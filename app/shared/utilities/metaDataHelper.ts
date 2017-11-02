@@ -1,5 +1,5 @@
 import { INameValuePair } from '../models/namevaluepair';
-import { AdvancedApplicationRestartInfo, InstanceInfo } from '../models/solution-metadata';
+import { AdvancedApplicationRestartInfo, InstanceInfo, SiteProfilingInfo } from '../models/solution-metadata';
 
 export class MetaDataHelper {
 
@@ -31,6 +31,22 @@ export class MetaDataHelper {
         }
 
         return values;
+    }
+
+    static getProfilingData(metaData: INameValuePair[][]): SiteProfilingInfo {
+        if(metaData.length > 0) {
+            let profilingInfo: SiteProfilingInfo = {
+                subscriptionId: MetaDataHelper.getValueForName(metaData[0], 'subscriptionid'),
+                resourceGroupName: MetaDataHelper.getValueForName(metaData[0], 'resourcegroup'), 
+                siteName: MetaDataHelper.getValueForName(metaData[0], 'sitename'),
+                instances: []
+            }
+
+            // push instances in to the array here from Daas Service
+            profilingInfo.instances.push("INSTANCE");
+
+            return profilingInfo;
+        }
     }
 
     static getAdvancedApplicationRestartData(metaData: INameValuePair[][]): AdvancedApplicationRestartInfo {

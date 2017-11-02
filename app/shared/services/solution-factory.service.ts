@@ -5,6 +5,7 @@ import { ScaleUpSolutionComponent } from '../../solutions/components/specific-so
 import { ISolution, SolutionData } from '../models/solution';
 import { LoggingService } from '../services/logging/logging.service';
 import { SolutionTypeTag } from '../models/solution-type-tag';
+import { ProfilingComponent } from '../../solutions/components/specific-solutions/profiling-solution/profiling-solution.component';
 
 @Injectable()
 export class SolutionFactoryService {
@@ -63,8 +64,8 @@ export class SolutionFactoryService {
             //     return new OtherSolutions.CheckAutoHeal(rank, _logger);
             // case 103:
             //     return new OtherSolutions.GetDumpOfProcess(rank, _logger);
-            // case 104:
-            //     return new OtherSolutions.RunRemoteProfiler(rank, _logger);
+             case 104:
+             return new SolutionHolder(ProfilingComponent, <SolutionData>{ title: "Remote Profile WebApp", tags: [SolutionTypeTag.Mitigation], solution: solution });
             // case 105:
             //     return new OtherSolutions.UpgradeDatabase(rank, _logger);
             // case 106:

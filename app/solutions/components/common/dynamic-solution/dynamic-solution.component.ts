@@ -4,13 +4,15 @@ import { SolutionHolder } from '../../../../shared/models/solution-holder';
 import { SolutionBaseComponent } from '../solution-base/solution-base.component';
 import { SiteRestartComponent } from '../../specific-solutions/site-restart-solution/site-restart-solution.component';
 import { ScaleUpSolutionComponent } from '../../specific-solutions/scale-up-solution/scale-up-solution.component';
+import { ProfilingComponent } from '../../specific-solutions/profiling-solution/profiling-solution.component';
+
 
 @Component({
     selector: 'dynamic-solution',
     template: `
     <div dynamic-solution-placeholder></div>
     `,
-    entryComponents: [SiteRestartComponent, ScaleUpSolutionComponent]
+    entryComponents: [SiteRestartComponent, ScaleUpSolutionComponent,ProfilingComponent]
 })
 export class DynamicSolutionComponent implements AfterViewInit {
     currentComponent = null;
