@@ -43,5 +43,9 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit {
         var daasSessions = this._daasService.getDaasSessions(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName).subscribe(result => {
             console.log("Start Profiler Trace here !");
         });
+
+        var instances = this._daasService.getInstances(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName).subscribe(result => {
+            console.log("got instance information !");
+        });
     }
 }

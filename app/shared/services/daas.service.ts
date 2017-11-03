@@ -28,14 +28,31 @@ export class DaasService {
     }
 
 
-    collectProfilerTrace(subscriptionId: string, resourceGroup: string, siteName: string): Observable<boolean> {      
-        let resourceUri: string = this._uriElementsService.getDaasSessionsUrl(subscriptionId, resourceGroup, siteName);
-        return this._armClient.postResource(resourceUri, null);
-    }
+    //collectProfilerTrace(subscriptionId: string, resourceGroup: string, siteName: string): Observable<boolean> {      
+      //  let resourceUri: string = this._uriElementsService.getDiagnosticsSessionsUrl(subscriptionId, resourceGroup, siteName);
+      //  return this._armClient.postResource(resourceUri, null);
+  //  }
 
     getDaasSessions(subscriptionId: string, resourceGroup: string, siteName: string): Observable<boolean> {      
-        let resourceUri: string = this._uriElementsService.getDaasSessionsUrl(subscriptionId, resourceGroup, siteName);
+        let resourceUri: string = this._uriElementsService.getDiagnosticsSessionsUrl(subscriptionId, resourceGroup, siteName);
         return this._armClient.getResource<any>(resourceUri);
+    }
+
+    getInstances(subscriptionId: string, resourceGroup: string, siteName: string) : Observable<boolean> {      
+        let resourceUri: string = this._uriElementsService.getDiagnosticsInstancesUrl(subscriptionId, resourceGroup, siteName);
+        return this._armClient.getResource<any>(resourceUri);
+    }
+
+    startDaasSession(subscriptionId: string, resourceGroup: string, siteName: string)
+    {
+      //  let resourceUri: string = this._uriElementsService.getDiagnosticsSessionsUrl(subscriptionId, resourceGroup, siteName);
+
+    }
+
+    startWebJob (subscriptionId: string, resourceGroup: string, siteName: string)
+    {
+        let resourceUri: string = this._uriElementsService.getDiagnosticsWebJobStartUrl(subscriptionId, resourceGroup, siteName);
+        return this._armClient.postResource(resourceUri, null);
     }
     
 }

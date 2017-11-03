@@ -21,11 +21,46 @@ export class UriElementsService {
         TODO : Need to add start time and end time parameters
     */
 
-    private _daasSessionsUrlFormat = "/extensions/daas/api/sessions/all?api-version=2016-02-01";
     
-    getDaasSessionsUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
-        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._daasSessionsUrlFormat;
-    }
+    private _diagnosticsPath = "/extensions/daas/api/";
+       private _diagnosticsSessionsPath = this._diagnosticsPath + "sessions/all";
+    private _diagnosticsSessionsDetailsPath = this._diagnosticsPath + "sessions" + "/{type}/{details} ";
+    private _diagnosticsDiagnosersPath = this._diagnosticsPath + "diagnosers";
+    private _diagnosticsInstancesPath = this._diagnosticsPath + "instances";
+    private _diagnosticsSingleSessionPath = this._diagnosticsPath + "session/{sessionId}/{details}";
+    private _diagnosticsWebJobStatePath = this._diagnosticsPath + "daaswebjobstate";
+    private _diagnosticsWebJobStartPath = this._diagnosticsPath + "daaswebjobstart";
+    
+    getDiagnosticsDiagnosersUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '') {
+        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsDiagnosersPath;
+    };
+
+    getDiagnosticsSessionsUrl(subscriptionId: string, resourceGroup: string, siteName:string, slot: string = '') {
+        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsSessionsPath;
+    };
+
+    getDiagnosticsSessionsDetailsUrl(subscriptionId: string, resourceGroup: string, siteName:string, type:string, detailed:boolean, slot: string = '') {
+        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsSessionsDetailsPath.replace("{type}", type)
+        .replace("{details}", detailed.toString());
+    };
+
+    getDiagnosticsInstancesUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '') {
+        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsInstancesPath;
+    };
+
+    getDiagnosticsSingleSessionUrl(subscriptionId: string, resourceGroup: string, siteName:string, sessionId: string, detailed: boolean, slot: string = '') {
+        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsSingleSessionPath
+        .replace("{sessionId}", sessionId)
+        .replace("{details}", detailed.toString());
+    };
+
+    getDiagnosticsWebJobStateUrl(subscriptionId: string, resourceGroup: string, siteName:string, slot: string = '') {
+        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsWebJobStatePath;
+    };
+
+    getDiagnosticsWebJobStartUrl(subscriptionId: string, resourceGroup: string, siteName:string, slot: string = '') {
+        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsWebJobStartPath;
+    };
 
 
     getSiteRestartUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
