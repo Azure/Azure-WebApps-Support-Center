@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { SolutionBaseComponent } from '../../common/solution-base/solution-base.component';
 import { SolutionData } from '../../../../shared/models/solution';
 import { MetaDataHelper } from '../../../../shared/utilities/metaDataHelper';
-import { PortalActionService, SiteService, ServerFarmDataService } from '../../../../shared/services'
+import { PortalActionService, SiteService, ServerFarmDataService, DaasService} from '../../../../shared/services'
 import { SiteProfilingInfo } from '../../../../shared/models/solution-metadata';
 
 
@@ -29,7 +29,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit {
     siteToBeProfiled: SiteProfilingInfo;
     instanceList: string;
 
-    constructor(private _siteService: SiteService, _portalActionService: PortalActionService, _serverFarmService: ServerFarmDataService) {
+    constructor(private _siteService: SiteService, private _daasService: DaasService, _portalActionService: PortalActionService, _serverFarmService: ServerFarmDataService) {
 
     }
 
@@ -40,10 +40,8 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit {
 
     collectProfilerTrace() {
         //TODO: logging
-        //this._siteService.restartSite(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName).subscribe(result => {
+        var daasSessions = this._daasService.getDaasSessions(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName).subscribe(result => {
             console.log("Start Profiler Trace here !");
-     //   });
+        });
     }
-
-   
 }

@@ -21,6 +21,13 @@ export class UriElementsService {
         TODO : Need to add start time and end time parameters
     */
 
+    private _daasSessionsUrlFormat = "/extensions/daas/api/sessions/all?api-version=2016-02-01";
+    
+    getDaasSessionsUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
+        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._daasSessionsUrlFormat;
+    }
+
+
     getSiteRestartUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
         return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._siteRestartUrlFormat;
     }
