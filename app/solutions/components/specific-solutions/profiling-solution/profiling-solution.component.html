@@ -11,19 +11,37 @@
                             <b>{{siteToBeProfiled.siteName}}</b>
                         </td>
                     </tr>
-                    <!-- <tr *ngFor="let instance of siteToBeProfiled.instances; let i = index">
-                        <td>
-                            <span *ngIf="i === 0">Unhealthy Instances:</span>
-                        </td>
+                    <tr *ngFor="let instance of instances; let i = index">
                         <td class="highlight-blue">
                             <b>{{instance}}</b>
                         </td>
                         <td></td>
-                    </tr> -->
+                    </tr>
+                    <tr *ngIf="diagnoserSession">
+                        <td colspan="2">
+                                <ul  *ngIf="diagnoserSession.CollectorStatus == 2">
+                                        <li  ng-repeat="message in diagnoserSession.CollectorStatusMessages">                                           
+                                                <span class="highlight-blue">{{ message.Entity }} -</span>
+                                                <span>{{  message.Message }}</span>                                            
+                                        </li>
+                                    </ul>
+                                    <ul *ngIf="diagnoserSession.AnalyzerStatus == 2">
+                                        <li ng-repeat="message in diagnoserSession.AnalyzerStatusMessages">                                            
+                                                <span class="highlight-blue">{{ message.Entity }} -</span>
+                                                <span>{{  message.Message }}</span>                                        
+                                        </li>
+                                    </ul>       
+                        </td>
+                    </tr>
                 </table>
             </div>
             <div style="text-align:right">
-                <button class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace On Specified Instances</button>
+                    <div class="col" *ngIf="sessionsInProgress==true">
+                            <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                            Waiting for existing sessions...
+                    </div>
+
+                <button *ngIf="sessionsInProgress==false" class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
             </div>
         </div>
         

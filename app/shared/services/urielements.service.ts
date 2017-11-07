@@ -23,7 +23,8 @@ export class UriElementsService {
 
     
     private _diagnosticsPath = "/extensions/daas/api/";
-       private _diagnosticsSessionsPath = this._diagnosticsPath + "sessions/all";
+    private _diagnosticsSessionsAllPath = this._diagnosticsPath + "sessions/all";
+    private _diagnosticsSessionsPath = this._diagnosticsPath + "sessions";
     private _diagnosticsSessionsDetailsPath = this._diagnosticsPath + "sessions" + "/{type}/{details} ";
     private _diagnosticsDiagnosersPath = this._diagnosticsPath + "diagnosers";
     private _diagnosticsInstancesPath = this._diagnosticsPath + "instances";
@@ -33,6 +34,10 @@ export class UriElementsService {
     
     getDiagnosticsDiagnosersUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '') {
         return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsDiagnosersPath;
+    };
+
+    getAllDiagnosticsSessionsUrl(subscriptionId: string, resourceGroup: string, siteName:string, slot: string = '') {
+        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsSessionsAllPath;
     };
 
     getDiagnosticsSessionsUrl(subscriptionId: string, resourceGroup: string, siteName:string, slot: string = '') {
@@ -61,7 +66,6 @@ export class UriElementsService {
     getDiagnosticsWebJobStartUrl(subscriptionId: string, resourceGroup: string, siteName:string, slot: string = '') {
         return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsWebJobStartPath;
     };
-
 
     getSiteRestartUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
         return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._siteRestartUrlFormat;

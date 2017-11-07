@@ -40,16 +40,17 @@ export class ArmService {
     }
 
     // From Support Center Project
-    postResource(resourceUri: string, body: any): Observable<boolean> {
+    postResource<T>(resourceUri: string, body: any): Observable<boolean | T> {
         var url = `${this.armUrl}${resourceUri}?api-version=${this.websiteApiVersion}`;
         if (body) {
             body = JSON.stringify(body);
         }
 
         return this._http.post(url, body, { headers: this.getHeaders() })
-            .map((response: Response) => response.ok)
+            .map((response: Response) => <T>response.json())
             .catch((response) => { return Observable.of(false) });
     }
+
 
     private handleError(error: Response): any {
         return Observable.throw(error.json().error || 'Server error');
