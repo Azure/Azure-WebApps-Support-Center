@@ -152,7 +152,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit {
                         }
                     }
                     else {
-                        // stop our timer at this point.
+                        // stop our timer at this point
                         if (this.subscription) {
                             this.subscription.unsubscribe();
                             console.log("unsubscribing");
@@ -166,7 +166,8 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit {
 
     collectProfilerTrace() {
         this.sessionsInProgress = true;
-        this.InstancesStatus.clear();
+        this.InstancesStatus =  new Map<string, number>();
+        
         var submitNewSession = this._daasService.submitDaasSession(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName)
             .subscribe(result => {
 
