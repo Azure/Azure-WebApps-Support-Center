@@ -29,13 +29,16 @@ import { ExpandableSummaryComponent } from './components/expandable-summary/expa
 import { VerticalDisplayListComponent } from './components/vertical-display-list/vertical-display-list.component';
 import { VerticalDisplayListItemComponent } from './components/vertical-display-list/vertical-display-list-item/vertical-display-list-item.component';
 import { SolutionTypeTagComponent } from './components/solution-type-tag/solution-type-tag.component';
+import { GroupByPipe } from './pipes/groupBy.pipe';
+
 
 
 @NgModule({
     declarations: [
         LimitToFilter,
         nvD3,
-        MarkupPipe,
+        MarkupPipe,       
+        GroupByPipe,
         BlogComponent,
         OpenTicketComponent,
         DowntimeTimelineComponent,
@@ -66,7 +69,8 @@ import { SolutionTypeTagComponent } from './components/solution-type-tag/solutio
         LimitToFilter,
         RouterModule,
         nvD3,
-        MarkupPipe,
+        MarkupPipe,      
+        GroupByPipe,
         BlogComponent,
         OpenTicketComponent,
         DowntimeTimelineComponent,

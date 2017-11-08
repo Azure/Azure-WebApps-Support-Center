@@ -17,38 +17,92 @@
                         </td>
                         <td></td>
                     </tr>
-                    <tr *ngIf="diagnoserSession">
-                        <td colspan="2">
-                                <ul  *ngIf="diagnoserSession.CollectorStatus == 2">
-                                        <li  ng-repeat="message in diagnoserSession.CollectorStatusMessages">                                           
-                                                <span class="highlight-blue">{{ message.Entity }} -</span>
-                                                <span>{{  message.Message }}</span>                                            
-                                        </li>
-                                    </ul>
-                                    <ul *ngIf="diagnoserSession.AnalyzerStatus == 2">
-                                        <li ng-repeat="message in diagnoserSession.AnalyzerStatusMessages">                                            
-                                                <span class="highlight-blue">{{ message.Entity }} -</span>
-                                                <span>{{  message.Message }}</span>                                        
-                                        </li>
-                                    </ul>       
-                        </td>
-                    </tr>
+                   
                 </table>
             </div>
             <div style="text-align:right">
                     <div class="col" *ngIf="sessionsInProgress==true">
                             <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                            Waiting for existing sessions...
+                           {{ spinnerMessage }}
                     </div>
 
                 <button *ngIf="sessionsInProgress==false" class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
             </div>
+        </div>
+
+        <div class="status-box" *ngIf="sessionsInProgress==true">
+            <div id="wizard-progress">
+                <ol class="step-indicator">
+                    <li [ngClass]="{'active' : sessionStatus === 1,'complete' : sessionStatus > 1}" >
+                        <div class="step"><i class="fa fa-play"></i></div>
+                        <div class="caption hidden-xs hidden-sm">Step 1: Starting Profier</div>
+                    </li>
+                    <li [ngClass]="{'': sessionStatus === 1, 'active' : sessionStatus === 2,'complete' : sessionStatus > 2}">
+                        <div class="step"><i class="fa fa-clock-o"></i></div>
+                        <div class="caption hidden-xs hidden-sm">Step 2: Reproduce the issue now</div>
+                    </li>
+                    <li [ngClass]="{'': sessionStatus < 2, 'active' : sessionStatus === 3,'complete' : sessionStatus > 3}">
+                        <div class="step"><i class="fa fa-clock-o"></i></div>
+                        <div class="caption hidden-xs hidden-sm">Step 3: Stopping profiler </div>
+                    </li>
+                    <li [ngClass]="{'': sessionStatus < 3, 'active' : sessionStatus === 4}">
+                        <div class="step"><i class="fa fa-cog"></i></div>
+                        <div class="caption hidden-xs hidden-sm">Step 4: Analyzing profiler trace</div>
+                    </li>                   
+                </ol>
+            </div>
+            <table>
+                <tr *ngIf="diagnoserSession">
+                    <td colspan="2">
+                            <ul  *ngIf="diagnoserSession.CollectorStatus == 2 && diagnoserSession.CollectorStatusMessages.length > 0">
+                                    <li  *ngFor="let message of diagnoserSession.CollectorStatusMessages | groupBy: 'EntityType'">                                           
+                                            <!-- <span class="highlight-blue">{{ message.key }} -</span> -->
+                                            <span>{{  message.value[message.value.length-1].Message }}</span>                                           
+                                    </li>
+                                </ul>
+                                <ul *ngIf="diagnoserSession.AnalyzerStatus == 2 && diagnoserSession.AnalyzerStatusMessages.length > 0">
+                                    <li *ngFor="let message of diagnoserSession.AnalyzerStatusMessages | groupBy: 'EntityType'">                                            
+                                        <!-- <span class="highlight-blue">{{ message.key }} -</span> -->
+                                        <span>{{  message.value[message.value.length-1].Message }}</span>       
+                                    </li>
+                                </ul>       
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div>
+           
         </div>
         
         <div class="header2">What you should know before performing a Profiler Trace</div>
         <ul>
             <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
         </ul>
-    
+
+        <div class="header2"><strong>Last 5 Profiler Sessions</strong></div>
+
+        <div class=" panel panel-default" *ngFor="let session of Sessions">          
+                {{ session.StartTime }}
+                    <table class="table table-hover">
+                        <tbody>
+                            <tr *ngFor="let diagnoser of session.DiagnoserSessions">                                
+                                <td class="col-md-2" style="text-align: center">
+      
+                                    <div *ngFor="let log of diagnoser.Logs">
+                                        <a href="/api/vfs/data/DaaS/{{ log.RelativePath }}" style="cursor: pointer" *ngIf="diagnoser.Logs.length > 0" target="_blank"> {{ log.FileName }} </a>
+                                    </div>
+                                </td>
+                                <td class="col-md-2" style="text-align: center">
+                                    <div *ngFor="let report of diagnoser.Reports">
+                                        <a href="/api/vfs/data/DaaS/{{ report.RelativePath }}" style="cursor: pointer" *ngIf=" diagnoser.Reports.length > 0 " target="_blank"> {{ report.FileName }} </a>
+                                    </div>
+                                </td>                               
+                            </tr>                          
+                        </tbody>
+                    </table>
+
+        </div>
+     
     
     </default-solution-template>
