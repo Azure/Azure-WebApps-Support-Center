@@ -55,8 +55,16 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
         this.SessionCompleted = false;
 
         //TODO:: How would this look for ASE ?
-        this.scmPath = "https://" + this.siteToBeProfiled.siteName + ".scm.azurewebsites.net";
-        this._daasService.getInstances(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName)
+        if (this.siteToBeProfiled.slot.length > 0)
+        {
+            this.scmPath = `https://${this.siteToBeProfiled.siteName}-${this.siteToBeProfiled.slot}.scm.azurewebsites.net`;
+        }
+        else
+        {
+            this.scmPath = `https://${this.siteToBeProfiled.siteName}.scm.azurewebsites.net`;
+        }
+        
+        this._daasService.getInstances(this.siteToBeProfiled)
             .subscribe(result => {
                 this.instances = result;
                 this.checkRunningSessions();                
@@ -80,7 +88,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     }
     checkRunningSessions() {
         this.checkingExistingSessions = true;
-        this._daasService.getDaasSessionsWithDetails(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName)
+        this._daasService.getDaasSessionsWithDetails(this.siteToBeProfiled)
             .subscribe(x => {
                 this.checkingExistingSessions = false;
                 this.Sessions = this.takeTopFiveProfilingSessions(x);                
@@ -111,7 +119,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
    
     pollRunningSession(sessionId: string) {
         var inProgress = false;
-        this._daasService.getDaasSessionWithDetails(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName, sessionId)
+        this._daasService.getDaasSessionWithDetails(this.siteToBeProfiled, sessionId)
             .subscribe(runningSession => {                
                 if (runningSession.Status == 0) {                    
                     inProgress = true;
@@ -180,7 +188,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
         this.sessionInProgress = true;
         this.updateInstanceInformation();
 
-        var submitNewSession = this._daasService.submitDaasSession(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName)
+        var submitNewSession = this._daasService.submitDaasSession(this.siteToBeProfiled)
             .subscribe(result => {
                 this.sessionStatus = 1;
                 this.SessionId = result;

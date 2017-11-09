@@ -35,10 +35,26 @@ export class MetaDataHelper {
 
     static getProfilingData(metaData: INameValuePair[][]): SiteProfilingInfo {
         if(metaData.length > 0) {
+
+            var siteNameWithSlot = MetaDataHelper.getValueForName(metaData[0], 'sitename');
+            var siteName = "";
+            var slotName = "";
+
+            if (siteNameWithSlot.indexOf('(') >= 0) {
+                let parts = siteNameWithSlot.split('(');
+                siteName = parts[0];
+                slotName = parts[1].replace(')', '');
+            }
+            else
+            {
+                siteName = siteNameWithSlot;
+            }
+
             let profilingInfo: SiteProfilingInfo = {
                 subscriptionId: MetaDataHelper.getValueForName(metaData[0], 'subscriptionid'),
                 resourceGroupName: MetaDataHelper.getValueForName(metaData[0], 'resourcegroup'), 
-                siteName: MetaDataHelper.getValueForName(metaData[0], 'sitename'),
+                siteName: siteName,
+                slot:slotName,
                 instances: []
             }           
 

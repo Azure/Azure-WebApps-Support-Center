@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { SiteProfilingInfo } from '../models/solution-metadata';
 
 @Injectable()
 export class UriElementsService {
@@ -38,39 +39,39 @@ export class UriElementsService {
     private _diagnosticsWebJobStatePath = this._diagnosticsPath + "daaswebjobstate";
     private _diagnosticsWebJobStartPath = this._diagnosticsPath + "daaswebjobstart";
     
-    getDiagnosticsDiagnosersUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '') {
-        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsDiagnosersPath;
+    getDiagnosticsDiagnosersUrl(site: SiteProfilingInfo) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDiagnosersPath;
     };
 
-    getAllDiagnosticsSessionsUrl(subscriptionId: string, resourceGroup: string, siteName:string, slot: string = '') {
-        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsSessionsAllPath;
+    getAllDiagnosticsSessionsUrl(site: SiteProfilingInfo) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSessionsAllPath;
     };
 
-    getDiagnosticsSessionsUrl(subscriptionId: string, resourceGroup: string, siteName:string, slot: string = '') {
-        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsSessionsPath;
+    getDiagnosticsSessionsUrl(site: SiteProfilingInfo) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSessionsPath;
     };
 
-    getDiagnosticsSessionsDetailsUrl(subscriptionId: string, resourceGroup: string, siteName:string, type:string, detailed:boolean, slot: string = '') {
-        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsSessionsDetailsPath.replace("{type}", type)
+    getDiagnosticsSessionsDetailsUrl(site: SiteProfilingInfo, type:string, detailed:boolean) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSessionsDetailsPath.replace("{type}", type)
         .replace("{details}", detailed.toString());
     };
 
-    getDiagnosticsInstancesUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '') {
-        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsInstancesPath;
+    getDiagnosticsInstancesUrl(site: SiteProfilingInfo) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsInstancesPath;
     };
 
-    getDiagnosticsSingleSessionUrl(subscriptionId: string, resourceGroup: string, siteName:string, sessionId: string, detailed: boolean, slot: string = '') {
-        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsSingleSessionPath
+    getDiagnosticsSingleSessionUrl(site: SiteProfilingInfo, sessionId: string, detailed: boolean) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSingleSessionPath
         .replace("{sessionId}", sessionId)
         .replace("{details}", detailed.toString());
     };
 
-    getDiagnosticsWebJobStateUrl(subscriptionId: string, resourceGroup: string, siteName:string, slot: string = '') {
-        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsWebJobStatePath;
+    getDiagnosticsWebJobStateUrl(site: SiteProfilingInfo) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsWebJobStatePath;
     };
 
-    getDiagnosticsWebJobStartUrl(subscriptionId: string, resourceGroup: string, siteName:string, slot: string = '') {
-        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticsWebJobStartPath;
+    getDiagnosticsWebJobStartUrl(site: SiteProfilingInfo) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsWebJobStartPath;
     };
 
     getSiteRestartUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {

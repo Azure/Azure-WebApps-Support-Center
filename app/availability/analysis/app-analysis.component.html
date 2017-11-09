@@ -22,10 +22,13 @@
                     [openedFromTicketFlow]="bladeOpenedFromSupportTicketFlow">
                 </observations-availability>
                 <br/>
-                <solution-list *ngIf="abnormalTimePeriods && selectedTimePeriodIndex >= 0" 
+                <!-- <solution-list *ngIf="abnormalTimePeriods && selectedTimePeriodIndex >= 0" 
                     [abnormalTimePeriod]="abnormalTimePeriods[selectedTimePeriodIndex]"
                     [openedFromTicketFlow]="bladeOpenedFromSupportTicketFlow">
-                </solution-list>
+                </solution-list> -->
+                <solutions-widget [solutionModels]="[]">
+
+                </solutions-widget>
             </div>
         </div>
     </div>

@@ -11,6 +11,7 @@ export class AdvancedApplicationRestartInfo extends SiteInfoMetaData {
 }
 
 export class SiteProfilingInfo extends SiteInfoMetaData {
+    slot:string;
     instances: string[];
 }
 
