@@ -112,10 +112,8 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     pollRunningSession(sessionId: string) {
         var inProgress = false;
         this._daasService.getDaasSessionWithDetails(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName, sessionId)
-            .subscribe(runningSession => {
-                console.log("Finding session with Id " + sessionId);
-                if (runningSession.Status == 0) {
-                    console.log("Found a running session with status Active");
+            .subscribe(runningSession => {                
+                if (runningSession.Status == 0) {                    
                     inProgress = true;
                     this.getProfilingStateFromSession(runningSession);
                 }
@@ -125,7 +123,6 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
                     // stop our timer at this point
                     if (this.subscription) {
                         this.subscription.unsubscribe();
-                        console.log("unsubscribing");
                     }
 
                     var clrDiagnoser = runningSession.DiagnoserSessions.find(x => x.Name == "CLR Profiler");
@@ -156,8 +153,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
                             this.InstancesStatus.set(msg.EntityType, 2);
                         }
                     });
-                    this.sessionStatus = this.InstancesStatus.get(this.selectedInstance);
-                    console.log(this.selectedInstance + " has status " + this.sessionStatus);
+                    this.sessionStatus = this.InstancesStatus.get(this.selectedInstance);                    
                 }
             }
             else if (clrDiagnoser.AnalyzerStatus == 2) {
@@ -165,9 +161,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
                 // once we are at the analyzer, lets just set all instances's status to 
                 // analyzing as we will reach here once all the collectors have finsihed                
                 this.sessionStatus = 4;
-                if (clrDiagnoser.AnalyzerStatusMessages.length > 0) {
-                    console.log(clrDiagnoser.AnalyzerStatusMessages[clrDiagnoser.AnalyzerStatusMessages.length - 1].Message);
-                }
+                
             }
         }
     }
@@ -190,9 +184,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
             .subscribe(result => {
                 this.sessionStatus = 1;
                 this.SessionId = result;
-                console.log("Started a new DAAS Session with Id =" + this.SessionId);
-
-                this.subscription = Observable.interval(5000).subscribe(res => {
+                this.subscription = Observable.interval(10000).subscribe(res => {
                     this.pollRunningSession(this.SessionId);
                 });
             });
@@ -208,7 +200,6 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     }
 
     ngOnDestroy(): void {
-        this.subscription.unsubscribe();
-        console.log("unsubscribing");
+        this.subscription.unsubscribe();        
     }
 }
