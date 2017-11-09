@@ -9,7 +9,6 @@ import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { Observable } from 'rxjs/Observable';
 import { Diagnoser, DiagnoserStatusMessage, Session, Report } from '../../../../shared/models/idaassession';
 
-
 @Component({
     templateUrl: 'profiling-solution.component.html',
     styleUrls: ['../../../styles/solutions.css',
@@ -48,11 +47,9 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     SessionCompleted:boolean;
 
     constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService) {
-
     }
 
     ngOnInit(): void {
-
         
         this.siteToBeProfiled = MetaDataHelper.getProfilingData(this.data.solution.data);         
         this.SessionCompleted = false;
@@ -75,7 +72,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
                 }
             });
         });
-        console.log("Array length is = " + arrayToReturn.length);
+        
         if (arrayToReturn.length > 5) {
             arrayToReturn = arrayToReturn.slice(0, 5);
         }

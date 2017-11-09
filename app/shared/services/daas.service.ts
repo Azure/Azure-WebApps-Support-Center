@@ -37,7 +37,7 @@ export class DaasService {
         session.TimeSpan = "00:02:00";
 
         let resourceUri: string = this._uriElementsService.getDiagnosticsSessionsUrl(subscriptionId, resourceGroup, siteName);
-        return this._armClient.postResource<string>(resourceUri, session);
+        return <Observable<string>>(this._armClient.postResource(resourceUri, session));
     }
     getDaasSessionsWithDetails(subscriptionId: string, resourceGroup: string, siteName: string): Observable<Session[]> {
         let resourceUri: string = this._uriElementsService.getDiagnosticsSessionsDetailsUrl(subscriptionId, resourceGroup, siteName, "all", true);
