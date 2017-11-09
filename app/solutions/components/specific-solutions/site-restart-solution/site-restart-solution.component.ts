@@ -3,8 +3,8 @@ import { SolutionBaseComponent } from '../../common/solution-base/solution-base.
 import { SolutionData } from '../../../../shared/models/solution';
 import { MetaDataHelper } from '../../../../shared/utilities/metaDataHelper';
 import { AdvancedApplicationRestartInfo } from '../../../../shared/models/solution-metadata';
-import { PortalActionService, SiteService, ServerFarmDataService } from '../../../../shared/services'
-
+import { PortalActionService, SiteService, ServerFarmDataService } from '../../../../shared/services';
+import { ActionStatus } from '../../../../shared/models/enumerations';
 
 @Component({
     templateUrl: 'site-restart-solution.component.html',
@@ -30,6 +30,10 @@ export class SiteRestartComponent implements SolutionBaseComponent, OnInit {
 
     appRestartDescription: string = "An App Restart will kill the app process on all instances."
 
+    restartAppStatus: ActionStatus = ActionStatus.NotStarted
+    restartAppSuccessMessage: string = "App Restart Successful. Check and see if this issue is resolved."
+    restartAppFailureMessage: string = "App Restart Failed. Please try again or try a different solution."
+
     siteToBeRestarted: AdvancedApplicationRestartInfo;
     instanceList: string;
 
@@ -44,9 +48,14 @@ export class SiteRestartComponent implements SolutionBaseComponent, OnInit {
 
     restartSite() {
         //TODO: logging
-        this._siteService.restartSite(this.siteToBeRestarted.subscriptionId, this.siteToBeRestarted.resourceGroupName, this.siteToBeRestarted.siteName).subscribe(result => {
-            console.log("Restarted!");
-        });
+        this.restartAppStatus = ActionStatus.Running
+        this._siteService.restartSite(this.siteToBeRestarted.subscriptionId, this.siteToBeRestarted.resourceGroupName, this.siteToBeRestarted.siteName).subscribe(
+            response => {
+                this.restartAppStatus = response ? ActionStatus.Passed : ActionStatus.Failed;
+            },
+            error => {
+                this.restartAppStatus = ActionStatus.Failed;
+            });
     }
 
     advancedAppRestartSite() {
@@ -56,6 +65,6 @@ export class SiteRestartComponent implements SolutionBaseComponent, OnInit {
             this._siteService.killW3wpOnInstance(this.siteToBeRestarted.subscriptionId, this.siteToBeRestarted.resourceGroupName, this.siteToBeRestarted.siteName,
                 '', instance.machineName);
         })
-        
+
     }
 }

@@ -111,24 +111,22 @@ export class AppAnalysisComponent implements OnInit {
         this.abnormalTimePeriods = null;
         this.analysisResponse = null;
 
-        this._appAnalysisService.invalidateCache();
-
         this.topLevelGraphRefreshIndex++;
 
         this.startLoadingMessage();
 
-        this._loadData();
+        this._loadData(true);
     }
 
     selectDowntime(index: number): void {
         this.selectedTimePeriodIndex = index;
     }
 
-    private _loadData(): void {
+    private _loadData(invalidateCache: boolean = false): void {
 
         let self = this;
 
-        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'runtimeavailability').subscribe(data => {
+        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', 'runtimeavailability', invalidateCache).subscribe(data => {
             self.runtimeAvailabilityResponse = data;
             if (self.runtimeAvailabilityResponse && self.runtimeAvailabilityResponse.data && self.runtimeAvailabilityResponse.data.length > 0) {
                 let currentAppHealth = self.runtimeAvailabilityResponse.data[0].find(p => p.name.toLowerCase() === "currentapphealth");
@@ -143,11 +141,11 @@ export class AppAnalysisComponent implements OnInit {
             }
         });
 
-        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'servicehealth').subscribe(data => {
+        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', 'servicehealth', invalidateCache).subscribe(data => {
             self.serviceHealthResponse = data;
         });
 
-        this._appAnalysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'appanalysis')
+        this._appAnalysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', 'appanalysis', invalidateCache)
             .subscribe(data => {
                 this.loadingAnalysis = false;
                 clearInterval(self.loadingMessageTimer);
@@ -167,7 +165,7 @@ export class AppAnalysisComponent implements OnInit {
             });
 
         // Ideally we want to put this call on startup. We can't put this call in logging service as that will create a cyclic dependency.
-        this._appAnalysisService.getDiagnosticProperties(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName).subscribe(data => {
+        this._appAnalysisService.getDiagnosticProperties(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, invalidateCache).subscribe(data => {
             if (data && data.appStack) {
                 self._logger.appStackInfo = data.appStack;
             }

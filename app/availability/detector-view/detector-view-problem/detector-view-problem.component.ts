@@ -26,6 +26,8 @@ export class DetectorViewProblemComponent implements OnInit {
     @Input() isHealthyNow: boolean;
     @Input() highlightedDowntime: IDetectorAbnormalTimePeriod;
 
+    @Input() showSolutions: boolean = true;
+
     downtimeMessage: string;
     downtimeTime: string;
     abnormalTimePeriods: IDetectorAbnormalTimePeriod[] = [];

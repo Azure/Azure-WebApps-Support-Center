@@ -6,7 +6,7 @@ import { AppAnalysisService } from '../../../shared/services';
 import { PortalActionService, AvailabilityLoggingService, AuthService, WindowService } from '../../../shared/services';
 import { StartupInfo } from '../../../shared/models/portal';
 import { INameValuePair } from '../../../shared/models/namevaluepair';
-import { ICache } from '../../../shared/models/icache';
+import { Cache } from '../../../shared/models/icache';
 import { GraphHelper } from '../../../shared/utilities/graphHelper';
 import { SupportBladeDefinitions, BladeOptions } from '../../../shared/models/portal';
 import * as _ from 'underscore';
@@ -39,7 +39,7 @@ export class WebAppRestartComponent implements OnInit {
     siteName: string;
     slotName: string;
     analysisResult: IDetectorAbnormalTimePeriod[];
-    metricsPerInstance: ICache<any>;
+    metricsPerInstance: Cache<any>;
     allInstances: string[];
     selectedWorker: string;
     noReason: any;
@@ -111,7 +111,7 @@ export class WebAppRestartComponent implements OnInit {
         this._loadData();
     }
 
-    private _loadData(startDate: string = ''): void {
+    private _loadData(startDate: string = '', invalidateCache: boolean = false): void {
 
         this.analysisResult = [];
         this.metricsPerInstance = {};
@@ -132,7 +132,7 @@ export class WebAppRestartComponent implements OnInit {
         var allMetrics: IMetricSet[] = [];
         this.loadingAnalysis = true;
 
-        this._analysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'apprestartanalysis', startDate)
+        this._analysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', 'apprestartanalysis', invalidateCache, startDate)
             .subscribe((response: IAppAnalysisResponse) => {
 
                 self.loadingAnalysis = false;
@@ -332,7 +332,6 @@ export class WebAppRestartComponent implements OnInit {
         this._logger.LogMessage(`New Date Selected :${event.formatted}`);
 
         let currentDate: Date = GraphHelper.convertToUTCTime(new Date());
-        this._analysisService.invalidateCache();
         this.startLoadingMessage();
         this.showToolsDropdown = false;
 
@@ -342,6 +341,6 @@ export class WebAppRestartComponent implements OnInit {
             dateFilter = '';
         }
 
-        this._loadData(dateFilter);
+        this._loadData(dateFilter, true);
     }
 }

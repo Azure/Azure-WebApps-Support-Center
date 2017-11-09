@@ -16,21 +16,23 @@
             <!-- <ul>
                     <li *ngFor="let instance of siteToBeRestarted.instances">{{instance.machineName}}</li>
                 </ul> -->
-            <table style="border:none">
+            <div>
+                We detected the following site as the 
+            </div>
+            <table style="border:none;margin-bottom: 10px;">
                 <tr>
                     <td>App to be Restarted: </td>
                     <td class="highlight-blue">
                         <b>{{siteToBeRestarted.siteName}}</b>
                     </td>
                 </tr>
-                <tr *ngFor="let instance of siteToBeRestarted.instances; let i = index">
+                <tr>
                     <td>
-                        <span *ngIf="i === 0">Unhealthy Instances:</span>
+                        Unhealthy Instance(s):
                     </td>
                     <td class="highlight-blue">
-                        <b>{{instance.machineName}}</b>
+                            {{instanceList}}
                     </td>
-                    <td></td>
                 </tr>
             </table>
         </div>
@@ -64,6 +66,7 @@
         <div style="text-align:right">
             <button class="btn btn-primary" (click)="restartSite()">Restart App</button>
         </div>
+        <solution-operation [operationStatus]="restartAppStatus" [failureMessage]="[restartAppFailureMessage]" [successMessage]="restartAppSuccessMessage"></solution-operation>
     </div>
 
 

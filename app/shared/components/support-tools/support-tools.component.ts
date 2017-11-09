@@ -28,11 +28,11 @@ export class SupportToolsComponent  {
 
         this._portalService.getStartupInfo()        
             .flatMap((startUpInfo: StartupInfo) => {
-                return this._armService.getArmResource(startUpInfo.resourceId);
+                return this._armService.getResource<Site>(startUpInfo.resourceId);
             })
             .flatMap((site: Site) => {
                 this.currentSite = site;
-                return this._rbacService.hasPermission(this.currentSite.properties.serverFarmId, [this._rbacService.readScope]);
+                return this._rbacService.hasPermission(this.currentSite.serverFarmId, [this._rbacService.readScope]);
             })
             .subscribe((hasPermission: boolean) => {
                 this.hasReadAccessToServerFarm = hasPermission;

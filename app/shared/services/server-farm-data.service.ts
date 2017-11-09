@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Site } from '../../shared/models/site';
 import { ServerFarm } from '../../shared/models/server-farm';
 import { StartupInfo } from '../../shared/models/portal';
+
+import { ResponseMessageEnvelope } from '../models/responsemessageenvelope';
 import { UriElementsService, AuthService, ArmService, RBACService } from '../../shared/services';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -11,52 +13,39 @@ import 'rxjs/add/observable/throw';
 
 @Injectable()
 export class ServerFarmDataService {
-    private token: string;
     private siteResourceId: string;
 
+    public siteServerFarm: BehaviorSubject<ResponseMessageEnvelope<ServerFarm>> = new BehaviorSubject(null);
+    public hasServerFarmAccess: BehaviorSubject<boolean> = new BehaviorSubject(null);
+    public sitesInServerFarm: BehaviorSubject<Site[]> = new BehaviorSubject(null);
+
     private currentSite: Site;
-    private currentServerFarm: ServerFarm;
     public hasReadAccessToServerFarm: boolean;
-    private sitesInServerFarm: Site[];
 
     private serverFarmBehaviorSubject: BehaviorSubject<ServerFarm> = new BehaviorSubject<ServerFarm>(null);
 
     constructor(private _armService: ArmService, private _uriElementsService: UriElementsService, private _authService: AuthService,
         private _rbacService: RBACService) {
-        console.log("constructor");
         this._authService.getStartupInfo()
             .flatMap((startUpInfo: StartupInfo) => {
-                console.log(startUpInfo);
-                this.token = startUpInfo.token;
                 this.siteResourceId = startUpInfo.resourceId;
-                return this._armService.getArmResource(this.siteResourceId);
+                return this._armService.getResource<Site>(this.siteResourceId);
             })
-            .flatMap((site: Site) => {
-                this.currentSite = site;
-                console.log(site);
-                return this._rbacService.hasPermission(this.currentSite.properties.serverFarmId, [this._rbacService.readScope]);
+            .flatMap((site: ResponseMessageEnvelope<Site>) => {
+                this.currentSite = site.properties;
+                return this._rbacService.hasPermission(this.currentSite.serverFarmId, [this._rbacService.readScope]);
             })
             .flatMap((hasPermission: boolean) => {
-                this.hasReadAccessToServerFarm = hasPermission;
-                if(!hasPermission){
-                    console.log("No permission to App Service Plan");
-                }
-                return this._armService.getArmResource(this.currentSite.properties.serverFarmId);
+                this.hasServerFarmAccess.next(hasPermission);
+                return this._armService.getResource<ServerFarm>(this.currentSite.serverFarmId);
             })
-            .flatMap((serverFarm: ServerFarm) => {
-                serverFarm = this.addAdditionalProperties(serverFarm);
-                this.currentServerFarm = serverFarm;
-                this.serverFarmBehaviorSubject.next(this.currentServerFarm);
-                return this._armService.getArmResources(this.currentServerFarm.id + "/sites");
+            .flatMap((serverFarm: ResponseMessageEnvelope<ServerFarm>) => {
+                this.siteServerFarm.next(serverFarm);
+                return this._armService.getResourceCollection<Site>(serverFarm.id + "/sites");
             })
-            .subscribe((sites: Site[]) => {
-                this.sitesInServerFarm = sites;
-                console.log(sites);
+            .subscribe((sites: ResponseMessageEnvelope<Site>[]) => {
+                this.sitesInServerFarm.next(sites.map(env => env.properties));
             });
-    }
-
-    public getSiteInServerFarm(siteName: string) {
-        return this.sitesInServerFarm.find(site => site.properties.name.toLowerCase() === siteName.toLowerCase());
     }
 
     public getSiteServerFarm() {
@@ -89,7 +78,7 @@ export class ServerFarmDataService {
 
             if (serverFarm.sku.family.toLowerCase() === 'p1') {
                 serverFarm.additionalProperties.cores *= 2;
-                serverFarm.additionalProperties.ramInGB *=2;
+                serverFarm.additionalProperties.ramInGB *= 2;
             }
         }
 

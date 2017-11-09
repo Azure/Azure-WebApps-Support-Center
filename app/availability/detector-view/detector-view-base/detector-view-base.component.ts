@@ -18,6 +18,7 @@ export class DetectorViewBaseComponent implements OnInit {
     slotName: string;
     detectorName: string;
     topLevelDetector: string = 'runtimeavailability';
+    category: string = 'availability';
 
     detectorResponse: IDetectorResponse;
     detectorMetrics: IMetricSet[];
@@ -40,12 +41,12 @@ export class DetectorViewBaseComponent implements OnInit {
         this.siteName = this._route.parent.snapshot.params['sitename'];
         this.slotName = this._route.snapshot.params['slot'] ? this._route.snapshot.params['slot'] : '';
 
-        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, this.topLevelDetector)
+        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, this.category, this.topLevelDetector)
             .subscribe(response => {
                 this.processTopLevelDetectorResponse(response);
             });
 
-        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, this.detectorName)
+        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, this.category, this.detectorName)
             .subscribe(response => {
                 this.processDetectorResponse(response);
             });

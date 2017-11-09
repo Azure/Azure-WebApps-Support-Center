@@ -68,7 +68,8 @@ import { UriElementsService } from '../shared/services'
     exports: [
         ObservationsComponent,
         ObservationsAvailabilityComponent,
-        ObservationsPerformanceComponent
+        ObservationsPerformanceComponent,
+        DetectorViewProblemComponent
     ]
 })
 export class AvailabilityModule {

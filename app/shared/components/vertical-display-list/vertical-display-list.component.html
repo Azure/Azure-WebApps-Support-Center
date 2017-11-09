@@ -1,15 +1,24 @@
-<div class="outer-container">
-    <div class="column-container left-column-container">
-        <div class="list-item" [ngClass]="{'list-item-selected':listItem.metaData.isSelected}" *ngFor="let listItem of listItems" (click)="selectItem(listItem)">
-            <span class="list-item-text"><b>{{listItem.metaData.title}}</b></span>
-            <div class="tag-holder">
-                <solution-type-tag *ngFor="let tag of listItem.metaData.tags" [tagType]="tag"></solution-type-tag>
-            </div>
-            
-        </div>
-        <div class="list-item list-item-fill"></div>
+<div>
+    <div class="title-container" style="width:100%">
+        <h2>Troubleshooting and Next Steps</h2>
     </div>
-    <div class="column-container right-column-container">
-        <ng-content></ng-content>
+    <div class="outer-container">
+
+        <div class="column-container left-column-container">
+            <div class="list-item" [ngClass]="{'list-item-selected':listItem.metaData.isSelected}" *ngFor="let listItem of listItems"
+                (click)="selectItem(listItem)">
+                <span class="list-item-text">
+                    <b>{{listItem.metaData.title}}</b>
+                </span>
+                <div class="tag-holder">
+                    <solution-type-tag *ngFor="let tag of listItem.metaData.tags" [tagType]="tag"></solution-type-tag>
+                </div>
+
+            </div>
+            <div class="list-item list-item-fill"></div>
+        </div>
+        <div class="column-container right-column-container">
+            <ng-content></ng-content>
+        </div>
     </div>
 </div>

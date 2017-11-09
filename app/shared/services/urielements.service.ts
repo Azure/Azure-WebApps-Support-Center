@@ -5,13 +5,19 @@ export class UriElementsService {
     private _resourceProviderPrefix: string = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.Web/";
     private _siteResource = this._resourceProviderPrefix + "sites/{siteName}";
     private _slotResource = "/slots/{slot}";
-    private _siteResourceDiagnosticsPrefix: string = "/diagnostics";
 
     private _siteRestartUrlFormat: string = "/restart";
-    private _analysisResourceFormat: string = this._siteResourceDiagnosticsPrefix + "/{analysisName}";
-    private _detectorsUrlFormat: string = this._siteResourceDiagnosticsPrefix + "/detectors";
-    private _detectorResourceFormat: string = this._detectorsUrlFormat + "/{detectorName}";
-    private _diagnosticPropertiesFormat: string = this._siteResourceDiagnosticsPrefix + "/properties";
+
+    private _siteResourceDiagnosticsPrefix: string = "/diagnostics";    
+    private _diagnosticCategoryFormat: string = this._siteResourceDiagnosticsPrefix + "/{diagnosticCategory}"
+
+    private _analysisResource: string = this._diagnosticCategoryFormat + "/analyses";
+    private _analysisResourceFormat: string = this._analysisResource + "/{analysisName}/execute";
+
+    private _detectorsUrlFormat: string = this._diagnosticCategoryFormat + "/detectors";
+    private _detectorResourceFormat: string = this._detectorsUrlFormat + "/{detectorName}/execute";
+
+    private _diagnosticProperties: string = this._siteResourceDiagnosticsPrefix + "/properties";
 
     private _queryStringParams = "?startTime={startTime}&endTime={endTime}";
 
@@ -84,24 +90,25 @@ export class UriElementsService {
             .replace('{siteName}', resource);
     }
 
-    getAnalysisResourceUrl(subscriptionId: string, resourceGroup: string, siteName: string, analysisName: string, slot: string = '', startTime: string = '', endTime: string = ''): string {
+    getAnalysisResourceUrl(subscriptionId: string, resourceGroup: string, siteName: string, diagnosticCategory: string, analysisName: string, slot: string = '', startTime: string = '', endTime: string = ''): string {
         return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) +
-            this._analysisResourceFormat.replace("{analysisName}", analysisName) +
+            this._analysisResourceFormat.replace("{diagnosticCategory}", diagnosticCategory).replace("{analysisName}", analysisName) +
             this._getQueryParams(startTime, endTime);
     }
 
-    getDetectorsUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
-        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._detectorsUrlFormat;
+    getDetectorsUrl(subscriptionId: string, resourceGroup: string, siteName: string, diagnosticCategory: string, slot: string = ''): string {
+        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + 
+               this._detectorsUrlFormat.replace("{diagnosticCategory}", diagnosticCategory);
     }
 
-    getDetectorResourceUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '', detectorName: string, startTime: string = '', endTime: string = ''): string {
+    getDetectorResourceUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '', diagnosticCategory: string, detectorName: string, startTime: string = '', endTime: string = ''): string {
         return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) +
-            this._detectorResourceFormat.replace("{detectorName}", detectorName) +
+            this._detectorResourceFormat.replace("{diagnosticCategory}", diagnosticCategory).replace("{detectorName}", detectorName) +
             this._getQueryParams(startTime, endTime);
     }
 
     getDiagnosticPropertiesUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
-        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticPropertiesFormat;
+        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticProperties;
     }
 
     private _getSiteResourceUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '') {

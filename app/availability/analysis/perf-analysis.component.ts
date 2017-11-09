@@ -115,36 +115,34 @@ export class PerfAnalysisComponent implements OnInit {
         this.abnormalTimePeriods = null;
         this.analysisResponse = null;
 
-        this._appAnalysisService.invalidateCache();
-
         this.topLevelGraphRefreshIndex++;
 
         this.startLoadingMessage();
 
-        this._loadData();
+        this._loadData(true);
     }
 
     selectDowntime(index: number): void {
         this.selectedTimePeriodIndex = index;
     }
 
-    private _loadData(): void {
+    private _loadData(invalidateCache: boolean = false): void {
 
         let self = this;
         
-        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'sitelatency').subscribe(data => {
+        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', 'sitelatency', invalidateCache).subscribe(data => {
             self.siteLatencyResponse = data;
         });
 
-        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'servicehealth').subscribe(data => {
+        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', 'servicehealth', invalidateCache).subscribe(data => {
             self.serviceHealthResponse = data;
         });
 
-        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'runtimeavailability').subscribe(data => {
+        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', 'runtimeavailability', invalidateCache).subscribe(data => {
             self.runtimeAvailabilityResponse = data;
         });
 
-        this._appAnalysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'perfanalysis')
+        this._appAnalysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', 'perfanalysis', invalidateCache)
             .subscribe(data => {
                 this.loadingAnalysis = false;
                 clearInterval(self.loadingMessageTimer);
@@ -164,7 +162,7 @@ export class PerfAnalysisComponent implements OnInit {
             });
 
         // Ideally we want to put this call on startup. We can't put this call in logging service as that will create a cyclic dependency.
-        this._appAnalysisService.getDiagnosticProperties(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName).subscribe(data => {
+        this._appAnalysisService.getDiagnosticProperties(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, invalidateCache).subscribe(data => {
             if (data && data.appStack) {
                 self._logger.appStackInfo = data.appStack;
             }

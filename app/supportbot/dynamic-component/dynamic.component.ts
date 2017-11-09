@@ -5,11 +5,15 @@ import { ButtonMessageComponent } from '../common/button-message/button-message.
 import { MainMenuComponent } from '../message-flow/main-menu/main-menu.component';
 import { HealthCheckComponent } from '../message-flow/health-check/health-check.component';
 import { FeedbackComponent } from '../message-flow/feedback/feedback.component';
+import { SolutionsMessageComponent } from '../common/solutions-message/solutions-message.component';
+import { GraphMessageComponent } from '../common/graph-message/graph-message.component';
+import { ProblemStatementMessageComponent } from '../common/problem-statement-message/problem-statement-message.component';
 import { Message } from '../models/message';
 
 @Component({
     selector: 'dynamic-component',
-    entryComponents: [TextMessageComponent, MainMenuComponent, ButtonMessageComponent, HealthCheckComponent, FeedbackComponent],
+    entryComponents: [TextMessageComponent, MainMenuComponent, ButtonMessageComponent, HealthCheckComponent, FeedbackComponent, 
+        SolutionsMessageComponent, GraphMessageComponent, ProblemStatementMessageComponent],
     template: `
     <div #dynamicComponentContainer></div>
   `,

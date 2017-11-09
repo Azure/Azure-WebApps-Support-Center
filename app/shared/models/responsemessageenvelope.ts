@@ -1,4 +1,4 @@
-export interface IResponseMessageEnvelope<T> {
+export interface ResponseMessageEnvelope<T> {
     id: string;
     name: string;
     type: string;
@@ -7,7 +7,7 @@ export interface IResponseMessageEnvelope<T> {
     properties: T;
 }
 
-export interface IResponseMessageCollectionEnvelope<T>{
+export interface ResponseMessageCollectionEnvelope<T>{
     id:string;
     nextLink:string;
     value: T[]

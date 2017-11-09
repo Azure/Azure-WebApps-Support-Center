@@ -9,6 +9,7 @@ import { DynamicSolutionComponent } from './components/common/dynamic-solution/d
 import { ScaleUpSolutionComponent } from './components/specific-solutions/scale-up-solution/scale-up-solution.component';
 import { DefaultSolutionTemplateComponent } from './components/common/default-solution-template/default-solution-template.component';
 import { ProfilingComponent } from './components/specific-solutions/profiling-solution/profiling-solution.component';
+import { SolutionOperationComponent } from './components/common/solution-operation/solution-operation.component';
 
 @NgModule({
     declarations: [
@@ -18,7 +19,8 @@ import { ProfilingComponent } from './components/specific-solutions/profiling-so
         SiteRestartComponent,
         ScaleUpSolutionComponent,
         DefaultSolutionTemplateComponent,
-        ProfilingComponent
+        ProfilingComponent,
+        SolutionOperationComponent
     ],
     imports: [
         SharedModule

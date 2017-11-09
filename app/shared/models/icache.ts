@@ -1,3 +1,3 @@
-export interface ICache<T>{
+export interface Cache<T>{
     [K: string]: T;
 }

@@ -84,7 +84,7 @@ export class AvailabilityGraphComponent implements OnInit, OnChanges {
     }
 
     private _loadData(): void {
-        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'runtimeavailability').subscribe(data => {
+        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', 'runtimeavailability').subscribe(data => {
             this.runtimeAvailabilityResponse = data;
             this.runtimeAvailabilityMetrics = this.runtimeAvailabilityResponse.metrics;
             if (this.runtimeAvailabilityResponse && this.runtimeAvailabilityResponse.data && this.runtimeAvailabilityResponse.data.length > 0) {
@@ -111,7 +111,7 @@ export class AvailabilityGraphComponent implements OnInit, OnChanges {
             }
         });
 
-        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'sitelatency').subscribe(data => {
+        this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', 'sitelatency').subscribe(data => {
             this.siteLatencyResponse = data;
             this.siteLatencyMetrics = this.siteLatencyResponse.metrics;
 

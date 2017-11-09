@@ -24,7 +24,7 @@
             <br/>
             <p [innerHtml]="suggestion"></p>
             <div style="text-align:right">
-                <button class="btn btn-primary">Open Scale Up App Service Plan</button>
+                <button class="btn btn-primary" (click)="openBlade()">Open Scale Up App Service Plan</button>
             </div>
 
         </div>
@@ -33,5 +33,17 @@
         </div>
 
     </div>
+
+    <p style="padding: 10px 0px 0px 0px" [innerHtml]="secondarySuggestion" *ngIf="secondarySuggestion"></p>
+
+    <div class="header2">Why you should scale up</div>
+    <ul>
+        <li *ngFor="let statement of whyToScale">{{statement}}</li>
+    </ul>
+
+    <div class="header2">Why you not should scale up</div>
+    <ul>
+        <li *ngFor="let statement of whyNotToScale">{{statement}}</li>
+    </ul>
 
 </default-solution-template>

@@ -79,7 +79,7 @@ export class SupportBotComponent implements OnInit {
         var analysisList = ["appanalysis", "perfanalysis"]
         var result: Observable<IAppAnalysisResponse>[] = [];
         analysisList.forEach((item) => {
-            result.push(this._analysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, item));
+            result.push(this._analysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', item));
         });
 
         return result;

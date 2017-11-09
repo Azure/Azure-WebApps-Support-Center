@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
 import { AppAnalysisService, BotLoggingService } from '../../../shared/services';
-import { ICache } from '../../../shared/models/icache';
+import { Cache } from '../../../shared/models/icache';
 import { IDetectorResponse } from '../../../shared/models/detectorresponse';
 import { IAppAnalysisResponse } from '../../../shared/models/appanalysisresponse';
 import { GraphHelper } from '../../../shared/utilities/graphHelper';
@@ -34,7 +34,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
     selectedCategoryIndex: number;
 
     private _requestsColors: [string] = ["rgb(0, 188, 242)", "rgb(127, 186, 0)", "rgb(155, 79, 150)", "rgb(255, 140, 0)", "rgb(232, 17, 35)"];
-    private _analysisData: ICache<IAppAnalysisResponse>;
+    private _analysisData: Cache<IAppAnalysisResponse>;
 
     constructor(private _route: ActivatedRoute, private _analysisService: AppAnalysisService, private _logger: BotLoggingService) {
         this.showLoadingMessage = true;
@@ -43,6 +43,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
         this._logger.LogHealthCheckInvoked();
 
         this.healthCheckpoints = [{
+            category: 'availability',
             detector: 'runtimeavailability',
             title: 'Requests and Errors',
             graphOptions: (() => {
@@ -57,6 +58,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
             healthStatus: undefined,
             healthStatusMessage: undefined
         }, {
+            category: 'availability',
             detector: 'sitelatency',
             title: 'App Performance',
             graphOptions: (() => {
@@ -72,6 +74,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
             healthStatus: undefined,
             healthStatusMessage: undefined
         }, {
+            category: 'availability',
             detector: 'sitecpuanalysis',
             title: 'CPU Usage',
             graphOptions: (() => {
@@ -87,6 +90,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
             healthStatus: undefined,
             healthStatusMessage: undefined
         }, {
+            category: 'availability',
             detector: 'sitememoryanalysis',
             title: 'Memory Usage',
             graphOptions: (() => {
@@ -155,7 +159,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
 
         var result: Observable<IDetectorResponse>[] = [];
         this.healthCheckpoints.forEach((item) => {
-            result.push(this._analysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, item.detector));
+            result.push(this._analysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, item.category, item.detector));
         });
 
         return result;
@@ -166,7 +170,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
         var analysisList = ["appanalysis", "perfanalysis"]
         var result: Observable<IAppAnalysisResponse>[] = [];
         analysisList.forEach((item) => {
-            result.push(this._analysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, item)
+            result.push(this._analysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', item)
                 .do((data: IAppAnalysisResponse) => this._analysisData[item] = data));
         });
 

@@ -9,6 +9,7 @@
 
 export * from "./window.service";
 export * from "./broadcast.service";
+export * from "./cache.service";
 export * from "./portal.service";
 export * from "./auth.service";
 

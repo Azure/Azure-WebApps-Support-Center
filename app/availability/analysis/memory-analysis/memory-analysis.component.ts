@@ -46,7 +46,7 @@ export class MemoryAnalysisComponent implements OnInit {
         this.siteName = this._route.snapshot.params['sitename'];
         this.slotName = this._route.snapshot.params['slot'] ? this._route.snapshot.params['slot'] : '';
 
-        this._appAnalysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'memoryanalysis')
+        this._appAnalysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', 'memoryanalysis')
             .subscribe(data => {
                 if (data) {
                     this.memoryAnalysisResponse = data;
@@ -56,8 +56,6 @@ export class MemoryAnalysisComponent implements OnInit {
                     this.pageReadsViewModel = this.getSummaryViewModel(summaryDowntime, this.PageFileOperations, 'Page Reads/sec', false);
                     this.physicalMemoryViewModel = this.getSummaryViewModel(summaryDowntime, this.SiteMemoryAnalysis, 'Percent Physical Memory Used');
                     this.committedViewModel = this.getSummaryViewModel(summaryDowntime, this.CommittedMemoryUsage);
-
-                    console.log(this.physicalMemoryViewModel);
                 }
 
             });

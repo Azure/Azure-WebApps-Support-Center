@@ -28,7 +28,7 @@
         <p style="text-align: center" *ngIf="messagesDisplayedToIndex < abnormalTimePeriods.length"><a (click)="messagesDisplayedToIndex = messagesDisplayedToIndex + 1">Show More</a></p>
     </div>
 
-    <solutions-expandable *ngIf="solutionUIModel && solutionUIModel.length >= 0" [solutionModel]="solutionUIModel" [title]="getSolutionTitle()"></solutions-expandable>
+    <solutions-expandable *ngIf="showSolutions && solutionUIModel && solutionUIModel.length >= 0" [solutionModel]="solutionUIModel" [title]="getSolutionTitle()"></solutions-expandable>
 </div>
 
 <!-- No Abnormal Time Periods Found -->

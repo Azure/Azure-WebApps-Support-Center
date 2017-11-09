@@ -5,6 +5,7 @@ import { PortalActionService, ArmService, PortalService, RBACService, LoggingSer
 import { SupportBladeDefinitions } from '../../shared/models/portal';
 import { Site } from '../../shared/models/site';
 import { StartupInfo } from '../../shared/models/portal';
+import { ResponseMessageEnvelope } from '../../shared/models/responsemessageenvelope';
 
 @Component({
     selector: 'tools-menu',
@@ -30,11 +31,11 @@ export class ToolsMenuComponent  {
 
         this._portalService.getStartupInfo()
             .flatMap((startUpInfo: StartupInfo) => {
-                return this._armService.getArmResource(startUpInfo.resourceId);
+                return this._armService.getResource<Site>(startUpInfo.resourceId);
             })
-            .flatMap((site: Site) => {
-                this.currentSite = site;
-                return this._rbacService.hasPermission(this.currentSite.properties.serverFarmId, [this._rbacService.readScope]);
+            .flatMap((site: ResponseMessageEnvelope<Site>) => {
+                this.currentSite = site.properties;
+                return this._rbacService.hasPermission(this.currentSite.serverFarmId, [this._rbacService.readScope]);
             })
             .subscribe((hasPermission: boolean) => {
                 this.hasReadAccessToServerFarm = hasPermission;

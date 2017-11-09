@@ -33,6 +33,11 @@ export class AppComponent implements OnInit {
         this._authService.getStartupInfo()
             .subscribe(info => {
 
+                let subscription = this.getSubscriptionIdFromResourceUri(info.resourceId);
+                if(this.allowedSubscriptions.indexOf(subscription.toLowerCase())> 0){
+                    AuthService.newFeatureEnabled = true;   
+                };
+
                 // For now there will be a hard coded destination.
                 // In the future we will pass the tool path in with the startup info
                 var adjustedResourceId = info.resourceId.toLowerCase().replace("/providers/microsoft.web", "");
@@ -55,7 +60,7 @@ export class AppComponent implements OnInit {
                         this._router.navigate([adjustedResourceId + '/diagnostics/availability/memoryanalysis']);
                         break;
                     default:
-                        this._router.navigate([adjustedResourceId + '/diagnostics/availability/analysis']);
+                        this._router.navigate([adjustedResourceId + '/diagnostics']);
                         break;
                 }
             });

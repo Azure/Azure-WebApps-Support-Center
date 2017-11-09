@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Message, ButtonActionType } from './models/message';
 import { MessageGroup } from './models/message-group';
 import { MessageFlowFactory } from './message-flow/message-flow.factory';
+import { HealthCheckMessageFlow }  from './message-flow/health-check/healthcheckmessageflow';
 
 @Injectable()
 export class MessageProcessor {
@@ -11,7 +12,7 @@ export class MessageProcessor {
     private _currentMessageGroup: MessageGroup;
     private _currentMessageIterator: number;
 
-    constructor() {
+    constructor(private _healthCheckFlow: HealthCheckMessageFlow) {
         this._messageGroups = MessageFlowFactory.getMessageGroups();
         this._currentKey = this._startingKey;
         this._currentMessageIterator = 0;
