@@ -68,8 +68,3 @@ export class Session
     DiagnoserSessions: Diagnoser[];
     Status: SessionStatus;
 }
-
-export interface DaasSessions
-{
-
-}
