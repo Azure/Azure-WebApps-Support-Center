@@ -22,53 +22,45 @@ export class DaasService {
             return this._armClient.getArmResource(startUpInfo.resourceId);
         }).subscribe((site: Site) => {
             var siteInfo = site;
-            //this.currentSite.siteName = site.name;
-            //this.currentSite.subscriptionId= site.properties.;
-            //this.currentSite.resourceGroupName = site.properties.resourceGroup;
         });
     }
 
-
-    getDaasSessions(subscriptionId: string, resourceGroup: string, siteName: string): Observable<Session[]> {      
+    getDaasSessions(subscriptionId: string, resourceGroup: string, siteName: string): Observable<Session[]> {
         let resourceUri: string = this._uriElementsService.getAllDiagnosticsSessionsUrl(subscriptionId, resourceGroup, siteName);
         return this._armClient.getResource<any>(resourceUri);
     }
 
-    submitDaasSession(subscriptionId: string, resourceGroup: string, siteName:string, slot: string = ''): Observable<string> {
-        var session = {
-            RunLive: true,
-            CollectLogsOnly: false,
-            StartTime: "",
-            TimeSpan: "00:02:00",
-            Diagnosers: ["CLR Profiler"],
-            Instances: []
-        }     
+    submitDaasSession(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): Observable<string> {
+
+        let session = new Session();
+        session.CollectLogsOnly = false;
+        session.StartTime = "";
+        session.RunLive = true;
+        session.Instances = [];
+        session.Diagnosers = [];
+        session.Diagnosers.push("CLR Profiler");
+        session.TimeSpan = "00:02:00";
 
         let resourceUri: string = this._uriElementsService.getDiagnosticsSessionsUrl(subscriptionId, resourceGroup, siteName);
         return this._armClient.postResource<any>(resourceUri, session);
-
     }
-    getDaasSessionsWithDetails(subscriptionId: string, resourceGroup: string, siteName: string): Observable<Session[]> {      
-        let resourceUri: string = this._uriElementsService.getDiagnosticsSessionsDetailsUrl(subscriptionId, resourceGroup, siteName,"all",true);
+    getDaasSessionsWithDetails(subscriptionId: string, resourceGroup: string, siteName: string): Observable<Session[]> {
+        let resourceUri: string = this._uriElementsService.getDiagnosticsSessionsDetailsUrl(subscriptionId, resourceGroup, siteName, "all", true);
         return this._armClient.getResource<any>(resourceUri);
     }
 
-    getDaasSessionWithDetails(subscriptionId: string, resourceGroup: string, siteName: string, sessionId:string): Observable<Session> {      
-        let resourceUri: string = this._uriElementsService.getDiagnosticsSingleSessionUrl(subscriptionId, resourceGroup, siteName,sessionId,true);
+    getDaasSessionWithDetails(subscriptionId: string, resourceGroup: string, siteName: string, sessionId: string): Observable<Session> {
+        let resourceUri: string = this._uriElementsService.getDiagnosticsSingleSessionUrl(subscriptionId, resourceGroup, siteName, sessionId, true);
         return this._armClient.getResource<any>(resourceUri);
     }
 
-
-
-    getInstances(subscriptionId: string, resourceGroup: string, siteName: string) : Observable<string[]> {      
+    getInstances(subscriptionId: string, resourceGroup: string, siteName: string): Observable<string[]> {
         let resourceUri: string = this._uriElementsService.getDiagnosticsInstancesUrl(subscriptionId, resourceGroup, siteName);
         return this._armClient.getResource<any>(resourceUri);
     }
 
-    startWebJob (subscriptionId: string, resourceGroup: string, siteName: string)
-    {
+    startWebJob(subscriptionId: string, resourceGroup: string, siteName: string) {
         let resourceUri: string = this._uriElementsService.getDiagnosticsWebJobStartUrl(subscriptionId, resourceGroup, siteName);
         return this._armClient.postResource(resourceUri, null);
     }
-    
 }

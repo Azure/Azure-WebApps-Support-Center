@@ -54,19 +54,19 @@ export interface Diagnoser{
     Reports: Report[];
 }
 
-export interface Session
-{
-    
+export class Session
+{    
     StartTime: string;
     EndTime:string; 
     SessionId:string;
     Description: string;
     Instances: string[];    
     RunLive: boolean;
-    CollectedLogsOnly: boolean;
+    CollectLogsOnly: boolean;
+    Diagnosers: string[];
+    TimeSpan: string;
     DiagnoserSessions: Diagnoser[];
     Status: SessionStatus;
-
 }
 
 export interface DaasSessions
