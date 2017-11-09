@@ -26,8 +26,23 @@
                             Checking existing sessions...
                     </div>
 
-                <button [disabled]="sessionInProgress || checkingExistingSessions" class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
+                <button [disabled]="sessionInProgress || checkingExistingSessions" [hidden]="SessionCompleted"  class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
             </div>
+        </div>
+
+        <div class="status-box" *ngIf="Reports?.length > 0">
+            <table class="table table-hover">
+                <tbody>
+                    <tr *ngFor="let report of Reports">                                
+                        <td>
+                            {{ report.FileName }} 
+                        </td>
+                        <td>
+                            <a (click)="openReport(report.RelativePath)" class="btn btn-primary">Open Report</a>
+                        </td>
+                    </tr>                          
+                </tbody>
+            </table>
         </div>
 
         <div class="status-box" *ngIf="sessionInProgress==true">
@@ -76,22 +91,22 @@
             <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
         </ul>
 
-        <div class="header2"><strong>Last 5 Profiler Sessions</strong></div>
+        <div class="header2">Last 5 Profiler Sessions</div>        
 
         <div class=" panel panel-default" *ngFor="let session of Sessions">          
                 {{ session.StartTime }}
                     <table class="table table-hover">
                         <tbody>
                             <tr *ngFor="let diagnoser of session.DiagnoserSessions">                                
-                                <td class="col-md-2" style="text-align: center">
+                                <td style="text-align: center">
       
                                     <div *ngFor="let log of diagnoser.Logs">
-                                        <a href="/api/vfs/data/DaaS/{{ log.RelativePath }}" style="cursor: pointer" *ngIf="diagnoser.Logs.length > 0" target="_blank"> {{ log.FileName }} </a>
+                                        <a href="{{ scmPath }}/api/vfs/data/DaaS/{{ log.RelativePath }}" style="cursor: pointer" *ngIf="diagnoser.Logs.length > 0" target="_blank"> {{ log.FileName }} </a>
                                     </div>
                                 </td>
-                                <td class="col-md-2" style="text-align: center">
+                                <td style="text-align: center">
                                     <div *ngFor="let report of diagnoser.Reports">
-                                        <a href="/api/vfs/data/DaaS/{{ report.RelativePath }}" style="cursor: pointer" *ngIf=" diagnoser.Reports.length > 0 " target="_blank"> {{ report.FileName }} </a>
+                                        <a href="{{ scmPath }}/api/vfs/data/DaaS/{{ report.RelativePath }}" style="cursor: pointer" *ngIf=" diagnoser.Reports.length > 0 " target="_blank"> {{ report.FileName }} </a>
                                     </div>
                                 </td>                               
                             </tr>                          

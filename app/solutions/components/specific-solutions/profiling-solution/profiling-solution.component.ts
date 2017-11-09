@@ -2,12 +2,13 @@ import { Component, Input, OnInit, Pipe, PipeTransform, OnDestroy } from '@angul
 import { SolutionBaseComponent } from '../../common/solution-base/solution-base.component';
 import { SolutionData } from '../../../../shared/models/solution';
 import { MetaDataHelper } from '../../../../shared/utilities/metaDataHelper';
-import { PortalActionService, SiteService, ServerFarmDataService, DaasService } from '../../../../shared/services'
+import { PortalActionService, SiteService, ServerFarmDataService, DaasService, WindowService } from '../../../../shared/services'
 import { SiteProfilingInfo } from '../../../../shared/models/solution-metadata';
 import { Subscription } from 'rxjs';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { Observable } from 'rxjs/Observable';
-import { Diagnoser, DiagnoserStatusMessage, Session } from '../../../../shared/models/idaassession';
+import { Diagnoser, DiagnoserStatusMessage, Session, Report } from '../../../../shared/models/idaassession';
+
 
 @Component({
     templateUrl: 'profiling-solution.component.html',
@@ -19,13 +20,15 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
 
     @Input() data: SolutionData;
 
+    
+
     title: string = "Collect a Profiler Trace";
     description: string = "If your app is down or performing slow, you can collect a profiling trace to identify the root cause of the issue. Profiling is light weight and is designed for production scenarios.";
 
     thingsToKnowBefore: string[] = [
-        "Once the profiler trace is started, you should reproduce the issue by browsing to the WebApp",
+        "Once the profiler trace is started, reproduce the issue by browsing to the WebApp",
         "The profiler trace will automatically stop after 60 seconds.",
-        "Your application will not be restarted as a result of running the profiler.",
+        "Your WebApp will not be restarted as a result of running the profiler.",
         "A profiler trace will help to identify issues in an ASP.NET application only and ASP.NET core is not yet supported",
     ]
 
@@ -40,12 +43,22 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     InstancesStatus: Map<string, number>;
     selectedInstance: string;
     checkingExistingSessions:boolean;
+    Reports:Report[];
+    scmPath: string;
+    SessionCompleted:boolean;
 
-    constructor(private _siteService: SiteService, private _daasService: DaasService, _portalActionService: PortalActionService, _serverFarmService: ServerFarmDataService) {
+    constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService) {
+
     }
 
     ngOnInit(): void {
-        this.siteToBeProfiled = MetaDataHelper.getProfilingData(this.data.solution.data);        
+
+        
+        this.siteToBeProfiled = MetaDataHelper.getProfilingData(this.data.solution.data);         
+        this.SessionCompleted = false;
+
+        //TODO:: How would this look for ASE ?
+        this.scmPath = "https://" + this.siteToBeProfiled.siteName + ".scm.azurewebsites.net";
         this._daasService.getInstances(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName)
             .subscribe(result => {
                 this.instances = result;
@@ -64,7 +77,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
         });
         console.log("Array length is = " + arrayToReturn.length);
         if (arrayToReturn.length > 5) {
-            arrayToReturn = arrayToReturn.slice(0, 4);
+            arrayToReturn = arrayToReturn.slice(0, 5);
         }
         return arrayToReturn;
     }
@@ -98,7 +111,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
                 }                              
             });
     }
-
+   
     pollRunningSession(sessionId: string) {
         var inProgress = false;
         this._daasService.getDaasSessionWithDetails(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName, sessionId)
@@ -110,10 +123,19 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
                     this.getProfilingStateFromSession(runningSession);
                 }
                 else {
+                    this.sessionInProgress = false;
+                    
                     // stop our timer at this point
                     if (this.subscription) {
                         this.subscription.unsubscribe();
                         console.log("unsubscribing");
+                    }
+
+                    var clrDiagnoser = runningSession.DiagnoserSessions.find(x => x.Name == "CLR Profiler");
+                    if (clrDiagnoser) 
+                    {
+                        this.Reports = clrDiagnoser.Reports;
+                        this.SessionCompleted = true;
                     }
                 }
                 this.sessionInProgress = inProgress;
@@ -181,6 +203,11 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
 
     onInstanceChange(instanceSelected: string): void {
         this.selectedInstance = instanceSelected;
+    }
+
+    openReport(url:string)
+    {
+        this._windowService.open( `${this.scmPath}/api/vfs/data/DaaS/${url}`);
     }
 
     ngOnDestroy(): void {
