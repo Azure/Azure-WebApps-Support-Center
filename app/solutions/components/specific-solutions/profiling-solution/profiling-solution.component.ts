@@ -114,8 +114,8 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
         this._daasService.getDaasSessionWithDetails(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName, sessionId)
             .subscribe(runningSession => {
                 console.log("Finding session with Id " + sessionId);
-                if (runningSession.Status < 3) {
-                    console.log("Found a running session with status less than 3");
+                if (runningSession.Status == 0) {
+                    console.log("Found a running session with status Active");
                     inProgress = true;
                     this.getProfilingStateFromSession(runningSession);
                 }
