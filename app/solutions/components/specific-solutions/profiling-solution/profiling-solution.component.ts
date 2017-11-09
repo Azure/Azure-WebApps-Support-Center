@@ -1,13 +1,13 @@
-import { Component, Input, OnInit, Pipe, PipeTransform, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { SolutionBaseComponent } from '../../common/solution-base/solution-base.component';
 import { SolutionData } from '../../../../shared/models/solution';
 import { MetaDataHelper } from '../../../../shared/utilities/metaDataHelper';
-import { PortalActionService, SiteService, ServerFarmDataService, DaasService, WindowService } from '../../../../shared/services'
+import { SiteService, DaasService, WindowService } from '../../../../shared/services'
 import { SiteProfilingInfo } from '../../../../shared/models/solution-metadata';
 import { Subscription } from 'rxjs';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { Observable } from 'rxjs/Observable';
-import { Diagnoser, DiagnoserStatusMessage, Session, Report } from '../../../../shared/models/idaassession';
+import { Diagnoser, DiagnoserStatusMessage, Session, Report } from '../../../../shared/models/daas';
 
 @Component({
     templateUrl: 'profiling-solution.component.html',

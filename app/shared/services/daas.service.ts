@@ -1,16 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Response } from '@angular/http';
-import { ArmService, AuthService, UriElementsService, ServerFarmDataService } from '../services';
+import { Http } from '@angular/http';
+import { ArmService, AuthService, UriElementsService } from '../services';
 import { Observable } from 'rxjs/Observable';
-import { StartupInfo } from '../models/portal';
-import { Site } from '../models/site'
-
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
-
 import { SiteProfilingInfo } from '../models/solution-metadata';
-import { Session } from '../models/idaassession';
+import { Session } from '../models/daas';
 
 @Injectable()
 export class DaasService {

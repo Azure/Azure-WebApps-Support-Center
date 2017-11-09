@@ -65,7 +65,7 @@ export class SolutionFactoryService {
             // case 103:
             //     return new OtherSolutions.GetDumpOfProcess(rank, _logger);
              case 104:
-             return new SolutionHolder(ProfilingComponent, <SolutionData>{ title: "Remote Profile WebApp", tags: [SolutionTypeTag.Mitigation], solution: solution });
+             return new SolutionHolder(ProfilingComponent, <SolutionData>{ title: "Remote Profile WebApp", tags: [SolutionTypeTag.Investigation], solution: solution });
             // case 105:
             //     return new OtherSolutions.UpgradeDatabase(rank, _logger);
             // case 106:
