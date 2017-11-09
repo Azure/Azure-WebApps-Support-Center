@@ -1,10 +1,9 @@
-import { Component, Input, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { Component, Input, OnInit, Pipe, PipeTransform, OnDestroy } from '@angular/core';
 import { SolutionBaseComponent } from '../../common/solution-base/solution-base.component';
 import { SolutionData } from '../../../../shared/models/solution';
 import { MetaDataHelper } from '../../../../shared/utilities/metaDataHelper';
 import { PortalActionService, SiteService, ServerFarmDataService, DaasService } from '../../../../shared/services'
 import { SiteProfilingInfo } from '../../../../shared/models/solution-metadata';
-
 import { Subscription } from 'rxjs';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { Observable } from 'rxjs/Observable';
@@ -16,7 +15,7 @@ import { Diagnoser, DiagnoserStatusMessage, Session } from '../../../../shared/m
         'profiling-solution.component.css'
     ]
 })
-export class ProfilingComponent implements SolutionBaseComponent, OnInit {
+export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDestroy {
 
     @Input() data: SolutionData;
 
@@ -33,28 +32,25 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit {
     siteToBeProfiled: SiteProfilingInfo;
     instances: string[];
     SessionId: string;
-    sessionsInProgress: boolean;
+    sessionInProgress: boolean;
     diagnoserSession: Diagnoser;
-    subscription: Subscription;
-    spinnerMessage: string;
+    subscription: Subscription;    
     sessionStatus: number;
     Sessions: Session[];
     InstancesStatus: Map<string, number>;
+    selectedInstance: string;
+    checkingExistingSessions:boolean;
 
     constructor(private _siteService: SiteService, private _daasService: DaasService, _portalActionService: PortalActionService, _serverFarmService: ServerFarmDataService) {
-
     }
 
     ngOnInit(): void {
-
-        this.sessionsInProgress = false;
-        this.siteToBeProfiled = MetaDataHelper.getProfilingData(this.data.solution.data);
+        this.siteToBeProfiled = MetaDataHelper.getProfilingData(this.data.solution.data);        
         this._daasService.getInstances(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName)
             .subscribe(result => {
                 this.instances = result;
+                this.checkRunningSessions();                
             });
-
-        this.checkRunningSessions();
     }
 
     takeTopFiveProfilingSessions(sessions: Session[]): Session[] {
@@ -66,125 +62,129 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit {
                 }
             });
         });
-
-        console.log("Sessions Array lenght = " + arrayToReturn.length);
-
+        console.log("Array length is = " + arrayToReturn.length);
         if (arrayToReturn.length > 5) {
             arrayToReturn = arrayToReturn.slice(0, 4);
         }
-
         return arrayToReturn;
     }
-    checkRunningSessions(newSessionId: string = ""): boolean {
-        console.log("Executing running sessions check called with " + newSessionId)
-        console.log("newSessionId.length" + newSessionId.length);
+    checkRunningSessions() {
+        this.checkingExistingSessions = true;
+        this._daasService.getDaasSessionsWithDetails(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName)
+            .subscribe(x => {
+                this.checkingExistingSessions = false;
+                this.Sessions = this.takeTopFiveProfilingSessions(x);                
+                var runningSession ;
+                for (var index = 0; index < this.Sessions.length; index++) {
+                    if (this.Sessions[index].Status < 3) 
+                    {                        
+                        var clrDiagnoser = this.Sessions[index].DiagnoserSessions.find(x => x.Name == "CLR Profiler");
+                        if (clrDiagnoser) 
+                        {
+                            runningSession = this.Sessions[index];
+                            break;
+                        }                        
+                    }
+                }
+                if (runningSession)
+                {
+                    this.sessionInProgress = true;
+                    this.updateInstanceInformation();
+                    this.getProfilingStateFromSession(runningSession);
+                    this.SessionId = runningSession.SessionId;
+                    this.subscription = Observable.interval(5000).subscribe(res => {
+                        this.pollRunningSession(this.SessionId);
+                    });
+                }                              
+            });
+    }
 
+    pollRunningSession(sessionId: string) {
         var inProgress = false;
+        this._daasService.getDaasSessionWithDetails(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName, sessionId)
+            .subscribe(runningSession => {
+                console.log("Finding session with Id " + sessionId);
+                if (runningSession.Status < 3) {
+                    console.log("Found a running session with status less than 3");
+                    inProgress = true;
+                    this.getProfilingStateFromSession(runningSession);
+                }
+                else {
+                    // stop our timer at this point
+                    if (this.subscription) {
+                        this.subscription.unsubscribe();
+                        console.log("unsubscribing");
+                    }
+                }
+                this.sessionInProgress = inProgress;
+            });
+    }
 
-        if (newSessionId.length == 0) {
+    getProfilingStateFromSession(session: Session) {
+        var clrDiagnoser = session.DiagnoserSessions.find(x => x.Name == "CLR Profiler");
+        if (clrDiagnoser) {
+            this.diagnoserSession = clrDiagnoser;
 
-            this.spinnerMessage = "Waiting for existing sessions...";
+            if (clrDiagnoser.CollectorStatus == 2) {
+                if (clrDiagnoser.CollectorStatusMessages.length > 0) {
 
-            this._daasService.getDaasSessionsWithDetails(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName)
-                .subscribe(x => {
-                    this.Sessions = this.takeTopFiveProfilingSessions(x);
-                    x.forEach(function (session) {
-                        // If any of the sessions is less than 3 (i.e. Active or InProgress)
-                        if (session.Status < 3) {
-                            inProgress = true;
+                    clrDiagnoser.CollectorStatusMessages.forEach(msg => {
+                        // The order of this IF check should not be changed
+                        if (msg.Message.indexOf('Stopping') >= 0 || msg.Message.indexOf('Stopped') >= 0) {
+                            this.InstancesStatus.set(msg.EntityType, 3);
+                        }
+                        else if (msg.Message.indexOf('seconds') >= 0) {
+                            this.InstancesStatus.set(msg.EntityType, 2);
                         }
                     });
-                    this.sessionsInProgress = inProgress;
-                });
+                    this.sessionStatus = this.InstancesStatus.get(this.selectedInstance);
+                    console.log(this.selectedInstance + " has status " + this.sessionStatus);
+                }
+            }
+            else if (clrDiagnoser.AnalyzerStatus == 2) {
+
+                // once we are at the analyzer, lets just set all instances's status to 
+                // analyzing as we will reach here once all the collectors have finsihed                
+                this.sessionStatus = 4;
+                if (clrDiagnoser.AnalyzerStatusMessages.length > 0) {
+                    console.log(clrDiagnoser.AnalyzerStatusMessages[clrDiagnoser.AnalyzerStatusMessages.length - 1].Message);
+                }
+            }
         }
-        else {
-            this.spinnerMessage = "Running...";
-            this._daasService.getDaasSessionWithDetails(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName, newSessionId)
-                .subscribe(runningSession => {
-                    console.log("Finding session with Id " + newSessionId);
-                    if (runningSession.Status < 3) {
-                        console.log("Found a running session with status less than 3");
-                        inProgress = true;
-                        var clrDiagnoser = runningSession.DiagnoserSessions.find(x => x.Name == "CLR Profiler");
-                        if (clrDiagnoser) {
-                            this.diagnoserSession = clrDiagnoser;
+    }
 
-                            console.log("clrDiagnoser.AnalyzerStatus = " + clrDiagnoser.AnalyzerStatus);
-                            console.log("clrDiagnoser.CollectorStatus = " + clrDiagnoser.CollectorStatus);
-                            console.log("clrDiagnoser.AnalyzerStatusMessages = " + clrDiagnoser.AnalyzerStatusMessages.length);
-                            console.log("clrDiagnoser.CollectorStatusMessages = " + clrDiagnoser.CollectorStatusMessages.length);
-
-                            if (clrDiagnoser.CollectorStatus == 2) {
-                                if (clrDiagnoser.CollectorStatusMessages.length > 0) {
-
-                                    clrDiagnoser.CollectorStatusMessages.forEach(msg => {
-                                        // The order of this IF check should not be changed
-                                        if (msg.Message.indexOf('Stopping') >= 0 || msg.Message.indexOf('Stopped') >= 0) {
-                                            this.InstancesStatus.set(msg.EntityType, 3);
-                                        }
-                                        else if (msg.Message.indexOf('seconds') >= 0) {
-                                            this.InstancesStatus.set(msg.EntityType, 2);
-                                        }
-                                    });
-
-                                    var profilerWaitingMessage = clrDiagnoser.CollectorStatusMessages.find(x => x.Message.indexOf('seconds') >= 0);
-                                    if (profilerWaitingMessage) {
-                                        this.sessionStatus = 2;
-                                    }
-                                    var stoppingMessage = clrDiagnoser.CollectorStatusMessages.find(x => (x.Message.indexOf('Stopping') >= 0 || x.Message.indexOf('Stopped') >= 0));
-                                    if (stoppingMessage) {
-                                        this.sessionStatus = 3;
-                                    }
-                                    console.log(clrDiagnoser.CollectorStatusMessages[clrDiagnoser.CollectorStatusMessages.length - 1].Message);
-                                }
-                            }
-                            else if (clrDiagnoser.AnalyzerStatus == 2) {
-
-                                this.InstancesStatus.forEach(function (value, key) {
-                                    this.InstancesStatus.set(key, 4);
-                                });
-
-                                this.sessionStatus = 4;
-                                if (clrDiagnoser.AnalyzerStatusMessages.length > 0) {
-                                    console.log(clrDiagnoser.AnalyzerStatusMessages[clrDiagnoser.AnalyzerStatusMessages.length - 1].Message);
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        // stop our timer at this point
-                        if (this.subscription) {
-                            this.subscription.unsubscribe();
-                            console.log("unsubscribing");
-                        }
-                    }
-                    this.sessionsInProgress = inProgress;
-                });
+    updateInstanceInformation() {        
+        this.InstancesStatus = new Map<string, number>();
+        this.instances.forEach(x => {
+            this.InstancesStatus.set(x, 1);
+        });
+        if (this.instances.length > 0) {
+            this.selectedInstance = this.instances[0];
         }
-        return this.sessionsInProgress;
     }
 
     collectProfilerTrace() {
-        this.sessionsInProgress = true;
-        this.InstancesStatus =  new Map<string, number>();
-        
+        this.sessionInProgress = true;
+        this.updateInstanceInformation();
+
         var submitNewSession = this._daasService.submitDaasSession(this.siteToBeProfiled.subscriptionId, this.siteToBeProfiled.resourceGroupName, this.siteToBeProfiled.siteName)
             .subscribe(result => {
-
-                this.instances.forEach(x => {
-                    this.InstancesStatus.set(x, 1);
-                });
-
                 this.sessionStatus = 1;
-                console.log("new session submitted");
-                console.log(result);
                 this.SessionId = result;
-                console.log("printing session id" + this.SessionId);
+                console.log("Started a new DAAS Session with Id =" + this.SessionId);
 
                 this.subscription = Observable.interval(5000).subscribe(res => {
-                    this.checkRunningSessions(this.SessionId);
-                    // Something happens here
+                    this.pollRunningSession(this.SessionId);
                 });
             });
+    }
+
+    onInstanceChange(instanceSelected: string): void {
+        this.selectedInstance = instanceSelected;
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+        console.log("unsubscribing");
     }
 }

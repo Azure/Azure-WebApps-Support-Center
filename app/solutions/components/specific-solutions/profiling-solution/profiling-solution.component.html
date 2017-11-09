@@ -21,54 +21,50 @@
                 </table>
             </div>
             <div style="text-align:right">
-                    <div class="col" *ngIf="sessionsInProgress==true">
+                    <div class="col" *ngIf="checkingExistingSessions==true">
                             <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                           {{ spinnerMessage }}
+                            Checking existing sessions...
                     </div>
 
-                <button *ngIf="sessionsInProgress==false" class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
+                <button [disabled]="sessionInProgress || checkingExistingSessions" class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
             </div>
         </div>
 
-        <div class="status-box" *ngIf="sessionsInProgress==true">
+        <div class="status-box" *ngIf="sessionInProgress==true">
+            <select id="selectInstances" (change)="onInstanceChange($event.target.value)">
+                <option *ngFor="let instancestatus of InstancesStatus | mapValues" value= {{instancestatus.key}}>
+                        {{instancestatus.key}}
+                </option>
+            </select>
+
             <div id="wizard-progress">
                 <ol class="step-indicator">
                     <li [ngClass]="{'active' : sessionStatus === 1,'complete' : sessionStatus > 1}" >
                         <div class="step"><i class="fa fa-play"></i></div>
-                        <div class="caption hidden-xs hidden-sm">Step 1: Starting Profier</div>
+                        <div class="caption hidden-xs hidden-sm">
+                                <i *ngIf="sessionStatus === 1" class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i> Step 1: Starting Profier
+                        </div>
                     </li>
                     <li [ngClass]="{'': sessionStatus === 1, 'active' : sessionStatus === 2,'complete' : sessionStatus > 2}">
                         <div class="step"><i class="fa fa-clock-o"></i></div>
-                        <div class="caption hidden-xs hidden-sm">Step 2: Reproduce the issue now</div>
+                        <div class="caption hidden-xs hidden-sm">
+                                <i *ngIf="sessionStatus === 2" class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i> Step 2: Reproduce the issue now
+                        </div>
                     </li>
                     <li [ngClass]="{'': sessionStatus < 2, 'active' : sessionStatus === 3,'complete' : sessionStatus > 3}">
-                        <div class="step"><i class="fa fa-clock-o"></i></div>
-                        <div class="caption hidden-xs hidden-sm">Step 3: Stopping profiler </div>
+                        <div class="step"><i class="fa fa-stop"></i></div>
+                        <div class="caption hidden-xs hidden-sm">
+                                <i *ngIf="sessionStatus === 3" class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i> Step 3: Stopping profiler 
+                        </div>
                     </li>
                     <li [ngClass]="{'': sessionStatus < 3, 'active' : sessionStatus === 4}">
                         <div class="step"><i class="fa fa-cog"></i></div>
-                        <div class="caption hidden-xs hidden-sm">Step 4: Analyzing profiler trace</div>
+                        <div class="caption hidden-xs hidden-sm">
+                                <i *ngIf="sessionStatus === 4" class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i> Step 4: Analyzing profiler trace
+                            </div>
                     </li>                   
                 </ol>
-            </div>
-            <table>
-                <tr *ngIf="diagnoserSession">
-                    <td colspan="2">
-                            <ul  *ngIf="diagnoserSession.CollectorStatus == 2 && diagnoserSession.CollectorStatusMessages.length > 0">
-                                    <li  *ngFor="let message of diagnoserSession.CollectorStatusMessages | groupBy: 'EntityType'">                                           
-                                            <!-- <span class="highlight-blue">{{ message.key }} -</span> -->
-                                            <span>{{  message.value[message.value.length-1].Message }}</span>                                           
-                                    </li>
-                                </ul>
-                                <ul *ngIf="diagnoserSession.AnalyzerStatus == 2 && diagnoserSession.AnalyzerStatusMessages.length > 0">
-                                    <li *ngFor="let message of diagnoserSession.AnalyzerStatusMessages | groupBy: 'EntityType'">                                            
-                                        <!-- <span class="highlight-blue">{{ message.key }} -</span> -->
-                                        <span>{{  message.value[message.value.length-1].Message }}</span>       
-                                    </li>
-                                </ul>       
-                    </td>
-                </tr>
-            </table>
+            </div>           
         </div>
 
         <div>

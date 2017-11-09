@@ -30,6 +30,7 @@ import { VerticalDisplayListComponent } from './components/vertical-display-list
 import { VerticalDisplayListItemComponent } from './components/vertical-display-list/vertical-display-list-item/vertical-display-list-item.component';
 import { SolutionTypeTagComponent } from './components/solution-type-tag/solution-type-tag.component';
 import { GroupByPipe } from './pipes/groupBy.pipe';
+import { MapValuesPipe } from './pipes/mapValues.pipe';
 
 
 
@@ -39,6 +40,7 @@ import { GroupByPipe } from './pipes/groupBy.pipe';
         nvD3,
         MarkupPipe,       
         GroupByPipe,
+        MapValuesPipe,
         BlogComponent,
         OpenTicketComponent,
         DowntimeTimelineComponent,
@@ -71,6 +73,7 @@ import { GroupByPipe } from './pipes/groupBy.pipe';
         nvD3,
         MarkupPipe,      
         GroupByPipe,
+        MapValuesPipe,
         BlogComponent,
         OpenTicketComponent,
         DowntimeTimelineComponent,
