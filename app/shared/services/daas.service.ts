@@ -34,17 +34,17 @@ export class DaasService {
     }
     getDaasSessionsWithDetails(site:SiteProfilingInfo): Observable<Session[]> {
         let resourceUri: string = this._uriElementsService.getDiagnosticsSessionsDetailsUrl(site, "all", true);
-        return <Observable<Session[]>>this._armClient.getResourceWithoutEnvelope<Session[]>(resourceUri);
+        return <Observable<Session[]>>this._armClient.getResourceWithoutEnvelope<Session[]>(resourceUri,null,true);
     }
 
     getDaasSessionWithDetails(site:SiteProfilingInfo, sessionId: string): Observable<Session> {
-        let resourceUri: string = this._uriElementsService.getDiagnosticsSingleSessionUrl(site, sessionId, true);
-        return <Observable<Session>>this._armClient.getResourceWithoutEnvelope<Session>(resourceUri);
+        let resourceUri: string = this._uriElementsService.getDiagnosticsSingleSessionUrl(site, sessionId, true);        
+        return <Observable<Session>>this._armClient.getResourceWithoutEnvelope<Session>(resourceUri,null, true);
     }
 
     getInstances(site:SiteProfilingInfo): Observable<string[]> {
         let resourceUri: string = this._uriElementsService.getDiagnosticsInstancesUrl(site);
-        return <Observable<string[]>>this._armClient.getResourceWithoutEnvelope<string[]>(resourceUri);
+        return <Observable<string[]>>this._armClient.getResourceWithoutEnvelope<string[]>(resourceUri,null, true);
     }
 
     startWebJob(site:SiteProfilingInfo,) {

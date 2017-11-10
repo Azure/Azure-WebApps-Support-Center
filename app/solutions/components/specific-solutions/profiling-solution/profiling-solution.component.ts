@@ -89,17 +89,17 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     checkRunningSessions() {
         this.checkingExistingSessions = true;
         this._daasService.getDaasSessionsWithDetails(this.siteToBeProfiled)
-            .subscribe(x => {
+            .subscribe(sessions => {
                 this.checkingExistingSessions = false;
-                this.Sessions = this.takeTopFiveProfilingSessions(x);                
+                this.Sessions = this.takeTopFiveProfilingSessions(sessions);                
                 var runningSession ;
-                for (var index = 0; index < this.Sessions.length; index++) {
-                    if (this.Sessions[index].Status < 3) 
+                for (var index = 0; index < sessions.length; index++) {
+                    if (sessions[index].Status == 0)  // Check Active Sessions only
                     {                        
-                        var clrDiagnoser = this.Sessions[index].DiagnoserSessions.find(x => x.Name == "CLR Profiler");
+                        var clrDiagnoser = sessions[index].DiagnoserSessions.find(x => x.Name == "CLR Profiler");
                         if (clrDiagnoser) 
                         {
-                            runningSession = this.Sessions[index];
+                            runningSession = sessions[index];
                             break;
                         }                        
                     }
@@ -110,7 +110,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
                     this.updateInstanceInformation();
                     this.getProfilingStateFromSession(runningSession);
                     this.SessionId = runningSession.SessionId;
-                    this.subscription = Observable.interval(5000).subscribe(res => {
+                    this.subscription = Observable.interval(10000).subscribe(res => {
                         this.pollRunningSession(this.SessionId);
                     });
                 }                              
@@ -118,10 +118,10 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     }
    
     pollRunningSession(sessionId: string) {
-        var inProgress = false;
+        var inProgress = false;        
         this._daasService.getDaasSessionWithDetails(this.siteToBeProfiled, sessionId)
-            .subscribe(runningSession => {                
-                if (runningSession.Status == 0) {                    
+            .subscribe(runningSession => {                                
+                if (runningSession.Status == 0) {                                        
                     inProgress = true;
                     this.getProfilingStateFromSession(runningSession);
                 }
@@ -147,14 +147,13 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     getProfilingStateFromSession(session: Session) {
         var clrDiagnoser = session.DiagnoserSessions.find(x => x.Name == "CLR Profiler");
         if (clrDiagnoser) {
-            this.diagnoserSession = clrDiagnoser;
-
-            if (clrDiagnoser.CollectorStatus == 2) {
-                if (clrDiagnoser.CollectorStatusMessages.length > 0) {
-
+            this.diagnoserSession = clrDiagnoser;            
+            if (clrDiagnoser.CollectorStatus == 2) {                
+                if (clrDiagnoser.CollectorStatusMessages.length > 0) {                    
                     clrDiagnoser.CollectorStatusMessages.forEach(msg => {
                         // The order of this IF check should not be changed
                         if (msg.Message.indexOf('Stopping') >= 0 || msg.Message.indexOf('Stopped') >= 0) {
+                            
                             this.InstancesStatus.set(msg.EntityType, 3);
                         }
                         else if (msg.Message.indexOf('seconds') >= 0) {
