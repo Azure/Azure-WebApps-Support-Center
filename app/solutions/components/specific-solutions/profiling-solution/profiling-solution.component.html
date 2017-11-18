@@ -1,119 +1,138 @@
 <default-solution-template [title]="title" [description]="description" [tags]="data.tags">
-    
-   
-        <div class="action-box">
-            <div>
-             
-                <table style="border:none">
-                    <tr>
-                        <td>App to be Profiled: </td>
-                        <td class="highlight-blue">
-                            <b>{{siteToBeProfiled.siteName}}</b>
-                        </td>
-                    </tr>
-                    <tr *ngFor="let instance of instances; let i = index">
-                        <td class="highlight-blue">
-                            <b>{{instance}}</b>
-                        </td>
-                        <td></td>
-                    </tr>
-                   
-                </table>
-            </div>
-            <div style="text-align:right">
-                    <div class="col" *ngIf="checkingExistingSessions==true">
-                            <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                            Checking existing sessions...
-                    </div>
-
-                <button [disabled]="sessionInProgress || checkingExistingSessions" [hidden]="SessionCompleted"  class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
-            </div>
-        </div>
-
-        <div class="status-box" *ngIf="Reports?.length > 0">
-            <table class="table table-hover">
-                <tbody>
-                    <tr *ngFor="let report of Reports">                                
-                        <td>
-                            {{ report.FileName }} 
-                        </td>
-                        <td>
-                            <a (click)="openReport(report.RelativePath)" class="btn btn-primary">Open Report</a>
-                        </td>
-                    </tr>                          
-                </tbody>
+    <div class="action-box">
+        <div>
+            <table style="border:none">
+                <tr>
+                    <td>App to be Profiled: </td>
+                    <td class="highlight-blue">
+                        <b>{{siteToBeProfiled.siteName}}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Instance(s):
+                    </td>
+                    <td class="highlight-blue">
+                        <span *ngFor="let instance of instances; let isLast=last">
+                            {{instance}}{{isLast? '':','}}
+                        </span>
+                    </td>
+                </tr>
             </table>
-        </div>
 
-        <div class="status-box" *ngIf="sessionInProgress==true">
-            <select id="selectInstances" (change)="onInstanceChange($event.target.value)">
-                <option *ngFor="let instancestatus of InstancesStatus | mapValues" value= {{instancestatus.key}}>
+            <div style="text-align:right">
+                <div class="col" *ngIf="checkingExistingSessions">
+                    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                    Checking existing sessions...
+                </div>
+
+                <button [disabled]="sessionInProgress || checkingExistingSessions" [hidden]="SessionCompleted" class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
+            </div>
+
+            <div class="status-box" *ngIf="sessionInProgress">
+                <select id="selectInstances" (change)="onInstanceChange($event.target.value)">
+                    <option *ngFor="let instancestatus of InstancesStatus | mapValues" value={{instancestatus.key}}>
                         {{instancestatus.key}}
-                </option>
-            </select>
+                    </option>
+                </select>
 
-            <div id="wizard-progress">
-                <ol class="step-indicator">
-                    <li [ngClass]="{'active' : sessionStatus === 1,'complete' : sessionStatus > 1}" >
-                        <div class="step"><i class="fa fa-play"></i></div>
-                        <div class="caption hidden-xs hidden-sm">
+                <div id="wizard-progress">
+                    <ol class="step-indicator">
+                        <li [ngClass]="{'active' : sessionStatus === 1,'complete' : sessionStatus > 1}">
+                            <div class="step">
+                                <i class="fa fa-play"></i>
+                            </div>
+                            <div class="caption hidden-xs hidden-sm">
                                 <i *ngIf="sessionStatus === 1" class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i> Step 1: Starting Profier
-                        </div>
-                    </li>
-                    <li [ngClass]="{'': sessionStatus === 1, 'active' : sessionStatus === 2,'complete' : sessionStatus > 2}">
-                        <div class="step"><i class="fa fa-clock-o"></i></div>
-                        <div class="caption hidden-xs hidden-sm">
+                            </div>
+                        </li>
+                        <li [ngClass]="{'': sessionStatus === 1, 'active' : sessionStatus === 2,'complete' : sessionStatus > 2}">
+                            <div class="step">
+                                <i class="fa fa-clock-o"></i>
+                            </div>
+                            <div class="caption hidden-xs hidden-sm">
                                 <i *ngIf="sessionStatus === 2" class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i> Step 2: Reproduce the issue now
-                        </div>
-                    </li>
-                    <li [ngClass]="{'': sessionStatus < 2, 'active' : sessionStatus === 3,'complete' : sessionStatus > 3}">
-                        <div class="step"><i class="fa fa-stop"></i></div>
-                        <div class="caption hidden-xs hidden-sm">
-                                <i *ngIf="sessionStatus === 3" class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i> Step 3: Stopping profiler 
-                        </div>
-                    </li>
-                    <li [ngClass]="{'': sessionStatus < 3, 'active' : sessionStatus === 4}">
-                        <div class="step"><i class="fa fa-cog"></i></div>
-                        <div class="caption hidden-xs hidden-sm">
+                            </div>
+                        </li>
+                        <li [ngClass]="{'': sessionStatus < 2, 'active' : sessionStatus === 3,'complete' : sessionStatus > 3}">
+                            <div class="step">
+                                <i class="fa fa-stop"></i>
+                            </div>
+                            <div class="caption hidden-xs hidden-sm">
+                                <i *ngIf="sessionStatus === 3" class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i> Step 3: Stopping profiler
+                            </div>
+                        </li>
+                        <li [ngClass]="{'': sessionStatus < 3, 'active' : sessionStatus === 4}">
+                            <div class="step">
+                                <i class="fa fa-cog"></i>
+                            </div>
+                            <div class="caption hidden-xs hidden-sm">
                                 <i *ngIf="sessionStatus === 4" class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i> Step 4: Analyzing profiler trace
                             </div>
-                    </li>                   
-                </ol>
-            </div>           
+                        </li>
+                    </ol>
+                    <div *ngIf="sessionStatus === 2">
+                        Profiler trace will stop automatically after 60 seconds unless overriden explicitly
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div>
-           
+    </div>
+
+    <div class="status-box" *ngIf="Reports?.length > 0">
+        <table class="table table-hover">
+            <tbody>
+                <tr *ngFor="let report of Reports">
+                    <td>
+                        {{ report.FileName }}
+                    </td>
+                    <td>
+                        <a (click)="openReport(report.RelativePath)" class="btn btn-primary">Open Report</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="header2">What you should know before performing a Profiler Trace</div>
+    <ul>
+        <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
+    </ul>
+
+    <div class="header2">Last 5 Profiler Sessions</div>
+
+    <div>
+        <div class="col" *ngIf="checkingExistingSessions">
+            <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+            Populating last 5 sessions...
         </div>
-        
-        <div class="header2">What you should know before performing a Profiler Trace</div>
-        <ul>
-            <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
-        </ul>
 
-        <div class="header2">Last 5 Profiler Sessions</div>        
+        <table class="table table-hover table-bordered report-table" *ngIf="checkingExistingSessions===false">
+            <thead class="thead-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Reports</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let session of Sessions">
+                    <td>{{ session.StartTime }} (UTC)</td>
+                    <td>
+                        <div *ngFor="let diagnoser of session.DiagnoserSessions">
+                            <ul style="list-style: none;">
+                                <li *ngFor="let report of diagnoser.Reports">
+                                    {{ getInstanceNameFromReport(report.FileName) }}
+                                    <a href="{{ scmPath }}/api/vfs/data/DaaS/{{ report.RelativePath }}" style="cursor: pointer" target="_blank">
+                                        <i class="fa fa-external-link" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-        <div class=" panel panel-default" *ngFor="let session of Sessions">          
-                {{ session.StartTime }}
-                    <table class="table table-hover">
-                        <tbody>
-                            <tr *ngFor="let diagnoser of session.DiagnoserSessions">                                
-                                <td style="text-align: center">
-      
-                                    <div *ngFor="let log of diagnoser.Logs">
-                                        <a href="{{ scmPath }}/api/vfs/data/DaaS/{{ log.RelativePath }}" style="cursor: pointer" *ngIf="diagnoser.Logs.length > 0" target="_blank"> {{ log.FileName }} </a>
-                                    </div>
-                                </td>
-                                <td style="text-align: center">
-                                    <div *ngFor="let report of diagnoser.Reports">
-                                        <a href="{{ scmPath }}/api/vfs/data/DaaS/{{ report.RelativePath }}" style="cursor: pointer" *ngIf=" diagnoser.Reports.length > 0 " target="_blank"> {{ report.FileName }} </a>
-                                    </div>
-                                </td>                               
-                            </tr>                          
-                        </tbody>
-                    </table>
-
-        </div>
-     
-    
-    </default-solution-template>
+</default-solution-template>

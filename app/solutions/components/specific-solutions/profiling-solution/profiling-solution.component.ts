@@ -209,4 +209,17 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     ngOnDestroy(): void {
         this.subscription.unsubscribe();        
     }
+
+    getInstanceNameFromReport(reportName:string):string {
+
+        var reportNameArray = reportName.split("_");
+        if (reportNameArray.length > 0)
+        {
+            return reportNameArray[0];
+        }
+        else
+        {
+            return reportName;
+        }
+    }
 }

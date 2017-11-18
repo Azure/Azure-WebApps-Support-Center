@@ -8,6 +8,10 @@ td {
     margin-top:20px;
 }
 
+.report-table td, th{
+  text-align:center;
+  vertical-align:middle;
+}
 
 @import url(https://fonts.googleapis.com/css?family=Lato:400,300);
 body {
@@ -82,8 +86,9 @@ body {
 }
 #wizard-progress .step-indicator .step:hover {
   cursor: pointer;
-}
+} 
 #wizard-progress .step-indicator .caption {
   color: #ccc;
   padding: 11px 16px;
 }
+
