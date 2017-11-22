@@ -114,7 +114,7 @@ export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageCom
             background: 'rgb(234, 131, 0)'
         }, {
             text: 'white',
-            background: 'rgb(30, 200, 0)'
+            background: 'rgb(200, 0, 185)'
         }];
     }
 

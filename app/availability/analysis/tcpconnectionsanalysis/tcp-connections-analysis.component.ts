@@ -55,7 +55,6 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
             .subscribe(data => {
             this.openSocketCountViewModel = data;
             });
-
     }
 
     getSummaryViewModel(detectorName: string, topLevelSeries: string = '', excludeTopLevelInDetail: boolean = true): Observable<SummaryViewModel> {
@@ -80,7 +79,8 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
                     mainMetricGraphTitle: graphMetaData.mainGraphTitle,
                     mainMetricGraphDescription: graphMetaData.mainGraphDescriptions,
                     perInstanceGraphTitle: graphMetaData.perInstanceGraphTitle,
-                    perInstanceGraphDescription: graphMetaData.perInstanceGraphDescription
+                    perInstanceGraphDescription: graphMetaData.perInstanceGraphDescription,
+                    emptyDataResponse: graphMetaData.emptyDataResponse
                 };
             });
 
@@ -91,19 +91,22 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
             mainGraphTitle: 'TCP Connection Rejections',
             mainGraphDescriptions: 'Connection Rejections is the number of times your application\'s request to open a new connection failed because the machine wide TCP Connection limit was hit',
             perInstanceGraphTitle: null,
-            perInstanceGraphDescription: null
+            perInstanceGraphDescription: null,
+            emptyDataResponse: 'No issues detected with port rejections in this time frame.'
         },
         'tcpconnectionsusage': {
-            mainGraphTitle: 'TCP Connections',
-            mainGraphDescriptions: 'This is the total number of outbound connections on the instance',
-            perInstanceGraphTitle: 'TCP Connections by State',
-            perInstanceGraphDescription: 'This represents total connections (inbound and outbound) per instance'
+            mainGraphTitle: 'Outbound TCP Connections',
+            mainGraphDescriptions: 'This is the total number of Outbound Connections per Instance',
+            perInstanceGraphTitle: 'TCP Connections',
+            perInstanceGraphDescription: 'The below graph shows connections (both Inbound and Outbound) per instance. Established and TimeWait include both Inbound and Outbound connections'
         },
         'tcpopensocketcount': {
             mainGraphTitle: 'Open Socket handles',
-            mainGraphDescriptions: 'This represents the total number of open socket handles per process',
-            perInstanceGraphTitle: 'Open Socket handles per instance',
-            perInstanceGraphDescription: 'The below graph represents the webapp and the process under the webapp which is having the maximum open sockets on the instance'
+            mainGraphDescriptions: 'This represents the total number of open socket handles per instance',
+            perInstanceGraphTitle: 'Open Socket handles per Instance',
+            perInstanceGraphDescription: 'The below graph represents the WebApp and the processes under the WebApp which have the maximum Open Socket handle count on this instance',
+            emptyDataResponse: 'Open Socket count information is displayed only if the Outbound TCP Connections crosses 95% of the machine-wide TCP Connection limit.'
+
         }
     }
 }

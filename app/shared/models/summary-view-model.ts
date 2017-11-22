@@ -13,6 +13,7 @@ export interface SummaryViewModel {
     mainMetricGraphDescription: string;
     perInstanceGraphTitle: string;
     perInstanceGraphDescription;
+    emptyDataResponse:string;
 }
 
 export enum SummaryHealthStatus {

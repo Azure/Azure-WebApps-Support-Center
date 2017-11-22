@@ -26,10 +26,14 @@
              {{summaryModel.detectorAbnormalTimePeriod.message}}
           </span>
         </div>
-        <div class="message" *ngIf="!summaryModel.detectorAbnormalTimePeriod">
+        <div class="message" *ngIf="!summaryModel.detectorAbnormalTimePeriod && !summaryModel.emptyDataResponse">
           No issues detected
         </div>
+        <div class="message" *ngIf="!summaryModel.detectorAbnormalTimePeriod && (summaryModel.emptyDataResponse && summaryModel.emptyDataResponse.length > 0)">
+        {{ summaryModel.emptyDataResponse }}
+        </div>               
       </div>
+    
       <div>
         <metric-graph [metricSets]="mainMetricSets" [title]="summaryModel.mainMetricGraphTitle" [chartType]="lineChart" [description]="summaryModel.mainMetricGraphDescription"></metric-graph>
         <instance-view-graph *ngIf="summaryModel.perInstanceGraphTitle && summaryModel.perInstanceGraphTitle !== ''" [metricSets]="detailMetricSets"
