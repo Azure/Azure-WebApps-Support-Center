@@ -8,6 +8,7 @@ import { MemoryAnalysisComponent } from './analysis/memory-analysis/memory-analy
 import { DetectorViewRouteConfig } from './detector-view/detector-view.routeconfig';
 import { DetectorViewMainComponent } from './detector-view/detector-view-main/detector-view-main.component';
 import { SiteCpuAnalysisDetectorComponent } from './detector-view/detectors/site-cpu-analysis-detector/site-cpu-analysis-detector.component';
+import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalysis/tcp-connections-analysis.component';
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
@@ -128,7 +129,23 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
             cacheComponent: true
         }
     },
-
+    // TCP Connections Analysis
+    {
+        path: _siteResourceUrl + '/diagnostics/availability/tcpconnectionsanalysis',
+        component: TcpConnectionsAnalysisComponent,
+        data: {
+            navigationTitle: 'TCP Connections Analysis',
+            cacheComponent: true
+        }
+    },
+    {
+        path: _slotResourceUrl + '/diagnostics/availability/tcpconnectionsanalysis',
+        component: TcpConnectionsAnalysisComponent,
+        data: {
+            navigationTitle: 'TCP Connections Analysis',
+            cacheComponent: true
+        }
+    },
     {
         path: _siteResourceUrl + '/diagnostics/availability',
         children: AvailabilityCommonRouteConfig

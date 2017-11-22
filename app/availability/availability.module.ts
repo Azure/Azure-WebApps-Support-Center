@@ -32,6 +32,7 @@ import { AvailabilityAndPerformanceCategoryRouteConfig } from './availability.ro
 import { AspNetCoreComponent } from "./detector-view/detectors/aspnetcore-detector/aspnetcore-detector.component";
 
 import { UriElementsService } from '../shared/services'
+import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalysis/tcp-connections-analysis.component';
 
 @NgModule({
     declarations: [
@@ -59,7 +60,8 @@ import { UriElementsService } from '../shared/services'
         MemoryAnalysisComponent,
         CommittedMemoryUsageComponent,
         PageFileOperationsComponent,
-        AspNetCoreComponent
+        AspNetCoreComponent,
+        TcpConnectionsAnalysisComponent
     ],
     imports: [
         RouterModule.forChild(AvailabilityAndPerformanceCategoryRouteConfig),

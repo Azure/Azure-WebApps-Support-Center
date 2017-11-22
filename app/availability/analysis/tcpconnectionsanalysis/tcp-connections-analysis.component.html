@@ -1,0 +1,10 @@
+<availability-graph 
+[(displayGraph)]="displayGraph" >
+</availability-graph>
+
+<h4>TCP Connections Summary</h4>
+<expandable-summary [title]="'Connections Rejections'" [summaryViewModel]="connnectionsRejectionsViewModel"></expandable-summary>
+<expandable-summary [title]="'TCP Connections'" [summaryViewModel]="connectionsUsageViewModel"></expandable-summary>
+<expandable-summary [title]="'Open Socket Handles'" [summaryViewModel]="openSocketCountViewModel"></expandable-summary>
+<br/>
+<feedback-form [source]="'memoryanalysis'"></feedback-form>
