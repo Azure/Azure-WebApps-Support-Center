@@ -86,6 +86,11 @@ export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageCom
                 name: 'Web App Restarted',
                 href: 'availability/apprestartanalysis'
             });
+
+            categories.push({
+                name: 'TCP Connections',
+                href: 'availability/tcpconnectionsanalysis'
+            });
         }
 
         return categories;
@@ -107,6 +112,9 @@ export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageCom
         }, {
             text: 'white',
             background: 'rgb(234, 131, 0)'
+        }, {
+            text: 'white',
+            background: 'rgb(30, 200, 0)'
         }];
     }
 
