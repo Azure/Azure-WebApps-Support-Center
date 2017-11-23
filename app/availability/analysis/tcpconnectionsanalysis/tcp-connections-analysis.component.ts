@@ -1,12 +1,13 @@
-import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { IAppAnalysisResponse, IAbnormalTimePeriod, IAnalysisData } from '../../../shared/models/appanalysisresponse';
 import { IDetectorAbnormalTimePeriod, IDetectorResponse } from '../../../shared/models/detectorresponse';
 import { SummaryViewModel, SummaryHealthStatus } from '../../../shared/models/summary-view-model';
-import { PortalActionService, ServerFarmDataService, AvailabilityLoggingService, AuthService, AppAnalysisService } from '../../../shared/services';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
+
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import { ActivatedRoute } from '@angular/router';
+import { AvailabilityLoggingService } from '../../../shared/services/index';
 
 @Component({
     selector: 'tcpconnections-analysis',
@@ -19,10 +20,9 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
     connectionsUsageViewModel: SummaryViewModel;
     openSocketCountViewModel: SummaryViewModel;
 
-    readonly ConnectionRejections: string = "portexhaustion"
-    readonly TcpConnections: string = "tcpconnectionsusage"
-    readonly OpenSocketCount: string = "tcpopensocketcount"
-
+    readonly ConnectionRejections: string = "portexhaustion";
+    readonly TcpConnections: string = "tcpconnectionsusage";
+    readonly OpenSocketCount: string = "tcpopensocketcount";
 
     subscriptionId: string;
     resourceGroup: string;
@@ -59,8 +59,6 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
 
     getSummaryViewModel(detectorName: string, topLevelSeries: string = '', excludeTopLevelInDetail: boolean = true): Observable<SummaryViewModel> {
 
-        
-
         let graphMetaData = this.graphMetaData[detectorName];
 
         return this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, "availability", detectorName)
@@ -83,7 +81,6 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
                     emptyDataResponse: graphMetaData.emptyDataResponse
                 };
             });
-
     }
 
     private graphMetaData: any = {
