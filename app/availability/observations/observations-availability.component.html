@@ -2,6 +2,7 @@
     <h4 class="not-bold" style="margin-top:10px" *ngIf="selectedDowntimeIndex === -1">
             Your app is healthy right now.
     </h4>
+    
     <div style="border-top: 1px solid rgb(180, 180, 180);max-width: 800px;">
     <h5 class="not-bold" *ngIf="analysisResponse.abnormalTimePeriods.length > 0">However, we did detect downtimes in the last 24 hours. Select one from the orange timeline above to investigate possible causes.</h5>
     
@@ -19,7 +20,10 @@
         </a>
     </p>
     <div *ngIf="downtimesViewModel[selectedDowntimeIndex].showDetails">
-        Observations: 
+
+        <app-insights-exceptions [startTime]="analysisResponse.abnormalTimePeriods[selectedDowntimeIndex].startTime" [endTime]="analysisResponse.abnormalTimePeriods[selectedDowntimeIndex].endTime"></app-insights-exceptions>
+
+        <span style="font-weight:500" *ngIf="analysisResponse.abnormalTimePeriods[selectedDowntimeIndex].events.length > 0">Other Observations:</span> 
         <div class="observation">
             <ul>
                 <span *ngFor="let downtime of analysisResponse.abnormalTimePeriods[selectedDowntimeIndex].events">

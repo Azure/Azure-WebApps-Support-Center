@@ -24,6 +24,8 @@ import { GraphMessageComponent } from './common/graph-message/graph-message.comp
 import { CpuAnalysisChatFlow } from './message-flow/cpu-analysis-chat/cpu-analysis-chat-flow';
 import { ProblemStatementMessageComponent } from './common/problem-statement-message/problem-statement-message.component';
 
+import { AppInsightsSettingsComponent } from '../availability/app-insights/app-insights-settings.component';
+
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
 
@@ -58,6 +60,20 @@ const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:
                 data: {
                     navigationTitle: 'Home',
                     cacheComponent: true
+                }
+            },
+            {
+                path: _siteResourceUrl + '/diagnostics/settings/appinsights',
+                component: AppInsightsSettingsComponent,
+                data: {
+                    navigationTitle: 'Application Insights Settings'
+                }
+            },
+            {
+                path: _slotResourceUrl + '/diagnostics/settings/appinsights Settings',
+                component: AppInsightsSettingsComponent,
+                data: {
+                    navigationTitle: 'Application Insights'
                 }
             }]
         ),

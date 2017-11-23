@@ -30,6 +30,11 @@ import { PageFileOperationsComponent } from './detector-view/detectors/page-oper
 import { ToolsMenuComponent } from './tools-menu/tools-menu.component';
 import { AvailabilityAndPerformanceCategoryRouteConfig } from './availability.routeconfig';
 import { AspNetCoreComponent } from "./detector-view/detectors/aspnetcore-detector/aspnetcore-detector.component";
+import { AppInsightsTileComponent } from './app-insights/app-insights-tile.component';
+import { AppInsightsSettingsComponent } from './app-insights/app-insights-settings.component';
+import { AppInsightsExceptionsComponent } from './app-insights/exceptions/app-insights-exceptions.component';
+import { AppInsightsDependenciesComponent } from './app-insights/dependencies/app-insights-dependencies.component';
+
 
 import { UriElementsService } from '../shared/services'
 import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalysis/tcp-connections-analysis.component';
@@ -61,7 +66,11 @@ import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalys
         CommittedMemoryUsageComponent,
         PageFileOperationsComponent,
         AspNetCoreComponent,
-        TcpConnectionsAnalysisComponent
+        TcpConnectionsAnalysisComponent,
+        AppInsightsTileComponent,
+        AppInsightsSettingsComponent,
+        AppInsightsExceptionsComponent,
+        AppInsightsDependenciesComponent
     ],
     imports: [
         RouterModule.forChild(AvailabilityAndPerformanceCategoryRouteConfig),
@@ -73,7 +82,9 @@ import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalys
         ObservationsComponent,
         ObservationsAvailabilityComponent,
         ObservationsPerformanceComponent,
-        DetectorViewProblemComponent
+        DetectorViewProblemComponent,
+        AppInsightsTileComponent,
+        AppInsightsSettingsComponent
     ]
 })
 export class AvailabilityModule {

@@ -28,4 +28,7 @@ export * from "./appanalysis.service";
 export * from "./daas.service";
 export * from "./portal-action.service";
 export * from "./detector-view-state.service";
+export * from "./appinsights/appinsights.service";
+export * from "./appinsights/appinsights-query.service";
 export * from "./solution-factory.service";
+

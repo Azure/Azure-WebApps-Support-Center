@@ -3,6 +3,8 @@
         <support-bot></support-bot>
     </div>
     <div id="tools-content" [style.height.px] = "toolsContainerHeight">
+
+        <app-insights-tile></app-insights-tile>
         <support-tools></support-tools>
 
         <collapsible-list *ngFor="let list of listCollection" [title]="list.title" [collapsed]="list.collapsed">

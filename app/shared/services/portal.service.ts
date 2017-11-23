@@ -10,12 +10,14 @@ export class PortalService {
     public sessionId = "";
     private portalSignature: string = "FxFrameBlade";
     private startupInfoObservable : ReplaySubject<StartupInfo>;
+    private appInsightsResourceObservable: ReplaySubject<any>;
     private shellSrc: string;
 
     constructor(private _broadcastService : BroadcastService) {
         this.sessionId = "";
 
         this.startupInfoObservable = new ReplaySubject<StartupInfo>(1);
+        this.appInsightsResourceObservable = new ReplaySubject<any>(1);
 
         if (this.inIFrame()) {
             this.initializeIframe();
@@ -26,6 +28,10 @@ export class PortalService {
         return this.startupInfoObservable;
     }
 
+    getAppInsightsResourceInfo(): ReplaySubject<any>{
+        return this.appInsightsResourceObservable;
+    }
+
     initializeIframe(): void {
         this.shellSrc = this.getQueryStringParameter("trustedAuthority");
 
@@ -34,7 +40,7 @@ export class PortalService {
         // This is a required message. It tells the shell that your iframe is ready to receive messages.
         this.postMessage(Verbs.ready, null);
         this.postMessage(Verbs.getStartupInfo, null);
-
+        
         this._broadcastService.subscribe<ErrorEvent>(BroadcastEvent.Error, error => {
             if (error.details) {
                 this.logMessage(LogEntryLevel.Error, error.details);
@@ -88,13 +94,16 @@ export class PortalService {
 
         var data = event.data.data;
         let methodName = event.data.kind;
-
         console.log("[iFrame] Received mesg: " + methodName);
 
         if (methodName === Verbs.sendStartupInfo) {
             let info = <StartupInfo>data;
             this.sessionId = info.sessionId;
             this.startupInfoObservable.next(info);
+        }
+        else if(methodName === Verbs.sendAppInsightsResource){
+            let aiResource = data;
+            this.appInsightsResourceObservable.next(aiResource);
         }
     }
 

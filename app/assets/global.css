@@ -539,3 +539,18 @@ a:hover{
 .tool-tip:hover .tool-tip-text {
     visibility: visible;
 }
+
+.hyperlink{
+    cursor:pointer;
+    color:#3999c6;
+}
+.hyperlink:hover{
+    text-decoration: underline;
+}
+.hyperlink.disabled{
+    color:#8e8e8e;
+    cursor: not-allowed;
+}
+.hyperlink.disabled:hover{
+    text-decoration: none;
+}

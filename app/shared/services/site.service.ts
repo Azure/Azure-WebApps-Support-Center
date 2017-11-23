@@ -45,6 +45,44 @@ export class SiteService {
         })
     }
 
+    parseResourceUri(resourceUri: string): any {
+
+        var output = {
+            subscriptionId: '',
+            resourceGroup: '',
+            siteName: '',
+            slotName: ''
+        };
+
+        if (!resourceUri) {
+            return output;
+        }
+
+        let resourceUriParts = resourceUri.split("/");
+
+        let subscriptionIndex = resourceUriParts.indexOf('subscriptions');
+        if (subscriptionIndex > -1) {
+            output.subscriptionId = resourceUriParts[subscriptionIndex + 1];
+        }
+
+        let resourceGroupIndex = resourceUriParts.indexOf('resourceGroups');
+        if (resourceGroupIndex > -1) {
+            output.resourceGroup = resourceUriParts[resourceGroupIndex + 1];
+        }
+
+        let sitesIndex = resourceUriParts.indexOf('sites');
+        if (sitesIndex > -1) {
+            output.siteName = resourceUriParts[sitesIndex + 1];
+        }
+
+        let slotIndex = resourceUriParts.indexOf('slots');
+        if (slotIndex > -1) {
+            output.slotName = resourceUriParts[slotIndex + 1];
+        }
+
+        return output;
+    }
+
     restartSite(subscriptionId: string, resourceGroup: string, siteName: string): Observable<boolean> {
         return this.findTargetedSite(siteName).flatMap((targetedSite: Site) => {
             var slotName = '';
@@ -81,6 +119,20 @@ export class SiteService {
             return this._http.post(url, body, { headers: requestHeaders })
                 .map((response: Response) => response.ok);
         })
+    }
+
+    getSiteAppSettings(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): Observable<any> {
+
+        let url: string = this._uriElementsService.getListAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
+
+        return this._armClient.postResource(url, {});
+    }
+
+    updateSiteAppSettings(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '', body: any): Observable<any> {
+
+        let url: string = this._uriElementsService.getUpdateAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
+
+        return this._armClient.putResource(url, body);
     }
 
     private _populateSiteInfo(resourceId: string): void {

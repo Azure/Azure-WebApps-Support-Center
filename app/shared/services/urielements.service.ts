@@ -8,6 +8,8 @@ export class UriElementsService {
     private _slotResource = "/slots/{slot}";
 
     private _siteRestartUrlFormat: string = "/restart";
+    private _listAppSettingsUrlFormat: string = "/config/appsettings/list";
+    private _updateAppSettingsUrlFormat: string = "/config/appsettings";
 
     private _siteResourceDiagnosticsPrefix: string = "/diagnostics";    
     private _diagnosticCategoryFormat: string = this._siteResourceDiagnosticsPrefix + "/{diagnosticCategory}"
@@ -110,6 +112,14 @@ export class UriElementsService {
 
     getDiagnosticPropertiesUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
         return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._diagnosticProperties;
+    }
+
+    getListAppSettingsUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
+        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._listAppSettingsUrlFormat;
+    }
+
+    getUpdateAppSettingsUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
+        return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._updateAppSettingsUrlFormat;
     }
 
     private _getSiteResourceUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '') {

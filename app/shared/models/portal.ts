@@ -66,6 +66,8 @@ export class Verbs {
     // Blade-specific Requests from iframe
     public static openScaleUpBlade = "open-scaleup-blade";
     public static openSupportRequestBlade = "open-support-request-inputs";
+    public static getAppInsightsResource = "get-appinsights-resource";
+    public static sendAppInsightsResource = "send-appinsights-resource";
 }
 
 export enum LogEntryLevel {

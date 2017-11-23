@@ -10,7 +10,7 @@ import { ResponseMessageEnvelope } from '../../models/responsemessageenvelope';
     selector: 'support-tools',
     templateUrl: 'support-tools.component.html'
 })
-export class SupportToolsComponent  {
+export class SupportToolsComponent {
 
     @Input() collapsed: boolean = false;
 
@@ -18,7 +18,7 @@ export class SupportToolsComponent  {
     public premiumTools: any[];
 
     public mitigateLink: string;
-    
+
     currentSite: Site;
     hasReadAccessToServerFarm: boolean;
     initialized: boolean = false;
@@ -27,7 +27,7 @@ export class SupportToolsComponent  {
         this.supportTools = [];
         this.premiumTools = [];
 
-        this._authService.getStartupInfo()        
+        this._authService.getStartupInfo()
             .flatMap((startUpInfo: StartupInfo) => {
                 return this._armService.getResource<Site>(startUpInfo.resourceId);
             })
@@ -46,13 +46,13 @@ export class SupportToolsComponent  {
     }
 
     initialize() {
-        this.mitigateLink =  "https://mawssupport.trafficmanager.net/?sitename=" + this.currentSite.name + "&tab=mitigate&source=ibiza";
+        this.mitigateLink = "https://mawssupport.trafficmanager.net/?sitename=" + this.currentSite.name + "&tab=mitigate&source=ibiza";
 
         this.supportTools.push({
             title: "Metrics per Instance (Apps)",
             description: "View Performance Counters as well as Metrics for your application",
             enabled: true,
-            action: () => { 
+            action: () => {
                 this.logToolUse(SupportBladeDefinitions.MetricPerInstance.Identifier);
                 this._portalActionService.openSupportIFrame(SupportBladeDefinitions.MetricPerInstance)
             }
@@ -63,7 +63,7 @@ export class SupportToolsComponent  {
             description: this.hasReadAccessToServerFarm ? "View Metrics for applications on your App Service Plan" :
                 "You do not have access to the the app service plan to which this site belongs",
             enabled: this.hasReadAccessToServerFarm,
-            action: () => { 
+            action: () => {
                 this.logToolUse(SupportBladeDefinitions.AppServicePlanMetrics.Identifier);
                 this._portalActionService.openSupportIFrame(SupportBladeDefinitions.AppServicePlanMetrics)
             }
@@ -73,17 +73,17 @@ export class SupportToolsComponent  {
             title: "Live HTTP Traffic",
             description: "View Live Requests and Failures to your application",
             enabled: true,
-            action: () => { 
+            action: () => {
                 this.logToolUse(SupportBladeDefinitions.Pulse.Identifier);
                 this._portalActionService.openSupportIFrame(SupportBladeDefinitions.Pulse)
             }
         });
 
-         this.supportTools.push({
+        this.supportTools.push({
             title: "Application Events",
             description: "View Event Log which often holds information about failed requests",
             enabled: true,
-            action: () => { 
+            action: () => {
                 this.logToolUse(SupportBladeDefinitions.EventViewer.Identifier);
                 this._portalActionService.openSupportIFrame(SupportBladeDefinitions.EventViewer)
             }
@@ -93,7 +93,7 @@ export class SupportToolsComponent  {
             title: "Failed Request Tracing Logs",
             description: "View detailed logs for failed requests. This requires you to enable Failed Request Tracing",
             enabled: true,
-            action: () => { 
+            action: () => {
                 this.logToolUse(SupportBladeDefinitions.FREBLogs.Identifier);
                 this._portalActionService.openSupportIFrame(SupportBladeDefinitions.FREBLogs)
             }
@@ -103,7 +103,7 @@ export class SupportToolsComponent  {
             title: "Diagnostics as a Service",
             description: "Run a Diagnostics as a Service session for a deep analysis of your application",
             enabled: true,
-            action: () => { 
+            action: () => {
                 this.logToolUse(SupportBladeDefinitions.DaaS.Identifier);
                 this._portalActionService.openSupportIFrame(SupportBladeDefinitions.DaaS)
             }
@@ -113,7 +113,7 @@ export class SupportToolsComponent  {
             title: "Mitigate",
             description: "Set rules for recycling or taking other actions based on memory usage or request patterns",
             enabled: true,
-            action: () => { 
+            action: () => {
                 this.logToolUse("Mitigate");
                 this._portalActionService.openAutoHealSite();
             }
@@ -123,7 +123,7 @@ export class SupportToolsComponent  {
             title: "Advanced Application Restart",
             description: "Restart your app on a specific instance",
             enabled: true,
-            action: () => { 
+            action: () => {
                 this.logToolUse("AdvancedAppRestart");
                 this._portalActionService.openBladeAdvancedAppRestartBladeForCurrentSite();
             }
@@ -133,7 +133,7 @@ export class SupportToolsComponent  {
             title: "PHP Debugging",
             description: "",
             enabled: true,
-            action: () => { 
+            action: () => {
                 this.logToolUse("PHPDebugging", "Premium Tools");
                 this._portalActionService.openPHPDebuggingBlade();
             }
@@ -143,7 +143,7 @@ export class SupportToolsComponent  {
             title: "Security Scanning",
             description: "",
             enabled: true,
-            action: () => { 
+            action: () => {
                 this.logToolUse("TinfoilSecurity", "Premium Tools");
                 this._portalActionService.openTifoilSecurityBlade();
             }
@@ -152,7 +152,7 @@ export class SupportToolsComponent  {
         this.initialized = true;
     }
 
-    logToolUse(tool: string, container = "Support Tools"): void{
+    logToolUse(tool: string, container = "Support Tools"): void {
         this._logger.LogClickEvent(tool, container);
     }
 }

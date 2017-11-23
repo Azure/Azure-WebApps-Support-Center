@@ -7,7 +7,7 @@ import { HttpModule } from '@angular/http';
 import {
     PortalService, BroadcastService, AuthService, ArmService, UriElementsService, PortalActionService,
     SiteService, AppAnalysisService, WindowService, ServerFarmDataService, RBACService, LoggingService,     
-    AvailabilityLoggingService, BotLoggingService, DetectorViewStateService, CacheService, SolutionFactoryService, DaasService
+    AvailabilityLoggingService, BotLoggingService, DetectorViewStateService, CacheService, SolutionFactoryService, DaasService, AppInsightsService, AppInsightsQueryService
 } from './services';
 import { LimitToFilter } from './utilities/limitToFilter.pipe';
 import { nvD3 } from './utilities/nvd3graph.component';
@@ -31,8 +31,6 @@ import { VerticalDisplayListItemComponent } from './components/vertical-display-
 import { SolutionTypeTagComponent } from './components/solution-type-tag/solution-type-tag.component';
 import { GroupByPipe } from './pipes/groupBy.pipe';
 import { MapValuesPipe } from './pipes/mapValues.pipe';
-
-
 
 @NgModule({
     declarations: [
@@ -62,7 +60,8 @@ import { MapValuesPipe } from './pipes/mapValues.pipe';
     imports: [
         HttpModule,
         CommonModule,
-        FormsModule
+        FormsModule,
+        RouterModule
     ],
     exports: [
         CommonModule,
@@ -113,9 +112,11 @@ export class SharedModule {
                 AvailabilityLoggingService,
                 BotLoggingService,
                 DetectorViewStateService,
+                AppInsightsService,
+                AppInsightsQueryService,
+                CacheService,
                 SolutionFactoryService,
-                DaasService,
-                CacheService                
+                DaasService               
             ]
         }
     }
