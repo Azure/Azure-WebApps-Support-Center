@@ -19,6 +19,7 @@ export class ExpandableSummaryComponent implements OnInit {
 
     summaryModel: SummaryViewModel;
     expanded: boolean = false;
+    metricsContainData: boolean = false; 
 
     mainMetricSets: IMetricSet[];
     detailMetricSets: IMetricSet[];
@@ -43,6 +44,13 @@ export class ExpandableSummaryComponent implements OnInit {
                 this.mainMetricSets = this.summaryModel.mainMetricSets;
                 this.detailMetricSets = this.summaryModel.detailMetricSets;
 
+                this.mainMetricSets.forEach(element => {
+                    if (element.values.length > 0)
+                    {
+                        this.metricsContainData = true;
+                    }
+                });
+               
                 let abnormalTimePeriod = this.summaryModel.detectorAbnormalTimePeriod;
                 if (abnormalTimePeriod && abnormalTimePeriod.metaData.length > 0) {
                     let markupStringNameValuePair = abnormalTimePeriod.metaData[0].find(x => x.name === "MarkupString");
