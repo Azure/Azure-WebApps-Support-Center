@@ -45,8 +45,7 @@ export class ExpandableSummaryComponent implements OnInit {
                 this.detailMetricSets = this.summaryModel.detailMetricSets;
 
                 this.mainMetricSets.forEach(element => {
-                    if (element.values.length > 0)
-                    {
+                    if (element.values.length > 0) {
                         this.metricsContainData = true;
                     }
                 });
