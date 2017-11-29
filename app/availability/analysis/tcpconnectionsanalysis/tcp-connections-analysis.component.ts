@@ -20,7 +20,7 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
     connectionsUsageViewModel: SummaryViewModel;
     openSocketCountViewModel: SummaryViewModel;
 
-    readonly ConnectionRejections: string = "portexhaustion";
+    ConnectionRejections: string = "portexhaustion";
     readonly TcpConnections: string = "tcpconnectionsusage";
     readonly OpenSocketCount: string = "tcpopensocketcount";
 
@@ -36,11 +36,15 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
     ngOnInit(): void {
         this._logger.LogAnalysisInitialized('TCP Connections Analysis');
 
+        
+
         this.subscriptionId = this._route.snapshot.params['subscriptionid'];
         this.resourceGroup = this._route.snapshot.params['resourcegroup'];
         this.siteName = this._route.snapshot.params['sitename'];
         this.slotName = this._route.snapshot.params['slot'] ? this._route.snapshot.params['slot'] : '';
 
+        this.getDetectorNameForConnectionRejections();
+        
         this.getSummaryViewModel(this.ConnectionRejections, 'Port Rejection', false)
             .subscribe(data => {
             this.connnectionsRejectionsViewModel = data;
@@ -55,6 +59,19 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
             .subscribe(data => {
             this.openSocketCountViewModel = data;
             });
+    }
+
+    getDetectorNameForConnectionRejections() {
+
+        this._appAnalysisService.getDetectors(this.subscriptionId,this.resourceGroup,this.siteName, "availability", this.slotName)
+        .subscribe(response =>{
+            if (response.find(d => d.name === 'portrejections')){
+                this.ConnectionRejections = "portrejections";
+            }
+            else {
+                this.ConnectionRejections = "portexhaustion";
+            }             
+        });
     }
 
     getSummaryViewModel(detectorName: string, topLevelSeries: string = '', excludeTopLevelInDetail: boolean = true): Observable<SummaryViewModel> {
