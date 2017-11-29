@@ -36,15 +36,13 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
     ngOnInit(): void {
         this._logger.LogAnalysisInitialized('TCP Connections Analysis');
 
-        
-
         this.subscriptionId = this._route.snapshot.params['subscriptionid'];
         this.resourceGroup = this._route.snapshot.params['resourcegroup'];
         this.siteName = this._route.snapshot.params['sitename'];
         this.slotName = this._route.snapshot.params['slot'] ? this._route.snapshot.params['slot'] : '';
 
         this.getDetectorNameForConnectionRejections();
-        
+
         this.getSummaryViewModel(this.ConnectionRejections, 'Port Rejection', false)
             .subscribe(data => {
             this.connnectionsRejectionsViewModel = data;
