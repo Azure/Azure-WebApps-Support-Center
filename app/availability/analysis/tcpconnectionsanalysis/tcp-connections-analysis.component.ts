@@ -41,12 +41,7 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
         this.siteName = this._route.snapshot.params['sitename'];
         this.slotName = this._route.snapshot.params['slot'] ? this._route.snapshot.params['slot'] : '';
 
-        this.getDetectorNameForConnectionRejections();
-
-        this.getSummaryViewModel(this.ConnectionRejections, 'Port Rejection', false)
-            .subscribe(data => {
-            this.connnectionsRejectionsViewModel = data;
-            });
+        this.getSummaryViewModelForConnectionRejections();
 
         this.getSummaryViewModel(this.TcpConnections, 'Outbound', false)
             .subscribe(data => {
@@ -59,7 +54,7 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
             });
     }
 
-    getDetectorNameForConnectionRejections() {
+    getSummaryViewModelForConnectionRejections() {
 
         this._appAnalysisService.getDetectors(this.subscriptionId,this.resourceGroup,this.siteName, "availability", this.slotName)
         .subscribe(response =>{
@@ -68,7 +63,12 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
             }
             else {
                 this.ConnectionRejections = "portexhaustion";
-            }             
+            }     
+
+            this.getSummaryViewModel(this.ConnectionRejections, 'Port Rejection', false)
+            .subscribe(data => {
+            this.connnectionsRejectionsViewModel = data;
+            });        
         });
     }
 
