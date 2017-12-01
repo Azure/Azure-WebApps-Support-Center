@@ -20,7 +20,7 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
     connectionsUsageViewModel: SummaryViewModel;
     openSocketCountViewModel: SummaryViewModel;
 
-    ConnectionRejections: string = "portexhaustion";
+    readonly ConnectionRejections: string = "portrejections";
     readonly TcpConnections: string = "tcpconnectionsusage";
     readonly OpenSocketCount: string = "tcpopensocketcount";
 
@@ -41,7 +41,10 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
         this.siteName = this._route.snapshot.params['sitename'];
         this.slotName = this._route.snapshot.params['slot'] ? this._route.snapshot.params['slot'] : '';
 
-        this.getSummaryViewModelForConnectionRejections();
+        this.getSummaryViewModel(this.ConnectionRejections, 'Port Rejection', false)
+        .subscribe(data => {
+        this.connnectionsRejectionsViewModel = data;
+        });
 
         this.getSummaryViewModel(this.TcpConnections, 'Outbound', false)
             .subscribe(data => {
@@ -54,25 +57,7 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
             });
     }
 
-    getSummaryViewModelForConnectionRejections() {
-
-        this._appAnalysisService.getDetectors(this.subscriptionId,this.resourceGroup,this.siteName, "availability", this.slotName)
-        .subscribe(response =>{
-            if (response.find(d => d.name === 'portrejections')){
-                this.ConnectionRejections = "portrejections";
-            }
-            else {
-                this.ConnectionRejections = "portexhaustion";
-            }     
-
-            this.getSummaryViewModel(this.ConnectionRejections, 'Port Rejection', false)
-            .subscribe(data => {
-            this.connnectionsRejectionsViewModel = data;
-            });        
-        });
-    }
-
-    getSummaryViewModel(detectorName: string, topLevelSeries: string = '', excludeTopLevelInDetail: boolean = true): Observable<SummaryViewModel> {
+   getSummaryViewModel(detectorName: string, topLevelSeries: string = '', excludeTopLevelInDetail: boolean = true): Observable<SummaryViewModel> {
 
         let graphMetaData = this.graphMetaData[detectorName];
 
@@ -80,7 +65,7 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
             .map(detectorResponse => {
                 let downtime = detectorResponse.abnormalTimePeriods[0] ? detectorResponse.abnormalTimePeriods[0] : null;
                 let health = downtime ? SummaryHealthStatus.Warning :  SummaryHealthStatus.Healthy;
-                        
+                
                 return <SummaryViewModel>{
                     detectorName: detectorName,
                     health: health,
@@ -99,7 +84,7 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
     }
 
     private graphMetaData: any = {
-        'portexhaustion': {
+        'portrejections': {
             mainGraphTitle: 'TCP Connection Rejections',
             mainGraphDescriptions: 'Connection Rejections is the number of times your application\'s request to open a new connection failed because the machine wide TCP Connection limit was hit',
             perInstanceGraphTitle: null,
