@@ -224,5 +224,5 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
         {
             return reportName;
         }
-    }   
+    }
 }
