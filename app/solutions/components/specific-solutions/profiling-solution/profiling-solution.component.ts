@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { SolutionBaseComponent } from '../../common/solution-base/solution-base.component';
 import { SolutionData } from '../../../../shared/models/solution';
 import { MetaDataHelper } from '../../../../shared/utilities/metaDataHelper';
-import { SiteService, DaasService, WindowService } from '../../../../shared/services'
+import { SiteService, DaasService, WindowService, AvailabilityLoggingService } from '../../../../shared/services'
 import { SiteProfilingInfo } from '../../../../shared/models/solution-metadata';
 import { Subscription } from 'rxjs';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
@@ -46,10 +46,12 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     scmPath: string;
     SessionCompleted:boolean;
 
-    constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService) {
+    constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
     }
 
     ngOnInit(): void {
+
+        this._logger.LogSolutionDisplayed('CLR Profiling', this.data.solution.order.toString(), 'bot-sitecpuanalysis');
         
         this.siteToBeProfiled = MetaDataHelper.getProfilingData(this.data.solution.data);         
         this.SessionCompleted = false;
@@ -184,6 +186,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     }
 
     collectProfilerTrace() {
+        this._logger.LogSolutionTried('CLR Profiling', this.data.solution.order.toString(), 'inline', '');
         this.sessionInProgress = true;
         this.updateInstanceInformation();
 
@@ -221,5 +224,5 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
         {
             return reportName;
         }
-    }
+    }   
 }
