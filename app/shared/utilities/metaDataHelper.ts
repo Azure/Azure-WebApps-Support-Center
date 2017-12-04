@@ -5,16 +5,17 @@ export class MetaDataHelper {
 
     static getMetaDataValue(metaData: INameValuePair[][], key: string): string {
         let searchKey = key.toLowerCase();
+        let returnValue = null;
         if (metaData && metaData.length > 0) {
             metaData.forEach(element => {
                 element.forEach(nameValuePair => {
                     if (nameValuePair.name.toLowerCase() === searchKey) {
-                        return nameValuePair.value;
+                        returnValue = nameValuePair.value;
                     }
                 });
             });
         }
-        return null;
+        return returnValue;
     }
 
     static getMetaDataValues(metaData: INameValuePair[][], key: string): string[] {

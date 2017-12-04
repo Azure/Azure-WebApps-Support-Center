@@ -8,6 +8,8 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { ActivatedRoute } from '@angular/router';
 import { AvailabilityLoggingService } from '../../../shared/services/index';
+import { MetaDataHelper } from '../../../shared/utilities/metaDataHelper';
+import  '../../../shared/polyfills/string'
 
 @Component({
     selector: 'tcpconnections-analysis',
@@ -66,11 +68,18 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
                 let downtime = detectorResponse.abnormalTimePeriods[0] ? detectorResponse.abnormalTimePeriods[0] : null;
                 let health = downtime ? SummaryHealthStatus.Warning :  SummaryHealthStatus.Healthy;
                 
+                if (detectorResponse.abnormalTimePeriods.length > 0)
+                {
+                    let abnormalTimePeriodMessage = this.getAbnormalTimePeriodMessageFromMetadata(detectorName, detectorResponse);
+                    detectorResponse.abnormalTimePeriods[0].message = abnormalTimePeriodMessage;
+                }
+
                 return <SummaryViewModel>{
                     detectorName: detectorName,
                     health: health,
                     loading: false,
                     detectorAbnormalTimePeriod: detectorResponse.abnormalTimePeriods[0],
+                    renderAbnormalTimePeriodAsHtml:true,
                     detectorData: null,
                     mainMetricSets: detectorResponse ? (topLevelSeries !== '' ? detectorResponse.metrics.filter(x => x.name === topLevelSeries) : detectorResponse.metrics) : null,
                     detailMetricSets: topLevelSeries !== '' && detectorResponse ? excludeTopLevelInDetail ? detectorResponse.metrics.filter(x => x.name !== topLevelSeries) : detectorResponse.metrics : null,
@@ -81,6 +90,49 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
                     emptyDataResponse: graphMetaData.emptyDataResponse
                 };
             });
+    }
+
+    getAbnormalTimePeriodMessageFromMetadata(detectorName:string, detectorResponse:IDetectorResponse):string
+    {
+        let message = detectorResponse.abnormalTimePeriods[0].message;
+
+        if (detectorName == this.OpenSocketCount)
+        {
+            let issueType = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "IssueType");
+            let instance = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "Instance");
+            let siteName = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "SiteName");
+            let processName = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "ProcessName");
+            let processId = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "ProcessId");            
+            let handleCount = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "HandleCount");
+
+            if (issueType == "HigSocketHandleCount" || issueType == "HighSocketHandleCount")
+            {
+                message = "<b>High Open Socket handle count</b> detected on instance - " + instance + ". ";
+            }
+            else if (issueType == "SocketHandlesLeaked")
+            {
+                message = "<b>Socket handle leak</b> detected on instance - " + instance + ". It was detected that the TCP Connections were not high on the instance however the open socket handle count on the instance was high.";
+            }
+            
+            let msg = "During this time frame, the process with the maximum handle count belonged to :-<ul><li>WebApp - {0}</li><li>Process - {1}</li><li>ProcessId - {2}</li><li>TCP Open Socket handle count - {3}</li></ul>";
+            message = message + msg.format(siteName, processName, processId, handleCount);
+    
+        }
+
+        else if (detectorName == this.TcpConnections)
+        {
+            let total = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "Total");
+            let remoteAddress = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "RemoteAddress");
+            let established = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "Established");
+            let timeWait = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "TimeWait");
+            let instance = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "Instance");            
+            
+            message = "<b>High TCP Connections</b> detected on " + instance;
+            +("<ul><li>A total of <b>{0}</b> outbound connections (Established :{1} , TimeWait :{2}) detected to remote endpoint with IP Address <b>{3}</b></li></ul>")
+            .format(total, established, timeWait, remoteAddress);
+        }
+
+        return message;
     }
 
     private graphMetaData: any = {

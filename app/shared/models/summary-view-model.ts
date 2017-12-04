@@ -6,6 +6,7 @@ export interface SummaryViewModel {
     loading: boolean;
     health: SummaryHealthStatus;
     detectorAbnormalTimePeriod: IDetectorAbnormalTimePeriod;
+    renderAbnormalTimePeriodAsHtml: boolean;
     detectorData: IAnalysisData;
     mainMetricSets: IMetricSet[];
     detailMetricSets: IMetricSet[];
