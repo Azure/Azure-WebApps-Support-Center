@@ -114,7 +114,7 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
                 message = "<b>Socket handle leak</b> detected on instance - " + instance + ". It was detected that the TCP Connections were not high on the instance however the open socket handle count on the instance was high.";
             }
             
-            let msg = "During this time frame, the process with the maximum handle count belonged to :-<ul><li>WebApp - {0}</li><li>Process - {1}</li><li>ProcessId - {2}</li><li>TCP Open Socket handle count - {3}</li></ul>";
+            let msg = "During this time frame, the process with the maximum handle count (<b>{3}</b>) belonged to :-<ul><li>WebApp - {0}</li><li>Process - {1}</li><li>ProcessId - {2}</li></ul>";
             message = message + msg.format(siteName, processName, processId, handleCount);
     
         }
