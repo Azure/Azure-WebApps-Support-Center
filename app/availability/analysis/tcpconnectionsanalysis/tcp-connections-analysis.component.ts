@@ -96,7 +96,7 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
     {
         let message = detectorResponse.abnormalTimePeriods[0].message;
 
-        if (detectorName == this.OpenSocketCount)
+        if (detectorName === this.OpenSocketCount)
         {
             let issueType = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "IssueType");
             let instance = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "Instance");
@@ -105,13 +105,13 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
             let processId = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "ProcessId");            
             let handleCount = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "HandleCount");
 
-            if (issueType == "HigSocketHandleCount" || issueType == "HighSocketHandleCount")
+            if (issueType === "HigSocketHandleCount" || issueType === "HighSocketHandleCount")
             {
                 message = "<b>High Open Socket handle count</b> detected on instance - " + instance + ". ";
             }
-            else if (issueType == "SocketHandlesLeaked")
+            else if (issueType === "SocketHandlesLeaked")
             {
-                message = "<b>Socket handle leak</b> detected on instance - " + instance + ". It was detected that the TCP Connections were not high on the instance however the open socket handle count on the instance was high.";
+                message = "<b>Socket handle leak</b> detected on instance - " + instance + ". It was detected that the TCP Connections were not high on the instance, however the open socket handle count on the instance was high.";
             }
             
             let msg = "During this time frame, the process with the maximum handle count (<b>{3}</b>) belonged to :-<ul><li>WebApp - {0}</li><li>Process - {1}</li><li>ProcessId - {2}</li></ul>";
@@ -119,7 +119,7 @@ export class TcpConnectionsAnalysisComponent implements OnInit {
     
         }
 
-        else if (detectorName == this.TcpConnections)
+        else if (detectorName === this.TcpConnections)
         {
             let total = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "Total");
             let remoteAddress = MetaDataHelper.getMetaDataValue(detectorResponse.abnormalTimePeriods[0].metaData, "RemoteAddress");
