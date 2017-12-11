@@ -1,5 +1,5 @@
 import { INameValuePair } from '../models/namevaluepair';
-import { ApplicationRestartInfo, InstanceInfo, SiteProfilingInfo } from '../models/solution-metadata';
+import { ApplicationRestartInfo, InstanceInfo, SiteDaasInfo } from '../models/solution-metadata';
 
 export class MetaDataHelper {
 
@@ -33,7 +33,7 @@ export class MetaDataHelper {
         return values;
     }
 
-    static getProfilingData(metaData: INameValuePair[][]): SiteProfilingInfo {
+    static getSiteDaasData(metaData: INameValuePair[][]): SiteDaasInfo {
         if(metaData.length > 0) {
 
             var siteNameWithSlot = MetaDataHelper.getValueForName(metaData[0], 'sitename');
@@ -50,7 +50,7 @@ export class MetaDataHelper {
                 siteName = siteNameWithSlot;
             }
 
-            let profilingInfo: SiteProfilingInfo = {
+            let siteDaasInfo: SiteDaasInfo = {
                 subscriptionId: MetaDataHelper.getValueForName(metaData[0], 'subscriptionid'),
                 resourceGroupName: MetaDataHelper.getValueForName(metaData[0], 'resourcegroup'), 
                 siteName: siteName,
@@ -58,7 +58,7 @@ export class MetaDataHelper {
                 instances: []
             }           
 
-            return profilingInfo;
+            return siteDaasInfo;
         }
     }
 

@@ -1,0 +1,40 @@
+<div class="header2">Last 5 {{DiagnoserHeading}}</div>
+    <div>
+        <div class="col" *ngIf="checkingExistingSessions">
+            <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+            Populating last 5 sessions...
+        </div>
+
+        <div *ngIf="!checkingExistingSessions">
+            <div *ngIf="Sessions?.length === 0">
+                No sessions found
+            </div>
+            <table *ngIf="Sessions?.length > 0" class="table table-hover table-bordered report-table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Reports</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let session of Sessions">
+                        <td>{{ session.StartTime }} (UTC)</td>
+                        <td>
+                            <div *ngFor="let diagnoser of session.DiagnoserSessions">
+                                <div *ngIf="diagnoser.Name === SessionType">
+                                    <ul style="list-style: none;">
+                                        <li *ngFor="let report of diagnoser.Reports">
+                                            {{ getInstanceNameFromReport(report.FileName) }}
+                                            <a href="{{ scmPath }}/api/vfs/data/DaaS/{{ report.RelativePath }}" style="cursor: pointer" target="_blank">
+                                                <i class="fa fa-external-link" aria-hidden="true"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>

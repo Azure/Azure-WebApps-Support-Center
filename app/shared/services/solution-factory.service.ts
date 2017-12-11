@@ -8,6 +8,7 @@ import { SolutionTypeTag } from '../models/solution-type-tag';
 import { ProfilingComponent } from '../../solutions/components/specific-solutions/profiling-solution/profiling-solution.component';
 import { ScaleOutSolutionComponent } from '../../solutions/components/specific-solutions/scale-out-solution/scale-out-solution.component';
 import { SplitSitesIntoDifferentServerFarmsSolutionComponent } from '../../solutions/components/specific-solutions/split-sites-serverfarms-solution/split-sites-serverfarms-solution.component';
+import { MemoryDumpComponent } from '../../solutions/components/specific-solutions/memorydump-solution/memorydump-solution.component';
 
 @Injectable()
 export class SolutionFactoryService {
@@ -64,10 +65,10 @@ export class SolutionFactoryService {
             //     return new BladeSolutions.OpenAppInsights(rank, parameters, _logger, portalActionService);
             // case 102:
             //     return new OtherSolutions.CheckAutoHeal(rank, _logger);
-            // case 103:
-            //     return new OtherSolutions.GetDumpOfProcess(rank, _logger);
-             case 104:
-             return new SolutionHolder(ProfilingComponent, <SolutionData>{ title: "Remote Profile WebApp", tags: [SolutionTypeTag.Investigation], solution: solution });
+            case 103:
+                return new SolutionHolder(MemoryDumpComponent, <SolutionData>{ title: "Collect Memory Dump", tags: [SolutionTypeTag.Investigation], solution: solution });
+            case 104:
+                return new SolutionHolder(ProfilingComponent, <SolutionData>{ title: "Remote Profile WebApp", tags: [SolutionTypeTag.Investigation], solution: solution });
             // case 105:
             //     return new OtherSolutions.UpgradeDatabase(rank, _logger);
             // case 106:

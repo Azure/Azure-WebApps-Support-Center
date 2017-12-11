@@ -3,9 +3,9 @@
         <div>
             <table style="border:none">
                 <tr>
-                    <td>App to be Profiled: </td>
+                    <td>App to be Dumped: </td>
                     <td class="highlight-blue">
-                        <b>{{siteToBeProfiled.siteName}}</b>
+                        <b>{{siteToBeDumped.siteName}}</b>
                     </td>
                 </tr>
                 <tr>
@@ -13,9 +13,10 @@
                         Instance(s):
                     </td>
                     <td class="highlight-blue">
-                        <span *ngFor="let instance of instances; let isLast=last">
-                            {{instance}}{{isLast? '':','}}
-                        </span>
+                        <div *ngFor="let instance of InstancesSelected;let i = index">                            
+                                <input type="checkbox" value="{{ instance.InstanceName }}" name="{{ instance.InstanceName }}" [(ngModel)]="InstancesSelected[i].Selected"
+                                /> {{ instance.InstanceName}}                            
+                        </div>
                     </td>
                 </tr>
             </table>
@@ -26,7 +27,7 @@
                     Checking existing sessions...
                 </div>
 
-                <button [disabled]="sessionInProgress || checkingExistingSessions" [hidden]="SessionCompleted" class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
+                <button [disabled]="sessionInProgress || checkingExistingSessions" [hidden]="SessionCompleted" class="btn btn-primary" (click)="collectMemoryDump()">Collect Memory Dump</button>
             </div>
 
             <div class="status-box" *ngIf="sessionInProgress">
@@ -36,8 +37,8 @@
                     </option>
                 </select>
 
-                <step-wizard [CurrentStep]="sessionStatus" [WizardSteps]="WizardSteps" ></step-wizard>
-               
+                <step-wizard [CurrentStep]="sessionStatus" [WizardSteps]="WizardSteps"></step-wizard>
+
             </div>
         </div>
 
@@ -58,11 +59,11 @@
         </table>
     </div>
 
-    <div class="header2">What you should know before performing a Profiler Trace</div>
+    <div class="header2">What you should know before collecting a Memory Dump</div>
     <ul>
         <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
     </ul>
 
-    <daas-sessions SessionType="CLR Profiler" [checkingExistingSessions]="checkingExistingSessions" [Sessions]="Sessions"></daas-sessions>
-    
+    <daas-sessions SessionType="Memory Dump" [checkingExistingSessions]="checkingExistingSessions" [Sessions]="Sessions"></daas-sessions>
+
 </default-solution-template>

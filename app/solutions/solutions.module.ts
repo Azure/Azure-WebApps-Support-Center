@@ -13,6 +13,7 @@ import { SolutionOperationComponent } from './components/common/solution-operati
 import { ScaleOutSolutionComponent } from './components/specific-solutions/scale-out-solution/scale-out-solution.component';
 import { SplitSitesIntoDifferentServerFarmsSolutionComponent } from './components/specific-solutions/split-sites-serverfarms-solution/split-sites-serverfarms-solution.component';
 import { SolutionFeedbackComponent } from './components/common/solution-feedback/solution-feedback.component';
+import { MemoryDumpComponent } from './components/specific-solutions/memorydump-solution/memorydump-solution.component';
 
 @NgModule({
     declarations: [
@@ -24,6 +25,7 @@ import { SolutionFeedbackComponent } from './components/common/solution-feedback
         ScaleOutSolutionComponent,
         DefaultSolutionTemplateComponent,
         ProfilingComponent,
+        MemoryDumpComponent,
         SolutionOperationComponent,
         SplitSitesIntoDifferentServerFarmsSolutionComponent,
         SolutionFeedbackComponent

@@ -2,12 +2,16 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { SolutionBaseComponent } from '../../common/solution-base/solution-base.component';
 import { SolutionData } from '../../../../shared/models/solution';
 import { MetaDataHelper } from '../../../../shared/utilities/metaDataHelper';
-import { SiteService, DaasService, WindowService } from '../../../../shared/services'
-import { SiteProfilingInfo } from '../../../../shared/models/solution-metadata';
+import { SiteService, DaasService, WindowService, AvailabilityLoggingService } from '../../../../shared/services'
+import { SiteDaasInfo } from '../../../../shared/models/solution-metadata';
 import { Subscription } from 'rxjs';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { Observable } from 'rxjs/Observable';
 import { Diagnoser, DiagnoserStatusMessage, Session, Report } from '../../../../shared/models/daas';
+import { StepWizardSingleStep } from '../../../../shared/models/step-wizard-single-step';
+import { StepWizardComponent } from '../../../../shared/components/step-wizard/step-wizard.component';
+import { DaasSessionsComponent } from '../../../../shared/components/daas-sessions/daas-sessions.component';
+
 
 @Component({
     templateUrl: 'profiling-solution.component.html',
@@ -17,9 +21,7 @@ import { Diagnoser, DiagnoserStatusMessage, Session, Report } from '../../../../
 })
 export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDestroy {
 
-    @Input() data: SolutionData;
-
-    
+    @Input() data: SolutionData;  
 
     title: string = "Collect a Profiler Trace";
     description: string = "If your app is down or performing slow, you can collect a profiling trace to identify the root cause of the issue. Profiling is light weight and is designed for production scenarios.";
@@ -31,7 +33,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
         "A profiler trace will help to identify issues in an ASP.NET application only and ASP.NET core is not yet supported",
     ]
 
-    siteToBeProfiled: SiteProfilingInfo;
+    siteToBeProfiled: SiteDaasInfo;
     instances: string[];
     SessionId: string;
     sessionInProgress: boolean;
@@ -44,14 +46,17 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     checkingExistingSessions:boolean;
     Reports:Report[];
     scmPath: string;
-    SessionCompleted:boolean;
-
-    constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService) {
+    SessionCompleted:boolean;    
+    WizardSteps: StepWizardSingleStep[] = [];
+    
+    constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
     }
 
     ngOnInit(): void {
         
-        this.siteToBeProfiled = MetaDataHelper.getProfilingData(this.data.solution.data);         
+        this._logger.LogSolutionDisplayed('CLR Profiling', this.data.solution.order.toString(), 'bot-sitecpuanalysis');
+        
+        this.siteToBeProfiled = MetaDataHelper.getSiteDaasData(this.data.solution.data);         
         this.SessionCompleted = false;
 
         //TODO:: How would this look for ASE ?
@@ -64,11 +69,39 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
             this.scmPath = `https://${this.siteToBeProfiled.siteName}.scm.azurewebsites.net`;
         }
         
+        this.initWizard();
+
         this._daasService.getInstances(this.siteToBeProfiled)
             .subscribe(result => {
                 this.instances = result;
                 this.checkRunningSessions();                
             });
+        
+    }
+
+    initWizard():void {
+       
+        let step1 = new StepWizardSingleStep;
+        step1.Caption = "Step 1: Starting Profier";
+        step1.IconType = "fa-play";
+        this.WizardSteps.push(step1);
+
+        let step2 = new StepWizardSingleStep;
+        step2.Caption = "Step 2: Reproduce the issue now";
+        step2.IconType = "fa-clock-o";
+        step2.AdditionalText = "Profiler trace will stop automatically after 60 seconds unless overriden explicitly";
+        this.WizardSteps.push(step2);
+        
+        let step3 = new StepWizardSingleStep;
+        step3.Caption = "Step 3: Stopping profiler";
+        step3.IconType = "fa-stop";
+        this.WizardSteps.push(step3);
+
+        let step4 = new StepWizardSingleStep;
+        step4.Caption = "Step 4: Analyzing profiler trace";
+        step4.IconType = "fa-cog";
+        this.WizardSteps.push(step4);
+
     }
 
     takeTopFiveProfilingSessions(sessions: Session[]): Session[] {
@@ -184,10 +217,11 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     }
 
     collectProfilerTrace() {
+        this._logger.LogSolutionTried('CLR Profiling', this.data.solution.order.toString(), 'inline', '');
         this.sessionInProgress = true;
         this.updateInstanceInformation();
 
-        var submitNewSession = this._daasService.submitDaasSession(this.siteToBeProfiled)
+        var submitNewSession = this._daasService.submitDaasSession(this.siteToBeProfiled,"CLR Profiler",[])
             .subscribe(result => {
                 this.sessionStatus = 1;
                 this.SessionId = result;
@@ -209,17 +243,5 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     ngOnDestroy(): void {
         this.subscription.unsubscribe();        
     }
-
-    getInstanceNameFromReport(reportName:string):string {
-
-        var reportNameArray = reportName.split("_");
-        if (reportNameArray.length > 0)
-        {
-            return reportNameArray[0];
-        }
-        else
-        {
-            return reportName;
-        }
-    }
+    
 }

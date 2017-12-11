@@ -31,6 +31,8 @@ import { VerticalDisplayListItemComponent } from './components/vertical-display-
 import { SolutionTypeTagComponent } from './components/solution-type-tag/solution-type-tag.component';
 import { GroupByPipe } from './pipes/groupBy.pipe';
 import { MapValuesPipe } from './pipes/mapValues.pipe';
+import { StepWizardComponent } from './components/step-wizard/step-wizard.component';
+import { DaasSessionsComponent } from './components/daas-sessions/daas-sessions.component';
 
 @NgModule({
     declarations: [
@@ -55,7 +57,9 @@ import { MapValuesPipe } from './pipes/mapValues.pipe';
         ExpandableSummaryComponent,
         VerticalDisplayListComponent,
         VerticalDisplayListItemComponent,
-        SolutionTypeTagComponent
+        SolutionTypeTagComponent,
+        StepWizardComponent,
+        DaasSessionsComponent
     ],
     imports: [
         HttpModule,
@@ -89,7 +93,9 @@ import { MapValuesPipe } from './pipes/mapValues.pipe';
         ExpandableSummaryComponent,
         VerticalDisplayListComponent,
         VerticalDisplayListItemComponent,
-        SolutionTypeTagComponent
+        SolutionTypeTagComponent,
+        StepWizardComponent,
+        DaasSessionsComponent                
     ]
 })
 export class SharedModule {

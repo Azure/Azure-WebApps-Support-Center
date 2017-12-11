@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SiteProfilingInfo } from '../models/solution-metadata';
+import { SiteDaasInfo } from '../models/solution-metadata';
 
 @Injectable()
 export class UriElementsService {
@@ -41,38 +41,38 @@ export class UriElementsService {
     private _diagnosticsWebJobStatePath = this._diagnosticsPath + "daaswebjobstate";
     private _diagnosticsWebJobStartPath = this._diagnosticsPath + "daaswebjobstart";
     
-    getDiagnosticsDiagnosersUrl(site: SiteProfilingInfo) {
+    getDiagnosticsDiagnosersUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDiagnosersPath;
     };
 
-    getAllDiagnosticsSessionsUrl(site: SiteProfilingInfo) {
+    getAllDiagnosticsSessionsUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSessionsAllPath;
     };
 
-    getDiagnosticsSessionsUrl(site: SiteProfilingInfo) {
+    getDiagnosticsSessionsUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSessionsPath;
     };
 
-    getDiagnosticsSessionsDetailsUrl(site: SiteProfilingInfo, type:string, detailed:boolean) {
+    getDiagnosticsSessionsDetailsUrl(site: SiteDaasInfo, type:string, detailed:boolean) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSessionsDetailsPath.replace("{type}", type)
         .replace("{details}", detailed.toString());
     };
 
-    getDiagnosticsInstancesUrl(site: SiteProfilingInfo) {
+    getDiagnosticsInstancesUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsInstancesPath;
     };
 
-    getDiagnosticsSingleSessionUrl(site: SiteProfilingInfo, sessionId: string, detailed: boolean) {
+    getDiagnosticsSingleSessionUrl(site: SiteDaasInfo, sessionId: string, detailed: boolean) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSingleSessionPath
         .replace("{sessionId}", sessionId)
         .replace("{details}", detailed.toString());
     };
 
-    getDiagnosticsWebJobStateUrl(site: SiteProfilingInfo) {
+    getDiagnosticsWebJobStateUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsWebJobStatePath;
     };
 
-    getDiagnosticsWebJobStartUrl(site: SiteProfilingInfo) {
+    getDiagnosticsWebJobStartUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsWebJobStartPath;
     };
 
