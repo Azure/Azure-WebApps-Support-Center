@@ -34,7 +34,7 @@ export class SolutionsWidgetComponent implements OnInit {
 
             solutions.forEach(solution => {
                 if (!this.solutions.find(holder => holder.data.solution.id === solution.id)) {
-                    let solutionHolder = this._solutionFactoryService.getSolutionById(solution);
+                    let solutionHolder = this._solutionFactoryService.getSolution(solution);
                     if (solutionHolder) {
                         //Hack for handling different CPU solutions
                         if (!(solutionHolder.data.solution.id === 2 && this.solutions.find(solution => solution.data.solution.id === 1))) {
@@ -48,7 +48,7 @@ export class SolutionsWidgetComponent implements OnInit {
 
             // TEMP: Add a scale out solution if there are none other available
             if (this.solutions.length <= 0) {
-                let t = this._solutionFactoryService.getSolutionById(<ISolution>{ id: 4 });
+                let t = this._solutionFactoryService.getSolution(<ISolution>{ id: 4 });
                 this.solutions.push(t);
             }            
         })
@@ -60,27 +60,27 @@ export class SolutionsWidgetComponent implements OnInit {
         let sampleMemoryDump = <ISolution>{ "id": 103, "displayName": "Kill Process(es) on Instance", "order": 1.0, "description": "This action will only kill a specific process on specified instances. Other processes are not affected and the whole site is not restarted.", "data": [[{ "name": "SubscriptionId", "value": "1402be24-4f35-4ab7-a212-2cd496ebdf14" }, { "name": "ResourceGroup", "value": "puneetgdemowebcamp" }, { "name": "SiteName", "value": "demowebcamp" }, { "name": "ProcessName", "value": "demowebcamp" }, { "name": "MachineName", "value": "RD00155D3BFE27" }, { "name": "InstanceId", "value": "23975d61d45f1de4d5980442c107a28d6438e0ac0f28a1eb70c5f89025990aac" }], [{ "name": "SubscriptionId", "value": "ef90e930-9d7f-4a60-8a99-748e0eea69de" }, { "name": "ResourceGroup", "value": "puneetgdemowebcamp" }, { "name": "SiteName", "value": "demowebcamp" }, { "name": "ProcessName", "value": "demowebcamp" }, { "name": "MachineName", "value": "RD00155D3BEAA4" }, { "name": "InstanceId", "value": "177d406f6116588e488f229322e0d416f7026376e4e4d991b40ce5085affb0fe" }], [{ "name": "SubscriptionId", "value": "1402be24-4f35-4ab7-a212-2cd496ebdf14" }, { "name": "ResourceGroup", "value": "puneetgdemowebcamp" }, { "name": "SiteName", "value": "demowebcamp" }, { "name": "ProcessName", "value": "demowebcamp" }, { "name": "MachineName", "value": "RD00155D3C2142" }, { "name": "InstanceId", "value": "bae4a5f918cf044087f6b73d3e3ee0cecd6caaef4f0d85a2471cbaa2574cd8c8" }]], "metadata": [] }
 
         if (this.solutions.findIndex(x => x.data.solution.id === 1) < 0) {
-            let t = this._solutionFactoryService.getSolutionById(sampleRestart);
+            let t = this._solutionFactoryService.getSolution(sampleRestart);
             this.solutions.push(t);
         }
 
         if (this.solutions.findIndex(x => x.data.solution.id === 3) < 0) {
-            let t = this._solutionFactoryService.getSolutionById(<ISolution>{ id: 3 });
+            let t = this._solutionFactoryService.getSolution(<ISolution>{ id: 3 });
             this.solutions.push(t);
         }
 
         if (this.solutions.findIndex(x => x.data.solution.id === 4) < 0) {
-            let t = this._solutionFactoryService.getSolutionById(<ISolution>{ id: 4 });
+            let t = this._solutionFactoryService.getSolution(<ISolution>{ id: 4 });
             this.solutions.push(t);
         }
 
         if (this.solutions.findIndex(x => x.data.solution.id === 12) < 0) {
-            let t = this._solutionFactoryService.getSolutionById(<ISolution>{ id: 12 });
+            let t = this._solutionFactoryService.getSolution(<ISolution>{ id: 12 });
             this.solutions.push(t);
         }
 
         if (this.solutions.findIndex(x => x.data.solution.id === 104) < 0) {
-            let t = this._solutionFactoryService.getSolutionById(sampleProfiler);
+            let t = this._solutionFactoryService.getSolution(sampleProfiler);
             this.solutions.push(t);
         }
 

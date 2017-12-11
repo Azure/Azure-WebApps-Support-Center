@@ -17,7 +17,7 @@ export class SolutionFactoryService {
 
     }
 
-    getSolutionById(solution: ISolution): SolutionHolder {
+    getSolution(solution: ISolution): SolutionHolder {
 
         switch (solution.id) {
             case 1:
@@ -65,10 +65,17 @@ export class SolutionFactoryService {
             //     return new BladeSolutions.OpenAppInsights(rank, parameters, _logger, portalActionService);
             // case 102:
             //     return new OtherSolutions.CheckAutoHeal(rank, _logger);
+<<<<<<< HEAD
             case 103:
                 return new SolutionHolder(MemoryDumpComponent, <SolutionData>{ title: "Collect Memory Dump", tags: [SolutionTypeTag.Investigation], solution: solution });
             case 104:
                 return new SolutionHolder(ProfilingComponent, <SolutionData>{ title: "Remote Profile WebApp", tags: [SolutionTypeTag.Investigation], solution: solution });
+=======
+            // case 103:
+            //     return new OtherSolutions.GetDumpOfProcess(rank, _logger);
+            // case 104:
+            // return new SolutionHolder(ProfilingComponent, <SolutionData>{ title: "Remote Profile WebApp", tags: [SolutionTypeTag.Investigation], solution: solution });
+>>>>>>> c7babee59cb0684bda5f6f0093be395038457051
             // case 105:
             //     return new OtherSolutions.UpgradeDatabase(rank, _logger);
             // case 106:

@@ -22,9 +22,11 @@
         <div class="message" *ngIf="summaryModel.detectorAbnormalTimePeriod">
           <span *ngIf="markupString" [innerHtml]="markupString | markup">
           </span>
-          <span *ngIf="!markupString">
+          <span *ngIf="!markupString && !summaryModel.renderAbnormalTimePeriodAsHtml">
              {{summaryModel.detectorAbnormalTimePeriod.message}}
           </span>
+          <span *ngIf="!markupString && summaryModel.renderAbnormalTimePeriodAsHtml" [innerHtml]="summaryModel.detectorAbnormalTimePeriod.message | markup">            
+         </span>
         </div>
         <div class="message" *ngIf="!summaryModel.detectorAbnormalTimePeriod && !summaryModel.emptyDataResponse">
           No issues detected
