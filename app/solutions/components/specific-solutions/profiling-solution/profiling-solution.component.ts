@@ -110,26 +110,29 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
 
     initWizard():void {
        
-        let step1 = new StepWizardSingleStep;
-        step1.Caption = "Step 1: Starting Profier";
-        step1.IconType = "fa-play";
-        this.WizardSteps.push(step1);
+        this.WizardSteps.push({
+            Caption: "Step 1: Starting Profier",
+            IconType: "fa-play",
+            AdditionalText:""
+        });
 
-        let step2 = new StepWizardSingleStep;
-        step2.Caption = "Step 2: Reproduce the issue now";
-        step2.IconType = "fa-clock-o";
-        step2.AdditionalText = "Profiler trace will stop automatically after 60 seconds unless overriden explicitly";
-        this.WizardSteps.push(step2);
-        
-        let step3 = new StepWizardSingleStep;
-        step3.Caption = "Step 3: Stopping profiler";
-        step3.IconType = "fa-stop";
-        this.WizardSteps.push(step3);
+        this.WizardSteps.push({
+            Caption: "Step 2: Reproduce the issue now",
+            IconType: "fa-clock-o",
+            AdditionalText:"Profiler trace will stop automatically after 60 seconds unless overriden explicitly"
+        });
 
-        let step4 = new StepWizardSingleStep;
-        step4.Caption = "Step 4: Analyzing profiler trace";
-        step4.IconType = "fa-cog";
-        this.WizardSteps.push(step4);
+        this.WizardSteps.push({
+            Caption: "Step 3: Stopping profiler",
+            IconType: "fa-stop",
+            AdditionalText:""
+        });
+
+        this.WizardSteps.push({
+            Caption: "Step 4: Analyzing profiler trace",
+            IconType: "fa-cog",
+            AdditionalText:""
+        });
 
     }
 

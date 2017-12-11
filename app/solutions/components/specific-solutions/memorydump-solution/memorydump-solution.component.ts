@@ -112,22 +112,25 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
     }
 
     initWizard(): void {
+
+        this.WizardSteps.push({
+            Caption: "Step 1: Collecting Memory Dump",
+            IconType: "fa-play",
+            AdditionalText:""
+        });
+
+        this.WizardSteps.push({
+            Caption: "Step 2: Copying memory Dumps",
+            IconType: "fa-clone",
+            AdditionalText:""
+        });
+
+        this.WizardSteps.push({
+            Caption: "Step 3: Analyzing Memory Dump",
+            IconType: "fa-cog",
+            AdditionalText:""
+        });
        
-        let step1 = new StepWizardSingleStep;
-        step1.Caption = "Step 1: Collecting Memory Dump";
-        step1.IconType = "fa-play";
-        this.WizardSteps.push(step1);
-
-        let step2 = new StepWizardSingleStep;
-        step2.Caption = "Step 2: Copying memory Dumps";
-        step2.IconType = "fa-clone";
-        this.WizardSteps.push(step2);
-
-        let step3 = new StepWizardSingleStep;
-        step3.Caption = "Step 3: Analyzing Memory Dumps";
-        step3.IconType = "fa-cog";
-        this.WizardSteps.push(step3);
-
     }
 
     takeTopFiveMemoryDumpSessions(sessions: Session[]): Session[] {
