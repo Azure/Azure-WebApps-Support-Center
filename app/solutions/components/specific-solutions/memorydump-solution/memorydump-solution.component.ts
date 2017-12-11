@@ -267,9 +267,6 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
         this._logger.LogSolutionTried('Memory Dump', this.data.solution.order.toString(), 'inline', '');
         this.sessionInProgress = true;
 
-
-        
-
         this.updateInstanceInformation();
 
         var submitNewSession = this._daasService.submitDaasSession(this.siteToBeDumped, "Memory Dump", this.instancesToDump)
