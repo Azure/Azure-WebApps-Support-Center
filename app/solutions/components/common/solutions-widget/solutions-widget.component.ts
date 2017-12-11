@@ -85,7 +85,7 @@ export class SolutionsWidgetComponent implements OnInit {
         }
 
         if (this.solutions.findIndex(x => x.data.solution.id === 103) < 0) {
-            let t = this._solutionFactoryService.getSolutionById(sampleMemoryDump);
+            let t = this._solutionFactoryService.getSolution(sampleMemoryDump);
             this.solutions.push(t);
         }
     }
