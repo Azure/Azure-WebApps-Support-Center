@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { SolutionBaseComponent } from '../../common/solution-base/solution-base.component';
 import { SolutionData } from '../../../../shared/models/solution';
 import { MetaDataHelper } from '../../../../shared/utilities/metaDataHelper';
-import { SiteService, DaasService, WindowService, AvailabilityLoggingService } from '../../../../shared/services'
+import { SiteService, DaasService, WindowService, AvailabilityLoggingService, ServerFarmDataService } from '../../../../shared/services'
 import { SiteDaasInfo } from '../../../../shared/models/solution-metadata';
 import { Subscription } from 'rxjs';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
@@ -32,9 +32,9 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
     description: string = "If your app is performing slow or not responding at all, you can collect a memory dump to identify the root cause of the issue.";
 
     thingsToKnowBefore: string[] = [
-        "Collecting a memory dump freezes process till dump generation finishes so process cannot serve any requests during this time.",
+        "Collecting a memory dump freezes process until dump generation finishes so process cannot serve any requests during this time.",
         "Dumps are collected for the worker process (w3wp.exe) and child processes of the worker process.",
-        "Size of the memory dump is directly proportional to the process size so processes consuming more memory will take longer to be dumped.",
+        "Size of the memory dump is directly proportional to the process size, so processes consuming more memory will take longer to be dumped.",
         "Your WebApp will not be restarted as a result of collecting the memory dump."
     ]
 
@@ -55,8 +55,9 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
     scmPath: string;
     SessionCompleted: boolean;
     WizardSteps: StepWizardSingleStep[] = [];
+    couldNotFindSite: boolean = false;
 
-    constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
+    constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService, private _serverFarmService:ServerFarmDataService) {
     }
 
     ngOnInit(): void {
@@ -64,15 +65,40 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
         this._logger.LogSolutionDisplayed('Memory Dump', this.data.solution.order.toString(), 'bot-sitecpuanalysis');
 
         this.siteToBeDumped = MetaDataHelper.getSiteDaasData(this.data.solution.data);
+        let siteInfo = MetaDataHelper.getSiteDaasData(this.data.solution.data); 
         this.SessionCompleted = false;
 
-        //TODO:: How would this look for ASE ?
-        if (this.siteToBeDumped.slot.length > 0) {
-            this.scmPath = `https://${this.siteToBeDumped.siteName}-${this.siteToBeDumped.slot}.scm.azurewebsites.net`;
-        }
-        else {
-            this.scmPath = `https://${this.siteToBeDumped.siteName}.scm.azurewebsites.net`;
-        }
+        this._serverFarmService.sitesInServerFarm.subscribe(sites => {
+            let targetedSite = sites.find(site => site.name.toLowerCase() === siteInfo.siteName.toLowerCase());
+
+            if (targetedSite) {
+                let siteName = targetedSite.name;
+                let slotName = '';
+                if (targetedSite.name.indexOf('(') >= 0) {
+                    let parts = targetedSite.name.split('(');
+                    siteName = parts[0];
+                    slotName = parts[1].replace(')', '');
+                }
+    
+                this.siteToBeDumped = <SiteDaasInfo>{
+                    subscriptionId: siteInfo.subscriptionId,
+                    resourceGroupName: targetedSite.resourceGroup,
+                    siteName: siteName,
+                    slot: slotName
+                }
+    
+                this.scmPath = targetedSite.hostNames.find(hostname => hostname.indexOf('.scm.') > 0);
+    
+                this._daasService.getInstances(this.siteToBeDumped)
+                    .subscribe(result => {
+                        this.instances = result;
+                        this.checkRunningSessions();                
+                    });
+            }
+            else {
+                this.couldNotFindSite = true;
+            }
+        });
 
         this.initWizard();
 
@@ -86,7 +112,7 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
     }
 
     initWizard(): void {
-
+       
         let step1 = new StepWizardSingleStep;
         step1.Caption = "Step 1: Collecting Memory Dump";
         step1.IconType = "fa-play";

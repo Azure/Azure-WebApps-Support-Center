@@ -97,18 +97,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
                 this.couldNotFindSite = true;
             }
         });
-
-
-        //TODO:: How would this look for ASE ?
-        if (this.siteToBeProfiled.slot.length > 0)
-        {
-            this.scmPath = `https://${this.siteToBeProfiled.siteName}-${this.siteToBeProfiled.slot}.scm.azurewebsites.net`;
-        }
-        else
-        {
-            this.scmPath = `https://${this.siteToBeProfiled.siteName}.scm.azurewebsites.net`;
-        }
-        
+    
         this.initWizard();
 
         this._daasService.getInstances(this.siteToBeProfiled)
