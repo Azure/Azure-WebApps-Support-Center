@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
 import { IMetricSet } from '../../../shared/models/detectorresponse';
 import { SummaryViewModel, SummaryHealthStatus } from '../../../shared/models/summary-view-model';
 import { ChartType } from '../../../shared/models/chartdata';
@@ -12,14 +12,14 @@ import 'rxjs/add/operator/map';
     templateUrl: 'expandable-summary.component.html',
     styleUrls: ['expandable-summary.component.css']
 })
-export class ExpandableSummaryComponent implements OnInit {
+export class ExpandableSummaryComponent implements OnInit, OnChanges {
 
     healthStatus: any = SummaryHealthStatus;
     lineChart: ChartType = ChartType.lineChart;
 
     summaryModel: SummaryViewModel;
     expanded: boolean = false;
-    metricsContainData: boolean = false; 
+    metricsContainData: boolean = false;
 
     mainMetricSets: IMetricSet[];
     detailMetricSets: IMetricSet[];
@@ -27,7 +27,9 @@ export class ExpandableSummaryComponent implements OnInit {
     markupString: string;
 
     @Input() title: string;
-    
+
+    @Input() refreshing: boolean = false;
+
     private _summaryViewModelSubject: BehaviorSubject<SummaryViewModel> = new BehaviorSubject<SummaryViewModel>(null);
 
     @Input() set summaryViewModel(value: SummaryViewModel) {
@@ -35,6 +37,20 @@ export class ExpandableSummaryComponent implements OnInit {
     }
 
     constructor(private _logger: AvailabilityLoggingService) {
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['summaryViewModel']) {           
+            const _changedSummaryViewModel: SimpleChange = changes.summaryViewModel;
+            if (_changedSummaryViewModel.currentValue && _changedSummaryViewModel.previousValue) {                
+                this.summaryModel = null;
+                this.mainMetricSets = null;
+                this.detailMetricSets = null;
+                this.expanded = false;
+                this.metricsContainData = false;
+                this._summaryViewModelSubject.next(_changedSummaryViewModel.currentValue);
+            }
+        }       
     }
 
     ngOnInit(): void {
@@ -49,7 +65,7 @@ export class ExpandableSummaryComponent implements OnInit {
                         this.metricsContainData = true;
                     }
                 });
-               
+
                 let abnormalTimePeriod = this.summaryModel.detectorAbnormalTimePeriod;
                 if (abnormalTimePeriod && abnormalTimePeriod.metaData.length > 0) {
                     let markupStringNameValuePair = abnormalTimePeriod.metaData[0].find(x => x.name === "MarkupString");
