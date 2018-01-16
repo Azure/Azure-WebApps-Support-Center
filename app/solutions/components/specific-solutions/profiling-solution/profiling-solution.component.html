@@ -8,7 +8,7 @@
                         <b>{{siteToBeProfiled.siteName}}</b>
                     </td>
                 </tr>
-                <tr>
+                <tr *ngIf="!error">
                     <td>
                         Instance(s):
                     </td>
@@ -18,6 +18,7 @@
                         </span>
                     </td>
                 </tr>
+
             </table>
 
             <div style="text-align:right">
@@ -25,8 +26,12 @@
                     <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
                     Checking existing sessions...
                 </div>
+                <div class="col" *ngIf="retrievingInstances">
+                    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                    Retrieving instances...
+                </div>
 
-                <button [disabled]="sessionInProgress || checkingExistingSessions" [hidden]="SessionCompleted" class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
+                <button [disabled]="sessionInProgress || checkingExistingSessions || retrievingInstances || retrievingInstancesFailed" [hidden]="SessionCompleted" class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
             </div>
 
             <div class="status-box" *ngIf="sessionInProgress">
@@ -36,11 +41,21 @@
                     </option>
                 </select>
 
-                <step-wizard [CurrentStep]="sessionStatus" [WizardSteps]="WizardSteps" ></step-wizard>
-               
+                <step-wizard [CurrentStep]="sessionStatus" [WizardSteps]="WizardSteps"></step-wizard>
+
             </div>
         </div>
 
+    </div>
+
+    <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="error">
+        <strong>Error</strong> - 
+        <div *ngIf="error.Message.toLower().indexOf('gateway') > -1 && error.Message.toLower().indexOf('timeout') > -1">
+            Failed to fetch instances for the Web App. This can happen if the instance is impacted in a huge way such that the diagnostic API's cannot even respond. Please retry this step after some time.
+        </div>
+        <div>
+            {{ error.message }}
+        </div>
     </div>
 
     <div class="status-box" *ngIf="Reports?.length > 0">
@@ -64,5 +79,5 @@
     </ul>
 
     <daas-sessions SessionType="CLR Profiler" [checkingExistingSessions]="checkingExistingSessions" [Sessions]="Sessions"></daas-sessions>
-    
+
 </default-solution-template>
