@@ -12,10 +12,9 @@ import { StepWizardSingleStep } from '../../../../shared/models/step-wizard-sing
 import { StepWizardComponent } from '../../../../shared/components/step-wizard/step-wizard.component';
 import { DaasSessionsComponent } from '../../../../shared/components/daas-sessions/daas-sessions.component';
 
-class InstanceSelection
-{
-    InstanceName:string;
-    Selected:boolean;
+class InstanceSelection {
+    InstanceName: string;
+    Selected: boolean;
 }
 
 @Component({
@@ -57,7 +56,7 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
     WizardSteps: StepWizardSingleStep[] = [];
     couldNotFindSite: boolean = false;
 
-    constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService, private _serverFarmService:ServerFarmDataService) {
+    constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService, private _serverFarmService: ServerFarmDataService) {
     }
 
     ngOnInit(): void {
@@ -65,7 +64,7 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
         this._logger.LogSolutionDisplayed('Memory Dump', this.data.solution.order.toString(), 'bot-sitecpuanalysis');
 
         this.siteToBeDumped = MetaDataHelper.getSiteDaasData(this.data.solution.data);
-        let siteInfo = MetaDataHelper.getSiteDaasData(this.data.solution.data); 
+        let siteInfo = MetaDataHelper.getSiteDaasData(this.data.solution.data);
         this.SessionCompleted = false;
 
         this._serverFarmService.sitesInServerFarm.subscribe(sites => {
@@ -79,20 +78,21 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
                     siteName = parts[0];
                     slotName = parts[1].replace(')', '');
                 }
-    
+
                 this.siteToBeDumped = <SiteDaasInfo>{
                     subscriptionId: siteInfo.subscriptionId,
                     resourceGroupName: targetedSite.resourceGroup,
                     siteName: siteName,
                     slot: slotName
                 }
-    
+
                 this.scmPath = targetedSite.hostNames.find(hostname => hostname.indexOf('.scm.') > 0);
-    
+
                 this._daasService.getInstances(this.siteToBeDumped)
                     .subscribe(result => {
                         this.instances = result;
-                        this.checkRunningSessions();                
+                        this.checkRunningSessions();
+                        this.populateInstancesToDump();
                     });
             }
             else {
@@ -101,14 +101,6 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
         });
 
         this.initWizard();
-
-        this._daasService.getInstances(this.siteToBeDumped)
-            .subscribe(result => {
-                this.instances = result;
-                this.checkRunningSessions();
-                this.populateInstancesToDump();
-            });
-
     }
 
     initWizard(): void {
@@ -116,21 +108,21 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
         this.WizardSteps.push({
             Caption: "Step 1: Collecting Memory Dump",
             IconType: "fa-play",
-            AdditionalText:""
+            AdditionalText: ""
         });
 
         this.WizardSteps.push({
             Caption: "Step 2: Copying memory Dumps",
             IconType: "fa-clone",
-            AdditionalText:""
+            AdditionalText: ""
         });
 
         this.WizardSteps.push({
             Caption: "Step 3: Analyzing Memory Dump",
             IconType: "fa-cog",
-            AdditionalText:""
+            AdditionalText: ""
         });
-       
+
     }
 
     takeTopFiveMemoryDumpSessions(sessions: Session[]): Session[] {
@@ -243,7 +235,7 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
 
     populateInstancesToDump() {
         this.InstancesSelected = new Array();
-        
+
         this.instances.forEach(x => {
             let s = new InstanceSelection();
             s.InstanceName = x;
@@ -255,13 +247,12 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
     collectMemoryDump() {
         this.instancesToDump = new Array<string>();
 
-        this.InstancesSelected.forEach(x=>{
-            if (x.Selected)
-            {
+        this.InstancesSelected.forEach(x => {
+            if (x.Selected) {
                 this.instancesToDump.push(x.InstanceName);
             }
         });
-        
+
         if (this.instancesToDump.length === 0) {
             alert("Please choose at-least one instance");
             return false;

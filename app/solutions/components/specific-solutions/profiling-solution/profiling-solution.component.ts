@@ -27,9 +27,9 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     description: string = "If your app is down or performing slow, you can collect a profiling trace to identify the root cause of the issue. Profiling is light weight and is designed for production scenarios.";
 
     thingsToKnowBefore: string[] = [
-        "Once the profiler trace is started, reproduce the issue by browsing to the WebApp",
+        "Once the profiler trace is started, reproduce the issue by browsing to the web app",
         "The profiler trace will automatically stop after 60 seconds.",
-        "Your WebApp will not be restarted as a result of running the profiler.",
+        "Your web app will not be restarted as a result of running the profiler.",
         "A profiler trace will help to identify issues in an ASP.NET application only and ASP.NET core is not yet supported",
     ]
 
