@@ -18,7 +18,6 @@
                         </span>
                     </td>
                 </tr>
-
             </table>
 
             <div style="text-align:right">
@@ -40,21 +39,18 @@
                         {{instancestatus.key}}
                     </option>
                 </select>
-
                 <step-wizard [CurrentStep]="sessionStatus" [WizardSteps]="WizardSteps"></step-wizard>
-
             </div>
         </div>
 
     </div>
 
     <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="error">
-        <strong>Error</strong> - 
-        <div *ngIf="error.Message.toLower().indexOf('gateway') > -1 && error.Message.toLower().indexOf('timeout') > -1">
-            Failed to fetch instances for the Web App. This can happen if the instance is impacted in a huge way such that the diagnostic API's cannot even respond. Please retry this step after some time.
+        <div *ngIf="error.code === 'GatewayTimeout'">
+            <strong>Error</strong> - Failed to fetch instances for the Web App. The instance may fail to respond to any diagnostic calls under high CPU situations. Please retry this investigation after some time.
         </div>
-        <div>
-            {{ error.message }}
+        <div *ngIf="error.code != 'GatewayTimeout'">
+            <strong>Error</strong> - {{ error.message }}
         </div>
     </div>
 

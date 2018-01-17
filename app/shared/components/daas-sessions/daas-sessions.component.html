@@ -22,7 +22,7 @@
                         <td>
                             <div *ngFor="let diagnoser of session.DiagnoserSessions">
                                 <div *ngIf="diagnoser.Name === SessionType">
-                                    <ul style="list-style: none;">
+                                    <ul *ngIf="diagnoser.Reports.length > 0" style="list-style: none;">
                                         <li *ngFor="let report of diagnoser.Reports">
                                             {{ getInstanceNameFromReport(report.FileName) }}
                                             <a href="{{ scmPath }}/api/vfs/data/DaaS/{{ report.RelativePath }}" style="cursor: pointer" target="_blank">
@@ -30,6 +30,12 @@
                                             </a>
                                         </li>
                                     </ul>
+                                    <div *ngIf="diagnoser.CollectorErrors.length > 0" class="tool-tip"><i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
+                                        <span class="tool-tip-text">{{diagnoser.CollectorErrors[0]}}</span>
+                                    </div>
+                                    <div *ngIf="diagnoser.AnalyzerErrors.length > 0" class="tool-tip"><i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
+                                        <span class="tool-tip-text">{{diagnoser.CollectorErrors[0]}}</span>
+                                    </div>
                                 </div>
                             </div>
                         </td>

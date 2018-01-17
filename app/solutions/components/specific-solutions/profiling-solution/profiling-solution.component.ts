@@ -87,9 +87,9 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
                 }
 
                 this.scmPath = targetedSite.hostNames.find(hostname => hostname.indexOf('.scm.') > 0);
-
+                
                 this.retrievingInstances = true;
-                this._daasService.getInstances(this.siteToBeProfiled).retry(3)
+                this._daasService.getInstances(this.siteToBeProfiled).retry(2)
                     .subscribe(result => {
                         this.retrievingInstances = false;
                         this.instances = result;
@@ -156,7 +156,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
 
     checkRunningSessions() {
         this.checkingExistingSessions = true;
-        this._daasService.getDaasSessionsWithDetails(this.siteToBeProfiled).retry(3)
+        this._daasService.getDaasSessionsWithDetails(this.siteToBeProfiled).retry(2)
             .subscribe(sessions => {
                 this.checkingExistingSessions = false;
                 this.Sessions = this.takeTopFiveProfilingSessions(sessions);

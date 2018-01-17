@@ -34,7 +34,7 @@ export class UriElementsService {
     private _diagnosticsPath = "/extensions/daas/api/";
     private _diagnosticsSessionsAllPath = this._diagnosticsPath + "sessions/all";
     private _diagnosticsSessionsPath = this._diagnosticsPath + "sessions";
-    private _diagnosticsSessionsDetailsPath = this._diagnosticsPath + "sessions" + "/{type}/{details} ";
+    private _diagnosticsSessionsDetailsPath = this._diagnosticsPath + "sessions" + "/{type}/{details}";
     private _diagnosticsDiagnosersPath = this._diagnosticsPath + "diagnosers";
     private _diagnosticsInstancesPath = this._diagnosticsPath + "instances";
     private _diagnosticsSingleSessionPath = this._diagnosticsPath + "session/{sessionId}/{details}";
