@@ -193,7 +193,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
                 }
                 else {
                     this.sessionInProgress = false;
-
+                    
                     // stop our timer at this point
                     if (this.subscription) {
                         this.subscription.unsubscribe();
