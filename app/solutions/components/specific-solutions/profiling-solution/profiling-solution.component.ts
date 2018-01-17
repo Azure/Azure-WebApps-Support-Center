@@ -142,7 +142,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
         var arrayToReturn = new Array<Session>();
         sessions.forEach(session => {
             session.DiagnoserSessions.forEach(diagnoser => {
-                if (diagnoser.Name == "CLR Profiler") {
+                if (diagnoser.Name === "CLR Profiler") {
                     arrayToReturn.push(session);
                 }
             });
@@ -162,9 +162,9 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
                 this.Sessions = this.takeTopFiveProfilingSessions(sessions);
                 var runningSession;
                 for (var index = 0; index < sessions.length; index++) {
-                    if (sessions[index].Status == 0)  // Check Active Sessions only
+                    if (sessions[index].Status === 0)  // Check Active Sessions only
                     {
-                        var clrDiagnoser = sessions[index].DiagnoserSessions.find(x => x.Name == "CLR Profiler");
+                        var clrDiagnoser = sessions[index].DiagnoserSessions.find(x => x.Name === "CLR Profiler");
                         if (clrDiagnoser) {
                             runningSession = sessions[index];
                             break;
@@ -187,7 +187,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
         var inProgress = false;
         this._daasService.getDaasSessionWithDetails(this.siteToBeProfiled, sessionId)
             .subscribe(runningSession => {
-                if (runningSession.Status == 0) {
+                if (runningSession.Status === 0) {
                     inProgress = true;
                     this.getProfilingStateFromSession(runningSession);
                 }
@@ -199,7 +199,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
                         this.subscription.unsubscribe();
                     }
 
-                    var clrDiagnoser = runningSession.DiagnoserSessions.find(x => x.Name == "CLR Profiler");
+                    var clrDiagnoser = runningSession.DiagnoserSessions.find(x => x.Name === "CLR Profiler");
                     if (clrDiagnoser) {
                         this.Reports = clrDiagnoser.Reports;
                         this.SessionCompleted = true;
@@ -210,10 +210,10 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
     }
 
     getProfilingStateFromSession(session: Session) {
-        var clrDiagnoser = session.DiagnoserSessions.find(x => x.Name == "CLR Profiler");
+        var clrDiagnoser = session.DiagnoserSessions.find(x => x.Name === "CLR Profiler");
         if (clrDiagnoser) {
             this.diagnoserSession = clrDiagnoser;
-            if (clrDiagnoser.CollectorStatus == 2) {
+            if (clrDiagnoser.CollectorStatus === 2) {
                 if (clrDiagnoser.CollectorStatusMessages.length > 0) {
                     clrDiagnoser.CollectorStatusMessages.forEach(msg => {
                         // The order of this IF check should not be changed
@@ -228,7 +228,7 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
                     this.sessionStatus = this.InstancesStatus.get(this.selectedInstance);
                 }
             }
-            else if (clrDiagnoser.AnalyzerStatus == 2) {
+            else if (clrDiagnoser.AnalyzerStatus === 2) {
 
                 // once we are at the analyzer, lets just set all instances's status to 
                 // analyzing as we will reach here once all the collectors have finsihed                

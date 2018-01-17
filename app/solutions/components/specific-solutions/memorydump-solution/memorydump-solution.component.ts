@@ -137,7 +137,7 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
         var arrayToReturn = new Array<Session>();
         sessions.forEach(session => {
             session.DiagnoserSessions.forEach(diagnoser => {
-                if (diagnoser.Name == "Memory Dump") {
+                if (diagnoser.Name === "Memory Dump") {
                     arrayToReturn.push(session);
                 }
             });
@@ -156,9 +156,9 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
                 this.Sessions = this.takeTopFiveMemoryDumpSessions(sessions);
                 var runningSession;
                 for (var index = 0; index < sessions.length; index++) {
-                    if (sessions[index].Status == 0)  // Check Active Sessions only
+                    if (sessions[index].Status === 0)  // Check Active Sessions only
                     {
-                        var dumpDiagnoser = sessions[index].DiagnoserSessions.find(x => x.Name == "Memory Dump");
+                        var dumpDiagnoser = sessions[index].DiagnoserSessions.find(x => x.Name === "Memory Dump");
                         if (dumpDiagnoser) {
                             runningSession = sessions[index];
                             break;
@@ -181,7 +181,7 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
         var inProgress = false;
         this._daasService.getDaasSessionWithDetails(this.siteToBeDumped, sessionId)
             .subscribe(runningSession => {
-                if (runningSession.Status == 0) {
+                if (runningSession.Status === 0) {
                     inProgress = true;
                     this.getMemoryDumpStateFromSession(runningSession);
                 }
@@ -193,7 +193,7 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
                         this.subscription.unsubscribe();
                     }
 
-                    var dumpDiagnoser = runningSession.DiagnoserSessions.find(x => x.Name == "Memory Dump");
+                    var dumpDiagnoser = runningSession.DiagnoserSessions.find(x => x.Name === "Memory Dump");
                     if (dumpDiagnoser) {
                         this.Reports = dumpDiagnoser.Reports;
                         this.SessionCompleted = true;
@@ -204,10 +204,10 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
     }
 
     getMemoryDumpStateFromSession(session: Session) {
-        var dumpDiagnoser = session.DiagnoserSessions.find(x => x.Name == "Memory Dump");
+        var dumpDiagnoser = session.DiagnoserSessions.find(x => x.Name === "Memory Dump");
         if (dumpDiagnoser) {
             this.diagnoserSession = dumpDiagnoser;
-            if (dumpDiagnoser.CollectorStatus == 2) {
+            if (dumpDiagnoser.CollectorStatus === 2) {
                 if (dumpDiagnoser.CollectorStatusMessages.length > 0) {
                     dumpDiagnoser.CollectorStatusMessages.forEach(msg => {
                         // The order of this IF check should not be changed
@@ -219,7 +219,7 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
                     this.sessionStatus = this.InstancesStatus.get(this.selectedInstance);
                 }
             }
-            else if (dumpDiagnoser.AnalyzerStatus == 2) {
+            else if (dumpDiagnoser.AnalyzerStatus === 2) {
 
                 // once we are at the analyzer, lets just set all instances's status to 
                 // analyzing as we will reach here once all the collectors have finsihed                
@@ -262,7 +262,7 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
             }
         });
         
-        if (this.instancesToDump.length == 0) {
+        if (this.instancesToDump.length === 0) {
             alert("Please choose at-least one instance");
             return false;
         }
