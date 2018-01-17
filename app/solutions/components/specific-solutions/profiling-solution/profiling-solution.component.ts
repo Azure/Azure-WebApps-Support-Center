@@ -63,7 +63,6 @@ export class ProfilingComponent implements SolutionBaseComponent, OnInit, OnDest
 
         this._logger.LogSolutionDisplayed('CLR Profiling', this.data.solution.order.toString(), 'bot-sitecpuanalysis');
 
-        this.siteToBeProfiled = MetaDataHelper.getSiteDaasData(this.data.solution.data);
         let siteInfo = MetaDataHelper.getSiteDaasData(this.data.solution.data);
         this.SessionCompleted = false;
 

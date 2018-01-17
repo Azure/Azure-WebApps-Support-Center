@@ -63,7 +63,6 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
 
         this._logger.LogSolutionDisplayed('Memory Dump', this.data.solution.order.toString(), 'bot-sitecpuanalysis');
 
-        this.siteToBeDumped = MetaDataHelper.getSiteDaasData(this.data.solution.data);
         let siteInfo = MetaDataHelper.getSiteDaasData(this.data.solution.data);
         this.SessionCompleted = false;
 
