@@ -58,7 +58,7 @@ namespace Diagnostics.Tests.ScriptsTests
             }
         }
 
-        [Fact(Skip = "Skipping this test until we have data sources project")]
+        [Fact(Skip = "Skipping this test until we have data sources project to inject a deendency dll in the script.")]
         public async void EntityInvoker_TestReferencesInjection()
         {
             EntityMetadata metadata = ScriptTestDataHelper.GetRandomMetadata();
