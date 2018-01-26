@@ -2,6 +2,6 @@ language: csharp
 mono: none
 dotnet: 2.1.3
 script:
- - dotnet restore src\Diagnostics.sln
- - dotnet build src\Diagnostics.sln
- - dotnet test src\Diagnostics.Tests
+ - dotnet restore src\\Diagnostics.sln
+ - dotnet build src\\Diagnostics.sln
+ - dotnet test src\\Diagnostics.Tests
