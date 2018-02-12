@@ -56,6 +56,10 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
     WizardSteps: StepWizardSingleStep[] = [];
     couldNotFindSite: boolean = false;
 
+    error: any;
+    retrievingInstances: boolean = false;
+    retrievingInstancesFailed: boolean = false;
+    
     constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService, private _serverFarmService: ServerFarmDataService) {
     }
 
@@ -88,11 +92,17 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
 
                     this.scmPath = targetedSite.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
-                    this._daasService.getInstances(this.siteToBeDumped)
+                    this.retrievingInstances = true;
+                    this._daasService.getInstances(this.siteToBeDumped).retry(2)
                         .subscribe(result => {
+                            this.retrievingInstances = false;
                             this.instances = result;
                             this.checkRunningSessions();
-                            this.populateInstancesToDump();
+                        },
+                        error => {
+                            this.error = error;
+                            this.retrievingInstances = false;
+                            this.retrievingInstancesFailed = true;
                         });
                 }
                 else {
@@ -143,7 +153,7 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
     }
     checkRunningSessions() {
         this.checkingExistingSessions = true;
-        this._daasService.getDaasSessionsWithDetails(this.siteToBeDumped)
+        this._daasService.getDaasSessionsWithDetails(this.siteToBeDumped).retry(2)
             .subscribe(sessions => {
                 this.checkingExistingSessions = false;
                 this.Sessions = this.takeTopFiveMemoryDumpSessions(sessions);
@@ -271,6 +281,10 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
                 this.subscription = Observable.interval(10000).subscribe(res => {
                     this.pollRunningSession(this.SessionId);
                 });
+            },
+            error => {
+                this.error = error;
+                this.sessionInProgress = false;
             });
     }
 
