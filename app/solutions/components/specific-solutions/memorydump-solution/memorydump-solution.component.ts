@@ -98,6 +98,7 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
                             this.retrievingInstances = false;
                             this.instances = result;
                             this.checkRunningSessions();
+                            this.populateInstancesToDump();
                         },
                         error => {
                             this.error = error;
