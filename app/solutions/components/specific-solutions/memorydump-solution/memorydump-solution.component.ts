@@ -59,7 +59,7 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
     error: any;
     retrievingInstances: boolean = false;
     retrievingInstancesFailed: boolean = false;
-    
+
     constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService, private _serverFarmService: ServerFarmDataService) {
     }
 
@@ -248,22 +248,26 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
     populateInstancesToDump() {
         this.InstancesSelected = new Array();
 
-        this.instances.forEach(x => {
-            let s = new InstanceSelection();
-            s.InstanceName = x;
-            s.Selected = true;
-            this.InstancesSelected.push(s);
-        });
+        if (this.instances && this.instances.length > 0) {
+            this.instances.forEach(x => {
+                let s = new InstanceSelection();
+                s.InstanceName = x;
+                s.Selected = true;
+                this.InstancesSelected.push(s);
+            });
+        }
     }
 
     collectMemoryDump() {
         this.instancesToDump = new Array<string>();
 
-        this.InstancesSelected.forEach(x => {
-            if (x.Selected) {
-                this.instancesToDump.push(x.InstanceName);
-            }
-        });
+        if (this.InstancesSelected && this.InstancesSelected != null) {
+            this.InstancesSelected.forEach(x => {
+                if (x.Selected) {
+                    this.instancesToDump.push(x.InstanceName);
+                }
+            });
+        }
 
         if (this.instancesToDump.length === 0) {
             alert("Please choose at-least one instance");
