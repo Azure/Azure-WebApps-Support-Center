@@ -261,7 +261,7 @@ export class MemoryDumpComponent implements SolutionBaseComponent, OnInit, OnDes
     collectMemoryDump() {
         this.instancesToDump = new Array<string>();
 
-        if (this.InstancesSelected && this.InstancesSelected != null) {
+        if (this.InstancesSelected && this.InstancesSelected !== null) {
             this.InstancesSelected.forEach(x => {
                 if (x.Selected) {
                     this.instancesToDump.push(x.InstanceName);
