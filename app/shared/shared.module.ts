@@ -33,6 +33,8 @@ import { GroupByPipe } from './pipes/groupBy.pipe';
 import { MapValuesPipe } from './pipes/mapValues.pipe';
 import { StepWizardComponent } from './components/step-wizard/step-wizard.component';
 import { DaasSessionsComponent } from './components/daas-sessions/daas-sessions.component';
+import { ScrollingTileComponent } from './components/scrolling-tile/scrolling-tile.component';
+import { NguCarouselModule } from '@ngu/carousel';
 
 @NgModule({
     declarations: [
@@ -59,13 +61,15 @@ import { DaasSessionsComponent } from './components/daas-sessions/daas-sessions.
         VerticalDisplayListItemComponent,
         SolutionTypeTagComponent,
         StepWizardComponent,
-        DaasSessionsComponent
+        DaasSessionsComponent,
+        ScrollingTileComponent
     ],
     imports: [
         HttpModule,
         CommonModule,
         FormsModule,
-        RouterModule
+        RouterModule,
+        NguCarouselModule
     ],
     exports: [
         CommonModule,
@@ -95,7 +99,8 @@ import { DaasSessionsComponent } from './components/daas-sessions/daas-sessions.
         VerticalDisplayListItemComponent,
         SolutionTypeTagComponent,
         StepWizardComponent,
-        DaasSessionsComponent            
+        DaasSessionsComponent,
+        ScrollingTileComponent
     ]
 })
 export class SharedModule {

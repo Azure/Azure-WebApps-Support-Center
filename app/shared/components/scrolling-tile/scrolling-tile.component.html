@@ -1,0 +1,12 @@
+<ngu-carousel [inputs]="carouselTile">
+    <ngu-tile NguCarouselItem *ngFor="let Subcategory of Subcategories" style="width:135px">
+        <div class="tile" [style.background-color]="Subcategory.BgColor">
+            <div class="col animated zoomIn category-box" [style.background-color]="Subcategory.BgColor" [style.color]="Subcategory.TextColor"
+                [routerLink]="[Subcategory.Href]" (click)="logCategorySelected(Subcategory.Name)">
+                <div class="category-content">{{Subcategory.Name}}</div>
+            </div>
+        </div>
+    </ngu-tile>
+    <button NguCarouselPrev class='leftRs'>&lt;</button>
+    <button NguCarouselNext class='rightRs'>&gt;</button>
+</ngu-carousel>
