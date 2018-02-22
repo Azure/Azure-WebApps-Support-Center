@@ -76,3 +76,8 @@ body {
   color: #ccc;
   padding: 11px 16px;
 }
+
+.wizard-status{
+  font-size: smaller;
+  margin-left: 20px;
+}

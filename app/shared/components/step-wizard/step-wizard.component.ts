@@ -13,6 +13,7 @@ import { StepWizardSingleStep } from '../../models/step-wizard-single-step';
 export class StepWizardComponent {
 
     @Input() public CurrentStep: number;
+    @Input() public WizardStepStatus: string;
     @Input() public WizardSteps: StepWizardSingleStep[];
 
 

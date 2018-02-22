@@ -1,0 +1,72 @@
+<div class="action-box" *ngIf="siteToBeDiagnosed">
+    <div>
+        <table style="border:none">
+            <tr>
+                <td>App: </td>
+                <td class="highlight-blue">
+                    <b>{{siteToBeDiagnosed.siteName}}</b>
+                </td>
+            </tr>
+            <tr *ngIf="!error">
+                <td>
+                    Instance(s):
+                </td>
+                <td class="highlight-blue">
+                    <div *ngFor="let instance of InstancesSelected;let i = index">
+                        <input type="checkbox" value="{{ instance.InstanceName }}" name="{{ instance.InstanceName }}" [(ngModel)]="InstancesSelected[i].Selected"
+                        /> {{ instance.InstanceName}}
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div style="text-align:right">
+            <div class="col" *ngIf="checkingExistingSessions">
+                <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                Checking existing sessions...
+            </div>
+            <div class="col" *ngIf="retrievingInstances">
+                <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                Retrieving instances...
+            </div>
+
+            <button [disabled]="sessionInProgress || checkingExistingSessions || retrievingInstances || retrievingInstancesFailed" [hidden]="SessionCompleted"
+                class="btn btn-primary" (click)="collectDiagnoserData()">Collect {{ DiagnoserName }}</button>
+        </div>
+
+        <div class="status-box" *ngIf="sessionInProgress">
+            <select id="selectInstances" (change)="onInstanceChange($event.target.value)">
+                <option *ngFor="let instancestatus of InstancesStatus | mapValues" value={{instancestatus.key}}>
+                    {{instancestatus.key}}
+                </option>
+            </select>
+
+            <step-wizard [CurrentStep]="sessionStatus" [WizardSteps]="WizardSteps" [WizardStepStatus]= "WizardStepStatus"></step-wizard>
+
+        </div>
+    </div>
+    <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="error">
+        <div *ngIf="error.code === 'GatewayTimeout'">
+            <strong>Error</strong> - Failed to fetch instances for the Web App. The instance may fail to respond to any diagnostic
+            calls under high CPU situations. Please retry this investigation after some time.
+        </div>
+        <div *ngIf="error.code != 'GatewayTimeout'">
+            <strong>Error</strong> - {{ error.message }}
+        </div>
+    </div>
+</div>
+
+<div class="status-box" *ngIf="Reports?.length > 0">
+    <table class="table table-hover">
+        <tbody>
+            <tr *ngFor="let report of Reports">
+                <td>
+                    {{ report.FileName }}
+                </td>
+                <td>
+                    <a (click)="openReport(report.RelativePath)" class="btn btn-primary">Open Report</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

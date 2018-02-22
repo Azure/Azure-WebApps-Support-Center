@@ -26,11 +26,15 @@ export class DaasSessionsComponent {
 
         if (this.SessionType === "CLR Profiler")
         {
-            this.DiagnoserHeading = "Profiling sessions";
+            this.DiagnoserHeading = "profiling sessions";
         }
         else if (this.SessionType === "Memory Dump")
         {
-            this.DiagnoserHeading = "Dumps collected";
+            this.DiagnoserHeading = "dumps collected";
+        }
+        else
+        {
+            this.DiagnoserHeading = "diagnostic sessions";
         }
     }
 

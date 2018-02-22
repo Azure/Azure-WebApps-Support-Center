@@ -33,6 +33,10 @@ import { GroupByPipe } from './pipes/groupBy.pipe';
 import { MapValuesPipe } from './pipes/mapValues.pipe';
 import { StepWizardComponent } from './components/step-wizard/step-wizard.component';
 import { DaasSessionsComponent } from './components/daas-sessions/daas-sessions.component';
+import { ProfilerComponent } from './components/daas/profiler.component';
+import { ProfilerToolComponent } from './components/tools/profiler-tool/profiler-tool.component';
+import { DaasComponent } from './components/daas/daas.component';
+import { MemoryDumpToolComponent } from './components/tools/memorydump-tool/memorydump-tool.component';
 
 @NgModule({
     declarations: [
@@ -59,7 +63,11 @@ import { DaasSessionsComponent } from './components/daas-sessions/daas-sessions.
         VerticalDisplayListItemComponent,
         SolutionTypeTagComponent,
         StepWizardComponent,
-        DaasSessionsComponent
+        DaasSessionsComponent,        
+        ProfilerComponent,
+        ProfilerToolComponent,
+        MemoryDumpToolComponent,
+        DaasComponent
     ],
     imports: [
         HttpModule,
@@ -95,7 +103,11 @@ import { DaasSessionsComponent } from './components/daas-sessions/daas-sessions.
         VerticalDisplayListItemComponent,
         SolutionTypeTagComponent,
         StepWizardComponent,
-        DaasSessionsComponent            
+        DaasSessionsComponent,        
+        ProfilerComponent,
+        ProfilerToolComponent,        
+        DaasComponent,
+        MemoryDumpToolComponent
     ]
 })
 export class SharedModule {

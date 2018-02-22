@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="header1">{{ title }}</div>
+    <p>{{ description }}</p>
+
+    <div class="wizardcontainer">
+
+        <profiler [scmPath]="scmPath" [siteToBeProfiled]="siteToBeProfiled" (checkingExistingSessionsEvent)="updateCheckingExistingSessions($event)"
+            (SessionsEvent)="updateSessions($event)">
+        </profiler>
+
+    </div>
+
+    <div class="header2">What you should know before collecting a Profiler trace</div>
+    <ul>
+        <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
+    </ul>
+
+    <div class="sessions">
+        <daas-sessions SessionType="CLR Profiler" [scmPath]="scmPath" [checkingExistingSessions]="checkingExistingSessions" [Sessions]="Sessions"></daas-sessions>
+    </div>
+
+</div>

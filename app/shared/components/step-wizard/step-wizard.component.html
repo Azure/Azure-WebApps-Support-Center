@@ -14,4 +14,7 @@
             {{ wizardstep.AdditionalText }}
         </div>
     </div>
+    <div *ngIf="WizardStepStatus" class="wizard-status">
+        {{ WizardStepStatus }}
+    </div>
 </div>

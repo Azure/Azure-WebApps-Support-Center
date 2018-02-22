@@ -4,8 +4,7 @@ export class ApplicationRestartInfo extends SiteInfoMetaData {
     instances: InstanceInfo[];
 }
 
-export class SiteDaasInfo extends SiteInfoMetaData {
-    slot:string;
+export class SiteDaasInfo extends SiteInfoMetaData {    
     instances: string[];
 }
 

@@ -1,0 +1,35 @@
+td {
+    padding-right:10px;
+}
+
+.status-box {
+    border: 1px solid #ebebeb;
+    padding:15px;
+    margin-top:20px;
+}
+
+.header1 {
+    font-size: 24px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.header2 {
+    font-size: 2opx;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.container {
+    margin-left:20px;
+    margin-top:20px;
+}
+
+.sessions {
+    margin-top:20px;
+    width:60%;
+}
+
+.wizardcontainer {
+    width:60%;
+}

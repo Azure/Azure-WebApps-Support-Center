@@ -9,6 +9,8 @@ import { DetectorViewRouteConfig } from './detector-view/detector-view.routeconf
 import { DetectorViewMainComponent } from './detector-view/detector-view-main/detector-view-main.component';
 import { SiteCpuAnalysisDetectorComponent } from './detector-view/detectors/site-cpu-analysis-detector/site-cpu-analysis-detector.component';
 import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalysis/tcp-connections-analysis.component';
+import { ProfilerToolComponent } from '../shared/components/tools/profiler-tool/profiler-tool.component';
+import { MemoryDumpToolComponent } from '../shared/components/tools/memorydump-tool/memorydump-tool.component';
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
@@ -163,5 +165,42 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     {
         path: _slotResourceUrl + '/diagnostics/performance',
         children: PerformanceCommonRouteConfig
+    },
+
+    // CLR Profiling Tool
+    {
+        path: _siteResourceUrl + '/diagnostics/tools/profiler',
+        component: ProfilerToolComponent,
+        data: {
+            navigationTitle: 'CLR Profiler',
+            cacheComponent: true
+        }
+    },
+    {
+        path: _slotResourceUrl + '/diagnostics/tools/profiler',
+        component: ProfilerToolComponent,
+        data: {
+            navigationTitle: 'CLR Profiler',
+            cacheComponent: true
+        }
+    },
+
+    // Memory Dump
+    {
+        path: _siteResourceUrl + '/diagnostics/tools/memorydump',
+        component: MemoryDumpToolComponent,
+        data: {
+            navigationTitle: 'Memory Dump',
+            cacheComponent: true
+        }
+    },
+    {
+        path: _slotResourceUrl + '/diagnostics/tools/memorydump',
+        component: MemoryDumpToolComponent,
+        data: {
+            navigationTitle: 'Memory Dump',
+            cacheComponent: true
+        }
     }
+
 ];
