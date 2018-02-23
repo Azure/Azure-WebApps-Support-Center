@@ -15,6 +15,7 @@ import { SplitSitesIntoDifferentServerFarmsSolutionComponent } from './component
 import { SolutionFeedbackComponent } from './components/common/solution-feedback/solution-feedback.component';
 import { MemoryDumpSolutionComponent } from './components/specific-solutions/memorydump-solution/memorydump-solution.component';
 import { RevertDeploymentComponent } from './components/specific-solutions/revert-deployment-solution/revert-deployment-solution.component';
+import { JavaThreadDumpSolutionComponent } from './components/specific-solutions/java-threaddump-solution/java-threaddump-solution.component';
 
 @NgModule({
     declarations: [
@@ -30,7 +31,8 @@ import { RevertDeploymentComponent } from './components/specific-solutions/rever
         SolutionOperationComponent,
         SplitSitesIntoDifferentServerFarmsSolutionComponent,
         SolutionFeedbackComponent,
-        RevertDeploymentComponent
+        RevertDeploymentComponent,
+        JavaThreadDumpSolutionComponent
     ],
     imports: [
         SharedModule

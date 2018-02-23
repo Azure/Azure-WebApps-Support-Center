@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="header1">{{ title }}</div>
+    <p>{{ description }}</p>
+    <div class="wizardcontainer">
+
+        <daas [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed" [DiagnoserName]="DiagnoserName" (checkingExistingSessionsEvent)="updateCheckingExistingSessions($event)"
+            (SessionsEvent)="updateSessions($event)">
+        </daas>
+    </div>
+
+    <div class="header2">What you should know before collecting a Java Memory dump</div>
+    <ul>
+        <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
+    </ul>
+
+    <div class="sessions">
+        <daas-sessions SessionType="JAVA Memory Dump" [scmPath]="scmPath" [checkingExistingSessions]="checkingExistingSessions" [Sessions]="Sessions"></daas-sessions>
+    </div>
+</div>

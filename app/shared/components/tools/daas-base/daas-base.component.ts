@@ -4,7 +4,7 @@ import { Session } from '../../../models/daas';
 import { SiteService, DaasService, WindowService, AvailabilityLoggingService } from '../../../services';
 import { SiteInfoMetaData } from '../../../models/site';
 
-export abstract class DaasBaseComponent implements OnInit {
+export abstract class DaasBaseComponent  {
 
     DiagnoserName: string;
     siteToBeDiagnosed: SiteDaasInfo    
@@ -30,12 +30,7 @@ export abstract class DaasBaseComponent implements OnInit {
             }
         });
     }
-
-    ngOnInit(): void {
-
-        this.scmPath = this._siteService.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
-    }
-
+    
     updateCheckingExistingSessions(event) {
         this.checkingExistingSessions = event;
     }

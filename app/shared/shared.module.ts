@@ -37,6 +37,8 @@ import { ProfilerComponent } from './components/daas/profiler.component';
 import { ProfilerToolComponent } from './components/tools/profiler-tool/profiler-tool.component';
 import { DaasComponent } from './components/daas/daas.component';
 import { MemoryDumpToolComponent } from './components/tools/memorydump-tool/memorydump-tool.component';
+import { JavaMemoryDumpToolComponent } from './components/tools/java-memorydump-tool/java-memorydump-tool.component';
+import { JavaThreadDumpToolComponent } from './components/tools/java-threaddump-tool/java-threaddump-tool.component';
 
 @NgModule({
     declarations: [
@@ -67,7 +69,9 @@ import { MemoryDumpToolComponent } from './components/tools/memorydump-tool/memo
         ProfilerComponent,
         ProfilerToolComponent,
         MemoryDumpToolComponent,
-        DaasComponent
+        DaasComponent,
+        JavaMemoryDumpToolComponent,
+        JavaThreadDumpToolComponent
     ],
     imports: [
         HttpModule,
@@ -107,7 +111,9 @@ import { MemoryDumpToolComponent } from './components/tools/memorydump-tool/memo
         ProfilerComponent,
         ProfilerToolComponent,        
         DaasComponent,
-        MemoryDumpToolComponent
+        MemoryDumpToolComponent,
+        JavaMemoryDumpToolComponent,
+        JavaThreadDumpToolComponent
     ]
 })
 export class SharedModule {

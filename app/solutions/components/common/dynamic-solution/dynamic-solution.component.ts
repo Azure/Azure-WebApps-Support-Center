@@ -9,6 +9,7 @@ import { ScaleOutSolutionComponent } from '../../specific-solutions/scale-out-so
 import { SplitSitesIntoDifferentServerFarmsSolutionComponent } from '../../specific-solutions/split-sites-serverfarms-solution/split-sites-serverfarms-solution.component';
 import { MemoryDumpSolutionComponent } from '../../specific-solutions/memorydump-solution/memorydump-solution.component';
 import { RevertDeploymentComponent } from '../../specific-solutions/revert-deployment-solution/revert-deployment-solution.component';
+import { JavaThreadDumpSolutionComponent } from '../../specific-solutions/java-threaddump-solution/java-threaddump-solution.component';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { RevertDeploymentComponent } from '../../specific-solutions/revert-deplo
     template: `
     <div dynamic-solution-placeholder></div>
     `,
-    entryComponents: [SiteRestartComponent, ScaleUpSolutionComponent, ScaleOutSolutionComponent, ProfilingSolutionComponent, MemoryDumpSolutionComponent, SplitSitesIntoDifferentServerFarmsSolutionComponent, RevertDeploymentComponent]
+    entryComponents: [SiteRestartComponent, ScaleUpSolutionComponent, ScaleOutSolutionComponent, ProfilingSolutionComponent, MemoryDumpSolutionComponent, SplitSitesIntoDifferentServerFarmsSolutionComponent, RevertDeploymentComponent, JavaThreadDumpSolutionComponent]
 })
 export class DynamicSolutionComponent implements AfterViewInit {
     currentComponent = null;

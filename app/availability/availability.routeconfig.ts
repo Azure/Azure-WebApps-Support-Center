@@ -11,6 +11,8 @@ import { SiteCpuAnalysisDetectorComponent } from './detector-view/detectors/site
 import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalysis/tcp-connections-analysis.component';
 import { ProfilerToolComponent } from '../shared/components/tools/profiler-tool/profiler-tool.component';
 import { MemoryDumpToolComponent } from '../shared/components/tools/memorydump-tool/memorydump-tool.component';
+import { JavaMemoryDumpToolComponent } from '../shared/components/tools/java-memorydump-tool/java-memorydump-tool.component';
+import { JavaThreadDumpToolComponent } from '../shared/components/tools/java-threaddump-tool/java-threaddump-tool.component';
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
@@ -199,6 +201,40 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         component: MemoryDumpToolComponent,
         data: {
             navigationTitle: 'Memory Dump',
+            cacheComponent: true
+        }
+    },    
+    // Java Thread Dump
+    {
+        path: _siteResourceUrl + '/diagnostics/tools/javathreaddump',
+        component: JavaThreadDumpToolComponent,
+        data: {
+            navigationTitle: 'Java Thread Dump',
+            cacheComponent: true
+        }
+    },
+    {
+        path: _slotResourceUrl + '/diagnostics/tools/javathreaddump',
+        component: JavaThreadDumpToolComponent,
+        data: {
+            navigationTitle: 'Java Thread Dump',
+            cacheComponent: true
+        }
+    },
+    // Java Memory Dump
+    {
+        path: _siteResourceUrl + '/diagnostics/tools/javamemorydump',
+        component: JavaMemoryDumpToolComponent,
+        data: {
+            navigationTitle: 'Java Memory Dump',
+            cacheComponent: true
+        }
+    },
+    {
+        path: _slotResourceUrl + '/diagnostics/tools/javamemorydump',
+        component: JavaMemoryDumpToolComponent,
+        data: {
+            navigationTitle: 'Java Memory Dump',
             cacheComponent: true
         }
     }

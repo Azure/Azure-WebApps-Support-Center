@@ -1,0 +1,15 @@
+<default-solution-template [title]="title" [description]="description" [tags]="data.tags">
+    
+    <daas [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed" 
+    [DiagnoserName]="DiagnoserName" (checkingExistingSessionsEvent)="updateCheckingExistingSessions($event)"
+    (SessionsEvent)="updateSessions($event)">
+    </daas>
+
+    <div class="header2">What you should know before collecting a Java Thread Dump</div>
+    <ul>
+        <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
+    </ul>
+
+    <daas-sessions SessionType="JAVA Thread Dump" [scmPath]="scmPath" [checkingExistingSessions]="checkingExistingSessions" [Sessions]="Sessions"></daas-sessions>
+
+</default-solution-template>

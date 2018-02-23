@@ -10,6 +10,7 @@ import { ScaleOutSolutionComponent } from '../../solutions/components/specific-s
 import { SplitSitesIntoDifferentServerFarmsSolutionComponent } from '../../solutions/components/specific-solutions/split-sites-serverfarms-solution/split-sites-serverfarms-solution.component';
 import { MemoryDumpSolutionComponent } from '../../solutions/components/specific-solutions/memorydump-solution/memorydump-solution.component';
 import { RevertDeploymentComponent } from '../../solutions/components/specific-solutions/revert-deployment-solution/revert-deployment-solution.component';
+import { JavaThreadDumpSolutionComponent } from '../../solutions/components/specific-solutions/java-threaddump-solution/java-threaddump-solution.component';
 
 @Injectable()
 export class SolutionFactoryService {
@@ -70,6 +71,8 @@ export class SolutionFactoryService {
                 return new SolutionHolder(MemoryDumpSolutionComponent, <SolutionData>{ title: "Collect Memory Dump", tags: [SolutionTypeTag.Investigation], solution: solution });                
             case 104:                
                 return new SolutionHolder(ProfilingSolutionComponent, <SolutionData>{ title: "Remote Profile App", tags: [SolutionTypeTag.Investigation], solution: solution });
+            case 117:                
+                return new SolutionHolder(JavaThreadDumpSolutionComponent, <SolutionData>{ title: "Collect Java Thread Dump", tags: [SolutionTypeTag.Investigation], solution: solution });            
             // case 105:
             //     return new OtherSolutions.UpgradeDatabase(rank, _logger);
             // case 106:

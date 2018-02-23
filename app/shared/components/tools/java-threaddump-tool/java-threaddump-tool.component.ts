@@ -6,19 +6,19 @@ import { SiteInfoMetaData } from '../../../models/site';
 import { DaasBaseComponent } from '../daas-base/daas-base.component';
 
 @Component({
-    templateUrl: 'memorydump-tool.component.html',
+    templateUrl: 'java-threaddump-tool.component.html',
     styleUrls: ['../styles/daasstyles.css']
 })
-export class MemoryDumpToolComponent extends DaasBaseComponent implements OnInit {
+export class JavaThreadDumpToolComponent extends DaasBaseComponent implements OnInit {
 
-    title: string = "Collect a Memory dump";
-    description: string = "If your app is performing slow or not responding at all, you can collect a memory dump to identify the root cause of the issue.";
+    title: string = "Collect a Java Thread dump";
+    description: string = "If your Java app is performing slow or not responding at all, you can collect a jStack log to identify the state of threads running the java.exe";
     
     thingsToKnowBefore: string[] = [
-        "Collecting a memory dump freezes process until dump generation finishes so process cannot serve any requests during this time.",
-        "Dumps are collected for the worker process (w3wp.exe) and child processes of the worker process.",
-        "Size of the memory dump is directly proportional to the process size, so processes consuming more memory will take longer to be dumped.",
-        "Your WebApp will not be restarted as a result of collecting the memory dump."
+        "Collecting a jStack log will freeze the process until the jStack log is collected so process cannot serve any requests during the time jStack is running.",
+        "jStack logs are collected for all the Java process (java.exe) running on the instance.",
+        "jStack takes a few seconds to run but if there are many threads, it can take slightly longer to collect this data.",
+        "Your WebApp will not be restarted as a result of collecting the jStack logs."
     ]
     
     constructor(private _siteServiceLocal: SiteService, private _daasServiceLocal: DaasService, private _windowServiceLocal: WindowService, private _loggerLocal: AvailabilityLoggingService)
@@ -27,7 +27,7 @@ export class MemoryDumpToolComponent extends DaasBaseComponent implements OnInit
     }
     ngOnInit(): void {
 
-        this.DiagnoserName = "Memory Dump";
+        this.DiagnoserName = "JAVA Thread Dump";
         this.scmPath = this._siteServiceLocal.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
     }
