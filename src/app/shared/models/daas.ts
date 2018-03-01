@@ -1,5 +1,4 @@
-export enum DiagnosisStatus
-{
+export enum DiagnosisStatus {
     NotRequested,
     WaitingForInputs,
     InProgress,
@@ -8,14 +7,12 @@ export enum DiagnosisStatus
     Complete
 }
 
-export interface DiagnoserStatusMessage
-{
+export interface DiagnoserStatusMessage {
     EntityType: string;
     Message: string;
 }
 
-export enum SessionStatus
-{
+export enum SessionStatus {
     Active,
     CollectedLogsOnly,
     Cancelled,
@@ -23,44 +20,41 @@ export enum SessionStatus
     Complete
 }
 
-export interface Log
-{
+export interface Log {
     StartTime: string;
     EndTime: string;
     RelativePath: string;
     FileName: string;
-    FullPermanentStoragePath:string;
+    FullPermanentStoragePath: string;
 }
 
-export interface Report
-{
+export interface Report {
     StartTime: string;
     EndTime: string;
     RelativePath: string;
     FileName: string;
-    FullPermanentStoragePath:string
+    FullPermanentStoragePath: string
 }
 
-export interface Diagnoser{
+export interface Diagnoser {
 
     Name: string;
     CollectorStatus: DiagnosisStatus;
-    CollectorStatusMessages : DiagnoserStatusMessage[];
+    CollectorStatusMessages: DiagnoserStatusMessage[];
     AnalyzerStatus: DiagnosisStatus;
     AnalyzerStatusMessages: DiagnoserStatusMessage[];
     CollectorErrors: string[];
-    AnalyzerErrors: string[];   
+    AnalyzerErrors: string[];
     Logs: Log[];
     Reports: Report[];
 }
 
-export class Session
-{    
+export class Session {
     StartTime: string;
-    EndTime:string; 
-    SessionId:string;
+    EndTime: string;
+    SessionId: string;
     Description: string;
-    Instances: string[];    
+    Instances: string[];
     RunLive: boolean;
     CollectLogsOnly: boolean;
     Diagnosers: string[];
@@ -73,4 +67,29 @@ export interface DiagnoserDefinition {
     Name: string;
     Warnings: string[];
     Description: string;
+}
+
+export interface DatabaseTestConnectionResult {
+    Name: string;
+    ConnectionString: string;
+    ProviderName: string;
+    ExceptionDetails: ExceptionDetails
+    Succeeded: boolean;
+    DatabaseType: number;
+    Instance: string;
+    DummyValueExistsInWebConfig: boolean;
+    FilePath: string;
+    LineNumber: number;
+    IsEnvironmentVariable: boolean;
+    MaskedConnectionString: string;
+}
+
+export interface ExceptionDetails {
+    ClassName: string;
+    Message: string;
+    Data: any;
+    StackTraceString: string;
+    RemoteStackTraceString: string;
+    HResult: number;
+
 }

@@ -1,0 +1,17 @@
+.status{
+    margin-top:20px;
+}
+
+.container {
+    margin-top:20px;
+}
+
+.highlight-blue {
+    color: #286090;
+    font-weight: bold;
+}
+
+.connection-heading {
+    font-size: 13px;
+    margin-bottom: 5px;
+}

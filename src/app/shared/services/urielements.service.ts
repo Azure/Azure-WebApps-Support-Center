@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SiteDaasInfo } from '../models/solution-metadata';
+import { SiteInfoMetaData } from '../models/site';
 
 @Injectable()
 export class UriElementsService {
@@ -38,7 +39,8 @@ export class UriElementsService {
     private _diagnosticsDiagnosersPath = this._diagnosticsPath + "diagnosers";
     private _diagnosticsInstancesPath = this._diagnosticsPath + "instances";
     private _diagnosticsSingleSessionPath = this._diagnosticsPath + "session/{sessionId}/{details}";
-    
+    private _diagnosticsDatabaseTestPath = this._diagnosticsPath + "databasetest";
+
     getDiagnosticsDiagnosersUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDiagnosersPath;
     };
@@ -64,6 +66,10 @@ export class UriElementsService {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSingleSessionPath
         .replace("{sessionId}", sessionId)
         .replace("{details}", detailed.toString());
+    };
+
+    getDatabaseTestUrl(site: SiteInfoMetaData) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDatabaseTestPath;
     };
 
     getSiteRestartUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {

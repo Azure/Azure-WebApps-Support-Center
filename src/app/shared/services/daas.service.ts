@@ -5,7 +5,8 @@ import { SiteDaasInfo } from '../models/solution-metadata';
 import { ArmService } from './arm.service';
 import { AuthService } from './auth.service';
 import { UriElementsService } from './urielements.service';
-import { Session, DiagnoserDefinition } from '../models/daas';
+import { Session, DiagnoserDefinition, DatabaseTestConnectionResult } from '../models/daas';
+import { SiteInfoMetaData } from '../models/site';
 
 @Injectable()
 export class DaasService {
@@ -52,5 +53,11 @@ export class DaasService {
     getDiagnosers(site: SiteDaasInfo): Observable<DiagnoserDefinition[]> {
         let resourceUri: string = this._uriElementsService.getDiagnosticsDiagnosersUrl(site);
         return <Observable<DiagnoserDefinition[]>>this._armClient.getResourceWithoutEnvelope<DiagnoserDefinition[]>(resourceUri, null, true);
+    }
+
+    getDatabaseTest(site:SiteInfoMetaData)
+    {
+        let resourceUri: string = this._uriElementsService.getDatabaseTestUrl(site);
+        return <Observable<DatabaseTestConnectionResult[]>>this._armClient.getResourceWithoutEnvelope<Session>(resourceUri,null, true);
     }
 }

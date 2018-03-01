@@ -16,6 +16,7 @@ import { JavaThreadDumpToolComponent } from '../shared/components/tools/java-thr
 import { HttpLogAnalysisToolComponent } from '../shared/components/tools/http-loganalysis-tool/http-loganalysis-tool.component';
 import { PhpProcessAnalyzerToolComponent } from '../shared/components/tools/php-processanalyzer-tool/php-processanalyzer-tool.component';
 import { PhpLogsAnalyzerToolComponent } from '../shared/components/tools/php-logsanalyzer-tool/php-logsanalyzer-tool.component';
+import { DatabaseTestToolComponent } from '../shared/components/tools/database-test-tool/database-test-tool.component';
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
@@ -278,6 +279,22 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         component: PhpProcessAnalyzerToolComponent,
         data: {
             navigationTitle: 'PHP Process Analyzer'
+        }
+    }
+    ,
+    // Database Test Tool
+    {
+        path: _siteResourceUrl + '/diagnostics/tools/databasetester',
+        component: DatabaseTestToolComponent,
+        data: {
+            navigationTitle: 'Database Test Tool'
+        }
+    },
+    {
+        path: _slotResourceUrl + '/diagnostics/tools/databasetester',
+        component: DatabaseTestToolComponent,
+        data: {
+            navigationTitle: 'Database Test Tool'
         }
     }
 

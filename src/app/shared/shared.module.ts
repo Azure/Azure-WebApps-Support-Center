@@ -58,6 +58,7 @@ import { IncidentNotificationComponent } from './components/incident-notificatio
 import { HttpLogAnalysisToolComponent } from './components/tools/http-loganalysis-tool/http-loganalysis-tool.component';
 import { PhpProcessAnalyzerToolComponent } from './components/tools/php-processanalyzer-tool/php-processanalyzer-tool.component';
 import { PhpLogsAnalyzerToolComponent } from './components/tools/php-logsanalyzer-tool/php-logsanalyzer-tool.component';
+import { DatabaseTestToolComponent } from './components/tools/database-test-tool/database-test-tool.component';
 
 @NgModule({
     declarations: [
@@ -94,7 +95,8 @@ import { PhpLogsAnalyzerToolComponent } from './components/tools/php-logsanalyze
         IncidentNotificationComponent,
         HttpLogAnalysisToolComponent,
         PhpProcessAnalyzerToolComponent,
-        PhpLogsAnalyzerToolComponent
+        PhpLogsAnalyzerToolComponent,
+        DatabaseTestToolComponent
     ],
     imports: [
         HttpModule,
@@ -140,7 +142,8 @@ import { PhpLogsAnalyzerToolComponent } from './components/tools/php-logsanalyze
         IncidentNotificationComponent,
         HttpLogAnalysisToolComponent,
         PhpProcessAnalyzerToolComponent,
-        PhpLogsAnalyzerToolComponent
+        PhpLogsAnalyzerToolComponent,
+        DatabaseTestToolComponent
     ]
 })
 export class SharedModule {
