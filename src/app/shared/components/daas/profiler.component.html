@@ -40,13 +40,13 @@
                 <button [disabled]="sessionInProgress || checkingExistingSessions || retrievingInstances || retrievingInstancesFailed" [hidden]="SessionCompleted"
                     class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
                 <div style="margin-top:5px">
-                    <input type="checkbox"  [(ngModel)]="collectStackTraces"/> With thread report
+                    <input type="checkbox"  [(ngModel)]="collectStackTraces"/> Add thread report
                     <div class="tool-tip" style="z-index:2">
                         <i class="fa fa-info-circle" style="color:rgb(84, 143, 255)"></i>
-                        <span class="tool-tip-text">If this option is enabled, then along with the profiler trace, a thread report of all the threads in
-                            the process is also collected at the end of the profiler trace. This is useful espeically if you are troubleshooting totally hung processes or deadlocks or requests taking more than 60 seconds.This will have the effect of pausing your process for a few seconds till the thread dump is generated.
+                        <span class="tool-tip-text">
+                                If this option is enabled, then along with the profiler trace, a thread report of all the threads in the process is also collected at the end of the profiler trace. This is useful especially if you are troubleshooting totally hung processes, deadlocks or requests taking more than 60 seconds. This will pause your process for a few seconds until the thread dump is generated.                                
                             <div style="margin-top:10px">
-                                CAUTION : This option is NOT recommended if you are experiencing high CPU on the instance.
+                                    CAUTION: This option is NOT recommended if you are experiencing high CPU on the instance.
                             </div>
                         </span>
                     </div>
