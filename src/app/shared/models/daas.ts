@@ -82,6 +82,8 @@ export interface DatabaseTestConnectionResult {
     LineNumber: number;
     IsEnvironmentVariable: boolean;
     MaskedConnectionString: string;
+    DisplayClearText: boolean;
+    Expanded:boolean;
 }
 
 export interface ExceptionDetails {

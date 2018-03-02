@@ -1,0 +1,29 @@
+.panel-heading {
+  cursor: pointer;
+}
+
+.health-icon-container {
+  padding: 0px 10px 0px 0px;
+}
+
+.panel-body {
+  background-color: #f6fbff;
+}
+
+.content-container {
+  padding: 15px;
+}
+
+h5 {
+  margin-top:0px
+}
+
+.message {
+  padding-left:10px;
+}
+
+.highlight-blue {
+  color: #286090;
+  max-width: 350px;
+  overflow-wrap: break-word;
+}
