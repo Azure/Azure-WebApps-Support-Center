@@ -36,18 +36,18 @@
                         <table class="table table-bordered">
                             <tbody>
                                 <tr>
-                                    <td style="min-width:150px;max-width:150px;width:150px">Provider</td>
+                                    <td style="min-width:150px;max-width:150px;width:150px"><strong>Provider</strong></td>
                                     <td>{{ connection.ProviderName }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Connection String</td>
-                                    <td class="highlight-blue" (click)="toggleConnectionString(i)">
+                                    <td><strong>Connection String</strong></td>
+                                    <td class="connstr-text" (click)="toggleConnectionString(i)">
                                         <span *ngIf="!connection.DisplayClearText">Hidden value. Click to show</span>
                                         <span *ngIf="connection.DisplayClearText"> {{ connection.ConnectionString }}</span>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Source</td>
+                                    <td><strong>Source</strong></td>
                                     <td>
                                         <div *ngIf="connection.IsEnvironmentVariable">
                                             Environment Variable
@@ -73,8 +73,8 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr style="color:#f1720a" *ngIf="!connection.DummyValueExistsInWebConfig && connection.IsEnvironmentVariable">
-                                    <td>Warning</td>
+                                <tr *ngIf="!connection.DummyValueExistsInWebConfig && connection.IsEnvironmentVariable">
+                                    <td><strong>Warning</strong></td>
                                     <td>
                                         We found that the connection string is defined only as an environment variable and no dummy value exists in the web.config.
                                         Any C# code attempting to retrieve this connnecting string value via call to ConfigurationManager.ConnectionStrings

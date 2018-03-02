@@ -22,8 +22,7 @@ h5 {
   padding-left:10px;
 }
 
-.highlight-blue {
-  color: #286090;
+.connstr-text {
   max-width: 350px;
   overflow-wrap: break-word;
 }
