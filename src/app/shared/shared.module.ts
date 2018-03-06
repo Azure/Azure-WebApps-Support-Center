@@ -59,6 +59,7 @@ import { HttpLogAnalysisToolComponent } from './components/tools/http-loganalysi
 import { PhpProcessAnalyzerToolComponent } from './components/tools/php-processanalyzer-tool/php-processanalyzer-tool.component';
 import { PhpLogsAnalyzerToolComponent } from './components/tools/php-logsanalyzer-tool/php-logsanalyzer-tool.component';
 import { ConnectionDiagnoserToolComponent } from './components/tools/connection-diagnoser-tool/connection-diagnoser-tool.component';
+import { NetworkTraceToolComponent } from './components/tools/network-trace-tool/network-trace-tool.component';
 
 @NgModule({
     declarations: [
@@ -96,7 +97,8 @@ import { ConnectionDiagnoserToolComponent } from './components/tools/connection-
         HttpLogAnalysisToolComponent,
         PhpProcessAnalyzerToolComponent,
         PhpLogsAnalyzerToolComponent,
-        ConnectionDiagnoserToolComponent
+        ConnectionDiagnoserToolComponent,
+        NetworkTraceToolComponent
     ],
     imports: [
         HttpModule,
@@ -143,7 +145,8 @@ import { ConnectionDiagnoserToolComponent } from './components/tools/connection-
         HttpLogAnalysisToolComponent,
         PhpProcessAnalyzerToolComponent,
         PhpLogsAnalyzerToolComponent,
-        ConnectionDiagnoserToolComponent
+        ConnectionDiagnoserToolComponent,
+        NetworkTraceToolComponent
     ]
 })
 export class SharedModule {

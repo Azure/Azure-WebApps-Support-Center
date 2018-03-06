@@ -40,6 +40,7 @@ export class UriElementsService {
     private _diagnosticsInstancesPath = this._diagnosticsPath + "instances";
     private _diagnosticsSingleSessionPath = this._diagnosticsPath + "session/{sessionId}/{details}";
     private _diagnosticsDatabaseTestPath = this._diagnosticsPath + "databasetest";
+    private _networkTraceStartPath = "/networkTrace/start"
 
     getDiagnosticsDiagnosersUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDiagnosersPath;
@@ -61,6 +62,11 @@ export class UriElementsService {
     getDiagnosticsInstancesUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsInstancesPath;
     };
+
+    getNetworkTraceUrl(site:SiteInfoMetaData)
+    {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._networkTraceStartPath;
+    }
 
     getDiagnosticsSingleSessionUrl(site: SiteDaasInfo, sessionId: string, detailed: boolean) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSingleSessionPath

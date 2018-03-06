@@ -17,6 +17,7 @@ import { HttpLogAnalysisToolComponent } from '../shared/components/tools/http-lo
 import { PhpProcessAnalyzerToolComponent } from '../shared/components/tools/php-processanalyzer-tool/php-processanalyzer-tool.component';
 import { PhpLogsAnalyzerToolComponent } from '../shared/components/tools/php-logsanalyzer-tool/php-logsanalyzer-tool.component';
 import { ConnectionDiagnoserToolComponent } from '../shared/components/tools/connection-diagnoser-tool/connection-diagnoser-tool.component';
+import { NetworkTraceToolComponent } from '../shared/components/tools/network-trace-tool/network-trace-tool.component';
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
@@ -297,6 +298,22 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         data: {
             navigationTitle: 'Connection Diagnoser',
             cacheComponent: true
+        }
+    }
+    ,
+    // Network Trace Tool
+    {
+        path: _siteResourceUrl + '/diagnostics/tools/networktrace',
+        component: NetworkTraceToolComponent,
+        data: {
+            navigationTitle: 'Network Trace',            
+        }
+    },
+    {
+        path: _slotResourceUrl + '/diagnostics/tools/networktrace',
+        component: NetworkTraceToolComponent,
+        data: {
+            navigationTitle: 'Network Trace',           
         }
     }
 

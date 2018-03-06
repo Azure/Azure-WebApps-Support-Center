@@ -1,0 +1,79 @@
+<div class="container">
+    <div class="header1">{{ title }}</div>
+    <p>{{ description }}</p>
+
+    <div class="focus-box focus-box-warning">
+        Analyzing network traces is complex and time consuming task. Before collecting a network trace, please make sure you understand
+        that you really need to collect a network trace to troubleshoot the problem.
+    </div>
+
+    <div class="header2">What you should know before collecting a Network Trace</div>
+    <ul>
+        <li>Network traces are helpful to troubleshoot TCP packet loss and to check HTTP communication that your App is making
+            with the remote endpoints.</li>
+        <li>After the network trace is started, you should reproduce the problem so that outbound traffic from your App gets
+            captured in the trace.</li>
+        <li> Network traces are collected on all the instance(s) serving your App</li>
+        <li>To analyze the Network Trace, you need tools like
+            <a href='https://www.microsoft.com/en-in/download/details.aspx?id=4865'>Network Monitor </a> or
+            <a href='https://www.wireshark.org/'>Wireshark</a> that can open the network captures. </li>
+    </ul>
+
+    <div *ngIf="!supportedTier">
+        <div class="focus-box focus-box-warning" style="margin-top:20px">
+            <div>
+                <strong>Error</strong> - This tool is supported only on Dedicated SKU's
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="error">
+        <div class="focus-box focus-box-warning" style="margin-top:20px">
+            <div>
+                <strong>Error</strong> - {{ error.code }} : {{ error.message }}
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!networkTraceStarted && supportedTier && !error">
+        <div style="margin-top:20px;">
+            Choose duration to collect the Network Trace
+            <select [(ngModel)]="duration" [disabled]="inProgress || checkingValidity">
+                <option value="60">60 seconds</option>
+                <option value="120">2 minutes</option>
+                <option value="180">3 minutes</option>
+                <option value="300">5 minutes</option>
+                <option value="300">10 minutes</option>
+                <option value="300">15 minutes</option>
+            </select>
+        </div>
+
+        <div style="margin-top:10px">
+            <button [disabled]="inProgress || checkingValidity" class="btn btn-primary" (click)="collectNetworkTrace()">Collect Network Trace</button>
+        </div>
+    </div>
+    <div *ngIf="networkTraceStarted && !alreadyRunning" style="margin-top:20px">
+        <span style="padding: 0px 10px 0px 0px">
+            <i class="fa health-icon fa-check-circle healthy-icon-color" aria-hidden="true"></i>
+            Network Trace is started for the Web App and will automatically stop after
+            <strong>{{ duration }}</strong> seconds. Please check for these file(s) in
+            <a href='https://{{this.scmPath}}/debugconsole'
+                target="blank">Kudu console</a> in
+            <strong>d:\home\logfiles\networktrace\</strong> folder after some time.
+        </span>
+        <div>
+            <ul>
+                <li *ngFor="let file of files"> {{ file }}</li>
+            </ul>
+        </div>
+    </div>
+
+    <div *ngIf="alreadyRunning" style="margin-top:20px">
+        <span style="padding: 0px 10px 0px 0px">
+            <i class="fa health-icon fa-exclamation-circle unhealthy-icon-color" aria-hidden="true"></i>
+            It appears there is already a network trace running for this Web App. Check the
+            <a href='https://{{this.scmPath}}/debugconsole' target="blank">Kudu console</a> in
+            <strong>d:\home\logfiles\networktrace\</strong> folder after some time to see the trace files.
+        </span>
+    </div>
+</div>
