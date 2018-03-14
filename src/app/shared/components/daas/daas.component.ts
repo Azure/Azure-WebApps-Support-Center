@@ -53,68 +53,79 @@ export class DaasComponent implements OnInit, OnDestroy {
     error: any;
     retrievingInstances: boolean = false;
     retrievingInstancesFailed: boolean = false;
-    foundDiagnoserWarnings:boolean = false;
+    foundDiagnoserWarnings: boolean = false;
     retrievingDiagnosers: boolean = false;
-    
-    supportedTier:boolean = false;
+
+    supportedTier: boolean = false;
     diagnoserWarning: string = "";
+    daasRunnerJobRunning: boolean = true;
+    checkingDaasWebJobStatus: boolean = false;
+    checkingSupportedTier: boolean = true;
 
     constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
-        this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
-            if (serverFarm) {
-                if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic"  || serverFarm.sku.tier === "Premium")
-                {
-                    this.supportedTier = true;
-                }               
-            }
-        }, error => {
-            //TODO: handle error
-        })
+
     }
 
     ngOnInit(): void {
 
-        if (!this.supportedTier)
-        {
-            return;
-        }
-        
-        this.SessionCompleted = false;
+        this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
+            if (serverFarm) {
+                this.checkingSupportedTier = false;
+                if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier === "Premium") {
+                    this.supportedTier = true;
+                    this.checkingDaasWebJobStatus = true;
 
-        this.retrievingInstances = true;
-        this._daasService.getInstances(this.siteToBeDiagnosed).retry(2)
-            .subscribe(result => {
-                this.retrievingInstances = false;
-                this.instances = result;
-                this.checkRunningSessions();
-                this.populateinstancesToDiagnose();
-
-                this.retrievingDiagnosers = true;
-                this._daasService.getDiagnosers(this.siteToBeDiagnosed).retry(2)
-                    .subscribe(result => {
-                        this.retrievingDiagnosers = false;
-                        let diagnosers: DiagnoserDefinition[] = result;
-                        let thisDiagnoser = diagnosers.filter(x => x.Name === this.DiagnoserName);
-                        if (thisDiagnoser.length > 0) {
-                            if (thisDiagnoser[0].Warnings.length > 0) {
-                                this.diagnoserWarning = thisDiagnoser[0].Warnings.join(',');
-                                this.foundDiagnoserWarnings = true;
+                    this._daasService.getDaasWebjobState(this.siteToBeDiagnosed).retry(2)
+                        .subscribe(webjobstate => {
+                            this.checkingDaasWebJobStatus = false;
+                            let daasRunnerState = webjobstate.json();
+                            if (daasRunnerState != "Running") {
+                                this.daasRunnerJobRunning = false;
+                                return;
                             }
-                        }
-                        if (!this.foundDiagnoserWarnings) {
-                            this.initWizard();
-                        }
-                    },
-                        error => {
-                            this.error = error;
-                        });
-            },
-                error => {
-                    this.error = error;
-                    this.retrievingInstances = false;
-                    this.retrievingInstancesFailed = true;
-                });
 
+                            this.SessionCompleted = false;
+
+                            this.retrievingInstances = true;
+                            this._daasService.getInstances(this.siteToBeDiagnosed).retry(2)
+                                .subscribe(result => {
+                                    this.retrievingInstances = false;
+                                    this.instances = result;
+                                    this.checkRunningSessions();
+                                    this.populateinstancesToDiagnose();
+
+                                    this.retrievingDiagnosers = true;
+                                    this._daasService.getDiagnosers(this.siteToBeDiagnosed).retry(2)
+                                        .subscribe(result => {
+                                            this.retrievingDiagnosers = false;
+                                            let diagnosers: DiagnoserDefinition[] = result;
+                                            let thisDiagnoser = diagnosers.filter(x => x.Name === this.DiagnoserName);
+                                            if (thisDiagnoser.length > 0) {
+                                                if (thisDiagnoser[0].Warnings.length > 0) {
+                                                    this.diagnoserWarning = thisDiagnoser[0].Warnings.join(',');
+                                                    this.foundDiagnoserWarnings = true;
+                                                }
+                                            }
+                                            if (!this.foundDiagnoserWarnings) {
+                                                this.initWizard();
+                                            }
+                                        },
+                                            error => {
+                                                this.error = error;
+                                            });
+                                },
+                                    error => {
+                                        this.error = error;
+                                        this.retrievingInstances = false;
+                                        this.retrievingInstancesFailed = true;
+                                    });
+
+                        });
+                }
+            }
+        }, error => {
+            //TODO: handle error
+        })
     }
 
     initWizard(): void {

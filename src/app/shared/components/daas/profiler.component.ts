@@ -88,7 +88,7 @@ export class ProfilerComponent implements OnInit, OnDestroy {
     initWizard(): void {
 
         this.WizardSteps.push({
-            Caption: "Step 1: Starting Profier",
+            Caption: "Step 1: Starting Profiler",
             IconType: "fa-play",
             AdditionalText: ""
         });

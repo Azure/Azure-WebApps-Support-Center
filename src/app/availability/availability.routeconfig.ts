@@ -307,7 +307,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/databasetester',
         component: ConnectionDiagnoserToolComponent,
         data: {
-            navigationTitle: 'Connection Diagnoser',
+            navigationTitle: 'Connection Strings',
             cacheComponent: true
         }
     },
@@ -315,7 +315,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _slotResourceUrl + '/diagnostics/tools/databasetester',
         component: ConnectionDiagnoserToolComponent,
         data: {
-            navigationTitle: 'Connection Diagnoser',
+            navigationTitle: 'Connection Strings',
             cacheComponent: true
         }
     }

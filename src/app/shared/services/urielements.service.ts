@@ -41,6 +41,8 @@ export class UriElementsService {
     private _diagnosticsSingleSessionPath = this._diagnosticsPath + "session/{sessionId}/{details}";
     private _diagnosticsDatabaseTestPath = this._diagnosticsPath + "databasetest";
     private _networkTraceStartPath = "/networkTrace/start"
+    private _diagnosticsWebJobStatePath:string = this._supportApi + 'diagnostics/{subscriptionId}/{resourceGroup}/{siteName}/daaswebjobstate';
+    private _diagnosticsWebJobStartPath:string = this._supportApi + 'diagnostics/{subscriptionId}/{resourceGroup}/{siteName}/daaswebjobstart';
 
     getDiagnosticsDiagnosersUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDiagnosersPath;
@@ -77,6 +79,32 @@ export class UriElementsService {
     getDatabaseTestUrl(site: SiteInfoMetaData) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDatabaseTestPath;
     };
+
+    getDaasWebJobStateUrl(site:SiteInfoMetaData)
+    {
+        var resource = site.siteName;
+        if (site.slot !== '') {
+            resource = `${site.siteName}(${site.slot})`;
+        }
+
+        return this._diagnosticsWebJobStatePath
+        .replace('{subscriptionId}', site.subscriptionId)
+        .replace('{resourceGroup}', site.resourceGroupName)
+        .replace('{siteName}', resource);
+    }
+
+    startDaasWebJobUrl(site:SiteInfoMetaData)
+    {
+        var resource = site.siteName;
+        if (site.slot !== '') {
+            resource = `${site.siteName}(${site.slot})`;
+        }
+
+        return this._diagnosticsWebJobStartPath
+        .replace('{subscriptionId}', site.subscriptionId)
+        .replace('{resourceGroup}', site.resourceGroupName)
+        .replace('{siteName}', resource);
+    }
 
     getSiteRestartUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
         return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._siteRestartUrlFormat;

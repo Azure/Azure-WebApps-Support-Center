@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, RequestOptions, Headers, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { SiteDaasInfo } from '../models/solution-metadata';
 import { ArmService } from './arm.service';
@@ -55,9 +55,35 @@ export class DaasService {
         return <Observable<DiagnoserDefinition[]>>this._armClient.getResourceWithoutEnvelope<DiagnoserDefinition[]>(resourceUri, null, true);
     }
 
-    getDatabaseTest(site:SiteInfoMetaData)
+    getDatabaseTest(site:SiteInfoMetaData): Observable<DatabaseTestConnectionResult[]>
     {
         let resourceUri: string = this._uriElementsService.getDatabaseTestUrl(site);
         return <Observable<DatabaseTestConnectionResult[]>>this._armClient.getResourceWithoutEnvelope<Session>(resourceUri,null, true);
+    }
+
+    getDaasWebjobState(site:SiteDaasInfo): Observable<Response>
+    {
+        let url: string = this._uriElementsService.getDaasWebJobStateUrl(site);        
+        let requestHeaders: Headers = this._getHeaders();
+        let options = new RequestOptions({headers: requestHeaders , method: "GET"});
+        return this._http.get(url, options);
+    }
+
+    starttDaasWebjob(site:SiteDaasInfo): Observable<Response>
+    {
+        let url: string = this._uriElementsService.startDaasWebJobUrl(site);        
+        let requestHeaders: Headers = this._getHeaders();
+        let bodyString: string = '';        
+        return this._http.post(url, bodyString, { headers: requestHeaders });
+    }
+
+    private _getHeaders(): Headers {
+
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
+        headers.append('Authorization', `Bearer ${this._authService.getAuthToken()}`);
+
+        return headers;
     }
 }

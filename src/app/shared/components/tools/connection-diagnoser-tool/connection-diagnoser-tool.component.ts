@@ -9,7 +9,7 @@ import { AvailabilityLoggingService } from '../../../services/logging/availabili
 
 @Component({
     templateUrl: 'connection-diagnoser-tool.component.html',
-    styleUrls: ['connection-diagnoser-tool.component.css']
+    styleUrls: ['../styles/daasstyles.css', 'connection-diagnoser-tool.component.css']
 })
 export class ConnectionDiagnoserToolComponent implements OnInit {
 
@@ -47,11 +47,9 @@ export class ConnectionDiagnoserToolComponent implements OnInit {
                     {
                         this.succeeded++;
                     }
-                    if (x.ConnectionString.toLowerCase().indexOf('defaultendpointsprotocol') === -1)
-                    {
-                        this.total++;
-                    }
-                   
+                    
+                    this.total++;
+                    
                     if (x.FilePath !==null && x.FilePath.startsWith('D:\\local\\VirtualDirectory0'))
                     {
                         x.FilePath = x.FilePath.substring(27);

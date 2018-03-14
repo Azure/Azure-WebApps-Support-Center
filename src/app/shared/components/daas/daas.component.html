@@ -1,11 +1,30 @@
-<div *ngIf="!supportedTier">
+<div *ngIf="!checkingSupportedTier && !supportedTier">
     <div class="focus-box focus-box-warning" style="margin-top:20px">
         <div>
             <strong>Error</strong> - This tool is supported only on Dedicated SKU's
         </div>
     </div>
 </div>
-<div *ngIf="supportedTier">
+<div *ngIf="!daasRunnerJobRunning">
+    <div class="focus-box focus-box-warning" style="margin-top:20px">
+        <div>
+            <strong>Error</strong> - We found that the DAAS Web job is in a stopped state. Please go to WebJobs under this Web App
+            and start the DAAS Web job manually and re-run this tool.
+        </div>
+    </div>
+</div>
+
+<div class="col" *ngIf="checkingDaasWebJobStatus">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Checking if DaaS Webjob is running...
+</div>
+
+<div class="col" *ngIf="checkingSupportedTier">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Checking if the WebApp is running in a supported Tier
+</div>
+
+<div *ngIf="supportedTier && !checkingDaasWebJobStatus && daasRunnerJobRunning">
     <div class="action-box" *ngIf="siteToBeDiagnosed">
         <div>
             <table style="border:none">

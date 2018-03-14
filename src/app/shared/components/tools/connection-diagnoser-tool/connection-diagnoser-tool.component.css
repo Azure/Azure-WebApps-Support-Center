@@ -2,27 +2,16 @@
   cursor: pointer;
 }
 
-.health-icon-container {
-  padding: 0px 10px 0px 0px;
-}
-
 .panel-body {
   background-color: #f6fbff;
 }
 
-.content-container {
-  padding: 15px;
-}
-
-h5 {
-  margin-top:0px
-}
-
-.message {
-  padding-left:10px;
-}
-
-.connstr-text {
-  max-width: 350px;
+.connstr-text {  
   overflow-wrap: break-word;
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.fixed-table {
+  table-layout:fixed
 }

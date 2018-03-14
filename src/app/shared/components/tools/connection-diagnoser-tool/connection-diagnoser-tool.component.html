@@ -1,9 +1,10 @@
-<div>
-    <h4>Connection Diagnoser</h4>
-    <div style="margin-top:10px">This tool validates all the connection strings configured for your App (either as app-settings, environment variables
+<div class="container">
+    <div class="header1">Check Connection Strings</div>
+    
+    <p>This tool validates all the connection strings configured for your App (either as app-settings, environment variables
         or inside the configuration files) and helps you to identify successful vs. failing connections from the App Service
         instance.
-    </div>
+    </p>
 
     <div *ngIf="retrievingInfo" style="margin-top:30px; margin-left:30px">
         <i class="fa fa-circle-o-notch fa-2x fa-spin spin-icon" aria-hidden="true"></i>
@@ -19,72 +20,78 @@
         </div>
 
         <div *ngFor="let connection of dbTestResult; let i = index">
-            <div *ngIf="connection.ConnectionString.toLowerCase().indexOf('defaultendpointsprotocol') === -1">
-                <div class="panel panel-default">
-                    <div class="panel-heading" (click)="toggleExpanded(i)">
-                        <span style="padding: 0px 10px 0px 0px">
-                            <i class="fa health-icon fa-exclamation-circle unhealthy-icon-color" *ngIf="!connection.Succeeded" aria-hidden="true"></i>
-                            <i class="fa health-icon fa-check-circle healthy-icon-color" *ngIf="connection.Succeeded" aria-hidden="true"></i>
-                        </span>
-                        <b>{{ connection.Name }}</b>
-                        <span class="pull-right">
-                            <i class="fa fa-plus" *ngIf="!connection.Expanded" aria-hidden="true"></i>
-                            <i class="fa fa-minus" *ngIf="connection.Expanded" aria-hidden="true"></i>
-                        </span>
-                    </div>
-                    <div class="panel-body" *ngIf="connection.Expanded">
-                        <table class="table table-bordered">
-                            <tbody>
-                                <tr>
-                                    <td style="min-width:150px;max-width:150px;width:150px"><strong>Provider</strong></td>
-                                    <td>{{ connection.ProviderName }}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Connection String</strong></td>
-                                    <td class="connstr-text" (click)="toggleConnectionString(i)">
-                                        <span *ngIf="!connection.DisplayClearText">Hidden value. Click to show</span>
-                                        <span *ngIf="connection.DisplayClearText"> {{ connection.ConnectionString }}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Source</strong></td>
-                                    <td>
-                                        <div *ngIf="connection.IsEnvironmentVariable">
-                                            Environment Variable
+            <div class="panel panel-default">
+                <div class="panel-heading" (click)="toggleExpanded(i)">
+                    <span style="padding: 0px 10px 0px 0px">
+                        <i class="fa health-icon fa-exclamation-circle unhealthy-icon-color" *ngIf="!connection.Succeeded" aria-hidden="true"></i>
+                        <i class="fa health-icon fa-check-circle healthy-icon-color" *ngIf="connection.Succeeded" aria-hidden="true"></i>
+                    </span>
+                    <b>{{ connection.Name }}</b>
+                    <span class="pull-right">
+                        <i class="fa fa-plus" *ngIf="!connection.Expanded" aria-hidden="true"></i>
+                        <i class="fa fa-minus" *ngIf="connection.Expanded" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <div class="panel-body" *ngIf="connection.Expanded">
+                    <table class="table table-bordered fixed-table">
+                        <tbody>
+                            <tr>
+                                <td style="min-width:150px;max-width:150px;width:150px">
+                                    <strong>Provider</strong>
+                                </td>
+                                <td>{{ connection.ProviderName }}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Connection String</strong>
+                                </td>
+                                <td class="connstr-text" (click)="toggleConnectionString(i)">
+                                    <span *ngIf="!connection.DisplayClearText">Hidden value. Click to show</span>
+                                    <span *ngIf="connection.DisplayClearText"> {{ connection.ConnectionString }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Source</strong>
+                                </td>
+                                <td>
+                                    <div *ngIf="connection.IsEnvironmentVariable">
+                                        Environment Variable
+                                    </div>
+                                    <div *ngIf="!connection.IsEnvironmentVariable && connection.FilePath !== null">
+                                        {{ connection.FilePath }}
+                                        <span *ngIf="connection.LineNumber > 0"> @ line {{ connection.LineNumber }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Status</strong>
+                                </td>
+                                <td>
+                                    <div *ngIf="connection.Succeeded" style="color:rgb(19, 140, 57)">
+                                        <strong>We could connect successfully to this connection.</strong>
+                                    </div>
+                                    <div *ngIf="!connection.Succeeded">
+                                        <div style="color:rgb(160, 12, 12)">
+                                            <strong>{{ connection.ExceptionDetails.ClassName }}</strong>: {{ connection.ExceptionDetails.Message}}
                                         </div>
-                                        <div *ngIf="!connection.IsEnvironmentVariable && connection.FilePath !== null">
-                                            {{ connection.FilePath }}
-                                            <span *ngIf="connection.LineNumber > 0"> @ line {{ connection.LineNumber }}</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Status</strong>
-                                    </td>
-                                    <td>
-                                        <div *ngIf="connection.Succeeded" style="color:rgb(19, 140, 57)">
-                                            <strong>We could connect successfully to this connection.</strong>
-                                        </div>
-                                        <div *ngIf="!connection.Succeeded">
-                                            <div style="color:rgb(160, 12, 12)">
-                                                <strong>{{ connection.ExceptionDetails.ClassName }}</strong>: {{ connection.ExceptionDetails.Message}}
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr *ngIf="!connection.DummyValueExistsInWebConfig && connection.IsEnvironmentVariable">
-                                    <td><strong>Warning</strong></td>
-                                    <td>
-                                        We found that the connection string is defined only as an environment variable and no dummy value exists in the web.config.
-                                        Any C# code attempting to retrieve this connnecting string value via call to ConfigurationManager.ConnectionStrings
-                                        property will fail. For more information, click
-                                        <a target="_blank" href='https://azure.microsoft.com/en-us/blog/windows-azure-web-sites-how-application-strings-and-connection-strings-work/'>here</a>.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="!connection.DummyValueExistsInWebConfig && connection.IsEnvironmentVariable">
+                                <td>
+                                    <strong>Warning</strong>
+                                </td>
+                                <td>
+                                    We found that the connection string is defined only as an environment variable and no dummy value exists in the web.config.
+                                    Any C# code attempting to retrieve this connnecting string value via call to ConfigurationManager.ConnectionStrings
+                                    property will fail. For more information, click
+                                    <a target="_blank" href='https://azure.microsoft.com/en-us/blog/windows-azure-web-sites-how-application-strings-and-connection-strings-work/'>here</a>.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
