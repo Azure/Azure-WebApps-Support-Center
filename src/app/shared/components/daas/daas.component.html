@@ -1,30 +1,6 @@
-<div *ngIf="!checkingSupportedTier && !supportedTier">
-    <div class="focus-box focus-box-warning" style="margin-top:20px">
-        <div>
-            <strong>Error</strong> - This tool is supported only on Dedicated SKU's
-        </div>
-    </div>
-</div>
-<div *ngIf="!daasRunnerJobRunning">
-    <div class="focus-box focus-box-warning" style="margin-top:20px">
-        <div>
-            <strong>Error</strong> - We found that the DAAS Web job is in a stopped state. Please go to WebJobs under this Web App
-            and start the DAAS Web job manually and re-run this tool.
-        </div>
-    </div>
-</div>
+<daas-validator [siteToBeDiagnosed]="siteToBeDiagnosed" [DiagnoserName]="DiagnoserName" (DaasValidated)="onDaasValidated($event)"></daas-validator>
 
-<div class="col" *ngIf="checkingDaasWebJobStatus">
-        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-        Checking if DaaS Webjob is running...
-</div>
-
-<div class="col" *ngIf="checkingSupportedTier">
-        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-        Checking if the WebApp is running in a supported Tier
-</div>
-
-<div *ngIf="supportedTier && !checkingDaasWebJobStatus && daasRunnerJobRunning">
+<div *ngIf="daasValidated">
     <div class="action-box" *ngIf="siteToBeDiagnosed">
         <div>
             <table style="border:none">
@@ -34,7 +10,7 @@
                         <b>{{siteToBeDiagnosed.siteName}}</b>
                     </td>
                 </tr>
-                <tr *ngIf="!error && !foundDiagnoserWarnings">
+                <tr *ngIf="!error">
                     <td>
                         Instance(s):
                     </td>
@@ -48,20 +24,12 @@
             </table>
 
             <div style="text-align:right">
-                <div class="col" *ngIf="checkingExistingSessions">
+                <div class="col" *ngIf="operationInProgress">
                     <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                    Checking existing sessions...
+                    {{ operationStatus }}
                 </div>
-                <div class="col" *ngIf="retrievingInstances">
-                    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                    Retrieving instances...
-                </div>
-                <div class="col" *ngIf="retrievingDiagnosers && !retrievingInstances && !checkingExistingSessions">
-                    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                    Retrieving Diagnoser settings...
-                </div>
-
-                <button [disabled]="sessionInProgress || checkingExistingSessions || retrievingInstances || retrievingInstancesFailed || retrievingDiagnosers || foundDiagnoserWarnings"
+                
+                <button [disabled]="sessionInProgress || operationInProgress || retrievingInstancesFailed"
                     [hidden]="SessionCompleted" class="btn btn-primary" (click)="collectDiagnoserData()">Collect {{ DiagnoserName }}</button>
             </div>
 
@@ -84,13 +52,7 @@
             <div *ngIf="error.code != 'GatewayTimeout'">
                 <strong>Error</strong> - {{ error.message }}
             </div>
-        </div>
-
-        <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="foundDiagnoserWarnings">
-            <div>
-                <strong>Warning</strong> - {{ diagnoserWarning }}
-            </div>
-        </div>
+        </div>        
     </div>
 
     <div class="status-box" *ngIf="Reports?.length > 0">

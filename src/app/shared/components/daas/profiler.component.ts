@@ -9,80 +9,44 @@ import { DaasService } from '../../services/daas.service';
 import { WindowService } from '../../services/window.service';
 import { AvailabilityLoggingService } from '../../services/logging/availability.logging.service';
 import { ServerFarmDataService } from '../../services/server-farm-data.service';
+import { DaasComponent } from './daas.component';
+import { SiteService } from '../../services/site.service';
 
 
 @Component({
-    selector : 'profiler',
+    selector: 'profiler',
     templateUrl: 'profiler.component.html',
     styleUrls: ['profiler.component.css']
 })
 
-export class ProfilerComponent implements OnInit, OnDestroy {
+export class ProfilerComponent extends DaasComponent implements OnInit, OnDestroy {
 
-    @Input() siteToBeProfiled: SiteDaasInfo;
-    @Input() scmPath: string;
 
-    @Output() checkingExistingSessionsEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() SessionsEvent: EventEmitter<Session[]> = new EventEmitter<Session[]>();
-
-    Sessions: Session[];
-    checkingExistingSessions: boolean;
-        
-    instances: string[];
-    SessionId: string;
-    sessionInProgress: boolean;
-    diagnoserSession: Diagnoser;
-    subscription: Subscription;
-    sessionStatus: number;
-    
     InstancesStatus: Map<string, number>;
     selectedInstance: string;
-    Reports: Report[];
-
-    SessionCompleted: boolean;
     WizardSteps: StepWizardSingleStep[] = [];
-
     error: any;
-    retrievingInstances: boolean = false;
-    retrievingInstancesFailed: boolean = false;
-    supportedTier:boolean = false;
-    collectStackTraces:boolean = false;
+    collectStackTraces: boolean = false;
 
-    constructor(private _serverFarmService: ServerFarmDataService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
-        this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
-            if (serverFarm) {
-                if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic"  || serverFarm.sku.tier === "Premium")
-                {
-                    this.supportedTier = true;
-                }               
-            }
-        }, error => {
-            //TODO: handle error
-        })
+    constructor(private _serverFarmServiceLocal: ServerFarmDataService, private _siteServiceLocal: SiteService, private _daasServiceLocal: DaasService, private _windowServiceLocal: WindowService, private _loggerLocal: AvailabilityLoggingService) {
+        
+        super(_serverFarmServiceLocal, _siteServiceLocal, _daasServiceLocal, _windowServiceLocal, _loggerLocal)
+        this.DiagnoserName = "CLR Profiler";
     }
 
     ngOnInit(): void {
         
-        if (!this.supportedTier)
-        {
-            return;
+    }
+
+    collectProfilerTrace() {
+        if (this.collectStackTraces) {
+            this.DiagnoserName = "CLR Profiler With ThreadStacks";
+        }
+        else {
+            this.DiagnoserName = "CLR Profiler";
         }
 
-        this.SessionCompleted = false;
-        this.retrievingInstances = true;
-        this._daasService.getInstances(this.siteToBeProfiled).retry(2)
-            .subscribe(result => {
-                this.retrievingInstances = false;
-                this.instances = result;
-                this.checkRunningSessions();
-            },
-                error => {
-                    this.error = error;
-                    this.retrievingInstances = false;
-                    this.retrievingInstancesFailed = true;
-                });
-        this.initWizard();
-
+        this.collectDiagnoserData();
     }
 
     initWizard(): void {
@@ -113,84 +77,7 @@ export class ProfilerComponent implements OnInit, OnDestroy {
 
     }
 
-    takeTopFiveProfilingSessions(sessions: Session[]): Session[] {
-        var arrayToReturn = new Array<Session>();
-        sessions.forEach(session => {
-            session.DiagnoserSessions.forEach(diagnoser => {
-                if (diagnoser.Name.startsWith("CLR Profiler")) {
-                    arrayToReturn.push(session);
-                }
-            });
-        });
-
-        if (arrayToReturn.length > 5) {
-            arrayToReturn = arrayToReturn.slice(0, 5);
-        }
-        return arrayToReturn;
-    }
-
-    checkRunningSessions() {
-        this.checkingExistingSessions = true;
-        this.checkingExistingSessionsEvent.emit(true);
-
-        this._daasService.getDaasSessionsWithDetails(this.siteToBeProfiled).retry(2)
-            .subscribe(sessions => {
-                this.checkingExistingSessions = false;
-                this.checkingExistingSessionsEvent.emit(false);
-                
-                this.Sessions = this.takeTopFiveProfilingSessions(sessions);
-                this.SessionsEvent.emit(this.Sessions);
-                
-                var runningSession;
-                for (var index = 0; index < sessions.length; index++) {
-                    if (sessions[index].Status === 0)  // Check Active Sessions only
-                    {
-                        var clrDiagnoser = sessions[index].DiagnoserSessions.find(x => x.Name.startsWith("CLR Profiler"));
-                        if (clrDiagnoser) {
-                            runningSession = sessions[index];
-                            break;
-                        }
-                    }
-                }
-                if (runningSession) {
-                    this.sessionInProgress = true;
-                    this.updateInstanceInformation();
-                    this.getProfilingStateFromSession(runningSession);
-                    this.SessionId = runningSession.SessionId;
-                    this.subscription = Observable.interval(10000).subscribe(res => {
-                        this.pollRunningSession(this.SessionId);
-                    });
-                }
-            });
-    }
-
-    pollRunningSession(sessionId: string) {
-        var inProgress = false;
-        this._daasService.getDaasSessionWithDetails(this.siteToBeProfiled, sessionId)
-            .subscribe(runningSession => {
-                if (runningSession.Status === 0) {
-                    inProgress = true;
-                    this.getProfilingStateFromSession(runningSession);
-                }
-                else {
-                    this.sessionInProgress = false;
-
-                    // stop our timer at this point
-                    if (this.subscription) {
-                        this.subscription.unsubscribe();
-                    }
-
-                    var clrDiagnoser = runningSession.DiagnoserSessions.find(x => x.Name.startsWith("CLR Profiler"));
-                    if (clrDiagnoser) {                        
-                        this.Reports = clrDiagnoser.Reports;
-                        this.SessionCompleted = true;
-                    }
-                }
-                this.sessionInProgress = inProgress;
-            });
-    }
-
-    getProfilingStateFromSession(session: Session) {
+    getDiagnoserStateFromSession(session: Session) {
         var clrDiagnoser = session.DiagnoserSessions.find(x => x.Name.startsWith("CLR Profiler"));
         if (clrDiagnoser) {
             this.diagnoserSession = clrDiagnoser;
@@ -217,55 +104,5 @@ export class ProfilerComponent implements OnInit, OnDestroy {
 
             }
         }
-    }
-
-    updateInstanceInformation() {
-        this.InstancesStatus = new Map<string, number>();
-        this.instances.forEach(x => {
-            this.InstancesStatus.set(x, 1);
-        });
-        if (this.instances.length > 0) {
-            this.selectedInstance = this.instances[0];
-        }
-    }
-
-    collectProfilerTrace() {
-        //this._logger.LogSolutionTried('CLR Profiling', this.data.solution.order.toString(), 'inline', '');
-        this.sessionInProgress = true;
-        this.updateInstanceInformation();
-
-        let diagnoserName = "CLR Profiler";
-        if (this.collectStackTraces)
-        {
-            diagnoserName = "CLR Profiler with Thread Stacks"
-        }
-
-        var submitNewSession = this._daasService.submitDaasSession(this.siteToBeProfiled, diagnoserName, [])
-            .subscribe(result => {
-                this.sessionStatus = 1;
-                this.SessionId = result;
-                this.subscription = Observable.interval(10000).subscribe(res => {
-                    this.pollRunningSession(this.SessionId);
-                });
-            },
-                error => {
-                    this.error = error;
-                    this.sessionInProgress = false;
-                });
-    }
-
-    onInstanceChange(instanceSelected: string): void {
-        this.selectedInstance = instanceSelected;
-    }
-
-    openReport(url: string) {
-        this._windowService.open(`https://${this.scmPath}/api/vfs/data/DaaS/${url}`);
-    }
-
-    ngOnDestroy(): void {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-        }
-
     }
 }

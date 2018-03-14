@@ -1,6 +1,6 @@
 <default-solution-template [title]="title" [description]="description" [tags]="data.tags">
 
-    <profiler [scmPath]="scmPath" [siteToBeProfiled]="siteToBeProfiled" (checkingExistingSessionsEvent)="updateCheckingExistingSessions($event)"
+    <profiler [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeProfiled" (checkingExistingSessionsEvent)="updateCheckingExistingSessions($event)"
         (SessionsEvent)="updateSessions($event)">
     </profiler>
 

@@ -1,18 +1,13 @@
-<div *ngIf="!supportedTier">
-    <div class="focus-box focus-box-warning" style="margin-top:20px">
-        <div>
-            <strong>Error</strong> - This tool is supported only on Dedicated SKU's
-        </div>
-    </div>
-</div>
-<div *ngIf="supportedTier">
-    <div class="action-box" *ngIf="siteToBeProfiled">
+<daas-validator [siteToBeDiagnosed]="siteToBeDiagnosed" DiagnoserName="CLR Profiler" (DaasValidated)="onDaasValidated($event)"></daas-validator>
+
+<div *ngIf="daasValidated">
+    <div class="action-box" *ngIf="siteToBeDiagnosed">
         <div>
             <table style="border:none">
                 <tr>
-                    <td>App to be Profiled: </td>
+                    <td>App: </td>
                     <td class="highlight-blue">
-                        <b>{{siteToBeProfiled.siteName}}</b>
+                        <b>{{siteToBeDiagnosed.siteName}}</b>
                     </td>
                 </tr>
                 <tr *ngIf="!error">
@@ -20,36 +15,38 @@
                         Instance(s):
                     </td>
                     <td class="highlight-blue">
-                        <span *ngFor="let instance of instances; let isLast=last">
-                            {{instance}}{{isLast? '':','}}
-                        </span>
+                        <div *ngFor="let instance of InstancesSelected;let i = index">
+                            <input type="checkbox" value="{{ instance.InstanceName }}" name="{{ instance.InstanceName }}" [(ngModel)]="InstancesSelected[i].Selected"
+                            /> {{ instance.InstanceName}}
+                        </div>
                     </td>
-                </tr>             
+                </tr>
             </table>
 
             <div style="text-align:right">
-                <div class="col" *ngIf="checkingExistingSessions">
+                <div class="col" *ngIf="operationInProgress">
                     <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                    Checking existing sessions...
-                </div>
-                <div class="col" *ngIf="retrievingInstances">
-                    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                    Retrieving instances...
+                    {{ operationStatus }}
                 </div>
 
-                <button [disabled]="sessionInProgress || checkingExistingSessions || retrievingInstances || retrievingInstancesFailed" [hidden]="SessionCompleted"
-                    class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
+                <button [disabled]="sessionInProgress || operationInProgress || retrievingInstancesFailed" [hidden]="SessionCompleted" class="btn btn-primary"
+                    (click)="collectProfilerTrace()">Collect Profiler Trace</button>
+
                 <div style="margin-top:5px">
-                    <input type="checkbox"  [(ngModel)]="collectStackTraces"/> Add thread report
+                    <input type="checkbox" [(ngModel)]="collectStackTraces" /> Add thread report
                     <div class="tool-tip" style="z-index:2">
                         <i class="fa fa-info-circle" style="color:rgb(84, 143, 255)"></i>
-                        <span class="tool-tip-text">If this option is enabled, then along with the profiler trace, a thread report of all the threads in the process is also collected at the end of the profiler trace. This is useful especially if you are troubleshooting totally hung processes, deadlocks or requests taking more than 60 seconds. This will pause your process for a few seconds until the thread dump is generated.                                
+                        <span class="tool-tip-text">If this option is enabled, then along with the profiler trace, a thread report of all the threads
+                            in the process is also collected at the end of the profiler trace. This is useful especially
+                            if you are troubleshooting totally hung processes, deadlocks or requests taking more than 60
+                            seconds. This will pause your process for a few seconds until the thread dump is generated.
                             <div style="margin-top:10px">
-                                    CAUTION: This option is NOT recommended if you are experiencing high CPU on the instance.
+                                CAUTION: This option is NOT recommended if you are experiencing high CPU on the instance.
                             </div>
                         </span>
                     </div>
                 </div>
+
             </div>
 
             <div class="status-box" *ngIf="sessionInProgress">
@@ -58,19 +55,19 @@
                         {{instancestatus.key}}
                     </option>
                 </select>
-                <step-wizard [CurrentStep]="sessionStatus" [WizardSteps]="WizardSteps"></step-wizard>
+
+                <step-wizard [CurrentStep]="sessionStatus" [WizardSteps]="WizardSteps" [WizardStepStatus]="WizardStepStatus"></step-wizard>
+
             </div>
         </div>
-
-    </div>
-
-    <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="error">
-        <div *ngIf="error.code === 'GatewayTimeout'">
-            <strong>Error</strong> - Failed to fetch instances for the web app. The instance may fail to respond to any diagnostic
-            calls under high CPU situations. Please retry this investigation after some time.
-        </div>
-        <div *ngIf="error.code != 'GatewayTimeout'">
-            <strong>Error</strong> - {{ error.message }}
+        <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="error">
+            <div *ngIf="error.code === 'GatewayTimeout'">
+                <strong>Error</strong> - Failed to fetch instances for the Web App. The instance may fail to respond to any diagnostic
+                calls under high CPU situations. Please retry this investigation after some time.
+            </div>
+            <div *ngIf="error.code != 'GatewayTimeout'">
+                <strong>Error</strong> - {{ error.message }}
+            </div>
         </div>
     </div>
 

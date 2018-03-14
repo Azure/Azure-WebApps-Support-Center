@@ -10,7 +10,6 @@ import { WindowService } from '../../services/window.service';
 import { AvailabilityLoggingService } from '../../services/logging/availability.logging.service';
 import { ServerFarmDataService } from '../../services/server-farm-data.service';
 
-
 class InstanceSelection {
     InstanceName: string;
     Selected: boolean;
@@ -42,90 +41,48 @@ export class DaasComponent implements OnInit, OnDestroy {
     Sessions: Session[];
     InstancesStatus: Map<string, number>;
     selectedInstance: string;
-    checkingExistingSessions: boolean;
+    operationInProgress: boolean;
+    operationStatus: string;
     Reports: Report[];
     SessionCompleted: boolean;
     WizardSteps: StepWizardSingleStep[] = [];
-    couldNotFindSite: boolean = false;
 
     WizardStepStatus: string;
 
     error: any;
-    retrievingInstances: boolean = false;
     retrievingInstancesFailed: boolean = false;
-    foundDiagnoserWarnings: boolean = false;
-    retrievingDiagnosers: boolean = false;
 
-    supportedTier: boolean = false;
-    diagnoserWarning: string = "";
-    daasRunnerJobRunning: boolean = true;
-    checkingDaasWebJobStatus: boolean = false;
-    checkingSupportedTier: boolean = true;
+    daasValidated: boolean = false;
 
     constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
 
     }
 
+    onDaasValidated(validated: boolean) {
+        this.daasValidated = true;
+        this.SessionCompleted = false;
+        this.operationInProgress = true;
+        this.operationStatus = "Retrieving instances..."
+
+        this._daasService.getInstances(this.siteToBeDiagnosed).retry(2)
+            .subscribe(result => {
+                this.operationInProgress = false;
+                this.operationStatus = "";
+
+                this.instances = result;
+                this.checkRunningSessions();
+                this.populateinstancesToDiagnose();
+                this.initWizard();
+            },
+                error => {
+                    this.error = error;
+                    this.operationInProgress = false;
+                    this.retrievingInstancesFailed = true;
+                });
+    }
+
     ngOnInit(): void {
 
-        this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
-            if (serverFarm) {
-                this.checkingSupportedTier = false;
-                if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier === "Premium") {
-                    this.supportedTier = true;
-                    this.checkingDaasWebJobStatus = true;
-
-                    this._daasService.getDaasWebjobState(this.siteToBeDiagnosed).retry(2)
-                        .subscribe(webjobstate => {
-                            this.checkingDaasWebJobStatus = false;
-                            let daasRunnerState = webjobstate.json();
-                            if (daasRunnerState != "Running") {
-                                this.daasRunnerJobRunning = false;
-                                return;
-                            }
-
-                            this.SessionCompleted = false;
-
-                            this.retrievingInstances = true;
-                            this._daasService.getInstances(this.siteToBeDiagnosed).retry(2)
-                                .subscribe(result => {
-                                    this.retrievingInstances = false;
-                                    this.instances = result;
-                                    this.checkRunningSessions();
-                                    this.populateinstancesToDiagnose();
-
-                                    this.retrievingDiagnosers = true;
-                                    this._daasService.getDiagnosers(this.siteToBeDiagnosed).retry(2)
-                                        .subscribe(result => {
-                                            this.retrievingDiagnosers = false;
-                                            let diagnosers: DiagnoserDefinition[] = result;
-                                            let thisDiagnoser = diagnosers.filter(x => x.Name === this.DiagnoserName);
-                                            if (thisDiagnoser.length > 0) {
-                                                if (thisDiagnoser[0].Warnings.length > 0) {
-                                                    this.diagnoserWarning = thisDiagnoser[0].Warnings.join(',');
-                                                    this.foundDiagnoserWarnings = true;
-                                                }
-                                            }
-                                            if (!this.foundDiagnoserWarnings) {
-                                                this.initWizard();
-                                            }
-                                        },
-                                            error => {
-                                                this.error = error;
-                                            });
-                                },
-                                    error => {
-                                        this.error = error;
-                                        this.retrievingInstances = false;
-                                        this.retrievingInstancesFailed = true;
-                                    });
-
-                        });
-                }
-            }
-        }, error => {
-            //TODO: handle error
-        })
     }
 
     initWizard(): void {
@@ -166,12 +123,14 @@ export class DaasComponent implements OnInit, OnDestroy {
         return arrayToReturn;
     }
     checkRunningSessions() {
-        this.checkingExistingSessions = true;
+        this.operationInProgress = true;
+        this.operationStatus = "Checking existing sessions...";
         this.checkingExistingSessionsEvent.emit(true);
 
         this._daasService.getDaasSessionsWithDetails(this.siteToBeDiagnosed).retry(2)
             .subscribe(sessions => {
-                this.checkingExistingSessions = false;
+                this.operationInProgress = false;
+                this.operationStatus = "";
                 this.checkingExistingSessionsEvent.emit(false);
 
                 this.Sessions = this.takeTopFiveDiagnoserSessions(sessions);
@@ -190,7 +149,7 @@ export class DaasComponent implements OnInit, OnDestroy {
                 }
                 if (runningSession) {
                     this.sessionInProgress = true;
-                    this.updateInstanceInformation();
+                    this.updateInstanceInformationOnLoad();
                     this.getDiagnoserStateFromSession(runningSession);
                     this.SessionId = runningSession.SessionId;
                     this.subscription = Observable.interval(10000).subscribe(res => {
@@ -248,6 +207,16 @@ export class DaasComponent implements OnInit, OnDestroy {
         }
     }
 
+    updateInstanceInformationOnLoad() {
+        this.InstancesStatus = new Map<string, number>();
+        this.instances.forEach(x => {
+            this.InstancesStatus.set(x, 1);
+        });
+        if (this.instances.length > 0) {
+            this.selectedInstance = this.instances[0];
+        }
+    }
+
     updateInstanceInformation() {
         this.InstancesStatus = new Map<string, number>();
 
@@ -290,7 +259,6 @@ export class DaasComponent implements OnInit, OnDestroy {
         }
 
         this.sessionInProgress = true;
-
         this.updateInstanceInformation();
 
         var submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.DiagnoserName, this.instancesToDiagnose)
