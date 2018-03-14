@@ -248,6 +248,9 @@ export class DaasComponent implements OnInit, OnDestroy {
     }
 
     collectDiagnoserData() {
+
+        this._logger.LogClickEvent(this.DiagnoserName, "DiagnosticTools");
+        
         this.instancesToDiagnose = new Array<string>();
 
         if (this.InstancesSelected && this.InstancesSelected !== null) {
