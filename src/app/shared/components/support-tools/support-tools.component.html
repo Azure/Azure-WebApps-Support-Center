@@ -1,7 +1,7 @@
 <collapsible-list *ngIf="initialized" [title]="'Support Tools'" [collapsed]="collapsed">
-    <collapsible-list-item *ngFor="let item of supportTools" [disabled]="!item.enabled" (onSelect)="item.action()">{{item.title}}</collapsible-list-item>
+    <collapsible-list-item *ngFor="let item of supportTools" [disabled]="!item.enabled" (onSelect)="item.action()" [marginTop]="10">{{item.title}}</collapsible-list-item>
 </collapsible-list>
 
 <collapsible-list *ngIf="initialized" [title]="'Premium Tools'" [collapsed]="true">
-    <collapsible-list-item *ngFor="let item of premiumTools" [disabled]="!item.enabled" (onSelect)="item.action()">{{item.title}}</collapsible-list-item>
+    <collapsible-list-item *ngFor="let item of premiumTools" [disabled]="!item.enabled" (onSelect)="item.action()" [marginTop]="10">{{item.title}}</collapsible-list-item>
 </collapsible-list>
