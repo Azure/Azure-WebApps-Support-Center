@@ -26,6 +26,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     @Input() siteToBeDiagnosed: SiteDaasInfo;
     @Input() scmPath: string;
     @Input() DiagnoserName: string;
+    @Input() DiagnoserNameLookup: string = "";
 
     @Output() checkingExistingSessionsEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() SessionsEvent: EventEmitter<Session[]> = new EventEmitter<Session[]>();
@@ -55,10 +56,14 @@ export class DaasComponent implements OnInit, OnDestroy {
     daasValidated: boolean = false;
 
     constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
-
     }
 
     onDaasValidated(validated: boolean) {
+
+        if (this.DiagnoserNameLookup === "") {
+            this.DiagnoserNameLookup = this.DiagnoserName;
+        }
+
         this.daasValidated = true;
         this.SessionCompleted = false;
         this.operationInProgress = true;
@@ -111,7 +116,7 @@ export class DaasComponent implements OnInit, OnDestroy {
         var arrayToReturn = new Array<Session>();
         sessions.forEach(session => {
             session.DiagnoserSessions.forEach(diagnoser => {
-                if (diagnoser.Name === this.DiagnoserName) {
+                if (diagnoser.Name.startsWith(this.DiagnoserNameLookup)) {
                     arrayToReturn.push(session);
                 }
             });
@@ -140,7 +145,7 @@ export class DaasComponent implements OnInit, OnDestroy {
                 for (var index = 0; index < sessions.length; index++) {
                     if (sessions[index].Status === 0)  // Check Active Sessions only
                     {
-                        var daasDiagnoser = sessions[index].DiagnoserSessions.find(x => x.Name === this.DiagnoserName);
+                        var daasDiagnoser = sessions[index].DiagnoserSessions.find(x => x.Name.startsWith(this.DiagnoserNameLookup));
                         if (daasDiagnoser) {
                             runningSession = sessions[index];
                             break;
@@ -175,7 +180,7 @@ export class DaasComponent implements OnInit, OnDestroy {
                         this.subscription.unsubscribe();
                     }
 
-                    var daasDiagnoser = runningSession.DiagnoserSessions.find(x => x.Name === this.DiagnoserName);
+                    var daasDiagnoser = runningSession.DiagnoserSessions.find(x => x.Name.startsWith(this.DiagnoserNameLookup));
                     if (daasDiagnoser) {
                         this.Reports = daasDiagnoser.Reports;
                         this.SessionCompleted = true;
@@ -186,7 +191,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     }
 
     getDiagnoserStateFromSession(session: Session) {
-        var daasDiagnoser = session.DiagnoserSessions.find(x => x.Name === this.DiagnoserName);
+        var daasDiagnoser = session.DiagnoserSessions.find(x => x.Name.startsWith(this.DiagnoserNameLookup));
         if (daasDiagnoser) {
             this.diagnoserSession = daasDiagnoser;
             if (daasDiagnoser.CollectorStatus === 2) {

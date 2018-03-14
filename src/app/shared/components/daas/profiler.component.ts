@@ -29,18 +29,19 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
     collectStackTraces: boolean = false;
 
     constructor(private _serverFarmServiceLocal: ServerFarmDataService, private _siteServiceLocal: SiteService, private _daasServiceLocal: DaasService, private _windowServiceLocal: WindowService, private _loggerLocal: AvailabilityLoggingService) {
-        
+
         super(_serverFarmServiceLocal, _siteServiceLocal, _daasServiceLocal, _windowServiceLocal, _loggerLocal)
         this.DiagnoserName = "CLR Profiler";
+        this.DiagnoserNameLookup = "CLR Profiler";
     }
 
     ngOnInit(): void {
-        
+
     }
 
     collectProfilerTrace() {
         if (this.collectStackTraces) {
-            this.DiagnoserName = "CLR Profiler With ThreadStacks";
+            this.DiagnoserName = "CLR Profiler with Thread Stacks";
         }
         else {
             this.DiagnoserName = "CLR Profiler";
