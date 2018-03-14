@@ -8,7 +8,7 @@
         <support-tools></support-tools>
 
         <collapsible-list *ngFor="let list of listCollection" [title]="list.title" [collapsed]="list.collapsed">
-            <collapsible-list-item *ngFor="let item of list.items" (onSelect)="openUrl(item.href, item.title, list.title)">{{item.title}}</collapsible-list-item>
+            <collapsible-list-item *ngFor="let item of list.items" (onSelect)="openUrl(item.href, item.title, list.title)" [marginTop]="10">{{item.title}}</collapsible-list-item>
         </collapsible-list>
     </div>
 </div>

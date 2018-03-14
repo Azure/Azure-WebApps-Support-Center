@@ -19,6 +19,7 @@ import { PhpLogsAnalyzerToolComponent } from '../shared/components/tools/php-log
 import { ConnectionDiagnoserToolComponent } from '../shared/components/tools/connection-diagnoser-tool/connection-diagnoser-tool.component';
 import { NetworkTraceToolComponent } from '../shared/components/tools/network-trace-tool/network-trace-tool.component';
 import { IncidentSummaryComponent } from '../shared/components/incident-summary/incident-summary.component';
+import { ToolNames } from '../shared/models/tools-constants';
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
@@ -198,14 +199,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/profiler',
         component: ProfilerToolComponent,
         data: {
-            navigationTitle: 'CLR Profiler'            
+            navigationTitle: ToolNames.Profiler          
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/profiler',
         component: ProfilerToolComponent,
         data: {
-            navigationTitle: 'CLR Profiler'
+            navigationTitle: ToolNames.Profiler
         }
     },
 
@@ -214,14 +215,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/memorydump',
         component: MemoryDumpToolComponent,
         data: {
-            navigationTitle: 'Memory Dump'
+            navigationTitle: ToolNames.MemoryDump
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/memorydump',
         component: MemoryDumpToolComponent,
         data: {
-            navigationTitle: 'Memory Dump'
+            navigationTitle: ToolNames.MemoryDump
         }
     },    
     // Java Thread Dump
@@ -229,14 +230,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/javathreaddump',
         component: JavaThreadDumpToolComponent,
         data: {
-            navigationTitle: 'Java Thread Dump'
+            navigationTitle: ToolNames.JavaThreadDump
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/javathreaddump',
         component: JavaThreadDumpToolComponent,
         data: {
-            navigationTitle: 'Java Thread Dump'
+            navigationTitle: ToolNames.JavaThreadDump
         }
     },
     // Java Memory Dump
@@ -244,14 +245,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/javamemorydump',
         component: JavaMemoryDumpToolComponent,
         data: {
-            navigationTitle: 'Java Memory Dump'
+            navigationTitle: ToolNames.JavaMemoryDump
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/javamemorydump',
         component: JavaMemoryDumpToolComponent,
         data: {
-            navigationTitle: 'Java Memory Dump'
+            navigationTitle: ToolNames.JavaMemoryDump
         }
     },
     
@@ -260,14 +261,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/httploganalyzer',
         component: HttpLogAnalysisToolComponent,
         data: {
-            navigationTitle: 'HTTP Log Analyzer'
+            navigationTitle: ToolNames.HttpLogAnalyzer
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/httploganalyzer',
         component: HttpLogAnalysisToolComponent,
         data: {
-            navigationTitle: 'HTTP Log Analyzer'
+            navigationTitle: ToolNames.HttpLogAnalyzer
         }
     },
     // PHP Log Analyzer 
@@ -275,14 +276,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/phploganalyzer',
         component: PhpLogsAnalyzerToolComponent,
         data: {
-            navigationTitle: 'PHP Log Analyzer'
+            navigationTitle: ToolNames.PHPLogAnalyzer
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/phploganalyzer',
         component: PhpLogsAnalyzerToolComponent,
         data: {
-            navigationTitle: 'PHP Log Analyzer'
+            navigationTitle: ToolNames.PHPLogAnalyzer
         }
     }
     ,
@@ -291,14 +292,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/phpprocessanalyzer',
         component: PhpProcessAnalyzerToolComponent,
         data: {
-            navigationTitle: 'PHP Process Analyzer'
+            navigationTitle: ToolNames.PHPProcessAnalyzer
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/phpprocessanalyzer',
         component: PhpProcessAnalyzerToolComponent,
         data: {
-            navigationTitle: 'PHP Process Analyzer'
+            navigationTitle: ToolNames.PHPProcessAnalyzer
         }
     }
     ,
@@ -307,7 +308,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/databasetester',
         component: ConnectionDiagnoserToolComponent,
         data: {
-            navigationTitle: 'Connection Strings',
+            navigationTitle: ToolNames.DatabaseTester,
             cacheComponent: true
         }
     },
@@ -315,7 +316,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _slotResourceUrl + '/diagnostics/tools/databasetester',
         component: ConnectionDiagnoserToolComponent,
         data: {
-            navigationTitle: 'Connection Strings',
+            navigationTitle: ToolNames.DatabaseTester,
             cacheComponent: true
         }
     }
@@ -325,14 +326,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/networktrace',
         component: NetworkTraceToolComponent,
         data: {
-            navigationTitle: 'Network Trace',            
+            navigationTitle: ToolNames.NetworkTrace,            
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/networktrace',
         component: NetworkTraceToolComponent,
         data: {
-            navigationTitle: 'Network Trace',           
+            navigationTitle: ToolNames.NetworkTrace,           
         }
     }
 

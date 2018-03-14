@@ -11,6 +11,8 @@ export class CollapsibleListItemComponent {
     @Input() disabled: boolean = false;
     @Output() onSelect: EventEmitter<any> = new EventEmitter<any>();
 
+    @Input() marginTop: number = 0;
+
     constructor() {
     }
 

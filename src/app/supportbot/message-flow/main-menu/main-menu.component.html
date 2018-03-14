@@ -1,11 +1,14 @@
-<div class="row">
+<div class="row" style="margin-bottom: 10px;">
     <div class="category-container-header">Select Problem Category</div>
-    <div class="col category-container animated zoomIn"
-        *ngFor="let category of categories; let i = index"
-        [style.background-color]="colors[i].background"
-        [style.color]="colors[i].text"
-        [routerLink]="[category.href]"
-        (click)="logCategorySelected(category.name)">
-        <div class="category-content">{{category.name}}</div>
+    <div *ngFor="let category of problemCategories;let i = index">
+        <collapsible-list [title]="category.Name" [collapsed]="category.Collapsed" >
+            <collapsible-list-item>
+                <div class="col animated zoomIn category-box" *ngFor="let subcategory of category.Subcategories" [style.background-color]="subcategory.BgColor" 
+                    [style.color]="subcategory.TextColor" [routerLink]="[subcategory.Href]" (click)="logCategorySelected(subcategory.Name)">
+                    <div class="category-content">{{subcategory.Name}}</div>
+                </div>
+                <!-- <scrolling-tile [Collapsed]="category.Collapsed" [Subcategories]="category.Subcategories" ></scrolling-tile> -->
+            </collapsible-list-item>
+        </collapsible-list>
     </div>
 </div>
