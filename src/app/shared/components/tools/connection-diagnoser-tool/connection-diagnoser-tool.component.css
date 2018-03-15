@@ -10,6 +10,7 @@
   overflow-wrap: break-word;
   font-style: italic;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .fixed-table {

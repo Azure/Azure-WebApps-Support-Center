@@ -75,7 +75,7 @@ export interface DatabaseTestConnectionResult {
     ProviderName: string;
     ExceptionDetails: ExceptionDetails
     Succeeded: boolean;
-    DatabaseType: number;
+    DatabaseType: ConnectionDatabaseType;
     Instance: string;
     DummyValueExistsInWebConfig: boolean;
     FilePath: string;
@@ -84,6 +84,14 @@ export interface DatabaseTestConnectionResult {
     MaskedConnectionString: string;
     DisplayClearText: boolean;
     Expanded:boolean;
+}
+
+export enum ConnectionDatabaseType {
+    SqlDatabase = 0,
+    SqlServer,
+    MySql,
+    Custom,
+    Dynamic
 }
 
 export interface ExceptionDetails {
