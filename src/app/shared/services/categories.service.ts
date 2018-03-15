@@ -105,6 +105,14 @@ export class CategoriesService {
             Href: 'tools/databasetester',
             OperatingSystem: OperatingSystem.windows
         });
+
+        tools.Subcategories.push({
+            Name: ToolNames.NetworkTrace,
+            BgColor: 'rgb(153, 51, 127)',
+            TextColor: 'White',
+            Href: 'tools/networktrace',
+            OperatingSystem: OperatingSystem.windows
+        });
         
         this.Categories.push(perf);
         this.Categories.push(tools);

@@ -9,6 +9,7 @@
 
     <div class="header2">What you should know before collecting a Network Trace</div>
     <ul>
+        <li>This tool <strong>cannot</strong> capture Network Traffic between Azure Virtual Networks.</li>
         <li>Network traces are helpful to troubleshoot TCP packet loss and to check HTTP communication that your App is making
             with the remote endpoints.</li>
         <li>After the network trace is started, you should reproduce the problem so that outbound traffic from your App gets
@@ -58,8 +59,7 @@
             <i class="fa health-icon fa-check-circle healthy-icon-color" aria-hidden="true"></i>
             Network Trace is started for the Web App and will automatically stop after
             <strong>{{ duration }}</strong> seconds. Please check for these file(s) in
-            <a href='https://{{this.scmPath}}/debugconsole'
-                target="blank">Kudu console</a> in
+            <a href='https://{{this.scmPath}}/debugconsole' target="blank">Kudu console</a> in
             <strong>d:\home\logfiles\networktrace\</strong> folder after some time.
         </span>
         <div>
