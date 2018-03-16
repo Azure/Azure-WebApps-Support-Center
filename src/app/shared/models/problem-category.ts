@@ -14,4 +14,5 @@ export class Subcategory
     TextColor:string;
     Href: string;
     OperatingSystem: OperatingSystem;
+    AppStack: string;
 }

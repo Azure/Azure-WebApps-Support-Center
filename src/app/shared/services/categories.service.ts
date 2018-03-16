@@ -26,7 +26,8 @@ export class CategoriesService {
             BgColor: '#1446a0',
             TextColor: 'White',
             Href: 'availability/analysis',
-            OperatingSystem: OperatingSystem.windows || OperatingSystem.linux
+            OperatingSystem: OperatingSystem.windows || OperatingSystem.linux,
+            AppStack : ""
         });
 
         perf.Subcategories.push({
@@ -34,7 +35,8 @@ export class CategoriesService {
             BgColor: '#ef476f',
             TextColor: 'White',
             Href: 'performance/analysis',
-            OperatingSystem: OperatingSystem.windows || OperatingSystem.linux
+            OperatingSystem: OperatingSystem.windows || OperatingSystem.linux,
+            AppStack : ""
         });
 
         perf.Subcategories.push({
@@ -42,7 +44,8 @@ export class CategoriesService {
             BgColor: '#540d6e',
             TextColor: 'White',
             Href: 'availability/detectors/sitecpuanalysis',
-            OperatingSystem: OperatingSystem.windows
+            OperatingSystem: OperatingSystem.windows,
+            AppStack : ""
         });
 
         perf.Subcategories.push({
@@ -50,7 +53,8 @@ export class CategoriesService {
             BgColor: 'rgb(1, 185, 137)',
             TextColor: 'White',
             Href: 'availability/memoryanalysis',
-            OperatingSystem: OperatingSystem.windows
+            OperatingSystem: OperatingSystem.windows,
+            AppStack : ""
         });
 
         perf.Subcategories.push({
@@ -58,7 +62,8 @@ export class CategoriesService {
             BgColor: '#540d6e',
             TextColor: 'White',
             Href: 'availability/detectors/dockercontainerstartstop',
-            OperatingSystem: OperatingSystem.linux
+            OperatingSystem: OperatingSystem.linux,
+            AppStack : ""
         });
 
         perf.Subcategories.push({
@@ -66,7 +71,8 @@ export class CategoriesService {
             BgColor: 'rgb(234, 131, 0)',
             TextColor: 'White',
             Href: 'availability/apprestartanalysis',
-            OperatingSystem: OperatingSystem.windows
+            OperatingSystem: OperatingSystem.windows,
+            AppStack : ""
         });
 
         perf.Subcategories.push({
@@ -74,7 +80,8 @@ export class CategoriesService {
             BgColor: 'rgb(59, 99, 123)',
             TextColor: 'White',
             Href: 'availability/tcpconnectionsanalysis',
-            OperatingSystem: OperatingSystem.windows
+            OperatingSystem: OperatingSystem.windows,
+            AppStack : ""
         });
 
         let tools = new Category();
@@ -87,7 +94,8 @@ export class CategoriesService {
             BgColor: 'rgb(153, 51, 0)',
             TextColor: 'White',
             Href: 'tools/profiler',
-            OperatingSystem: OperatingSystem.windows
+            OperatingSystem: OperatingSystem.windows,
+            AppStack : "ASP.Net"
         });
 
         tools.Subcategories.push({
@@ -95,7 +103,8 @@ export class CategoriesService {
             BgColor: 'rgb(102, 153, 0)',
             TextColor: 'White',
             Href: 'tools/memorydump',
-            OperatingSystem: OperatingSystem.windows
+            OperatingSystem: OperatingSystem.windows,
+            AppStack : ""
         });
 
         tools.Subcategories.push({
@@ -103,7 +112,8 @@ export class CategoriesService {
             BgColor: 'rgb(0, 102, 153)',
             TextColor: 'White',
             Href: 'tools/databasetester',
-            OperatingSystem: OperatingSystem.windows
+            OperatingSystem: OperatingSystem.windows,
+            AppStack : ""
         });
 
         tools.Subcategories.push({
@@ -111,8 +121,46 @@ export class CategoriesService {
             BgColor: 'rgb(153, 51, 127)',
             TextColor: 'White',
             Href: 'tools/networktrace',
-            OperatingSystem: OperatingSystem.windows
+            OperatingSystem: OperatingSystem.windows,
+            AppStack : ""
         });
+
+        tools.Subcategories.push({
+            Name: ToolNames.PHPLogAnalyzer,
+            BgColor: 'rgb(153, 69, 0)',
+            TextColor: 'White',
+            Href: 'tools/phploganalyzer',
+            OperatingSystem: OperatingSystem.windows,
+            AppStack : "PHP"
+        });
+        
+        tools.Subcategories.push({
+            Name: ToolNames.PHPProcessAnalyzer,
+            BgColor: 'rgb(0, 148, 153)',
+            TextColor: 'White',
+            Href: 'tools/phpprocessanalyzer',
+            OperatingSystem: OperatingSystem.windows,
+            AppStack : "PHP"
+        });
+
+        tools.Subcategories.push({
+            Name: ToolNames.JavaMemoryDump,
+            BgColor: 'rgb(153, 69, 0)',
+            TextColor: 'White',
+            Href: 'tools/javamemorydump',
+            OperatingSystem: OperatingSystem.windows,
+            AppStack : "Java"
+        });
+
+        tools.Subcategories.push({
+            Name: ToolNames.JavaThreadDump,
+            BgColor: 'rgb(0, 148, 153)',
+            TextColor: 'White',
+            Href: 'tools/javathreaddump',
+            OperatingSystem: OperatingSystem.windows,
+            AppStack : "Java"
+        });
+
         
         this.Categories.push(perf);
         this.Categories.push(tools);

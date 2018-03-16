@@ -33,7 +33,7 @@ export class DaasValidatorComponent implements OnInit {
     this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
       if (serverFarm) {
         this.checkingSupportedTier = false;
-        if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier === "Premium") {
+        if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier === "Premium" || serverFarm.sku.tier === "Isolated") {
           this.supportedTier = true;
           this.checkingDaasWebJobStatus = true;
 

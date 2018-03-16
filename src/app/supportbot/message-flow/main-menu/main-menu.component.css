@@ -7,3 +7,20 @@
     margin: 10px;
     vertical-align: top;
 }
+
+.diagnostics-stack {
+    color:black;    
+    margin-left: 15px;
+    text-decoration: none;
+    cursor: default;
+}
+
+.area {       
+    text-align: center;
+    display:block;    
+}
+
+.content {
+    display:table;    
+    vertical-align:middle;
+}
