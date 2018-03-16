@@ -3,7 +3,7 @@
     <div *ngFor="let category of problemCategories;let i = index">
         <collapsible-list [title]="category.Name" [collapsed]="category.Collapsed">
             <collapsible-list-item>
-                <div class="col animated zoomIn category-box" *ngFor="let subcategory of category.Subcategories" [style.background-color]="subcategory.BgColor"
+                <div [ngClass]="animateToolsOnly && category.Name !=='Diagnostic Tools'?'col zoomIn category-box':'col zoomIn animated  category-box'" *ngFor="let subcategory of category.Subcategories" [style.background-color]="subcategory.BgColor"
                     [style.color]="subcategory.TextColor" [routerLink]="[subcategory.Href]" (click)="logCategorySelected(subcategory.Name)">
                     <div class="category-content">{{subcategory.Name}}</div>
                 </div>
