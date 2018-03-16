@@ -8,19 +8,18 @@
     vertical-align: top;
 }
 
-.diagnostics-stack {
-    color:black;    
-    margin-left: 15px;
-    text-decoration: none;
-    cursor: default;
-}
-
-.area {       
+.area {
     text-align: center;
-    display:block;    
+    display:block;
+    margin-left: 15px;
 }
 
 .content {
-    display:table;    
+    display:table;
     vertical-align:middle;
+}
+
+.change-stack{
+    cursor:pointer;
+    color:#3999c6;
 }

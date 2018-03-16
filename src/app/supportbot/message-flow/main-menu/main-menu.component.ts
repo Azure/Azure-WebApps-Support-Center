@@ -23,9 +23,9 @@ export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageCom
 
     problemCategories: Category[] = [];
     allProblemCategories: Category[] = [];
-    AppStack: string = "";
-    showStackList: boolean = false;
+    AppStack: string = "";    
     animateToolsOnly: boolean = false;
+    showToolsDropdown:boolean = false;
 
     @Output() onViewUpdate = new EventEmitter();
     @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
@@ -79,15 +79,9 @@ export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageCom
         this.onViewUpdate.emit();
     }
 
-    stackChangeClicked() {
-        this.showStackList = true;
-    }
-
     onStackChanged(stack: string) {       
         this.AppStack = stack;
-        setTimeout(() => {
-            this.showStackList = false;
-        }, 2000);
+        this.showToolsDropdown = false;
         this.problemCategories = this.filterCategoriesForStack(this.allProblemCategories);
         this.animateToolsOnly = true;
     }
