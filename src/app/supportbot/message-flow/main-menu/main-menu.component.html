@@ -15,6 +15,7 @@
                         <strong *ngIf="!showStackList">{{ AppStack }}</strong>
                         <select style="font-size:smaller" *ngIf="showStackList" [(ngModel)]="AppStack" (change)="onStackChanged($event.target.value)">
                             <option>ASP.Net</option>
+                            <option>ASP.Net Core</option>
                             <option>Java</option>
                             <option>PHP</option>
                         </select>

@@ -11,13 +11,13 @@
                     </td>
                 </tr>
                 <tr *ngIf="!error">
-                    <td>
+                    <td valign="top">
                         Instance(s):
                     </td>
                     <td class="highlight-blue">
                         <div *ngFor="let instance of InstancesSelected;let i = index">
-                            <input type="checkbox" value="{{ instance.InstanceName }}" name="{{ instance.InstanceName }}" [(ngModel)]="InstancesSelected[i].Selected"
-                            /> {{ instance.InstanceName}}
+                            <input type="checkbox" [disabled]="sessionInProgress" value="{{ instance.InstanceName }}" name="{{ instance.InstanceName }}"
+                                [(ngModel)]="InstancesSelected[i].Selected" /> {{ instance.InstanceName}}
                         </div>
                     </td>
                 </tr>
@@ -33,7 +33,7 @@
                     (click)="collectProfilerTrace()">Collect Profiler Trace</button>
 
                 <div style="margin-top:5px">
-                    <input type="checkbox" [(ngModel)]="collectStackTraces" /> Add thread report
+                    <input type="checkbox" [(ngModel)]="collectStackTraces" [disabled]="sessionInProgress" /> Add thread report
                     <div class="tool-tip" style="z-index:2">
                         <i class="fa fa-info-circle" style="color:rgb(84, 143, 255)"></i>
                         <span class="tool-tip-text">If this option is enabled, then along with the profiler trace, a thread report of all the threads
@@ -68,6 +68,10 @@
             <div *ngIf="error.code != 'GatewayTimeout'">
                 <strong>Error</strong> - {{ error.message }}
             </div>
+        </div>
+        <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="instancesChanged">
+            <strong>Error</strong> - We detected that instances serving the Web App has changed so please select the instances again
+            and run diagnostics again
         </div>
     </div>
 

@@ -52,6 +52,7 @@ export class DaasComponent implements OnInit, OnDestroy {
 
     error: any;
     retrievingInstancesFailed: boolean = false;
+    instancesChanged: boolean = false;
 
     daasValidated: boolean = false;
 
@@ -185,6 +186,14 @@ export class DaasComponent implements OnInit, OnDestroy {
                         this.Reports = daasDiagnoser.Reports;
                         this.SessionCompleted = true;
                     }
+
+                    // Update the sessions information table when a running session finishes
+                    this._daasService.getDaasSessionsWithDetails(this.siteToBeDiagnosed).retry(2)
+                        .subscribe(sessions => {
+                            this.checkingExistingSessionsEvent.emit(false);
+                            this.Sessions = this.takeTopFiveDiagnoserSessions(sessions);
+                            this.SessionsEvent.emit(this.Sessions);
+                        });
                 }
                 this.sessionInProgress = inProgress;
             });
@@ -247,40 +256,68 @@ export class DaasComponent implements OnInit, OnDestroy {
         }
     }
 
+    compareInstances(oldInstances: string[], newInstances: string[]): boolean {
+        return oldInstances.length == newInstances.length && oldInstances.every(function (v, i) { return v === newInstances[i] });
+    }
+
     collectDiagnoserData() {
-
-        this._logger.LogClickEvent(this.DiagnoserName, "DiagnosticTools");
         
-        this.instancesToDiagnose = new Array<string>();
+        this.instancesChanged = false;
+        this.operationInProgress = true;
+        this.operationStatus = "Validating instances..."
 
-        if (this.InstancesSelected && this.InstancesSelected !== null) {
-            this.InstancesSelected.forEach(x => {
-                if (x.Selected) {
-                    this.instancesToDiagnose.push(x.InstanceName);
-                }
-            });
-        }
-
-        if (this.instancesToDiagnose.length === 0) {
-            alert("Please choose at-least one instance");
-            return false;
-        }
-
-        this.sessionInProgress = true;
-        this.updateInstanceInformation();
-
-        var submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.DiagnoserName, this.instancesToDiagnose)
+        this._daasService.getInstances(this.siteToBeDiagnosed).retry(2)
             .subscribe(result => {
+                this.operationInProgress = false;
+                this.operationStatus = "";
+
+                if (!this.compareInstances(this.instances, result)) {
+                    this.instances = result;
+                    this.populateinstancesToDiagnose();
+                    this.instancesChanged = true;
+                    return;
+                }
+
+                this._logger.LogClickEvent(this.DiagnoserName, "DiagnosticTools");
+                this.instancesToDiagnose = new Array<string>();
+
+                if (this.InstancesSelected && this.InstancesSelected !== null) {
+                    this.InstancesSelected.forEach(x => {
+                        if (x.Selected) {
+                            this.instancesToDiagnose.push(x.InstanceName);
+                        }
+                    });
+                }
+
+                if (this.instancesToDiagnose.length === 0) {
+                    alert("Please choose at-least one instance");
+                    return false;
+                }
+
+                this.Reports = [];
+                this.sessionInProgress = true;
                 this.sessionStatus = 1;
-                this.SessionId = result;
-                this.subscription = Observable.interval(10000).subscribe(res => {
-                    this.pollRunningSession(this.SessionId);
-                });
+                this.updateInstanceInformation();
+
+                var submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.DiagnoserName, this.instancesToDiagnose)
+                    .subscribe(result => {
+                        this.SessionId = result;
+                        this.subscription = Observable.interval(10000).subscribe(res => {
+                            this.pollRunningSession(this.SessionId);
+                        });
+                    },
+                        error => {
+                            this.error = error;
+                            this.sessionInProgress = false;
+                        });
             },
                 error => {
                     this.error = error;
-                    this.sessionInProgress = false;
+                    this.operationInProgress = false;
+                    this.retrievingInstancesFailed = true;
                 });
+
+
     }
 
     onInstanceChange(instanceSelected: string): void {
@@ -295,6 +332,7 @@ export class DaasComponent implements OnInit, OnDestroy {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
+        this.Reports = [];
 
     }
 

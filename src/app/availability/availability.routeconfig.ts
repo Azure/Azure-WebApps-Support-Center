@@ -199,14 +199,16 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/profiler',
         component: ProfilerToolComponent,
         data: {
-            navigationTitle: ToolNames.Profiler          
+            navigationTitle: ToolNames.Profiler,
+            cacheComponent: true
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/profiler',
         component: ProfilerToolComponent,
         data: {
-            navigationTitle: ToolNames.Profiler
+            navigationTitle: ToolNames.Profiler,
+            cacheComponent: true
         }
     },
 
@@ -215,14 +217,16 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/memorydump',
         component: MemoryDumpToolComponent,
         data: {
-            navigationTitle: ToolNames.MemoryDump
+            navigationTitle: ToolNames.MemoryDump,
+            cacheComponent: true
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/memorydump',
         component: MemoryDumpToolComponent,
         data: {
-            navigationTitle: ToolNames.MemoryDump
+            navigationTitle: ToolNames.MemoryDump,
+            cacheComponent: true
         }
     },    
     // Java Thread Dump
@@ -230,14 +234,16 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/javathreaddump',
         component: JavaThreadDumpToolComponent,
         data: {
-            navigationTitle: ToolNames.JavaThreadDump
+            navigationTitle: ToolNames.JavaThreadDump,
+            cacheComponent: true
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/javathreaddump',
         component: JavaThreadDumpToolComponent,
         data: {
-            navigationTitle: ToolNames.JavaThreadDump
+            navigationTitle: ToolNames.JavaThreadDump,
+            cacheComponent: true
         }
     },
     // Java Memory Dump
@@ -245,14 +251,16 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/javamemorydump',
         component: JavaMemoryDumpToolComponent,
         data: {
-            navigationTitle: ToolNames.JavaMemoryDump
+            navigationTitle: ToolNames.JavaMemoryDump,
+            cacheComponent: true
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/javamemorydump',
         component: JavaMemoryDumpToolComponent,
         data: {
-            navigationTitle: ToolNames.JavaMemoryDump
+            navigationTitle: ToolNames.JavaMemoryDump,
+            cacheComponent: true
         }
     },
     
@@ -261,14 +269,16 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/httploganalyzer',
         component: HttpLogAnalysisToolComponent,
         data: {
-            navigationTitle: ToolNames.HttpLogAnalyzer
+            navigationTitle: ToolNames.HttpLogAnalyzer,
+            cacheComponent: true
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/httploganalyzer',
         component: HttpLogAnalysisToolComponent,
         data: {
-            navigationTitle: ToolNames.HttpLogAnalyzer
+            navigationTitle: ToolNames.HttpLogAnalyzer,
+            cacheComponent: true
         }
     },
     // PHP Log Analyzer 
@@ -276,14 +286,16 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/phploganalyzer',
         component: PhpLogsAnalyzerToolComponent,
         data: {
-            navigationTitle: ToolNames.PHPLogAnalyzer
+            navigationTitle: ToolNames.PHPLogAnalyzer,
+            cacheComponent: true
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/phploganalyzer',
         component: PhpLogsAnalyzerToolComponent,
         data: {
-            navigationTitle: ToolNames.PHPLogAnalyzer
+            navigationTitle: ToolNames.PHPLogAnalyzer,
+            cacheComponent: true
         }
     }
     ,
@@ -292,14 +304,16 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/phpprocessanalyzer',
         component: PhpProcessAnalyzerToolComponent,
         data: {
-            navigationTitle: ToolNames.PHPProcessAnalyzer
+            navigationTitle: ToolNames.PHPProcessAnalyzer,
+            cacheComponent: true
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/phpprocessanalyzer',
         component: PhpProcessAnalyzerToolComponent,
         data: {
-            navigationTitle: ToolNames.PHPProcessAnalyzer
+            navigationTitle: ToolNames.PHPProcessAnalyzer,
+            cacheComponent: true
         }
     }
     ,

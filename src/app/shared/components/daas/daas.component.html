@@ -11,13 +11,13 @@
                     </td>
                 </tr>
                 <tr *ngIf="!error">
-                    <td>
+                    <td valign="top">
                         Instance(s):
                     </td>
                     <td class="highlight-blue">
                         <div *ngFor="let instance of InstancesSelected;let i = index">
-                            <input type="checkbox" value="{{ instance.InstanceName }}" name="{{ instance.InstanceName }}" [(ngModel)]="InstancesSelected[i].Selected"
-                            /> {{ instance.InstanceName}}
+                            <input type="checkbox" [disabled]="sessionInProgress" value="{{ instance.InstanceName }}" name="{{ instance.InstanceName }}"
+                                [(ngModel)]="InstancesSelected[i].Selected" /> {{ instance.InstanceName}}
                         </div>
                     </td>
                 </tr>
@@ -28,9 +28,9 @@
                     <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
                     {{ operationStatus }}
                 </div>
-                
-                <button [disabled]="sessionInProgress || operationInProgress || retrievingInstancesFailed"
-                    [hidden]="SessionCompleted" class="btn btn-primary" (click)="collectDiagnoserData()">Collect {{ DiagnoserName }}</button>
+
+                <button [disabled]="sessionInProgress || operationInProgress || retrievingInstancesFailed" [hidden]="SessionCompleted" class="btn btn-primary"
+                    (click)="collectDiagnoserData()">Collect {{ DiagnoserName }}</button>
             </div>
 
             <div class="status-box" *ngIf="sessionInProgress">
@@ -52,7 +52,11 @@
             <div *ngIf="error.code != 'GatewayTimeout'">
                 <strong>Error</strong> - {{ error.message }}
             </div>
-        </div>        
+        </div>
+        <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="instancesChanged">
+            <strong>Error</strong> - We detected that instances serving the Web App has changed so please select the instances again
+            and run diagnostics again
+        </div>
     </div>
 
     <div class="status-box" *ngIf="Reports?.length > 0">
