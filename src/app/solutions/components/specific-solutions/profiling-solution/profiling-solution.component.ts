@@ -1,17 +1,9 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { SolutionBaseComponent } from '../../common/solution-base/solution-base.component';
 import { SolutionData } from '../../../../shared/models/solution';
 import { MetaDataHelper } from '../../../../shared/utilities/metaDataHelper';
 import { SiteDaasInfo } from '../../../../shared/models/solution-metadata';
-import { Subscription } from 'rxjs';
-import { TimerObservable } from 'rxjs/observable/TimerObservable';
-import { Diagnoser, DiagnoserStatusMessage, Session, Report } from '../../../../shared/models/daas';
-import { StepWizardSingleStep } from '../../../../shared/models/step-wizard-single-step';
-import { StepWizardComponent } from '../../../../shared/components/step-wizard/step-wizard.component';
-import { DaasSessionsComponent } from '../../../../shared/components/daas-sessions/daas-sessions.component';
 import { SiteService } from '../../../../shared/services/site.service';
-import { DaasService } from '../../../../shared/services/daas.service';
-import { WindowService } from '../../../../shared/services/window.service';
 import { AvailabilityLoggingService } from '../../../../shared/services/logging/availability.logging.service';
 import { ServerFarmDataService } from '../../../../shared/services/server-farm-data.service';
 import { Observable } from 'rxjs/Observable';
@@ -38,7 +30,7 @@ export class ProfilingSolutionComponent implements SolutionBaseComponent, OnInit
         "A profiler trace will help to identify issues in an ASP.NET application only and ASP.NET core is not yet supported",
     ]
 
-    siteToBeProfiled: SiteDaasInfo;
+    siteToBeDiagnosed: SiteDaasInfo;
     scmPath: string;
     couldNotFindSite: boolean = false;
     refreshSessions:boolean = false;
@@ -64,7 +56,7 @@ export class ProfilingSolutionComponent implements SolutionBaseComponent, OnInit
                         slotName = parts[1].replace(')', '');
                     }
 
-                    this.siteToBeProfiled = <SiteDaasInfo>{
+                    this.siteToBeDiagnosed = <SiteDaasInfo>{
                         subscriptionId: siteInfo.subscriptionId,
                         resourceGroupName: targetedSite.resourceGroup,
                         siteName: siteName,
