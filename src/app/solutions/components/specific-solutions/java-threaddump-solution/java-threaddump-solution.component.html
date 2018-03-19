@@ -10,6 +10,6 @@
         <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
     </ul>
 
-    <daas-sessions SessionType="JAVA Thread Dump" [scmPath]="scmPath" [checkingExistingSessions]="checkingExistingSessions" [Sessions]="Sessions"></daas-sessions>
+    <daas-sessions [refreshSessions]="refreshSessions" DiagnoserNameLookup="JAVA Thread Dump" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed"></daas-sessions>
 
 </default-solution-template>

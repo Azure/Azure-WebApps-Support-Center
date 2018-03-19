@@ -25,7 +25,7 @@ export class ProfilerToolComponent implements OnInit {
         "A profiler trace will help to identify issues in an ASP.NET application only and ASP.NET core is not yet supported.",
     ]
 
-    siteToBeProfiled: SiteDaasInfo    
+    siteToBeDiagnosed: SiteDaasInfo    
     scmPath: string;
     couldNotFindSite: boolean = false;
 
@@ -38,13 +38,13 @@ export class ProfilerToolComponent implements OnInit {
             if (siteInfo) {
                 
                 let siteInfoMetaData = siteInfo;
-                this.siteToBeProfiled = new SiteDaasInfo();
+                this.siteToBeDiagnosed = new SiteDaasInfo();
                 
-                this.siteToBeProfiled.subscriptionId = siteInfo.subscriptionId;
-                this.siteToBeProfiled.resourceGroupName =siteInfo.resourceGroupName;
-                this.siteToBeProfiled.siteName = siteInfo.siteName;
-                this.siteToBeProfiled.slot =siteInfo.slot;
-                this.siteToBeProfiled.instances = [];
+                this.siteToBeDiagnosed.subscriptionId = siteInfo.subscriptionId;
+                this.siteToBeDiagnosed.resourceGroupName =siteInfo.resourceGroupName;
+                this.siteToBeDiagnosed.siteName = siteInfo.siteName;
+                this.siteToBeDiagnosed.slot =siteInfo.slot;
+                this.siteToBeDiagnosed.instances = [];
 
             }
         });

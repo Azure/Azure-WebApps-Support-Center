@@ -12,9 +12,7 @@ export abstract class DaasBaseComponent  {
     DiagnoserName: string;
     siteToBeDiagnosed: SiteDaasInfo    
     scmPath: string;    
-
-    Sessions: Session[];
-    checkingExistingSessions: boolean;
+    refreshSessions:boolean = false;
 
     constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
 
@@ -33,12 +31,8 @@ export abstract class DaasBaseComponent  {
             }
         });
     }
-    
-    updateCheckingExistingSessions(event) {
-        this.checkingExistingSessions = event;
-    }
-
+        
     updateSessions(event) {
-        this.Sessions = event;
+        this.refreshSessions = event;
     }
 }

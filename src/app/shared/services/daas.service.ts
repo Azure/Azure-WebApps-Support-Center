@@ -40,6 +40,11 @@ export class DaasService {
         return <Observable<Session[]>>this._armClient.getResourceWithoutEnvelope<Session[]>(resourceUri, null, true);
     }
 
+    getDaasActiveSessionsWithDetails(site: SiteDaasInfo): Observable<Session[]> {
+        let resourceUri: string = this._uriElementsService.getDiagnosticsSessionsDetailsUrl(site, "active", true);
+        return <Observable<Session[]>>this._armClient.getResourceWithoutEnvelope<Session[]>(resourceUri, null, true);
+    }
+
     getDaasSessionWithDetails(site: SiteDaasInfo, sessionId: string): Observable<Session> {
         let resourceUri: string = this._uriElementsService.getDiagnosticsSingleSessionUrl(site, sessionId, true);
         return <Observable<Session>>this._armClient.getResourceWithoutEnvelope<Session>(resourceUri, null, true);

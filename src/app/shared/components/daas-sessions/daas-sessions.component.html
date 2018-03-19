@@ -21,7 +21,7 @@
                         <td>{{ session.StartTime }} (UTC)</td>
                         <td>
                             <div *ngFor="let diagnoser of session.DiagnoserSessions">
-                                <div *ngIf="diagnoser.Name.startsWith(SessionType)">
+                                <div *ngIf="diagnoser.Name.startsWith(DiagnoserNameLookup)">
                                     <ul *ngIf="diagnoser.Reports.length > 0" style="list-style: none;">
                                         <li *ngFor="let report of diagnoser.Reports">
                                             {{ getInstanceNameFromReport(report.FileName) }}

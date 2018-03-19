@@ -28,8 +28,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     @Input() DiagnoserName: string;
     @Input() DiagnoserNameLookup: string = "";
 
-    @Output() checkingExistingSessionsEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() SessionsEvent: EventEmitter<Session[]> = new EventEmitter<Session[]>();
+    @Output() SessionsEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     instances: string[];
     instancesToDiagnose: string[];
@@ -113,34 +112,15 @@ export class DaasComponent implements OnInit, OnDestroy {
 
     }
 
-    takeTopFiveDiagnoserSessions(sessions: Session[]): Session[] {
-        var arrayToReturn = new Array<Session>();
-        sessions.forEach(session => {
-            session.DiagnoserSessions.forEach(diagnoser => {
-                if (diagnoser.Name.startsWith(this.DiagnoserNameLookup)) {
-                    arrayToReturn.push(session);
-                }
-            });
-        });
-
-        if (arrayToReturn.length > 5) {
-            arrayToReturn = arrayToReturn.slice(0, 5);
-        }
-        return arrayToReturn;
-    }
+   
     checkRunningSessions() {
         this.operationInProgress = true;
-        this.operationStatus = "Checking existing sessions...";
-        this.checkingExistingSessionsEvent.emit(true);
+        this.operationStatus = "Checking active sessions...";        
 
-        this._daasService.getDaasSessionsWithDetails(this.siteToBeDiagnosed).retry(2)
+        this._daasService.getDaasActiveSessionsWithDetails(this.siteToBeDiagnosed).retry(2)
             .subscribe(sessions => {
                 this.operationInProgress = false;
-                this.operationStatus = "";
-                this.checkingExistingSessionsEvent.emit(false);
-
-                this.Sessions = this.takeTopFiveDiagnoserSessions(sessions);
-                this.SessionsEvent.emit(this.Sessions);
+                this.operationStatus = "";                                            
 
                 var runningSession;
                 for (var index = 0; index < sessions.length; index++) {
@@ -188,12 +168,7 @@ export class DaasComponent implements OnInit, OnDestroy {
                     }
 
                     // Update the sessions information table when a running session finishes
-                    this._daasService.getDaasSessionsWithDetails(this.siteToBeDiagnosed).retry(2)
-                        .subscribe(sessions => {
-                            this.checkingExistingSessionsEvent.emit(false);
-                            this.Sessions = this.takeTopFiveDiagnoserSessions(sessions);
-                            this.SessionsEvent.emit(this.Sessions);
-                        });
+                    this.SessionsEvent.emit(true);
                 }
                 this.sessionInProgress = inProgress;
             });
@@ -208,7 +183,7 @@ export class DaasComponent implements OnInit, OnDestroy {
 
                 if (daasDiagnoser.CollectorStatusMessages.length > 0) {
                     var thisInstanceMessages = daasDiagnoser.CollectorStatusMessages.filter(x => x.EntityType === this.selectedInstance);
-                    var messagesLength = daasDiagnoser.CollectorStatusMessages.length;
+                    var messagesLength = thisInstanceMessages.length;
                     if (messagesLength > 0) {
                         this.WizardStepStatus = thisInstanceMessages[messagesLength - 1].Message
                     }

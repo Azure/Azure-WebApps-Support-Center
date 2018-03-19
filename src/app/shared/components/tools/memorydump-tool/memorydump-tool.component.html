@@ -14,6 +14,6 @@
     </ul>
 
     <div class="sessions">
-        <daas-sessions SessionType="Memory Dump" [scmPath]="scmPath" [checkingExistingSessions]="checkingExistingSessions" [Sessions]="Sessions"></daas-sessions>
+        <daas-sessions [refreshSessions]="refreshSessions" DiagnoserNameLookup="Memory Dump" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed"></daas-sessions>
     </div>
 </div>
