@@ -310,5 +310,4 @@ export class DaasComponent implements OnInit, OnDestroy {
         this.Reports = [];
 
     }
-
 }

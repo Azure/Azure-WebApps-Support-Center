@@ -41,9 +41,7 @@ export class ProfilingSolutionComponent implements SolutionBaseComponent, OnInit
     siteToBeProfiled: SiteDaasInfo;
     scmPath: string;
     couldNotFindSite: boolean = false;
-
-    Sessions: Session[];
-    checkingExistingSessions: boolean;
+    refreshSessions:boolean = false;
 
     constructor(private _siteService: SiteService, private _logger: AvailabilityLoggingService, private _serverFarmService: ServerFarmDataService) {
     }
@@ -84,11 +82,7 @@ export class ProfilingSolutionComponent implements SolutionBaseComponent, OnInit
         });
     }
 
-    updateCheckingExistingSessions(event) {
-        this.checkingExistingSessions = event;
-    }
-
     updateSessions(event) {
-        this.Sessions = event;
+        this.refreshSessions = event;
     }
 }

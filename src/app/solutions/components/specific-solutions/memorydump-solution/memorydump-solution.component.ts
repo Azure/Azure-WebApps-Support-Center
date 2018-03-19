@@ -45,8 +45,7 @@ export class MemoryDumpSolutionComponent implements SolutionBaseComponent, OnIni
     scmPath: string;
     couldNotFindSite: boolean = false;
 
-    Sessions: Session[];
-    checkingExistingSessions: boolean ;
+    refreshSessions:boolean = false;
     DiagnoserName: string = "Memory Dump";
 
     constructor(private _siteService: SiteService, private _logger: AvailabilityLoggingService, private _serverFarmService: ServerFarmDataService) {
@@ -87,11 +86,7 @@ export class MemoryDumpSolutionComponent implements SolutionBaseComponent, OnIni
 
     }
 
-    updateCheckingExistingSessions(event) {
-        this.checkingExistingSessions = event;
-    }
-
     updateSessions(event) {
-        this.Sessions = event;
+        this.refreshSessions = event;
     }
 }

@@ -25,12 +25,11 @@ export class ProfilerToolComponent implements OnInit {
         "A profiler trace will help to identify issues in an ASP.NET application only and ASP.NET core is not yet supported.",
     ]
 
-    siteToBeDiagnosed: SiteDaasInfo    
+    siteToBeDiagnosed: SiteDaasInfo;
     scmPath: string;
     couldNotFindSite: boolean = false;
 
-    Sessions: Session[];
-    checkingExistingSessions: boolean;
+    refreshSessions:boolean = false;
 
     constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
 
@@ -55,11 +54,7 @@ export class ProfilerToolComponent implements OnInit {
         this.scmPath = this._siteService.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
     }
 
-    updateCheckingExistingSessions(event) {
-        this.checkingExistingSessions = event;
-    }
-
     updateSessions(event) {
-        this.Sessions = event;
+        this.refreshSessions = event;
     }
 }

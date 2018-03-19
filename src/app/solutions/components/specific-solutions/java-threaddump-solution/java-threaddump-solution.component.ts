@@ -37,9 +37,8 @@ export class JavaThreadDumpSolutionComponent implements SolutionBaseComponent, O
     scmPath: string;
     couldNotFindSite: boolean = false;
 
-    Sessions: Session[];
-    checkingExistingSessions: boolean ;
     DiagnoserName: string = "JAVA Thread Dump";
+    refreshSessions: boolean = false;
 
     constructor(private _siteService: SiteService, private _logger: AvailabilityLoggingService, private _serverFarmService: ServerFarmDataService) {
     }
@@ -79,11 +78,7 @@ export class JavaThreadDumpSolutionComponent implements SolutionBaseComponent, O
 
     }
 
-    updateCheckingExistingSessions(event) {
-        this.checkingExistingSessions = event;
-    }
-
     updateSessions(event) {
-        this.Sessions = event;
+        this.refreshSessions = event;
     }
 }

@@ -1,8 +1,6 @@
 <default-solution-template [title]="title" [description]="description" [tags]="data.tags">
     
-    <daas [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed" 
-    [DiagnoserName]="DiagnoserName" (checkingExistingSessionsEvent)="updateCheckingExistingSessions($event)"
-    (SessionsEvent)="updateSessions($event)">
+    <daas [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed" [DiagnoserName]="DiagnoserName" (SessionsEvent)="updateSessions($event)">
     </daas>
 
     <div class="header2">What you should know before collecting a Java Thread Dump</div>

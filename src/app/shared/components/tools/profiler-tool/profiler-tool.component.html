@@ -4,8 +4,7 @@
 
     <div class="wizardcontainer">
 
-        <profiler [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed" (checkingExistingSessionsEvent)="updateCheckingExistingSessions($event)"
-            (SessionsEvent)="updateSessions($event)">
+        <profiler [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed" (SessionsEvent)="updateSessions($event)">
         </profiler>
 
     </div>

@@ -34,6 +34,5 @@ export class JavaThreadDumpToolComponent extends DaasBaseComponent implements On
         this.scmPath = this._siteServiceLocal.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
     }
-
     
 }
