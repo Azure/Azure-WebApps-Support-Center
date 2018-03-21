@@ -84,7 +84,7 @@
                                     <tr *ngFor="let diagnoser of session.DiagnoserSessions">
                                         <td>{{ diagnoser.Name }}</td>
                                         <td>
-                                            <ul *ngIf="diagnoser.Logs.length > 0" style="list-style: none;">
+                                            <ul *ngIf="diagnoser.Logs.length > 0" style="list-style: none;padding:0">
                                                 <li *ngFor="let log of diagnoser.Logs">
                                                     <a (click)="openReport(log.RelativePath)" style="cursor: pointer">
                                                         {{ log.FileName }}
@@ -93,7 +93,7 @@
                                             </ul>
                                         </td>
                                         <td>
-                                            <ul *ngIf="diagnoser.Reports.length > 0" style="list-style: none;">
+                                            <ul *ngIf="diagnoser.Reports.length > 0" style="list-style: none;padding:0">
                                                 <li *ngFor="let report of diagnoser.Reports">                                                    
                                                     <a (click)="openReport(report.RelativePath)" style="cursor: pointer">
                                                         {{ report.FileName }}
