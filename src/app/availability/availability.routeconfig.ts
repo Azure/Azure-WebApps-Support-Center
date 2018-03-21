@@ -358,6 +358,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         component: DaasSessionsDetailedComponent,
         data: {
             navigationTitle: ToolNames.DiagnosticSessions,
+            cacheComponent: true
         }
     },
     {
@@ -365,6 +366,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         component: DaasSessionsDetailedComponent,
         data: {
             navigationTitle: ToolNames.DiagnosticSessions,
+            cacheComponent: true
         }
     }
 

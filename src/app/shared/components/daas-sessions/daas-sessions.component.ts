@@ -128,7 +128,7 @@ export class DaasSessionsComponent implements OnChanges {
 
     getDateTimeMessage(datetime: string): string {
         var utc = new Date(new Date().toUTCString()).getTime();
-        let newDate = new Date(datetime);
+        let newDate = new Date(datetime + 'Z');
         var oneDay = 1000 * 60 * 60 * 24;
         var duration = utc.valueOf() - newDate.valueOf();
         var inDays = Math.round(duration / oneDay);
