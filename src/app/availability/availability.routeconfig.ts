@@ -20,6 +20,7 @@ import { ConnectionDiagnoserToolComponent } from '../shared/components/tools/con
 import { NetworkTraceToolComponent } from '../shared/components/tools/network-trace-tool/network-trace-tool.component';
 import { IncidentSummaryComponent } from '../shared/components/incident-summary/incident-summary.component';
 import { ToolNames } from '../shared/models/tools-constants';
+import { DaasSessionsDetailedComponent } from '../shared/components/daas-sessions-detailed/daas-sessions-detailed.component';
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
@@ -340,14 +341,30 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         path: _siteResourceUrl + '/diagnostics/tools/networktrace',
         component: NetworkTraceToolComponent,
         data: {
-            navigationTitle: ToolNames.NetworkTrace,            
+            navigationTitle: ToolNames.NetworkTrace,
         }
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/networktrace',
         component: NetworkTraceToolComponent,
         data: {
-            navigationTitle: ToolNames.NetworkTrace,           
+            navigationTitle: ToolNames.NetworkTrace,
+        }
+    }
+    ,    
+    // DiagnosticSessions
+    {
+        path: _siteResourceUrl + '/diagnostics/tools/diagnosticsessions',
+        component: DaasSessionsDetailedComponent,
+        data: {
+            navigationTitle: ToolNames.DiagnosticSessions,
+        }
+    },
+    {
+        path: _slotResourceUrl + '/diagnostics/tools/diagnosticsessions',
+        component: DaasSessionsDetailedComponent,
+        data: {
+            navigationTitle: ToolNames.DiagnosticSessions,
         }
     }
 

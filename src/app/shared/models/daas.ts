@@ -61,6 +61,7 @@ export class Session {
     TimeSpan: string;
     DiagnoserSessions: Diagnoser[];
     Status: SessionStatus;
+    Expanded:boolean;
 }
 
 export interface DiagnoserDefinition {

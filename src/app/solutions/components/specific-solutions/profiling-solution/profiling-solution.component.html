@@ -8,6 +8,6 @@
         <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
     </ul>
 
-    <daas-sessions [refreshSessions]="refreshSessions" DiagnoserNameLookup="CLR Profiler" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed"></daas-sessions>
+    <daas-sessions [showDetailsLink]="false" [refreshSessions]="refreshSessions" DiagnoserNameLookup="CLR Profiler" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed"></daas-sessions>
 
 </default-solution-template>

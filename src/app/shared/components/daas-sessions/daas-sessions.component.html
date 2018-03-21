@@ -1,46 +1,125 @@
-<div *ngIf="supportedTier" class="header2">Last 5 {{DiagnoserHeading}}</div>
-    <div>
-        <div class="col" *ngIf="checkingExistingSessions">
-            <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-            Populating last 5 sessions...
-        </div>
+<div *ngIf="supportedTier && !showDetailedView" class="header2">Last 5 {{DiagnoserHeading}}
+    <div *ngIf="showDetailsLink" style="display:inline">(Click
+        <div style="display:inline" [routerLink]="allSessions">
+            <a>here</a> to see all sessions)</div>
+    </div>
+</div>
 
-        <div *ngIf="!checkingExistingSessions">
-            <div *ngIf="Sessions?.length === 0">
-                No sessions found
-            </div>
-            <table *ngIf="Sessions?.length > 0" class="table table-hover table-bordered report-table">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Date</th>
-                        <th>Reports</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let session of Sessions">
-                        <td>{{ session.StartTime }} (UTC)</td>
-                        <td>
-                            <div *ngFor="let diagnoser of session.DiagnoserSessions">
-                                <div *ngIf="diagnoser.Name.startsWith(DiagnoserNameLookup)">
-                                    <ul *ngIf="diagnoser.Reports.length > 0" style="list-style: none;">
-                                        <li *ngFor="let report of diagnoser.Reports">
-                                            {{ getInstanceNameFromReport(report.FileName) }}
-                                            <a (click)="openReport(report.RelativePath)" style="cursor: pointer">
-                                                <i class="fa fa-external-link" aria-hidden="true"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <div *ngIf="diagnoser.CollectorErrors.length > 0" class="tool-tip"><i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
-                                        <span class="tool-tip-text">{{diagnoser.CollectorErrors[0]}}</span>
-                                    </div>
-                                    <div *ngIf="diagnoser.AnalyzerErrors.length > 0" class="tool-tip"><i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
-                                        <span class="tool-tip-text">{{diagnoser.AnalyzerErrors[0]}}</span>
-                                    </div>
+<div>
+    <div class="col" *ngIf="checkingExistingSessions">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Populating diagnostic sessions...
+    </div>
+
+    <div *ngIf="!checkingExistingSessions && !showDetailedView">
+        <div *ngIf="Sessions?.length === 0">
+            No sessions found
+        </div>
+        <table *ngIf="Sessions?.length > 0" class="table table-hover table-bordered report-table">
+            <thead class="thead-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Reports</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let session of Sessions">
+                    <td>{{ session.StartTime }} (UTC)</td>
+                    <td>
+                        <div *ngFor="let diagnoser of session.DiagnoserSessions">
+                            <div>
+                                <ul *ngIf="diagnoser.Reports.length > 0" style="list-style: none;">
+                                    <li *ngFor="let report of diagnoser.Reports">
+                                        {{ getInstanceNameFromReport(report.FileName) }}
+                                        <a (click)="openReport(report.RelativePath)" style="cursor: pointer">
+                                            <i class="fa fa-external-link" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div *ngIf="diagnoser.CollectorErrors.length > 0" class="tool-tip">
+                                    <i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
+                                    <span class="tool-tip-text">{{diagnoser.CollectorErrors[0]}}</span>
+                                </div>
+                                <div *ngIf="diagnoser.AnalyzerErrors.length > 0" class="tool-tip">
+                                    <i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
+                                    <span class="tool-tip-text">{{diagnoser.AnalyzerErrors[0]}}</span>
                                 </div>
                             </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!checkingExistingSessions && showDetailedView">
+        <div *ngIf="Sessions?.length === 0">
+            No sessions found
+        </div>
+        <div *ngFor="let session of Sessions; let i = index">
+            <div class="panel panel-default">
+                <div class="panel-heading" (click)="toggleExpanded(i)">
+                    <span style="padding: 0px 10px 0px 0px">
+                        <i class="fa health-icon fa-exclamation-triangle warning-icon-color" *ngIf="hasErrors(session)" aria-hidden="true"></i>
+                        <i class="fa health-icon fa-check-circle healthy-icon-color" *ngIf="!hasErrors(session)" aria-hidden="true"></i>
+                    </span>
+                    <b>{{ session.StartTime }} </b>
+                    <span>- {{ getDateTimeMessage(session.StartTime) }} ago</span>
+                    <span class="pull-right">
+                        <i class="fa fa-plus" *ngIf="!session.Expanded" aria-hidden="true"></i>
+                        <i class="fa fa-minus" *ngIf="session.Expanded" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <div class="panel-body" *ngIf="session.Expanded">
+                    <div *ngFor="let diagnoser of session.DiagnoserSessions" >
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th style="width:250px">Diagnoser</th>
+                                        <th>Data</th>
+                                        <th>Reports</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ diagnoser.Name }}</td>
+                                        <td>
+                                            <ul *ngIf="diagnoser.Logs.length > 0" style="list-style: none;">
+                                                <li *ngFor="let log of diagnoser.Logs">
+                                                    {{ log.FileName }}
+                                                    <a (click)="openReport(log.RelativePath)" style="cursor: pointer">
+                                                        <i class="fa fa-external-link" aria-hidden="true"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <ul *ngIf="diagnoser.Reports.length > 0" style="list-style: none;">
+                                                <li *ngFor="let report of diagnoser.Reports">
+                                                    {{ report.FileName }}
+                                                    <a (click)="openReport(report.RelativePath)" style="cursor: pointer">
+                                                        <i class="fa fa-external-link" aria-hidden="true"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <div *ngIf="diagnoser.CollectorErrors.length > 0" class="tool-tip">
+                                                <i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
+                                                <span class="tool-tip-text">{{diagnoser.CollectorErrors[0]}}</span>
+                                            </div>
+                                            <div *ngIf="diagnoser.AnalyzerErrors.length > 0" class="tool-tip">
+                                                <i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
+                                                <span class="tool-tip-text">{{diagnoser.AnalyzerErrors[0]}}</span>
+                                            </div>
+                                        </td>
+    
+                                    </tr>
+    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>

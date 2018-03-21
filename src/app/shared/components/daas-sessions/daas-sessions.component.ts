@@ -15,15 +15,19 @@ export class DaasSessionsComponent implements OnChanges {
 
     checkingExistingSessions: boolean;
     Sessions: Session[];
-    
-    @Input() public DiagnoserNameLookup: string;
+
+    @Input() public DiagnoserNameLookup: string = "";
     @Input() public siteToBeDiagnosed: SiteDaasInfo;
     @Input() public scmPath: string;
+    @Input() public showDetailsLink: boolean = true;
 
     DiagnoserHeading: string;
     supportedTier: boolean = false;
-    
-    @Input() refreshSessions:boolean = false;
+
+    @Input() refreshSessions: boolean = false;
+    showDetailedView: boolean = false;
+    allSessions: string = "../../tools/diagnosticsessions";
+
 
     constructor(private _windowService: WindowService, private _serverFarmService: ServerFarmDataService, private _daasService: DaasService) {
         this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
@@ -42,15 +46,14 @@ export class DaasSessionsComponent implements OnChanges {
         if (changes['refreshSessions']) {
             this.populateSessions();
         }
-      }
+    }
 
     ngOnInit(): void {
 
         this.populateSessions();
     }
 
-    populateSessions()
-    {
+    populateSessions() {
         if (this.DiagnoserNameLookup.startsWith("CLR Profiler")) {
             this.DiagnoserHeading = "profiling sessions";
         }
@@ -61,11 +64,21 @@ export class DaasSessionsComponent implements OnChanges {
             this.DiagnoserHeading = "diagnostic sessions";
         }
 
+        if (this.DiagnoserNameLookup === "") {
+            this.showDetailedView = true;
+        }
+
         this.checkingExistingSessions = true;
         this._daasService.getDaasSessionsWithDetails(this.siteToBeDiagnosed).retry(2)
             .subscribe(sessions => {
                 this.checkingExistingSessions = false;
-                this.Sessions = this.takeTopFiveDiagnoserSessions(sessions);
+                if (this.showDetailedView) {
+                    this.Sessions = this.setExpanded(sessions);
+                }
+                else {
+                    this.Sessions = this.takeTopFiveDiagnoserSessions(sessions);
+                }
+
             });
     }
 
@@ -102,5 +115,35 @@ export class DaasSessionsComponent implements OnChanges {
 
     openReport(url: string) {
         this._windowService.open(`https://${this.scmPath}/api/vfs/data/DaaS/${url}`);
+    }
+
+    toggleExpanded(i: number): void {
+        // this._logger.LogClickEvent(`Connection String-${this.dbTestResult[i].Name}`, "DiagnosticTools");
+        this.Sessions[i].Expanded = !this.Sessions[i].Expanded;
+    }
+
+    hasErrors(session: Session): boolean {
+        return session.DiagnoserSessions.filter(x => x.AnalyzerErrors.length > 0 || x.CollectorErrors.length > 0).length > 0 ? true : false;
+    }
+
+    getDateTimeMessage(datetime: string): string {
+        var utc = new Date(new Date().toUTCString()).getTime();
+        let newDate = new Date(datetime);
+        var oneDay = 1000 * 60 * 60 * 24;
+        var duration = utc.valueOf() - newDate.valueOf();
+        var inDays = Math.round(duration / oneDay);
+        var inHours = Math.round(duration * 24 / oneDay);
+        var inMinutes = Math.round(duration * 24 * 60 / oneDay);
+        return (inDays > 0 ? inDays.toString() + " day(s)" : (inHours > 0 ? inHours.toString() + " hour(s)" : inMinutes.toString() + " minute(s)"));
+    }
+
+    setExpanded(sessions: Session[]): Session[] {
+        let maxValue = (sessions.length > 3 ? 3 : sessions.length)
+        let counter = 0;
+        while (counter < maxValue) {
+            sessions[counter].Expanded = true;
+            counter++;
+        }
+        return sessions;
     }
 }
