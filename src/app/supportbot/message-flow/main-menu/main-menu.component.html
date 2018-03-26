@@ -1,10 +1,10 @@
 <div class="row" style="margin-bottom: 10px;">
     <div class="category-container-header">Select Problem Category</div>
     <div *ngFor="let category of allProblemCategories;let i = index">
-        <collapsible-list [title]="category.Name" [collapsed]="category.Collapsed">
+        <collapsible-list [title]="category.Name" [collapsed]="category.Collapsed" *ngIf="(category.Subcategories | toolstack:AppStack | platformfilter:platform).length > 0">
             <collapsible-list-item>
                 <div class="col zoomIn animated category-box" 
-                    *ngFor="let subcategory of category.Subcategories | toolstack:AppStack" [style.background-color]="subcategory.BgColor" [style.color]="subcategory.TextColor"
+                    *ngFor="let subcategory of category.Subcategories | toolstack:AppStack | platformfilter:platform" [style.background-color]="subcategory.BgColor" [style.color]="subcategory.TextColor"
                     [routerLink]="[subcategory.Href]" (click)="logCategorySelected(subcategory.Name)">
                     <div class="category-content">{{subcategory.Name}}</div>
                 </div>
@@ -15,7 +15,6 @@
                     Showing tools for
                     <strong>{{ AppStack }}</strong>.
                     <div style="display:inline-block" class="dropup">
-                        <!-- <button class="btn btn-link dropdown-toggle" (click)="showToolsDropdown = !showToolsDropdown" id="dropdownMenu1">Change stack</button> -->
                         <a class="dropdown-toggle" (click)="showToolsDropdown = !showToolsDropdown">Change Stack</a>
                         <ul class="dropdown-menu" style="cursor: pointer" aria-labelledby="dropdownMenu1" [ngClass]="{'show': showToolsDropdown ===
                     true, 'hide': showToolsDropdown === false}">
@@ -38,5 +37,3 @@
         </collapsible-list>
     </div>
 </div>
-
-<!-- [ngClass]="animateToolsOnly && category.Name !=='Diagnostic Tools'?'col zoomIn category-box':'col zoomIn animated  category-box' -->
