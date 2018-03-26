@@ -166,7 +166,7 @@ export class CategoriesService {
         this.Categories.push(tools);
     }
 
-    getCategories(site: Site): Category[] {
+    getCategories(): Category[] {
         return this.Categories;
     }
 }
