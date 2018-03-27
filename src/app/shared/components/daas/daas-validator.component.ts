@@ -29,14 +29,19 @@ export class DaasValidatorComponent implements OnInit {
 
   }
 
-  validateDaasSettings()
-  {
+  validateDaasSettings() {
+    this.supportedTier = false;
+    this.diagnoserWarning = "";
+    this.daasRunnerJobRunning = true;
+    this.checkingDaasWebJobStatus = false;
     this.checkingSupportedTier = true;
-    console.log("Clicked");
+    this.foundDiagnoserWarnings = false;
+    this.retrievingDiagnosers = false;
+
     this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
       if (serverFarm) {
         this.checkingSupportedTier = false;
-        if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier === "Premium" || serverFarm.sku.tier === "Isolated") {
+        if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
           this.supportedTier = true;
           this.checkingDaasWebJobStatus = true;
 
@@ -86,6 +91,7 @@ export class DaasValidatorComponent implements OnInit {
     let retryCount: number = 0;
     return this._daasService.getDaasWebjobState(this.siteToBeDiagnosed)
       .map(response => {
+        
         if (response.json() !== "Running" && retryCount < 2) {
           retryCount++;
           throw response;
