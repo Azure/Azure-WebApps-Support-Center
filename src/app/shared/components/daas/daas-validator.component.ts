@@ -29,8 +29,10 @@ export class DaasValidatorComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {
-
+  validateDaasSettings()
+  {
+    this.checkingSupportedTier = true;
+    console.log("Clicked");
     this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
       if (serverFarm) {
         this.checkingSupportedTier = false;
@@ -71,6 +73,11 @@ export class DaasValidatorComponent implements OnInit {
     }, error => {
       //TODO: handle error
     })
+  }
+
+  ngOnInit(): void {
+
+    this.validateDaasSettings();
   }
 
   // Implementing a retry logic if DAAS Webjob is not running because just my making a HTTP call,

@@ -3,7 +3,7 @@
     <div>
       <strong>Error</strong> - This tool is supported only on Dedicated SKU's
     </div>
-  </div>
+  </div>  
 </div>
 
 <div *ngIf="!daasRunnerJobRunning" class="focus-box focus-box-warning" style="margin-top:20px">
@@ -31,4 +31,10 @@
 <div class="col" *ngIf="retrievingDiagnosers">
   <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
   Retrieving Diagnoser settings...
+</div>
+
+<div style="margin-top:15px" *ngIf="(!supportedTier || !daasRunnerJobRunning || foundDiagnoserWarnings) && (!checkingDaasWebJobStatus && !checkingSupportedTier && !retrievingDiagnosers)">
+    <span class="hotspot-clickable" (click)="validateDaasSettings()">
+        <i class="fa fa-refresh refresh-icon"></i> Refresh
+    </span>
 </div>
