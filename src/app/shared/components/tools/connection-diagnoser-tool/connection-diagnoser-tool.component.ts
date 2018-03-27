@@ -37,6 +37,14 @@ export class ConnectionDiagnoserToolComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.checkConnectionStrings();
+    }
+
+    checkConnectionStrings()
+    {
+        this.retrievingInfo = true;
+        this.dbTestResult = [];
+        
         this._logger.LogClickEvent("Check Connection Strings", "DiagnosticTools");
 
         this._daasService.getDatabaseTest(this.siteToBeDiagnosed)

@@ -1,7 +1,9 @@
 <div class="container">
     <div class="header1">All Diagnostic Sessions</div>
-    <p>The below table lists all the diagnostic sessions for this Web App.</p>
-  <div class="sessions">
-    <daas-sessions [DiagnoserNameLookup]="" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed"></daas-sessions>
-  </div>
+    <p>
+        The below table lists all the diagnostic sessions for this Web App.
+    </p>
+    <div class="sessions">
+        <daas-sessions [DiagnoserNameLookup]="" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed" [refreshSessions]="refreshSessions"></daas-sessions>
+    </div>
 </div>

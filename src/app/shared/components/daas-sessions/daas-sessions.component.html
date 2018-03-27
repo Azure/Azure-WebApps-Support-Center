@@ -4,8 +4,12 @@
             <a>here</a> to see all sessions)</div>
     </div>
 </div>
-
-<div>
+<div *ngIf="!checkingExistingSessions && showDetailedView">
+    <span class="hotspot-clickable pull-right" (click)="populateSessions()">
+        <i class="fa fa-refresh refresh-icon"></i> Refresh
+    </span>
+</div>
+<div style="clear:both">
     <div class="col" *ngIf="checkingExistingSessions">
         <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
         Populating diagnostic sessions...
@@ -27,7 +31,7 @@
                     <td>{{ session.StartTime }} (UTC)</td>
                     <td>
                         <div *ngFor="let diagnoser of session.DiagnoserSessions">
-                            <div>
+                            <div *ngIf="diagnoser.Name.startsWith(DiagnoserNameLookup)">
                                 <ul *ngIf="diagnoser.Reports.length > 0" style="list-style: none;">
                                     <li *ngFor="let report of diagnoser.Reports">
                                         {{ getInstanceNameFromReport(report.FileName) }}
@@ -55,7 +59,8 @@
         <div *ngIf="Sessions?.length === 0">
             No sessions found
         </div>
-        <div *ngFor="let session of Sessions; let i = index">
+
+        <div style="margin-top:20px" *ngFor="let session of Sessions; let i = index">
             <div class="panel panel-default">
                 <div class="panel-heading" (click)="toggleExpanded(i)">
                     <span>
@@ -94,7 +99,7 @@
                                         </td>
                                         <td>
                                             <ul *ngIf="diagnoser.Reports.length > 0" style="list-style: none;padding:0">
-                                                <li *ngFor="let report of diagnoser.Reports">                                                    
+                                                <li *ngFor="let report of diagnoser.Reports">
                                                     <a (click)="openReport(report.RelativePath)" style="cursor: pointer">
                                                         {{ report.FileName }}
                                                     </a>
@@ -109,9 +114,9 @@
                                                 <span class="tool-tip-text">{{diagnoser.AnalyzerErrors[0]}}</span>
                                             </div>
                                         </td>
-    
+
                                     </tr>
-    
+
                                 </tbody>
                             </table>
                         </div>
