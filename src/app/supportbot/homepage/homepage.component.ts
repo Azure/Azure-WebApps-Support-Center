@@ -178,8 +178,8 @@ export class HomepageComponent implements OnInit {
             title: 'Contribute',
             collapsed: true,
             items: [{
-                title: 'Support Center Github',
-                href: 'https://github.com/Azure/Azure-WebApps-Support-Center'
+                title: 'Github repo',
+                href: 'https://github.com/Azure/Azure-AppServices-Diagnostics-Portal'
             }]
         }
     }

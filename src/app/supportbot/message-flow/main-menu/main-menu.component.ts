@@ -11,6 +11,7 @@ import { Category, Subcategory } from '../../../shared/models/problem-category';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { StartupInfo } from '../../../shared/models/portal';
+import { IDiagnosticProperties } from '../../../shared/models/diagnosticproperties';
 
 @Component({
     templateUrl: 'main-menu.component.html',
@@ -23,6 +24,7 @@ export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageCom
 
     allProblemCategories: Category[] = [];
     AppStack: string = "";    
+    platform: OperatingSystem;
     showToolsDropdown:boolean = false;
 
     @Output() onViewUpdate = new EventEmitter();
@@ -41,9 +43,10 @@ export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageCom
                 
                 this._authService.getStartupInfo().subscribe((startupInfo: StartupInfo) => {
                     let resourceUriParts = this._siteService.parseResourceUri(startupInfo.resourceId);
-                    this._appAnalysisService.getDiagnosticProperties(resourceUriParts.subscriptionId, resourceUriParts.resourceGroup, resourceUriParts.siteName, resourceUriParts.slotName).subscribe(data => {
-                        this.AppStack = (data.appStack === "" ? "ASP.Net" : data.appStack);
-                        this.allProblemCategories = this._categoryService.getCategories(site);
+                    this._appAnalysisService.getDiagnosticProperties(resourceUriParts.subscriptionId, resourceUriParts.resourceGroup, resourceUriParts.siteName, resourceUriParts.slotName).subscribe((data: IDiagnosticProperties) => {
+                        this.AppStack = data && data.appStack && data.appStack != "" ? data.appStack : "ASP.Net";
+                        this.platform = data && data.isLinux ? OperatingSystem.linux: OperatingSystem.windows; 
+                        this.allProblemCategories = this._categoryService.getCategories();
                         setTimeout(() => {
                             this.onComplete.emit({ status: true });
                         }, 300);
@@ -71,5 +74,12 @@ export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageCom
 export class ToolStackPipe implements PipeTransform {
     transform(subcategories: Subcategory[], stack: string): Subcategory[] {
         return subcategories.filter(x => (x.AppStack === "" || x.AppStack.toLowerCase().indexOf(stack.toLowerCase()) > -1))
+    }
+}
+
+@Pipe({name: 'platformfilter'})
+export class PlatformPipe implements PipeTransform {
+    transform(subcategories: Subcategory[], platform: OperatingSystem): Subcategory[] {
+        return subcategories.filter(x => x.OperatingSystem & platform)
     }
 }

@@ -26,7 +26,7 @@ export class CategoriesService {
             BgColor: '#1446a0',
             TextColor: 'White',
             Href: 'availability/analysis',
-            OperatingSystem: OperatingSystem.windows || OperatingSystem.linux,
+            OperatingSystem: OperatingSystem.windows | OperatingSystem.linux,
             AppStack : ""
         });
 
@@ -35,7 +35,7 @@ export class CategoriesService {
             BgColor: '#ef476f',
             TextColor: 'White',
             Href: 'performance/analysis',
-            OperatingSystem: OperatingSystem.windows || OperatingSystem.linux,
+            OperatingSystem: OperatingSystem.windows | OperatingSystem.linux,
             AppStack : ""
         });
 
@@ -166,29 +166,7 @@ export class CategoriesService {
         this.Categories.push(tools);
     }
 
-    getCategories(site: Site): Category[] {
-
-        let categories : Category[] = [];
-        let subcategories : Subcategory[] = [];
-
-        this.Categories.forEach( c=> {
-
-            subcategories = c.Subcategories.filter(x => x.OperatingSystem === SiteExtensions.operatingSystem(site));
-
-            if (subcategories.length > 0)
-            {
-                // willing to hear suggestions to improve
-                // this logic, this seems a bit bad 
-
-                let category = new Category();
-                category.Name = c.Name;
-                category.Collapsed = c.Collapsed;
-                category.Subcategories = subcategories;
-                categories.push(category);
-            }
-
-        })
-
-        return categories;
+    getCategories(): Category[] {
+        return this.Categories;
     }
 }
