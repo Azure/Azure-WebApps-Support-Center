@@ -23,8 +23,7 @@ export class DaasSessionsDetailedComponent implements OnInit {
 
       this._siteService.currentSiteMetaData.subscribe(siteInfo => {
         if (siteInfo) {
-            
-            let siteInfoMetaData = siteInfo;
+
             this.siteToBeDiagnosed = new SiteDaasInfo();
             
             this.siteToBeDiagnosed.subscriptionId = siteInfo.subscriptionId;
