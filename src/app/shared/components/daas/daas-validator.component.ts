@@ -56,10 +56,10 @@ export class DaasValidatorComponent implements OnInit {
             this._daasService.getDiagnosers(this.siteToBeDiagnosed).retry(2)
               .subscribe(result => {
                 let diagnosers: DiagnoserDefinition[] = result;
-                let thisDiagnoser = diagnosers.filter(x => x.Name === this.DiagnoserName);
-                if (thisDiagnoser.length > 0) {
-                  if (thisDiagnoser[0].Warnings.length > 0) {
-                    this.diagnoserWarning = thisDiagnoser[0].Warnings.join(',');
+                let thisDiagnoser = diagnosers.find(x => x.Name === this.DiagnoserName);
+                if (thisDiagnoser) {
+                  if (thisDiagnoser.Warnings.length > 0) {
+                    this.diagnoserWarning = thisDiagnoser.Warnings.join(',');
                     this.foundDiagnoserWarnings = true;
                   }
                 }
@@ -91,7 +91,7 @@ export class DaasValidatorComponent implements OnInit {
     let retryCount: number = 0;
     return this._daasService.getDaasWebjobState(this.siteToBeDiagnosed)
       .map(response => {
-        
+
         if (response.json() !== "Running" && retryCount < 2) {
           retryCount++;
           throw response;
