@@ -27,7 +27,7 @@ import { SolutionTypeTagComponent } from './components/solution-type-tag/solutio
 import { GroupByPipe } from './pipes/groupBy.pipe';
 import { MapValuesPipe } from './pipes/mapValues.pipe';
 import { StepWizardComponent } from './components/step-wizard/step-wizard.component';
-import { DaasSessionsComponent } from './components/daas-sessions/daas-sessions.component';
+import { DaasSessionsComponent, DateTimeDiffPipe } from './components/daas-sessions/daas-sessions.component';
 import { WindowService } from './services/window.service';
 import { PortalService } from './services/portal.service';
 import { BroadcastService } from './services/broadcast.service';
@@ -71,9 +71,10 @@ import { DaasSessionsDetailedComponent } from './components/daas-sessions-detail
     declarations: [
         LimitToFilter,
         nvD3,
-        MarkupPipe,       
+        MarkupPipe,
         GroupByPipe,
         MapValuesPipe,
+        DateTimeDiffPipe,
         BlogComponent,
         OpenTicketComponent,
         DowntimeTimelineComponent,
@@ -124,9 +125,10 @@ import { DaasSessionsDetailedComponent } from './components/daas-sessions-detail
         LimitToFilter,
         RouterModule,
         nvD3,
-        MarkupPipe,      
+        MarkupPipe,
         GroupByPipe,
         MapValuesPipe,
+        DateTimeDiffPipe,
         BlogComponent,
         OpenTicketComponent,
         DowntimeTimelineComponent,

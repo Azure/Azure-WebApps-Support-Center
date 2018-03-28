@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, OnChanges, Pipe, PipeTransform } from '@angular/core';
 import { Session } from '../../models/daas';
 import { WindowService } from '../../services/window.service';
 import { ServerFarmDataService } from '../../services/server-farm-data.service';
@@ -145,5 +145,21 @@ export class DaasSessionsComponent implements OnChanges {
             counter++;
         }
         return sessions;
+    }
+
+}
+
+@Pipe({name: 'datetimediff'})
+export class DateTimeDiffPipe implements PipeTransform {
+    transform(datetime: string): string {
+
+        var utc = new Date(new Date().toUTCString()).getTime();
+        let newDate = new Date(datetime + 'Z');
+        var oneDay = 1000 * 60 * 60 * 24;
+        var duration = utc.valueOf() - newDate.valueOf();
+        var inDays = Math.round(duration / oneDay);
+        var inHours = Math.round(duration * 24 / oneDay);
+        var inMinutes = Math.round(duration * 24 * 60 / oneDay);
+        return (inDays > 0 ? inDays.toString() + " day(s)" : (inHours > 0 ? inHours.toString() + " hour(s)" : inMinutes.toString() + " minute(s)"));
     }
 }
