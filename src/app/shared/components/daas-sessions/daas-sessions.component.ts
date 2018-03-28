@@ -155,17 +155,6 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
         return session.DiagnoserSessions.filter(x => x.CollectorStatus <= 2 || x.AnalyzerStatus <= 2).length > 0 ? true : false;
     }
 
-    getDateTimeMessage(datetime: string): string {
-        var utc = new Date(new Date().toUTCString()).getTime();
-        let newDate = new Date(datetime + 'Z');
-        var oneDay = 1000 * 60 * 60 * 24;
-        var duration = utc.valueOf() - newDate.valueOf();
-        var inDays = Math.round(duration / oneDay);
-        var inHours = Math.round(duration * 24 / oneDay);
-        var inMinutes = Math.round(duration * 24 * 60 / oneDay);
-        return (inDays > 0 ? inDays.toString() + " day(s)" : (inHours > 0 ? inHours.toString() + " hour(s)" : inMinutes.toString() + " minute(s)"));
-    }
-
     setExpanded(sessions: Session[]): Session[] {
         let maxValue = (sessions.length > 3 ? 3 : sessions.length)
         let counter = 0;
