@@ -13,6 +13,7 @@ import { ArmService } from './arm.service';
 import { AuthService } from './auth.service';
 import { UriElementsService } from './urielements.service';
 import { ServerFarmDataService } from './server-farm-data.service';
+import { SiteDaasInfo } from '../models/solution-metadata';
 
 @Injectable()
 export class SiteService {
@@ -129,6 +130,25 @@ export class SiteService {
         let url: string = this._uriElementsService.getListAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
 
         return this._armClient.postResource(url, {});
+    }
+
+    getSiteDaasInfoFromSiteMetadata(): Observable<SiteDaasInfo>
+    {
+        return this.currentSiteMetaData.map(siteInfo => {
+            if (siteInfo) {
+
+                let siteInfoMetaData = siteInfo;
+                let siteToBeDiagnosed = new SiteDaasInfo();
+
+                siteToBeDiagnosed.subscriptionId = siteInfo.subscriptionId;
+                siteToBeDiagnosed.resourceGroupName = siteInfo.resourceGroupName;
+                siteToBeDiagnosed.siteName = siteInfo.siteName;
+                siteToBeDiagnosed.slot = siteInfo.slot;
+                siteToBeDiagnosed.instances = [];
+                
+                return siteToBeDiagnosed;
+            }
+        });
     }
 
     updateSiteAppSettings(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '', body: any): Observable<any> {

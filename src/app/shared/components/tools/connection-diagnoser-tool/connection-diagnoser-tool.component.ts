@@ -24,14 +24,7 @@ export class ConnectionDiagnoserToolComponent implements OnInit {
 
         this._siteService.currentSiteMetaData.subscribe(siteInfo => {
             if (siteInfo) {
-
-                let siteInfoMetaData = siteInfo;
-                this.siteToBeDiagnosed = new SiteDaasInfo();
-
-                this.siteToBeDiagnosed.subscriptionId = siteInfo.subscriptionId;
-                this.siteToBeDiagnosed.resourceGroupName = siteInfo.resourceGroupName;
-                this.siteToBeDiagnosed.siteName = siteInfo.siteName;
-                this.siteToBeDiagnosed.slot = siteInfo.slot;
+                this.siteToBeDiagnosed = siteInfo;
             }
         });
     }
