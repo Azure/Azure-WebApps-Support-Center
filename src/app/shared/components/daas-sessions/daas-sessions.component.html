@@ -4,12 +4,7 @@
             <a>here</a> to see all sessions)</div>
     </div>
 </div>
-<div *ngIf="!checkingExistingSessions && showDetailedView">
-    <span class="hotspot-clickable pull-right" (click)="populateSessions()">
-        <i class="fa fa-refresh refresh-icon"></i> Refresh
-    </span>
-</div>
-<div style="clear:both">
+<div>
     <div class="col" *ngIf="checkingExistingSessions">
         <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
         Populating diagnostic sessions...
@@ -63,9 +58,12 @@
         <div style="margin-top:20px" *ngFor="let session of sessions; let i = index">
             <div class="panel panel-default">
                 <div class="panel-heading" (click)="toggleExpanded(i)">
-                    <span>
+                    <span *ngIf="!isSessionInProgress(session)">
                         <i class="fa health-icon fa-exclamation-triangle warning-icon-color" *ngIf="hasErrors(session)" aria-hidden="true"></i>
                         <i class="fa health-icon fa-check-circle healthy-icon-color" *ngIf="!hasErrors(session)" aria-hidden="true"></i>
+                    </span>
+                    <span *ngIf="isSessionInProgress(session)">
+                        <i class="fa health-icon fa-hourglass-half warning-icon-color" aria-hidden="true"></i>                        
                     </span>
                     <b>{{ session.StartTime }} UTC</b>
                     <span>- {{ session.StartTime | datetimediff }} ago</span>
@@ -96,6 +94,10 @@
                                                     </a>
                                                 </li>
                                             </ul>
+                                            <div *ngIf="diagnoser.CollectorStatus === 2">
+                                                <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                                                Collecting data...
+                                            </div>
                                         </td>
                                         <td>
                                             <ul *ngIf="diagnoser.Reports.length > 0" style="list-style: none;padding:0">
@@ -112,6 +114,14 @@
                                             <div *ngIf="diagnoser.AnalyzerErrors.length > 0" class="tool-tip">
                                                 <i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
                                                 <span class="tool-tip-text">{{diagnoser.AnalyzerErrors[0]}}</span>
+                                            </div>
+                                            <div *ngIf="diagnoser.AnalyzerStatus === 2">
+                                                <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                                                In progress...
+                                            </div>
+                                            <div *ngIf="diagnoser.AnalyzerStatus < 2">
+                                                <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                                                Waiting...
                                             </div>
                                         </td>
 

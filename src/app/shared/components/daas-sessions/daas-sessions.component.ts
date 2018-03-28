@@ -1,9 +1,12 @@
-import { Component, Input, OnInit, SimpleChanges, OnChanges, Pipe, PipeTransform } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, OnChanges, Pipe, PipeTransform, OnDestroy } from '@angular/core';
 import { Session } from '../../models/daas';
 import { WindowService } from '../../services/window.service';
 import { ServerFarmDataService } from '../../services/server-farm-data.service';
 import { DaasService } from '../../services/daas.service';
 import { SiteDaasInfo } from '../../models/solution-metadata';
+import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import * as _ from 'underscore';
 
 @Component({
     selector: 'daas-sessions',
@@ -11,7 +14,7 @@ import { SiteDaasInfo } from '../../models/solution-metadata';
     styleUrls: ['daas-sessions.component.css']
 })
 
-export class DaasSessionsComponent implements OnChanges {
+export class DaasSessionsComponent implements OnChanges, OnDestroy {
 
     checkingExistingSessions: boolean;
     sessions: Session[];
@@ -27,6 +30,7 @@ export class DaasSessionsComponent implements OnChanges {
     @Input() refreshSessions: boolean = false;
     showDetailedView: boolean = false;
     allSessions: string = "../../tools/diagnosticsessions";
+    subscription: Subscription;
 
 
     constructor(private _windowService: WindowService, private _serverFarmService: ServerFarmDataService, private _daasService: DaasService) {
@@ -50,7 +54,32 @@ export class DaasSessionsComponent implements OnChanges {
 
     ngOnInit(): void {
 
+        if (this.diagnoserNameLookup === "") {
+            this.showDetailedView = true;
+        }
+
         this.populateSessions();
+        if (this.showDetailedView) {
+            this.subscription = Observable.interval(15000).subscribe(res => {
+                this.checkSessions();
+            });
+        }
+    }
+
+    reducedSession(obj:Session) {
+        return {SessionId: obj.SessionId, DiagnoserSessions: obj.DiagnoserSessions, Status: obj.Status};
+    };
+
+    checkSessions() {
+        this._daasService.getDaasSessionsWithDetails(this.siteToBeDiagnosed).retry(2)
+            .subscribe(sessions => {
+                var newSessions = sessions.map(this.reducedSession);
+                var existingSessions = this.sessions.map(this.reducedSession);
+
+                if (!_.isEqual(newSessions, existingSessions)) {
+                    this.sessions = this.setExpanded(sessions);
+                }
+            });
     }
 
     populateSessions() {
@@ -62,10 +91,6 @@ export class DaasSessionsComponent implements OnChanges {
         }
         else {
             this.DiagnoserHeading = "diagnostic sessions";
-        }
-
-        if (this.diagnoserNameLookup === "") {
-            this.showDetailedView = true;
         }
 
         this.checkingExistingSessions = true;
@@ -126,6 +151,10 @@ export class DaasSessionsComponent implements OnChanges {
         return session.DiagnoserSessions.filter(x => x.AnalyzerErrors.length > 0 || x.CollectorErrors.length > 0).length > 0 ? true : false;
     }
 
+    isSessionInProgress(session: Session): boolean {
+        return session.DiagnoserSessions.filter(x => x.CollectorStatus <= 2 || x.AnalyzerStatus <= 2).length > 0 ? true : false;
+    }
+
     getDateTimeMessage(datetime: string): string {
         var utc = new Date(new Date().toUTCString()).getTime();
         let newDate = new Date(datetime + 'Z');
@@ -147,9 +176,15 @@ export class DaasSessionsComponent implements OnChanges {
         return sessions;
     }
 
+    ngOnDestroy(): void {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
+    }
+
 }
 
-@Pipe({name: 'datetimediff'})
+@Pipe({ name: 'datetimediff' })
 export class DateTimeDiffPipe implements PipeTransform {
     transform(datetime: string): string {
 
