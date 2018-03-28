@@ -46,14 +46,14 @@ export class MemoryDumpSolutionComponent implements SolutionBaseComponent, OnIni
     couldNotFindSite: boolean = false;
 
     refreshSessions:boolean = false;
-    DiagnoserName: string = "Memory Dump";
+    diagnoserName: string = "Memory Dump";
 
     constructor(private _siteService: SiteService, private _logger: AvailabilityLoggingService, private _serverFarmService: ServerFarmDataService) {
     }
 
     ngOnInit(): void {
 
-        this._logger.LogSolutionDisplayed(this.DiagnoserName, this.data.solution.order.toString(), 'bot-sitecpuanalysis');
+        this._logger.LogSolutionDisplayed(this.diagnoserName, this.data.solution.order.toString(), 'bot-sitecpuanalysis');
         let siteInfo = MetaDataHelper.getSiteDaasData(this.data.solution.data);
 
         this._serverFarmService.sitesInServerFarm.subscribe(sites => {

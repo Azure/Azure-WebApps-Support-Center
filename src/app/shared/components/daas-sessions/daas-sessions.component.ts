@@ -14,9 +14,9 @@ import { SiteDaasInfo } from '../../models/solution-metadata';
 export class DaasSessionsComponent implements OnChanges {
 
     checkingExistingSessions: boolean;
-    Sessions: Session[];
+    sessions: Session[];
 
-    @Input() public DiagnoserNameLookup: string = "";
+    @Input() public diagnoserNameLookup: string = "";
     @Input() public siteToBeDiagnosed: SiteDaasInfo;
     @Input() public scmPath: string;
     @Input() public showDetailsLink: boolean = true;
@@ -54,17 +54,17 @@ export class DaasSessionsComponent implements OnChanges {
     }
 
     populateSessions() {
-        if (this.DiagnoserNameLookup.startsWith("CLR Profiler")) {
+        if (this.diagnoserNameLookup.startsWith("CLR Profiler")) {
             this.DiagnoserHeading = "profiling sessions";
         }
-        else if (this.DiagnoserNameLookup === "Memory Dump") {
+        else if (this.diagnoserNameLookup === "Memory Dump") {
             this.DiagnoserHeading = "dumps collected";
         }
         else {
             this.DiagnoserHeading = "diagnostic sessions";
         }
 
-        if (this.DiagnoserNameLookup === "") {
+        if (this.diagnoserNameLookup === "") {
             this.showDetailedView = true;
         }
 
@@ -73,10 +73,10 @@ export class DaasSessionsComponent implements OnChanges {
             .subscribe(sessions => {
                 this.checkingExistingSessions = false;
                 if (this.showDetailedView) {
-                    this.Sessions = this.setExpanded(sessions);
+                    this.sessions = this.setExpanded(sessions);
                 }
                 else {
-                    this.Sessions = this.takeTopFiveDiagnoserSessions(sessions);
+                    this.sessions = this.takeTopFiveDiagnoserSessions(sessions);
                 }
 
             });
@@ -86,7 +86,7 @@ export class DaasSessionsComponent implements OnChanges {
         var arrayToReturn = new Array<Session>();
         sessions.forEach(session => {
             session.DiagnoserSessions.forEach(diagnoser => {
-                if (diagnoser.Name.startsWith(this.DiagnoserNameLookup)) {
+                if (diagnoser.Name.startsWith(this.diagnoserNameLookup)) {
                     arrayToReturn.push(session);
                 }
             });
@@ -100,7 +100,7 @@ export class DaasSessionsComponent implements OnChanges {
 
     getInstanceNameFromReport(reportName: string): string {
 
-        if (!this.DiagnoserNameLookup.startsWith("CLR Profiler")) {
+        if (!this.diagnoserNameLookup.startsWith("CLR Profiler")) {
             return reportName;
         }
 
@@ -119,7 +119,7 @@ export class DaasSessionsComponent implements OnChanges {
 
     toggleExpanded(i: number): void {
         // this._logger.LogClickEvent(`Connection String-${this.dbTestResult[i].Name}`, "DiagnosticTools");
-        this.Sessions[i].Expanded = !this.Sessions[i].Expanded;
+        this.sessions[i].Expanded = !this.sessions[i].Expanded;
     }
 
     hasErrors(session: Session): boolean {

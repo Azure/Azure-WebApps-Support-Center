@@ -25,26 +25,26 @@ export class DaasComponent implements OnInit, OnDestroy {
 
     @Input() siteToBeDiagnosed: SiteDaasInfo;
     @Input() scmPath: string;
-    @Input() DiagnoserName: string;
-    @Input() DiagnoserNameLookup: string = "";
+    @Input() diagnoserName: string;
+    @Input() diagnoserNameLookup: string = "";
 
     @Output() SessionsEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     instances: string[];
     instancesToDiagnose: string[];
-    InstancesSelected: InstanceSelection[];
-    SessionId: string;
+    instancesSelected: InstanceSelection[];
+    sessionId: string;
     sessionInProgress: boolean;
     diagnoserSession: Diagnoser;
     subscription: Subscription;
     sessionStatus: number;
-    Sessions: Session[];
-    InstancesStatus: Map<string, number>;
+    sessions: Session[];
+    instancesStatus: Map<string, number>;
     selectedInstance: string;
     operationInProgress: boolean;
     operationStatus: string;
     Reports: Report[];
-    SessionCompleted: boolean;
+    sessionCompleted: boolean;
     WizardSteps: StepWizardSingleStep[] = [];
 
     WizardStepStatus: string;
@@ -60,12 +60,12 @@ export class DaasComponent implements OnInit, OnDestroy {
 
     onDaasValidated(validated: boolean) {
 
-        if (this.DiagnoserNameLookup === "") {
-            this.DiagnoserNameLookup = this.DiagnoserName;
+        if (this.diagnoserNameLookup === "") {
+            this.diagnoserNameLookup = this.diagnoserName;
         }
 
         this.daasValidated = true;
-        this.SessionCompleted = false;
+        this.sessionCompleted = false;
         this.operationInProgress = true;
         this.operationStatus = "Retrieving instances..."
 
@@ -99,13 +99,13 @@ export class DaasComponent implements OnInit, OnDestroy {
         });
 
         this.WizardSteps.push({
-            Caption: "Step 2: Collecting " + this.DiagnoserName,
+            Caption: "Step 2: Collecting " + this.diagnoserName,
             IconType: "fa-clone",
             AdditionalText: ""
         });
 
         this.WizardSteps.push({
-            Caption: "Step 3: Analyzing " + this.DiagnoserName,
+            Caption: "Step 3: Analyzing " + this.diagnoserName,
             IconType: "fa-cog",
             AdditionalText: ""
         });
@@ -126,7 +126,7 @@ export class DaasComponent implements OnInit, OnDestroy {
                 for (var index = 0; index < sessions.length; index++) {
                     if (sessions[index].Status === 0)  // Check Active Sessions only
                     {
-                        var daasDiagnoser = sessions[index].DiagnoserSessions.find(x => x.Name.startsWith(this.DiagnoserNameLookup));
+                        var daasDiagnoser = sessions[index].DiagnoserSessions.find(x => x.Name.startsWith(this.diagnoserNameLookup));
                         if (daasDiagnoser) {
                             runningSession = sessions[index];
                             break;
@@ -137,9 +137,9 @@ export class DaasComponent implements OnInit, OnDestroy {
                     this.sessionInProgress = true;
                     this.updateInstanceInformationOnLoad();
                     this.getDiagnoserStateFromSession(runningSession);
-                    this.SessionId = runningSession.SessionId;
+                    this.sessionId = runningSession.SessionId;
                     this.subscription = Observable.interval(10000).subscribe(res => {
-                        this.pollRunningSession(this.SessionId);
+                        this.pollRunningSession(this.sessionId);
                     });
                 }
             });
@@ -161,10 +161,10 @@ export class DaasComponent implements OnInit, OnDestroy {
                         this.subscription.unsubscribe();
                     }
 
-                    var daasDiagnoser = runningSession.DiagnoserSessions.find(x => x.Name.startsWith(this.DiagnoserNameLookup));
+                    var daasDiagnoser = runningSession.DiagnoserSessions.find(x => x.Name.startsWith(this.diagnoserNameLookup));
                     if (daasDiagnoser) {
                         this.Reports = daasDiagnoser.Reports;
-                        this.SessionCompleted = true;
+                        this.sessionCompleted = true;
                     }
 
                     // Update the sessions information table when a running session finishes
@@ -175,7 +175,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     }
 
     getDiagnoserStateFromSession(session: Session) {
-        var daasDiagnoser = session.DiagnoserSessions.find(x => x.Name.startsWith(this.DiagnoserNameLookup));
+        var daasDiagnoser = session.DiagnoserSessions.find(x => x.Name.startsWith(this.diagnoserNameLookup));
         if (daasDiagnoser) {
             this.diagnoserSession = daasDiagnoser;
             if (daasDiagnoser.CollectorStatus === 2) {
@@ -197,9 +197,9 @@ export class DaasComponent implements OnInit, OnDestroy {
     }
 
     updateInstanceInformationOnLoad() {
-        this.InstancesStatus = new Map<string, number>();
+        this.instancesStatus = new Map<string, number>();
         this.instances.forEach(x => {
-            this.InstancesStatus.set(x, 1);
+            this.instancesStatus.set(x, 1);
         });
         if (this.instances.length > 0) {
             this.selectedInstance = this.instances[0];
@@ -207,11 +207,11 @@ export class DaasComponent implements OnInit, OnDestroy {
     }
 
     updateInstanceInformation() {
-        this.InstancesStatus = new Map<string, number>();
+        this.instancesStatus = new Map<string, number>();
 
         if (this.instancesToDiagnose.length > 0) {
             this.instancesToDiagnose.forEach(x => {
-                this.InstancesStatus.set(x, 1);
+                this.instancesStatus.set(x, 1);
             });
 
             this.selectedInstance = this.instances[0];
@@ -219,14 +219,14 @@ export class DaasComponent implements OnInit, OnDestroy {
     }
 
     populateinstancesToDiagnose() {
-        this.InstancesSelected = new Array();
+        this.instancesSelected = new Array();
 
         if (this.instances && this.instances.length > 0) {
             this.instances.forEach(x => {
                 let s = new InstanceSelection();
                 s.InstanceName = x;
                 s.Selected = true;
-                this.InstancesSelected.push(s);
+                this.instancesSelected.push(s);
             });
         }
     }
@@ -253,11 +253,11 @@ export class DaasComponent implements OnInit, OnDestroy {
                     return;
                 }
 
-                this._logger.LogClickEvent(this.DiagnoserName, "DiagnosticTools");
+                this._logger.LogClickEvent(this.diagnoserName, "DiagnosticTools");
                 this.instancesToDiagnose = new Array<string>();
 
-                if (this.InstancesSelected && this.InstancesSelected !== null) {
-                    this.InstancesSelected.forEach(x => {
+                if (this.instancesSelected && this.instancesSelected !== null) {
+                    this.instancesSelected.forEach(x => {
                         if (x.Selected) {
                             this.instancesToDiagnose.push(x.InstanceName);
                         }
@@ -274,11 +274,11 @@ export class DaasComponent implements OnInit, OnDestroy {
                 this.sessionStatus = 1;
                 this.updateInstanceInformation();
 
-                var submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.DiagnoserName, this.instancesToDiagnose)
+                var submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.diagnoserName, this.instancesToDiagnose)
                     .subscribe(result => {
-                        this.SessionId = result;
+                        this.sessionId = result;
                         this.subscription = Observable.interval(10000).subscribe(res => {
-                            this.pollRunningSession(this.SessionId);
+                            this.pollRunningSession(this.sessionId);
                         });
                     },
                         error => {

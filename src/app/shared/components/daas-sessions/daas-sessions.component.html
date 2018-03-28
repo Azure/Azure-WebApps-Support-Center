@@ -16,10 +16,10 @@
     </div>
 
     <div *ngIf="!checkingExistingSessions && !showDetailedView">
-        <div *ngIf="Sessions?.length === 0">
+        <div *ngIf="sessions?.length === 0">
             No sessions found
         </div>
-        <table *ngIf="Sessions?.length > 0" class="table table-hover table-bordered report-table">
+        <table *ngIf="sessions?.length > 0" class="table table-hover table-bordered report-table">
             <thead class="thead-light">
                 <tr>
                     <th>Date</th>
@@ -27,11 +27,11 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let session of Sessions">
+                <tr *ngFor="let session of sessions">
                     <td>{{ session.StartTime }} (UTC)</td>
                     <td>
                         <div *ngFor="let diagnoser of session.DiagnoserSessions">
-                            <div *ngIf="diagnoser.Name.startsWith(DiagnoserNameLookup)">
+                            <div *ngIf="diagnoser.Name.startsWith(diagnoserNameLookup)">
                                 <ul *ngIf="diagnoser.Reports.length > 0" style="list-style: none;">
                                     <li *ngFor="let report of diagnoser.Reports">
                                         {{ getInstanceNameFromReport(report.FileName) }}
@@ -56,11 +56,11 @@
         </table>
     </div>
     <div *ngIf="!checkingExistingSessions && showDetailedView">
-        <div *ngIf="Sessions?.length === 0">
+        <div *ngIf="sessions?.length === 0">
             No sessions found
         </div>
 
-        <div style="margin-top:20px" *ngFor="let session of Sessions; let i = index">
+        <div style="margin-top:20px" *ngFor="let session of sessions; let i = index">
             <div class="panel panel-default">
                 <div class="panel-heading" (click)="toggleExpanded(i)">
                     <span>

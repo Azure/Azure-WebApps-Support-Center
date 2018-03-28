@@ -9,7 +9,7 @@ import { AvailabilityLoggingService } from '../../../services/logging/availabili
 
 export abstract class DaasBaseComponent  {
 
-    DiagnoserName: string;
+    diagnoserName: string;
     siteToBeDiagnosed: SiteDaasInfo    
     scmPath: string;    
     refreshSessions:boolean = false;

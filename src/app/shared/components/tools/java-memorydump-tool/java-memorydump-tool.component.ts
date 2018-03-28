@@ -31,7 +31,7 @@ export class JavaMemoryDumpToolComponent extends DaasBaseComponent implements On
     }
     ngOnInit(): void {
 
-        this.DiagnoserName = "JAVA Memory Dump";
+        this.diagnoserName = "JAVA Memory Dump";
         this.scmPath = this._siteServiceLocal.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
     }

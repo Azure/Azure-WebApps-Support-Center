@@ -22,7 +22,7 @@ import { SiteService } from '../../services/site.service';
 export class ProfilerComponent extends DaasComponent implements OnInit, OnDestroy {
 
 
-    InstancesStatus: Map<string, number>;
+    instancesStatus: Map<string, number>;
     selectedInstance: string;
     WizardSteps: StepWizardSingleStep[] = [];
     error: any;
@@ -31,8 +31,8 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
     constructor(private _serverFarmServiceLocal: ServerFarmDataService, private _siteServiceLocal: SiteService, private _daasServiceLocal: DaasService, private _windowServiceLocal: WindowService, private _loggerLocal: AvailabilityLoggingService) {
 
         super(_serverFarmServiceLocal, _siteServiceLocal, _daasServiceLocal, _windowServiceLocal, _loggerLocal)
-        this.DiagnoserName = "CLR Profiler";
-        this.DiagnoserNameLookup = "CLR Profiler";
+        this.diagnoserName = "CLR Profiler";
+        this.diagnoserNameLookup = "CLR Profiler";
     }
 
     ngOnInit(): void {
@@ -41,10 +41,10 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
 
     collectProfilerTrace() {
         if (this.collectStackTraces) {
-            this.DiagnoserName = "CLR Profiler with Thread Stacks";
+            this.diagnoserName = "CLR Profiler with Thread Stacks";
         }
         else {
-            this.DiagnoserName = "CLR Profiler";
+            this.diagnoserName = "CLR Profiler";
         }
 
         this.collectDiagnoserData();
@@ -88,13 +88,13 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
                         // The order of this IF check should not be changed
                         if (msg.Message.indexOf('Stopping') >= 0 || msg.Message.indexOf('Stopped') >= 0) {
 
-                            this.InstancesStatus.set(msg.EntityType, 3);
+                            this.instancesStatus.set(msg.EntityType, 3);
                         }
                         else if (msg.Message.indexOf('seconds') >= 0) {
-                            this.InstancesStatus.set(msg.EntityType, 2);
+                            this.instancesStatus.set(msg.EntityType, 2);
                         }
                     });
-                    this.sessionStatus = this.InstancesStatus.get(this.selectedInstance);
+                    this.sessionStatus = this.instancesStatus.get(this.selectedInstance);
                 }
             }
             else if (clrDiagnoser.AnalyzerStatus === 2) {

@@ -32,7 +32,7 @@ export class PhpProcessAnalyzerToolComponent extends DaasBaseComponent implement
     }
     ngOnInit(): void {
 
-        this.DiagnoserName = "PHP Process Report";
+        this.diagnoserName = "PHP Process Report";
         this.scmPath = this._siteServiceLocal.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
     }

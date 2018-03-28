@@ -30,7 +30,7 @@ export class JavaThreadDumpToolComponent extends DaasBaseComponent implements On
     }
     ngOnInit(): void {
 
-        this.DiagnoserName = "JAVA Thread Dump";
+        this.diagnoserName = "JAVA Thread Dump";
         this.scmPath = this._siteServiceLocal.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
     }

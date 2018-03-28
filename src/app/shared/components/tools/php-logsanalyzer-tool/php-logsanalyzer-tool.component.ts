@@ -29,7 +29,7 @@ export class PhpLogsAnalyzerToolComponent extends DaasBaseComponent implements O
     }
     ngOnInit(): void {
 
-        this.DiagnoserName = "PHP Error Logs";
+        this.diagnoserName = "PHP Error Logs";
         this.scmPath = this._siteServiceLocal.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
     }

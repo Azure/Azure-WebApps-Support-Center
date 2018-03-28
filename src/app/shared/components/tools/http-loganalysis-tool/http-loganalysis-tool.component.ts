@@ -31,7 +31,7 @@ export class HttpLogAnalysisToolComponent extends DaasBaseComponent implements O
     }
     ngOnInit(): void {
 
-        this.DiagnoserName = "Http Logs";
+        this.diagnoserName = "Http Logs";
         this.scmPath = this._siteServiceLocal.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
     }

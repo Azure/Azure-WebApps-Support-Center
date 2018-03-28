@@ -3,7 +3,7 @@
     <p>{{ description }}</p>
     <div class="wizardcontainer">
 
-        <daas [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed" [DiagnoserName]="DiagnoserName" (SessionsEvent)="updateSessions($event)">
+        <daas [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed" [diagnoserName]="diagnoserName" (SessionsEvent)="updateSessions($event)">
         </daas>
     </div>
 
@@ -13,6 +13,6 @@
     </ul>
 
     <div class="sessions">
-        <daas-sessions [refreshSessions]="refreshSessions" DiagnoserNameLookup="PHP Process Report" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed"></daas-sessions>
+        <daas-sessions [refreshSessions]="refreshSessions" diagnoserNameLookup="PHP Process Report" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed"></daas-sessions>
     </div>
 </div>

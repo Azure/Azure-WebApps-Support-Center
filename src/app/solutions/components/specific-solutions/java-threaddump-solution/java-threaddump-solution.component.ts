@@ -37,7 +37,7 @@ export class JavaThreadDumpSolutionComponent implements SolutionBaseComponent, O
     scmPath: string;
     couldNotFindSite: boolean = false;
 
-    DiagnoserName: string = "JAVA Thread Dump";
+    diagnoserName: string = "JAVA Thread Dump";
     refreshSessions: boolean = false;
 
     constructor(private _siteService: SiteService, private _logger: AvailabilityLoggingService, private _serverFarmService: ServerFarmDataService) {
@@ -45,7 +45,7 @@ export class JavaThreadDumpSolutionComponent implements SolutionBaseComponent, O
 
     ngOnInit(): void {
 
-        this._logger.LogSolutionDisplayed(this.DiagnoserName, this.data.solution.order.toString(), 'bot-sitecpuanalysis');
+        this._logger.LogSolutionDisplayed(this.diagnoserName, this.data.solution.order.toString(), 'bot-sitecpuanalysis');
         let siteInfo = MetaDataHelper.getSiteDaasData(this.data.solution.data);
 
         this._serverFarmService.sitesInServerFarm.subscribe(sites => {

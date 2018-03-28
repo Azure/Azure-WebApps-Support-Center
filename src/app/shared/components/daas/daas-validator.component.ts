@@ -12,7 +12,7 @@ import { Observable } from 'rxjs/Observable';
 export class DaasValidatorComponent implements OnInit {
 
   @Input() siteToBeDiagnosed: SiteDaasInfo;
-  @Input() DiagnoserName: string;
+  @Input() diagnoserName: string;
 
   @Output() DaasValidated: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -56,7 +56,7 @@ export class DaasValidatorComponent implements OnInit {
             this._daasService.getDiagnosers(this.siteToBeDiagnosed).retry(2)
               .subscribe(result => {
                 let diagnosers: DiagnoserDefinition[] = result;
-                let thisDiagnoser = diagnosers.find(x => x.Name === this.DiagnoserName);
+                let thisDiagnoser = diagnosers.find(x => x.Name === this.diagnoserName);
                 if (thisDiagnoser) {
                   if (thisDiagnoser.Warnings.length > 0) {
                     this.diagnoserWarning = thisDiagnoser.Warnings.join(',');

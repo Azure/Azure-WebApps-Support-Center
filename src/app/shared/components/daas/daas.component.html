@@ -1,4 +1,4 @@
-<daas-validator [siteToBeDiagnosed]="siteToBeDiagnosed" [DiagnoserName]="DiagnoserName" (DaasValidated)="onDaasValidated($event)"></daas-validator>
+<daas-validator [siteToBeDiagnosed]="siteToBeDiagnosed" [diagnoserName]="diagnoserName" (DaasValidated)="onDaasValidated($event)"></daas-validator>
 
 <div *ngIf="daasValidated">
     <div class="action-box" *ngIf="siteToBeDiagnosed">
@@ -15,9 +15,9 @@
                         Instance(s):
                     </td>
                     <td class="highlight-blue">
-                        <div *ngFor="let instance of InstancesSelected;let i = index">
+                        <div *ngFor="let instance of instancesSelected;let i = index">
                             <input type="checkbox" [disabled]="sessionInProgress" value="{{ instance.InstanceName }}" name="{{ instance.InstanceName }}"
-                                [(ngModel)]="InstancesSelected[i].Selected" /> {{ instance.InstanceName}}
+                                [(ngModel)]="instancesSelected[i].Selected" /> {{ instance.InstanceName}}
                         </div>
                     </td>
                 </tr>
@@ -29,13 +29,13 @@
                     {{ operationStatus }}
                 </div>
 
-                <button [disabled]="sessionInProgress || operationInProgress || retrievingInstancesFailed" [hidden]="SessionCompleted" class="btn btn-primary"
-                    (click)="collectDiagnoserData()">Collect {{ DiagnoserName }}</button>
+                <button [disabled]="sessionInProgress || operationInProgress || retrievingInstancesFailed" [hidden]="sessionCompleted" class="btn btn-primary"
+                    (click)="collectDiagnoserData()">Collect {{ diagnoserName }}</button>
             </div>
 
             <div class="status-box" *ngIf="sessionInProgress">
                 <select id="selectInstances" (change)="onInstanceChange($event.target.value)">
-                    <option *ngFor="let instancestatus of InstancesStatus | mapValues" value={{instancestatus.key}}>
+                    <option *ngFor="let instancestatus of instancesStatus | mapValues" value={{instancestatus.key}}>
                         {{instancestatus.key}}
                     </option>
                 </select>
