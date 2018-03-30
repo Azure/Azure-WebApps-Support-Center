@@ -63,6 +63,16 @@ export class SupportToolsComponent {
         });
 
         this.supportTools.push({
+            title: "Performance Counters",
+            description: "",
+            enabled: true,
+            action: () => {
+                this.logToolUse(SupportBladeDefinitions.MetricPerInstance.Identifier);
+                this._portalActionService.openMdmMetricsBlade()
+            }
+        });
+
+        this.supportTools.push({
             title: "Metrics per Instance (App Service Plan)",
             description: this.hasReadAccessToServerFarm ? "View Metrics for applications on your App Service Plan" :
                 "You do not have access to the the app service plan to which this site belongs",

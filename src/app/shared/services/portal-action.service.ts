@@ -51,6 +51,18 @@ export class PortalActionService {
         this._portalService.openBlade(bladeInfo, "troubleshoot");
     }
 
+    public openMdmMetricsBlade() {
+        let bladeInfo = {
+            detailBlade: "MetricsBladeV2",
+            extension: "Microsoft_Azure_Monitoring",
+            detailBladeInputs: {
+                id: this.currentSite.id
+            }
+        };
+
+        this._portalService.openBlade(bladeInfo, "troubleshoot");
+    }
+
     public openAppInsightsBlade() {      
         let bladeInfo = {
             detailBlade: "AppServicesEnablementBlade",
