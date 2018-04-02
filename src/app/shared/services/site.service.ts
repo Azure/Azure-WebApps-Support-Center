@@ -132,8 +132,13 @@ export class SiteService {
         return this._armClient.postResource(url, {});
     }
 
-    getSiteDaasInfoFromSiteMetadata(): Observable<SiteDaasInfo>
-    {
+    getVirtualNetworkConnectionsInformation(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): Observable<any> {
+
+        let url: string = this._uriElementsService.getVirtualNetworkConnections(subscriptionId, resourceGroup, siteName, slot);
+        return this._armClient.getResource(url);
+    }
+
+    getSiteDaasInfoFromSiteMetadata(): Observable<SiteDaasInfo> {
         return this.currentSiteMetaData.map(siteInfo => {
             if (siteInfo) {
 
@@ -145,7 +150,7 @@ export class SiteService {
                 siteToBeDiagnosed.siteName = siteInfo.siteName;
                 siteToBeDiagnosed.slot = siteInfo.slot;
                 siteToBeDiagnosed.instances = [];
-                
+
                 return siteToBeDiagnosed;
             }
         });

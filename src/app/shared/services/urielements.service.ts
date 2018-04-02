@@ -22,6 +22,7 @@ export class UriElementsService {
     private _detectorResourceFormat: string = this._detectorsUrlFormat + "/{detectorName}/execute";
 
     private _diagnosticProperties: string = this._siteResourceDiagnosticsPrefix + "/properties";
+    private _virtualNetworkConnections: string = "/virtualNetworkConnections";
 
     private _queryStringParams = "?startTime={startTime}&endTime={endTime}";
 
@@ -68,6 +69,11 @@ export class UriElementsService {
     getNetworkTraceUrl(site:SiteInfoMetaData)
     {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._networkTraceStartPath;
+    }
+
+    getVirtualNetworkConnections(subscriptionId:string, resourceGroupName:string, siteName:string, slot:string ='')
+    {
+        return this._getSiteResourceUrl(subscriptionId, resourceGroupName, siteName, slot) + this._virtualNetworkConnections;
     }
 
     getDiagnosticsSingleSessionUrl(site: SiteDaasInfo, sessionId: string, detailed: boolean) {

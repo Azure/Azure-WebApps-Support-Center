@@ -28,6 +28,8 @@ export class NetworkTraceToolComponent implements OnInit {
     error: any;
     files: string[] = [];
     alreadyRunning: boolean = false;
+    localCacheEnabled: boolean = false;
+    traceLocation: string = "d:\\home\\logfiles\\networktrace";
 
     constructor(private _siteService: SiteService, private _uriElementsService: UriElementsService, private _armClient: ArmService, private _serverFarmService: ServerFarmDataService, private _windowServiceLocal: WindowService, private _loggerLocal: AvailabilityLoggingService) {
 
@@ -38,7 +40,6 @@ export class NetworkTraceToolComponent implements OnInit {
         });
     }
     ngOnInit(): void {
-
         this.scmPath = this._siteService.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
         this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
@@ -46,19 +47,34 @@ export class NetworkTraceToolComponent implements OnInit {
                 // Specifically not checking for Isolated as Network Trace tool is not working on ASE currently
                 if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier.indexOf("Premium") > -1) {
                     this.supportedTier = true;
-                    this.checkingValidity = false;
+
+                    this._siteService.getSiteAppSettings(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.siteToBeDiagnosed.siteName, this.siteToBeDiagnosed.slot).subscribe(settingsResponse => {
+                        if (settingsResponse && settingsResponse.properties) {
+                            if (settingsResponse.properties["WEBSITE_LOCAL_CACHE_OPTION"]) {
+                                this.localCacheEnabled = settingsResponse.properties["WEBSITE_LOCAL_CACHE_OPTION"] == "Always";
+                                if (this.localCacheEnabled) {
+                                    this.traceLocation = "d:\\home\\logfiles\\{InstanceId}\\networktrace"
+                                }
+                            }
+                        }
+
+                        this._siteService.getVirtualNetworkConnectionsInformation(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.siteToBeDiagnosed.siteName, this.siteToBeDiagnosed.slot).subscribe(virtualNetworkConnectionsResponse => {
+                            this.checkingValidity = false;
+                            if (virtualNetworkConnectionsResponse && virtualNetworkConnectionsResponse.length > 0) {
+                                this.supportedTier = false;
+                            }
+                        });
+                    });
                 }
             }
         }, error => {
             this.error = error;
         });
-
     }
 
     collectNetworkTrace() {
         this.inProgress = true;
         this.startNetworkTrace(this.siteToBeDiagnosed).subscribe(result => {
-
             if (result.properties) {
                 if (result.properties.indexOf('.cap') > 0) {
                     this.networkTraceStarted = true;
@@ -76,7 +92,6 @@ export class NetworkTraceToolComponent implements OnInit {
         }, error => {
             this.error = error;
         });
-
     }
 
     startNetworkTrace(site: SiteInfoMetaData): Observable<NetworkTraceResult> {

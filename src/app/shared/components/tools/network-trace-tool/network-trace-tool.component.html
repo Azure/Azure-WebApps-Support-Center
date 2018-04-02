@@ -25,7 +25,7 @@
     <div *ngIf="!supportedTier">
         <div class="focus-box focus-box-warning" style="margin-top:20px">
             <div>
-                <strong>Error</strong> - This tool is supported only on Dedicated SKU's
+                <strong>Error</strong> - This tool is supported only on Web App running on Dedicated SKU's and not connected to Azure Virtual networks
             </div>
         </div>
     </div>
@@ -51,7 +51,11 @@
             </select>
         </div>
 
-        <div style="margin-top:10px">
+        <div style="margin-top:10px">            
+            <div class="col" *ngIf="checkingValidity">
+                <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                Checking App configuration... 
+            </div>
             <button [disabled]="inProgress || checkingValidity" class="btn btn-primary" (click)="collectNetworkTrace()">Collect Network Trace</button>
         </div>
     </div>
@@ -64,7 +68,7 @@
                 Network Trace is started for the Web App and will automatically stop after
                 <strong>{{ duration }}</strong> seconds. Please check for these file(s) in
                 <a href='https://{{this.scmPath}}/debugconsole' target="blank">Kudu console</a> in
-                <strong>d:\home\logfiles\networktrace\</strong> folder after some time.
+                <strong>{{ traceLocation }}</strong> folder after some time.
                 <ul>
                     <li *ngFor="let file of files"> {{ file }}</li>
                 </ul>
@@ -77,7 +81,7 @@
             <i class="fa health-icon fa-exclamation-circle unhealthy-icon-color" aria-hidden="true"></i>
             It appears there is already a network trace running for this Web App. Check the
             <a href='https://{{this.scmPath}}/debugconsole' target="blank">Kudu console</a> in
-            <strong>d:\home\logfiles\networktrace\</strong> folder after some time to see the trace files.
+            <strong>{{ traceLocation }}</strong> folder after some time to see the trace files.
         </span>
     </div>
 </div>
