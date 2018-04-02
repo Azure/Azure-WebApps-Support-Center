@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, SimpleChanges, OnChanges, Pipe, PipeTransform, OnDestroy } from '@angular/core';
-import { Session } from '../../models/daas';
+import { Session, SessionStatus } from '../../models/daas';
 import { WindowService } from '../../services/window.service';
 import { ServerFarmDataService } from '../../services/server-farm-data.service';
 import { DaasService } from '../../services/daas.service';
@@ -148,11 +148,11 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
     }
 
     hasErrors(session: Session): boolean {
-        return session.DiagnoserSessions.filter(x => x.AnalyzerErrors.length > 0 || x.CollectorErrors.length > 0).length > 0 ? true : false;
+        return session.Status == SessionStatus.Error;        
     }
 
     isSessionInProgress(session: Session): boolean {
-        return session.DiagnoserSessions.filter(x => x.CollectorStatus <= 2 || x.AnalyzerStatus <= 2).length > 0 ? true : false;
+        return session.Status == SessionStatus.Active;
     }
 
     setExpanded(sessions: Session[]): Session[] {
