@@ -73,6 +73,7 @@ export class NetworkTraceToolComponent implements OnInit {
     }
 
     collectNetworkTrace() {
+        this._loggerLocal.LogClickEvent("Collect Network Trace", "DiagnosticTools");
         this.inProgress = true;
         this.startNetworkTrace(this.siteToBeDiagnosed).subscribe(result => {
             if (result.properties) {
