@@ -43,36 +43,39 @@ export class DaasValidatorComponent implements OnInit {
         this.checkingSupportedTier = false;
         if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
           this.supportedTier = true;
-          this.checkingDaasWebJobStatus = true;
 
-          this.checkDaasWebJobState().subscribe(webjobstate => {
-            this.checkingDaasWebJobStatus = false;
-            if (webjobstate != "Running") {
-              this.daasRunnerJobRunning = false;
-              return;
-            }
-
-            this.retrievingDiagnosers = true;
-            this._daasService.getDiagnosers(this.siteToBeDiagnosed).retry(2)
-              .subscribe(result => {
-                let diagnosers: DiagnoserDefinition[] = result;
-                let thisDiagnoser = diagnosers.find(x => x.Name === this.diagnoserName);
-                if (thisDiagnoser) {
-                  if (thisDiagnoser.Warnings.length > 0) {
-                    this.diagnoserWarning = thisDiagnoser.Warnings.join(',');
-                    this.foundDiagnoserWarnings = true;
+          this.retrievingDiagnosers = true;
+          this._daasService.getDiagnosers(this.siteToBeDiagnosed).retry(2)
+            .subscribe(result => {
+              this.retrievingDiagnosers = false;
+              let diagnosers: DiagnoserDefinition[] = result;
+              let thisDiagnoser = diagnosers.find(x => x.Name === this.diagnoserName);
+              if (thisDiagnoser) {
+                if (thisDiagnoser.Warnings.length > 0) {
+                  this.diagnoserWarning = thisDiagnoser.Warnings.join(',');
+                  this.foundDiagnoserWarnings = true;
+                  return;
+                }
+              }
+              
+              if (!this.foundDiagnoserWarnings) {
+                this.checkingDaasWebJobStatus = true;
+                this.checkDaasWebJobState().subscribe(webjobstate => {
+                  this.checkingDaasWebJobStatus = false;
+                  if (webjobstate != "Running") {
+                    this.daasRunnerJobRunning = false;
+                    return;
                   }
-                }
-
-                this.retrievingDiagnosers = false;
-                if (!this.foundDiagnoserWarnings) {
-                  this.DaasValidated.emit(true);
-                }
-              },
-                error => {
-                  this.error = error;
+                  else{
+                    this.DaasValidated.emit(true);
+                  }
                 });
-          });
+                
+              }
+            },
+              error => {
+                this.error = error;
+              });
         }
       }
     }, error => {
