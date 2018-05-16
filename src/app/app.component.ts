@@ -5,6 +5,9 @@ import * as _ from 'underscore';
 import { AuthService } from './shared/services/auth.service';
 import { WindowService } from './shared/services/window.service';
 import { LoggingService } from './shared/services/logging/logging.service';
+import { StartupInfo } from './shared/models/portal';
+import { Observable } from 'rxjs';
+import { GenericApiService } from './shared/services/generic-api.service';
 
 @Component({
     selector: 'sc-app',
@@ -15,7 +18,35 @@ export class AppComponent implements OnInit {
     public navigationItems: INavigationItem[];
     public contentMaxHeight: number;
 
-    constructor(private _authService: AuthService, private _router: Router, private _activatedRoute: ActivatedRoute, private _windowService: WindowService, private _logger: LoggingService) {
+    private _hardCodedSupportTopicIdMapping = [
+        {
+            pesId: '14748',
+            supportTopicId: '32583701',
+            path: '/diagnostics/availability/detectors/sitecpuanalysis/focus',
+        },
+        {
+            pesId: '14748',
+            supportTopicId: '32457411',
+            path: '/diagnostics/performance/analysis',
+        },
+        {
+            pesId: '14748',
+            supportTopicId: '32570954',
+            path: '/diagnostics/availability/apprestartanalysis',
+        },
+        {
+            pesId: '14748',
+            supportTopicId: '32542218',
+            path: '/diagnostics/availability/analysis',
+        },
+        {
+            pesId: '14748',
+            supportTopicId: '32581616',
+            path: '/diagnostics/availability/memoryanalysis',
+        }
+    ]
+
+    constructor(private _authService: AuthService, private _router: Router, private _activatedRoute: ActivatedRoute, private _windowService: WindowService, private _logger: LoggingService, private _genericApi: GenericApiService) {
         this.navigationItems = [];
         this.contentMaxHeight = 0;
     }
@@ -35,26 +66,9 @@ export class AppComponent implements OnInit {
                 var adjustedResourceId = info.resourceId.toLowerCase().replace("/providers/microsoft.web", "");
                 let subscriptionId = this.getSubscriptionIdFromResourceUri(adjustedResourceId);
 
-                switch (info.supportTopicId) {
-                    case "32583701":
-                        this._router.navigate([adjustedResourceId + '/diagnostics/availability/detectors/sitecpuanalysis/focus']);
-                        break;
-                    case "32457411":
-                        this._router.navigate([adjustedResourceId + '/diagnostics/performance/analysis']);
-                        break;
-                    case "32570954":
-                        this._router.navigate([adjustedResourceId + '/diagnostics/availability/apprestartanalysis']);
-                        break;
-                    case "32542218":
-                        this._router.navigate([adjustedResourceId + '/diagnostics/availability/analysis']);
-                        break;
-                    case "32581616":
-                        this._router.navigate([adjustedResourceId + '/diagnostics/availability/memoryanalysis']);
-                        break;
-                    default:
-                        this._router.navigate([adjustedResourceId + '/diagnostics']);
-                        break;
-                }
+                let redirectPath = this.getRouteBasedOnSupportTopicId(info).subscribe(redirectPath => {
+                    this._router.navigate([adjustedResourceId + redirectPath]);
+                });
             });
 
         this._router.events.filter(event => event instanceof NavigationEnd).subscribe(event => {
@@ -92,6 +106,41 @@ export class AppComponent implements OnInit {
                 this.selectTab(existingTab);
             }
         });
+    }
+
+    getRouteBasedOnSupportTopicId(info: StartupInfo): Observable<string> {
+
+        let path: string;
+        
+        // If no support topic id, then default to diagnostics home page
+        if (!info.supportTopicId || info.supportTopicId === '') {
+            path = '/diagnostics';
+        }
+
+        // Check for old availability support topics
+        //TODO: Enable filtering with pesId when it starts being passed in
+        let matchingMapping = this._hardCodedSupportTopicIdMapping.find(supportTopic => supportTopic.supportTopicId === info.supportTopicId); // && supportTopic.pesId === info.pesId)
+
+        if (matchingMapping) {
+            path = matchingMapping.path;
+        }
+
+        if (path) {
+            return Observable.of(path);
+        }
+
+        // get detectors for generic API and try to find matching support topic id
+        return this._genericApi.getDetectors().map(detectors => {
+            let matchingDetector;
+            
+            if (detectors) {
+                matchingDetector = detectors.find(detector => 
+                    detector.supportTopicList && 
+                    detector.supportTopicList.findIndex(supportTopic => supportTopic.id === info.supportTopicId && supportTopic.pesId === info.pesId) >= 0);
+            }
+
+            return matchingDetector ? `/detectors/${matchingDetector.id}` : '/diagnostics';
+        })
     }
 
     selectTab(tab: INavigationItem) {

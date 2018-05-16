@@ -7,6 +7,7 @@ export interface StartupInfo {
     resourceId: string;
     featureUri? : string;
     source?: string;
+    pesId?: string; 
     supportTopicId?: string;
     workflowId?: string; 
     resourceType:ResourceType;

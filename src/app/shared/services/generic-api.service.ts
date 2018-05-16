@@ -54,7 +54,7 @@ export class GenericApiService {
                 this.detectorList = response.map(listItem => listItem.properties.metadata);
                 return this.detectorList;
             })
-        }        
+        }
     }
 
     public getDetector(detectorName: string) {
