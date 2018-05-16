@@ -66,6 +66,8 @@ export class AppComponent implements OnInit {
                 var adjustedResourceId = info.resourceId.toLowerCase().replace("/providers/microsoft.web", "");
                 let subscriptionId = this.getSubscriptionIdFromResourceUri(adjustedResourceId);
 
+                info.supportTopicId = '32581616';
+
                 let redirectPath = this.getRouteBasedOnSupportTopicId(info).subscribe(redirectPath => {
                     this._router.navigate([adjustedResourceId + redirectPath]);
                 });
@@ -118,8 +120,8 @@ export class AppComponent implements OnInit {
         }
 
         // Check for old availability support topics
-        //TODO: Enable filtering with pesId when it starts being passed in
-        let matchingMapping = this._hardCodedSupportTopicIdMapping.find(supportTopic => supportTopic.supportTopicId === info.supportTopicId); // && supportTopic.pesId === info.pesId)
+        let matchingMapping = this._hardCodedSupportTopicIdMapping
+            .find(supportTopic => supportTopic.supportTopicId === info.supportTopicId && (!info.pesId || info.pesId === '' || supportTopic.pesId === info.pesId))
 
         if (matchingMapping) {
             path = matchingMapping.path;
