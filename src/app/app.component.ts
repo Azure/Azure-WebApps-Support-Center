@@ -66,8 +66,6 @@ export class AppComponent implements OnInit {
                 var adjustedResourceId = info.resourceId.toLowerCase().replace("/providers/microsoft.web", "");
                 let subscriptionId = this.getSubscriptionIdFromResourceUri(adjustedResourceId);
 
-                info.supportTopicId = '32581616';
-
                 let redirectPath = this.getRouteBasedOnSupportTopicId(info).subscribe(redirectPath => {
                     this._router.navigate([adjustedResourceId + redirectPath]);
                 });
