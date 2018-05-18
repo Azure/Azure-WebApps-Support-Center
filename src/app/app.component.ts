@@ -117,30 +117,25 @@ export class AppComponent implements OnInit {
             path = '/diagnostics';
         }
 
-        // Check for old availability support topics
-        let matchingMapping = this._hardCodedSupportTopicIdMapping
-            .find(supportTopic => supportTopic.supportTopicId === info.supportTopicId && (!info.pesId || info.pesId === '' || supportTopic.pesId === info.pesId))
-
-        if (matchingMapping) {
-            path = matchingMapping.path;
-        }
-
-        if (path) {
-            return Observable.of(path);
-        }
-
-        // get detectors for generic API and try to find matching support topic id
-        return this._genericApi.getDetectors().map(detectors => {
-            let matchingDetector;
-            
+        return this._genericApi.getDetectors().map(detectors => {            
             if (detectors) {
-                matchingDetector = detectors.find(detector => 
+                let matchingDetector = detectors.find(detector => 
                     detector.supportTopicList && 
-                    detector.supportTopicList.findIndex(supportTopic => supportTopic.id === info.supportTopicId && supportTopic.pesId === info.pesId) >= 0);
+                    detector.supportTopicList.findIndex(supportTopic => supportTopic.id === info.supportTopicId) >= 0);
+
+                if (matchingDetector) {
+                    return `/detectors/${matchingDetector.id}`;
+                }
             }
 
-            return matchingDetector ? `/detectors/${matchingDetector.id}` : '/diagnostics';
+            let matchingMapping = this._hardCodedSupportTopicIdMapping
+                .find(supportTopic => supportTopic.supportTopicId === info.supportTopicId && (!info.pesId || info.pesId === '' || supportTopic.pesId === info.pesId))
+
+            return matchingMapping ? matchingMapping.path : '/diagnostics';
         })
+        .catch((error, caught) => {
+            return '/diagnostics';
+        });
     }
 
     selectTab(tab: INavigationItem) {
