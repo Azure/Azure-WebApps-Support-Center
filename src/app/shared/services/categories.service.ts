@@ -50,7 +50,10 @@ export class CategoriesService {
             Collapsed: false,
             BgColor: 'rgb(1, 185, 137)',
             TextColor: 'white',
-            Subcategories: detectors.map(detector => <Subcategory>{
+            Subcategories: detectors
+            //TODO: below line is temporary to remove linux detectors that we are hardcoding to be in avail + perf section
+            .filter(detector => detector.id.toLowerCase() !== 'linuxappdown' && detector.id.toLowerCase() !== 'linuxcontainerrecycle') 
+            .map(detector => <Subcategory>{
                 Name: detector.name,
                 BgColor: '#1446a0',
                 TextColor: 'White',
@@ -79,7 +82,18 @@ export class CategoriesService {
             BgColor: '#1446a0',
             TextColor: 'White',
             Href: 'availability/analysis',
-            OperatingSystem: OperatingSystem.windows | OperatingSystem.linux,
+            OperatingSystem: OperatingSystem.windows,
+            AppType: AppType.WebApp,
+            Sku: Sku.NotDynamic,
+            AppStack : ""
+        });
+
+        perf.Subcategories.push({
+            Name: 'Web App Down',
+            BgColor: '#1446a0',
+            TextColor: 'White',
+            Href: '../detectors/LinuxAppDown',
+            OperatingSystem: OperatingSystem.linux,
             AppType: AppType.WebApp,
             Sku: Sku.NotDynamic,
             AppStack : ""
@@ -124,6 +138,17 @@ export class CategoriesService {
             TextColor: 'White',
             Href: 'availability/apprestartanalysis',
             OperatingSystem: OperatingSystem.windows,
+            AppType: AppType.WebApp,
+            Sku: Sku.NotDynamic,
+            AppStack : ""
+        });
+
+        perf.Subcategories.push({
+            Name: 'Web App Restarted',
+            BgColor: 'rgb(234, 131, 0)',
+            TextColor: 'White',
+            Href: '../detectors/LinuxContainerRecycle',
+            OperatingSystem: OperatingSystem.linux,
             AppType: AppType.WebApp,
             Sku: Sku.NotDynamic,
             AppStack : ""
