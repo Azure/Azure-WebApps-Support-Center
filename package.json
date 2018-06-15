@@ -25,7 +25,7 @@
     "@angular/upgrade": "^5.2.6",
     "@ngu/carousel": "^1.4.6",
     "@swimlane/ngx-datatable": "^11.3.2",
-    "applens-diagnostics": "0.0.5",
+    "applens-diagnostics": "0.0.6",
     "bootstrap": "^3.3.6",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",

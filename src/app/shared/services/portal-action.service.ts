@@ -36,15 +36,12 @@ export class PortalActionService {
 
     public openBladeScaleOutBlade() {
         var scaleOutInputs = {
-            WebHostingPlanId: this.currentSite.properties.serverFarmId,
-            resourceId: this.currentSite.properties.serverFarmId,
-            apiVersion: "2015-08-01",
-            options: <any>null
+            resourceId: this.currentSite.properties.serverFarmId
         };
 
         let bladeInfo = {
-            detailBlade: "ScaleSettingBlade",
-            extension: "Microsoft_Azure_Insights",
+            detailBlade: "AutoScaleSettingsBlade",
+            extension: "Microsoft_Azure_Monitoring",
             detailBladeInputs: scaleOutInputs
         };
 

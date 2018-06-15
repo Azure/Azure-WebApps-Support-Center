@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { SolutionsModule } from '../solutions/solutions.module';
 import { MyDatePickerModule } from 'mydatepicker';
-import { DiagnosticDataModule } from 'applens-diagnostics';
+import { DiagnosticDataModule, PUBLIC_CONFIGURATION } from 'applens-diagnostics';
 
 import { AvailabilityComponent } from './availability.component';
 import { AppCurrentHealthComponent } from './currenthealth/app-current-health.component';
@@ -80,7 +80,7 @@ import { DiagnosticService } from 'applens-diagnostics';
     ],
     imports: [
         RouterModule.forChild(AvailabilityAndPerformanceCategoryRouteConfig),
-        DiagnosticDataModule.forRoot(),
+        DiagnosticDataModule.forRoot(PUBLIC_CONFIGURATION),
         SharedModule,
         MyDatePickerModule,
         SolutionsModule
