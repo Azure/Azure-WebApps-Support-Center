@@ -1,0 +1,145 @@
+.container {
+    margin-left:20px;
+    margin-top:20px;
+}
+
+.header1 {
+    font-size: 24px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.header2 {    
+    font-size: 20px;
+    margin-top:25px;
+    margin-bottom:15px;
+}
+
+
+#toggle {
+    opacity: 0;
+    /* font-size: 30px; */
+  }
+  
+  #label {
+    display: inline-block;
+    background: #e8e8e8;
+    width: 2em;
+    height: 1em;
+    border-radius: 0.5em;
+    position: relative;
+    cursor: pointer;
+    background: #e8e8e8;
+    /* font-size: 30px; */
+  }
+  
+  #switch {
+    position: absolute;
+    width: 0.9em;
+    height: 0.9em;
+    margin-top: 0.05em;
+    margin-left: 0.05em;
+    border-radius: 1em;
+    background: #c0392b;
+    box-shadow: 5px 0px 28px -9px rgba(0, 0, 0, 0.75);
+    transition: transform .2s ease-in;
+    /* font-size: 30px; */
+  }
+  
+  #toggle:checked ~ #label #switch {
+    background: #2ecc71;
+    transform: translatex(1em);
+    transition: transform .2s ease-in;
+    /* font-size: 30px; */
+  }
+
+
+
+
+  .quickstart-template {
+    display: inline-block;
+    margin: 0 2px;
+    cursor: pointer;
+  }
+
+  .quickstart-template-selected {
+    border: 2px solid #0058ad;
+    margin: 0;
+}
+
+.quickstart-template-icon {
+    padding: 10px;
+    width: 150px;
+    height: 80px;
+    -webkit-box-shadow: 2px 2px 3px 0 rgba(0,0,0,.2);
+    box-shadow: 2px 2px 3px 0 rgba(0,0,0,.2);
+    text-align:center;
+    
+}
+  
+.quickstart-template:hover
+{
+    -webkit-box-shadow:6px 6px 20px 0 rgba(0,0,0,.2);
+    box-shadow:6px 6px 20px 0 rgba(0,0,0,.2);margin:0 2px
+}
+
+.quickstart-template-selected
+{
+    border:2px solid #0058ad;
+    margin:0
+}
+
+.quickstart-template-selected:hover{
+    border:2px solid #0058ad;
+    margin:0;
+    -webkit-box-shadow:0 0;
+    box-shadow:0 0
+}
+
+.icon-template{
+    font-size: 30px;
+}
+
+
+.forminput{
+    margin-top:15px;
+    border:1px solid whitesmoke;
+    padding:15px;
+    border-radius: 1em;
+    
+}
+
+.active {
+    background-color: gainsboro;
+}
+
+.activeAction {
+    color: #0585da;
+}
+
+
+.image-btn {
+    color: #0585da; 
+    border: none;    
+    font-size: 16px; 
+    cursor: pointer; 
+    background-color: white;
+}
+
+/* Darker background on mouse-over */
+.image-btn:hover {
+    color: rgb(0, 23, 94);
+    background-color: white;
+}
+
+.summary {
+    background-color: #efefef;
+    border-bottom-left-radius: 0;
+    border: 1px solid #e6e6e6;    
+    font-size: 13px;
+    display: inline-block;
+    max-width: 50%;
+    padding: 10px;
+    padding-right: 30px;
+    border-radius: 10px;
+}

@@ -1,0 +1,57 @@
+<button type="button" class="btn btn-primary" (click)="addNewRule()" *ngIf="Rule == null && !editMode">
+  Configure Slow Request rule
+</button>
+
+<table class="table table-bordered" *ngIf="!editMode && Rule != null">
+  <thead>
+    <tr>
+      <th>
+        Request Count
+      </th>
+      <th>
+        Time Taken
+      </th>
+      <th>
+        Duration
+      </th>
+      <th>
+        Action
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{ Rule.count }}</td>
+      <td>{{ Rule.timeTaken }}</td>
+      <td>{{ Rule.timeInterval }}</td>
+      <td>
+        <button class="image-btn" *ngIf="!editMode" (click)="editRule()">
+          <i class="fa fa-edit"></i>
+        </button>
+        <button class="image-btn" *ngIf="!editMode" (click)="deleteRule()">
+          <i class="fa fa-trash"></i>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="form-group" *ngIf="editMode">
+  <div>
+    <label for="requestsCountSlow">After how many slow requests you want this condition to kick in ?</label>
+    <input type="number" class="form-control" id="requestsCountSlow" aria-describedby="requestsCountSlowHelp" placeholder="Enter request count"
+      [(ngModel)]="RuleCopy.count">
+    <small id="requestsCountSlowHelp" class="form-text text-muted">If there are these many slow requests in the duration configured below, the configured action will be taken</small>
+  </div>
+  <div class="form-group">
+    <label for="timeTakenSlow">What should be minimum time-taken (in seconds) for these slow requests ?</label>
+    <timespan [(TimeSpan)]="RuleCopy.timeTaken" placeholder="e.g. 60"></timespan>
+  </div>
+
+  <div class="form-group">
+    <label for="durationSlow">How frequently (in seconds) you want to check?</label>
+    <timespan [(TimeSpan)]="RuleCopy.timeInterval" placeholder="e.g. 300"></timespan>
+  </div>
+
+  <button type="button" class="btn btn-primary" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
+</div>

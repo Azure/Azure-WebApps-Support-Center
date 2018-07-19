@@ -71,6 +71,13 @@ import { DaasSessionsDetailedComponent } from './components/daas-sessions-detail
 import { GenericApiService } from './services/generic-api.service';
 import { TabTitleResolver } from './resolvers/tab-name.resolver';
 import { AseService } from './services/ase.service';
+import { AutohealingComponent } from './autohealing/autohealing.component';
+import { AutohealingService } from './services/autohealing.service';
+import { AutohealingMemoryRuleComponent } from './autohealing/autohealing-memory-rule/autohealing-memory-rule.component';
+import { AutohealingSlowrequestsRuleComponent } from './autohealing/autohealing-slowrequests-rule/autohealing-slowrequests-rule.component';
+import { AutohealingRequestsRuleComponent } from './autohealing/autohealing-requests-rule/autohealing-requests-rule.component';
+import { AutohealingStatuscodesRuleComponent } from './autohealing/autohealing-statuscodes-rule/autohealing-statuscodes-rule.component';
+import { TimespanComponent } from './components/timespan/timespan.component';
 
 @NgModule({
     declarations: [
@@ -115,7 +122,13 @@ import { AseService } from './services/ase.service';
         IncidentSummaryComponent,
         DaasValidatorComponent,
         DaasSessionsDetailedComponent,
-        LiveAgentChatComponent
+        LiveAgentChatComponent,
+        AutohealingComponent,
+        AutohealingSlowrequestsRuleComponent,
+        AutohealingMemoryRuleComponent,
+        AutohealingRequestsRuleComponent,
+        AutohealingStatuscodesRuleComponent,
+        TimespanComponent
     ],
     imports: [
         HttpModule,
@@ -201,7 +214,8 @@ export class SharedModule {
                 GenericApiService,
                 TabTitleResolver,
                 AseService,
-                LiveChatService
+                LiveChatService,
+                AutohealingService
             ]
         }
     }

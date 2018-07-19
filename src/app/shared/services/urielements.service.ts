@@ -12,6 +12,7 @@ export class UriElementsService {
     private _siteRestartUrlFormat: string = "/restart";
     private _listAppSettingsUrlFormat: string = "/config/appsettings/list";
     private _updateAppSettingsUrlFormat: string = "/config/appsettings";
+    private _configWebUrlFormat: string = "/config/web";
 
     private _siteResourceDiagnosticsPrefix: string = "/diagnostics";    
     private _diagnosticCategoryFormat: string = this._siteResourceDiagnosticsPrefix + "/{diagnosticCategory}"
@@ -174,6 +175,10 @@ export class UriElementsService {
 
     getUpdateAppSettingsUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
         return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._updateAppSettingsUrlFormat;
+    }
+
+    getConfigWebUrl(site:SiteInfoMetaData): string {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName,site.siteName, site.slot) + this._configWebUrlFormat;
     }
 
     private _getSiteResourceUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '') {

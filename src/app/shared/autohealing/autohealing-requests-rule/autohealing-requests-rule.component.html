@@ -1,0 +1,50 @@
+<button type="button" class="btn btn-primary" (click)="addNewRule()" *ngIf="Rule == null && !editMode">
+  Configure Request Count Rule
+</button>
+<table class="table table-bordered" *ngIf="!editMode && Rule != null">
+  <thead>
+    <tr>
+      <th>
+        Request Count
+      </th>
+      <th>
+        Duration
+      </th>
+      <th>
+        Action
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{ Rule.count }}</td>
+      <td>{{ Rule.timeInterval }}</td>
+      <td>
+        <button class="image-btn" *ngIf="!editMode" (click)="editRule()">
+          <i class="fa fa-edit"></i>
+        </button>
+        <button class="image-btn" *ngIf="!editMode" (click)="deleteRule()">
+          <i class="fa fa-trash"></i>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="form-group" *ngIf="editMode">
+  <div>
+    <label for="requests">After how many requests you want this condition to kick in ?</label>
+    <input type="number" class="form-control" id="requests" aria-describedby="requestCountHelp" placeholder="Enter request count"
+      [(ngModel)]="RuleCopy.count">
+    <small id="requestCountHelp" class="form-text text-muted">After the process has served these many requests in the duration configured below, the configured action will be taken
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label for="durationCount">How frequently (in seconds) you want to check ?</label>
+    <timespan [(TimeSpan)]="RuleCopy.timeInterval" placeholder="e.g. 60"></timespan>
+  </div>
+
+  <button type="button" class="btn btn-primary" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
+
+</div>

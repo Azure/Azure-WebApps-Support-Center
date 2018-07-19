@@ -25,6 +25,7 @@ import { GenericDetectorComponent } from './generic-detector/generic-detector.co
 import { Injectable } from '@angular/core';
 import { GenericApiService } from '../shared/services/generic-api.service';
 import { TabTitleResolver } from '../shared/resolvers/tab-name.resolver';
+import { AutohealingComponent } from '../shared/autohealing/autohealing.component';
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
@@ -371,7 +372,22 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     }
     ,
-    // Network Trace Tool
+    // Autohealing
+    {
+        path: _siteResourceUrl + '/diagnostics/tools/mitigate',
+        component: AutohealingComponent,
+        data: {
+            navigationTitle: 'Mitigate',
+        }
+    },
+    {
+        path: _slotResourceUrl + '/diagnostics/tools/mitigate',
+        component: AutohealingComponent,
+        data: {
+            navigationTitle: 'Mitigate',
+        }
+    }
+    ,    
     {
         path: _siteResourceUrl + '/diagnostics/tools/networktrace',
         component: NetworkTraceToolComponent,
