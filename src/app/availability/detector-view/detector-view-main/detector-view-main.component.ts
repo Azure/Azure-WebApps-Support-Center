@@ -5,7 +5,7 @@ import { StartupInfo } from '../../../shared/models/portal';
 import { GraphHelper } from '../../../shared/utilities/graphHelper';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 import { AvailabilityLoggingService } from '../../../shared/services/logging/availability.logging.service';
-import { AuthService } from '../../../shared/services/auth.service';
+import { AuthService } from '../../../startup/services/auth.service';
 declare let d3: any;
 
 @Component({

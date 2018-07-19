@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OperatingSystem, SiteExtensions } from '../../shared/models/site';
-import { WindowService } from '../../shared/services/window.service';
+import { WindowService } from '../../startup/services/window.service';
 import { SiteService } from '../../shared/services/site.service';
 import { LoggingService } from '../../shared/services/logging/logging.service';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../startup/services/auth.service';
 import { ResourceType, AppType } from '../../shared/models/portal';
 
 @Component({

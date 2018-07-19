@@ -1,12 +1,12 @@
 import { Component, Input, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { SiteDaasInfo } from '../../models/solution-metadata';
 import { Session, Diagnoser, Report, DiagnoserDefinition } from '../../models/daas';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Rx';
 import { StepWizardSingleStep } from '../../models/step-wizard-single-step';
 import { Observable } from 'rxjs/Observable';
 import { SiteService } from '../../services/site.service';
 import { DaasService } from '../../services/daas.service';
-import { WindowService } from '../../services/window.service';
+import { WindowService } from '../../../startup/services/window.service';
 import { AvailabilityLoggingService } from '../../services/logging/availability.logging.service';
 import { ServerFarmDataService } from '../../services/server-farm-data.service';
 

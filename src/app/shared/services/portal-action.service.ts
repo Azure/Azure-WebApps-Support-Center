@@ -6,10 +6,10 @@ import {Observable, Subscription as RxSubscription, Subject, ReplaySubject} from
 import { LogEntryLevel, StartupInfo, SupportBladeDefinition } from '../models/portal';
 import { SiteConfig } from '../models/site-config';
 import { ResponseMessageEnvelope } from '../models/responsemessageenvelope';
-import { WindowService } from './window.service';
-import { PortalService } from './portal.service';
+import { WindowService } from '../../startup/services/window.service';
+import { PortalService } from '../../startup/services/portal.service';
 import { ArmService } from './arm.service';
-import { AuthService } from './auth.service';
+import { AuthService } from '../../startup/services/auth.service';
 
 @Injectable()
 export class PortalActionService {

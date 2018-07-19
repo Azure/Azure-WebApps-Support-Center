@@ -5,7 +5,7 @@ import { SiteService } from '../../services/site.service';
 import { IncidentNotification } from '../../models/icm-incident';
 import { ServiceIncidentService } from '../../services/service-incident.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../startup/services/auth.service';
 import { LoggingService } from '../../services/logging/logging.service';
 
 

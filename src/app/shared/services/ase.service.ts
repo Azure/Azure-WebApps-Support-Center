@@ -1,6 +1,6 @@
 import { Injectable, Host } from '@angular/core';
 import { ArmService } from './arm.service';
-import { AuthService } from './auth.service';
+import { AuthService } from '../../startup/services/auth.service';
 import { StartupInfo, ResourceType } from '../models/portal';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { HostingEnvironment, AseInfoMetaData } from '../models/hostingEnvironment';
@@ -16,6 +16,7 @@ export class AseService {
   public currentAseMetaData: AseInfoMetaData;
 
   constructor(private _armClient: ArmService, private _authService: AuthService) {
+    console.log('ase service');
     this._authService.getStartupInfo().subscribe((startUpInfo: StartupInfo) => {
       this._populateAseInfo(startUpInfo.resourceId);
       if (startUpInfo.resourceType === ResourceType.HostingEnvironment) {

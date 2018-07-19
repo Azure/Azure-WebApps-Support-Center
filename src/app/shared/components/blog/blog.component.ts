@@ -1,6 +1,6 @@
 import { Component, OnChanges, SimpleChanges, Input } from '@angular/core';
 import { SolutionMetadata } from '../../models/solution-ui-model/solutionproperties';
-import { WindowService } from '../../services/window.service';
+import { WindowService } from '../../../startup/services/window.service';
 
 @Component({
     selector: 'blog',

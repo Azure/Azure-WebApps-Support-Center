@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { StartupInfo } from '../../shared/models/portal';
 import { ArmObj } from '../../shared/models/armObj';
 import { SiteService } from '../../shared/services/site.service';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../startup/services/auth.service';
 import { AppInsightsService } from '../../shared/services/appinsights/appinsights.service';
 import { AppInsightsQueryService } from '../../shared/services/appinsights/appinsights-query.service';
 

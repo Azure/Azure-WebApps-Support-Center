@@ -1,4 +1,4 @@
-<div class="panel with-nav-tabs panel-default app-container">
+<!-- <div class="panel with-nav-tabs panel-default app-container">
     <div class="panel-heading app-nav-bar">
         <ul class="nav nav-tabs">
 
@@ -11,10 +11,14 @@
 
         </ul>
     </div>
-    <incident-notification></incident-notification>
+    <!-- <incident-notification></incident-notification> 
     <div id="app-content" class="panel-body" [style.max-height.px]="contentMaxHeight">
         <div class="tab-content container-fluid">
             <router-outlet></router-outlet>
         </div>
     </div>
-</div>
+</div> -->
+
+<tabs>
+    <router-outlet></router-outlet>
+</tabs>

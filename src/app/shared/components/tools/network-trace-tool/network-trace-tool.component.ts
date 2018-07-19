@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { SiteService } from '../../../services/site.service';
-import { WindowService } from '../../../services/window.service';
+import { WindowService } from '../../../../startup/services/window.service';
 import { AvailabilityLoggingService } from '../../../services/logging/availability.logging.service';
 import { StepWizardSingleStep } from '../../../models/step-wizard-single-step';
 import { SiteInfoMetaData } from '../../../models/site';

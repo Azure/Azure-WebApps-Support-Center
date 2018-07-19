@@ -1,15 +1,9 @@
-import { Http, Headers, Response, Request } from '@angular/http';
-import { Injectable, EventEmitter } from '@angular/core';
+import { Http, Headers, Response } from '@angular/http';
+import { Injectable } from '@angular/core';
 import { Subscription } from '../models/subscription';
-import { Site } from '../models/site';
-import { ArmObj } from '../models/armObj';
-import { SiteConfig } from '../models/site-config';
 import { ResponseMessageEnvelope, ResponseMessageCollectionEnvelope } from '../models/responsemessageenvelope'
-import { Observable, Subscription as RxSubscription, Subject, ReplaySubject } from 'rxjs/Rx';
-import { ResourceGroup } from '../models/resource-group';
-import { PublishingCredentials } from '../models/publishing-credentials';
-import { DeploymentLocations } from '../models/arm/locations';
-import { AuthService } from './auth.service';
+import { Observable, ReplaySubject } from 'rxjs/Rx';
+import { AuthService } from '../../startup/services/auth.service';
 import { CacheService } from './cache.service';
 
 import 'rxjs/add/operator/map';
@@ -29,12 +23,26 @@ export class ArmService {
     }
 
     getResource<T>(resourceUri: string, apiVersion?: string, invalidateCache: boolean = false): Observable<{} | ResponseMessageEnvelope<T>> {
+        if(!resourceUri.startsWith('/')) { resourceUri = '/' + resourceUri }
         var url: string = `${this.armUrl}${resourceUri}${resourceUri.indexOf('?') >= 0 ? '&' : '?'}api-version=${!!apiVersion ? apiVersion : this.websiteApiVersion}`
 
         let request = this._http.get(url, {
             headers: this.getHeaders()
         })
             .map((response: Response) => (<ResponseMessageEnvelope<T>>response.json()))
+            .catch(this.handleError);
+
+        return this._cache.get(url, request, invalidateCache);
+    }
+
+    getArmResource<T>(resourceUri: string, apiVersion?: string, invalidateCache: boolean = false): Observable<T> {
+        if(!resourceUri.startsWith('/')) { resourceUri = '/' + resourceUri }
+        var url: string = `${this.armUrl}${resourceUri}${resourceUri.indexOf('?') >= 0 ? '&' : '?'}api-version=${!!apiVersion ? apiVersion : this.websiteApiVersion}`
+
+        let request = this._http.get(url, {
+            headers: this.getHeaders()
+        })
+            .map((response: Response) => (<T>response.json()))
             .catch(this.handleError);
 
         return this._cache.get(url, request, invalidateCache);

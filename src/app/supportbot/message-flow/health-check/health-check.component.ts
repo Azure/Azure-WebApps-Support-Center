@@ -11,7 +11,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
 import * as _ from 'underscore';
 import { OperatingSystem, Site, SiteExtensions } from '../../../shared/models/site';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs/Rx';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 import { BotLoggingService } from '../../../shared/services/logging/bot.logging.service';
 import { SiteService } from '../../../shared/services/site.service';

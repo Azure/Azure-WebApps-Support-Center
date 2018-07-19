@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { SolutionsModule } from '../solutions/solutions.module';
 import { MyDatePickerModule } from 'mydatepicker';
-import { DiagnosticDataModule, PUBLIC_CONFIGURATION } from 'applens-diagnostics';
+import { DiagnosticDataModule } from 'applens-diagnostics';
 
 import { AvailabilityComponent } from './availability.component';
 import { AppCurrentHealthComponent } from './currenthealth/app-current-health.component';
@@ -40,8 +40,6 @@ import { AppInsightsDependenciesComponent } from './app-insights/dependencies/ap
 import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalysis/tcp-connections-analysis.component';
 import { ProblemSolutionComponent } from './problem-solution/problem-solution.component';
 import { GenericDetectorComponent } from './generic-detector/generic-detector.component';
-import { GenericApiService } from '../shared/services/generic-api.service';
-import { DiagnosticService } from 'applens-diagnostics';
 
 @NgModule({
     declarations: [
@@ -80,10 +78,10 @@ import { DiagnosticService } from 'applens-diagnostics';
     ],
     imports: [
         RouterModule.forChild(AvailabilityAndPerformanceCategoryRouteConfig),
-        DiagnosticDataModule.forRoot(PUBLIC_CONFIGURATION),
         SharedModule,
         MyDatePickerModule,
-        SolutionsModule
+        SolutionsModule,
+        DiagnosticDataModule
     ],
     exports: [
         ObservationsComponent,
@@ -93,9 +91,6 @@ import { DiagnosticService } from 'applens-diagnostics';
         AppInsightsTileComponent,
         AppInsightsSettingsComponent,
         ProblemSolutionComponent
-    ],
-    providers : [
-        { provide: DiagnosticService, useExisting: GenericApiService }
     ]
 })
 export class AvailabilityModule {

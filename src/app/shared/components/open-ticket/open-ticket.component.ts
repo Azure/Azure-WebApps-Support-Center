@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PortalService } from '../../services/portal.service';
+import { PortalService } from '../../../startup/services/portal.service';
 
 @Component({
     selector: 'open-ticket',

@@ -6,7 +6,7 @@ import { StartupInfo } from '../../models/portal';
 import { ResponseMessageEnvelope } from '../../models/responsemessageenvelope';
 import { PortalActionService } from '../../services/portal-action.service';
 import { ArmService } from '../../services/arm.service';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../startup/services/auth.service';
 import { RBACService } from '../../services/rbac.service';
 import { LoggingService } from '../../services/logging/logging.service';
 

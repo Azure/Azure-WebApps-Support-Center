@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AvailabilityEventType } from './events.enumerations';
-import { SummaryHealthStatus } from '../../../shared/models/summary-view-model';
+import { SummaryHealthStatus } from '../../models/summary-view-model';
 import { LoggingService } from './logging.service';
-import { PortalService } from '../portal.service';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../../startup/services/auth.service';
 import { ArmService } from '../arm.service';
+import { PortalService } from '../../../startup/services/portal.service';
 
 @Injectable()
 export class AvailabilityLoggingService extends LoggingService {

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, AfterViewInit, ContentChildren, QueryList } from '@angular/core';
-import { IAppAnalysisResponse, IAbnormalTimePeriod } from '../../../shared/models/appanalysisresponse';
+import { IAppAnalysisResponse, IAbnormalTimePeriod } from '../../models/appanalysisresponse';
 import { Observable } from 'rxjs/Observable';
 import { ExpandableListItemComponent } from './expandable-list-item.component'
 import 'rxjs/add/operator/map';

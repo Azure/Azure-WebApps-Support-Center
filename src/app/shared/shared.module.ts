@@ -29,10 +29,7 @@ import { GroupByPipe } from './pipes/groupBy.pipe';
 import { MapValuesPipe } from './pipes/mapValues.pipe';
 import { StepWizardComponent } from './components/step-wizard/step-wizard.component';
 import { DaasSessionsComponent, DateTimeDiffPipe } from './components/daas-sessions/daas-sessions.component';
-import { WindowService } from './services/window.service';
-import { PortalService } from './services/portal.service';
-import { BroadcastService } from './services/broadcast.service';
-import { AuthService } from './services/auth.service';
+import { WindowService } from '../startup/services/window.service';
 import { ArmService } from './services/arm.service';
 import { UriElementsService } from './services/urielements.service';
 import { PortalActionService } from './services/portal-action.service';
@@ -40,9 +37,6 @@ import { SiteService } from './services/site.service';
 import { AppAnalysisService } from './services/appanalysis.service';
 import { ServerFarmDataService } from './services/server-farm-data.service';
 import { RBACService } from './services/rbac.service';
-import { LoggingService } from './services/logging/logging.service';
-import { AvailabilityLoggingService } from './services/logging/availability.logging.service';
-import { BotLoggingService } from './services/logging/bot.logging.service';
 import { DetectorViewStateService } from './services/detector-view-state.service';
 import { AppInsightsService } from './services/appinsights/appinsights.service';
 import { AppInsightsQueryService } from './services/appinsights/appinsights-query.service';
@@ -70,6 +64,11 @@ import { DaasSessionsDetailedComponent } from './components/daas-sessions-detail
 import { GenericApiService } from './services/generic-api.service';
 import { TabTitleResolver } from './resolvers/tab-name.resolver';
 import { AseService } from './services/ase.service';
+import { LoggingService } from './services/logging/logging.service';
+import { AvailabilityLoggingService } from './services/logging/availability.logging.service';
+import { BotLoggingService } from './services/logging/bot.logging.service';
+import { StartupModule } from '../startup/startup.module';
+import { TabsComponent } from './components/tabs/tabs.component';
 
 @NgModule({
     declarations: [
@@ -114,11 +113,13 @@ import { AseService } from './services/ase.service';
         IncidentSummaryComponent,
         DaasValidatorComponent,
         DaasSessionsDetailedComponent,
-        LiveAgentChatComponent
+        LiveAgentChatComponent,
+        TabsComponent
     ],
     imports: [
         HttpModule,
         CommonModule,
+        StartupModule,
         FormsModule,
         RouterModule,
         NguCarouselModule
@@ -168,7 +169,8 @@ import { AseService } from './services/ase.service';
         ConnectionDiagnoserToolComponent,
         NetworkTraceToolComponent,
         IncidentSummaryComponent,
-        LiveAgentChatComponent
+        LiveAgentChatComponent,
+        TabsComponent
     ]
 })
 export class SharedModule {
@@ -177,9 +179,6 @@ export class SharedModule {
             ngModule: SharedModule,
             providers: [
                 WindowService,
-                PortalService,
-                BroadcastService,
-                AuthService,
                 ArmService,
                 UriElementsService,
                 PortalActionService,

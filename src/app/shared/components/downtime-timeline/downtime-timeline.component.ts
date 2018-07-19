@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, OnChanges, EventEmitter } from '@angular/core';
-import { IAppAnalysisResponse, IAbnormalTimePeriod } from '../../../shared/models/appanalysisresponse';
+import { IAppAnalysisResponse, IAbnormalTimePeriod } from '../../models/appanalysisresponse';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 

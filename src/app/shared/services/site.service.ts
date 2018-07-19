@@ -10,7 +10,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import { ArmService } from './arm.service';
-import { AuthService } from './auth.service';
+import { AuthService } from '../../startup/services/auth.service';
 import { UriElementsService } from './urielements.service';
 import { ServerFarmDataService } from './server-farm-data.service';
 import { SiteDaasInfo } from '../models/solution-metadata';

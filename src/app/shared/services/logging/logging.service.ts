@@ -4,10 +4,10 @@ import { CommonLogEventType } from './events.enumerations';
 import { SiteExtensions, OperatingSystem, Site } from '../../models/site';
 import { IDiagnosticProperties } from '../../models/diagnosticproperties';
 import { ResponseMessageEnvelope } from '../../models/responsemessageenvelope';
-import { PortalService } from '../portal.service';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../../startup/services/auth.service';
 import { ArmService } from '../arm.service';
 import { IncidentNotification, IncidentType, IncidentStatus } from '../../models/icm-incident';
+import { PortalService } from '../../../startup/services/portal.service';
 
 @Injectable()
 export class LoggingService {

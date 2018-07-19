@@ -5,7 +5,7 @@ import { SolutionMetadata } from '../../models/solution-ui-model/solutionpropert
 import { ActionType } from '../../models/enumerations';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { PortalActionService } from '../../services/portal-action.service';
-import { WindowService } from '../../services/window.service';
+import { WindowService } from '../../../startup/services/window.service';
 import { AvailabilityLoggingService } from '../../services/logging/availability.logging.service';
 
 

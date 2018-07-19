@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { AuthService } from '../../../shared/services/auth.service';
+import { AuthService } from '../../../startup/services/auth.service';
 import { AppInsightsService } from '../../../shared/services/appinsights/appinsights.service';
 import { AppInsightsQueryService } from '../../../shared/services/appinsights/appinsights-query.service';
 import { PortalActionService } from '../../../shared/services/portal-action.service';

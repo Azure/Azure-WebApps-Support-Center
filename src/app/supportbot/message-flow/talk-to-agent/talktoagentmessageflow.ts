@@ -6,7 +6,7 @@ import { RegisterMessageFlowWithFactory } from '../message-flow.factory';
 import { MessageSender, ButtonActionType } from '../../models/message-enums';
 import { TalkToAgentMessageComponent } from './talk-to-agent-message.component';
 import { SiteService } from '../../../shared/services/site.service';
-import { AuthService } from '../../../shared/services/auth.service';
+import { AuthService } from '../../../startup/services/auth.service';
 import { ResourceType } from '../../../shared/models/portal';
 import { Site, SiteInfoMetaData, SiteExtensions, OperatingSystem } from '../../../shared/models/site';
 import { DemoSubscriptions } from '../../../betaSubscriptions';

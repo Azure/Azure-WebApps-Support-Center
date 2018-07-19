@@ -5,7 +5,7 @@ import { INameValuePair } from '../../shared/models/namevaluepair';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SolutionFactory } from '../../shared/models/solution-ui-model/solutionfactory';
 import { SupportBladeDefinitions } from '../../shared/models/portal';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs/Rx';
 import { ISolution } from '../../shared/models/solution';
 import { AvailabilityLoggingService } from '../../shared/services/logging/availability.logging.service';
 import { DetectorViewStateService } from '../../shared/services/detector-view-state.service';

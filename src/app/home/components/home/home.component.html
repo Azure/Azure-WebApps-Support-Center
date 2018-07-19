@@ -1,0 +1,15 @@
+<div class="home-container">
+    <input placeholder="Topic Search" />
+    <br/>
+    <h3>App Service Diagnostics</h3>
+    <p id="page-description">
+        Use this diagnostics tools to delve deeper into how your app is working, solve problems, and discover how to improve your
+        application.
+    </p>
+    <div>
+        <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
+            <category-tile [category]="category"></category-tile>
+        </div>
+
+    </div>
+</div>

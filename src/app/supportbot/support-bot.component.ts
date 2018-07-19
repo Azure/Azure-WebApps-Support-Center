@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { Message } from './models/message';
 import { MessageProcessor } from './message-processor.service';
 import { AppAnalysisService } from '../shared/services/appanalysis.service';
-import { WindowService } from '../shared/services/window.service';
+import { WindowService } from '../startup/services/window.service';
 
 @Component({
     selector: 'support-bot',

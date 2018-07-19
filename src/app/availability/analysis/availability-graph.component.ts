@@ -6,7 +6,7 @@ import { IAppAnalysisResponse, IAbnormalTimePeriod } from '../../shared/models/a
 import { AppAnalysisService } from '../../shared/services/appanalysis.service';
 import { ServerFarmDataService } from '../../shared/services/server-farm-data.service';
 import { AvailabilityLoggingService } from '../../shared/services/logging/availability.logging.service';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../startup/services/auth.service';
 
 declare let d3: any;
 

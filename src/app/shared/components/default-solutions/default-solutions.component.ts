@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { BladeOptions, SupportBladeDefinitions } from '../../models/portal';
 import 'rxjs/add/operator/map';
-import { PortalService } from '../../services/portal.service';
+import { PortalService } from '../../../startup/services/portal.service';
 import { PortalActionService } from '../../services/portal-action.service';
 
 @Component({

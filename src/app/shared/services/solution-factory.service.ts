@@ -3,7 +3,6 @@ import { SolutionHolder } from '../models/solution-holder';
 import { SiteRestartComponent } from '../../solutions/components/specific-solutions/site-restart-solution/site-restart-solution.component'//solutions/components/solutions/site-restart/site-restart.component';
 import { ScaleUpSolutionComponent } from '../../solutions/components/specific-solutions/scale-up-solution/scale-up-solution.component';
 import { ISolution, SolutionData } from '../models/solution';
-import { LoggingService } from '../services/logging/logging.service';
 import { SolutionTypeTag } from '../models/solution-type-tag';
 import { ProfilingSolutionComponent } from '../../solutions/components/specific-solutions/profiling-solution/profiling-solution.component';
 import { ScaleOutSolutionComponent } from '../../solutions/components/specific-solutions/scale-out-solution/scale-out-solution.component';
@@ -11,6 +10,7 @@ import { SplitSitesIntoDifferentServerFarmsSolutionComponent } from '../../solut
 import { MemoryDumpSolutionComponent } from '../../solutions/components/specific-solutions/memorydump-solution/memorydump-solution.component';
 import { RevertDeploymentComponent } from '../../solutions/components/specific-solutions/revert-deployment-solution/revert-deployment-solution.component';
 import { JavaThreadDumpSolutionComponent } from '../../solutions/components/specific-solutions/java-threaddump-solution/java-threaddump-solution.component';
+import { LoggingService } from './logging/logging.service';
 
 @Injectable()
 export class SolutionFactoryService {

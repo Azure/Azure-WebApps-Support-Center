@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
-import { IMetricSet } from '../../../shared/models/detectorresponse';
-import { SummaryViewModel, SummaryHealthStatus } from '../../../shared/models/summary-view-model';
-import { ChartType } from '../../../shared/models/chartdata';
+import { IMetricSet } from '../../models/detectorresponse';
+import { SummaryViewModel, SummaryHealthStatus } from '../../models/summary-view-model';
+import { ChartType } from '../../models/chartdata';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/map';
 import { AvailabilityLoggingService } from '../../services/logging/availability.logging.service';

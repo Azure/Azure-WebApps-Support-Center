@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { SolutionBaseComponent } from '../../common/solution-base/solution-base.component';
+import { SolutionBaseComponent } from '../solution-base/solution-base.component';
 import { SolutionData } from '../../../../shared/models/solution';
 import { ServerFarmDataService } from '../../../../shared/services/server-farm-data.service';
 import { ServerFarm } from '../../../../shared/models/server-farm';

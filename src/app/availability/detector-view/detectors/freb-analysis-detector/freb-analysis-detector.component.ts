@@ -5,7 +5,7 @@ import { DetectorViewBaseComponent } from '../../detector-view-base/detector-vie
 import { SupportBladeDefinitions, SupportBladeDefinition, BladeOptions } from '../../../../shared/models/portal';
 import { AppAnalysisService } from '../../../../shared/services/appanalysis.service';
 import { PortalActionService } from '../../../../shared/services/portal-action.service';
-import { WindowService } from '../../../../shared/services/window.service';
+import { WindowService } from '../../../../startup/services/window.service';
 import { AvailabilityLoggingService } from '../../../../shared/services/logging/availability.logging.service';
 
 declare let d3: any;

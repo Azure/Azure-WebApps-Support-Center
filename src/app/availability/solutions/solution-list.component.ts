@@ -8,7 +8,7 @@ import { SolutionFactory } from '../../shared/models/solution-ui-model/solutionf
 import { ActionType } from '../../shared/models/enumerations';
 import { SiteService } from '../../shared/services/site.service';
 import { PortalActionService } from '../../shared/services/portal-action.service';
-import { WindowService } from '../../shared/services/window.service';
+import { WindowService } from '../../startup/services/window.service';
 import { AvailabilityLoggingService } from '../../shared/services/logging/availability.logging.service';
 
 @Component({

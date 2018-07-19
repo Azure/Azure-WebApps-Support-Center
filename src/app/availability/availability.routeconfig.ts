@@ -22,8 +22,6 @@ import { IncidentSummaryComponent } from '../shared/components/incident-summary/
 import { ToolNames } from '../shared/models/tools-constants';
 import { DaasSessionsDetailedComponent } from '../shared/components/daas-sessions-detailed/daas-sessions-detailed.component';
 import { GenericDetectorComponent } from './generic-detector/generic-detector.component';
-import { Injectable } from '@angular/core';
-import { GenericApiService } from '../shared/services/generic-api.service';
 import { TabTitleResolver } from '../shared/resolvers/tab-name.resolver';
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';

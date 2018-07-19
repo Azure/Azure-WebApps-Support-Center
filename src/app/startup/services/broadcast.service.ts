@@ -1,6 +1,6 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {Observable, Subscription} from 'rxjs/Rx';
-import {ErrorEvent} from '../models/error-event';
+import {ErrorEvent} from '../../shared/models/error-event';
 import {BroadcastEvent} from '../models/broadcast-event';
 
 @Injectable()

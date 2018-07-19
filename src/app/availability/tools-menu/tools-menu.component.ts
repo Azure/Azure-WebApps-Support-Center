@@ -7,7 +7,7 @@ import { StartupInfo } from '../../shared/models/portal';
 import { ResponseMessageEnvelope } from '../../shared/models/responsemessageenvelope';
 import { PortalActionService } from '../../shared/services/portal-action.service';
 import { ArmService } from '../../shared/services/arm.service';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../startup/services/auth.service';
 import { RBACService } from '../../shared/services/rbac.service';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 

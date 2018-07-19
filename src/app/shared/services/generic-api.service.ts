@@ -1,26 +1,14 @@
 import { Http, Headers, Response, Request } from '@angular/http';
 import { Injectable, EventEmitter } from '@angular/core';
-import { Subscription } from '../models/subscription';
-import { Site, SiteInfoMetaData } from '../models/site';
-import { ArmObj } from '../models/armObj';
-import { SiteConfig } from '../models/site-config';
-import { ResponseMessageEnvelope, ResponseMessageCollectionEnvelope } from '../models/responsemessageenvelope'
-import { Observable, Subscription as RxSubscription, Subject, ReplaySubject } from 'rxjs/Rx';
-import { ResourceGroup } from '../models/resource-group';
-import { PublishingCredentials } from '../models/publishing-credentials';
-import { DeploymentLocations } from '../models/arm/locations';
-import { AuthService } from './auth.service';
-import { CacheService } from './cache.service';
+import { ResponseMessageEnvelope } from '../models/responsemessageenvelope'
+import { Observable } from 'rxjs/Rx';
+import { AuthService } from '../../startup/services/auth.service';
 import { ArmService } from './arm.service';
-import { SiteService } from './site.service';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import { DetectorResponse, DetectorMetaData } from 'applens-diagnostics/src/app/diagnostic-data/models/detector';
-import { ResourceType } from '../models/portal';
-import { AseService } from './ase.service';
-import { AseInfoMetaData } from '../models/hostingEnvironment';
 
 @Injectable()
 export class GenericApiService {

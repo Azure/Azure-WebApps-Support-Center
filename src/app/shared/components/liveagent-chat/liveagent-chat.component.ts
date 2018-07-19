@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { WindowService } from '../../../shared/services/window.service';
+import { WindowService } from '../../../startup/services/window.service';
 import { SiteService } from '../../services/site.service';
 import { BotLoggingService } from '../../services/logging/bot.logging.service';
 import { Site, SiteInfoMetaData } from '../../models/site';

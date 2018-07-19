@@ -9,7 +9,7 @@ import { SiteService } from '../../../shared/services/site.service';
 import { CategoriesService } from '../../../shared/services/categories.service';
 import { Category, Subcategory } from '../../../shared/models/problem-category';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
-import { AuthService } from '../../../shared/services/auth.service';
+import { AuthService } from '../../../startup/services/auth.service';
 import { StartupInfo, ResourceType, AppType } from '../../../shared/models/portal';
 import { IDiagnosticProperties } from '../../../shared/models/diagnosticproperties';
 import { Sku } from '../../../shared/models/server-farm';

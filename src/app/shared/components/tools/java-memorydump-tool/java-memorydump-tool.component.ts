@@ -5,7 +5,7 @@ import { SiteInfoMetaData } from '../../../models/site';
 import { DaasBaseComponent } from '../daas-base/daas-base.component';
 import { SiteService } from '../../../services/site.service';
 import { DaasService } from '../../../services/daas.service';
-import { WindowService } from '../../../services/window.service';
+import { WindowService } from '../../../../startup/services/window.service';
 import { AvailabilityLoggingService } from '../../../services/logging/availability.logging.service';
 
 @Component({

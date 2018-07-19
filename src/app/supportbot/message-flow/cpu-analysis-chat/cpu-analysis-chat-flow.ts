@@ -14,7 +14,7 @@ import { SiteInfoMetaData } from '../../../shared/models/site';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 import { SiteService } from '../../../shared/services/site.service';
 import { MessageSender, ButtonActionType } from '../../models/message-enums';
-import { AuthService } from '../../../shared/services/auth.service';
+import { AuthService } from '../../../startup/services/auth.service';
 import { ResourceType } from '../../../shared/models/portal';
 
 

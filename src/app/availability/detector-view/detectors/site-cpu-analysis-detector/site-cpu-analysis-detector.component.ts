@@ -6,7 +6,7 @@ import { StartupInfo } from '../../../../shared/models/portal';
 import { MetaDataHelper } from '../../../../shared/utilities/metaDataHelper';
 import { AppAnalysisService } from '../../../../shared/services/appanalysis.service';
 import { AvailabilityLoggingService } from '../../../../shared/services/logging/availability.logging.service';
-import { AuthService } from '../../../../shared/services/auth.service';
+import { AuthService } from '../../../../startup/services/auth.service';
 import { DetectorViewStateService } from '../../../../shared/services/detector-view-state.service';
 declare let d3: any;
 

@@ -3,7 +3,7 @@ import { SolutionBaseComponent } from '../../common/solution-base/solution-base.
 import { SolutionData } from '../../../../shared/models/solution';
 import { SiteDaasInfo } from '../../../../shared/models/solution-metadata';
 import { Diagnoser, Session } from '../../../../shared/models/daas';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Rx';
 import { MetaDataHelper } from '../../../../shared/utilities/metaDataHelper';
 import { SiteService } from '../../../../shared/services/site.service';
 import { AvailabilityLoggingService } from '../../../../shared/services/logging/availability.logging.service';

@@ -11,8 +11,8 @@ import * as _ from 'underscore';
 import { IMyDpOptions, IMyDate, IMyDateModel } from 'mydatepicker';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 import { AvailabilityLoggingService } from '../../../shared/services/logging/availability.logging.service';
-import { AuthService } from '../../../shared/services/auth.service';
-import { WindowService } from '../../../shared/services/window.service';
+import { AuthService } from '../../../startup/services/auth.service';
+import { WindowService } from '../../../startup/services/window.service';
 import { PortalActionService } from '../../../shared/services/portal-action.service';
 
 declare let d3: any;
