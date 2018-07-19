@@ -1,0 +1,55 @@
+<!-- <div style="display:table">
+  <div style="display:table-row">
+    <div style="display:table-cell;max-width: 600px; min-width: 160px;">
+      Define a condition based on private bytes consumption of the process serving your application.
+    </div>
+
+    <div style="display:table-cell">
+     
+    </div>
+  </div>
+</div> -->
+
+<button type="button" class="btn btn-primary" (click)="addNewRule()" *ngIf="Rule == 0 && !editMode">
+    Configure Private Bytes rule
+  </button>
+
+<table class="table table-bordered" *ngIf="!editMode && Rule > 0">
+  <thead>
+    <tr>
+      <th>
+        Private Bytes
+      </th>
+      <th>
+        Action
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{ Rule }}</td>
+      <td>
+        <button class="image-btn" *ngIf="!editMode" (click)="editRule()">
+          <i class="fa fa-edit"></i>
+        </button>
+        <button class="image-btn" *ngIf="!editMode" (click)="deleteRule()">
+          <i class="fa fa-trash"></i>
+        </button>
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+<div class="form-group" *ngIf="editMode">
+  <div class="form-group">
+    <label for="idPrivateBytes">What is the memory threshold (private bytes) you want to configure ?</label>
+    <input type="number" class="form-control" id="idPrivateBytes" aria-describedby="privateBytesHelp" placeholder="Enter private bytes in KB"
+      [(ngModel)]="RuleCopy">
+    <small id="privateBytesHelp" class="form-text text-muted">After the process consumes these many private bytes, the configured action will be taken</small>
+    <div *ngIf="RuleCopy !== null && !isValid()" class="alert alert-danger">
+      Please specify a valid value for private bytes (in KB) from 102400 (100 MB) to 13631488 (13 GB)
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
+</div>

@@ -1,0 +1,77 @@
+<button type="button" class="btn btn-primary" (click)="addNewRule()">Add Status Codes Rule</button>
+<div *ngIf="Rule">
+  <table class="table table-bordered" *ngIf="Rule!==null && Rule.length > 0" style="margin-top:20px">
+    <thead>
+      <tr>
+        <th>
+          Count
+        </th>
+        <th>
+          Status Code
+        </th>
+        <th>
+          Sub-Status
+        </th>
+        <th>
+          Win32-Status
+        </th>
+        <th>
+          Interval
+        </th>
+        <th>
+          Action
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let rule of Rule; let i = index">
+        <td>{{ rule.count }}</td>
+        <td>{{ rule.status }}</td>
+        <td>{{ rule.subStatus }}</td>
+        <td>{{ rule.win32Status }}</td>
+        <td>{{ rule.timeInterval }}</td>
+        <td>
+          <button class="image-btn" *ngIf="!editMode" (click)="editStatusCodeRule(i)">
+            <i class="fa fa-edit"></i>
+          </button>
+          <button class="image-btn" *ngIf="!editMode" (click)="deleteStatusCodeRule(i)">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="editMode" style="margin-top:20px">
+    <div class="form-group">
+      <label for="requestCountStatusCodes">After how many requests you want this condition to kick in ?</label>
+      <input type="number" class="form-control" id="requestCountStatusCodes" aria-describedby="requestCountStatusCodesHelp" placeholder="Enter request count"
+        [(ngModel)]="currentRule.count">
+      <small id="requestCountStatusCodesHelp" class="form-text text-muted">After the process has served these many requests with the HTTP Status, Sub-status and win32 status codes in the duration
+        configured, the configured action will be taken</small>
+    </div>
+    <div class="form-group">
+      <label for="statusCode">What should be the status code for these requests ?</label>
+      <input type="number" class="form-control" id="statusCode" placeholder="e.g. 500" [(ngModel)]="currentRule.status" min="100"
+        max="530">
+      <div *ngIf="currentRule.status < 100 || currentRule.status > 530" class="alert alert-danger" style="margin-top:5px">
+        Valid HTTP Status codes range from HTTP 100 to HTTP 530 only.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="subStatusCode">What should be the sub-status code for these requests ?</label>
+      <input type="number" class="form-control" id="subStatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.subStatus">
+    </div>
+
+    <div class="form-group">
+      <label for="win32StatusCode">What should be the win32-status code for these requests ?</label>
+      <input type="number" class="form-control" id="win32StatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.win32Status">
+    </div>
+
+    <div class="form-group">
+      <label for="durationStatusCode">How frequently (in seconds) you want to check?</label>
+      <timespan [(TimeSpan)]="currentRule.timeInterval" placeholder="e.g. 60"></timespan>
+    </div>
+    <button type="button" class="btn btn-primary" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
+  </div>
+</div>

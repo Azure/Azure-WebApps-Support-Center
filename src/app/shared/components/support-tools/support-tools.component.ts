@@ -52,7 +52,7 @@ export class SupportToolsComponent {
     }
 
     initialize() {
-        this.mitigateLink = "https://mawssupport.trafficmanager.net/?sitename=" + this.currentSite.name + "&tab=mitigate&source=ibiza";
+        this.mitigateLink = "tools/mitigate";      
 
         this.supportTools.push({
             title: "Metrics per Instance (Apps)",
@@ -122,16 +122,6 @@ export class SupportToolsComponent {
             action: () => {
                 this.logToolUse(SupportBladeDefinitions.DaaS.Identifier);
                 this._portalActionService.openSupportIFrame(SupportBladeDefinitions.DaaS)
-            }
-        });
-
-        this.supportTools.push({
-            title: "Mitigate",
-            description: "Set rules for recycling or taking other actions based on memory usage or request patterns",
-            enabled: true,
-            action: () => {
-                this.logToolUse("Mitigate");
-                this._portalActionService.openAutoHealSite();
             }
         });
 
