@@ -1,0 +1,39 @@
+#toggle {
+    opacity: 0;
+    /* font-size: 30px; */
+  }
+  
+  #label {
+    display: inline-block;
+    background: #e8e8e8;
+    width: 2em;
+    height: 1em;
+    border-radius: 0.5em;
+    position: relative;
+    cursor: pointer;
+    background: #e8e8e8;
+    /* font-size: 30px; */
+  }
+  
+  #switch {
+    position: absolute;
+    width: 0.9em;
+    height: 0.9em;
+    margin-top: 0.05em;
+    margin-left: 0.05em;
+    border-radius: 1em;
+    background: #c0392b;
+    box-shadow: 5px 0px 28px -9px rgba(0, 0, 0, 0.75);
+    transition: transform .2s ease-in;
+    /* font-size: 30px; */
+  }
+  
+  #toggle:checked ~ #label #switch {
+    background: #2ecc71;
+    transform: translatex(1em);
+    transition: transform .2s ease-in;
+    /* font-size: 30px; */
+  }
+
+
+

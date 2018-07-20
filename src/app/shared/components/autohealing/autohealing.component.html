@@ -11,48 +11,39 @@
 
   <div *ngIf="!retrievingAutohealSettings">
     <div style="margin-top: 15px;">
-      <div class="inline" style="vertical-align: top;font-size: 16px">
-        Auto Healing Enabled
-      </div>
-      <div class="inline" style="font-size: 16px">
-        <input id="toggle" type="checkbox" [(ngModel)]="autohealingSettings.autoHealEnabled" (ngModelChange)="checkForChanges($event)" />
-        <label id="label" for="toggle">
-          <div id="switch"></div>
-        </label>
-      </div>
-
+      <toggle-button ToggleText="Auto-Healing Enabled" [selected]="autohealingSettings.autoHealEnabled" (selectedChange)="autohealingSettings.autoHealEnabled = $event; checkForChanges()"></toggle-button>
     </div>
 
     <div *ngIf="autohealingSettings.autoHealEnabled">
-      <div class="header2">1. Define conditions</div>
-      <div>
+      <div class="header2">1. Define Conditions</div>
+      <div class="tile-content">
         <ng-container *ngFor="let trigger of triggers; let i = index;">
-          <div class="quickstart-template" tabindex="0" (click)="updateTriggerStatus(i)" [class.active]="triggerSelected == i" [class.activeAction]="triggers[i].IsConfigured">
-            <div class="quickstart-template-icon">
+          <div class="tile" tabindex="0" (click)="updateTriggerStatus(i)" [class.active]="triggerSelected == i" [class.activeAction]="triggers[i].IsConfigured">
+            <div class="tile-icon">
               <div class="icon-template">
-                <i [class]="trigger.Icon" aria-hidden="true"></i>
+                <i [class]="trigger.Icon"></i>
               </div>
               <div>{{ trigger.Name }}</div>
             </div>
           </div>
         </ng-container>
+
+        <div class="forminput" *ngIf="triggerSelected >= 0">
+          <autohealing-slowrequests-rule *ngIf="triggerSelected == 0" [Rule]="autohealingSettings.autoHealRules.triggers.slowRequests"
+            (RuleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-slowrequests-rule>
+          <autohealing-memory-rule *ngIf="triggerSelected == 1" [Rule]="autohealingSettings.autoHealRules.triggers.privateBytesInKB"
+            (RuleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-memory-rule>
+          <autohealing-requests-rule *ngIf="triggerSelected == 2" [Rule]="autohealingSettings.autoHealRules.triggers.requests" (RuleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-requests-rule>
+          <autohealing-statuscodes-rule *ngIf="triggerSelected == 3" [Rule]="autohealingSettings.autoHealRules.triggers.statusCodes"
+            (RuleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-statuscodes-rule>
+        </div>
       </div>
 
-      <div class="forminput" *ngIf="triggerSelected >= 0">
-        <autohealing-slowrequests-rule *ngIf="triggerSelected == 0" [Rule]="autohealingSettings.autoHealRules.triggers.slowRequests"
-          (RuleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-slowrequests-rule>
-        <autohealing-memory-rule *ngIf="triggerSelected == 1" [Rule]="autohealingSettings.autoHealRules.triggers.privateBytesInKB"
-          (RuleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-memory-rule>
-        <autohealing-requests-rule *ngIf="triggerSelected == 2" [Rule]="autohealingSettings.autoHealRules.triggers.requests" (RuleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-requests-rule>
-        <autohealing-statuscodes-rule *ngIf="triggerSelected == 3" [Rule]="autohealingSettings.autoHealRules.triggers.statusCodes"
-          (RuleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-statuscodes-rule>
-      </div>
-
-      <div>
-        <div class="header2">2. Configure Actions</div>
+      <div class="header2">2. Configure Actions</div>
+      <div class="tile-content">
         <ng-container *ngFor="let action of actions; let i = index;">
-          <div class="quickstart-template" [class.activeAction]="actionSelected == i" (click)="updateAction(i)">
-            <div class="quickstart-template-icon">
+          <div class="tile" [class.activeAction]="actionSelected == i" (click)="updateActionStatus(i)">
+            <div class="tile-icon">
               <div class="icon-template">
                 <i [class]="action.Icon" aria-hidden="true"></i>
               </div>
@@ -60,44 +51,42 @@
             </div>
           </div>
         </ng-container>
-
-        <div *ngIf="actionSelected == 2 && customActionExpanded" class="forminput">
-          <div class="form-group">
-            <label for="executable">Specify the executable to be launched :-</label>
-            <input class="form-control" id="executable" aria-describedby="executableHelp" (ngModelChange)="checkForChanges($event)" [ngModel]="autohealingSettings.autoHealRules.actions.customAction.exe">
-            <small id="executableHelp" class="form-text text-muted">This process will be launched when the above mentioned triggers are met</small>
+        <div class="forminput" [hidden]="actionSelected < 2 || actionCollapsed">
+          <div [hidden]="actionSelected != 2">
+            <autohealing-daas-action [siteToBeDiagnosed]="siteToBeDiagnosed" (DaasAction)="updateDaasAction($event)"></autohealing-daas-action>
           </div>
-          <div class="form-group">
-            <label for="statusCode">Additional Parameters :-</label>
-            <input class="form-control" id="exeParams" placeholder="e.g. 500" (ngModelChange)="checkForChanges($event)" [ngModel]="autohealingSettings.autoHealRules.actions.customAction.parameters">
+
+          <div *ngIf="actionSelected == 3">
+            <div class="form-group">
+              <label for="executable">Specify the executable to be launched :-</label>
+              <input class="form-control" id="executable" aria-describedby="executableHelp" (change)="checkForChanges($event)" [(ngModel)]="autohealingSettings.autoHealRules.actions.customAction.exe">
+              <small id="executableHelp" class="form-text text-muted">This process will be launched when the above mentioned triggers are met</small>
+            </div>
+            <div class="form-group">
+              <label for="statusCode">Additional Parameters :-</label>
+              <input class="form-control" id="exeParams" placeholder="e.g. 500" (change)="checkForChanges($event)" [(ngModel)]="autohealingSettings.autoHealRules.actions.customAction.parameters">
+            </div>
           </div>
         </div>
       </div>
 
-      <div style="margin-bottom: 100px">
-        <div class="header2">3. Save your Settings</div>
-
-        <div>
-
-
-
-          <div class = "summary">
-            {{ summaryText }}
-          </div>
-
-          <div style="margin-top:20px">
-            <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="saveChanges()">Save</button>
-            <div *ngIf="savingAutohealSettings" class="inline">
-              <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-              Saving AutoHeal settings...
-            </div>
-            <div *ngIf="changesSaved" class="inline" style="color:#0058ad">
-              Changes Saved !!!
-            </div>
-          </div>
-
+      <div>
+        <div class="header2">3. Review and Save your Settings</div>
+        <div class="summary tile-content">
+          {{ summaryText }}
         </div>
+      </div>
 
+    </div>
+
+    <div *ngIf="!retrievingAutohealSettings" class="saveSection tile-content">
+      <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="saveChanges()">Save</button>
+      <div *ngIf="savingAutohealSettings" class="inline">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Saving AutoHeal settings...
+      </div>
+      <div *ngIf="changesSaved" class="inline" style="color:#0058ad">
+        Changes Saved !!!
       </div>
     </div>
   </div>

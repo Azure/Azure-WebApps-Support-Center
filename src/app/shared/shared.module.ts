@@ -79,6 +79,7 @@ import { AutohealingMemoryRuleComponent } from './components/autohealing/autohea
 import { AutohealingRequestsRuleComponent } from './components/autohealing/autohealing-requests-rule/autohealing-requests-rule.component';
 import { AutohealingStatuscodesRuleComponent } from './components/autohealing/autohealing-statuscodes-rule/autohealing-statuscodes-rule.component';
 import { AutohealingDaasActionComponent } from './components/autohealing/autohealing-daas-action/autohealing-daas-action.component';
+import { ToggleButtonComponent } from './components/toggle-button/toggle-button.component';
 
 @NgModule({
     declarations: [
@@ -130,7 +131,8 @@ import { AutohealingDaasActionComponent } from './components/autohealing/autohea
         AutohealingRequestsRuleComponent,
         AutohealingStatuscodesRuleComponent,
         TimespanComponent,
-        AutohealingDaasActionComponent
+        AutohealingDaasActionComponent,
+        ToggleButtonComponent
     ],
     imports: [
         HttpModule,
