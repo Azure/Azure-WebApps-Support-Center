@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { StatusCodesBasedTrigger } from '../../models/autohealing';
 import { AutohealingRuleComponent } from '../autohealing-rule/autohealing-rule.component';
-import { AutohealingService } from '../../services/autohealing.service';
+import { StatusCodesBasedTrigger } from '../../../models/autohealing';
+import { AutohealingService } from '../../../services/autohealing.service';
+
 
 @Component({
   selector: 'autohealing-statuscodes-rule',

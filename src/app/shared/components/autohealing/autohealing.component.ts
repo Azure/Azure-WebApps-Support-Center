@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SiteService } from '../services/site.service';
-import { SiteInfoMetaData } from '../models/site';
-import { AutohealingService } from '../services/autohealing.service';
-import { AutoHealSettings, AutoHealTriggers, AutoHealActions, AutoHealCustomAction } from '../models/autohealing';
+import { SiteInfoMetaData } from '../../models/site';
+import { AutoHealSettings, AutoHealActions, AutoHealCustomAction, AutoHealTriggers } from '../../models/autohealing';
+import { SiteService } from '../../services/site.service';
+import { AutohealingService } from '../../services/autohealing.service';
 
 @Component({
   selector: 'autohealing',

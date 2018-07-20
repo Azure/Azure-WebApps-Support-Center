@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { RequestsBasedTrigger } from '../../models/autohealing';
 import { AutohealingRuleComponent } from '../autohealing-rule/autohealing-rule.component';
-import { AutohealingService } from '../../services/autohealing.service';
+import { AutohealingService } from '../../../services/autohealing.service';
+import { RequestsBasedTrigger } from '../../../models/autohealing';
+
 
 @Component({
   selector: 'autohealing-requests-rule',

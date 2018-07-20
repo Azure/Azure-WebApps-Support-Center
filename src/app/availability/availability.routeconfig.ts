@@ -25,7 +25,8 @@ import { GenericDetectorComponent } from './generic-detector/generic-detector.co
 import { Injectable } from '@angular/core';
 import { GenericApiService } from '../shared/services/generic-api.service';
 import { TabTitleResolver } from '../shared/resolvers/tab-name.resolver';
-import { AutohealingComponent } from '../shared/autohealing/autohealing.component';
+import { AutohealingComponent } from '../shared/components/autohealing/autohealing.component';
+
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
