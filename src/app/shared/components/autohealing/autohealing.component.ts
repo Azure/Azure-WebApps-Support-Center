@@ -218,17 +218,17 @@ export class AutohealingComponent implements OnInit {
       }
 
       if (this.autohealingSettings.autoHealRules.triggers.requests != null) {
-        summary.push("app has served  " + this.autohealingSettings.autoHealRules.triggers.requests.count + " requests in a duration of  " + this._autohealingService.timeToSeconds(this.autohealingSettings.autoHealRules.triggers.requests.timeInterval) + " seconds");
+        summary.push("app has served  " + this.autohealingSettings.autoHealRules.triggers.requests.count + " requests in a duration of  " + this._autohealingService.timespanToSeconds(this.autohealingSettings.autoHealRules.triggers.requests.timeInterval) + " seconds");
       }
 
       if (this.autohealingSettings.autoHealRules.triggers.slowRequests != null) {
-        summary.push(this.autohealingSettings.autoHealRules.triggers.slowRequests.count + " requests took more than  " + this._autohealingService.timeToSeconds(this.autohealingSettings.autoHealRules.triggers.slowRequests.timeTaken) + " seconds in a duration of  " + this._autohealingService.timeToSeconds(this.autohealingSettings.autoHealRules.triggers.slowRequests.timeInterval) + " seconds");
+        summary.push(this.autohealingSettings.autoHealRules.triggers.slowRequests.count + " requests took more than  " + this._autohealingService.timespanToSeconds(this.autohealingSettings.autoHealRules.triggers.slowRequests.timeTaken) + " seconds in a duration of  " + this._autohealingService.timespanToSeconds(this.autohealingSettings.autoHealRules.triggers.slowRequests.timeInterval) + " seconds");
       }
 
       if (this.autohealingSettings.autoHealRules.triggers.statusCodes != null) {
         for (let index = 0; index < this.autohealingSettings.autoHealRules.triggers.statusCodes.length; index++) {
           let statusCodeRule = this.autohealingSettings.autoHealRules.triggers.statusCodes[index];
-          summary.push(statusCodeRule.count + " requests end up with HTTP Status  " + statusCodeRule.status + "." + statusCodeRule.subStatus + " and win-32 status  " + statusCodeRule.win32Status + " in a duration of  " + this._autohealingService.timeToSeconds(statusCodeRule.timeInterval) + " seconds");
+          summary.push(statusCodeRule.count + " requests end up with HTTP Status  " + statusCodeRule.status + "." + statusCodeRule.subStatus + " and win-32 status  " + statusCodeRule.win32Status + " in a duration of  " + this._autohealingService.timespanToSeconds(statusCodeRule.timeInterval) + " seconds");
         }
 
       }

@@ -44,7 +44,7 @@ export class AutohealingService {
         
     }
 
-    timeToSeconds(timeInterval: string): number {
+    timespanToSeconds(timeInterval: string): number {
         if (timeInterval.indexOf(':') < 0) {
           return 0;
         }
@@ -54,7 +54,7 @@ export class AutohealingService {
         return seconds;
       }
     
-      secondsToTime(seconds: number): string {
+      secondsToTimespan(seconds: number): string {
         var date = new Date(null);
         date.setSeconds(seconds); // specify value for SECONDS here
         var timeString = date.toISOString().substr(11, 8);

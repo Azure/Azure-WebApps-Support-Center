@@ -62,6 +62,6 @@ export class AutohealingStatuscodesRuleComponent extends AutohealingRuleComponen
   }
 
   isValid():boolean{
-    return (this.currentRule.count > 0 && this.currentRule.status > 100 && this.currentRule.status < 530 && (this.currentRule.timeInterval && this._autoHealingService.timeToSeconds(this.currentRule.timeInterval) > 0));
+    return (this.currentRule.count > 0 && this.currentRule.status > 100 && this.currentRule.status < 530 && (this.currentRule.timeInterval && this._autoHealingService.timespanToSeconds(this.currentRule.timeInterval) > 0));
   }
 }

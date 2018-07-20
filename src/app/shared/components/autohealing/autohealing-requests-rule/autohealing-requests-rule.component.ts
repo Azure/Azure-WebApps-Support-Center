@@ -23,7 +23,7 @@ export class AutohealingRequestsRuleComponent extends AutohealingRuleComponent i
 
   isValid(): boolean {
     if (this.RuleCopy && this.RuleCopy.timeInterval && this.RuleCopy.timeInterval !== '') {
-      return (this._autoHealingService.timeToSeconds(this.RuleCopy.timeInterval) > 0 && this.RuleCopy.count > 0);
+      return (this._autoHealingService.timespanToSeconds(this.RuleCopy.timeInterval) > 0 && this.RuleCopy.count > 0);
     }
     else {
       return false;

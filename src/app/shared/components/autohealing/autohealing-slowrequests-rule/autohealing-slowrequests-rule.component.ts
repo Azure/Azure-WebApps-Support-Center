@@ -24,7 +24,7 @@ export class AutohealingSlowrequestsRuleComponent extends AutohealingRuleCompone
 
   isValid(): boolean {
     if (this.RuleCopy && this.RuleCopy.timeInterval && this.RuleCopy.timeInterval !== '' && this.RuleCopy.timeTaken && this.RuleCopy.timeTaken != '') {
-      return (this.RuleCopy.count > 0 && this._autoHealingService.timeToSeconds(this.RuleCopy.timeInterval) > 0 && this._autoHealingService.timeToSeconds(this.RuleCopy.timeTaken) > 0);
+      return (this.RuleCopy.count > 0 && this._autoHealingService.timespanToSeconds(this.RuleCopy.timeInterval) > 0 && this._autoHealingService.timespanToSeconds(this.RuleCopy.timeTaken) > 0);
     }
     else {
       return false;
