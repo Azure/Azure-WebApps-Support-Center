@@ -71,13 +71,14 @@ import { DaasSessionsDetailedComponent } from './components/daas-sessions-detail
 import { GenericApiService } from './services/generic-api.service';
 import { TabTitleResolver } from './resolvers/tab-name.resolver';
 import { AseService } from './services/ase.service';
-import { AutohealingComponent } from './autohealing/autohealing.component';
 import { AutohealingService } from './services/autohealing.service';
-import { AutohealingMemoryRuleComponent } from './autohealing/autohealing-memory-rule/autohealing-memory-rule.component';
-import { AutohealingSlowrequestsRuleComponent } from './autohealing/autohealing-slowrequests-rule/autohealing-slowrequests-rule.component';
-import { AutohealingRequestsRuleComponent } from './autohealing/autohealing-requests-rule/autohealing-requests-rule.component';
-import { AutohealingStatuscodesRuleComponent } from './autohealing/autohealing-statuscodes-rule/autohealing-statuscodes-rule.component';
 import { TimespanComponent } from './components/timespan/timespan.component';
+import { AutohealingComponent } from './components/autohealing/autohealing.component';
+import { AutohealingSlowrequestsRuleComponent } from './components/autohealing/autohealing-slowrequests-rule/autohealing-slowrequests-rule.component';
+import { AutohealingMemoryRuleComponent } from './components/autohealing/autohealing-memory-rule/autohealing-memory-rule.component';
+import { AutohealingRequestsRuleComponent } from './components/autohealing/autohealing-requests-rule/autohealing-requests-rule.component';
+import { AutohealingStatuscodesRuleComponent } from './components/autohealing/autohealing-statuscodes-rule/autohealing-statuscodes-rule.component';
+import { AutohealingDaasActionComponent } from './components/autohealing/autohealing-daas-action/autohealing-daas-action.component';
 
 @NgModule({
     declarations: [
@@ -128,7 +129,8 @@ import { TimespanComponent } from './components/timespan/timespan.component';
         AutohealingMemoryRuleComponent,
         AutohealingRequestsRuleComponent,
         AutohealingStatuscodesRuleComponent,
-        TimespanComponent
+        TimespanComponent,
+        AutohealingDaasActionComponent
     ],
     imports: [
         HttpModule,
