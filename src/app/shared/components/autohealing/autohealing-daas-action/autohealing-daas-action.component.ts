@@ -14,11 +14,9 @@ import { AutoHealCustomAction } from '../../../models/autohealing';
 export class AutohealingDaasActionComponent implements OnInit {
 
   constructor(private _serverFarmService: ServerFarmDataService, private _daasService: DaasService) {
-
   }
 
   @Input() siteToBeDiagnosed: SiteInfoMetaData;
-
   @Output() DaasAction: EventEmitter<AutoHealCustomAction> = new EventEmitter<AutoHealCustomAction>();
 
   checkingSupportedTier: boolean = true;

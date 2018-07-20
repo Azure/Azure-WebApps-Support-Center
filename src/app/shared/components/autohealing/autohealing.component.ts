@@ -47,10 +47,11 @@ export class AutohealingComponent implements OnInit {
           this.retrievingAutohealSettings = false;
 
           if (this.autohealingSettings.autoHealRules.actions) {
-            this.actionSelected = this.autohealingSettings.autoHealRules.actions.actionType;
+            this.actionSelected = this.autohealingSettings.autoHealRules.actions.actionType;            
           }
 
           this.initTriggers();
+          this.updateSummaryText();
         });
       }
     });
@@ -68,9 +69,11 @@ export class AutohealingComponent implements OnInit {
   }
 
   updateDaasAction(action: AutoHealCustomAction) {
-    this.daasCustomAction = action;
-    this.autohealingSettings.autoHealRules.actions.customAction = this.daasCustomAction;
-    this.updateSummaryText();
+    if (this.actionSelected == 2){
+      this.daasCustomAction = action;
+      this.autohealingSettings.autoHealRules.actions.customAction = this.daasCustomAction;
+      this.updateSummaryText();
+    }    
   }
 
   saveChanges() {
@@ -234,7 +237,7 @@ export class AutohealingComponent implements OnInit {
       }
     }
 
-    if (summary.length > 0) {
+    if (summary.length > 0 && this.autohealingSettings.autoHealRules.actions !=null) {
       this.summaryText = summary.join(' or ');
       this.summaryText = "When " + this.summaryText + ", ";
 

@@ -10,7 +10,7 @@
   </div>
 </div> -->
 
-<button type="button" class="btn btn-primary" (click)="addNewRule()" *ngIf="Rule == 0 && !editMode">
+<button type="button" class="btn btn-primary" (click)="addNewRule()" *ngIf="(Rule == 0 || Rule == null)&& !editMode">
     Configure Private Bytes rule
   </button>
 
