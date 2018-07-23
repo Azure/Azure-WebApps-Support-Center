@@ -51,7 +51,7 @@
             </div>
           </div>
         </ng-container>
-        <div class="forminput" [hidden]="actionSelected != 2 || actionCollapsed">
+        <div [hidden]="actionSelected != 2 || actionCollapsed">
           <autohealing-custom-action [siteToBeDiagnosed]="siteToBeDiagnosed" [customAction]="customAction" (customActionChanged)="updateCustomAction($event)"></autohealing-custom-action>
         </div>
       </div>
@@ -61,8 +61,10 @@
         <div class="summary tile-content">
           <div *ngIf="originalSettings">
             <strong>Current Settings</strong>
-            <div *ngIf="originalSettings.Conditions.length > 0 && originalSettings.Action !== ''">
-              {{ originalSettings.Action }}, when
+            <div style="margin-top: 10px" *ngIf="originalSettings.Conditions.length > 0 && originalSettings.Action !== ''">
+                {{ originalSettings.Action }}
+                <span class="actionExe" *ngIf="originalSettings.ActionExe !==''">{{ originalSettings.ActionExe }}</span>
+                when
               <ul> 
                   <li *ngFor="let condition of originalSettings.Conditions;let i = index;"> 
                     {{ condition }} 
@@ -76,8 +78,10 @@
           </div>
           <div *ngIf="currentSettings && settingsChanged">
               <strong>New Settings</strong>
-              <div *ngIf="currentSettings.Conditions.length > 0 && currentSettings.Action !== ''">
-                {{ currentSettings.Action }}, when
+              <div style="margin-top: 10px" *ngIf="currentSettings.Conditions.length > 0 && currentSettings.Action !== ''">
+                {{ currentSettings.Action }}
+                <span class="actionExe" *ngIf="currentSettings.ActionExe !==''">{{ currentSettings.ActionExe }}</span>
+                when
                 <ul> 
                     <li *ngFor="let condition of currentSettings.Conditions;let i = index;"> 
                       {{ condition }} 

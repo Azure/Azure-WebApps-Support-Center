@@ -53,7 +53,7 @@ export class AutohealingComponent implements OnInit {
 
             this.actionSelected = this.autohealingSettings.autoHealRules.actions.actionType;
 
-            if (this.autohealingSettings.autoHealRules.actions.actionType == AutoHealActionType.CustomAction) {
+            if (this.autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction) {
               this.customAction = this.autohealingSettings.autoHealRules.actions.customAction;
 
 
@@ -130,7 +130,7 @@ export class AutohealingComponent implements OnInit {
       this.autohealingSettings.autoHealRules.actions = new AutoHealActions();
     }
 
-    if (action == 2) {
+    if (action === AutoHealActionType.CustomAction) {
       if (this.customAction != null) {
         this.autohealingSettings.autoHealRules.actions.customAction = this.customAction;
       }
@@ -214,11 +214,11 @@ export class AutohealingComponent implements OnInit {
 
     this.originalSettings = this.getSummary(this.originalAutoHealSettings);
     this.currentSettings = this.getSummary(this.autohealingSettings);
-    
+
   }
 
   getSummary(autohealingSettings: AutoHealSettings): any {
-    
+
     let conditions: string[] = [];
     if (autohealingSettings.autoHealRules.triggers != null) {
       if (autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0) {
@@ -242,25 +242,27 @@ export class AutohealingComponent implements OnInit {
       }
     }
 
-    let action : string ='';
-    if (conditions.length > 0 && autohealingSettings.autoHealRules.actions != null) {     
-      if (autohealingSettings.autoHealRules.actions.actionType == 0) {
-        action= "Recycle the process";
+    let action: string = '';
+    let actionExe: string = '';
+    if (conditions.length > 0 && autohealingSettings.autoHealRules.actions != null) {
+      if (autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.Recycle) {
+        action = "Recycle the process";
       }
-      else if (autohealingSettings.autoHealRules.actions.actionType == 1) {
-        action= "Log an Event in the Event Viewer";
+      else if (autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.LogEvent) {
+        action = "Log an Event in the Event Viewer";
       }
 
-      else if (autohealingSettings.autoHealRules.actions.actionType == 2) {
-        action = "Run executable (" + autohealingSettings.autoHealRules.actions.customAction.exe + " " + autohealingSettings.autoHealRules.actions.customAction.parameters + ")";
+      else if (autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction) {
+        action = "Run executable ";
+        actionExe = autohealingSettings.autoHealRules.actions.customAction.exe + " " + autohealingSettings.autoHealRules.actions.customAction.parameters;
       }
     }
-    
-    return { Action:action, Conditions:conditions };
+
+    return { Action: action, ActionExe: actionExe, Conditions: conditions };
   }
 
   formatBytes(bytes, decimals) {
-    if (bytes == 0) return '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     var k = 1024,
       dm = decimals || 2,
       sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],

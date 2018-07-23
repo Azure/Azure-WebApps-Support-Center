@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { SiteDaasInfo } from '../../../models/solution-metadata';
 import { ServerFarmDataService } from '../../../services/server-farm-data.service';
 import { DaasService } from '../../../services/daas.service';
 import { SiteInfoMetaData } from '../../../models/site';
@@ -11,8 +10,6 @@ import { AutoHealCustomAction } from '../../../models/autohealing';
   styleUrls: ['./autohealing-custom-action.component.css']
 })
 export class AutohealingCustomActionComponent implements OnInit {
-
-
 
   constructor(private _serverFarmService: ServerFarmDataService, private _daasService: DaasService) {
   }
@@ -29,9 +26,7 @@ export class AutohealingCustomActionComponent implements OnInit {
 
   Diagnosers: string[] = ['Memory Dump', 'CLR Profiler', 'CLR Profiler With ThreadStacks', 'JAVA Memory Dump', 'JAVA Thread Dump'];
   DiagnoserOptions: string[] = ['CollectKillAnalyze', 'CollectLogs', 'Troubleshoot'];
-
   customActionType: string = 'Diagnostics';
-
   customActionParams: string = '';
   customActionExe: string = '';
 
@@ -54,13 +49,19 @@ export class AutohealingCustomActionComponent implements OnInit {
   }
 
   isDiagnosticsConfigured(): boolean {
+    let invalidSetting = false;
     if (this.customAction != null) {
-      if (this.customAction.exe.endsWith('DaasConsole.exe')) {
-        //this.diagnoserName = this.parseDiagnoserFromParams(this.customAction.parameters);
-        //this.diagnoserOption = this.parseDiagnoseOptionFromParams(this.customAction.parameters);
-        this.diagnoserName = "Memory Dump";
-        this.diagnoserOption = 'Troubleshoot';
-        this.updateDaasAction(); 
+      if (this.customAction.exe.toLowerCase() === 'd:\\home\\data\\daas\\bin\\daasconsole.exe') {
+
+        if (this.customAction.parameters !== '') {
+          invalidSetting = this.getDiagnoserNameAndOptionFromParameter(this.customAction.parameters);
+        }
+        if (invalidSetting) {
+          this.diagnoserName = "Memory Dump";
+          this.diagnoserOption = 'Troubleshoot';
+          this.updateDaasAction();
+        }
+
       }
       else {
         this.customActionType = 'Custom';
@@ -86,8 +87,8 @@ export class AutohealingCustomActionComponent implements OnInit {
   }
 
   updateCustomActionType() {
-    if (this.customActionType == 'Diagnostics') {
-       this.updateDaasAction();
+    if (this.customActionType === 'Diagnostics') {
+      this.updateDaasAction();
     }
     else {
       this.updateCustomAction();
@@ -103,35 +104,31 @@ export class AutohealingCustomActionComponent implements OnInit {
 
   updateDaasAction() {
     let autoHealDaasAction = new AutoHealCustomAction();
-    autoHealDaasAction.exe = 'D:\\home\\data\DaaS\\bin\\DaasConsole.exe';
+    autoHealDaasAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
     autoHealDaasAction.parameters = `-${this.diagnoserOption} "${this.diagnoserName}"  60`;
     this.customActionChanged.emit(autoHealDaasAction);
   }
 
-  parseDiagnoseOptionFromParams(parameters: string): string {
-    let paramArray = parameters.split(' ');
-    let diagnoserOption = '';
-    if (paramArray.length > 0) {
-      diagnoserOption = paramArray[0];
-
-      if (diagnoserOption.startsWith('-')) {
-        diagnoserOption = diagnoserOption.substring(1);
+  getDiagnoserNameAndOptionFromParameter(param: string): boolean {
+    let invalidSetting = true;;
+    let paramArray = param.split(' ');
+    let diagnoserOption = paramArray[0];
+    if (diagnoserOption.startsWith('-')) {
+      diagnoserOption = diagnoserOption.substring(1);
+      if (this.DiagnoserOptions.indexOf(diagnoserOption) > -1) {
+        this.diagnoserOption = diagnoserOption;
+        let firstQuote = param.indexOf('"');
+        let secondQuote = param.indexOf('"', firstQuote + 1);
+        let diagnoserName = '';
+        if (secondQuote > firstQuote && secondQuote > 0 && firstQuote > 0) {
+          diagnoserName = param.substring(firstQuote + 1, secondQuote);
+          if (this.Diagnosers.indexOf(diagnoserName) > -1) {
+            this.diagnoserName = diagnoserName;
+            invalidSetting = false;
+          }
+        }
       }
     }
-    if (this.DiagnoserOptions.indexOf(diagnoserOption) > -1) {
-      return diagnoserOption;
-    }
-    else {
-      return "INCORRECT";
-    }
-  }
-  parseDiagnoserFromParams(parameters: string): string {
-    let firstQuote = parameters.indexOf('"');
-    let secondQuote = parameters.indexOf('"', firstQuote + 1);
-    let diagnoserName = '';
-    if (secondQuote > firstQuote && secondQuote > 0 && firstQuote > 0) {
-      diagnoserName = parameters.substring(firstQuote, secondQuote);
-    }
-    return diagnoserName;
+    return invalidSetting;
   }
 }

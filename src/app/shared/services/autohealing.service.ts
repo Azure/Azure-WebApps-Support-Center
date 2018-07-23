@@ -39,25 +39,28 @@ export class AutohealingService {
 
     updateAutohealSettings(site: SiteInfoMetaData, autohealSettings: AutoHealSettings): Observable<any> {
         let resourceUri: string = this._uriElementsService.getConfigWebUrl(site);
-        let properties = { "properties": autohealSettings};
+        let properties = { "properties": autohealSettings };
         return this._armService.putResource(resourceUri, properties, null, true);
-        
+
     }
 
     timespanToSeconds(timeInterval: string): number {
         if (timeInterval.indexOf(':') < 0) {
-          return 0;
+            return 0;
         }
         var a = timeInterval.split(':'); // split it at the colons
         // minutes are worth 60 seconds. Hours are worth 60 minutes.    
         var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
         return seconds;
-      }
-    
-      secondsToTimespan(seconds: number): string {
+    }
+
+    secondsToTimespan(seconds: number): string {
+        if (seconds <= 0) {
+            return '';
+        }
         var date = new Date(null);
         date.setSeconds(seconds); // specify value for SECONDS here
         var timeString = date.toISOString().substr(11, 8);
         return timeString;
-      }
+    }
 }

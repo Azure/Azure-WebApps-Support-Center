@@ -78,7 +78,7 @@
     background-color: #efefef;
     border-bottom-left-radius: 0;
     border: 1px solid #e6e6e6;    
-    font-size: 13px;
+    font-size: 15px;
     display: inline-block;
     padding: 10px;
     padding-right: 30px;
@@ -94,4 +94,11 @@
 
 .row {
     margin-top:5px;
+}
+
+.actionExe {
+    background-color: #c8c8ca;
+    border-radius: 5px;
+    padding: 3px;
+    
 }
