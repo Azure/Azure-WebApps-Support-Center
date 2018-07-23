@@ -51,22 +51,8 @@
             </div>
           </div>
         </ng-container>
-        <div class="forminput" [hidden]="actionSelected < 2 || actionCollapsed">
-          <div [hidden]="actionSelected != 2">
-            <autohealing-daas-action [siteToBeDiagnosed]="siteToBeDiagnosed" (DaasAction)="updateDaasAction($event)"></autohealing-daas-action>
-          </div>
-
-          <div *ngIf="actionSelected == 3">
-            <div class="form-group">
-              <label for="executable">Specify the executable to be launched :-</label>
-              <input class="form-control" id="executable" aria-describedby="executableHelp" (change)="checkForChanges($event)" [(ngModel)]="autohealingSettings.autoHealRules.actions.customAction.exe">
-              <small id="executableHelp" class="form-text text-muted">This process will be launched when the above mentioned triggers are met</small>
-            </div>
-            <div class="form-group">
-              <label for="statusCode">Additional Parameters :-</label>
-              <input class="form-control" id="exeParams" placeholder="e.g. 500" (change)="checkForChanges($event)" [(ngModel)]="autohealingSettings.autoHealRules.actions.customAction.parameters">
-            </div>
-          </div>
+        <div class="forminput" [hidden]="actionSelected != 2 || actionCollapsed" >
+            <autohealing-custom-action [siteToBeDiagnosed]="siteToBeDiagnosed" [customAction]="customAction" (customActionChanged)="updateCustomAction($event)"></autohealing-custom-action>
         </div>
       </div>
 

@@ -1,0 +1,56 @@
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <input type="radio" name="radiogroup" [(ngModel)]="customActionType" (change)="updateCustomActionType()" value="Diagnostics"> Diagnostics
+      </td>
+      <td>
+        <input type="radio" name="radiogroup" [(ngModel)]="customActionType" value="Custom" (change)="updateCustomActionType()" > Custom
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="customActionType == 'Diagnostics'">
+  <div *ngIf="!checkingSupportedTier && !supportedTier">
+    <div class="focus-box focus-box-warning" style="margin-top:20px">
+      <div>
+        <strong>Error</strong> - This tool is supported only on Dedicated SKU's
+      </div>
+    </div>
+  </div>
+
+  <div class="col" *ngIf="checkingSupportedTier">
+    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+    Checking if the WebApp is running in a supported Tier
+  </div>
+  <div *ngIf="supportedTier && !checkingSupportedTier">
+    <div>
+      <select (change)="chooseDiagnoserAction($event.target.value)" [ngModel]="diagnoserOption">
+        <option value='CollectLogs'>Collect Logs only</option>
+        <option value='Troubleshoot'>Collect and Analyze Data</option>
+        <option value='CollectKillAnalyze'>Collect and Analyze Logs and Kill Process</option>
+      </select>
+    </div>
+
+    <div>
+      <select (change)="chooseDiagnoser($event.target.value)" [ngModel]="diagnoserName">
+        <option *ngFor="let diagnoser of Diagnosers" value='{{diagnoser}}'>
+          {{diagnoser}}
+        </option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="customActionType == 'Custom'">
+  <div class="form-group">
+    <label for="executable">Specify the executable to be launched :-</label>
+    <input class="form-control" id="executable" aria-describedby="executableHelp" (change)="updateCustomAction()" [(ngModel)]="customActionExe">
+    <small id="executableHelp" class="form-text text-muted">This process will be launched when the above mentioned triggers are met</small>
+  </div>
+  <div class="form-group">
+    <label for="statusCode">Additional Parameters :-</label>
+    <input class="form-control" id="exeParams" placeholder="e.g. 500" (change)="updateCustomAction()" [(ngModel)]="customActionParams">
+  </div>
+</div>

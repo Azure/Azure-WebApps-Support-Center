@@ -1,9 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SiteInfoMetaData } from '../../models/site';
-import { AutoHealSettings, AutoHealActions, AutoHealCustomAction, AutoHealTriggers } from '../../models/autohealing';
+import { AutoHealSettings, AutoHealActions, AutoHealCustomAction, AutoHealTriggers, AutoHealActionType } from '../../models/autohealing';
 import { SiteService } from '../../services/site.service';
 import { AutohealingService } from '../../services/autohealing.service';
-import { SiteDaasInfo } from '../../models/solution-metadata';
 
 @Component({
   selector: 'autohealing',
@@ -22,7 +21,7 @@ export class AutohealingComponent implements OnInit {
   savingAutohealSettings: boolean = false;
   triggerSelected: number = -1;
   actionSelected: number = -1;
-  actionCollapsed: boolean = false;
+  actionCollapsed: boolean = true;
 
   originalAutoHealSettings: string = '';
   saveEnabled: boolean = false;
@@ -30,7 +29,7 @@ export class AutohealingComponent implements OnInit {
   triggers = [];
   actions = [];
   summaryText: string = '';
-  daasCustomAction: AutoHealCustomAction = null;
+  customAction: AutoHealCustomAction = null;
 
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService) {
 
@@ -47,7 +46,14 @@ export class AutohealingComponent implements OnInit {
           this.retrievingAutohealSettings = false;
 
           if (this.autohealingSettings.autoHealRules.actions) {
-            this.actionSelected = this.autohealingSettings.autoHealRules.actions.actionType;            
+
+            this.actionSelected = this.autohealingSettings.autoHealRules.actions.actionType;
+
+            if (this.autohealingSettings.autoHealRules.actions.actionType == AutoHealActionType.CustomAction) {
+              this.customAction = this.autohealingSettings.autoHealRules.actions.customAction;
+
+
+            }
           }
 
           this.initTriggers();
@@ -68,12 +74,12 @@ export class AutohealingComponent implements OnInit {
     this.updateSummaryText();
   }
 
-  updateDaasAction(action: AutoHealCustomAction) {
-    if (this.actionSelected == 2){
-      this.daasCustomAction = action;
-      this.autohealingSettings.autoHealRules.actions.customAction = this.daasCustomAction;
-      this.updateSummaryText();
-    }    
+  updateCustomAction(action: AutoHealCustomAction) {
+
+    this.customAction = action;
+    this.autohealingSettings.autoHealRules.actions.customAction = this.customAction;
+    this.updateSummaryText();
+    this.checkForChanges();
   }
 
   saveChanges() {
@@ -102,13 +108,13 @@ export class AutohealingComponent implements OnInit {
   }
 
   updateActionStatus(action: number) {
-    
+
     // collapse the conditions pane
     this.triggerSelected = -1;
-    
+
     //this is to allow user to collapse the action tile if they click it again
     if (this.actionSelected != action) {
-      
+
       this.actionCollapsed = false;
     }
     else {
@@ -121,22 +127,12 @@ export class AutohealingComponent implements OnInit {
     }
 
     if (action == 2) {
-      if (this.daasCustomAction != null) {
-        this.autohealingSettings.autoHealRules.actions.customAction = this.daasCustomAction;
+      if (this.customAction != null) {
+        this.autohealingSettings.autoHealRules.actions.customAction = this.customAction;
       }
     }
 
-    if (action == 3) {
-      if (this.autohealingSettings.autoHealRules.actions.customAction != null) {
-        this.autohealingSettings.autoHealRules.actions.customAction = new AutoHealCustomAction();
-        this.autohealingSettings.autoHealRules.actions.customAction.exe = 'D:\\home\\data\DaaS\\bin\\DaasConsole.exe';
-        this.autohealingSettings.autoHealRules.actions.customAction.parameters = '-CollectKillAnalyze "Memory Dump" 60';
-      }
-    }
-
-    //for both the DAAS Action and Custom Action, the actionType is 2 which is customAction
-    let autoHealAction = action > 2 ? action - 1 : action;
-    this.autohealingSettings.autoHealRules.actions.actionType = autoHealAction;
+    this.autohealingSettings.autoHealRules.actions.actionType = action;
     this.checkForChanges();
   }
 
@@ -205,7 +201,6 @@ export class AutohealingComponent implements OnInit {
 
     this.actions.push({ Name: 'Recycle Process', Icon: 'fa fa-recycle' });
     this.actions.push({ Name: 'Log an Event', Icon: 'fa fa-book' });
-    this.actions.push({ Name: 'Run Diagnostics', Icon: 'fa fa-wrench' });
     this.actions.push({ Name: 'Custom Action', Icon: 'fa fa-bolt' });
 
   }
