@@ -80,7 +80,6 @@
     border: 1px solid #e6e6e6;    
     font-size: 13px;
     display: inline-block;
-    max-width: 50%;
     padding: 10px;
     padding-right: 30px;
     border-radius: 10px;
@@ -91,4 +90,8 @@
 .saveSection {
     margin-top:20px;
     margin-bottom: 100px;
+}
+
+.row {
+    margin-top:5px;
 }

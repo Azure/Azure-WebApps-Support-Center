@@ -51,15 +51,44 @@
             </div>
           </div>
         </ng-container>
-        <div class="forminput" [hidden]="actionSelected != 2 || actionCollapsed" >
-            <autohealing-custom-action [siteToBeDiagnosed]="siteToBeDiagnosed" [customAction]="customAction" (customActionChanged)="updateCustomAction($event)"></autohealing-custom-action>
+        <div class="forminput" [hidden]="actionSelected != 2 || actionCollapsed">
+          <autohealing-custom-action [siteToBeDiagnosed]="siteToBeDiagnosed" [customAction]="customAction" (customActionChanged)="updateCustomAction($event)"></autohealing-custom-action>
         </div>
       </div>
 
       <div>
         <div class="header2">3. Review and Save your Settings</div>
         <div class="summary tile-content">
-          {{ summaryText }}
+          <div *ngIf="originalSettings">
+            <strong>Current Settings</strong>
+            <div *ngIf="originalSettings.Conditions.length > 0 && originalSettings.Action !== ''">
+              {{ originalSettings.Action }}, when
+              <ul> 
+                  <li *ngFor="let condition of originalSettings.Conditions;let i = index;"> 
+                    {{ condition }} 
+                    <span *ngIf="i < (originalSettings.Conditions.length -1)"> or,</span>
+                  </li>
+              </ul>
+            </div>
+            <div *ngIf="originalSettings.Conditions.length == 0 || originalSettings.Action === ''">
+                No rule configured !
+              </div>
+          </div>
+          <div *ngIf="currentSettings && settingsChanged">
+              <strong>New Settings</strong>
+              <div *ngIf="currentSettings.Conditions.length > 0 && currentSettings.Action !== ''">
+                {{ currentSettings.Action }}, when
+                <ul> 
+                    <li *ngFor="let condition of currentSettings.Conditions;let i = index;"> 
+                      {{ condition }} 
+                      <span *ngIf="i < (currentSettings.Conditions.length -1)"> or,</span>
+                    </li>
+                </ul>
+              </div>
+              <div *ngIf="currentSettings.Conditions.length == 0 || currentSettings.Action === ''">
+                No rule configured !
+              </div>
+          </div>
         </div>
       </div>
 

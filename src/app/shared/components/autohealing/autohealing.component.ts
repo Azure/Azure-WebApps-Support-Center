@@ -23,12 +23,15 @@ export class AutohealingComponent implements OnInit {
   actionSelected: number = -1;
   actionCollapsed: boolean = true;
 
-  originalAutoHealSettings: string = '';
+  originalAutoHealSettingsString: string = '';
+  originalAutoHealSettings: AutoHealSettings;
   saveEnabled: boolean = false;
   changesSaved: boolean = false;
   triggers = [];
   actions = [];
-  summaryText: string = '';
+  originalSettings: any;
+  currentSettings: any;
+  settingsChanged: boolean = false;
   customAction: AutoHealCustomAction = null;
 
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService) {
@@ -42,7 +45,8 @@ export class AutohealingComponent implements OnInit {
         this.siteToBeDiagnosed = siteInfo;
         this._autohealingService.getAutohealSettings(this.siteToBeDiagnosed).subscribe(autoHealSettings => {
           this.autohealingSettings = autoHealSettings;
-          this.originalAutoHealSettings = JSON.stringify(this.autohealingSettings);
+          this.originalAutoHealSettings = JSON.parse(JSON.stringify(autoHealSettings));
+          this.originalAutoHealSettingsString = JSON.stringify(this.autohealingSettings);
           this.retrievingAutohealSettings = false;
 
           if (this.autohealingSettings.autoHealRules.actions) {
@@ -56,7 +60,7 @@ export class AutohealingComponent implements OnInit {
             }
           }
 
-          this.initTriggers();
+          this.initTriggersAndActions();
           this.updateSummaryText();
         });
       }
@@ -65,7 +69,7 @@ export class AutohealingComponent implements OnInit {
 
 
   checkForChanges() {
-    if (this.originalAutoHealSettings != JSON.stringify(this.autohealingSettings)) {
+    if (this.originalAutoHealSettingsString != JSON.stringify(this.autohealingSettings)) {
       this.saveEnabled = true;
     }
     else {
@@ -91,7 +95,7 @@ export class AutohealingComponent implements OnInit {
       .subscribe(x => {
         console.log("Got Response " + x);
         this.savingAutohealSettings = false;
-        this.originalAutoHealSettings = JSON.stringify(this.autohealingSettings);
+        this.originalAutoHealSettingsString = JSON.stringify(this.autohealingSettings);
         this.changesSaved = true;
         setTimeout(() => {
           this.changesSaved = false;
@@ -190,11 +194,11 @@ export class AutohealingComponent implements OnInit {
     return isConfigured;
   }
 
-  initTriggers() {
+  initTriggersAndActions() {
 
     let triggersConfigured = this.autohealingSettings.autoHealRules.triggers != null;
 
-    this.triggers.push({ Name: 'Slow Requests', Icon: 'fa fa-clock-o', IsConfigured: triggersConfigured && this.checkRuleConfigured(0) });
+    this.triggers.push({ Name: 'Request Duration', Icon: 'fa fa-clock-o', IsConfigured: triggersConfigured && this.checkRuleConfigured(0) });
     this.triggers.push({ Name: 'Memory Limit', Icon: 'fa fa-microchip', IsConfigured: triggersConfigured && this.checkRuleConfigured(1) });
     this.triggers.push({ Name: 'Request Count', Icon: 'fa fa-bar-chart', IsConfigured: triggersConfigured && this.checkRuleConfigured(2) });
     this.triggers.push({ Name: 'Status Codes', Icon: 'fa fa-list', IsConfigured: triggersConfigured && this.checkRuleConfigured(3) });
@@ -205,53 +209,54 @@ export class AutohealingComponent implements OnInit {
 
   }
 
-
   updateSummaryText() {
-    this.summaryText = "";
-    let summary: string[] = [];
+    this.settingsChanged = JSON.stringify(this.autohealingSettings) != JSON.stringify(this.originalAutoHealSettings);
 
-    if (this.autohealingSettings.autoHealRules.triggers != null) {
-      if (this.autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0) {
-        summary.push("process consumes more than " + this.formatBytes(this.autohealingSettings.autoHealRules.triggers.privateBytesInKB, 2) + " private bytes of memory");
+    this.originalSettings = this.getSummary(this.originalAutoHealSettings);
+    this.currentSettings = this.getSummary(this.autohealingSettings);
+    
+  }
+
+  getSummary(autohealingSettings: AutoHealSettings): any {
+    
+    let conditions: string[] = [];
+    if (autohealingSettings.autoHealRules.triggers != null) {
+      if (autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0) {
+        conditions.push("Process consumes more than " + this.formatBytes(autohealingSettings.autoHealRules.triggers.privateBytesInKB, 2) + " private bytes of memory");
       }
 
-      if (this.autohealingSettings.autoHealRules.triggers.requests != null) {
-        summary.push("app has served  " + this.autohealingSettings.autoHealRules.triggers.requests.count + " requests in a duration of  " + this._autohealingService.timespanToSeconds(this.autohealingSettings.autoHealRules.triggers.requests.timeInterval) + " seconds");
+      if (autohealingSettings.autoHealRules.triggers.requests != null) {
+        conditions.push("App has served  " + autohealingSettings.autoHealRules.triggers.requests.count + " requests in a duration of  " + this._autohealingService.timespanToSeconds(autohealingSettings.autoHealRules.triggers.requests.timeInterval) + " seconds");
       }
 
-      if (this.autohealingSettings.autoHealRules.triggers.slowRequests != null) {
-        summary.push(this.autohealingSettings.autoHealRules.triggers.slowRequests.count + " requests took more than  " + this._autohealingService.timespanToSeconds(this.autohealingSettings.autoHealRules.triggers.slowRequests.timeTaken) + " seconds in a duration of  " + this._autohealingService.timespanToSeconds(this.autohealingSettings.autoHealRules.triggers.slowRequests.timeInterval) + " seconds");
+      if (autohealingSettings.autoHealRules.triggers.slowRequests != null) {
+        conditions.push(autohealingSettings.autoHealRules.triggers.slowRequests.count + " requests take more than  " + this._autohealingService.timespanToSeconds(autohealingSettings.autoHealRules.triggers.slowRequests.timeTaken) + " seconds in a duration of  " + this._autohealingService.timespanToSeconds(autohealingSettings.autoHealRules.triggers.slowRequests.timeInterval) + " seconds");
       }
 
-      if (this.autohealingSettings.autoHealRules.triggers.statusCodes != null) {
-        for (let index = 0; index < this.autohealingSettings.autoHealRules.triggers.statusCodes.length; index++) {
-          let statusCodeRule = this.autohealingSettings.autoHealRules.triggers.statusCodes[index];
-          summary.push(statusCodeRule.count + " requests end up with HTTP Status  " + statusCodeRule.status + "." + statusCodeRule.subStatus + " and win-32 status  " + statusCodeRule.win32Status + " in a duration of  " + this._autohealingService.timespanToSeconds(statusCodeRule.timeInterval) + " seconds");
+      if (autohealingSettings.autoHealRules.triggers.statusCodes != null) {
+        for (let index = 0; index < autohealingSettings.autoHealRules.triggers.statusCodes.length; index++) {
+          let statusCodeRule = autohealingSettings.autoHealRules.triggers.statusCodes[index];
+          conditions.push(statusCodeRule.count + " requests end up with HTTP Status  " + statusCodeRule.status + "." + statusCodeRule.subStatus + " and win-32 status  " + statusCodeRule.win32Status + " in a duration of  " + this._autohealingService.timespanToSeconds(statusCodeRule.timeInterval) + " seconds");
         }
 
       }
     }
 
-    if (summary.length > 0 && this.autohealingSettings.autoHealRules.actions !=null) {
-      this.summaryText = summary.join(' or ');
-      this.summaryText = "When " + this.summaryText + ", ";
-
-      if (this.autohealingSettings.autoHealRules.actions.actionType == 0) {
-        this.summaryText += " recycle the process.";
+    let action : string ='';
+    if (conditions.length > 0 && autohealingSettings.autoHealRules.actions != null) {     
+      if (autohealingSettings.autoHealRules.actions.actionType == 0) {
+        action= "Recycle the process";
       }
-      else if (this.autohealingSettings.autoHealRules.actions.actionType == 1) {
-        this.summaryText += " log an Event in the Event Viewer.";
+      else if (autohealingSettings.autoHealRules.actions.actionType == 1) {
+        action= "Log an Event in the Event Viewer";
       }
 
-      else if (this.autohealingSettings.autoHealRules.actions.actionType == 2) {
-        this.summaryText += " run an executable (" + this.autohealingSettings.autoHealRules.actions.customAction.exe + ") with parameters (" + this.autohealingSettings.autoHealRules.actions.customAction.parameters + ")";
+      else if (autohealingSettings.autoHealRules.actions.actionType == 2) {
+        action = "Run executable (" + autohealingSettings.autoHealRules.actions.customAction.exe + " " + autohealingSettings.autoHealRules.actions.customAction.parameters + ")";
       }
-
-
     }
-    else {
-      this.summaryText = "Found no auto-heal rules configured"
-    }
+    
+    return { Action:action, Conditions:conditions };
   }
 
   formatBytes(bytes, decimals) {

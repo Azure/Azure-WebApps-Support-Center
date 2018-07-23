@@ -1,6 +1,6 @@
 <button type="button" class="btn btn-primary" (click)="addNewRule()" *ngIf="(Rule == 0 || Rule == null) && !editMode">
-    Configure Private Bytes rule
-  </button>
+  Configure Private Bytes rule
+</button>
 
 <table class="table table-bordered" *ngIf="!editMode && Rule > 0">
   <thead>
@@ -30,14 +30,26 @@
 </table>
 
 <div class="form-group" *ngIf="editMode">
-  <div class="form-group">
+  <div class="row">
     <label for="idPrivateBytes">What is the memory threshold (private bytes) you want to configure ?</label>
-    <input type="number" class="form-control" id="idPrivateBytes" aria-describedby="privateBytesHelp" placeholder="Enter private bytes in KB"
-      [(ngModel)]="RuleCopy">
-    <small id="privateBytesHelp" class="form-text text-muted">After the process consumes these many private bytes, the configured action will be taken</small>
-    <div *ngIf="RuleCopy !== null && !isValid()" class="alert alert-danger">
-      Please specify a valid value for private bytes (in KB) from 102400 (100 MB) to 13631488 (13 GB)
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <input type="number" min="1" class="form-control" id="idPrivateBytes" aria-describedby="privateBytesHelp" placeholder="Enter private bytes in KB"
+        [(ngModel)]="RuleCopy">
     </div>
   </div>
-  <button type="button" class="btn btn-primary" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
+  <div class="row">
+    <div class="col-sm-8">
+      <small id="privateBytesHelp" class="form-text text-muted">After the process consumes these many private bytes, the configured action will be taken</small>
+      <div *ngIf="RuleCopy !== null && RuleCopy !=0 && !isValid()" class="alert alert-danger">
+        Please specify a valid value for private bytes (in KB) from 102400 (100 MB) to 13631488 (13 GB)
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <button type="button" class="btn btn-primary" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
+    </div>
+  </div>
 </div>

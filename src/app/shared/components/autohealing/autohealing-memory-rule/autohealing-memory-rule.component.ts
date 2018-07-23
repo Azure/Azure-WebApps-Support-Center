@@ -12,6 +12,12 @@ export class AutohealingMemoryRuleComponent extends AutohealingRuleComponent {
     this.editMode = true;
   }
 
+  ngOnInit(): void {    
+    if (this.Rule) {
+      this.RuleCopy = this.Rule;
+    }
+  }
+
   saveRule() {
     this.Rule = this.RuleCopy;
     this.editMode = false;

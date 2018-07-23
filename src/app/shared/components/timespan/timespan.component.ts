@@ -26,4 +26,5 @@ export class TimespanComponent implements OnInit {
       let timeSpan = this._autoHealingService.secondsToTimespan(this.Seconds);
       this.TimeSpanChange.emit(timeSpan);      
   }
+
 }

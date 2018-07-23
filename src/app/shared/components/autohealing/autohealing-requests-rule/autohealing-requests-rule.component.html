@@ -32,19 +32,30 @@
 </table>
 
 <div class="form-group" *ngIf="editMode">
-  <div>
+  <div class="row">
     <label for="requests">After how many requests you want this condition to kick in ?</label>
-    <input type="number" class="form-control" id="requests" aria-describedby="requestCountHelp" placeholder="Enter request count"
-      [(ngModel)]="RuleCopy.count">
-    <small id="requestCountHelp" class="form-text text-muted">After the process has served these many requests in the duration configured below, the configured action will be taken
-    </small>
+  </div>
+  <div class="row">
+    <div class="col-sm-2">
+      <input type="number" class="form-control" id="requests" aria-describedby="requestCountHelp" placeholder="Enter count" [(ngModel)]="RuleCopy.count">
+    </div>
+    <div class="col-sm-12">
+      <small id="requestCountHelp" class="form-text text-muted">After the process has served these many requests in the duration configured below, the configured action will be taken
+      </small>
+    </div>
   </div>
 
-  <div class="form-group">
+  <div class="row">
     <label for="durationCount">How frequently (in seconds) you want to check ?</label>
-    <timespan [(TimeSpan)]="RuleCopy.timeInterval" placeholder="e.g. 60"></timespan>
   </div>
-
-  <button type="button" class="btn btn-primary" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
-
+  <div class="row">
+    <div class="col-sm-2">
+      <timespan [(TimeSpan)]="RuleCopy.timeInterval" placeholder="e.g. 60"></timespan>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <button type="button" class="btn btn-primary" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
+    </div>
+  </div>
 </div>
