@@ -33,7 +33,7 @@ export class LiveChatService {
 
                 setTimeout(() => {
 
-                    this.startChat(false, '', LiveChatSettings.DemoModeForCaseSubmission);
+                    this.startChat(false, '', LiveChatSettings.DemoModeForCaseSubmission, 'ltr');
 
                 }, LiveChatSettings.InactivityTimeoutInMs);
 
@@ -55,7 +55,7 @@ export class LiveChatService {
         });
     }
 
-    public startChat(autoOpen: boolean, source: string, demoMode: boolean = false) {
+    public startChat(autoOpen: boolean, source: string, demoMode: boolean = false, chatPosition: string = '') {
 
         let restoreId: string = '';
         let externalId: string = '';
@@ -86,6 +86,9 @@ export class LiveChatService {
                                     restoreId: restoreId,
                                     firstName: this.currentResource.name,
                                     config: {
+                                        headerProperty: {
+                                            direction: chatPosition
+                                        },
                                         content: {
                                             placeholders: {
                                                 reply_field: 'Describe your problem or reply here',
