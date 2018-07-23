@@ -9,7 +9,6 @@
     </button>
   </div>
 
-
   <div class="panel panel-default" *ngIf="customActionType == 'Diagnostics'">
     <div class="panel-body">
       <div *ngIf="!checkingSupportedTier && !supportedTier">
@@ -24,25 +23,22 @@
         Checking if the WebApp is running in a supported Tier
       </div>
 
-
-
-
-
       <div *ngIf="supportedTier && !checkingSupportedTier">
         <div class="row">
           <div class="col-sm-3">
             <ng-container *ngFor="let option of DiagnoserOptions">
               <div class="radio">
                 <label>
-                  <input type="radio" name="optradio" [checked]="diagnoserOption === option" [value]="option" (change)="chooseDiagnoserAction(option)"> {{ option }}
+                  <input type="radio" name="optradio" [checked]="diagnoserOption.option === option.option" [value]="option.option" (change)="chooseDiagnoserAction(option)"> {{ option.option }}
                 </label>
               </div>
             </ng-container>
           </div>
           <div class="col-sm-9">
-            here goes the desc
+            <div class="diagnoser-option"> {{ diagnoserOption.Description}} </div>
           </div>
         </div>
+
 
         <div>
           Choose Diagnostic tool to run :
@@ -55,7 +51,6 @@
       </div>
     </div>
   </div>
-
 
   <div class="panel panel-default" *ngIf="customActionType == 'Custom'">
     <div class="panel-body">

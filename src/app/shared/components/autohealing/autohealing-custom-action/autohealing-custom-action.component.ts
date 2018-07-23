@@ -22,10 +22,14 @@ export class AutohealingCustomActionComponent implements OnInit {
   supportedTier: boolean = true;
 
   diagnoserName: string;
-  diagnoserOption: string;
+  diagnoserOption: any = [ { option:"", Description :"" }];
 
   Diagnosers: string[] = ['Memory Dump', 'CLR Profiler', 'CLR Profiler With ThreadStacks', 'JAVA Memory Dump', 'JAVA Thread Dump'];
-  DiagnoserOptions: string[] = ['CollectKillAnalyze', 'CollectLogs', 'Troubleshoot'];
+  DiagnoserOptions = [ 
+                    {option:'CollectKillAnalyze', Description : "With this option, the selected tool's data will collected, analyzed and after the collection is finished, the process will be recycled."}, 
+                    {option:'CollectLogs', Description : "With this option, only the selected tool's data will collected. No analysis will be performed and process will not be restarted as a part of this option."},
+                    {option: 'Troubleshoot', Description : "With this option, the selected tool's data will collected and then analyzed. This will not cause the process to restart. "}
+                  ];
   customActionType: string = 'Diagnostics';
   customActionParams: string = '';
   customActionExe: string = '';
@@ -40,7 +44,7 @@ export class AutohealingCustomActionComponent implements OnInit {
           let diagnosticsConfiguredAlready = this.isDiagnosticsConfigured();
           if (!diagnosticsConfiguredAlready) {
             this.diagnoserName = "Memory Dump";
-            this.diagnoserOption = 'Troubleshoot';
+            this.diagnoserOption = this.DiagnoserOptions[2];
             this.updateDaasAction();
           }
         }
@@ -58,7 +62,7 @@ export class AutohealingCustomActionComponent implements OnInit {
         }
         if (invalidSetting) {
           this.diagnoserName = "Memory Dump";
-          this.diagnoserOption = 'Troubleshoot';
+          this.diagnoserOption = this.DiagnoserOptions[2];
           this.updateDaasAction();
         }
 
@@ -105,7 +109,7 @@ export class AutohealingCustomActionComponent implements OnInit {
   updateDaasAction() {
     let autoHealDaasAction = new AutoHealCustomAction();
     autoHealDaasAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
-    autoHealDaasAction.parameters = `-${this.diagnoserOption} "${this.diagnoserName}"  60`;
+    autoHealDaasAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoserName}"  60`;
     this.customActionChanged.emit(autoHealDaasAction);
   }
 
@@ -115,8 +119,10 @@ export class AutohealingCustomActionComponent implements OnInit {
     let diagnoserOption = paramArray[0];
     if (diagnoserOption.startsWith('-')) {
       diagnoserOption = diagnoserOption.substring(1);
-      if (this.DiagnoserOptions.indexOf(diagnoserOption) > -1) {
-        this.diagnoserOption = diagnoserOption;
+
+      let diagnoserOptionIndex = this.DiagnoserOptions.findIndex(item => item.option === diagnoserOption)
+      if (diagnoserOptionIndex > -1) {
+        this.diagnoserOption = this.DiagnoserOptions[diagnoserOptionIndex];
         let firstQuote = param.indexOf('"');
         let secondQuote = param.indexOf('"', firstQuote + 1);
         let diagnoserName = '';
