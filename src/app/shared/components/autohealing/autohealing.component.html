@@ -9,6 +9,10 @@
     Retrieving autoHealing settings...
   </div>
 
+  <div *ngIf="errorMessage" class="alert alert-danger" style="margin-top:5px">
+    {{ errorMessage }}
+  </div>
+
   <div *ngIf="!retrievingAutohealSettings">
     <div style="margin-top: 15px;">
       <toggle-button ToggleText="Auto-Healing Enabled" [selected]="autohealingSettings.autoHealEnabled" (selectedChange)="autohealingSettings.autoHealEnabled = $event; checkForChanges()"></toggle-button>

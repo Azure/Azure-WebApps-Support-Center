@@ -31,6 +31,7 @@ export class AutohealingComponent implements OnInit {
   currentSettings: any;
   settingsChanged: boolean = false;
   customAction: AutoHealCustomAction = null;
+  errorMessage: string = '';
 
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService) {
   }
@@ -46,6 +47,11 @@ export class AutohealingComponent implements OnInit {
           this.initComponent(this.autohealingSettings);
         });
       }
+    },
+    err =>{
+      this.retrievingAutohealSettings = false;
+      this.errorMessage = "Failed while getting AutoHeal settings with error " + JSON.stringify(err);
+      this.errorMessage += ". Please retry after some time";
     });
   }
 
@@ -98,7 +104,12 @@ export class AutohealingComponent implements OnInit {
         this.actionCollapsed = true;
 
         this.initComponent(savedAutoHealSettings);
-      });
+      },
+    err =>{
+      this.savingAutohealSettings = false;
+      this.errorMessage = "Failed while saving AutoHeal settings with error " + JSON.stringify(err);
+      this.errorMessage += ". Please retry after some time";
+    });
   }
 
   updateTriggerStatus(triggerRule: number) {
