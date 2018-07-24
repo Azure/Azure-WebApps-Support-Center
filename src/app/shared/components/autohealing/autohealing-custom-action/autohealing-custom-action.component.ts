@@ -7,7 +7,7 @@ import { AutoHealCustomAction } from '../../../models/autohealing';
 @Component({
   selector: 'autohealing-custom-action',
   templateUrl: './autohealing-custom-action.component.html',
-  styleUrls: ['./autohealing-custom-action.component.css']
+  styleUrls: ['./autohealing-custom-action.component.css','../autohealing.component.css']
 })
 export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 

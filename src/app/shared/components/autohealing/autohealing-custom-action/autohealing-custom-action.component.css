@@ -31,10 +31,9 @@
 }
 
 .diagnostic-options {
-    border: Solid 1px whitesmoke;
+    border: Solid 1px rgb(214, 125, 85);;
     border-radius: 3px;
-    padding: 5px;
-    padding-top: 10px;
+    padding: 0px 0px 0px 5px;
     margin-left:1px;
 }
 
@@ -44,4 +43,19 @@ h4{
 p {
     line-height: 18px;
     font-size: 12px;
+}
+
+.diagnostic-options-heading{
+    margin-top:10px;  
+    background-color: rgb(214, 125, 85);
+    width:100px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    color:white;
+}
+
+label {
+    font-size: 13px;
+    font-weight: 400;
+    /* color: #595959; */
 }

@@ -51,6 +51,7 @@
     <div class="col-sm-4">
       <input type="number" min="1" id="requestsCountSlow" aria-describedby="requestsCountSlowHelp" placeholder="Enter count" [(ngModel)]="RuleCopy.count"
         min="1">
+      <span style="color:red">*</span>
       <div *ngIf="RuleCopy.count <=0" class="alert alert-danger" style="margin-top:5px">
         Request count should be more than zero
       </div>

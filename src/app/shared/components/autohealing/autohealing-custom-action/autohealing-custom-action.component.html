@@ -34,10 +34,12 @@
             </ng-container>
           </div>
         </div>
-        
-        <button type="button" class="btn btn-default btn-xs btn-primary" style="margin-top:10px">
+
+        <hr>
+
+        <div class="diagnostic-options-heading">
           Tool Options
-        </button>
+        </div>
         <div class="row diagnostic-options">
           <div class="col-sm-3">
             <ng-container *ngFor="let option of DiagnoserOptions">
@@ -60,12 +62,20 @@
     <div class="panel-body">
       <div class="form-group">
         <label for="executable">Specify the executable to be launched :-</label>
-        <input class="form-control" id="executable" aria-describedby="executableHelp" (input)="updateCustomActionExe($event.target.value)" [ngModel]="customActionExe" placeholder="for e.g. d:\home\data\anycustomexe.exe">
-        <small id="executableHelp" class="form-text text-muted">This process will be launched when the above mentioned triggers are met</small>
+        <div>
+          <input style="width:400px" type="text" id="executable" aria-describedby="executableHelp" (input)="updateCustomActionExe($event.target.value)"
+            [ngModel]="customActionExe" placeholder="for e.g. d:\home\data\anycustomexe.exe">
+          <div>
+            <small id="executableHelp" class="form-text text-muted">This process will be launched when the above mentioned triggers are met</small>
+          </div>
+        </div>
       </div>
       <div class="form-group">
-        <label for="statusCode">Additional Parameters :-</label>
-        <input class="form-control" id="exeParams" placeholder="e.g. -customparamer" (input)="updateCustomActionParams($event.target.value)" [ngModel]="customActionParams">
+        <label for="exeParams">Additional Parameters :-</label>
+        <div>
+          <input style="width:400px" type="text" id="exeParams" placeholder="e.g. -customparamer" (input)="updateCustomActionParams($event.target.value)"
+            [ngModel]="customActionParams">
+        </div>
       </div>
     </div>
   </div>

@@ -42,6 +42,7 @@
     <div class="col-sm-4">
       <input type="number" min="1" id="idPrivateBytes" aria-describedby="privateBytesHelp" placeholder="Enter private bytes in KB"
         [(ngModel)]="RuleCopy">
+      <span style="color:red">*</span>
       <div *ngIf="RuleCopy !== null && RuleCopy !=0 && !isValid()" class="alert alert-danger" style="margin-top:5px">
         Private should be > 102400 KB (100 MB) to 13631488 KB (13 GB)
       </div>

@@ -60,9 +60,10 @@
       <div class="col-sm-4">
         <input type="number" id="requestCountStatusCodes" aria-describedby="requestCountStatusCodesHelp" placeholder="Enter request count"
           [(ngModel)]="currentRule.count">
-          <div *ngIf="currentRule.count <=0"  class="alert alert-danger" style="margin-top:5px">
-              Request count should be more than zero
-            </div>
+        <span style="color:red">*</span>
+        <div *ngIf="currentRule.count <=0" class="alert alert-danger" style="margin-top:5px">
+          Request count should be more than zero
+        </div>
       </div>
     </div>
     <div class="row">
@@ -71,7 +72,7 @@
       </div>
       <div class="col-sm-4">
         <input type="number" id="statusCode" placeholder="e.g. 500" min="100" [(ngModel)]="currentRule.status">
-        <div *ngIf="currentRule.status < 100 || currentRule.status > 530"  class="alert alert-danger" style="margin-top:5px">
+        <div *ngIf="currentRule.status < 100 || currentRule.status > 530" class="alert alert-danger" style="margin-top:5px">
           Valid HTTP Status codes range from HTTP 100 to HTTP 530 only.
         </div>
       </div>
