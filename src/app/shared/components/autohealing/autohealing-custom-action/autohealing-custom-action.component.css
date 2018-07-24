@@ -32,7 +32,7 @@
 
 .diagnostic-options {
     border: Solid 1px rgb(214, 125, 85);;
-    border-radius: 3px;
+    border-radius: 0px 0px 5px 5px;
     padding: 0px 0px 0px 5px;
     margin-left:1px;
 }
@@ -52,6 +52,8 @@ p {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     color:white;
+    padding-left: 7px;
+    margin-left: 1px;
 }
 
 label {

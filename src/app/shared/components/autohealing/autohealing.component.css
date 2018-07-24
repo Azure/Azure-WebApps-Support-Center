@@ -87,15 +87,10 @@
     margin-top:20px;
     margin-bottom: 100px;
 }
-
-.row {
-    margin-top:5px;
-}
-
 .actionExe {
     background-color: #c8c8ca;
     border-radius: 5px;
-    padding: 3px;    
+    padding: 3px;
 }
 
 input[type="text"],input[type="number"] {
@@ -103,7 +98,6 @@ input[type="text"],input[type="number"] {
     position: relative;
     vertical-align: middle;
     height: 23px;
-    margin-right: 10px;
     padding: 0 5px;
     background-color: #fff;
     color: inherit;
@@ -129,4 +123,8 @@ label {
 
 .rule-button{
     margin-top:10px;
+}
+
+.form-group .row {
+    line-height: 25px;
 }
