@@ -52,7 +52,7 @@ export class AutohealingComponent implements OnInit {
   initComponent(autoHealSettings: AutoHealSettings) {
     this.originalAutoHealSettings = JSON.parse(JSON.stringify(autoHealSettings));
     this.originalAutoHealSettingsString = JSON.stringify(this.autohealingSettings);
-    if (this.autohealingSettings.autoHealRules.actions) {
+    if (this.autohealingSettings.autoHealRules.actions !=null) {
       this.actionSelected = this.autohealingSettings.autoHealRules.actions.actionType;
       if (this.autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction) {
         this.customAction = this.autohealingSettings.autoHealRules.actions.customAction;
