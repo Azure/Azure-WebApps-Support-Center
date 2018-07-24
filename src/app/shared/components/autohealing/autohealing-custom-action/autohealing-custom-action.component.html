@@ -1,10 +1,10 @@
-<div class="row" style="margin-bottom: 5px;margin-left:0;margin-top:10px">
+<div class="row" style="margin-bottom: 5px;margin-left:0;margin-top:10px;width:75%">
 
   <div class="btn-group" role="group" aria-label="...">
-    <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':customActionType==='Diagnostics'}" (click)="customActionType='Diagnostics'">
+    <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':customActionType==='Diagnostics'}" (click)="customActionType='Diagnostics';updateDaasAction()">
       Run Diagnostics
     </button>
-    <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':customActionType==='Custom'}" (click)="customActionType='Custom'">
+    <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':customActionType==='Custom'}" (click)="customActionType='Custom';updateCustomAction()">
       Run Any Executable
     </button>
   </div>
@@ -25,6 +25,20 @@
 
       <div *ngIf="supportedTier && !checkingSupportedTier">
         <div class="row">
+          <div class="detail-cards">
+            <ng-container *ngFor="let item of Diagnosers;let i = index">
+              <button class="detail-card" (click)="chooseDiagnoser(item)" [ngClass]="{'detail-card-active': item.Name === diagnoser.Name}">
+                <h4>{{item.Name}}</h4>
+                <p>{{ item.Description }}</p>
+              </button>
+            </ng-container>
+          </div>
+        </div>
+        
+        <button type="button" class="btn btn-default btn-xs btn-primary" style="margin-top:10px">
+          Tool Options
+        </button>
+        <div class="row diagnostic-options">
           <div class="col-sm-3">
             <ng-container *ngFor="let option of DiagnoserOptions">
               <div class="radio">
@@ -38,16 +52,6 @@
             <div class="diagnoser-option"> {{ diagnoserOption.Description}} </div>
           </div>
         </div>
-
-
-        <div>
-          Choose Diagnostic tool to run :
-          <select class="form-control" (change)="chooseDiagnoser($event.target.value)" [ngModel]="diagnoserName">
-            <option *ngFor="let diagnoser of Diagnosers" value='{{diagnoser}}'>
-              {{diagnoser}}
-            </option>
-          </select>
-        </div>
       </div>
     </div>
   </div>
@@ -56,12 +60,12 @@
     <div class="panel-body">
       <div class="form-group">
         <label for="executable">Specify the executable to be launched :-</label>
-        <input class="form-control" id="executable" aria-describedby="executableHelp" (change)="updateCustomAction()" [(ngModel)]="customActionExe">
+        <input class="form-control" id="executable" aria-describedby="executableHelp" (change)="updateCustomAction()" [(ngModel)]="customActionExe" placeholder="for e.g. d:\home\data\anycustomexe.exe">
         <small id="executableHelp" class="form-text text-muted">This process will be launched when the above mentioned triggers are met</small>
       </div>
       <div class="form-group">
         <label for="statusCode">Additional Parameters :-</label>
-        <input class="form-control" id="exeParams" placeholder="e.g. 500" (change)="updateCustomAction()" [(ngModel)]="customActionParams">
+        <input class="form-control" id="exeParams" placeholder="e.g. -customparamer" (change)="updateCustomAction()" [(ngModel)]="customActionParams">
       </div>
     </div>
   </div>

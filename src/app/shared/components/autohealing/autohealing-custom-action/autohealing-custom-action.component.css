@@ -1,6 +1,47 @@
-.diagnoser-option{
-    max-width: 350px;
+.diagnoser-option{    
     padding: 10px;
     border-radius: 5px;
     background-color: #eeeeee;
+    margin-top:10px;
+}
+
+.detail-card {
+    margin: 5px;
+    width: 250px;
+    height: 110px;
+    position: relative;
+    padding: 5px 5px 10px 15px;
+    text-align: left;
+    vertical-align: top;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(214, 214, 214);
+    box-shadow: rgba(120, 120, 120, 0.75) 0px 0px 6px;
+    background-color: white;
+}
+
+.detail-card:hover {
+    outline: rgb(0, 188, 242) solid 2px;
+    border-color: rgb(0, 188, 242);
+}
+
+.detail-card-active {
+    background-color: #286090;
+    color: whitesmoke;
+}
+
+.diagnostic-options {
+    border: Solid 1px whitesmoke;
+    border-radius: 3px;
+    padding: 5px;
+    padding-top: 10px;
+    margin-left:1px;
+}
+
+h4{
+    font-size: 12px;
+}
+p {
+    line-height: 18px;
+    font-size: 12px;
 }

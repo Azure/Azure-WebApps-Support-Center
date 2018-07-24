@@ -76,7 +76,7 @@
                 No rule configured !
               </div>
           </div>
-          <div *ngIf="currentSettings && settingsChanged">
+          <div *ngIf="currentSettings && settingsChanged" style="margin-top:25px">
               <strong>New Settings</strong>
               <div style="margin-top: 10px" *ngIf="currentSettings.Conditions.length > 0 && currentSettings.Action !== ''">
                 {{ currentSettings.Action }}

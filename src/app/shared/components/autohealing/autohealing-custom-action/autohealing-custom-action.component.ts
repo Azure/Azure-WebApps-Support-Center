@@ -21,15 +21,19 @@ export class AutohealingCustomActionComponent implements OnInit {
   checkingSupportedTier: boolean = true;
   supportedTier: boolean = true;
 
-  diagnoserName: string;
-  diagnoserOption: any = [ { option:"", Description :"" }];
+  diagnoser: any;
+  diagnoserOption: any = [{ option: "", Description: "" }];
 
-  Diagnosers: string[] = ['Memory Dump', 'CLR Profiler', 'CLR Profiler With ThreadStacks', 'JAVA Memory Dump', 'JAVA Thread Dump'];
-  DiagnoserOptions = [ 
-                    {option:'CollectKillAnalyze', Description : "With this option, the selected tool's data will collected, analyzed and after the collection is finished, the process will be recycled."}, 
-                    {option:'CollectLogs', Description : "With this option, only the selected tool's data will collected. No analysis will be performed and process will not be restarted as a part of this option."},
-                    {option: 'Troubleshoot', Description : "With this option, the selected tool's data will collected and then analyzed. This will not cause the process to restart. "}
-                  ];
+  Diagnosers = [{ Name: "Memory Dump", Description: "Collects memory dumps of the process and the child process'es hosting your App and analyzes them for errors" },
+  { Name: "CLR Profiler", Description: "Profiles ASP.NET application code to identify exceptions and performance issues" },
+  { Name: "CLR Profiler With ThreadStacks", Description: "Profiles ASP.NET application code to identify exceptions and performance issues and dumps stacks to identify deadlocks" },
+  { Name: "JAVA Memory Dump", Description: "Collects a binary memory dump using jMap of all java.exe processes running for this WebApp" },
+  { Name: "JAVA Thread Dump", Description: "Collects jStack output of all java.exe processes running for this App and analyzes the same" }];
+  DiagnoserOptions = [
+    { option: "CollectKillAnalyze", Description: "With this option, the above selected tool's data will collected, analyzed and the process will be recycled." },
+    { option: "CollectLogs", Description: "With this option, only the above selected tool's data will collected. No analysis will be performed and process will not be restarted." },
+    { option: "Troubleshoot", Description: "With this option, the above selected tool's data will collected and then analyzed. This will not cause the process to restart. " }
+  ];
   customActionType: string = 'Diagnostics';
   customActionParams: string = '';
   customActionExe: string = '';
@@ -43,7 +47,7 @@ export class AutohealingCustomActionComponent implements OnInit {
           this.supportedTier = true;
           let diagnosticsConfiguredAlready = this.isDiagnosticsConfigured();
           if (!diagnosticsConfiguredAlready) {
-            this.diagnoserName = "Memory Dump";
+            this.diagnoser = this.Diagnosers[0];
             this.diagnoserOption = this.DiagnoserOptions[2];
             this.updateDaasAction();
           }
@@ -61,7 +65,7 @@ export class AutohealingCustomActionComponent implements OnInit {
           invalidSetting = this.getDiagnoserNameAndOptionFromParameter(this.customAction.parameters);
         }
         if (invalidSetting) {
-          this.diagnoserName = "Memory Dump";
+          this.diagnoser = this.Diagnosers[0];
           this.diagnoserOption = this.DiagnoserOptions[2];
           this.updateDaasAction();
         }
@@ -81,7 +85,7 @@ export class AutohealingCustomActionComponent implements OnInit {
   }
 
   chooseDiagnoser(val) {
-    this.diagnoserName = val;
+    this.diagnoser = val;
     this.updateDaasAction();
   }
 
@@ -109,12 +113,13 @@ export class AutohealingCustomActionComponent implements OnInit {
   updateDaasAction() {
     let autoHealDaasAction = new AutoHealCustomAction();
     autoHealDaasAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
-    autoHealDaasAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoserName}"  60`;
+    autoHealDaasAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
     this.customActionChanged.emit(autoHealDaasAction);
   }
 
+
   getDiagnoserNameAndOptionFromParameter(param: string): boolean {
-    let invalidSetting = true;;
+    let invalidSetting = true;
     let paramArray = param.split(' ');
     let diagnoserOption = paramArray[0];
     if (diagnoserOption.startsWith('-')) {
@@ -128,8 +133,9 @@ export class AutohealingCustomActionComponent implements OnInit {
         let diagnoserName = '';
         if (secondQuote > firstQuote && secondQuote > 0 && firstQuote > 0) {
           diagnoserName = param.substring(firstQuote + 1, secondQuote);
-          if (this.Diagnosers.indexOf(diagnoserName) > -1) {
-            this.diagnoserName = diagnoserName;
+          let diagnoserIndex = this.Diagnosers.findIndex(item => item.Name === diagnoserName)
+          if (diagnoserIndex > -1) {
+            this.diagnoser = this.Diagnosers[diagnoserIndex];
             invalidSetting = false;
           }
         }
