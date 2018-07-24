@@ -37,10 +37,15 @@ export class AutohealingService {
     // }
 
 
-    updateAutohealSettings(site: SiteInfoMetaData, autohealSettings: AutoHealSettings): Observable<any> {
+    updateAutohealSettings(site: SiteInfoMetaData, autohealSettings: AutoHealSettings): Observable<AutoHealSettings> {
         let resourceUri: string = this._uriElementsService.getConfigWebUrl(site);
         let properties = { "properties": autohealSettings };
-        return this._armService.putResource(resourceUri, properties, null, true);
+        return this._armService.putResource(resourceUri, properties, null, true).map((response: ResponseMessageEnvelope<AutoHealSettings>) => {
+            let autohealSettings: AutoHealSettings = new AutoHealSettings();
+            autohealSettings.autoHealEnabled = response.properties.autoHealEnabled;
+            autohealSettings.autoHealRules = response.properties.autoHealRules;
+            return autohealSettings;
+        });
 
     }
 

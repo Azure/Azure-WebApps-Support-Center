@@ -1,4 +1,4 @@
-<input type="number" min="1" class="form-control" [ngModel]="Seconds" [placeholder]="placeholder" (ngModelChange)="updateTimeSpan($event)">
+<input type="number" min="1" [ngModel]="Seconds" [placeholder]="placeholder" (ngModelChange)="updateTimeSpan($event)">
 <div style="margin-top:5px" *ngIf="Seconds <=0" class="alert alert-danger">
-    should be > 0
+    Duration should be greater than 0 seconds
 </div>

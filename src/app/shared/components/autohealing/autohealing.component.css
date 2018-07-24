@@ -33,7 +33,6 @@
     -webkit-box-shadow: 2px 2px 3px 0 rgba(0,0,0,.2);
     box-shadow: 2px 2px 3px 0 rgba(0,0,0,.2);
     text-align:center;
-    
 }
 
 .tile:hover
@@ -54,7 +53,6 @@
     border:1px solid whitesmoke;
     padding:15px;
     border-radius: 1em;
-    
 }
 
 .active {
@@ -78,14 +76,12 @@
     background-color: #efefef;
     border-bottom-left-radius: 0;
     border: 1px solid #e6e6e6;    
-    font-size: 15px;
+    font-size: 14px;
     display: inline-block;
     padding: 10px;
     padding-right: 30px;
     border-radius: 10px;
 }
-
-
 
 .saveSection {
     margin-top:20px;
@@ -99,6 +95,38 @@
 .actionExe {
     background-color: #c8c8ca;
     border-radius: 5px;
-    padding: 3px;
-    
+    padding: 3px;    
+}
+
+input[type="text"],input[type="number"] {
+    border: 1px solid #d8e1e6;
+    position: relative;
+    vertical-align: middle;
+    height: 23px;
+    margin-right: 10px;
+    padding: 0 5px;
+    background-color: #fff;
+    color: inherit;
+    font-size:12px;
+}
+
+input[type=text]:focus,input[type=number]:focus
+{
+    border:1px solid #0058ad;
+    outline:0
+}
+
+label {
+    font-size: 13px;
+    font-weight: 400;
+    /* color: #595959; */
+}
+
+.alert{
+    font-size: 12px;
+    padding:5px;
+}
+
+.rule-button{
+    margin-top:10px;
 }

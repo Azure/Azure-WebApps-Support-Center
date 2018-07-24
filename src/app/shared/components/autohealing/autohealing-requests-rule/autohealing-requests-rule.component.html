@@ -1,6 +1,13 @@
-<button type="button" class="btn btn-primary" (click)="addNewRule()" *ngIf="Rule == null && !editMode">
-  Configure Request Count Rule
-</button>
+<div *ngIf="Rule == null && !editMode">
+  Configure a rule based on number of requests served by the App. This is useful in case your app to take an action when it
+  has served X number of requests in Y amount of time.
+  <div class="rule-button">
+    <button type="button" class="btn btn-primary btn-sm" (click)="addNewRule()">
+      Configure Request Count Rule
+    </button>
+  </div>
+</div>
+
 <table class="table table-bordered" *ngIf="!editMode && Rule != null">
   <thead>
     <tr>
@@ -33,29 +40,28 @@
 
 <div class="form-group" *ngIf="editMode">
   <div class="row">
-    <label for="requests">After how many requests you want this condition to kick in ?</label>
+    <div class="col-sm-8">
+      <label for="requests">After how many requests you want this condition to kick in ?</label>
+    </div>
+    <div class="col-sm-4">
+      <input type="number" id="requests" aria-describedby="requestCountHelp" placeholder="Enter count" [(ngModel)]="RuleCopy.count">
+      <div *ngIf="RuleCopy.count <=0" class="alert alert-danger" style="margin-top:5px">
+        Request count should be more than zero
+      </div>
+    </div>
   </div>
   <div class="row">
-    <div class="col-sm-2">
-      <input type="number" class="form-control" id="requests" aria-describedby="requestCountHelp" placeholder="Enter count" [(ngModel)]="RuleCopy.count">
+    <div class="col-sm-8">
+      <label for="durationCount">How frequently (in seconds) you want to check ?</label>
     </div>
-    <div class="col-sm-12">
-      <small id="requestCountHelp" class="form-text text-muted">After the process has served these many requests in the duration configured below, the configured action will be taken
-      </small>
+    <div class="col-sm-4">
+      <timespan [(TimeSpan)]="RuleCopy.timeInterval" placeholder="e.g. 60"></timespan>
     </div>
   </div>
 
   <div class="row">
-    <label for="durationCount">How frequently (in seconds) you want to check ?</label>
-  </div>
-  <div class="row">
-    <div class="col-sm-2">
-      <timespan [(TimeSpan)]="RuleCopy.timeInterval" placeholder="e.g. 60"></timespan>
-    </div>
-  </div>
-  <div class="row">
     <div class="col-sm-4">
-      <button type="button" class="btn btn-primary" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
+      <button type="button" class="btn btn-primary btn-sm" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
     </div>
   </div>
 </div>

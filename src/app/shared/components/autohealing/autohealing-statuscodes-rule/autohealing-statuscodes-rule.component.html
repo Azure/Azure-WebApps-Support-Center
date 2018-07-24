@@ -1,4 +1,14 @@
-<button type="button" class="btn btn-primary" (click)="addNewRule()">Add Status Codes Rule</button>
+<div>
+  If your app is failing with HTTP Server errors, you can configure a rule to mitigate the issue or collect diagnostic data
+  to identify the root cause of the problem. You can configure rules on more than one HTTP Status code condition.
+
+  <div class="rule-button">
+    <button type="button" class="btn btn-primary btn-sm" (click)="addNewRule()">
+      Add Status Codes Rule
+    </button>
+  </div>
+</div>
+
 <div *ngIf="Rule">
   <table class="table table-bordered" *ngIf="Rule!==null && Rule.length > 0" style="margin-top:20px">
     <thead>
@@ -42,73 +52,62 @@
     </tbody>
   </table>
 
-  <div *ngIf="editMode" class="form-group">
-
+  <div *ngIf="editMode" style="margin-top:20px">
     <div class="row">
-      <label for="requestCountStatusCodes">After how many requests you want this condition to kick in ?</label>
-    </div>
-    <div class="row">
-      <div class="col-sm-2">
-        <input type="number" class="form-control" id="requestCountStatusCodes" aria-describedby="requestCountStatusCodesHelp" placeholder="Enter request count"
+      <div class="col-sm-8">
+        <label for="requestCountStatusCodes">After how many requests you want this condition to kick in ?</label>
+      </div>
+      <div class="col-sm-4">
+        <input type="number" id="requestCountStatusCodes" aria-describedby="requestCountStatusCodesHelp" placeholder="Enter request count"
           [(ngModel)]="currentRule.count">
+          <div *ngIf="currentRule.count <=0"  class="alert alert-danger" style="margin-top:5px">
+              Request count should be more than zero
+            </div>
       </div>
-
-      <div class="col-sm-12">
-        <small id="requestCountStatusCodesHelp" class="form-text text-muted">After the process has served these many requests with the HTTP Status, Sub-status and win32 status codes in the duration
-          configured, the configured action will be taken</small>
-      </div>
-
-    </div>
-
-    <div class="row">
-      <label for="statusCode">What should be the status code for these requests ?</label>
     </div>
     <div class="row">
-      <div class="col-sm-2">
-        <input type="number" min="1" class="form-control" id="statusCode" placeholder="e.g. 500" [(ngModel)]="currentRule.status"
-          min="100" max="530">
+      <div class="col-sm-8">
+        <label for="statusCode">What should be the status code for these requests ?</label>
       </div>
-
-      <div class="col-sm-12">
-        <div *ngIf="currentRule.status < 100 || currentRule.status > 530" class="alert alert-danger" style="margin-top:5px">
+      <div class="col-sm-4">
+        <input type="number" id="statusCode" placeholder="e.g. 500" min="100" [(ngModel)]="currentRule.status">
+        <div *ngIf="currentRule.status < 100 || currentRule.status > 530"  class="alert alert-danger" style="margin-top:5px">
           Valid HTTP Status codes range from HTTP 100 to HTTP 530 only.
         </div>
       </div>
-
     </div>
 
     <div class="row">
-      <label for="subStatusCode">What should be the sub-status code for these requests ?</label>
-    </div>
-    <div class="row">
-      <div class="col-sm-2">
-        <input type="number" min="0" class="form-control" id="subStatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.subStatus">
+      <div class="col-sm-8">
+        <label for="subStatusCode">What should be the sub-status code for these requests ?</label>
+      </div>
+
+      <div class="col-sm-4">
+        <input type="number" min="0" id="subStatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.subStatus">
       </div>
     </div>
 
     <div class="row">
-      <label for="win32StatusCode">What should be the win32-status code for these requests ?</label>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-2">
-        <input type="number" min="0" class="form-control" id="win32StatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.win32Status">
+      <div class="col-sm-8">
+        <label for="win32StatusCode">What should be the win32-status code for these requests ?</label>
+      </div>
+      <div class="col-sm-4">
+        <input type="number" min="0" id="win32StatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.win32Status">
       </div>
     </div>
 
     <div class="row">
-      <label for="durationStatusCode">How frequently (in seconds) you want to check?</label>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-2">
+      <div class="col-sm-8">
+        <label for="durationStatusCode">How frequently (in seconds) you want to check?</label>
+      </div>
+      <div class="col-sm-4">
         <timespan [(TimeSpan)]="currentRule.timeInterval" placeholder="e.g. 60"></timespan>
       </div>
     </div>
 
     <div class="row">
       <div class="col-sm-4">
-        <button type="button" class="btn btn-primary" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
+        <button type="button" class="btn btn-primary btn-sm" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
       </div>
     </div>
 

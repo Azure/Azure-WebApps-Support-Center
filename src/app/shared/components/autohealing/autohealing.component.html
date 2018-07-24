@@ -28,7 +28,7 @@
           </div>
         </ng-container>
 
-        <div class="forminput" *ngIf="triggerSelected >= 0">
+        <div class="forminput" *ngIf="triggerSelected >= 0" style="width:75%">
           <autohealing-slowrequests-rule *ngIf="triggerSelected == 0" [Rule]="autohealingSettings.autoHealRules.triggers.slowRequests"
             (RuleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-slowrequests-rule>
           <autohealing-memory-rule *ngIf="triggerSelected == 1" [Rule]="autohealingSettings.autoHealRules.triggers.privateBytesInKB"

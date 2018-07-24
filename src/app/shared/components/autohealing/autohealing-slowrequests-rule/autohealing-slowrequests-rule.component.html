@@ -1,6 +1,13 @@
-<button type="button" class="btn btn-primary" (click)="addNewRule()" *ngIf="Rule == null && !editMode">
-  Configure Slow Request rule
-</button>
+<div *ngIf="Rule == null && !editMode">
+  If the performance of your application starts degrading and several pages start taking longer time to render, you can configure
+  a rule to mitigate the issue or collect diagnostic data to identify the root cause of the problem.
+
+  <div class="rule-button">
+    <button type="button" class="btn btn-primary btn-sm" (click)="addNewRule()">
+      Configure Slow Request rule
+    </button>
+  </div>
+</div>
 
 <table class="table table-bordered" *ngIf="!editMode && Rule != null">
   <thead>
@@ -38,39 +45,39 @@
 
 <div *ngIf="editMode" class="form-group">
   <div class="row">
-    <label for="requestsCountSlow">After how many slow requests you want this condition to kick in ?</label>
-  </div>
-  <div class="row">
-    <div class="col-sm-2">
-      <input type="number" min="1" class="form-control" id="requestsCountSlow" aria-describedby="requestsCountSlowHelp" placeholder="Enter count"
-        [(ngModel)]="RuleCopy.count" min="1">
+    <div class="col-sm-8">
+      <label for="requestsCountSlow">After how many slow requests you want this condition to kick in ?</label>
     </div>
-    <div class="col-sm-12">
-      <small id="requestsCountSlowHelp" class="form-text text-muted">If there are these many slow requests in the duration configured below, the configured action will be taken</small>
+    <div class="col-sm-4">
+      <input type="number" min="1" id="requestsCountSlow" aria-describedby="requestsCountSlowHelp" placeholder="Enter count" [(ngModel)]="RuleCopy.count"
+        min="1">
+      <div *ngIf="RuleCopy.count <=0" class="alert alert-danger" style="margin-top:5px">
+        Request count should be more than zero
+      </div>
     </div>
   </div>
 
   <div class="row">
-    <label for="timeTakenSlow">What should be minimum duration (in seconds) for these slow requests ?</label>
-  </div>
-  <div class="row">
-    <div class="col-sm-2">
+    <div class="col-sm-8">
+      <label for="timeTakenSlow">What should be minimum duration (in seconds) for these slow requests ?</label>
+    </div>
+    <div class="col-sm-4">
       <timespan [(TimeSpan)]="RuleCopy.timeTaken" placeholder="e.g. 60"></timespan>
     </div>
   </div>
 
   <div class="row">
-    <label for="durationSlow">How frequently (in seconds) you want to check?</label>
-  </div>
-  <div class="row">
-    <div class="col-sm-2">
+    <div class="col-sm-8">
+      <label for="durationSlow">How frequently (in seconds) you want to check?</label>
+    </div>
+    <div class="col-sm-4">
       <timespan [(TimeSpan)]="RuleCopy.timeInterval" placeholder="e.g. 300"></timespan>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-sm-2">
-      <button type="button" class="btn btn-primary" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
+    <div class="col-sm-4">
+      <button type="button" class="btn btn-primary btn-sm" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
     </div>
   </div>
 

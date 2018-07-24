@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { ServerFarmDataService } from '../../../services/server-farm-data.service';
 import { DaasService } from '../../../services/daas.service';
 import { SiteInfoMetaData } from '../../../models/site';
@@ -9,7 +9,7 @@ import { AutoHealCustomAction } from '../../../models/autohealing';
   templateUrl: './autohealing-custom-action.component.html',
   styleUrls: ['./autohealing-custom-action.component.css']
 })
-export class AutohealingCustomActionComponent implements OnInit {
+export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   constructor(private _serverFarmService: ServerFarmDataService, private _daasService: DaasService) {
   }
@@ -38,29 +38,40 @@ export class AutohealingCustomActionComponent implements OnInit {
   customActionParams: string = '';
   customActionExe: string = '';
 
-  ngOnInit() {
+  ngOnChanges() {
+    this.initComponent();
+  }
 
+  ngOnInit() {
     this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
       if (serverFarm) {
         this.checkingSupportedTier = false;
         if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
           this.supportedTier = true;
-          let diagnosticsConfiguredAlready = this.isDiagnosticsConfigured();
-          if (!diagnosticsConfiguredAlready) {
-            this.diagnoser = this.Diagnosers[0];
-            this.diagnoserOption = this.DiagnoserOptions[2];
-            this.updateDaasAction();
-          }
+          this.initComponent();
         }
       }
     });
+    
+  }
+
+  initComponent() {
+    if (this.customAction == null) {
+      return;
+    }
+    let diagnosticsConfiguredCorrectly = this.isDiagnosticsConfigured();
+    if (!diagnosticsConfiguredCorrectly) {
+      this.diagnoser = this.Diagnosers[0];
+      this.diagnoserOption = this.DiagnoserOptions[2];
+      this.updateDaasAction();
+    }
   }
 
   isDiagnosticsConfigured(): boolean {
     let invalidSetting = false;
     if (this.customAction != null) {
       if (this.customAction.exe.toLowerCase() === 'd:\\home\\data\\daas\\bin\\daasconsole.exe') {
-
+        this.customActionType = 'Diagnostics';
         if (this.customAction.parameters !== '') {
           invalidSetting = this.getDiagnoserNameAndOptionFromParameter(this.customAction.parameters);
         }
@@ -94,15 +105,14 @@ export class AutohealingCustomActionComponent implements OnInit {
     this.updateDaasAction();
   }
 
-  updateCustomActionType() {
-    if (this.customActionType === 'Diagnostics') {
-      this.updateDaasAction();
-    }
-    else {
-      this.updateCustomAction();
-    }
+  updateCustomActionExe(exe:string){
+    this.customActionExe = exe;
+    this.updateCustomAction();
   }
-
+  updateCustomActionParams(params:string){
+    this.customActionParams = params;
+    this.updateCustomAction();
+  }
   updateCustomAction() {
     let autoHealCustomAction = new AutoHealCustomAction();
     autoHealCustomAction.exe = this.customActionExe

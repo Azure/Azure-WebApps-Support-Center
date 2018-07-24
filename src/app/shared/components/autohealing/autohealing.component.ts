@@ -11,12 +11,10 @@ import { AutohealingService } from '../../services/autohealing.service';
 })
 export class AutohealingComponent implements OnInit {
 
-
-  siteToBeDiagnosed: SiteInfoMetaData;
-
   @Input()
   autohealingSettings: AutoHealSettings;
 
+  siteToBeDiagnosed: SiteInfoMetaData;
   retrievingAutohealSettings: boolean = true;
   savingAutohealSettings: boolean = false;
   triggerSelected: number = -1;
@@ -35,7 +33,6 @@ export class AutohealingComponent implements OnInit {
   customAction: AutoHealCustomAction = null;
 
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService) {
-
   }
 
   ngOnInit() {
@@ -44,27 +41,25 @@ export class AutohealingComponent implements OnInit {
       if (siteInfo) {
         this.siteToBeDiagnosed = siteInfo;
         this._autohealingService.getAutohealSettings(this.siteToBeDiagnosed).subscribe(autoHealSettings => {
-          this.autohealingSettings = autoHealSettings;
-          this.originalAutoHealSettings = JSON.parse(JSON.stringify(autoHealSettings));
-          this.originalAutoHealSettingsString = JSON.stringify(this.autohealingSettings);
           this.retrievingAutohealSettings = false;
-
-          if (this.autohealingSettings.autoHealRules.actions) {
-
-            this.actionSelected = this.autohealingSettings.autoHealRules.actions.actionType;
-
-            if (this.autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction) {
-              this.customAction = this.autohealingSettings.autoHealRules.actions.customAction;
-
-
-            }
-          }
-
-          this.initTriggersAndActions();
-          this.updateSummaryText();
+          this.autohealingSettings = autoHealSettings;
+          this.initComponent(this.autohealingSettings);
         });
       }
     });
+  }
+
+  initComponent(autoHealSettings: AutoHealSettings) {
+    this.originalAutoHealSettings = JSON.parse(JSON.stringify(autoHealSettings));
+    this.originalAutoHealSettingsString = JSON.stringify(this.autohealingSettings);
+    if (this.autohealingSettings.autoHealRules.actions) {
+      this.actionSelected = this.autohealingSettings.autoHealRules.actions.actionType;
+      if (this.autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction) {
+        this.customAction = this.autohealingSettings.autoHealRules.actions.customAction;
+      }
+    }
+    this.initTriggersAndActions();
+    this.updateSummaryText();
   }
 
 
@@ -89,17 +84,20 @@ export class AutohealingComponent implements OnInit {
   saveChanges() {
     this.saveEnabled = false;
     this.savingAutohealSettings = true;
-    this.triggerSelected = -1;
-    this.actionSelected = -1;
     this._autohealingService.updateAutohealSettings(this.siteToBeDiagnosed, this.autohealingSettings)
-      .subscribe(x => {
-        console.log("Got Response " + x);
+      .subscribe(savedAutoHealSettings => {
         this.savingAutohealSettings = false;
-        this.originalAutoHealSettingsString = JSON.stringify(this.autohealingSettings);
         this.changesSaved = true;
         setTimeout(() => {
           this.changesSaved = false;
-        }, 3000)
+        }, 3000);
+        this.autohealingSettings = savedAutoHealSettings;
+
+        //collapse both the Trigger and Action tiles
+        this.triggerSelected = -1;
+        this.actionCollapsed = true;
+
+        this.initComponent(savedAutoHealSettings);
       });
   }
 
@@ -118,7 +116,6 @@ export class AutohealingComponent implements OnInit {
 
     //this is to allow user to collapse the action tile if they click it again
     if (this.actionSelected != action) {
-
       this.actionCollapsed = false;
     }
     else {
@@ -131,9 +128,18 @@ export class AutohealingComponent implements OnInit {
     }
 
     if (action === AutoHealActionType.CustomAction) {
-      if (this.customAction != null) {
-        this.autohealingSettings.autoHealRules.actions.customAction = this.customAction;
+      if (this.customAction == null) {
+        let customAction = new AutoHealCustomAction();
+        customAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
+        customAction.parameters = '-Troubleshoot "Memory Dump"  60';
+        this.customAction = customAction;
       }
+      this.autohealingSettings.autoHealRules.actions.customAction = this.customAction;
+    }
+    else {
+      // reset the custom action if someone switches the tile back and forth
+      this.customAction = null;
+      this.autohealingSettings.autoHealRules.actions.customAction = null;
     }
 
     this.autohealingSettings.autoHealRules.actions.actionType = action;
@@ -196,8 +202,11 @@ export class AutohealingComponent implements OnInit {
 
   initTriggersAndActions() {
 
-    let triggersConfigured = this.autohealingSettings.autoHealRules.triggers != null;
+    this.triggers = [];
+    this.actions = [];
 
+    let triggersConfigured = this.autohealingSettings.autoHealRules.triggers != null;
+    this.triggers = [];
     this.triggers.push({ Name: 'Request Duration', Icon: 'fa fa-clock-o', IsConfigured: triggersConfigured && this.checkRuleConfigured(0) });
     this.triggers.push({ Name: 'Memory Limit', Icon: 'fa fa-microchip', IsConfigured: triggersConfigured && this.checkRuleConfigured(1) });
     this.triggers.push({ Name: 'Request Count', Icon: 'fa fa-bar-chart', IsConfigured: triggersConfigured && this.checkRuleConfigured(2) });
@@ -206,15 +215,12 @@ export class AutohealingComponent implements OnInit {
     this.actions.push({ Name: 'Recycle Process', Icon: 'fa fa-recycle' });
     this.actions.push({ Name: 'Log an Event', Icon: 'fa fa-book' });
     this.actions.push({ Name: 'Custom Action', Icon: 'fa fa-bolt' });
-
   }
 
   updateSummaryText() {
     this.settingsChanged = JSON.stringify(this.autohealingSettings) != JSON.stringify(this.originalAutoHealSettings);
-
     this.originalSettings = this.getSummary(this.originalAutoHealSettings);
     this.currentSettings = this.getSummary(this.autohealingSettings);
-
   }
 
   getSummary(autohealingSettings: AutoHealSettings): any {
@@ -254,7 +260,9 @@ export class AutohealingComponent implements OnInit {
 
       else if (autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction) {
         action = "Run executable ";
-        actionExe = autohealingSettings.autoHealRules.actions.customAction.exe + " " + autohealingSettings.autoHealRules.actions.customAction.parameters;
+        if (autohealingSettings.autoHealRules.actions.customAction != null && autohealingSettings.autoHealRules.actions.customAction.exe != null && autohealingSettings.autoHealRules.actions.customAction.parameters != null) {
+          actionExe = autohealingSettings.autoHealRules.actions.customAction.exe + " " + autohealingSettings.autoHealRules.actions.customAction.parameters;
+        }
       }
     }
 
