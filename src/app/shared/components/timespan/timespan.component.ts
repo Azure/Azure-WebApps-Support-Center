@@ -21,7 +21,6 @@ export class TimespanComponent implements OnInit {
   @Input() allowZeroValue:boolean;
   
   @Output() timeSpanChange = new EventEmitter<string>();
-  //@Output() timeSpanValueChanged = new EventEmitter<string>();
 
   Seconds:number;
 
@@ -30,11 +29,5 @@ export class TimespanComponent implements OnInit {
       let timeSpan = this._formattingService.secondsToTimespan(this.Seconds);
       this.timeSpanChange.emit(timeSpan);      
   }
-
-  // updateTimeSpanValue(val){
-  //   this.Seconds = val;
-  //   let timeSpan = this._formattingService.secondsToTimespan(val);
-  //   this.timeSpanValueChanged.emit(timeSpan);
-  // }
 
 }
