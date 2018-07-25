@@ -63,7 +63,7 @@
       <label for="timeTakenSlow">What should be minimum duration (in seconds) for these slow requests ?</label>
     </div>
     <div class="col-sm-4">
-      <timespan [(TimeSpan)]="ruleCopy.timeTaken" placeholder="e.g. 60"></timespan>
+      <timespan [(timeSpan)]="ruleCopy.timeTaken" placeholder="e.g. 60"></timespan>
     </div>
   </div>
 
@@ -72,7 +72,7 @@
       <label for="durationSlow">How frequently (in seconds) you want to check?</label>
     </div>
     <div class="col-sm-4">
-      <timespan [(TimeSpan)]="ruleCopy.timeInterval" placeholder="e.g. 300"></timespan>
+      <timespan [(timeSpan)]="ruleCopy.timeInterval" placeholder="e.g. 300"></timespan>
     </div>
   </div>
 

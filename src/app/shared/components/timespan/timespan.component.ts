@@ -11,20 +11,30 @@ export class TimespanComponent implements OnInit {
   constructor(private _formattingService : FormattingService) { }
 
   ngOnInit() {
-    if (this.TimeSpan && this.TimeSpan !== ''){
-      this.Seconds = this._formattingService.timespanToSeconds(this.TimeSpan);
+    if (this.timeSpan && this.timeSpan !== ''){
+      this.Seconds = this._formattingService.timespanToSeconds(this.timeSpan);
     }    
   }
 
-  @Input() TimeSpan: string;
+  @Input() timeSpan: string;
   @Input() placeholder:string;
-  @Output() TimeSpanChange = new EventEmitter<string>();
+  @Input() allowZeroValue:boolean;
+  
+  @Output() timeSpanChange = new EventEmitter<string>();
+  //@Output() timeSpanValueChanged = new EventEmitter<string>();
+
   Seconds:number;
 
   updateTimeSpan(val){
       this.Seconds = val;
       let timeSpan = this._formattingService.secondsToTimespan(this.Seconds);
-      this.TimeSpanChange.emit(timeSpan);      
+      this.timeSpanChange.emit(timeSpan);      
   }
+
+  // updateTimeSpanValue(val){
+  //   this.Seconds = val;
+  //   let timeSpan = this._formattingService.secondsToTimespan(val);
+  //   this.timeSpanValueChanged.emit(timeSpan);
+  // }
 
 }

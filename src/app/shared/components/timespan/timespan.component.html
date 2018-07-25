@@ -1,4 +1,5 @@
-<input type="number" min="1" [ngModel]="Seconds" [placeholder]="placeholder" (ngModelChange)="updateTimeSpan($event)">
+<input type="number" min="1" [ngModel]="Seconds" [placeholder]="placeholder" 
+(ngModelChange)="updateTimeSpan($event)">
 <span style="color:red">*</span>
 <div style="margin-top:5px" *ngIf="Seconds <=0" class="alert alert-danger">
     Duration should be greater than 0 seconds
