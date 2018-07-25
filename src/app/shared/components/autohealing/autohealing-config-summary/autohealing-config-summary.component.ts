@@ -36,9 +36,6 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
     }
 
     this.actualhealSettings = JSON.parse(this.autohealSettings);
-
-    console.log("updateComponent called");
-
     this.settingsSummary = {};
     let conditions: string[] = [];
     if (this.actualhealSettings.autoHealRules.triggers != null) {
