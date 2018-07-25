@@ -13,26 +13,26 @@ export class AutohealingMemoryRuleComponent extends AutohealingRuleComponent {
   }
 
   ngOnInit(): void {    
-    if (this.Rule) {
-      this.RuleCopy = this.Rule;
+    if (this.rule) {
+      this.ruleCopy = this.rule;
     }
   }
 
   saveRule() {
-    this.Rule = this.RuleCopy;
+    this.rule = this.ruleCopy;
     this.editMode = false;
-    this.RuleChange.emit(this.Rule);
+    this.ruleChange.emit(this.rule);
   }
 
   
   deleteRule() {
-    this.Rule = 0;
-    this.RuleCopy = 0;
-    this.RuleChange.emit(this.Rule);
+    this.rule = 0;
+    this.ruleCopy = 0;
+    this.ruleChange.emit(this.rule);
   }
 
   isValid(): boolean {
-    if (this.RuleCopy <= 102400 || this.RuleCopy > 13 * 1024 * 1024) {
+    if (this.ruleCopy <= 102400 || this.ruleCopy > 13 * 1024 * 1024) {
       return false;
     }
     else {

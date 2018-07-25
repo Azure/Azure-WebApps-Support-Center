@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { AutohealingService } from '../../services/autohealing.service';
+import { FormattingService } from '../../services/formatting.service';
 
 @Component({
   selector: 'timespan',
@@ -8,11 +8,11 @@ import { AutohealingService } from '../../services/autohealing.service';
 })
 export class TimespanComponent implements OnInit {
 
-  constructor(private _autoHealingService : AutohealingService) { }
+  constructor(private _formattingService : FormattingService) { }
 
   ngOnInit() {
     if (this.TimeSpan && this.TimeSpan !== ''){
-      this.Seconds = this._autoHealingService.timespanToSeconds(this.TimeSpan);
+      this.Seconds = this._formattingService.timespanToSeconds(this.TimeSpan);
     }    
   }
 
@@ -23,7 +23,7 @@ export class TimespanComponent implements OnInit {
 
   updateTimeSpan(val){
       this.Seconds = val;
-      let timeSpan = this._autoHealingService.secondsToTimespan(this.Seconds);
+      let timeSpan = this._formattingService.secondsToTimespan(this.Seconds);
       this.TimeSpanChange.emit(timeSpan);      
   }
 

@@ -4,13 +4,13 @@
 
   <div class="rule-button">
     <button type="button" class="btn btn-primary btn-sm" (click)="addNewRule()">
-      Add Status Codes Rule
+      Add Status Codes rule
     </button>
   </div>
 </div>
 
-<div *ngIf="Rule">
-  <table class="table table-bordered" *ngIf="Rule!==null && Rule.length > 0" style="margin-top:20px">
+<div *ngIf="rule">
+  <table class="table table-bordered" *ngIf="rule!==null && rule.length > 0" style="margin-top:20px">
     <thead>
       <tr>
         <th>
@@ -34,12 +34,12 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let rule of Rule; let i = index">
-        <td>{{ rule.count }}</td>
-        <td>{{ rule.status }}</td>
-        <td>{{ rule.subStatus }}</td>
-        <td>{{ rule.win32Status }}</td>
-        <td>{{ rule.timeInterval }}</td>
+      <tr *ngFor="let singleRule of rule; let i = index">
+        <td>{{ singleRule.count }}</td>
+        <td>{{ singleRule.status }}</td>
+        <td>{{ singleRule.subStatus }}</td>
+        <td>{{ singleRule.win32Status }}</td>
+        <td>{{ singleRule.timeInterval }}</td>
         <td>
           <button class="image-btn" *ngIf="!editMode" (click)="editStatusCodeRule(i)">
             <i class="fa fa-edit"></i>

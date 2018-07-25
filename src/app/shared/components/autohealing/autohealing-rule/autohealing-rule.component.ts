@@ -2,15 +2,15 @@ import { Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 export abstract class AutohealingRuleComponent implements OnInit{  
 
-  RuleCopy:any;
+  ruleCopy:any;
   
-  @Input() Rule: any;
-  @Output() RuleChange = new EventEmitter<any>();
+  @Input() rule: any;
+  @Output() ruleChange = new EventEmitter<any>();
   editMode: boolean = false; 
 
   ngOnInit(): void {    
-    if (this.Rule) {
-      this.RuleCopy = {...this.Rule}; 
+    if (this.rule) {
+      this.ruleCopy = {...this.rule}; 
     }
   }
   
@@ -19,16 +19,16 @@ export abstract class AutohealingRuleComponent implements OnInit{
   }
 
   deleteRule() {
-    this.Rule = null;
-    this.RuleCopy = null;
-    this.RuleChange.emit(this.Rule);
+    this.rule = null;
+    this.ruleCopy = null;
+    this.ruleChange.emit(this.rule);
   }
 
   saveRule() {
     // cloning the object
-    this.Rule = {...this.RuleCopy}; 
+    this.rule = {...this.ruleCopy}; 
     this.editMode = false;
-    this.RuleChange.emit(this.Rule);
+    this.ruleChange.emit(this.rule);
   }
 
 }

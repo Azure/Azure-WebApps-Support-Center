@@ -1,14 +1,14 @@
-<div *ngIf="Rule == null && !editMode">
+<div *ngIf="rule == null && !editMode">
   Configure a rule based on number of requests served by the App. This is useful in case your app to take an action when it
   has served X number of requests in Y amount of time.
   <div class="rule-button">
     <button type="button" class="btn btn-primary btn-sm" (click)="addNewRule()">
-      Configure Request Count Rule
+      Configure Request Count rule
     </button>
   </div>
 </div>
 
-<table class="table table-bordered" *ngIf="!editMode && Rule != null">
+<table class="table table-bordered" *ngIf="!editMode && rule != null">
   <thead>
     <tr>
       <th>
@@ -24,8 +24,8 @@
   </thead>
   <tbody>
     <tr>
-      <td>{{ Rule.count }}</td>
-      <td>{{ Rule.timeInterval }}</td>
+      <td>{{ rule.count }}</td>
+      <td>{{ rule.timeInterval }}</td>
       <td>
         <button class="image-btn" *ngIf="!editMode" (click)="editRule()">
           <i class="fa fa-edit"></i>
@@ -44,9 +44,9 @@
       <label for="requests">After how many requests you want this condition to kick in ?</label>
     </div>
     <div class="col-sm-4">
-      <input type="number" id="requests" aria-describedby="requestCountHelp" placeholder="Enter count" [(ngModel)]="RuleCopy.count">
+      <input type="number" id="requests" aria-describedby="requestCountHelp" placeholder="Enter count" [(ngModel)]="ruleCopy.count">
       <span style="color:red">*</span>
-      <div *ngIf="RuleCopy.count <=0" class="alert alert-danger" style="margin-top:5px">
+      <div *ngIf="ruleCopy.count <=0" class="alert alert-danger" style="margin-top:5px">
         Request count should be more than zero
       </div>
     </div>
@@ -56,7 +56,7 @@
       <label for="durationCount">How frequently (in seconds) you want to check ?</label>
     </div>
     <div class="col-sm-4">
-      <timespan [(TimeSpan)]="RuleCopy.timeInterval" placeholder="e.g. 60"></timespan>
+      <timespan [(TimeSpan)]="ruleCopy.timeInterval" placeholder="e.g. 60"></timespan>
     </div>
   </div>
 

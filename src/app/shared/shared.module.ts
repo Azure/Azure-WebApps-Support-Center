@@ -72,6 +72,7 @@ import { GenericApiService } from './services/generic-api.service';
 import { TabTitleResolver } from './resolvers/tab-name.resolver';
 import { AseService } from './services/ase.service';
 import { AutohealingService } from './services/autohealing.service';
+import { FormattingService } from './services/formatting.service';
 import { TimespanComponent } from './components/timespan/timespan.component';
 import { AutohealingComponent } from './components/autohealing/autohealing.component';
 import { AutohealingSlowrequestsRuleComponent } from './components/autohealing/autohealing-slowrequests-rule/autohealing-slowrequests-rule.component';
@@ -219,7 +220,8 @@ export class SharedModule {
                 TabTitleResolver,
                 AseService,
                 LiveChatService,
-                AutohealingService
+                AutohealingService,
+                FormattingService
             ]
         }
     }

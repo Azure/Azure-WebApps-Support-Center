@@ -1,4 +1,4 @@
-<div *ngIf="Rule == null && !editMode">
+<div *ngIf="rule == null && !editMode">
   If the performance of your application starts degrading and several pages start taking longer time to render, you can configure
   a rule to mitigate the issue or collect diagnostic data to identify the root cause of the problem.
 
@@ -9,7 +9,7 @@
   </div>
 </div>
 
-<table class="table table-bordered" *ngIf="!editMode && Rule != null">
+<table class="table table-bordered" *ngIf="!editMode && rule != null">
   <thead>
     <tr>
       <th>
@@ -28,9 +28,9 @@
   </thead>
   <tbody>
     <tr>
-      <td>{{ Rule.count }}</td>
-      <td>{{ Rule.timeTaken }}</td>
-      <td>{{ Rule.timeInterval }}</td>
+      <td>{{ rule.count }}</td>
+      <td>{{ rule.timeTaken }}</td>
+      <td>{{ rule.timeInterval }}</td>
       <td>
         <button class="image-btn" *ngIf="!editMode" (click)="editRule()">
           <i class="fa fa-edit"></i>
@@ -49,10 +49,10 @@
       <label for="requestsCountSlow">After how many slow requests you want this condition to kick in ?</label>
     </div>
     <div class="col-sm-4">
-      <input type="number" min="1" id="requestsCountSlow" aria-describedby="requestsCountSlowHelp" placeholder="Enter count" [(ngModel)]="RuleCopy.count"
+      <input type="number" min="1" id="requestsCountSlow" aria-describedby="requestsCountSlowHelp" placeholder="Enter count" [(ngModel)]="ruleCopy.count"
         min="1">
       <span style="color:red">*</span>
-      <div *ngIf="RuleCopy.count <=0" class="alert alert-danger" style="margin-top:5px">
+      <div *ngIf="ruleCopy.count <=0" class="alert alert-danger" style="margin-top:5px">
         Request count should be more than zero
       </div>
     </div>
@@ -63,7 +63,7 @@
       <label for="timeTakenSlow">What should be minimum duration (in seconds) for these slow requests ?</label>
     </div>
     <div class="col-sm-4">
-      <timespan [(TimeSpan)]="RuleCopy.timeTaken" placeholder="e.g. 60"></timespan>
+      <timespan [(TimeSpan)]="ruleCopy.timeTaken" placeholder="e.g. 60"></timespan>
     </div>
   </div>
 
@@ -72,7 +72,7 @@
       <label for="durationSlow">How frequently (in seconds) you want to check?</label>
     </div>
     <div class="col-sm-4">
-      <timespan [(TimeSpan)]="RuleCopy.timeInterval" placeholder="e.g. 300"></timespan>
+      <timespan [(TimeSpan)]="ruleCopy.timeInterval" placeholder="e.g. 300"></timespan>
     </div>
   </div>
 

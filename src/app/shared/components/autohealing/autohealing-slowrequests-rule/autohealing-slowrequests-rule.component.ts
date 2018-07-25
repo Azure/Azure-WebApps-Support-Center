@@ -1,9 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-
+import { Component } from '@angular/core';
 import { AutohealingRuleComponent } from '../autohealing-rule/autohealing-rule.component';
-import { AutohealingService } from '../../../services/autohealing.service';
 import { SlowRequestsBasedTrigger } from '../../../models/autohealing';
-
+import { FormattingService } from '../../../services/formatting.service';
 
 @Component({
   selector: 'autohealing-slowrequests-rule',
@@ -12,19 +10,19 @@ import { SlowRequestsBasedTrigger } from '../../../models/autohealing';
 })
 export class AutohealingSlowrequestsRuleComponent extends AutohealingRuleComponent {
 
-  constructor(private _autoHealingService:AutohealingService){
+  constructor(private _formattingService:FormattingService){
     super();
   }
   
   addNewRule() {
-    this.Rule = new SlowRequestsBasedTrigger();
-    this.RuleCopy = new SlowRequestsBasedTrigger();
+    this.rule = new SlowRequestsBasedTrigger();
+    this.ruleCopy = new SlowRequestsBasedTrigger();
     this.editMode = true;
   }
 
   isValid(): boolean {
-    if (this.RuleCopy && this.RuleCopy.timeInterval && this.RuleCopy.timeInterval !== '' && this.RuleCopy.timeTaken && this.RuleCopy.timeTaken != '') {
-      return (this.RuleCopy.count > 0 && this._autoHealingService.timespanToSeconds(this.RuleCopy.timeInterval) > 0 && this._autoHealingService.timespanToSeconds(this.RuleCopy.timeTaken) > 0);
+    if (this.ruleCopy && this.ruleCopy.timeInterval && this.ruleCopy.timeInterval !== '' && this.ruleCopy.timeTaken && this.ruleCopy.timeTaken != '') {
+      return (this.ruleCopy.count > 0 && this._formattingService.timespanToSeconds(this.ruleCopy.timeInterval) > 0 && this._formattingService.timespanToSeconds(this.ruleCopy.timeTaken) > 0);
     }
     else {
       return false;

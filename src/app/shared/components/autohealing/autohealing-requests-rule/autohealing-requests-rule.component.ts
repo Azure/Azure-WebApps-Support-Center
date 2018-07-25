@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AutohealingRuleComponent } from '../autohealing-rule/autohealing-rule.component';
-import { AutohealingService } from '../../../services/autohealing.service';
 import { RequestsBasedTrigger } from '../../../models/autohealing';
+import { FormattingService } from '../../../services/formatting.service';
 
 
 @Component({
@@ -11,19 +11,19 @@ import { RequestsBasedTrigger } from '../../../models/autohealing';
 })
 export class AutohealingRequestsRuleComponent extends AutohealingRuleComponent implements OnInit {
 
-  constructor(private _autoHealingService:AutohealingService){
+  constructor(private _formattingService:FormattingService){
     super();
   }
   
   addNewRule() {
-    this.Rule = new RequestsBasedTrigger();
-    this.RuleCopy = new RequestsBasedTrigger();
+    this.rule = new RequestsBasedTrigger();
+    this.ruleCopy = new RequestsBasedTrigger();
     this.editMode = true;
   }
 
   isValid(): boolean {
-    if (this.RuleCopy && this.RuleCopy.timeInterval && this.RuleCopy.timeInterval !== '') {
-      return (this._autoHealingService.timespanToSeconds(this.RuleCopy.timeInterval) > 0 && this.RuleCopy.count > 0);
+    if (this.ruleCopy && this.ruleCopy.timeInterval && this.ruleCopy.timeInterval !== '') {
+      return (this._formattingService.timespanToSeconds(this.ruleCopy.timeInterval) > 0 && this.ruleCopy.count > 0);
     }
     else {
       return false;

@@ -3,6 +3,7 @@ import { SiteInfoMetaData } from '../../models/site';
 import { AutoHealSettings, AutoHealActions, AutoHealCustomAction, AutoHealTriggers, AutoHealActionType } from '../../models/autohealing';
 import { SiteService } from '../../services/site.service';
 import { AutohealingService } from '../../services/autohealing.service';
+import { FormattingService } from '../../services/formatting.service';
 
 @Component({
   selector: 'autohealing',
@@ -13,27 +14,26 @@ export class AutohealingComponent implements OnInit {
 
   @Input()
   autohealingSettings: AutoHealSettings;
+  originalAutoHealSettings: AutoHealSettings;
 
   siteToBeDiagnosed: SiteInfoMetaData;
   retrievingAutohealSettings: boolean = true;
   savingAutohealSettings: boolean = false;
+  
   triggerSelected: number = -1;
   actionSelected: number = -1;
   actionCollapsed: boolean = true;
 
-  originalAutoHealSettingsString: string = '';
-  originalAutoHealSettings: AutoHealSettings;
   saveEnabled: boolean = false;
   changesSaved: boolean = false;
   triggers = [];
   actions = [];
   originalSettings: any;
   currentSettings: any;
-  settingsChanged: boolean = false;
   customAction: AutoHealCustomAction = null;
   errorMessage: string = '';
 
-  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService) {
+  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, private _formattingService: FormattingService) {
   }
 
   ngOnInit() {
@@ -48,17 +48,16 @@ export class AutohealingComponent implements OnInit {
         });
       }
     },
-    err =>{
-      this.retrievingAutohealSettings = false;
-      this.errorMessage = "Failed while getting AutoHeal settings with error " + JSON.stringify(err);
-      this.errorMessage += ". Please retry after some time";
-    });
+      err => {
+        this.retrievingAutohealSettings = false;
+        this.errorMessage = "Failed while getting AutoHeal settings with error " + JSON.stringify(err);
+        this.errorMessage += ". Please retry after some time";
+      });
   }
 
   initComponent(autoHealSettings: AutoHealSettings) {
-    this.originalAutoHealSettings = JSON.parse(JSON.stringify(autoHealSettings));
-    this.originalAutoHealSettingsString = JSON.stringify(this.autohealingSettings);
-    if (this.autohealingSettings.autoHealRules.actions !=null) {
+    this.originalAutoHealSettings = JSON.parse(JSON.stringify(autoHealSettings));    
+    if (this.autohealingSettings.autoHealRules.actions != null) {
       this.actionSelected = this.autohealingSettings.autoHealRules.actions.actionType;
       if (this.autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction) {
         this.customAction = this.autohealingSettings.autoHealRules.actions.customAction;
@@ -70,7 +69,8 @@ export class AutohealingComponent implements OnInit {
 
 
   checkForChanges() {
-    if (this.originalAutoHealSettingsString != JSON.stringify(this.autohealingSettings)) {
+    let originalAutoHealSettingsString = JSON.stringify(this.originalAutoHealSettings);
+    if (originalAutoHealSettingsString != JSON.stringify(this.autohealingSettings)) {
       this.saveEnabled = true;
     }
     else {
@@ -105,11 +105,11 @@ export class AutohealingComponent implements OnInit {
 
         this.initComponent(savedAutoHealSettings);
       },
-    err =>{
-      this.savingAutohealSettings = false;
-      this.errorMessage = "Failed while saving AutoHeal settings with error " + JSON.stringify(err);
-      this.errorMessage += ". Please retry after some time";
-    });
+        err => {
+          this.savingAutohealSettings = false;
+          this.errorMessage = "Failed while saving AutoHeal settings with error " + JSON.stringify(err);
+          this.errorMessage += ". Please retry after some time";
+        });
   }
 
   updateTriggerStatus(triggerRule: number) {
@@ -132,14 +132,14 @@ export class AutohealingComponent implements OnInit {
     else {
       this.actionCollapsed = !this.actionCollapsed;
     }
+    
     this.actionSelected = action;
-
     if (this.autohealingSettings.autoHealRules.actions == null) {
       this.autohealingSettings.autoHealRules.actions = new AutoHealActions();
     }
 
     if (action === AutoHealActionType.CustomAction) {
-      if (this.customAction == null) {
+      if (this.customAction == null) {        
         let customAction = new AutoHealCustomAction();
         customAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
         customAction.parameters = '-Troubleshoot "Memory Dump"  60';
@@ -177,51 +177,25 @@ export class AutohealingComponent implements OnInit {
         break;
       }
     }
-
-    this.triggers[triggerRule].IsConfigured = this.checkRuleConfigured(triggerRule);
+    
+    this.triggers[triggerRule].IsConfigured = this.triggers[triggerRule].checkRuleConfigured();
     this.checkForChanges();
-  }
-
-  checkRuleConfigured(triggerRule: number): boolean {
-    if (this.autohealingSettings.autoHealRules.triggers == null) {
-      return false;
-    }
-
-    let isConfigured: boolean = false;
-    switch (triggerRule) {
-      case 0: {
-        isConfigured = this.autohealingSettings.autoHealRules.triggers.slowRequests != null;
-        break;
-      }
-      case 1: {
-        isConfigured = this.autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0;
-        break;
-      }
-      case 2: {
-        isConfigured = this.autohealingSettings.autoHealRules.triggers.requests != null;
-        break;
-      }
-
-      case 3: {
-        isConfigured = this.autohealingSettings.autoHealRules.triggers.statusCodes && this.autohealingSettings.autoHealRules.triggers.statusCodes.length > 0;
-        break;
-      }
-    }
-
-    return isConfigured;
   }
 
   initTriggersAndActions() {
 
     this.triggers = [];
     this.actions = [];
+    let self = this;
 
-    let triggersConfigured = this.autohealingSettings.autoHealRules.triggers != null;
-    this.triggers = [];
-    this.triggers.push({ Name: 'Request Duration', Icon: 'fa fa-clock-o', IsConfigured: triggersConfigured && this.checkRuleConfigured(0) });
-    this.triggers.push({ Name: 'Memory Limit', Icon: 'fa fa-microchip', IsConfigured: triggersConfigured && this.checkRuleConfigured(1) });
-    this.triggers.push({ Name: 'Request Count', Icon: 'fa fa-bar-chart', IsConfigured: triggersConfigured && this.checkRuleConfigured(2) });
-    this.triggers.push({ Name: 'Status Codes', Icon: 'fa fa-list', IsConfigured: triggersConfigured && this.checkRuleConfigured(3) });
+    this.triggers.push({ Name: 'Request Duration', Icon: 'fa fa-clock-o', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.slowRequests != null; }, IsConfigured: false });
+    this.triggers.push({ Name: 'Memory Limit', Icon: 'fa fa-microchip', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0 }, IsConfigured: false });
+    this.triggers.push({ Name: 'Request Count', Icon: 'fa fa-bar-chart', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.requests != null; }, IsConfigured: false });
+    this.triggers.push({ Name: 'Status Codes', Icon: 'fa fa-list', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.statusCodes && this.autohealingSettings.autoHealRules.triggers.statusCodes.length > 0 }, IsConfigured: false });
+
+    this.triggers.forEach(triggerRule => {
+      triggerRule.IsConfigured = triggerRule.checkRuleConfigured();
+    });
 
     this.actions.push({ Name: 'Recycle Process', Icon: 'fa fa-recycle' });
     this.actions.push({ Name: 'Log an Event', Icon: 'fa fa-book' });
@@ -229,7 +203,6 @@ export class AutohealingComponent implements OnInit {
   }
 
   updateSummaryText() {
-    this.settingsChanged = JSON.stringify(this.autohealingSettings) != JSON.stringify(this.originalAutoHealSettings);
     this.originalSettings = this.getSummary(this.originalAutoHealSettings);
     this.currentSettings = this.getSummary(this.autohealingSettings);
   }
@@ -239,21 +212,21 @@ export class AutohealingComponent implements OnInit {
     let conditions: string[] = [];
     if (autohealingSettings.autoHealRules.triggers != null) {
       if (autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0) {
-        conditions.push("Process consumes more than " + this.formatBytes(autohealingSettings.autoHealRules.triggers.privateBytesInKB, 2) + " private bytes of memory");
+        conditions.push("Process consumes more than " + this._formattingService.formatBytes(autohealingSettings.autoHealRules.triggers.privateBytesInKB * 1024, 2) + " private bytes of memory");
       }
 
       if (autohealingSettings.autoHealRules.triggers.requests != null) {
-        conditions.push("App has served  " + autohealingSettings.autoHealRules.triggers.requests.count + " requests in a duration of  " + this._autohealingService.timespanToSeconds(autohealingSettings.autoHealRules.triggers.requests.timeInterval) + " seconds");
+        conditions.push("App has served  " + autohealingSettings.autoHealRules.triggers.requests.count + " requests in a duration of  " + this._formattingService.timespanToSeconds(autohealingSettings.autoHealRules.triggers.requests.timeInterval) + " seconds");
       }
 
       if (autohealingSettings.autoHealRules.triggers.slowRequests != null) {
-        conditions.push(autohealingSettings.autoHealRules.triggers.slowRequests.count + " requests take more than  " + this._autohealingService.timespanToSeconds(autohealingSettings.autoHealRules.triggers.slowRequests.timeTaken) + " seconds in a duration of  " + this._autohealingService.timespanToSeconds(autohealingSettings.autoHealRules.triggers.slowRequests.timeInterval) + " seconds");
+        conditions.push(autohealingSettings.autoHealRules.triggers.slowRequests.count + " requests take more than  " + this._formattingService.timespanToSeconds(autohealingSettings.autoHealRules.triggers.slowRequests.timeTaken) + " seconds in a duration of  " + this._formattingService.timespanToSeconds(autohealingSettings.autoHealRules.triggers.slowRequests.timeInterval) + " seconds");
       }
 
       if (autohealingSettings.autoHealRules.triggers.statusCodes != null) {
         for (let index = 0; index < autohealingSettings.autoHealRules.triggers.statusCodes.length; index++) {
           let statusCodeRule = autohealingSettings.autoHealRules.triggers.statusCodes[index];
-          conditions.push(statusCodeRule.count + " requests end up with HTTP Status  " + statusCodeRule.status + "." + statusCodeRule.subStatus + " and win-32 status  " + statusCodeRule.win32Status + " in a duration of  " + this._autohealingService.timespanToSeconds(statusCodeRule.timeInterval) + " seconds");
+          conditions.push(statusCodeRule.count + " requests end up with HTTP Status  " + statusCodeRule.status + "." + statusCodeRule.subStatus + " and win-32 status  " + statusCodeRule.win32Status + " in a duration of  " + this._formattingService.timespanToSeconds(statusCodeRule.timeInterval) + " seconds");
         }
 
       }
@@ -279,15 +252,5 @@ export class AutohealingComponent implements OnInit {
 
     return { Action: action, ActionExe: actionExe, Conditions: conditions };
   }
-
-  formatBytes(bytes, decimals) {
-    if (bytes === 0) return '0 Bytes';
-    var k = 1024,
-      dm = decimals || 2,
-      sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-      i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-  }
-
 
 }

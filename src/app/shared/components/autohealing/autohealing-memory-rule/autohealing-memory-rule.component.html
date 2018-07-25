@@ -1,4 +1,4 @@
-<div *ngIf="(Rule == 0 || Rule == null) && !editMode">
+<div *ngIf="(rule == 0 || rule == null) && !editMode">
   Configure a rule based on the private byte consumption of the process serving your web app. This is useful in case your app
   is consuming high memory and you want to quickly recycle or collect some data to identify the root cause.
   <div class="rule-button">
@@ -8,7 +8,7 @@
   </div>
 </div>
 
-<table class="table table-bordered" *ngIf="!editMode && Rule > 0">
+<table class="table table-bordered" *ngIf="!editMode && rule > 0">
   <thead>
     <tr>
       <th>
@@ -21,7 +21,7 @@
   </thead>
   <tbody>
     <tr>
-      <td>{{ Rule }}</td>
+      <td>{{ rule }}</td>
       <td>
         <button class="image-btn" *ngIf="!editMode" (click)="editRule()">
           <i class="fa fa-edit"></i>
@@ -41,9 +41,9 @@
     </div>
     <div class="col-sm-4">
       <input type="number" min="1" id="idPrivateBytes" aria-describedby="privateBytesHelp" placeholder="Enter private bytes in KB"
-        [(ngModel)]="RuleCopy">
+        [(ngModel)]="ruleCopy">
       <span style="color:red">*</span>
-      <div *ngIf="RuleCopy !== null && RuleCopy !=0 && !isValid()" class="alert alert-danger" style="margin-top:5px">
+      <div *ngIf="ruleCopy !== null && ruleCopy !=0 && !isValid()" class="alert alert-danger" style="margin-top:5px">
         Private should be > 102400 KB (100 MB) to 13631488 KB (13 GB)
       </div>
     </div>

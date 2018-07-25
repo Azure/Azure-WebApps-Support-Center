@@ -33,13 +33,13 @@
         </ng-container>
 
         <div class="forminput" *ngIf="triggerSelected >= 0" style="width:75%">
-          <autohealing-slowrequests-rule *ngIf="triggerSelected == 0" [Rule]="autohealingSettings.autoHealRules.triggers.slowRequests"
-            (RuleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-slowrequests-rule>
-          <autohealing-memory-rule *ngIf="triggerSelected == 1" [Rule]="autohealingSettings.autoHealRules.triggers.privateBytesInKB"
-            (RuleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-memory-rule>
-          <autohealing-requests-rule *ngIf="triggerSelected == 2" [Rule]="autohealingSettings.autoHealRules.triggers.requests" (RuleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-requests-rule>
-          <autohealing-statuscodes-rule *ngIf="triggerSelected == 3" [Rule]="autohealingSettings.autoHealRules.triggers.statusCodes"
-            (RuleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-statuscodes-rule>
+          <autohealing-slowrequests-rule *ngIf="triggerSelected == 0" [rule]="autohealingSettings.autoHealRules.triggers.slowRequests"
+            (ruleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-slowrequests-rule>
+          <autohealing-memory-rule *ngIf="triggerSelected == 1" [rule]="autohealingSettings.autoHealRules.triggers.privateBytesInKB"
+            (ruleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-memory-rule>
+          <autohealing-requests-rule *ngIf="triggerSelected == 2" [rule]="autohealingSettings.autoHealRules.triggers.requests" (ruleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-requests-rule>
+          <autohealing-statuscodes-rule *ngIf="triggerSelected == 3" [rule]="autohealingSettings.autoHealRules.triggers.statusCodes"
+            (ruleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-statuscodes-rule>
         </div>
       </div>
 
@@ -80,7 +80,7 @@
                 No rule configured !
               </div>
           </div>
-          <div *ngIf="currentSettings && settingsChanged" style="margin-top:25px">
+          <div *ngIf="currentSettings && saveEnabled" style="margin-top:25px">
               <strong>New Settings</strong>
               <div style="margin-top: 10px" *ngIf="currentSettings.Conditions.length > 0 && currentSettings.Action !== ''">
                 {{ currentSettings.Action }}

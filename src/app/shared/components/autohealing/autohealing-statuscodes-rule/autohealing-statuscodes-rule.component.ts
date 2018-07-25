@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AutohealingRuleComponent } from '../autohealing-rule/autohealing-rule.component';
 import { StatusCodesBasedTrigger } from '../../../models/autohealing';
-import { AutohealingService } from '../../../services/autohealing.service';
+import { FormattingService } from '../../../services/formatting.service';
 
 
 @Component({
@@ -14,14 +14,14 @@ export class AutohealingStatuscodesRuleComponent extends AutohealingRuleComponen
   currentRule: StatusCodesBasedTrigger;
   currentEditIndex: number = -1;
   
-  constructor(private _autoHealingService:AutohealingService){
+  constructor(private _formattingService:FormattingService){
     super();
   }
 
   addNewRule() {
     this.currentRule = new StatusCodesBasedTrigger();
-    if (!this.Rule) {
-      this.Rule = [];
+    if (!this.rule) {
+      this.rule = [];
     }
     this.editMode = true;   
     this.currentEditIndex = -1;
@@ -29,14 +29,14 @@ export class AutohealingStatuscodesRuleComponent extends AutohealingRuleComponen
 
   deleteStatusCodeRule(i: number) {
     if (i > -1) {
-      this.Rule.splice(i, 1)
-      this.RuleChange.emit(this.Rule);
+      this.rule.splice(i, 1)
+      this.ruleChange.emit(this.rule);
     }
   }
 
   editStatusCodeRule(i: number) {
     if (i > -1) {
-      this.currentRule = {...this.Rule[i]}; 
+      this.currentRule = {...this.rule[i]}; 
       this.editMode = true;
       this.currentEditIndex = i;      
     }
@@ -52,16 +52,16 @@ export class AutohealingStatuscodesRuleComponent extends AutohealingRuleComponen
       this.currentRule.win32Status = 0;
     }
     if (this.currentEditIndex < 0) {
-      this.Rule.push(this.currentRule);
+      this.rule.push(this.currentRule);
     }
     else {
-      this.Rule[this.currentEditIndex] = this.currentRule;
+      this.rule[this.currentEditIndex] = this.currentRule;
     }
 
-    this.RuleChange.emit(this.Rule);
+    this.ruleChange.emit(this.rule);
   }
 
   isValid():boolean{
-    return (this.currentRule.count > 0 && this.currentRule.status > 100 && this.currentRule.status < 530 && (this.currentRule.timeInterval && this._autoHealingService.timespanToSeconds(this.currentRule.timeInterval) > 0));
+    return (this.currentRule.count > 0 && this.currentRule.status > 100 && this.currentRule.status < 530 && (this.currentRule.timeInterval && this._formattingService.timespanToSeconds(this.currentRule.timeInterval) > 0));
   }
 }
