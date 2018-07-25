@@ -68,66 +68,39 @@
         <div class="summary tile-content">
           <div *ngIf="originalSettings">
             <strong>Current Settings</strong>
-            <div style="margin-top: 10px" *ngIf="originalSettings.Conditions.length > 0 && originalSettings.Action !== ''">
-              {{ originalSettings.Action }}
-              <span class="actionExe" *ngIf="originalSettings.ActionExe !==''">{{ originalSettings.ActionExe }}</span>
-              when
-              <ul>
-                <li *ngFor="let condition of originalSettings.Conditions;let i = index;">
-                  {{ condition }}
-                  <span *ngIf="i < (originalSettings.Conditions.length -1)"> or,</span>
-                </li>
-              </ul>
-            </div>
-            <div *ngIf="originalSettings.Conditions.length === 0 || originalSettings.Action ===  ''">
-              No rule configured !
-            </div>
+            <autohealing-config-summary [autohealSettings]="originalSettings">
+            </autohealing-config-summary>
           </div>
           <div *ngIf="currentSettings && saveEnabled" style="margin-top:25px">
             <strong>New Settings</strong>
-            <div style="margin-top: 10px" *ngIf="currentSettings.Conditions.length > 0 && currentSettings.Action !== ''">
-              {{ currentSettings.Action }}
-              <span class="actionExe" *ngIf="currentSettings.ActionExe !==''">{{ currentSettings.ActionExe }}</span>
-              when
-              <ul>
-                <li *ngFor="let condition of currentSettings.Conditions;let i = index;">
-                  {{ condition }}
-                  <span *ngIf="i < (currentSettings.Conditions.length -1)"> or,</span>
-                </li>
-              </ul>
-            </div>
-            <div *ngIf="currentSettings.Conditions.length === 0 || currentSettings.Action ===  ''">
-              No rule configured !
-            </div>
+            <autohealing-config-summary [autohealSettings]="currentSettings">
+            </autohealing-config-summary>
           </div>
-          <div>
-            <button (click)="modifyStartupTime = true" type="button" class="btn btn-primary btn-sm">Modify Startup Time</button>
-          </div>
-          <div>
-            <div *ngIf="modifyStartupTime">
-              <label for="durationCount">Configure the minimum time the process must execute before taking the action. This is useful specially in scenarios
+          <collapsible-list title="Modify Startup Time" [collapsed]="startupTimeCollapsed" (onSelect)="startupTimeCollapsed = !startupTimeCollapsed">
+            <collapsible-list-item [marginTop]="10">
+              <label for="minProcessExecutionTime">Configure the minimum time the process must execute before taking the action. This is useful specially in scenarios
                 where your App has a high startup time and you don't want the mitigation action to kick in during that time.
                 It is advisable to configure this duration to be more than the startup time that the app usually takes.
               </label>
               <div class="row">
                 <div class="col-xs-4" style="padding-left:5px; margin-top:5px">
-                  <input type="number" id="minProcessExecutionTime" placeholder="e.g. 60" [(ngModel)]="minProcessExecutionTime">                  
-                    <button style="margin-left:10px" type="button" class="btn btn-primary btn-sm" (click)="saveMinProcessTimeChanged()">Ok</button>                  
+                  <input type="number" id="minProcessExecutionTime" placeholder="e.g. 60" [ngModel]="minProcessExecutionTime" (input)="saveMinProcessTimeChanged($event.target.value)">
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="!retrievingAutohealSettings" class="saveSection tile-content">
-        <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="saveChanges()">Save</button>
-        <div *ngIf="savingAutohealSettings" class="inline">
-          <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-          Saving AutoHeal settings...
-        </div>
-        <div *ngIf="changesSaved" class="inline" style="color:#0058ad">
-          Changes Saved !!!
+            </collapsible-list-item>
+          </collapsible-list>
         </div>
       </div>
     </div>
+  </div>
+
+  <div *ngIf="!retrievingAutohealSettings" class="saveSection tile-content">
+    <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="saveChanges()">Save</button>
+    <div *ngIf="savingAutohealSettings" class="inline">
+      <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+      Saving AutoHeal settings...
+    </div>
+    <div *ngIf="changesSaved" class="inline" style="color:#0058ad">
+      Changes Saved !!!
+    </div>
+  </div>

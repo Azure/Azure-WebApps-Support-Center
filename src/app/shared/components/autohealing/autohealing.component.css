@@ -54,7 +54,7 @@
     border: 1px solid whitesmoke;
     padding: 15px;
     border-radius: 1em;
-    width:75%;
+    /* width:75%; */
 }
 
 .active {
@@ -87,12 +87,6 @@
 .saveSection {
     margin-top: 20px;
     margin-bottom: 100px;
-}
-
-.actionExe {
-    background-color: #c8c8ca;
-    border-radius: 5px;
-    padding: 3px;
 }
 
 input[type="text"], input[type="number"] {

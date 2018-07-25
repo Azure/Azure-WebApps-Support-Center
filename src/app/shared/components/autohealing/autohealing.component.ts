@@ -31,9 +31,10 @@ export class AutohealingComponent implements OnInit {
   originalSettings: any;
   currentSettings: any;
   customAction: AutoHealCustomAction = null;
-  errorMessage: string = '';
+  errorMessage: string = "";
   minProcessExecutionTime: number;
-  modifyStartupTime: boolean = false;
+  startupTimeCollapsed: boolean = true;
+  processStartupLabel: string = "";
 
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, private _formattingService: FormattingService) {
   }
@@ -58,31 +59,31 @@ export class AutohealingComponent implements OnInit {
   }
 
   initComponent(autoHealSettings: AutoHealSettings) {
-    this.originalAutoHealSettings = JSON.parse(JSON.stringify(autoHealSettings));
+    this.originalSettings = JSON.stringify(autoHealSettings);
+    this.originalAutoHealSettings = JSON.parse(this.originalSettings);
     if (this.autohealingSettings.autoHealRules.actions != null) {
-      if (this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime != null){
+      if (this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime != null) {
         this.minProcessExecutionTime = this._formattingService.timespanToSeconds(this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime);
       }
-      
+
       this.actionSelected = this.autohealingSettings.autoHealRules.actions.actionType;
       if (this.autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction) {
         this.customAction = this.autohealingSettings.autoHealRules.actions.customAction;
       }
     }
-    this.initTriggersAndActions();
+    this.initTriggersAndActions();    
     this.updateSummaryText();
   }
 
-  saveMinProcessTimeChanged() {
+  saveMinProcessTimeChanged(val:number) {
+    this.minProcessExecutionTime = val;
     if (this.autohealingSettings.autoHealRules.actions != null) {
-      if (this.minProcessExecutionTime != null && this.minProcessExecutionTime != 0){
+      if (this.minProcessExecutionTime != null && this.minProcessExecutionTime != 0) {
         this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = this._formattingService.secondsToTimespan(this.minProcessExecutionTime);
       }
       else {
         this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = null;
-      }
-              
-      this.modifyStartupTime = false;
+      }     
       this.checkForChanges();
     }
   }
@@ -126,7 +127,7 @@ export class AutohealingComponent implements OnInit {
       },
         err => {
           this.savingAutohealSettings = false;
-          this.errorMessage = "Failed while saving AutoHeal settings with error " + JSON.stringify(err);
+          this.errorMessage = "Failed while saving AutoHeal settings with error :" + err;
           this.errorMessage += ". Please retry after some time";
         });
   }
@@ -155,8 +156,8 @@ export class AutohealingComponent implements OnInit {
     this.actionSelected = action;
     if (this.autohealingSettings.autoHealRules.actions == null) {
       this.autohealingSettings.autoHealRules.actions = new AutoHealActions();
-      if (this.minProcessExecutionTime > 0){
-        this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = this._formattingService.secondsToTimespan( this.minProcessExecutionTime);
+      if (this.minProcessExecutionTime > 0) {
+        this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = this._formattingService.secondsToTimespan(this.minProcessExecutionTime);
       }
     }
 
@@ -224,61 +225,11 @@ export class AutohealingComponent implements OnInit {
     this.actions.push({ Name: 'Custom Action', Icon: 'fa fa-bolt' });
   }
 
-  updateSummaryText() {
-    this.originalSettings = this.getSummary(this.originalAutoHealSettings);
-    this.currentSettings = this.getSummary(this.autohealingSettings);
+  updateSummaryText() {    
+    this.currentSettings = JSON.stringify(this.autohealingSettings);
+    console.log(this.currentSettings);
   }
 
-  getSummary(autohealSettingsParameter: AutoHealSettings): any {
-
-    let conditions: string[] = [];
-    if (autohealSettingsParameter.autoHealRules.triggers != null) {
-      if (autohealSettingsParameter.autoHealRules.triggers.privateBytesInKB > 0) {
-        conditions.push("Process consumes more than " + this._formattingService.formatBytes(autohealSettingsParameter.autoHealRules.triggers.privateBytesInKB * 1024, 2) + " private bytes of memory");
-      }
-
-      if (autohealSettingsParameter.autoHealRules.triggers.requests != null) {
-        conditions.push("App has served  " + autohealSettingsParameter.autoHealRules.triggers.requests.count + " requests in a duration of  " + this._formattingService.timespanToSeconds(autohealSettingsParameter.autoHealRules.triggers.requests.timeInterval) + " seconds");
-      }
-
-      if (autohealSettingsParameter.autoHealRules.triggers.slowRequests != null) {
-        conditions.push(autohealSettingsParameter.autoHealRules.triggers.slowRequests.count + " requests take more than  " + this._formattingService.timespanToSeconds(autohealSettingsParameter.autoHealRules.triggers.slowRequests.timeTaken) + " seconds in a duration of  " + this._formattingService.timespanToSeconds(autohealSettingsParameter.autoHealRules.triggers.slowRequests.timeInterval) + " seconds");
-      }
-
-      if (autohealSettingsParameter.autoHealRules.triggers.statusCodes != null) {
-        for (let index = 0; index < autohealSettingsParameter.autoHealRules.triggers.statusCodes.length; index++) {
-          let statusCodeRule = autohealSettingsParameter.autoHealRules.triggers.statusCodes[index];
-          conditions.push(statusCodeRule.count + " requests end up with HTTP Status  " + statusCodeRule.status + "." + statusCodeRule.subStatus + " and win-32 status  " + statusCodeRule.win32Status + " in a duration of  " + this._formattingService.timespanToSeconds(statusCodeRule.timeInterval) + " seconds");
-        }
-
-      }
-    }
-
-    let action: string = '';
-    let actionExe: string = '';
-    if (conditions.length > 0 && autohealSettingsParameter.autoHealRules.actions != null) {
-      if (autohealSettingsParameter.autoHealRules.actions.actionType === AutoHealActionType.Recycle) {
-        action = "Recycle the process";
-      }
-      else if (autohealSettingsParameter.autoHealRules.actions.actionType === AutoHealActionType.LogEvent) {
-        action = "Log an Event in the Event Viewer";
-      }
-
-      else if (autohealSettingsParameter.autoHealRules.actions.actionType === AutoHealActionType.CustomAction) {
-        action = "Run executable ";
-        if (autohealSettingsParameter.autoHealRules.actions.customAction != null && autohealSettingsParameter.autoHealRules.actions.customAction.exe != null && autohealSettingsParameter.autoHealRules.actions.customAction.parameters != null) {
-          actionExe = autohealSettingsParameter.autoHealRules.actions.customAction.exe + " " + autohealSettingsParameter.autoHealRules.actions.customAction.parameters;
-        }      
-      }
-      if (autohealSettingsParameter.autoHealRules.actions != null && autohealSettingsParameter.autoHealRules.actions.minProcessExecutionTime != null) {
-        let seconds = this._formattingService.timespanToSeconds(autohealSettingsParameter.autoHealRules.actions.minProcessExecutionTime);
-        if (seconds > 0){
-          action = action + ` after ${seconds} seconds of process start`        
-        }
-      }
-    }
-
-    return { Action: action, ActionExe: actionExe, Conditions: conditions };
-  }
+  
 
 }
