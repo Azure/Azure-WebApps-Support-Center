@@ -72,6 +72,7 @@
       </div>
       <div class="col-sm-4">
         <input type="number" id="statusCode" placeholder="e.g. 500" min="100" [(ngModel)]="currentRule.status">
+        <span style="color:red">*</span>
         <div *ngIf="currentRule.status < 100 || currentRule.status > 530" class="alert alert-danger" style="margin-top:5px">
           Valid HTTP Status codes range from HTTP 100 to HTTP 530 only.
         </div>

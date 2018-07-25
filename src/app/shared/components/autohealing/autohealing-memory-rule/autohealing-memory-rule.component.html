@@ -21,7 +21,7 @@
   </thead>
   <tbody>
     <tr>
-      <td>{{ rule }}</td>
+      <td>{{ _formattingService.formatBytes(rule * 1024) }}</td>
       <td>
         <button class="image-btn" *ngIf="!editMode" (click)="editRule()">
           <i class="fa fa-edit"></i>
@@ -37,7 +37,7 @@
 <div class="form-group" *ngIf="editMode">
   <div class="row">
     <div class="col-sm-8">
-      <label for="idPrivateBytes">What is the memory threshold (private bytes) you want to configure ?</label>
+      <label for="idPrivateBytes">What is the memory threshold (private bytes) in KB you want to configure ?</label>
     </div>
     <div class="col-sm-4">
       <input type="number" min="1" id="idPrivateBytes" aria-describedby="privateBytesHelp" placeholder="Enter private bytes in KB"

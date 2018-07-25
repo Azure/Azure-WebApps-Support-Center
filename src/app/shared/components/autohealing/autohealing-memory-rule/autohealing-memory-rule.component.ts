@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AutohealingRuleComponent } from '../autohealing-rule/autohealing-rule.component';
+import { FormattingService } from '../../../services/formatting.service';
 
 @Component({
   selector: 'autohealing-memory-rule',
@@ -7,6 +8,10 @@ import { AutohealingRuleComponent } from '../autohealing-rule/autohealing-rule.c
   styleUrls: ['../autohealing.component.css']
 })
 export class AutohealingMemoryRuleComponent extends AutohealingRuleComponent {
+
+  constructor(private _formattingService: FormattingService){
+    super();    
+  }
 
   addNewRule() {
     this.editMode = true;
