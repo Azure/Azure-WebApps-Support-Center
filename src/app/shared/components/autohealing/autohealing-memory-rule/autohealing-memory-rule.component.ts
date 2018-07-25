@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AutohealingRuleComponent } from '../autohealing-rule/autohealing-rule.component';
-import { FormattingService } from '../../../services/formatting.service';
+import { FormatHelper } from '../../../utilities/formattingHelper';
 
 @Component({
   selector: 'autohealing-memory-rule',
@@ -9,7 +9,7 @@ import { FormattingService } from '../../../services/formatting.service';
 })
 export class AutohealingMemoryRuleComponent extends AutohealingRuleComponent {
 
-  constructor(private _formattingService: FormattingService){
+  constructor(){
     super();    
   }
 
@@ -19,7 +19,7 @@ export class AutohealingMemoryRuleComponent extends AutohealingRuleComponent {
 
   ngOnInit(): void {    
     if (this.rule) {
-      this.ruleCopy = this.rule;
+      this.ruleCopy = this.rule;      
     }
   }
 
@@ -33,7 +33,7 @@ export class AutohealingMemoryRuleComponent extends AutohealingRuleComponent {
   deleteRule() {
     this.rule = 0;
     this.ruleCopy = 0;
-    this.ruleChange.emit(this.rule);
+    this.ruleChange.emit(this.rule);    
   }
 
   isValid(): boolean {
@@ -43,6 +43,10 @@ export class AutohealingMemoryRuleComponent extends AutohealingRuleComponent {
     else {
       return true;
     }
+  }
+
+  formatBytes(bytes){
+    return FormatHelper.formatBytes(bytes,2);
   }
 
 

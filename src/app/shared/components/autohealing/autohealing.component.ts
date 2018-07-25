@@ -3,7 +3,7 @@ import { SiteInfoMetaData } from '../../models/site';
 import { AutoHealSettings, AutoHealActions, AutoHealCustomAction, AutoHealTriggers, AutoHealActionType } from '../../models/autohealing';
 import { SiteService } from '../../services/site.service';
 import { AutohealingService } from '../../services/autohealing.service';
-import { FormattingService } from '../../services/formatting.service';
+import { FormatHelper } from '../../utilities/formattingHelper';
 
 @Component({
   selector: 'autohealing',
@@ -36,7 +36,7 @@ export class AutohealingComponent implements OnInit {
   startupTimeCollapsed: boolean = true;
   processStartupLabel: string = "";
 
-  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, private _formattingService: FormattingService) {
+  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService) {
   }
 
   ngOnInit() {
@@ -63,7 +63,7 @@ export class AutohealingComponent implements OnInit {
     this.originalAutoHealSettings = JSON.parse(this.originalSettings);
     if (this.autohealingSettings.autoHealRules.actions != null) {
       if (this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime != null) {
-        this.minProcessExecutionTime = this._formattingService.timespanToSeconds(this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime);
+        this.minProcessExecutionTime = FormatHelper.timespanToSeconds(this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime);
       }
 
       this.actionSelected = this.autohealingSettings.autoHealRules.actions.actionType;
@@ -79,7 +79,7 @@ export class AutohealingComponent implements OnInit {
     this.minProcessExecutionTime = val;
     if (this.autohealingSettings.autoHealRules.actions != null) {
       if (this.minProcessExecutionTime != null && this.minProcessExecutionTime != 0) {
-        this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = this._formattingService.secondsToTimespan(this.minProcessExecutionTime);
+        this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = FormatHelper.secondsToTimespan(this.minProcessExecutionTime);
       }
       else {
         this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = null;
@@ -157,7 +157,7 @@ export class AutohealingComponent implements OnInit {
     if (this.autohealingSettings.autoHealRules.actions == null) {
       this.autohealingSettings.autoHealRules.actions = new AutoHealActions();
       if (this.minProcessExecutionTime > 0) {
-        this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = this._formattingService.secondsToTimespan(this.minProcessExecutionTime);
+        this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = FormatHelper.secondsToTimespan(this.minProcessExecutionTime);
       }
     }
 

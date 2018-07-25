@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { AutoHealSettings, AutoHealActionType } from '../../../models/autohealing';
-import { FormattingService } from '../../../services/formatting.service';
+import { FormatHelper } from '../../../utilities/formattingHelper';
 
 @Component({
   selector: 'autohealing-config-summary',
@@ -9,7 +9,7 @@ import { FormattingService } from '../../../services/formatting.service';
 })
 export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
 
-  constructor(private _formattingService: FormattingService) { }
+  constructor() { }
 
   @Input() autohealSettings: string;
   initialized: boolean = false;
@@ -32,7 +32,7 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
   updateComponent() {
 
     if (this.autohealSettings == null) {
-      return;
+      return;      
     }
 
     this.actualhealSettings = JSON.parse(this.autohealSettings);
@@ -40,21 +40,21 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
     let conditions: string[] = [];
     if (this.actualhealSettings.autoHealRules.triggers != null) {
       if (this.actualhealSettings.autoHealRules.triggers.privateBytesInKB > 0) {
-        conditions.push("Process consumes more than " + this._formattingService.formatBytes(this.actualhealSettings.autoHealRules.triggers.privateBytesInKB * 1024, 2) + " private bytes of memory");
+        conditions.push("Process consumes more than " + FormatHelper.formatBytes(this.actualhealSettings.autoHealRules.triggers.privateBytesInKB * 1024, 2) + " private bytes of memory");
       }
 
       if (this.actualhealSettings.autoHealRules.triggers.requests != null) {
-        conditions.push("App has served  " + this.actualhealSettings.autoHealRules.triggers.requests.count + " requests in a duration of  " + this._formattingService.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.requests.timeInterval) + " seconds");
+        conditions.push("App has served  " + this.actualhealSettings.autoHealRules.triggers.requests.count + " requests in a duration of  " + FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.requests.timeInterval) + " seconds");
       }
 
       if (this.actualhealSettings.autoHealRules.triggers.slowRequests != null) {
-        conditions.push(this.actualhealSettings.autoHealRules.triggers.slowRequests.count + " requests take more than  " + this._formattingService.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.slowRequests.timeTaken) + " seconds in a duration of  " + this._formattingService.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.slowRequests.timeInterval) + " seconds");
+        conditions.push(this.actualhealSettings.autoHealRules.triggers.slowRequests.count + " requests take more than  " + FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.slowRequests.timeTaken) + " seconds in a duration of  " + FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.slowRequests.timeInterval) + " seconds");
       }
 
       if (this.actualhealSettings.autoHealRules.triggers.statusCodes != null) {
         for (let index = 0; index < this.actualhealSettings.autoHealRules.triggers.statusCodes.length; index++) {
           let statusCodeRule = this.actualhealSettings.autoHealRules.triggers.statusCodes[index];
-          conditions.push(statusCodeRule.count + " requests end up with HTTP Status  " + statusCodeRule.status + "." + statusCodeRule.subStatus + " and win-32 status  " + statusCodeRule.win32Status + " in a duration of  " + this._formattingService.timespanToSeconds(statusCodeRule.timeInterval) + " seconds");
+          conditions.push(statusCodeRule.count + " requests end up with HTTP Status  " + statusCodeRule.status + "." + statusCodeRule.subStatus + " and win-32 status  " + statusCodeRule.win32Status + " in a duration of  " + FormatHelper.timespanToSeconds(statusCodeRule.timeInterval) + " seconds");
         }
 
       }
@@ -78,7 +78,7 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
         }
       }
       if (this.actualhealSettings.autoHealRules.actions != null && this.actualhealSettings.autoHealRules.actions.minProcessExecutionTime != null) {
-        let seconds = this._formattingService.timespanToSeconds(this.actualhealSettings.autoHealRules.actions.minProcessExecutionTime);
+        let seconds = FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.actions.minProcessExecutionTime);
         if (seconds > 0) {
           this.processStartupLabel = ` after ${seconds} seconds of process startup`;
         }

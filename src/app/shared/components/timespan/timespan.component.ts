@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { FormattingService } from '../../services/formatting.service';
+import { FormatHelper } from '../../utilities/formattingHelper';
 
 @Component({
   selector: 'timespan',
@@ -8,11 +8,11 @@ import { FormattingService } from '../../services/formatting.service';
 })
 export class TimespanComponent implements OnInit {
 
-  constructor(private _formattingService : FormattingService) { }
+  constructor() { }
 
   ngOnInit() {
     if (this.timeSpan && this.timeSpan !== ''){
-      this.Seconds = this._formattingService.timespanToSeconds(this.timeSpan);
+      this.Seconds = FormatHelper.timespanToSeconds(this.timeSpan);
     }    
   }
 
@@ -26,7 +26,7 @@ export class TimespanComponent implements OnInit {
 
   updateTimeSpan(val){
       this.Seconds = val;
-      let timeSpan = this._formattingService.secondsToTimespan(this.Seconds);
+      let timeSpan = FormatHelper.secondsToTimespan(this.Seconds);
       this.timeSpanChange.emit(timeSpan);      
   }
 

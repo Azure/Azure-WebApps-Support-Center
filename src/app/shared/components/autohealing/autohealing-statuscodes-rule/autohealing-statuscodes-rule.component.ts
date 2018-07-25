@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AutohealingRuleComponent } from '../autohealing-rule/autohealing-rule.component';
 import { StatusCodesBasedTrigger } from '../../../models/autohealing';
-import { FormattingService } from '../../../services/formatting.service';
-
+import { FormatHelper } from '../../../utilities/formattingHelper';
 
 @Component({
   selector: 'autohealing-statuscodes-rule',
@@ -14,7 +13,7 @@ export class AutohealingStatuscodesRuleComponent extends AutohealingRuleComponen
   currentRule: StatusCodesBasedTrigger;
   currentEditIndex: number = -1;
   
-  constructor(private _formattingService:FormattingService){
+  constructor(){
     super();
   }
 
@@ -62,6 +61,6 @@ export class AutohealingStatuscodesRuleComponent extends AutohealingRuleComponen
   }
 
   isValid():boolean{
-    return (this.currentRule.count > 0 && this.currentRule.status > 100 && this.currentRule.status < 530 && (this.currentRule.timeInterval && this._formattingService.timespanToSeconds(this.currentRule.timeInterval) > 0));
+    return (this.currentRule.count > 0 && this.currentRule.status > 100 && this.currentRule.status < 530 && (this.currentRule.timeInterval && FormatHelper.timespanToSeconds(this.currentRule.timeInterval) > 0));
   }
 }

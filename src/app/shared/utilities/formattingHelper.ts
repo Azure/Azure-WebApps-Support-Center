@@ -1,11 +1,6 @@
-import { Injectable } from "../../../../node_modules/@angular/core";
+export class FormatHelper {
 
-@Injectable()
-export class FormattingService {
-    constructor() {
-    }
-
-    timespanToSeconds(timeInterval: string): number {
+    static timespanToSeconds(timeInterval: string): number {
         if (timeInterval.indexOf(':') < 0) {
             return 0;
         }
@@ -15,7 +10,7 @@ export class FormattingService {
         return seconds;
     }
 
-    secondsToTimespan(seconds: number): string {
+    static secondsToTimespan(seconds: number): string {
         if (seconds <= 0) {
             return '';
         }
@@ -25,12 +20,12 @@ export class FormattingService {
         return timeString;
     }
 
-    formatBytes(bytes, decimals) {
+    static formatBytes(bytes, decimals) {
         if (bytes === 0) return '0 Bytes';
         var k = 1024,
-          dm = decimals || 2,
-          sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-          i = Math.floor(Math.log(bytes) / Math.log(k));
+            dm = decimals || 2,
+            sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+            i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-      }
+    }
 }

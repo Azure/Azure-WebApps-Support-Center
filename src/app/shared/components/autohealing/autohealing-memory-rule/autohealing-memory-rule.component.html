@@ -21,7 +21,7 @@
   </thead>
   <tbody>
     <tr>
-      <td>{{ _formattingService.formatBytes(rule * 1024) }}</td>
+      <td>{{ formatBytes(rule * 1024) }}</td>
       <td>
         <button class="image-btn" *ngIf="!editMode" (click)="editRule()">
           <i class="fa fa-edit"></i>
