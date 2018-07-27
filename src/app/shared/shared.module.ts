@@ -81,6 +81,7 @@ import { AutohealingStatuscodesRuleComponent } from './components/autohealing/au
 import { AutohealingCustomActionComponent } from './components/autohealing/autohealing-custom-action/autohealing-custom-action.component';
 import { ToggleButtonComponent } from './components/toggle-button/toggle-button.component';
 import { AutohealingConfigSummaryComponent } from './components/autohealing/autohealing-config-summary/autohealing-config-summary.component';
+import { AutohealingStartupTimeComponent } from './components/autohealing/autohealing-startup-time/autohealing-startup-time.component';
 
 @NgModule({
     declarations: [
@@ -134,7 +135,8 @@ import { AutohealingConfigSummaryComponent } from './components/autohealing/auto
         TimespanComponent,
         AutohealingCustomActionComponent,
         ToggleButtonComponent,
-        AutohealingConfigSummaryComponent
+        AutohealingConfigSummaryComponent,
+        AutohealingStartupTimeComponent
     ],
     imports: [
         HttpModule,

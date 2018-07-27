@@ -1,9 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { SiteInfoMetaData } from '../../models/site';
 import { AutoHealSettings, AutoHealActions, AutoHealCustomAction, AutoHealTriggers, AutoHealActionType } from '../../models/autohealing';
 import { SiteService } from '../../services/site.service';
 import { AutohealingService } from '../../services/autohealing.service';
 import { FormatHelper } from '../../utilities/formattingHelper';
+import { AutohealingStartupTimeComponent } from './autohealing-startup-time/autohealing-startup-time.component';
+import { THIS_EXPR } from '../../../../../node_modules/@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'autohealing',
@@ -11,6 +13,7 @@ import { FormatHelper } from '../../utilities/formattingHelper';
   styleUrls: ['./autohealing.component.css']
 })
 export class AutohealingComponent implements OnInit {
+  @ViewChild(AutohealingStartupTimeComponent) private startupTimeComponent: AutohealingStartupTimeComponent
 
   @Input()
   autohealingSettings: AutoHealSettings;
@@ -33,14 +36,11 @@ export class AutohealingComponent implements OnInit {
   customAction: AutoHealCustomAction = null;
   errorMessage: string = "";
   minProcessExecutionTime: number;
-  startupTimeCollapsed: boolean = true;
-  processStartupLabel: string = "";
 
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService) {
   }
 
   ngOnInit() {
-
     this._siteService.currentSiteMetaData.subscribe(siteInfo => {
       if (siteInfo) {
         this.siteToBeDiagnosed = siteInfo;
@@ -61,9 +61,17 @@ export class AutohealingComponent implements OnInit {
   initComponent(autoHealSettings: AutoHealSettings) {
     this.originalSettings = JSON.stringify(autoHealSettings);
     this.originalAutoHealSettings = JSON.parse(this.originalSettings);
+    this.updateConditionsAndActions();
+    this.updateSummaryText();
+  }
+
+  updateConditionsAndActions() {
     if (this.autohealingSettings.autoHealRules.actions != null) {
       if (this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime != null) {
         this.minProcessExecutionTime = FormatHelper.timespanToSeconds(this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime);
+      }
+      else {
+        this.minProcessExecutionTime = 0;
       }
 
       this.actionSelected = this.autohealingSettings.autoHealRules.actions.actionType;
@@ -71,19 +79,18 @@ export class AutohealingComponent implements OnInit {
         this.customAction = this.autohealingSettings.autoHealRules.actions.customAction;
       }
     }
-    this.initTriggersAndActions();    
-    this.updateSummaryText();
+    this.initTriggersAndActions();
   }
 
-  saveMinProcessTimeChanged(val:number) {
+  saveMinProcessTimeChanged(val: number) {
     this.minProcessExecutionTime = val;
     if (this.autohealingSettings.autoHealRules.actions != null) {
       if (this.minProcessExecutionTime != null && this.minProcessExecutionTime != 0) {
         this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = FormatHelper.secondsToTimespan(this.minProcessExecutionTime);
       }
       else {
-        this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = null;
-      }     
+        this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = FormatHelper.secondsToTimespan(0);
+      }
       this.checkForChanges();
     }
   }
@@ -103,7 +110,6 @@ export class AutohealingComponent implements OnInit {
 
     this.customAction = action;
     this.autohealingSettings.autoHealRules.actions.customAction = this.customAction;
-    this.updateSummaryText();
     this.checkForChanges();
   }
 
@@ -152,6 +158,8 @@ export class AutohealingComponent implements OnInit {
     else {
       this.actionCollapsed = !this.actionCollapsed;
     }
+
+    this.startupTimeComponent.resetComponent();
 
     this.actionSelected = action;
     if (this.autohealingSettings.autoHealRules.actions == null) {
@@ -225,11 +233,19 @@ export class AutohealingComponent implements OnInit {
     this.actions.push({ Name: 'Custom Action', Icon: 'fa fa-bolt' });
   }
 
-  updateSummaryText() {    
+  updateSummaryText() {
     this.currentSettings = JSON.stringify(this.autohealingSettings);
-    console.log(this.currentSettings);
   }
 
-  
+  reset() {
+    // Just set the current autoHeal settings to the original one
+    this.autohealingSettings = JSON.parse(JSON.stringify(this.originalAutoHealSettings));
+    this.updateConditionsAndActions();
+    this.checkForChanges();
+    this.actionCollapsed = true;
+    this.startupTimeComponent.resetComponent();
+  }
+
+
 
 }

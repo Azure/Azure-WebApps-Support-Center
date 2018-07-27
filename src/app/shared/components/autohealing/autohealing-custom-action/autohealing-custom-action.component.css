@@ -31,7 +31,7 @@
 }
 
 .diagnostic-options {
-    border: Solid 1px rgb(214, 125, 85);;
+    border: Solid 1px #286090;
     border-radius: 0px 0px 5px 5px;
     padding: 0px 0px 0px 5px;
     margin-left:1px;
@@ -47,7 +47,7 @@ p {
 
 .diagnostic-options-heading{
     margin-top:10px;  
-    background-color: rgb(214, 125, 85);
+    background-color: #286090;
     width:100px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
@@ -60,4 +60,9 @@ label {
     font-size: 13px;
     font-weight: 400;
     /* color: #595959; */
+}
+
+.final-action{
+    background-color:#eeeeee;
+    border-radius:5px;
 }

@@ -41,6 +41,9 @@
           Tool Options
         </div>
         <div class="row diagnostic-options">
+          <div style="margin-top: 10px;">
+            Configure additional options that control how the diagnostic tools chosen above should behave:
+          </div>
           <div class="col-sm-3">
             <ng-container *ngFor="let option of DiagnoserOptions">
               <div class="radio">
@@ -53,6 +56,10 @@
           <div class="col-sm-9">
             <div class="diagnoser-option"> {{ diagnoserOption.Description}} </div>
           </div>
+        </div>
+
+        <div style="margin-top:15px">
+          Action chosen: <span class="final-action">D:\home\data\DaaS\bin\DaasConsole.exe -{{diagnoserOption.option}} "{{diagnoser.Name}}" 60</span>
         </div>
       </div>
     </div>
