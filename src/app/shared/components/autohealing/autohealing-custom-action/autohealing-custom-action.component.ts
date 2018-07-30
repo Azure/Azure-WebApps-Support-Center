@@ -7,7 +7,7 @@ import { AutoHealCustomAction } from '../../../models/autohealing';
 @Component({
   selector: 'autohealing-custom-action',
   templateUrl: './autohealing-custom-action.component.html',
-  styleUrls: ['./autohealing-custom-action.component.css','../autohealing.component.css']
+  styleUrls: ['./autohealing-custom-action.component.css', '../autohealing.component.css']
 })
 export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
@@ -20,6 +20,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   checkingSupportedTier: boolean = true;
   supportedTier: boolean = true;
+  alwaysOnEnabled: boolean = true;
 
   diagnoser: any;
   diagnoserOption: any = [{ option: "", Description: "" }];
@@ -52,18 +53,36 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
         }
       }
     });
-    
+
   }
 
   initComponent() {
     if (this.customAction == null) {
+      this.customAction = new AutoHealCustomAction();
+      this.customAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
+      this.diagnoserOption = this.DiagnoserOptions[2];
+      this.diagnoser = this.Diagnosers[0];
+      this.customAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
       return;
     }
-    let diagnosticsConfiguredCorrectly = this.isDiagnosticsConfigured();
-    if (!diagnosticsConfiguredCorrectly) {
-      this.diagnoser = this.Diagnosers[0];
-      this.diagnoserOption = this.DiagnoserOptions[2];
+
+    if (this.customActionType === "Diagnostics"){
+      let diagnosticsConfiguredCorrectly = this.isDiagnosticsConfigured();
+      if (!diagnosticsConfiguredCorrectly) {
+        this.diagnoser = this.Diagnosers[0];
+        this.diagnoserOption = this.DiagnoserOptions[2];
+        
+      }
+    }
+    
+  }
+
+  saveCustomAction(){
+    if (this.customActionType === "Diagnostics"){
       this.updateDaasAction();
+    }
+    else {
+      this.updateCustomAction();
     }
   }
 
@@ -72,21 +91,19 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
     if (this.customAction != null) {
       if (this.customAction.exe.toLowerCase() === 'd:\\home\\data\\daas\\bin\\daasconsole.exe') {
         this.customActionType = 'Diagnostics';
+
         if (this.customAction.parameters !== '') {
           invalidSetting = this.getDiagnoserNameAndOptionFromParameter(this.customAction.parameters);
         }
         if (invalidSetting) {
           this.diagnoser = this.Diagnosers[0];
           this.diagnoserOption = this.DiagnoserOptions[2];
-          this.updateDaasAction();
         }
-
       }
       else {
         this.customActionType = 'Custom';
         this.customActionExe = this.customAction.exe;
         this.customActionParams = this.customAction.parameters;
-        this.updateCustomAction();
       }
       return true;
     }
@@ -97,21 +114,21 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   chooseDiagnoser(val) {
     this.diagnoser = val;
-    this.updateDaasAction();
+    
   }
 
   chooseDiagnoserAction(val) {
     this.diagnoserOption = val;
-    this.updateDaasAction();
+   
   }
 
-  updateCustomActionExe(exe:string){
+  updateCustomActionExe(exe: string) {
     this.customActionExe = exe;
-    this.updateCustomAction();
+    
   }
-  updateCustomActionParams(params:string){
+  updateCustomActionParams(params: string) {
     this.customActionParams = params;
-    this.updateCustomAction();
+    
   }
   updateCustomAction() {
     let autoHealCustomAction = new AutoHealCustomAction();
@@ -121,12 +138,19 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   }
 
   updateDaasAction() {
-    let autoHealDaasAction = new AutoHealCustomAction();
-    autoHealDaasAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
-    autoHealDaasAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
-    this.customActionChanged.emit(autoHealDaasAction);
+    if (this.alwaysOnEnabled === true) {
+      let autoHealDaasAction = new AutoHealCustomAction();
+      autoHealDaasAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
+      autoHealDaasAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
+      this.customActionChanged.emit(autoHealDaasAction);
+    }
+    else {
+      let emptyAction = new AutoHealCustomAction();
+      emptyAction.exe = "";
+      emptyAction.parameters = "";
+      this.customActionChanged.emit(emptyAction);
+    }
   }
-
 
   getDiagnoserNameAndOptionFromParameter(param: string): boolean {
     let invalidSetting = true;

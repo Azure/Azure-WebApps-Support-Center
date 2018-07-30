@@ -4,8 +4,6 @@ import { AutoHealSettings, AutoHealActions, AutoHealCustomAction, AutoHealTrigge
 import { SiteService } from '../../services/site.service';
 import { AutohealingService } from '../../services/autohealing.service';
 import { FormatHelper } from '../../utilities/formattingHelper';
-import { AutohealingStartupTimeComponent } from './autohealing-startup-time/autohealing-startup-time.component';
-import { THIS_EXPR } from '../../../../../node_modules/@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'autohealing',
@@ -13,8 +11,6 @@ import { THIS_EXPR } from '../../../../../node_modules/@angular/compiler/src/out
   styleUrls: ['./autohealing.component.css']
 })
 export class AutohealingComponent implements OnInit {
-  @ViewChild(AutohealingStartupTimeComponent) private startupTimeComponent: AutohealingStartupTimeComponent
-
   @Input()
   autohealingSettings: AutoHealSettings;
   originalAutoHealSettings: AutoHealSettings;
@@ -36,6 +32,7 @@ export class AutohealingComponent implements OnInit {
   customAction: AutoHealCustomAction = null;
   errorMessage: string = "";
   minProcessExecutionTime: number;
+  minProcessExecutionTimeExpanded: boolean = false;
 
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService) {
   }
@@ -93,6 +90,7 @@ export class AutohealingComponent implements OnInit {
       }
       this.checkForChanges();
     }
+    this.minProcessExecutionTimeExpanded = false;
   }
 
   checkForChanges() {
@@ -111,6 +109,7 @@ export class AutohealingComponent implements OnInit {
     this.customAction = action;
     this.autohealingSettings.autoHealRules.actions.customAction = this.customAction;
     this.checkForChanges();
+    this.actionCollapsed = true;
   }
 
   saveChanges() {
@@ -125,9 +124,10 @@ export class AutohealingComponent implements OnInit {
         }, 3000);
         this.autohealingSettings = savedAutoHealSettings;
 
-        //collapse both the Trigger and Action tiles
+        //collapse all the tiles
         this.triggerSelected = -1;
         this.actionCollapsed = true;
+        this.minProcessExecutionTimeExpanded = false;
 
         this.initComponent(savedAutoHealSettings);
       },
@@ -140,6 +140,7 @@ export class AutohealingComponent implements OnInit {
 
   updateTriggerStatus(triggerRule: number) {
     this.actionCollapsed = true;
+    this.minProcessExecutionTimeExpanded = false;
     if (this.autohealingSettings.autoHealRules.triggers == null) {
       this.autohealingSettings.autoHealRules.triggers = new AutoHealTriggers();
     }
@@ -150,6 +151,7 @@ export class AutohealingComponent implements OnInit {
 
     // collapse the conditions pane
     this.triggerSelected = -1;
+    this.minProcessExecutionTimeExpanded = false;
 
     //this is to allow user to collapse the action tile if they click it again
     if (this.actionSelected != action) {
@@ -158,8 +160,6 @@ export class AutohealingComponent implements OnInit {
     else {
       this.actionCollapsed = !this.actionCollapsed;
     }
-
-    this.startupTimeComponent.resetComponent();
 
     this.actionSelected = action;
     if (this.autohealingSettings.autoHealRules.actions == null) {
@@ -171,10 +171,10 @@ export class AutohealingComponent implements OnInit {
 
     if (action === AutoHealActionType.CustomAction) {
       if (this.customAction == null) {
-        let customAction = new AutoHealCustomAction();
-        customAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
-        customAction.parameters = '-Troubleshoot "Memory Dump"  60';
-        this.customAction = customAction;
+        // let customAction = new AutoHealCustomAction();
+        // customAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
+        // customAction.parameters = '-Troubleshoot "Memory Dump"  60';
+        // this.customAction = customAction;
       }
       this.autohealingSettings.autoHealRules.actions.customAction = this.customAction;
     }
@@ -243,9 +243,8 @@ export class AutohealingComponent implements OnInit {
     this.updateConditionsAndActions();
     this.checkForChanges();
     this.actionCollapsed = true;
-    this.startupTimeComponent.resetComponent();
+    this.minProcessExecutionTimeExpanded = true;
+
   }
-
-
 
 }
