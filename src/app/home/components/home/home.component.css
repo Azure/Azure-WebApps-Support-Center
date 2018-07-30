@@ -5,3 +5,12 @@
 #page-description {
     width:500px;
 }
+
+.search-input-group {
+    width:600px;
+}
+
+.category-container {
+    display: flex;
+    align-items: stretch;
+}

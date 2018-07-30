@@ -10,10 +10,10 @@ import { ResourceType } from '../../../shared/models/portal';
 
 @Injectable()
 @RegisterMessageFlowWithFactory()
-export class MainMenuMessageFlow implements IMessageFlowProvider {
+export class MainMenuMessageFlow extends IMessageFlowProvider {
 
     constructor(private _authService: AuthService) {
-
+        super();
     }
 
     GetMessageFlowList(): MessageGroup[] {

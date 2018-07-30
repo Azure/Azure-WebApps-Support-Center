@@ -46,3 +46,19 @@
 .ngx-datatable.bootstrap .datatable-header .datatable-header-cell .datatable-header-cell-label {
     color: #3a3a3a;
 }
+
+.critical-color {
+    color: #ff0000;
+}
+
+.warning-color {
+    color: #ff9104;
+}
+
+.success-color {
+    color: #3da907;
+}
+
+.info-color {
+    color: #3a9bc7;
+}

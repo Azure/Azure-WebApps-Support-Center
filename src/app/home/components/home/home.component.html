@@ -1,15 +1,24 @@
 <div class="home-container">
-    <input placeholder="Topic Search" />
-    <br/>
-    <h3>App Service Diagnostics</h3>
-    <p id="page-description">
-        Use this diagnostics tools to delve deeper into how your app is working, solve problems, and discover how to improve your
-        application.
-    </p>
-    <div>
-        <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
-            <category-tile [category]="category"></category-tile>
+    <div class="input-group input-group-lg search-input-group">
+        <input type="text" class="form-control" aria-label="Topic Search" placeholder="Topic Search" [(ngModel)]="searchValue" (focus)="onSearchBoxFocus(evt)">
+        <div class="input-group-btn">
+            <button class="btn btn-default" type="button" (click)="searchBoxFocus = false"><i class="fa fa-close"></i></button>
         </div>
-
+    </div>
+    <div *ngIf="!searchBoxFocus else searchResults">
+        <br/>
+        <h3>App Service Diagnostics</h3>
+        <p id="page-description">
+            Use App Service Diagnostics to investigate how your app is performing, diagnose issues, and discover how to improve your application. Select the problem category that best matches the information or tool that you're interested in: 
+        </p>
+        <div *ngIf="categories" class="category-container">
+            <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
+                <category-tile [category]="category"></category-tile>
+            </div>
+        </div>
     </div>
 </div>
+
+<ng-template #searchResults>
+    <search-results [searchValue]="searchValue"></search-results>
+</ng-template>

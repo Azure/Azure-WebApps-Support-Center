@@ -1,0 +1,13 @@
+<div class="category-container" *ngIf="!selectedDetector">
+  <div *ngFor="let detector of detectors">
+    <div class="category" (click)="select(detector)" [style.visibility]="!selectedDetector || selectedDetector === detector ? 'visible' : 'hidden'"
+      [class.selected-category]="selectedDetector && selectedDetector === detector">
+      <div>
+        {{detector.name}}
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="selectedDetector">
+  <dynamic-component [componentData]="message"></dynamic-component>
+</div>

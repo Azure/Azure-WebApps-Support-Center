@@ -1,8 +1,17 @@
 <div class="category-container" (click)="navigateToCategory()">
-  <div class="title-container">
+  <div class="title-container" [style.background-color]="category.color">
     {{category.name}}
   </div>
-  <div class="description">
-    {{category.description}}
+  <div class="category-body">
+    <p>{{category.description}}</p>
+    <div>
+        <span class="keyword-label">Keywords</span>
+        <div class="keywords">
+          <div class="keyword" [style.background-color]="category.color.replace(')',',.5)')" *ngFor="let keyword of category.keywords">
+            {{keyword}}
+          </div>
+        </div>
+      </div>
   </div>
+  
 </div>

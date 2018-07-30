@@ -39,7 +39,6 @@ import { AppInsightsDependenciesComponent } from './app-insights/dependencies/ap
 
 import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalysis/tcp-connections-analysis.component';
 import { ProblemSolutionComponent } from './problem-solution/problem-solution.component';
-import { GenericDetectorComponent } from './generic-detector/generic-detector.component';
 
 @NgModule({
     declarations: [
@@ -74,7 +73,6 @@ import { GenericDetectorComponent } from './generic-detector/generic-detector.co
         AppInsightsExceptionsComponent,
         AppInsightsDependenciesComponent,
         ProblemSolutionComponent,
-        GenericDetectorComponent
     ],
     imports: [
         RouterModule.forChild(AvailabilityAndPerformanceCategoryRouteConfig),

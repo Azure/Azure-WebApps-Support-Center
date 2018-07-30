@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 
@@ -26,26 +26,31 @@ export class SupportBotComponent implements OnInit {
     slotName: string;
     hostingEnvironmentName: string;
 
-    constructor(private _messageProcessor: MessageProcessor, private _route: ActivatedRoute, private _analysisService: AppAnalysisService, private _windowService: WindowService) {
+    @Input() overrideMessageProcessor: MessageProcessor;
+
+    constructor(private _messageProcessor: MessageProcessor) {
         this.messages = [];
         this.showTypingMessage = false;
         this.chatContainerHeight = 0;
     }
 
     ngOnInit(): void {
+        if(this.overrideMessageProcessor) {
+            this._messageProcessor = this.overrideMessageProcessor;
+        }
 
-        this.subscriptionId = this._route.snapshot.params['subscriptionid'];
-        this.resourceGroup = this._route.snapshot.params['resourcegroup'];
-        this.siteName = this._route.snapshot.params['sitename'];
-        this.slotName = this._route.snapshot.params['slot'] ? this._route.snapshot.params['slot'] : '';
-        this.hostingEnvironmentName = this._route.snapshot.params['name'];
-        this.chatContainerHeight = this._windowService.window.innerHeight - 60;
+        // this.subscriptionId = this._route.snapshot.params['subscriptionid'];
+        // this.resourceGroup = this._route.snapshot.params['resourcegroup'];
+        // this.siteName = this._route.snapshot.params['sitename'];
+        // this.slotName = this._route.snapshot.params['slot'] ? this._route.snapshot.params['slot'] : '';
+        // this.hostingEnvironmentName = this._route.snapshot.params['name'];
+        this.chatContainerHeight = window.innerHeight - 60;
 
         this.getMessage();
 
-        let warmupTasks = Observable.forkJoin(this._getWarmpUpTasks());
-        warmupTasks.subscribe(data => {
-        });
+        // let warmupTasks = Observable.forkJoin(this._getWarmpUpTasks());
+        // warmupTasks.subscribe(data => {
+        // });
     }
 
     scrollToBottom(event?: any): void {
@@ -77,16 +82,16 @@ export class SupportBotComponent implements OnInit {
         }
     }
 
-    private _getWarmpUpTasks(): Observable<IAppAnalysisResponse>[] {
+    // private _getWarmpUpTasks(): Observable<IAppAnalysisResponse>[] {
 
-        var analysisList = ["appanalysis", "perfanalysis"]
-        var result: Observable<IAppAnalysisResponse>[] = [];
-        if(this.siteName && this.siteName != '') {
-            analysisList.forEach((item) => {
-                result.push(this._analysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', item));
-            });
-        }
+    //     var analysisList = ["appanalysis", "perfanalysis"]
+    //     var result: Observable<IAppAnalysisResponse>[] = [];
+    //     if(this.siteName && this.siteName != '') {
+    //         analysisList.forEach((item) => {
+    //             result.push(this._analysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', item));
+    //         });
+    //     }
 
-        return result;
-    }
+    //     return result;
+    // }
 }

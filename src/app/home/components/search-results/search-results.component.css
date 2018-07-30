@@ -1,0 +1,45 @@
+.search-result-container {
+    padding-top: 10px;
+}
+
+.search-result {
+    padding:5px;
+    display: flex;
+    cursor: pointer;
+}
+
+.search-result:hover {
+    background-color: #eeeeee
+}
+
+.col-fixed-100{
+    width:100px;
+    height:100%;
+    z-index:1;
+}
+
+.col-offset-100{
+    padding-left:100px;
+    z-index:0;
+}
+
+.feature-icon {
+    padding:5px 30px 5px 10px;
+    display: flex;
+    align-items: center;
+}
+
+.feature-icon i {
+    color: white;
+    font-size: 20px;
+}
+
+.feature-icon-cirlce {
+    background-color: rgb(85, 113, 138);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

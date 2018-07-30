@@ -25,11 +25,22 @@ export class MessageProcessor {
         let messageGroups: MessageGroup[] = [];
         this._messageFlowProviders.forEach(provider => {
             messageGroups = messageGroups.concat(provider.GetMessageFlowList());
+            provider.SubscribeToAdditionalMessageFlowLists().subscribe(newMessageGroups => {
+                this._messageGroups.concat(newMessageGroups);
+            })
         })
 
         this._messageGroups = messageGroups;
 
-        this._currentKey = this._startingKey;
+        this.setCurrentKey(this._startingKey);
+
+        // this._currentKey = this._startingKey;
+        // this._currentMessageIterator = 0;
+        // this._currentMessageGroup = this._getMessageGroupByKey(this._currentKey);
+    }
+
+    public setCurrentKey(key: string) {
+        this._currentKey = key;
         this._currentMessageIterator = 0;
         this._currentMessageGroup = this._getMessageGroupByKey(this._currentKey);
     }

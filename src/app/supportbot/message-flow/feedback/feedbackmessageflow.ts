@@ -9,9 +9,10 @@ import { TalkToAgentMessageFlow } from '../talk-to-agent/talktoagentmessageflow'
 
 @Injectable()
 @RegisterMessageFlowWithFactory()
-export class FeedbackMessageFlow implements IMessageFlowProvider {
+export class FeedbackMessageFlow extends IMessageFlowProvider {
 
     constructor(private talkToAgentMessageFlow: TalkToAgentMessageFlow) {
+        super();
     }
 
     GetMessageFlowList(): MessageGroup[] {

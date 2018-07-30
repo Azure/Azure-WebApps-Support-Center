@@ -10,11 +10,16 @@ import { GraphMessageComponent } from '../common/graph-message/graph-message.com
 import { ProblemStatementMessageComponent } from '../common/problem-statement-message/problem-statement-message.component';
 import { TalkToAgentMessageComponent } from '../message-flow/talk-to-agent/talk-to-agent-message.component';
 import { Message } from '../models/message';
+import { CategoryMenuComponent } from '../message-flow/category-menu/category-menu.component';
+import { DetectorSummaryComponent } from '../message-flow/detector-summary/detector-summary.component';
+import { DocumentSearchResultsComponent } from '../message-flow/document-search-results/document-search-results.component';
+import { DocumentSearchComponent } from '../message-flow/document-search/document-search.component';
 
 @Component({
     selector: 'dynamic-component',
     entryComponents: [TextMessageComponent, MainMenuComponent, ButtonMessageComponent, HealthCheckComponent, FeedbackComponent, 
-        SolutionsMessageComponent, GraphMessageComponent, ProblemStatementMessageComponent, TalkToAgentMessageComponent],
+        SolutionsMessageComponent, GraphMessageComponent, ProblemStatementMessageComponent, TalkToAgentMessageComponent, CategoryMenuComponent,
+        DetectorSummaryComponent, DocumentSearchComponent, DocumentSearchResultsComponent],
     template: `
     <div #dynamicComponentContainer></div>
   `,

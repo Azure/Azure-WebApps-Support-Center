@@ -4,16 +4,41 @@
     border-radius: 5px;
     overflow: hidden;
     cursor: pointer;
+    height: 100%;
+}
+
+.category-container:hover {
+    box-shadow: 0 11px 15px -7px rgba(0,0,0,.2), 0 24px 38px 3px rgba(0,0,0,.14), 0 9px 46px 8px rgba(0,0,0,.12);
+    transition: box-shadow .28s cubic-bezier(.4,0,.2,1),-webkit-box-shadow .28s cubic-bezier(.4,0,.2,1);
 }
 
 .title-container {
-    padding: 5px;
+    padding: 10px;
     font-size: 16px;
     width: 100%;
     background-color: #d7a8e1;
     font-weight: 500;
 }
 
-.description {
+.category-body {
     padding: 10px;
+}
+
+.keywords {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.keyword-label {
+    color: #949494;
+    font-size: 12px;
+}
+
+.keyword {
+    font-size: 12px;
+    background-color: #f1d8f7;
+    border-radius: 5px;
+    padding:3px;
+    padding: 2px 4px;
+    margin: 0px 5px 5px 0px;
 }

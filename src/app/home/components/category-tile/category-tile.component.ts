@@ -22,6 +22,7 @@ export class CategoryTileComponent implements OnInit {
       preserveFragment: true,
       relativeTo: this._activatedRoute
     };
+    console.log('navigate to' + this.category.id);
 
     this._router.navigate(['categories', this.category.id], navigationExtras);
   }

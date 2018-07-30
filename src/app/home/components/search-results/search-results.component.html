@@ -1,0 +1,18 @@
+<div class="search-result-container">
+  <div class="search-result" *ngFor="let feature of features" (click)="navigateToFeature(feature)">
+    <div class="feature-icon">
+      <div class="feature-icon-cirlce" [style.background-color]="feature.featureType.color">
+        <i class="fa" [ngClass]="feature.featureType.icon"></i>
+      </div>
+
+    </div>
+    <div class="">
+      <h4>{{feature.name}}</h4>
+      <div>
+        <i>{{feature.category}}</i>
+      </div>
+      <p>{{feature.description}}</p>
+    </div>
+
+  </div>
+</div>

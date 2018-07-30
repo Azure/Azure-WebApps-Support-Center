@@ -1,0 +1,9 @@
+<div class="detector-summary-container">
+  <div class="status-bar" *ngFor="let model of detectorSummaryViewModels" (click)="navigateTo(model.path)">
+    <div class="status-bar-icon align-content-center">
+        <status-icon [loading]="model.loading" [status]="model.status" [size]="16"></status-icon>
+    </div>
+    <div class="status-bar-title">{{model.name}}</div>
+    <div class="align-content-center"><i class="fa fa-chevron-right"></i></div>
+  </div>
+</div>

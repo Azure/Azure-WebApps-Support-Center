@@ -6,7 +6,7 @@ import { RegisterMessageFlowWithFactory } from '../message-flow.factory';
 
 @Injectable()
 @RegisterMessageFlowWithFactory()
-export class StartupMessages implements IMessageFlowProvider {
+export class StartupMessages extends IMessageFlowProvider {
 
     public GetMessageFlowList(): MessageGroup[] {
 

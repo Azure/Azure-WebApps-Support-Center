@@ -14,12 +14,13 @@ import { AppType } from '../../../shared/models/portal';
 
 @Injectable()
 @RegisterMessageFlowWithFactory()
-export class TalkToAgentMessageFlow implements IMessageFlowProvider {
+export class TalkToAgentMessageFlow extends IMessageFlowProvider {
 
     public isApplicable: boolean;
     private isDemoMode: boolean = false;
 
     constructor(private siteService: SiteService, private authService: AuthService) {
+        super();
         this.isApplicable = false;
 
         if (this.authService.resourceType === ResourceType.Site) {

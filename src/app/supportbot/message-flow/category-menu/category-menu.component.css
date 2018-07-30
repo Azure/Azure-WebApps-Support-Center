@@ -1,0 +1,29 @@
+.category-container {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px 0px;
+}
+
+.category {
+    width: 180px;
+    background-color: #6186e2;
+    color: white;
+    margin-right: 30px;
+    padding: 10px;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.category > div {
+    text-align: center;
+    width:100%;
+}
+
+.selected-category {
+    background-color: #8c61e2;
+}

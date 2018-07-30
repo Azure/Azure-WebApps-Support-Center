@@ -69,6 +69,8 @@ import { AvailabilityLoggingService } from './services/logging/availability.logg
 import { BotLoggingService } from './services/logging/bot.logging.service';
 import { StartupModule } from '../startup/startup.module';
 import { TabsComponent } from './components/tabs/tabs.component';
+import { GenericDetectorComponent } from './components/generic-detector/generic-detector.component';
+import { DiagnosticDataModule } from '../../../node_modules/applens-diagnostics';
 
 @NgModule({
     declarations: [
@@ -114,7 +116,8 @@ import { TabsComponent } from './components/tabs/tabs.component';
         DaasValidatorComponent,
         DaasSessionsDetailedComponent,
         LiveAgentChatComponent,
-        TabsComponent
+        TabsComponent,
+        GenericDetectorComponent
     ],
     imports: [
         HttpModule,
@@ -122,7 +125,8 @@ import { TabsComponent } from './components/tabs/tabs.component';
         StartupModule,
         FormsModule,
         RouterModule,
-        NguCarouselModule
+        NguCarouselModule,
+        DiagnosticDataModule
     ],
     exports: [
         CommonModule,
@@ -170,7 +174,8 @@ import { TabsComponent } from './components/tabs/tabs.component';
         NetworkTraceToolComponent,
         IncidentSummaryComponent,
         LiveAgentChatComponent,
-        TabsComponent
+        TabsComponent,
+        GenericDetectorComponent
     ]
 })
 export class SharedModule {

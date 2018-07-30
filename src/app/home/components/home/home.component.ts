@@ -14,11 +14,23 @@ export class HomeComponent implements OnInit {
 
   categories: Category[];
 
+  searchValue: string;
+  searchBoxFocus: boolean;
+
   constructor(private _resourceService: ResourceService, private _categoryService: CategoryService) { 
-    this.categories = this._categoryService.categories;
+    this._categoryService.categories.subscribe(categories => this.categories = categories);
   }
 
   ngOnInit() {
     this.resourceName = this._resourceService.resource.name;
+  }
+
+  onSearchBoxFocus(event: any): void {
+    this.searchBoxFocus = true;
+  }
+
+  clearSearch() {
+    this.searchBoxFocus = false;
+    this.searchValue = '';
   }
 }

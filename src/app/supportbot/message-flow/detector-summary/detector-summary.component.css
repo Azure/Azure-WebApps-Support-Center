@@ -1,0 +1,29 @@
+.detector-summary-container {
+    margin: 10px 0px;
+}
+
+.status-bar {
+    width: 700px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    background-color: #eeeeee;
+    border: 1px solid #dddddd;
+    display: flex;
+    margin: 10px 0px;
+    cursor: pointer;
+    justify-content: space-between;
+}
+
+.align-content-center {
+    display: flex;
+    align-items: center;
+}
+
+.status-bar-icon {
+    padding: 0px 20px 0px 5px;
+}
+
+.status-bar-title {
+    width: inherit;
+}

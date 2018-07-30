@@ -27,6 +27,12 @@ import { CpuAnalysisChatFlow } from './message-flow/cpu-analysis-chat/cpu-analys
 import { ProblemStatementMessageComponent } from './common/problem-statement-message/problem-statement-message.component';
 
 import { AppInsightsSettingsComponent } from '../availability/app-insights/app-insights-settings.component';
+import { CategoryMenuComponent } from './message-flow/category-menu/category-menu.component';
+import { DetectorSummaryComponent } from './message-flow/detector-summary/detector-summary.component';
+import { DocumentSearchComponent } from './message-flow/document-search/document-search.component';
+import { DocumentSearchResultsComponent } from './message-flow/document-search-results/document-search-results.component';
+import { SharedV2Module } from '../shared-v2/shared-v2.module';
+import { DiagnosticDataModule } from 'applens-diagnostics';
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
@@ -48,10 +54,14 @@ const _hostingEnvironmentResourceUrl: string = 'subscriptions/:subscriptionid/re
         SolutionsMessageComponent,
         GraphMessageComponent,
         ProblemStatementMessageComponent,
+        CategoryMenuComponent,
+        DetectorSummaryComponent,
         ToolStackPipe,
         PlatformPipe,
         AppTypePipe,
-        SkuPipe
+        SkuPipe,
+        DocumentSearchComponent,
+        DocumentSearchResultsComponent
     ],
     imports: [
         RouterModule.forChild(
@@ -96,10 +106,15 @@ const _hostingEnvironmentResourceUrl: string = 'subscriptions/:subscriptionid/re
         ),
         SharedModule,
         AvailabilityModule,
-        SolutionsModule
+        SolutionsModule,
+        SharedV2Module,
+        DiagnosticDataModule
     ],
     exports: [
-        HomepageComponent
+        HomepageComponent,
+        SupportBotComponent,
+        CategoryMenuComponent,
+        DetectorSummaryComponent
     ],
     providers: [
         StartupMessages,

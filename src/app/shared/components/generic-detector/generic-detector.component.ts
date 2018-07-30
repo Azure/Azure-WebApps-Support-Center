@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment-timezone';
-import { GenericApiService } from '../../shared/services/generic-api.service';
 import { ActivatedRoute } from '@angular/router';
 import { DetectorResponse } from 'applens-diagnostics/src/app/diagnostic-data/models/detector';
+import { GenericApiService } from '../../services/generic-api.service';
 
 @Component({
   selector: 'generic-detector',

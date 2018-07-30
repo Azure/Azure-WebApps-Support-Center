@@ -21,8 +21,8 @@ import { NetworkTraceToolComponent } from '../shared/components/tools/network-tr
 import { IncidentSummaryComponent } from '../shared/components/incident-summary/incident-summary.component';
 import { ToolNames } from '../shared/models/tools-constants';
 import { DaasSessionsDetailedComponent } from '../shared/components/daas-sessions-detailed/daas-sessions-detailed.component';
-import { GenericDetectorComponent } from './generic-detector/generic-detector.component';
 import { TabTitleResolver } from '../shared/resolvers/tab-name.resolver';
+import { GenericDetectorComponent } from '../shared/components/generic-detector/generic-detector.component';
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';

@@ -52,7 +52,7 @@ import { GenericApiService } from './shared/services/generic-api.service';
     AppComponent
   ],
   providers: [
-    { provide: RouteReuseStrategy, useClass: CustomReuseStrategy }
+    { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
     { provide: DiagnosticService, useExisting: GenericApiService }
   ],
   bootstrap: [AppComponent]

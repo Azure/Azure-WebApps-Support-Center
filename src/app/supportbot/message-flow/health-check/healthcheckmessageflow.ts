@@ -12,9 +12,11 @@ import { TalkToAgentMessageFlow } from '../talk-to-agent/talktoagentmessageflow'
 
 @Injectable()
 @RegisterMessageFlowWithFactory()
-export class HealthCheckMessageFlow implements IMessageFlowProvider {
+export class HealthCheckMessageFlow extends IMessageFlowProvider {
 
-    constructor(private _appAnalysisService: AppAnalysisService, private _cpuAnalysisChatFlow: CpuAnalysisChatFlow, private _logger: BotLoggingService, private talkToAgentMessageFlow: TalkToAgentMessageFlow) { }
+    constructor(private _appAnalysisService: AppAnalysisService, private _cpuAnalysisChatFlow: CpuAnalysisChatFlow, private _logger: BotLoggingService, private talkToAgentMessageFlow: TalkToAgentMessageFlow) {
+        super();
+    }
 
     private _self: HealthCheckMessageFlow = this;
 

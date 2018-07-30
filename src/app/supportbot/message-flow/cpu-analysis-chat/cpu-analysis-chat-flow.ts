@@ -20,7 +20,7 @@ import { ResourceType } from '../../../shared/models/portal';
 
 @Injectable()
 @RegisterMessageFlowWithFactory()
-export class CpuAnalysisChatFlow implements IMessageFlowProvider {
+export class CpuAnalysisChatFlow extends IMessageFlowProvider {
 
     private cpuDetectorResponseSubject: BehaviorSubject<IDetectorResponse> = new BehaviorSubject(null);
     private solutionListSubject: BehaviorSubject<ISolution[]> = new BehaviorSubject(null);
@@ -41,6 +41,7 @@ export class CpuAnalysisChatFlow implements IMessageFlowProvider {
 
 
     constructor(private _appAnalysisService: AppAnalysisService, private _siteService: SiteService, private _authService: AuthService) {
+        super();
         if (this._authService.resourceType === ResourceType.Site) {
             this._siteService.currentSiteMetaData.subscribe(siteInfo => {
                 if (siteInfo) {
