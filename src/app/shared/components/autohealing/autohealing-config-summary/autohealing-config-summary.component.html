@@ -11,14 +11,7 @@
       </li>
     </ul>
   </div>
-  <div *ngIf="settingsSummary.Conditions.length === 0 || settingsSummary.Action ===  ''">
-    No rule configured!
-  </div>
-  <div *ngIf="settingsSummary.Conditions == null">
-    No rule configured!
-  </div>
 </div>
-
-<div *ngIf="settingsSummary == null">
+<div *ngIf="!(settingsSummary != null && settingsSummary.Conditions != null && settingsSummary.Actions != null && settingsSummary.Conditions.length != 0 && settingsSummary.Action.length != 0)">
   No rule configured!
 </div>
