@@ -35,31 +35,32 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
       return;
     }
     this.actualhealSettings = JSON.parse(this.autohealSettings);
-    
-    if (this.actualhealSettings.autoHealRules != null && this.actualhealSettings.autoHealRules.actions != null && this.actualhealSettings.autoHealRules.triggers != null) {
+
+    if (this.actualhealSettings.autoHealRules != null 
+      && this.actualhealSettings.autoHealRules.actions != null 
+      && this.actualhealSettings.autoHealRules.triggers != null) {
 
       this.settingsSummary = {};
       let conditions: string[] = [];
-      if (this.actualhealSettings.autoHealRules.triggers != null) {
-        if (this.actualhealSettings.autoHealRules.triggers.privateBytesInKB > 0) {
-          conditions.push("Process consumes more than " + FormatHelper.formatBytes(this.actualhealSettings.autoHealRules.triggers.privateBytesInKB * 1024, 2) + " private bytes of memory");
+
+      if (this.actualhealSettings.autoHealRules.triggers.privateBytesInKB > 0) {
+        conditions.push("Process consumes more than " + FormatHelper.formatBytes(this.actualhealSettings.autoHealRules.triggers.privateBytesInKB * 1024, 2) + " private bytes of memory");
+      }
+
+      if (this.actualhealSettings.autoHealRules.triggers.requests != null) {
+        conditions.push("App has served  " + this.actualhealSettings.autoHealRules.triggers.requests.count + " requests in a duration of  " + FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.requests.timeInterval) + " seconds");
+      }
+
+      if (this.actualhealSettings.autoHealRules.triggers.slowRequests != null) {
+        conditions.push(this.actualhealSettings.autoHealRules.triggers.slowRequests.count + " requests take more than  " + FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.slowRequests.timeTaken) + " seconds in a duration of  " + FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.slowRequests.timeInterval) + " seconds");
+      }
+
+      if (this.actualhealSettings.autoHealRules.triggers.statusCodes != null) {
+        for (let index = 0; index < this.actualhealSettings.autoHealRules.triggers.statusCodes.length; index++) {
+          let statusCodeRule = this.actualhealSettings.autoHealRules.triggers.statusCodes[index];
+          conditions.push(statusCodeRule.count + " requests end up with HTTP Status  " + statusCodeRule.status + "." + statusCodeRule.subStatus + " and win-32 status  " + statusCodeRule.win32Status + " in a duration of  " + FormatHelper.timespanToSeconds(statusCodeRule.timeInterval) + " seconds");
         }
 
-        if (this.actualhealSettings.autoHealRules.triggers.requests != null) {
-          conditions.push("App has served  " + this.actualhealSettings.autoHealRules.triggers.requests.count + " requests in a duration of  " + FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.requests.timeInterval) + " seconds");
-        }
-
-        if (this.actualhealSettings.autoHealRules.triggers.slowRequests != null) {
-          conditions.push(this.actualhealSettings.autoHealRules.triggers.slowRequests.count + " requests take more than  " + FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.slowRequests.timeTaken) + " seconds in a duration of  " + FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.slowRequests.timeInterval) + " seconds");
-        }
-
-        if (this.actualhealSettings.autoHealRules.triggers.statusCodes != null) {
-          for (let index = 0; index < this.actualhealSettings.autoHealRules.triggers.statusCodes.length; index++) {
-            let statusCodeRule = this.actualhealSettings.autoHealRules.triggers.statusCodes[index];
-            conditions.push(statusCodeRule.count + " requests end up with HTTP Status  " + statusCodeRule.status + "." + statusCodeRule.subStatus + " and win-32 status  " + statusCodeRule.win32Status + " in a duration of  " + FormatHelper.timespanToSeconds(statusCodeRule.timeInterval) + " seconds");
-          }
-
-        }
       }
 
       let action: string = "";
