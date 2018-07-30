@@ -45,14 +45,13 @@ export class AutohealingComponent implements OnInit {
           this.retrievingAutohealSettings = false;
           this.autohealingSettings = autoHealSettings;
           this.initComponent(this.autohealingSettings);
+        },
+        err => {
+          this.retrievingAutohealSettings = false;
+          this.errorMessage = `Failed with an error ${err} while retrieving autoheal settings`;
         });
       }
-    },
-      err => {
-        this.retrievingAutohealSettings = false;
-        this.errorMessage = "Failed while getting AutoHeal settings with error " + JSON.stringify(err);
-        this.errorMessage += ". Please retry after some time";
-      });
+    });
   }
 
   initComponent(autoHealSettings: AutoHealSettings) {

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ArmService } from "./arm.service";
 import { AuthService } from "./auth.service";
-import { Http} from "@angular/http";
+import { Http } from "@angular/http";
 import { UriElementsService } from "./urielements.service";
 import { Observable } from "rxjs";
 import { AutoHealSettings } from "../models/autohealing";
@@ -15,12 +15,13 @@ export class AutohealingService {
 
     getAutohealSettings(site: SiteInfoMetaData): Observable<AutoHealSettings> {
         let resourceUri: string = this._uriElementsService.getConfigWebUrl(site);
-        return this._armService.getResource<ResponseMessageEnvelope<AutoHealSettings>>(resourceUri).map((response: ResponseMessageEnvelope<AutoHealSettings>) => {
-            let autohealSettings: AutoHealSettings = new AutoHealSettings();
-            autohealSettings.autoHealEnabled = response.properties.autoHealEnabled;
-            autohealSettings.autoHealRules = response.properties.autoHealRules;
-            return autohealSettings;
-        });
+        return this._armService.getResource<ResponseMessageEnvelope<AutoHealSettings>>(resourceUri, null, true)
+            .map((response: ResponseMessageEnvelope<AutoHealSettings>) => {
+                let autohealSettings: AutoHealSettings = new AutoHealSettings();
+                autohealSettings.autoHealEnabled = response.properties.autoHealEnabled;
+                autohealSettings.autoHealRules = response.properties.autoHealRules;
+                return autohealSettings;
+            });
 
     }
 

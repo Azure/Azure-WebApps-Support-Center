@@ -3,11 +3,11 @@
     <label style="margin-right:20px"> {{ ToggleText }}
     </label>
     <div class="setting-control-container">
-      <div role="radiogroup" class="medium" aria-disabled="false" tabindex="0" aria-activedescendant="2d688408-1d94-4154-9502-af89c653daca-1">
-        <div role="radio" (click)="update(false)" id="2d688408-1d94-4154-9502-af89c653daca-0" [attr.aria-checked]="!selected">
+      <div role="radiogroup" class="medium" aria-disabled="false">
+        <div role="radio" (click)="update(false)" [attr.aria-checked]="!selected">
           Off
         </div>
-        <div role="radio" (click)="update(true)" id="2d688408-1d94-4154-9502-af89c653daca-1" [attr.aria-checked]="selected">
+        <div role="radio" (click)="update(true)" [attr.aria-checked]="selected">
           On
         </div>
       </div>

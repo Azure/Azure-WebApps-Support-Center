@@ -15,7 +15,7 @@
     {{ errorMessage }}
   </div>
 
-  <div *ngIf="!retrievingAutohealSettings">
+  <div *ngIf="!retrievingAutohealSettings && !errorMessage">
     <div style="margin-top: 15px;">
       <toggle-button ToggleText="Auto-Healing Enabled" [selected]="autohealingSettings.autoHealEnabled" (selectedChange)="autohealingSettings.autoHealEnabled = $event; checkForChanges()"></toggle-button>
     </div>
@@ -101,7 +101,7 @@
     </div>
   </div>
 
-  <div *ngIf="!retrievingAutohealSettings" class="saveSection tile-content">
+  <div *ngIf="!retrievingAutohealSettings  && !errorMessage" class="saveSection tile-content">
     <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="saveChanges()">Save</button>
     <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="reset()">Reset</button>
     <div *ngIf="savingAutohealSettings" class="inline">
