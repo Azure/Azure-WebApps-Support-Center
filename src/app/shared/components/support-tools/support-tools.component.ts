@@ -52,7 +52,7 @@ export class SupportToolsComponent {
     }
 
     initialize() {
-        this.mitigateLink = "availability/mitigate";
+        this.mitigateLink = "tools/mitigate";
 
         this.supportTools.push({
             title: "Metrics per Instance (Apps)",

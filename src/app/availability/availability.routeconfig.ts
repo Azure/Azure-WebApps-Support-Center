@@ -375,14 +375,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     ,
     // Autohealing
     {
-        path: _siteResourceUrl + '/diagnostics/availability/mitigate',
+        path: _siteResourceUrl + '/diagnostics/tools/mitigate',
         component: AutohealingComponent,
         data: {
             navigationTitle: 'Mitigate',
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/availability/mitigate',
+        path: _slotResourceUrl + '/diagnostics/tools/mitigate',
         component: AutohealingComponent,
         data: {
             navigationTitle: 'Mitigate',
