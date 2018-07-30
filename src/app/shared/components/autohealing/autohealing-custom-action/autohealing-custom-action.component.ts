@@ -25,11 +25,11 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   diagnoser: any;
   diagnoserOption: any = [{ option: "", Description: "" }];
 
-  Diagnosers = [{ Name: "Memory Dump", Description: "Collects memory dumps of the process and the child process'es hosting your App and analyzes them for errors" },
+  Diagnosers = [{ Name: "Memory Dump", Description: "Collects memory dumps of the process and the child processes hosting your app and analyzes them for errors" },
   { Name: "CLR Profiler", Description: "Profiles ASP.NET application code to identify exceptions and performance issues" },
   { Name: "CLR Profiler With ThreadStacks", Description: "Profiles ASP.NET application code to identify exceptions and performance issues and dumps stacks to identify deadlocks" },
-  { Name: "JAVA Memory Dump", Description: "Collects a binary memory dump using jMap of all java.exe processes running for this WebApp" },
-  { Name: "JAVA Thread Dump", Description: "Collects jStack output of all java.exe processes running for this App and analyzes the same" }];
+  { Name: "JAVA Memory Dump", Description: "Collects a binary memory dump using jMap of all java.exe processes running for this web app" },
+  { Name: "JAVA Thread Dump", Description: "Collects jStack output of all java.exe processes running for this app and analyzes the same" }];
   DiagnoserOptions = [
     { option: "CollectKillAnalyze", Description: "With this option, the above selected tool's data will collected, analyzed and the process will be recycled." },
     { option: "CollectLogs", Description: "With this option, only the above selected tool's data will collected. No analysis will be performed and process will not be restarted." },
