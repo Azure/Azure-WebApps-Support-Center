@@ -31,6 +31,7 @@ export class AutohealingComponent implements OnInit {
   currentSettings: any;
   customAction: AutoHealCustomAction = null;
   errorMessage: string = "";
+  errorMessageSaving: string = "";
   minProcessExecutionTime: number;
   minProcessExecutionTimeExpanded: boolean = false;
 
@@ -43,6 +44,7 @@ export class AutohealingComponent implements OnInit {
         this.siteToBeDiagnosed = siteInfo;
         this._autohealingService.getAutohealSettings(this.siteToBeDiagnosed).subscribe(autoHealSettings => {
           this.retrievingAutohealSettings = false;
+          this.errorMessage = "";
           this.autohealingSettings = autoHealSettings;
           this.initComponent(this.autohealingSettings);
         },
@@ -112,10 +114,11 @@ export class AutohealingComponent implements OnInit {
   }
 
   saveChanges() {
-    this.saveEnabled = false;
     this.savingAutohealSettings = true;
     this._autohealingService.updateAutohealSettings(this.siteToBeDiagnosed, this.autohealingSettings)
       .subscribe(savedAutoHealSettings => {
+        this.saveEnabled = false;
+        this.errorMessageSaving = "";
         this.savingAutohealSettings = false;
         this.changesSaved = true;
         setTimeout(() => {
@@ -132,8 +135,7 @@ export class AutohealingComponent implements OnInit {
       },
         err => {
           this.savingAutohealSettings = false;
-          this.errorMessage = "Failed while saving AutoHeal settings with error :" + err;
-          this.errorMessage += ". Please retry after some time";
+          this.errorMessageSaving = `Failed with an error ${err} while saving autoheal settings`;
         });
   }
 
