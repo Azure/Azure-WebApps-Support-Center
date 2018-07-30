@@ -151,7 +151,7 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
       },
         err => {
           this.savingAutohealSettings = false;
-          this.errorMessageSaving = `Failed with an error ${err} while saving autoheal settings`;
+          this.errorMessageSaving = `Failed with an error ${JSON.stringify(err)} while saving autoheal settings`;
         });
   }
 
