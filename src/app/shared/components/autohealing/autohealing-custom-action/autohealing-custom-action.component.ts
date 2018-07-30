@@ -46,10 +46,9 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
-      if (serverFarm) {
-
-        this.supportedTier = true;
+      if (serverFarm) {       
         if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
+          this.supportedTier = true;
           this._siteService.getAlwaysOnSetting(this.siteToBeDiagnosed).subscribe(alwaysOnSetting => {
             this.checkingSupportedTier = false;
             if (alwaysOnSetting) {
@@ -104,12 +103,12 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
       this.diagnoserOption = this.DiagnoserOptions[2];
     }
   }
+
   isDiagnosticsConfigured(): boolean {
     let invalidSetting = false;
     if (this.customAction != null) {
       if (this.customAction.exe.toLowerCase() === 'd:\\home\\data\\daas\\bin\\daasconsole.exe') {
         this.customActionType = 'Diagnostics';
-
         if (this.customAction.parameters !== '') {
           invalidSetting = this.getDiagnoserNameAndOptionFromParameter(this.customAction.parameters);
         }
