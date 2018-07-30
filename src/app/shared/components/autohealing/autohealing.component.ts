@@ -7,6 +7,7 @@ import { FormatHelper } from '../../utilities/formattingHelper';
 import { DetectorViewBaseComponent } from '../../../availability/detector-view/detector-view-base/detector-view-base.component';
 import { ActivatedRoute } from '../../../../../node_modules/@angular/router';
 import { AppAnalysisService } from '../../services/appanalysis.service';
+import { IDetectorResponse } from '../../models/detectorresponse';
 
 @Component({
   selector: 'autohealing',
@@ -37,7 +38,8 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
   errorMessageSaving: string = "";
   minProcessExecutionTime: number;
   minProcessExecutionTimeExpanded: boolean = false;
-  showAutoHealHistory : boolean = false;
+  showAutoHealHistory: boolean = false;
+  detectorHasData:boolean = false;
 
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, protected _route: ActivatedRoute, protected _appAnalysisService: AppAnalysisService) {
     super(_route, _appAnalysisService);
@@ -45,6 +47,14 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
 
   getDetectorName(): string {
     return "autoheal";
+  }
+
+  processDetectorResponse(response: IDetectorResponse) {
+    this.detectorResponse = response;
+    this.detectorMetrics = response.metrics;
+    this.detectorMetricsTitle = this.detectorMetricsTitle != undefined && this.detectorMetricsTitle != '' ?
+      this.detectorMetricsTitle : response.detectorDefinition.displayName;
+    this.detectorHasData = this.detectorResponse && this.detectorResponse.data.length >  0;
   }
 
   ngOnInit() {
@@ -87,7 +97,7 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
         this.customAction = this.autohealingSettings.autoHealRules.actions.customAction;
       }
     }
-    else{
+    else {
       this.autohealingSettings = new AutoHealSettings();
       this.autohealingSettings.autoHealRules = new AutoHealRules();
       this.autohealingSettings.autoHealRules.actions = new AutoHealActions();
