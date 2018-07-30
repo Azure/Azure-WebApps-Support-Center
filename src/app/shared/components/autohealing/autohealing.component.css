@@ -124,24 +124,7 @@ label {
     line-height: 25px;
 }
 
-.topmenu{
-    background-color:white;
-    border: none;
-    color: #adb0b7;
-    padding: 3px 6px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    border: 1px solid #adb0b7;
-    
-}
-
-
-.topmenu-selected {
-    background-color: #adb0b7;
-    color:white;
-}
-
-.topmenu, .topmenu-selected button:focus{
-    outline:0;
+.topmenu-button{
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
 }

@@ -8,20 +8,18 @@
   </div>
 
   <div style="margin-top:30px">
-    <button type="button" class="topmenu" [ngClass]="{'topmenu-selected':showAutoHealHistory===false}" (click)="showAutoHealHistory = false">
+    <button type="button" class="btn btn-default topmenu-button" [ngClass]="{'btn-primary':!showAutoHealHistory}" (click)="showAutoHealHistory = false">
       Configure Mitigation Rules
     </button>
-    <button type="button" class="topmenu" [ngClass]="{'topmenu-selected':showAutoHealHistory===true}" (click)="showAutoHealHistory = true">
+    <button type="button" class="btn btn-default topmenu-button" [ngClass]="{'btn-primary':showAutoHealHistory}" (click)="showAutoHealHistory = true">
       View Auto-Healing History
     </button>
   </div>
 
-
-
   <div *ngIf="!showAutoHealHistory" style="border: 1px solid #adb0b7">
 
     <div style="margin-left:30px;width:80%">
-      <div class="col" *ngIf="retrievingAutohealSettings" style="margin-top: 15px;">
+      <div class="col" *ngIf="retrievingAutohealSettings" style="margin-top: 15px;margin-bottom: 15px">
         <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
         Retrieving autoHealing settings...
       </div>
@@ -138,7 +136,7 @@
       The below graph shows all the autohealing invocations in the last 24 hours
     </div>
     <div style="margin-top:10px">
-      <metric-graph [metricSets]="detectorMetrics" [title]="detectorMetricsTitle" [chartType]="metricsChartType" [yAxisLabel]="detectorMetricsYAxisLabel"></metric-graph>     
+      <metric-graph [metricSets]="detectorMetrics" [title]="detectorMetricsTitle" [chartType]="metricsChartType" [yAxisLabel]="detectorMetricsYAxisLabel"></metric-graph>
     </div>
   </div>
 </div>
