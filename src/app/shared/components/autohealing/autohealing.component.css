@@ -86,7 +86,7 @@
 
 .saveSection {
     margin-top: 20px;
-    margin-bottom: 100px;
+    margin-bottom: 10px;
 }
 
 input[type="text"], input[type="number"] {
@@ -122,4 +122,26 @@ label {
 
 .form-group .row {
     line-height: 25px;
+}
+
+.topmenu{
+    background-color:white;
+    border: none;
+    color: #adb0b7;
+    padding: 3px 6px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid #adb0b7;
+    
+}
+
+
+.topmenu-selected {
+    background-color: #adb0b7;
+    color:white;
+}
+
+.topmenu, .topmenu-selected button:focus{
+    outline:0;
 }

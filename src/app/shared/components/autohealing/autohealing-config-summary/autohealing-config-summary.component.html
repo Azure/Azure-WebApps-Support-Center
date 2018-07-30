@@ -1,4 +1,5 @@
-<div style="margin-top: 10px" *ngIf="settingsSummary.Conditions.length > 0 && settingsSummary.Action !== ''">
+<div *ngIf="settingsSummary !=null ">
+  <div style="margin-top: 10px" *ngIf="settingsSummary.Conditions !=null && settingsSummary.Conditions.length > 0 && settingsSummary.Action !== ''">
     {{ settingsSummary.Action }}
     <span class="actionExe" *ngIf="settingsSummary.ActionExe !==''">{{ settingsSummary.ActionExe }}</span>
     <span style="font-style: italic" *ngIf="settingsSummary.ProcessStartupLabel !=''">{{ settingsSummary.ProcessStartupLabel }}</span>
@@ -13,3 +14,11 @@
   <div *ngIf="settingsSummary.Conditions.length === 0 || settingsSummary.Action ===  ''">
     No rule configured!
   </div>
+  <div *ngIf="settingsSummary.Conditions == null">
+    No rule configured!
+  </div>
+</div>
+
+<div *ngIf="settingsSummary == null">
+  No rule configured!
+</div>

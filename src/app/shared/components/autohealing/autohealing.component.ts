@@ -1,16 +1,19 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SiteInfoMetaData } from '../../models/site';
-import { AutoHealSettings, AutoHealActions, AutoHealCustomAction, AutoHealTriggers, AutoHealActionType } from '../../models/autohealing';
+import { AutoHealSettings, AutoHealActions, AutoHealCustomAction, AutoHealTriggers, AutoHealActionType, AutoHealRules } from '../../models/autohealing';
 import { SiteService } from '../../services/site.service';
 import { AutohealingService } from '../../services/autohealing.service';
 import { FormatHelper } from '../../utilities/formattingHelper';
+import { DetectorViewBaseComponent } from '../../../availability/detector-view/detector-view-base/detector-view-base.component';
+import { ActivatedRoute } from '../../../../../node_modules/@angular/router';
+import { AppAnalysisService } from '../../services/appanalysis.service';
 
 @Component({
   selector: 'autohealing',
   templateUrl: './autohealing.component.html',
   styleUrls: ['./autohealing.component.css']
 })
-export class AutohealingComponent implements OnInit {
+export class AutohealingComponent extends DetectorViewBaseComponent implements OnInit {
   @Input()
   autohealingSettings: AutoHealSettings;
   originalAutoHealSettings: AutoHealSettings;
@@ -34,11 +37,18 @@ export class AutohealingComponent implements OnInit {
   errorMessageSaving: string = "";
   minProcessExecutionTime: number;
   minProcessExecutionTimeExpanded: boolean = false;
+  showAutoHealHistory : boolean = false;
 
-  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService) {
+  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, protected _route: ActivatedRoute, protected _appAnalysisService: AppAnalysisService) {
+    super(_route, _appAnalysisService);
+  }
+
+  getDetectorName(): string {
+    return "autoheal";
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this._siteService.currentSiteMetaData.subscribe(siteInfo => {
       if (siteInfo) {
         this.siteToBeDiagnosed = siteInfo;
@@ -48,10 +58,10 @@ export class AutohealingComponent implements OnInit {
           this.autohealingSettings = autoHealSettings;
           this.initComponent(this.autohealingSettings);
         },
-        err => {
-          this.retrievingAutohealSettings = false;
-          this.errorMessage = `Failed with an error ${err} while retrieving autoheal settings`;
-        });
+          err => {
+            this.retrievingAutohealSettings = false;
+            this.errorMessage = `Failed with an error ${JSON.stringify(err)} while retrieving autoheal settings`;
+          });
       }
     });
   }
@@ -64,7 +74,7 @@ export class AutohealingComponent implements OnInit {
   }
 
   updateConditionsAndActions() {
-    if (this.autohealingSettings.autoHealRules.actions != null) {
+    if (this.autohealingSettings != null && this.autohealingSettings.autoHealRules != null && this.autohealingSettings.autoHealRules.actions != null) {
       if (this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime != null) {
         this.minProcessExecutionTime = FormatHelper.timespanToSeconds(this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime);
       }
@@ -76,6 +86,12 @@ export class AutohealingComponent implements OnInit {
       if (this.autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction) {
         this.customAction = this.autohealingSettings.autoHealRules.actions.customAction;
       }
+    }
+    else{
+      this.autohealingSettings = new AutoHealSettings();
+      this.autohealingSettings.autoHealRules = new AutoHealRules();
+      this.autohealingSettings.autoHealRules.actions = new AutoHealActions();
+      this.autohealingSettings.autoHealRules.triggers = new AutoHealTriggers();
     }
     this.initTriggersAndActions();
   }
@@ -214,10 +230,10 @@ export class AutohealingComponent implements OnInit {
     this.actions = [];
     let self = this;
 
-    this.triggers.push({ Name: 'Request Duration', Icon: 'fa fa-hourglass-half', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.slowRequests != null; }, IsConfigured: false });
-    this.triggers.push({ Name: 'Memory Limit', Icon: 'fa fa-microchip', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0 }, IsConfigured: false });
-    this.triggers.push({ Name: 'Request Count', Icon: 'fa fa-bar-chart', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.requests != null; }, IsConfigured: false });
-    this.triggers.push({ Name: 'Status Codes', Icon: 'fa fa-list', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.statusCodes && this.autohealingSettings.autoHealRules.triggers.statusCodes.length > 0 }, IsConfigured: false });
+    this.triggers.push({ Name: 'Request Duration', Icon: 'fa fa-hourglass-half', checkRuleConfigured: () => { return self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.slowRequests != null; }, IsConfigured: false });
+    this.triggers.push({ Name: 'Memory Limit', Icon: 'fa fa-microchip', checkRuleConfigured: () => { return self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0 }, IsConfigured: false });
+    this.triggers.push({ Name: 'Request Count', Icon: 'fa fa-bar-chart', checkRuleConfigured: () => { return self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.requests != null; }, IsConfigured: false });
+    this.triggers.push({ Name: 'Status Codes', Icon: 'fa fa-list', checkRuleConfigured: () => { return self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.statusCodes && this.autohealingSettings.autoHealRules.triggers.statusCodes.length > 0 }, IsConfigured: false });
 
     this.triggers.forEach(triggerRule => {
       triggerRule.IsConfigured = triggerRule.checkRuleConfigured();
