@@ -122,6 +122,10 @@ export class AutohealingComponent implements OnInit {
         setTimeout(() => {
           this.changesSaved = false;
         }, 3000);
+
+        this.customAction = null;
+        this.actionSelected = -1;
+        this.minProcessExecutionTime = 0;
         this.autohealingSettings = savedAutoHealSettings;
         this.collapseAllTiles();
 
