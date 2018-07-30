@@ -90,7 +90,7 @@ export class AutohealingComponent implements OnInit {
       }
       this.checkForChanges();
     }
-    this.minProcessExecutionTimeExpanded = false;
+    this.collapseAllTiles();
   }
 
   checkForChanges() {
@@ -123,11 +123,7 @@ export class AutohealingComponent implements OnInit {
           this.changesSaved = false;
         }, 3000);
         this.autohealingSettings = savedAutoHealSettings;
-
-        //collapse all the tiles
-        this.triggerSelected = -1;
-        this.actionCollapsed = true;
-        this.minProcessExecutionTimeExpanded = false;
+        this.collapseAllTiles();
 
         this.initComponent(savedAutoHealSettings);
       },
@@ -170,12 +166,6 @@ export class AutohealingComponent implements OnInit {
     }
 
     if (action === AutoHealActionType.CustomAction) {
-      if (this.customAction == null) {
-        // let customAction = new AutoHealCustomAction();
-        // customAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
-        // customAction.parameters = '-Troubleshoot "Memory Dump"  60';
-        // this.customAction = customAction;
-      }
       this.autohealingSettings.autoHealRules.actions.customAction = this.customAction;
     }
     else {
@@ -219,7 +209,7 @@ export class AutohealingComponent implements OnInit {
     this.actions = [];
     let self = this;
 
-    this.triggers.push({ Name: 'Request Duration', Icon: 'fa fa-clock-o', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.slowRequests != null; }, IsConfigured: false });
+    this.triggers.push({ Name: 'Request Duration', Icon: 'fa fa-hourglass-half', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.slowRequests != null; }, IsConfigured: false });
     this.triggers.push({ Name: 'Memory Limit', Icon: 'fa fa-microchip', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0 }, IsConfigured: false });
     this.triggers.push({ Name: 'Request Count', Icon: 'fa fa-bar-chart', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.requests != null; }, IsConfigured: false });
     this.triggers.push({ Name: 'Status Codes', Icon: 'fa fa-list', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.statusCodes && this.autohealingSettings.autoHealRules.triggers.statusCodes.length > 0 }, IsConfigured: false });
@@ -242,9 +232,14 @@ export class AutohealingComponent implements OnInit {
     this.autohealingSettings = JSON.parse(JSON.stringify(this.originalAutoHealSettings));
     this.updateConditionsAndActions();
     this.checkForChanges();
-    this.actionCollapsed = true;
-    this.minProcessExecutionTimeExpanded = true;
+    this.collapseAllTiles();
 
   }
 
+  collapseAllTiles(): void {
+    //collapse all the tiles
+    this.triggerSelected = -1;
+    this.actionCollapsed = true;
+    this.minProcessExecutionTimeExpanded = false;
+  }
 }

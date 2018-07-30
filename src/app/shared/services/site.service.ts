@@ -29,7 +29,7 @@ export class SiteService {
             this._populateSiteInfo(startUpInfo.resourceId);
             if (startUpInfo.resourceType === ResourceType.Site) {
                 this._armClient.getResource<Site>(startUpInfo.resourceId).subscribe((site: ResponseMessageEnvelope<Site>) => {
-                    
+
                     this.currentSiteStatic = site.properties;
                     this.currentSiteStatic.id = site.id;
                     this.currentSiteStatic.tags = site.tags;
@@ -132,10 +132,21 @@ export class SiteService {
     }
 
     getSiteAppSettings(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): Observable<any> {
-
         let url: string = this._uriElementsService.getListAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
-
         return this._armClient.postResource(url, {});
+    }
+
+    getSiteConfigSettings(siteInfo:SiteInfoMetaData): Observable<any> {
+        let url: string = this._uriElementsService.getConfigWebUrl(siteInfo);
+        return this._armClient.getResource<ResponseMessageEnvelope<any>>(url).map((response: ResponseMessageEnvelope<any>) => {            
+            return response.properties;
+        });        
+    }
+
+    getAlwaysOnSetting(siteInfo:SiteInfoMetaData): Observable<boolean> {
+        return this.getSiteConfigSettings(siteInfo).map(resp =>{
+            return resp.alwaysOn;
+        });
     }
 
     getVirtualNetworkConnectionsInformation(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): Observable<any> {

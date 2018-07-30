@@ -44,8 +44,4 @@ export class AutohealingStartupTimeComponent implements OnInit {
     }
   }
 
-  resetComponent(){
-    this.editMode = false;
-    this.localMinProcessExecutionTime = this.minProcessExecutionTime;
-  }
 }

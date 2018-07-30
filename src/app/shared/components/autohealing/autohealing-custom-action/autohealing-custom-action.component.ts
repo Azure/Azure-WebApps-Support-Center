@@ -3,6 +3,7 @@ import { ServerFarmDataService } from '../../../services/server-farm-data.servic
 import { DaasService } from '../../../services/daas.service';
 import { SiteInfoMetaData } from '../../../models/site';
 import { AutoHealCustomAction } from '../../../models/autohealing';
+import { SiteService } from '../../../services/site.service';
 
 @Component({
   selector: 'autohealing-custom-action',
@@ -11,7 +12,7 @@ import { AutoHealCustomAction } from '../../../models/autohealing';
 })
 export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
-  constructor(private _serverFarmService: ServerFarmDataService, private _daasService: DaasService) {
+  constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService) {
   }
 
   @Input() siteToBeDiagnosed: SiteInfoMetaData;
@@ -19,11 +20,11 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   @Output() customActionChanged: EventEmitter<AutoHealCustomAction> = new EventEmitter<AutoHealCustomAction>();
 
   checkingSupportedTier: boolean = true;
-  supportedTier: boolean = true;
-  alwaysOnEnabled: boolean = true;
+  supportedTier: boolean = false;
+  alwaysOnEnabled: boolean = false;
 
-  diagnoser: any;
-  diagnoserOption: any = [{ option: "", Description: "" }];
+  diagnoser: any = null;
+  diagnoserOption: any = null;
 
   Diagnosers = [{ Name: "Memory Dump", Description: "Collects memory dumps of the process and the child processes hosting your app and analyzes them for errors" },
   { Name: "CLR Profiler", Description: "Profiles ASP.NET application code to identify exceptions and performance issues" },
@@ -46,9 +47,19 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   ngOnInit() {
     this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
       if (serverFarm) {
-        this.checkingSupportedTier = false;
-        if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
-          this.supportedTier = true;
+
+        this.supportedTier = true;
+        if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
+          this._siteService.getAlwaysOnSetting(this.siteToBeDiagnosed).subscribe(alwaysOnSetting => {
+            this.checkingSupportedTier = false;
+            if (alwaysOnSetting) {
+              this.alwaysOnEnabled = true;
+            }
+            else {
+              this.alwaysOnEnabled = false;
+            }
+          });
+
           this.initComponent();
         }
       }
@@ -66,19 +77,17 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
       return;
     }
 
-    if (this.customActionType === "Diagnostics"){
+    if (this.customActionType === "Diagnostics") {
       let diagnosticsConfiguredCorrectly = this.isDiagnosticsConfigured();
       if (!diagnosticsConfiguredCorrectly) {
-        this.diagnoser = this.Diagnosers[0];
-        this.diagnoserOption = this.DiagnoserOptions[2];
-        
+        this.initDiagnosticsIfRequired();
       }
     }
-    
+
   }
 
-  saveCustomAction(){
-    if (this.customActionType === "Diagnostics"){
+  saveCustomAction() {
+    if (this.customActionType === "Diagnostics") {
       this.updateDaasAction();
     }
     else {
@@ -86,6 +95,15 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
     }
   }
 
+  initDiagnosticsIfRequired() {
+    if (this.diagnoser == null) {
+      this.diagnoser = this.Diagnosers[0];
+    }
+
+    if (this.diagnoserOption == null) {
+      this.diagnoserOption = this.DiagnoserOptions[2];
+    }
+  }
   isDiagnosticsConfigured(): boolean {
     let invalidSetting = false;
     if (this.customAction != null) {
@@ -96,8 +114,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
           invalidSetting = this.getDiagnoserNameAndOptionFromParameter(this.customAction.parameters);
         }
         if (invalidSetting) {
-          this.diagnoser = this.Diagnosers[0];
-          this.diagnoserOption = this.DiagnoserOptions[2];
+          this.initDiagnosticsIfRequired();
         }
       }
       else {
@@ -114,21 +131,21 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   chooseDiagnoser(val) {
     this.diagnoser = val;
-    
+
   }
 
   chooseDiagnoserAction(val) {
     this.diagnoserOption = val;
-   
+
   }
 
   updateCustomActionExe(exe: string) {
     this.customActionExe = exe;
-    
+
   }
   updateCustomActionParams(params: string) {
     this.customActionParams = params;
-    
+
   }
   updateCustomAction() {
     let autoHealCustomAction = new AutoHealCustomAction();

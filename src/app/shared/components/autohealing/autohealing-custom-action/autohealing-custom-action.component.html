@@ -1,7 +1,7 @@
 <div class="row" style="margin-bottom: 5px;margin-left:0;margin-top:10px">
 
   <div class="btn-group" role="group" aria-label="...">
-    <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':customActionType==='Diagnostics'}" (click)="customActionType='Diagnostics'">
+    <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':customActionType==='Diagnostics'}" (click)="customActionType='Diagnostics';initDiagnosticsIfRequired()">
       Run Diagnostics
     </button>
     <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':customActionType==='Custom'}" (click)="customActionType='Custom'">
@@ -13,9 +13,10 @@
     <div class="panel-body">
       <div *ngIf="customActionType == 'Diagnostics'">
         <div *ngIf="!checkingSupportedTier && !supportedTier">
-          <div class="focus-box focus-box-warning" style="margin-top:20px">
+          <div class="focus-box focus-box-warning">
             <div>
-              <strong>Error</strong> - This tool is supported only on Dedicated SKU's
+              <strong>Error</strong> - This tool is supported only in Standard, Premium or Isolated tiers because the diagnostic tools require the Always-On setting
+              to be enabled to collect data.
             </div>
           </div>
         </div>
@@ -23,12 +24,12 @@
           <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
           Checking if the WebApp is running in a supported Tier
         </div>
-        <div *ngIf="!checkingSupportedTier && !alwaysOnEnabled">
-          <div class="focus-box focus-box-warning" style="margin-top:20px">
+        <div *ngIf="!checkingSupportedTier && supportedTier && !alwaysOnEnabled">
+          <div class="focus-box focus-box-warning">
             <div>
-              <strong>Error</strong> - We determined that the Web App does not have Always On alwaysOnEnabled and due to these the
-              diagnostic tools will not work reliably with AutoHeal. Please turn on the Always On Setting and configure these
-              tools again.
+              <strong>Error</strong> - We determined that the web app does not have Always-On enabled and due to these the
+              diagnostic tools will not work reliably with AutoHeal. Please turn on the Always-On setting by going to the properties
+              of the web app and  then configure mitigation tools.
             </div>
           </div>
         </div>
@@ -65,10 +66,7 @@
               <div class="diagnoser-option"> {{ diagnoserOption.Description}} </div>
             </div>
           </div>
-
-
         </div>
-
       </div>
 
       <div *ngIf="customActionType == 'Custom'">
@@ -90,7 +88,6 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <div *ngIf="customActionType == 'Custom' || ( alwaysOnEnabled && supportedTier && !checkingSupportedTier)" style="margin-top:15px;margin-left:15px">
