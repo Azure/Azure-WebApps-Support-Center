@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AutohealingRuleComponent } from '../autohealing-rule/autohealing-rule.component';
-import { SlowRequestsBasedTrigger } from '../../../models/autohealing';
-import { FormatHelper } from '../../../utilities/formattingHelper';
+import { SlowRequestsBasedTrigger } from '../../shared/models/autohealing';
+import { FormatHelper } from '../../shared/utilities/formattingHelper';
 
 @Component({
   selector: 'autohealing-slowrequests-rule',

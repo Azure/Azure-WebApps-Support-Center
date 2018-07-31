@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { AutoHealSettings, AutoHealActionType } from '../../../models/autohealing';
-import { FormatHelper } from '../../../utilities/formattingHelper';
+import { AutoHealSettings, AutoHealActionType } from '../../shared/models/autohealing';
+import { FormatHelper } from '../../shared/utilities/formattingHelper';
 
 @Component({
   selector: 'autohealing-config-summary',

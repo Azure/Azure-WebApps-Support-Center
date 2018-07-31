@@ -1,9 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { ServerFarmDataService } from '../../../services/server-farm-data.service';
-import { DaasService } from '../../../services/daas.service';
-import { SiteInfoMetaData } from '../../../models/site';
-import { AutoHealCustomAction } from '../../../models/autohealing';
-import { SiteService } from '../../../services/site.service';
+import { ServerFarmDataService } from '../../shared/services/server-farm-data.service';
+import { SiteService } from '../../shared/services/site.service';
+import { SiteInfoMetaData } from '../../shared/models/site';
+import { AutoHealCustomAction } from '../../shared/models/autohealing';
 
 @Component({
   selector: 'autohealing-custom-action',

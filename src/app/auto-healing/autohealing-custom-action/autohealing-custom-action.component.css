@@ -26,12 +26,12 @@
 }
 
 .detail-card-active {
-    background-color: #286090;
+    background-color: #0058ad;
     color: whitesmoke;
 }
 
 .diagnostic-options {
-    border: Solid 1px #286090;
+    border: Solid 1px #0058ad;
     border-radius: 0px 0px 5px 5px;
     padding: 0px 0px 0px 5px;
     margin-left:1px;
@@ -47,7 +47,7 @@ p {
 
 .diagnostic-options-heading{
     margin-top:10px;  
-    background-color: #286090;
+    background-color: #0058ad;
     width:100px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;

@@ -1,13 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SiteInfoMetaData } from '../../models/site';
-import { AutoHealSettings, AutoHealActions, AutoHealCustomAction, AutoHealTriggers, AutoHealActionType, AutoHealRules } from '../../models/autohealing';
-import { SiteService } from '../../services/site.service';
-import { AutohealingService } from '../../services/autohealing.service';
-import { FormatHelper } from '../../utilities/formattingHelper';
-import { DetectorViewBaseComponent } from '../../../availability/detector-view/detector-view-base/detector-view-base.component';
-import { ActivatedRoute } from '../../../../../node_modules/@angular/router';
-import { AppAnalysisService } from '../../services/appanalysis.service';
-import { IDetectorResponse } from '../../models/detectorresponse';
+import { ActivatedRoute } from '@angular/router';
+import { DetectorViewBaseComponent } from '../availability/detector-view/detector-view-base/detector-view-base.component';
+import { SiteInfoMetaData } from '../shared/models/site';
+import { SiteService } from '../shared/services/site.service';
+import { AutohealingService } from '../shared/services/autohealing.service';
+import { IDetectorResponse } from '../shared/models/detectorresponse';
+import { FormatHelper } from '../shared/utilities/formattingHelper';
+import { AppAnalysisService } from '../shared/services/appanalysis.service';
+import { AutoHealSettings, AutoHealCustomAction, AutoHealRules, AutoHealActions, AutoHealTriggers, AutoHealActionType } from '../shared/models/autohealing';
 
 @Component({
   selector: 'autohealing',

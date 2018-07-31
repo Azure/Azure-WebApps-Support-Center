@@ -73,15 +73,7 @@ import { TabTitleResolver } from './resolvers/tab-name.resolver';
 import { AseService } from './services/ase.service';
 import { AutohealingService } from './services/autohealing.service';
 import { TimespanComponent } from './components/timespan/timespan.component';
-import { AutohealingComponent } from './components/autohealing/autohealing.component';
-import { AutohealingSlowrequestsRuleComponent } from './components/autohealing/autohealing-slowrequests-rule/autohealing-slowrequests-rule.component';
-import { AutohealingMemoryRuleComponent } from './components/autohealing/autohealing-memory-rule/autohealing-memory-rule.component';
-import { AutohealingRequestsRuleComponent } from './components/autohealing/autohealing-requests-rule/autohealing-requests-rule.component';
-import { AutohealingStatuscodesRuleComponent } from './components/autohealing/autohealing-statuscodes-rule/autohealing-statuscodes-rule.component';
-import { AutohealingCustomActionComponent } from './components/autohealing/autohealing-custom-action/autohealing-custom-action.component';
 import { ToggleButtonComponent } from './components/toggle-button/toggle-button.component';
-import { AutohealingConfigSummaryComponent } from './components/autohealing/autohealing-config-summary/autohealing-config-summary.component';
-import { AutohealingStartupTimeComponent } from './components/autohealing/autohealing-startup-time/autohealing-startup-time.component';
 
 @NgModule({
     declarations: [
@@ -127,16 +119,8 @@ import { AutohealingStartupTimeComponent } from './components/autohealing/autohe
         DaasValidatorComponent,
         DaasSessionsDetailedComponent,
         LiveAgentChatComponent,
-        AutohealingComponent,
-        AutohealingSlowrequestsRuleComponent,
-        AutohealingMemoryRuleComponent,
-        AutohealingRequestsRuleComponent,
-        AutohealingStatuscodesRuleComponent,
         TimespanComponent,
-        AutohealingCustomActionComponent,
-        ToggleButtonComponent,
-        AutohealingConfigSummaryComponent,
-        AutohealingStartupTimeComponent
+        ToggleButtonComponent
     ],
     imports: [
         HttpModule,
@@ -190,7 +174,9 @@ import { AutohealingStartupTimeComponent } from './components/autohealing/autohe
         ConnectionDiagnoserToolComponent,
         NetworkTraceToolComponent,
         IncidentSummaryComponent,
-        LiveAgentChatComponent
+        LiveAgentChatComponent,
+        TimespanComponent,
+        ToggleButtonComponent
     ]
 })
 export class SharedModule {
@@ -223,7 +209,7 @@ export class SharedModule {
                 TabTitleResolver,
                 AseService,
                 LiveChatService,
-                AutohealingService                
+                AutohealingService
             ]
         }
     }

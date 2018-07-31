@@ -4,6 +4,7 @@ import { SharedModule } from '../shared/shared.module';
 import { SolutionsModule } from '../solutions/solutions.module';
 import { MyDatePickerModule } from 'mydatepicker';
 import { DiagnosticDataModule, PUBLIC_CONFIGURATION } from 'applens-diagnostics';
+import { AutoHealingModule } from '../auto-healing/auto-healing.module';
 
 import { AvailabilityComponent } from './availability.component';
 import { AppCurrentHealthComponent } from './currenthealth/app-current-health.component';
@@ -35,8 +36,6 @@ import { AppInsightsTileComponent } from './app-insights/app-insights-tile.compo
 import { AppInsightsSettingsComponent } from './app-insights/app-insights-settings.component';
 import { AppInsightsExceptionsComponent } from './app-insights/exceptions/app-insights-exceptions.component';
 import { AppInsightsDependenciesComponent } from './app-insights/dependencies/app-insights-dependencies.component';
-
-
 import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalysis/tcp-connections-analysis.component';
 import { ProblemSolutionComponent } from './problem-solution/problem-solution.component';
 import { GenericDetectorComponent } from './generic-detector/generic-detector.component';
@@ -83,7 +82,8 @@ import { DiagnosticService } from 'applens-diagnostics';
         DiagnosticDataModule.forRoot(PUBLIC_CONFIGURATION),
         SharedModule,
         MyDatePickerModule,
-        SolutionsModule
+        SolutionsModule,
+        AutoHealingModule
     ],
     exports: [
         ObservationsComponent,
