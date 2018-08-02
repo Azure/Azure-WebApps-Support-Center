@@ -9,10 +9,14 @@ export class LiveChatSettings {
     // If set to false, it will show for all prod subs.
     public static DemoModeForCaseSubmission: boolean = false;
 
+    // If set to true, chat will be hidden for internal subscriptions
+    public static HideForInternalSubscriptions: boolean = true;
+
     // List of Support Topics for which Live chat is Enabled
     public static enabledSupportTopics: string[] = [
         "32440123",     //Configuration and Management/Configuring SSL
-        "32440122",     //Configuration and Management/Configuring custom domain names,
+        "32440122",     //Configuration and Management/Configuring custom domain names
+        "32542210",     //Configuration and Management/IP Configuration
         "32589277"      //How Do I/Configure domains and certificates
     ];
 

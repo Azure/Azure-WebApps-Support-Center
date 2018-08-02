@@ -183,6 +183,10 @@ export class LiveChatService {
     // This method indicate whether chat is applicable for current site
     private isChatApplicableForSite(site: Site, siteMetaData: SiteInfoMetaData, demoMode: boolean): boolean {
 
+        if (LiveChatSettings.HideForInternalSubscriptions == true && (DemoSubscriptions.betaSubscriptions.indexOf(siteMetaData.subscriptionId) >= 0)) {
+            return false;
+        }
+
         return site && siteMetaData
             && !(site.sku.toLowerCase() === 'free' || site.sku.toLowerCase() === 'shared')
             && (site.appType == AppType.WebApp)

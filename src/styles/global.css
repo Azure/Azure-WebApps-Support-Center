@@ -41,6 +41,9 @@ body{
 .app-nav-tab.active > a{
     border-bottom: 3px solid #252525 !important;
 }
+.modal-backdrop {
+    z-index: -1;
+}
 #app-content{
     padding:0 !important;
     position:relative !important;

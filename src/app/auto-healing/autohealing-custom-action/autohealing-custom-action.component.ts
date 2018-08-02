@@ -1,17 +1,17 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { ServerFarmDataService } from '../../../services/server-farm-data.service';
-import { DaasService } from '../../../services/daas.service';
-import { SiteInfoMetaData } from '../../../models/site';
-import { AutoHealCustomAction } from '../../../models/autohealing';
+import { ServerFarmDataService } from '../../shared/services/server-farm-data.service';
+import { SiteService } from '../../shared/services/site.service';
+import { SiteInfoMetaData } from '../../shared/models/site';
+import { AutoHealCustomAction } from '../../shared/models/autohealing';
 
 @Component({
   selector: 'autohealing-custom-action',
   templateUrl: './autohealing-custom-action.component.html',
-  styleUrls: ['./autohealing-custom-action.component.css','../autohealing.component.css']
+  styleUrls: ['./autohealing-custom-action.component.css', '../autohealing.component.css']
 })
 export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
-  constructor(private _serverFarmService: ServerFarmDataService, private _daasService: DaasService) {
+  constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService) {
   }
 
   @Input() siteToBeDiagnosed: SiteInfoMetaData;
@@ -19,16 +19,17 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   @Output() customActionChanged: EventEmitter<AutoHealCustomAction> = new EventEmitter<AutoHealCustomAction>();
 
   checkingSupportedTier: boolean = true;
-  supportedTier: boolean = true;
+  supportedTier: boolean = false;
+  alwaysOnEnabled: boolean = false;
 
-  diagnoser: any;
-  diagnoserOption: any = [{ option: "", Description: "" }];
+  diagnoser: any = null;
+  diagnoserOption: any = null;
 
-  Diagnosers = [{ Name: "Memory Dump", Description: "Collects memory dumps of the process and the child process'es hosting your App and analyzes them for errors" },
+  Diagnosers = [{ Name: "Memory Dump", Description: "Collects memory dumps of the process and the child processes hosting your app and analyzes them for errors" },
   { Name: "CLR Profiler", Description: "Profiles ASP.NET application code to identify exceptions and performance issues" },
   { Name: "CLR Profiler With ThreadStacks", Description: "Profiles ASP.NET application code to identify exceptions and performance issues and dumps stacks to identify deadlocks" },
-  { Name: "JAVA Memory Dump", Description: "Collects a binary memory dump using jMap of all java.exe processes running for this WebApp" },
-  { Name: "JAVA Thread Dump", Description: "Collects jStack output of all java.exe processes running for this App and analyzes the same" }];
+  { Name: "JAVA Memory Dump", Description: "Collects a binary memory dump using jMap of all java.exe processes running for this web app" },
+  { Name: "JAVA Thread Dump", Description: "Collects jStack output of all java.exe processes running for this app and analyzes the same" }];
   DiagnoserOptions = [
     { option: "CollectKillAnalyze", Description: "With this option, the above selected tool's data will collected, analyzed and the process will be recycled." },
     { option: "CollectLogs", Description: "With this option, only the above selected tool's data will collected. No analysis will be performed and process will not be restarted." },
@@ -44,26 +45,61 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
-      if (serverFarm) {
-        this.checkingSupportedTier = false;
-        if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
+      if (serverFarm) {       
+        if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
           this.supportedTier = true;
+          this._siteService.getAlwaysOnSetting(this.siteToBeDiagnosed).subscribe(alwaysOnSetting => {
+            this.checkingSupportedTier = false;
+            if (alwaysOnSetting) {
+              this.alwaysOnEnabled = true;
+            }
+            else {
+              this.alwaysOnEnabled = false;
+            }
+          });
+
           this.initComponent();
         }
       }
     });
-    
+
   }
 
   initComponent() {
     if (this.customAction == null) {
+      this.customAction = new AutoHealCustomAction();
+      this.customAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
+      this.diagnoserOption = this.DiagnoserOptions[2];
+      this.diagnoser = this.Diagnosers[0];
+      this.customAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
       return;
     }
-    let diagnosticsConfiguredCorrectly = this.isDiagnosticsConfigured();
-    if (!diagnosticsConfiguredCorrectly) {
-      this.diagnoser = this.Diagnosers[0];
-      this.diagnoserOption = this.DiagnoserOptions[2];
+
+    if (this.customActionType === "Diagnostics") {
+      let diagnosticsConfiguredCorrectly = this.isDiagnosticsConfigured();
+      if (!diagnosticsConfiguredCorrectly) {
+        this.initDiagnosticsIfRequired();
+      }
+    }
+
+  }
+
+  saveCustomAction() {
+    if (this.customActionType === "Diagnostics") {
       this.updateDaasAction();
+    }
+    else {
+      this.updateCustomAction();
+    }
+  }
+
+  initDiagnosticsIfRequired() {
+    if (this.diagnoser == null) {
+      this.diagnoser = this.Diagnosers[0];
+    }
+
+    if (this.diagnoserOption == null) {
+      this.diagnoserOption = this.DiagnoserOptions[2];
     }
   }
 
@@ -76,17 +112,13 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
           invalidSetting = this.getDiagnoserNameAndOptionFromParameter(this.customAction.parameters);
         }
         if (invalidSetting) {
-          this.diagnoser = this.Diagnosers[0];
-          this.diagnoserOption = this.DiagnoserOptions[2];
-          this.updateDaasAction();
+          this.initDiagnosticsIfRequired();
         }
-
       }
       else {
         this.customActionType = 'Custom';
         this.customActionExe = this.customAction.exe;
         this.customActionParams = this.customAction.parameters;
-        this.updateCustomAction();
       }
       return true;
     }
@@ -97,21 +129,21 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   chooseDiagnoser(val) {
     this.diagnoser = val;
-    this.updateDaasAction();
+
   }
 
   chooseDiagnoserAction(val) {
     this.diagnoserOption = val;
-    this.updateDaasAction();
+
   }
 
-  updateCustomActionExe(exe:string){
+  updateCustomActionExe(exe: string) {
     this.customActionExe = exe;
-    this.updateCustomAction();
+
   }
-  updateCustomActionParams(params:string){
+  updateCustomActionParams(params: string) {
     this.customActionParams = params;
-    this.updateCustomAction();
+
   }
   updateCustomAction() {
     let autoHealCustomAction = new AutoHealCustomAction();
@@ -121,12 +153,19 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   }
 
   updateDaasAction() {
-    let autoHealDaasAction = new AutoHealCustomAction();
-    autoHealDaasAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
-    autoHealDaasAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
-    this.customActionChanged.emit(autoHealDaasAction);
+    if (this.alwaysOnEnabled === true) {
+      let autoHealDaasAction = new AutoHealCustomAction();
+      autoHealDaasAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
+      autoHealDaasAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
+      this.customActionChanged.emit(autoHealDaasAction);
+    }
+    else {
+      let emptyAction = new AutoHealCustomAction();
+      emptyAction.exe = "";
+      emptyAction.parameters = "";
+      this.customActionChanged.emit(emptyAction);
+    }
   }
-
 
   getDiagnoserNameAndOptionFromParameter(param: string): boolean {
     let invalidSetting = true;

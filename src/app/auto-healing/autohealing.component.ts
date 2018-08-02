@@ -1,17 +1,20 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SiteInfoMetaData } from '../../models/site';
-import { AutoHealSettings, AutoHealActions, AutoHealCustomAction, AutoHealTriggers, AutoHealActionType } from '../../models/autohealing';
-import { SiteService } from '../../services/site.service';
-import { AutohealingService } from '../../services/autohealing.service';
-import { FormatHelper } from '../../utilities/formattingHelper';
+import { ActivatedRoute } from '@angular/router';
+import { DetectorViewBaseComponent } from '../availability/detector-view/detector-view-base/detector-view-base.component';
+import { SiteInfoMetaData } from '../shared/models/site';
+import { SiteService } from '../shared/services/site.service';
+import { AutohealingService } from '../shared/services/autohealing.service';
+import { IDetectorResponse } from '../shared/models/detectorresponse';
+import { FormatHelper } from '../shared/utilities/formattingHelper';
+import { AppAnalysisService } from '../shared/services/appanalysis.service';
+import { AutoHealSettings, AutoHealCustomAction, AutoHealRules, AutoHealActions, AutoHealTriggers, AutoHealActionType } from '../shared/models/autohealing';
 
 @Component({
   selector: 'autohealing',
   templateUrl: './autohealing.component.html',
   styleUrls: ['./autohealing.component.css']
 })
-export class AutohealingComponent implements OnInit {
-
+export class AutohealingComponent extends DetectorViewBaseComponent implements OnInit {
   @Input()
   autohealingSettings: AutoHealSettings;
   originalAutoHealSettings: AutoHealSettings;
@@ -32,38 +35,61 @@ export class AutohealingComponent implements OnInit {
   currentSettings: any;
   customAction: AutoHealCustomAction = null;
   errorMessage: string = "";
+  errorMessageSaving: string = "";
   minProcessExecutionTime: number;
-  startupTimeCollapsed: boolean = true;
-  processStartupLabel: string = "";
+  minProcessExecutionTimeExpanded: boolean = false;
+  showAutoHealHistory: boolean = false;
+  detectorHasData:boolean = false;
 
-  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService) {
+  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, protected _route: ActivatedRoute, protected _appAnalysisService: AppAnalysisService) {
+    super(_route, _appAnalysisService);
+  }
+
+  getDetectorName(): string {
+    return "autoheal";
+  }
+
+  processDetectorResponse(response: IDetectorResponse) {
+    this.detectorResponse = response;
+    this.detectorMetrics = response.metrics;
+    this.detectorMetricsTitle = this.detectorMetricsTitle != undefined && this.detectorMetricsTitle != '' ?
+      this.detectorMetricsTitle : response.detectorDefinition.displayName;
+    this.detectorHasData = this.detectorResponse && this.detectorResponse.data.length >  0;
   }
 
   ngOnInit() {
-
+    super.ngOnInit();
     this._siteService.currentSiteMetaData.subscribe(siteInfo => {
       if (siteInfo) {
         this.siteToBeDiagnosed = siteInfo;
         this._autohealingService.getAutohealSettings(this.siteToBeDiagnosed).subscribe(autoHealSettings => {
           this.retrievingAutohealSettings = false;
+          this.errorMessage = "";
           this.autohealingSettings = autoHealSettings;
           this.initComponent(this.autohealingSettings);
-        });
+        },
+          err => {
+            this.retrievingAutohealSettings = false;
+            this.errorMessage = `Failed with an error ${JSON.stringify(err)} while retrieving autoheal settings`;
+          });
       }
-    },
-      err => {
-        this.retrievingAutohealSettings = false;
-        this.errorMessage = "Failed while getting AutoHeal settings with error " + JSON.stringify(err);
-        this.errorMessage += ". Please retry after some time";
-      });
+    });
   }
 
   initComponent(autoHealSettings: AutoHealSettings) {
     this.originalSettings = JSON.stringify(autoHealSettings);
     this.originalAutoHealSettings = JSON.parse(this.originalSettings);
-    if (this.autohealingSettings.autoHealRules.actions != null) {
+    this.updateConditionsAndActions();
+    this.updateSummaryText();
+  }
+
+  updateConditionsAndActions() {
+    if (this.autohealingSettings != null && this.autohealingSettings.autoHealRules != null && this.autohealingSettings.autoHealRules.actions != null) {
       if (this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime != null) {
         this.minProcessExecutionTime = FormatHelper.timespanToSeconds(this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime);
+      }
+      else {
+        this.minProcessExecutionTime = 0;
       }
 
       this.actionSelected = this.autohealingSettings.autoHealRules.actions.actionType;
@@ -71,21 +97,27 @@ export class AutohealingComponent implements OnInit {
         this.customAction = this.autohealingSettings.autoHealRules.actions.customAction;
       }
     }
-    this.initTriggersAndActions();    
-    this.updateSummaryText();
+    else {
+      this.autohealingSettings = new AutoHealSettings();
+      this.autohealingSettings.autoHealRules = new AutoHealRules();
+      this.autohealingSettings.autoHealRules.actions = new AutoHealActions();
+      this.autohealingSettings.autoHealRules.triggers = new AutoHealTriggers();
+    }
+    this.initTriggersAndActions();
   }
 
-  saveMinProcessTimeChanged(val:number) {
+  saveMinProcessTimeChanged(val: number) {
     this.minProcessExecutionTime = val;
     if (this.autohealingSettings.autoHealRules.actions != null) {
       if (this.minProcessExecutionTime != null && this.minProcessExecutionTime != 0) {
         this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = FormatHelper.secondsToTimespan(this.minProcessExecutionTime);
       }
       else {
-        this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = null;
-      }     
+        this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime = FormatHelper.secondsToTimespan(0);
+      }
       this.checkForChanges();
     }
+    this.collapseAllTiles();
   }
 
   checkForChanges() {
@@ -103,37 +135,39 @@ export class AutohealingComponent implements OnInit {
 
     this.customAction = action;
     this.autohealingSettings.autoHealRules.actions.customAction = this.customAction;
-    this.updateSummaryText();
     this.checkForChanges();
+    this.actionCollapsed = true;
   }
 
   saveChanges() {
-    this.saveEnabled = false;
     this.savingAutohealSettings = true;
     this._autohealingService.updateAutohealSettings(this.siteToBeDiagnosed, this.autohealingSettings)
       .subscribe(savedAutoHealSettings => {
+        this.saveEnabled = false;
+        this.errorMessageSaving = "";
         this.savingAutohealSettings = false;
         this.changesSaved = true;
         setTimeout(() => {
           this.changesSaved = false;
         }, 3000);
-        this.autohealingSettings = savedAutoHealSettings;
 
-        //collapse both the Trigger and Action tiles
-        this.triggerSelected = -1;
-        this.actionCollapsed = true;
+        this.customAction = null;
+        this.actionSelected = -1;
+        this.minProcessExecutionTime = 0;
+        this.autohealingSettings = savedAutoHealSettings;
+        this.collapseAllTiles();
 
         this.initComponent(savedAutoHealSettings);
       },
         err => {
           this.savingAutohealSettings = false;
-          this.errorMessage = "Failed while saving AutoHeal settings with error :" + err;
-          this.errorMessage += ". Please retry after some time";
+          this.errorMessageSaving = `Failed with an error ${JSON.stringify(err)} while saving autoheal settings`;
         });
   }
 
   updateTriggerStatus(triggerRule: number) {
     this.actionCollapsed = true;
+    this.minProcessExecutionTimeExpanded = false;
     if (this.autohealingSettings.autoHealRules.triggers == null) {
       this.autohealingSettings.autoHealRules.triggers = new AutoHealTriggers();
     }
@@ -144,6 +178,7 @@ export class AutohealingComponent implements OnInit {
 
     // collapse the conditions pane
     this.triggerSelected = -1;
+    this.minProcessExecutionTimeExpanded = false;
 
     //this is to allow user to collapse the action tile if they click it again
     if (this.actionSelected != action) {
@@ -162,12 +197,6 @@ export class AutohealingComponent implements OnInit {
     }
 
     if (action === AutoHealActionType.CustomAction) {
-      if (this.customAction == null) {
-        let customAction = new AutoHealCustomAction();
-        customAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
-        customAction.parameters = '-Troubleshoot "Memory Dump"  60';
-        this.customAction = customAction;
-      }
       this.autohealingSettings.autoHealRules.actions.customAction = this.customAction;
     }
     else {
@@ -211,10 +240,10 @@ export class AutohealingComponent implements OnInit {
     this.actions = [];
     let self = this;
 
-    this.triggers.push({ Name: 'Request Duration', Icon: 'fa fa-clock-o', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.slowRequests != null; }, IsConfigured: false });
-    this.triggers.push({ Name: 'Memory Limit', Icon: 'fa fa-microchip', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0 }, IsConfigured: false });
-    this.triggers.push({ Name: 'Request Count', Icon: 'fa fa-bar-chart', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.requests != null; }, IsConfigured: false });
-    this.triggers.push({ Name: 'Status Codes', Icon: 'fa fa-list', checkRuleConfigured: () => { return self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.statusCodes && this.autohealingSettings.autoHealRules.triggers.statusCodes.length > 0 }, IsConfigured: false });
+    this.triggers.push({ Name: 'Request Duration', Icon: 'fa fa-hourglass-half', checkRuleConfigured: () => { return self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.slowRequests != null; }, IsConfigured: false });
+    this.triggers.push({ Name: 'Memory Limit', Icon: 'fa fa-microchip', checkRuleConfigured: () => { return self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0 }, IsConfigured: false });
+    this.triggers.push({ Name: 'Request Count', Icon: 'fa fa-bar-chart', checkRuleConfigured: () => { return self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.requests != null; }, IsConfigured: false });
+    this.triggers.push({ Name: 'Status Codes', Icon: 'fa fa-list', checkRuleConfigured: () => { return self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.statusCodes && this.autohealingSettings.autoHealRules.triggers.statusCodes.length > 0 }, IsConfigured: false });
 
     this.triggers.forEach(triggerRule => {
       triggerRule.IsConfigured = triggerRule.checkRuleConfigured();
@@ -225,11 +254,23 @@ export class AutohealingComponent implements OnInit {
     this.actions.push({ Name: 'Custom Action', Icon: 'fa fa-bolt' });
   }
 
-  updateSummaryText() {    
+  updateSummaryText() {
     this.currentSettings = JSON.stringify(this.autohealingSettings);
-    console.log(this.currentSettings);
   }
 
-  
+  reset() {
+    // Just set the current autoHeal settings to the original one
+    this.autohealingSettings = JSON.parse(JSON.stringify(this.originalAutoHealSettings));
+    this.updateConditionsAndActions();
+    this.checkForChanges();
+    this.collapseAllTiles();
 
+  }
+
+  collapseAllTiles(): void {
+    //collapse all the tiles
+    this.triggerSelected = -1;
+    this.actionCollapsed = true;
+    this.minProcessExecutionTimeExpanded = false;
+  }
 }

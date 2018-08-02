@@ -1,0 +1,29 @@
+<div *ngIf="!editMode">
+  Override the minimum time the process must execute before excecuting the auto-healing action. This is useful in scenarios where
+  the app has high startup time and you don't want the mitigation action to kick in during app startup.
+  <div class="rule-button">
+    <button type="button" class="btn btn-primary btn-sm" (click)="configureMinProcessExecutionTime()">
+      Modify Startup time
+    </button>
+  </div>
+</div>
+
+<div class="form-group" *ngIf="editMode">
+  <div class="row">
+    <div class="col-sm-6">
+      <label for="minProcessExecutionTime">Specify the time (in seconds) after process startup after which autohealing should kick in ?</label>      
+    </div>
+    <div class="col-sm-4">
+      <input type="number" [(ngModel)]="localMinProcessExecutionTime" id="minProcessExecutionTime" placeholder="e.g. 600">
+      <div style="margin-top:5px" *ngIf="localMinProcessExecutionTime < 0 || localMinProcessExecutionTime > 7200" class="alert alert-danger">
+        Duration should be >= 0 seconds and below 2 hours
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-4">
+      <button type="button" class="btn btn-primary btn-sm" [disabled]="!isValid()" (click)="saveConfig()">Ok</button>      
+    </div>
+  </div>
+</div>

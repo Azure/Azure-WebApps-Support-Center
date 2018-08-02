@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AutohealingRuleComponent } from '../autohealing-rule/autohealing-rule.component';
-import { FormatHelper } from '../../../utilities/formattingHelper';
+import { FormatHelper } from '../../shared/utilities/formattingHelper';
 
 @Component({
   selector: 'autohealing-memory-rule',

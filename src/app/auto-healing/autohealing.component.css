@@ -62,11 +62,11 @@
 }
 
 .activeAction {
-    color: #0585da;
+    color: #0058ad;
 }
 
 .image-btn {
-    color: #0585da;
+    color: #0058ad;
     border: none;
     font-size: 16px;
     cursor: pointer;
@@ -86,7 +86,7 @@
 
 .saveSection {
     margin-top: 20px;
-    margin-bottom: 100px;
+    margin-bottom: 10px;
 }
 
 input[type="text"], input[type="number"] {
@@ -122,4 +122,19 @@ label {
 
 .form-group .row {
     line-height: 25px;
+}
+
+.topmenu-button{
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.btn-primary {
+    background-color: #0058ad;
+    border-color: #0058ad;
+}
+
+.btn.btn-primary:disabled{
+    background-color: #0059ade7;
+    border-color: #0059ade7;
 }

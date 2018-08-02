@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { AutoHealSettings, AutoHealActionType } from '../../../models/autohealing';
-import { FormatHelper } from '../../../utilities/formattingHelper';
+import { AutoHealSettings, AutoHealActionType } from '../../shared/models/autohealing';
+import { FormatHelper } from '../../shared/utilities/formattingHelper';
 
 @Component({
   selector: 'autohealing-config-summary',
@@ -15,10 +15,10 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
   initialized: boolean = false;
 
   ngOnInit() {
-    if (this.initialized === false){
+    if (this.initialized === false) {
       this.updateComponent();
       this.initialized = true;
-    }    
+    }
   }
 
   ngOnChanges() {
@@ -32,13 +32,17 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
   updateComponent() {
 
     if (this.autohealSettings == null) {
-      return;      
+      return;
     }
-
     this.actualhealSettings = JSON.parse(this.autohealSettings);
-    this.settingsSummary = {};
-    let conditions: string[] = [];
-    if (this.actualhealSettings.autoHealRules.triggers != null) {
+
+    if (this.actualhealSettings.autoHealRules != null 
+      && this.actualhealSettings.autoHealRules.actions != null 
+      && this.actualhealSettings.autoHealRules.triggers != null) {
+
+      this.settingsSummary = {};
+      let conditions: string[] = [];
+
       if (this.actualhealSettings.autoHealRules.triggers.privateBytesInKB > 0) {
         conditions.push("Process consumes more than " + FormatHelper.formatBytes(this.actualhealSettings.autoHealRules.triggers.privateBytesInKB * 1024, 2) + " private bytes of memory");
       }
@@ -58,33 +62,33 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
         }
 
       }
-    }
 
-    let action: string = "";
-    let actionExe: string = "";
-    this.processStartupLabel = "";
-    if (conditions.length > 0 && this.actualhealSettings.autoHealRules.actions != null) {
-      if (this.actualhealSettings.autoHealRules.actions.actionType === AutoHealActionType.Recycle) {
-        action = "Recycle the process";
-      }
-      else if (this.actualhealSettings.autoHealRules.actions.actionType === AutoHealActionType.LogEvent) {
-        action = "Log an Event in the Event Viewer";
-      }
+      let action: string = "";
+      let actionExe: string = "";
+      this.processStartupLabel = "";
+      if (conditions.length > 0 && this.actualhealSettings.autoHealRules.actions != null) {
+        if (this.actualhealSettings.autoHealRules.actions.actionType === AutoHealActionType.Recycle) {
+          action = "Recycle the process";
+        }
+        else if (this.actualhealSettings.autoHealRules.actions.actionType === AutoHealActionType.LogEvent) {
+          action = "Log an Event in the Event Viewer";
+        }
 
-      else if (this.actualhealSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction) {
-        action = "Run executable ";
-        if (this.actualhealSettings.autoHealRules.actions.customAction != null && this.actualhealSettings.autoHealRules.actions.customAction.exe != null && this.actualhealSettings.autoHealRules.actions.customAction.parameters != null) {
-          actionExe = this.actualhealSettings.autoHealRules.actions.customAction.exe + " " + this.actualhealSettings.autoHealRules.actions.customAction.parameters;
+        else if (this.actualhealSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction) {
+          action = "Run executable ";
+          if (this.actualhealSettings.autoHealRules.actions.customAction != null && this.actualhealSettings.autoHealRules.actions.customAction.exe != null && this.actualhealSettings.autoHealRules.actions.customAction.parameters != null) {
+            actionExe = this.actualhealSettings.autoHealRules.actions.customAction.exe + " " + this.actualhealSettings.autoHealRules.actions.customAction.parameters;
+          }
+        }
+        if (this.actualhealSettings.autoHealRules.actions != null && this.actualhealSettings.autoHealRules.actions.minProcessExecutionTime != null) {
+          let seconds = FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.actions.minProcessExecutionTime);
+          if (seconds > 0) {
+            this.processStartupLabel = ` after ${seconds} seconds of process startup`;
+          }
         }
       }
-      if (this.actualhealSettings.autoHealRules.actions != null && this.actualhealSettings.autoHealRules.actions.minProcessExecutionTime != null) {
-        let seconds = FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.actions.minProcessExecutionTime);
-        if (seconds > 0) {
-          this.processStartupLabel = ` after ${seconds} seconds of process startup`;
-        }
-      }
-    }
 
-    this.settingsSummary = { Action: action, ActionExe: actionExe, Conditions: conditions, ProcessStartupLabel: this.processStartupLabel };
+      this.settingsSummary = { Action: action, ActionExe: actionExe, Conditions: conditions, ProcessStartupLabel: this.processStartupLabel };
+    }
   }
 }
