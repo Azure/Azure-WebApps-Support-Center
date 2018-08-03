@@ -41,7 +41,9 @@ export class UriElementsService {
     private _diagnosticsSessionsDetailsPath = this._diagnosticsPath + "sessions" + "/{type}/{details}";
     private _diagnosticsDiagnosersPath = this._diagnosticsPath + "diagnosers";
     private _diagnosticsInstancesPath = this._diagnosticsPath + "instances";
-    private _diagnosticsSingleSessionPath = this._diagnosticsPath + "session/{sessionId}/{details}";
+    private _diagnosticsSingleSessionPath = this._diagnosticsPath + "session/{sessionId}/";
+    private _diagnosticsSingleSessionDetailsPath = this. _diagnosticsSingleSessionPath + "{details}";
+    private _diagnosticsSingleSessionDeletePath = this._diagnosticsSingleSessionPath + "delete";
     private _diagnosticsDatabaseTestPath = this._diagnosticsPath + "databasetest";
     private _networkTraceStartPath = "/networkTrace/start"
     private _diagnosticsWebJobStatePath:string = this._supportApi + 'diagnostics/{subscriptionId}/{resourceGroup}/{siteName}/daaswebjobstate';
@@ -79,9 +81,14 @@ export class UriElementsService {
     }
 
     getDiagnosticsSingleSessionUrl(site: SiteDaasInfo, sessionId: string, detailed: boolean) {
-        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSingleSessionPath
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSingleSessionDetailsPath
         .replace("{sessionId}", sessionId)
         .replace("{details}", detailed.toString());
+    };
+
+    getDiagnosticsSingleSessionDeleteUrl(site: SiteDaasInfo, sessionId: string) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSingleSessionDeletePath
+        .replace("{sessionId}", sessionId);
     };
 
     getDatabaseTestUrl(site: SiteInfoMetaData) {

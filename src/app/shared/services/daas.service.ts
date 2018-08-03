@@ -60,26 +60,28 @@ export class DaasService {
         return <Observable<DiagnoserDefinition[]>>this._armClient.getResourceWithoutEnvelope<DiagnoserDefinition[]>(resourceUri, null, true);
     }
 
-    getDatabaseTest(site:SiteInfoMetaData): Observable<DatabaseTestConnectionResult[]>
-    {
+    getDatabaseTest(site: SiteInfoMetaData): Observable<DatabaseTestConnectionResult[]> {
         let resourceUri: string = this._uriElementsService.getDatabaseTestUrl(site);
-        return <Observable<DatabaseTestConnectionResult[]>>this._armClient.getResourceWithoutEnvelope<Session>(resourceUri,null, true);
+        return <Observable<DatabaseTestConnectionResult[]>>this._armClient.getResourceWithoutEnvelope<Session>(resourceUri, null, true);
     }
 
-    getDaasWebjobState(site:SiteDaasInfo): Observable<Response>
-    {
-        let url: string = this._uriElementsService.getDaasWebJobStateUrl(site);        
+    getDaasWebjobState(site: SiteDaasInfo): Observable<Response> {
+        let url: string = this._uriElementsService.getDaasWebJobStateUrl(site);
         let requestHeaders: Headers = this._getHeaders();
-        let options = new RequestOptions({headers: requestHeaders , method: "GET"});
+        let options = new RequestOptions({ headers: requestHeaders, method: "GET" });
         return this._http.get(url, options);
     }
 
-    starttDaasWebjob(site:SiteDaasInfo): Observable<Response>
-    {
-        let url: string = this._uriElementsService.startDaasWebJobUrl(site);        
+    starttDaasWebjob(site: SiteDaasInfo): Observable<Response> {
+        let url: string = this._uriElementsService.startDaasWebJobUrl(site);
         let requestHeaders: Headers = this._getHeaders();
-        let bodyString: string = '';        
+        let bodyString: string = '';
         return this._http.post(url, bodyString, { headers: requestHeaders });
+    }
+
+    deleteDaasSession(site: SiteDaasInfo, sessionId: string): Observable<any> {
+        let resourceUri: string = this._uriElementsService.getDiagnosticsSingleSessionDeleteUrl(site, sessionId);
+        return <Observable<any>>(this._armClient.deleteResource(resourceUri, null, true));
     }
 
     private _getHeaders(): Headers {
