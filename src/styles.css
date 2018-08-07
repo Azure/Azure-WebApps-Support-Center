@@ -62,3 +62,28 @@
 .info-color {
     color: #3a9bc7;
 }
+
+.critical {
+    color: #ff0000;
+}
+.bg-critical{
+    background-color: #ff0000;
+}
+.warning {
+    color: #ff9104;
+}
+.bg-warning {
+    background-color: #ff9104;
+}
+.success {
+    color: #3da907;
+}
+.bg-success {
+    background-color: #3da907;
+}
+.info {
+    color: #3a9bc7;
+}
+.bg-info {
+    background-color: #3a9bc7;
+}

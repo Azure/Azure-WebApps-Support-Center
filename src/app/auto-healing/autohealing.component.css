@@ -1,0 +1,140 @@
+.container {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.header1 {
+    font-size: 24px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.header2 {
+    font-size: 20px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+.tile {
+    display: inline-block;
+    margin: 0 2px;
+    cursor: pointer;
+}
+
+.tile-selected {
+    border: 2px solid #0058ad;
+    margin: 0;
+}
+
+.tile-icon {
+    padding: 10px;
+    width: 150px;
+    height: 80px;
+    -webkit-box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .2);
+    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .2);
+    text-align: center;
+}
+
+.tile:hover {
+    -webkit-box-shadow: 6px 6px 20px 0 rgba(0, 0, 0, .2);
+    box-shadow: 6px 6px 20px 0 rgba(0, 0, 0, .2);
+    margin: 0 2px
+}
+
+.icon-template {
+    font-size: 30px;
+}
+
+.tile-content {
+    margin-left: 15px;
+}
+
+.forminput {
+    margin-top: 15px;
+    border: 1px solid whitesmoke;
+    padding: 15px;
+    border-radius: 1em;
+    /* width:75%; */
+}
+
+.active {
+    background-color: gainsboro;
+}
+
+.activeAction {
+    color: #0058ad;
+}
+
+.image-btn {
+    color: #0058ad;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: white;
+}
+
+.summary {
+    background-color: #efefef;
+    border-bottom-left-radius: 0;
+    border: 1px solid #e6e6e6;
+    font-size: 14px;
+    display: inline-block;
+    padding: 10px;
+    padding-right: 30px;
+    border-radius: 10px;
+}
+
+.saveSection {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+input[type="text"], input[type="number"] {
+    border: 1px solid #d8e1e6;
+    position: relative;
+    vertical-align: middle;
+    height: 23px;
+    padding: 0 5px;
+    background-color: #fff;
+    color: inherit;
+    font-size: 12px;
+}
+
+input[type=text]:focus, input[type=number]:focus {
+    border: 1px solid #0058ad;
+    outline: 0
+}
+
+label {
+    font-size: 13px;
+    font-weight: 400;
+    /* color: #595959; */
+}
+
+.alert {
+    font-size: 12px;
+    padding: 5px;
+}
+
+.rule-button {
+    margin-top: 10px;
+}
+
+.form-group .row {
+    line-height: 25px;
+}
+
+.topmenu-button{
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.btn-primary {
+    background-color: #0058ad;
+    border-color: #0058ad;
+}
+
+.btn.btn-primary:disabled{
+    background-color: #0059ade7;
+    border-color: #0059ade7;
+}

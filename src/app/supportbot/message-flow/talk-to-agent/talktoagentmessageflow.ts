@@ -48,7 +48,7 @@ export class TalkToAgentMessageFlow extends IMessageFlowProvider {
         var messageGroupList: MessageGroup[] = [];
 
         var msgGroup: MessageGroup = new MessageGroup('talk-to-agent', [], () => '');
-        msgGroup.messages.push(new TextMessage('Do you want to talk about azure app service certificate or domain issue?'));
+        msgGroup.messages.push(new TextMessage('Do you want to talk about Azure App Service Certificate or Domain issue?'));
         msgGroup.messages.push(new ButtonListMessage(this.getProdIssueButtonList(), 'Talk-To-Agent'));
         msgGroup.messages.push(new TextMessage('Yes', MessageSender.User, 100));
         msgGroup.messages.push(new TextMessage('Got it. Let me connect you with one of our live agents for further assistance.', MessageSender.System, 1000));

@@ -1,0 +1,68 @@
+.diagnoser-option{    
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #eeeeee;
+    margin-top:10px;
+}
+
+.detail-card {
+    margin: 5px;
+    width: 250px;
+    height: 110px;
+    position: relative;
+    padding: 5px 5px 10px 15px;
+    text-align: left;
+    vertical-align: top;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(214, 214, 214);
+    box-shadow: rgba(120, 120, 120, 0.75) 0px 0px 6px;
+    background-color: white;
+}
+
+.detail-card:hover {
+    outline: rgb(0, 188, 242) solid 2px;
+    border-color: rgb(0, 188, 242);
+}
+
+.detail-card-active {
+    background-color: #0058ad;
+    color: whitesmoke;
+}
+
+.diagnostic-options {
+    border: Solid 1px #0058ad;
+    border-radius: 0px 0px 5px 5px;
+    padding: 0px 0px 0px 5px;
+    margin-left:1px;
+}
+
+h4{
+    font-size: 12px;
+}
+p {
+    line-height: 18px;
+    font-size: 12px;
+}
+
+.diagnostic-options-heading{
+    margin-top:10px;  
+    background-color: #0058ad;
+    width:100px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    color:white;
+    padding-left: 7px;
+    margin-left: 1px;
+}
+
+label {
+    font-size: 13px;
+    font-weight: 400;
+    /* color: #595959; */
+}
+
+.final-action{
+    background-color:#eeeeee;
+    border-radius:5px;
+}

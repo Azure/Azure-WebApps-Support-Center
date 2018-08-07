@@ -43,6 +43,7 @@ import { AppInsightsQueryService } from './services/appinsights/appinsights-quer
 import { CacheService } from './services/cache.service';
 import { SolutionFactoryService } from './services/solution-factory.service';
 import { DaasService } from './services/daas.service';
+import { LiveChatService } from './services/livechat.service';
 import { ProfilerComponent } from './components/daas/profiler.component';
 import { ProfilerToolComponent } from './components/tools/profiler-tool/profiler-tool.component';
 import { DaasComponent } from './components/daas/daas.component';
@@ -71,6 +72,9 @@ import { StartupModule } from '../startup/startup.module';
 import { TabsComponent } from './components/tabs/tabs.component';
 import { GenericDetectorComponent } from './components/generic-detector/generic-detector.component';
 import { DiagnosticDataModule } from '../../../node_modules/applens-diagnostics';
+import { AutohealingService } from './services/autohealing.service';
+import { TimespanComponent } from './components/timespan/timespan.component';
+import { ToggleButtonComponent } from './components/toggle-button/toggle-button.component';
 
 @NgModule({
     declarations: [
@@ -117,7 +121,9 @@ import { DiagnosticDataModule } from '../../../node_modules/applens-diagnostics'
         DaasSessionsDetailedComponent,
         LiveAgentChatComponent,
         TabsComponent,
-        GenericDetectorComponent
+        GenericDetectorComponent,
+        TimespanComponent,
+        ToggleButtonComponent
     ],
     imports: [
         HttpModule,
@@ -175,7 +181,9 @@ import { DiagnosticDataModule } from '../../../node_modules/applens-diagnostics'
         IncidentSummaryComponent,
         LiveAgentChatComponent,
         TabsComponent,
-        GenericDetectorComponent
+        GenericDetectorComponent,
+        TimespanComponent,
+        ToggleButtonComponent
     ]
 })
 export class SharedModule {
@@ -203,7 +211,9 @@ export class SharedModule {
                 ServiceIncidentService,
                 GenericApiService,
                 TabTitleResolver,
-                AseService
+                AseService,
+                LiveChatService,
+                AutohealingService
             ]
         }
     }

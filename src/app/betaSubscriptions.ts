@@ -11,6 +11,7 @@ export class DemoSubscriptions {
         "fb2c25dc-6bab-45c4-8cc9-cece7c42a95a", // antps14
         "edcc99a4-b7f9-4b5e-a9a1-3034c51db496", // OtherDemo?
         "ce678eba-8ab3-4a0c-9610-97fee4ee6b34",  //Ranjith linux test sub
-        "88c8fe3d-1993-4fac-8e44-0f3232cc60ce"   // antps29
+        "88c8fe3d-1993-4fac-8e44-0f3232cc60ce",   // antps29,
+        "da511dea-6e00-4728-93ff-6302ad7fe284"   // Nazeef's Sub
     ];
 }

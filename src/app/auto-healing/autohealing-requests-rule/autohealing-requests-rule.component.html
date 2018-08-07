@@ -1,0 +1,68 @@
+<div *ngIf="rule == null && !editMode">
+  Configure a rule based on number of requests served by the App. This is useful in case your app to take an action when it
+  has served X number of requests in Y amount of time.
+  <div class="rule-button">
+    <button type="button" class="btn btn-primary btn-sm" (click)="addNewRule()">
+      Configure Request Count rule
+    </button>
+  </div>
+</div>
+
+<table class="table table-bordered" *ngIf="!editMode && rule != null">
+  <thead>
+    <tr>
+      <th>
+        Request Count
+      </th>
+      <th>
+        Duration
+      </th>
+      <th>
+        Action
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{ rule.count }}</td>
+      <td>{{ rule.timeInterval }}</td>
+      <td>
+        <button class="image-btn" *ngIf="!editMode" (click)="editRule()">
+          <i class="fa fa-edit"></i>
+        </button>
+        <button class="image-btn" *ngIf="!editMode" (click)="deleteRule()">
+          <i class="fa fa-trash"></i>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="form-group" *ngIf="editMode">
+  <div class="row">
+    <div class="col-sm-6">
+      <label for="requests">After how many requests you want this condition to kick in ?</label>
+    </div>
+    <div class="col-sm-4">
+      <input type="number" id="requests" aria-describedby="requestCountHelp" placeholder="Enter count" [(ngModel)]="ruleCopy.count">
+      <span style="color:red">*</span>
+      <div *ngIf="ruleCopy.count <=0" class="alert alert-danger" style="margin-top:5px">
+        Request count should be more than zero
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <label for="durationCount">How frequently (in seconds) you want to check ?</label>
+    </div>
+    <div class="col-sm-4">
+      <timespan [(timeSpan)]="ruleCopy.timeInterval" placeholder="e.g. 60"></timespan>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-4">
+      <button type="button" class="btn btn-primary btn-sm" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
+    </div>
+  </div>
+</div>

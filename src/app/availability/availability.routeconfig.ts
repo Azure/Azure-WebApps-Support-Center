@@ -22,7 +22,9 @@ import { IncidentSummaryComponent } from '../shared/components/incident-summary/
 import { ToolNames } from '../shared/models/tools-constants';
 import { DaasSessionsDetailedComponent } from '../shared/components/daas-sessions-detailed/daas-sessions-detailed.component';
 import { TabTitleResolver } from '../shared/resolvers/tab-name.resolver';
+import { AutohealingComponent } from '../auto-healing/autohealing.component';
 import { GenericDetectorComponent } from '../shared/components/generic-detector/generic-detector.component';
+
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
@@ -369,7 +371,22 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     }
     ,
-    // Network Trace Tool
+    // Autohealing
+    {
+        path: _siteResourceUrl + '/diagnostics/tools/mitigate',
+        component: AutohealingComponent,
+        data: {
+            navigationTitle: 'Mitigate',
+        }
+    },
+    {
+        path: _slotResourceUrl + '/diagnostics/tools/mitigate',
+        component: AutohealingComponent,
+        data: {
+            navigationTitle: 'Mitigate',
+        }
+    }
+    ,    
     {
         path: _siteResourceUrl + '/diagnostics/tools/networktrace',
         component: NetworkTraceToolComponent,

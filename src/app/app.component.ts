@@ -4,10 +4,10 @@ import { INavigationItem } from "./shared/models/inavigationitem";
 import * as _ from 'underscore';
 import { AuthService } from './startup/services/auth.service';
 import { WindowService } from './startup/services/window.service';
-// import { LoggingService } from './shared/services/logging/logging.service';
+import { LoggingService } from './shared/services/logging/logging.service';
+import { LiveChatService } from './shared/services/livechat.service';
 import { StartupInfo } from './shared/models/portal';
-// import { Observable } from 'rxjs/Rx';
-// import { InvokeFunctionExpr } from '@angular/compiler';
+import { GenericApiService } from './shared/services/generic-api.service';
 import 'rxjs/add/operator/filter';
 
 @Component({
@@ -48,8 +48,8 @@ export class AppComponent implements OnInit {
             path: '/diagnostics/availability/memoryanalysis',
         }
     ]
-// private _logger: LoggingService , private _genericApi: GenericApiService
-    constructor(private _authService: AuthService, private _router: Router, private _activatedRoute: ActivatedRoute, private _windowService: WindowService) {
+
+    constructor(private _authService: AuthService, private _router: Router, private _activatedRoute: ActivatedRoute, private _windowService: WindowService, private _logger: LoggingService, private _genericApi: GenericApiService, private _liveChatService: LiveChatService) {
         this.navigationItems = [];
         this.contentMaxHeight = 0;
     }
