@@ -404,20 +404,20 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     }
     ,    
-    // DiagnosticSessions
+    // Diagnostics
     {
-        path: _siteResourceUrl + '/diagnostics/tools/diagnosticsessions',
+        path: _siteResourceUrl + '/diagnostics/tools/daas',
         component: DaasSessionsDetailedComponent,
         data: {
-            navigationTitle: ToolNames.DiagnosticSessions,
+            navigationTitle: ToolNames.Diagnostics,
             cacheComponent: true
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/tools/diagnosticsessions',
+        path: _slotResourceUrl + '/diagnostics/tools/daas',
         component: DaasSessionsDetailedComponent,
         data: {
-            navigationTitle: ToolNames.DiagnosticSessions,
+            navigationTitle: ToolNames.Diagnostics,
             cacheComponent: true
         }
     }
