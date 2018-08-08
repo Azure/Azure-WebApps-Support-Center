@@ -3,6 +3,7 @@ import { ServerFarmDataService } from '../../shared/services/server-farm-data.se
 import { SiteService } from '../../shared/services/site.service';
 import { SiteInfoMetaData } from '../../shared/models/site';
 import { AutoHealCustomAction } from '../../shared/models/autohealing';
+import { DaasService } from '../../shared/services/daas.service';
 
 @Component({
   selector: 'autohealing-custom-action',
@@ -11,7 +12,7 @@ import { AutoHealCustomAction } from '../../shared/models/autohealing';
 })
 export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
-  constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService) {
+  constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService) {
   }
 
   @Input() siteToBeDiagnosed: SiteInfoMetaData;
@@ -45,7 +46,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
-      if (serverFarm) {       
+      if (serverFarm) {
         if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
           this.supportedTier = true;
           this._siteService.getAlwaysOnSetting(this.siteToBeDiagnosed).subscribe(alwaysOnSetting => {
@@ -60,11 +61,25 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
           this.initComponent();
         }
+
+        // This is required in case someone lands on Mitigate page
+        // without ever hitting DAAS endpoint. Browsing to any DAAS 
+        // endpoint, will ensure that DaaSConsole is copied to the
+        // right folders and will allow autohealing to work correctly
+        this.makeDaasWarmupCall();
       }
     });
 
   }
 
+  makeDaasWarmupCall(): any {
+    this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(siteDaasInfo => {
+      this._daasService.getInstances(siteDaasInfo).subscribe(resp => {
+        //do nothing with resp
+      });
+    });
+
+  }
   initComponent() {
     if (this.customAction == null) {
       this.customAction = new AutoHealCustomAction();

@@ -113,7 +113,14 @@
           </div>
         </div>
       </div>
-
+      <div *ngIf="!retrievingAutohealSettings  && !errorMessage && saveEnabled && validationWarning.length > 0" class="tile-content alert alert-danger alert-section">
+        <strong>CAUTION</strong>
+        <ul style="margin-top:5px">
+          <li *ngFor="let warning of validationWarning">
+            {{ warning }}
+          </li>
+        </ul>
+      </div>
       <div *ngIf="!retrievingAutohealSettings  && !errorMessage" class="saveSection tile-content">
         <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="saveChanges()">Save</button>
         <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="reset()">Reset</button>
@@ -133,12 +140,12 @@
 
   <div *ngIf="showAutoHealHistory" style="border: 1px solid #adb0b7">
     <div *ngIf="detectorHasData">
-        <div style="margin-left:10px;margin-top:15px">
-            The below graph shows all the autohealing invocations in the last 24 hours
-          </div>
-          <div style="padding:15px">
-            <metric-graph [metricSets]="detectorMetrics" [title]="detectorMetricsTitle" [chartType]="metricsChartType" [yAxisLabel]="detectorMetricsYAxisLabel"></metric-graph>
-          </div>
+      <div style="margin-left:10px;margin-top:15px">
+        The below graph shows all the autohealing invocations in the last 24 hours
+      </div>
+      <div style="padding:15px">
+        <metric-graph [metricSets]="detectorMetrics" [title]="detectorMetricsTitle" [chartType]="metricsChartType" [yAxisLabel]="detectorMetricsYAxisLabel"></metric-graph>
+      </div>
     </div>
     <div *ngIf="!detectorHasData" style="margin:10px">
       Found no Autoheal events for this web app in the last 24 hours.
