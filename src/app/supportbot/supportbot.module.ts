@@ -17,7 +17,7 @@ import { DynamicComponent } from './dynamic-component/dynamic.component';
 import { TextMessageComponent } from './common/text-message/text-message.component';
 import { ButtonMessageComponent } from './common/button-message/button-message.component';
 import { LoadingMessageComponent } from './common/loading-message/loading-message.component';
-import { MainMenuComponent, ToolStackPipe, PlatformPipe, AppTypePipe, SkuPipe } from './message-flow/main-menu/main-menu.component';
+import { MainMenuComponent } from './message-flow/main-menu/main-menu.component';
 import { HealthCheckComponent } from './message-flow/health-check/health-check.component';
 import { TalkToAgentMessageComponent } from './message-flow/talk-to-agent/talk-to-agent-message.component';
 import { FeedbackComponent } from './message-flow/feedback/feedback.component';
@@ -47,11 +47,7 @@ const _hostingEnvironmentResourceUrl: string = 'subscriptions/:subscriptionid/re
         FeedbackComponent,
         SolutionsMessageComponent,
         GraphMessageComponent,
-        ProblemStatementMessageComponent,
-        ToolStackPipe,
-        PlatformPipe,
-        AppTypePipe,
-        SkuPipe
+        ProblemStatementMessageComponent
     ],
     imports: [
         RouterModule.forChild(
