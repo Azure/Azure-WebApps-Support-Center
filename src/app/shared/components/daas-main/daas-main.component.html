@@ -2,13 +2,13 @@
     <div class="header1">Diagnostics as a Service </div>
 
     <p>
-        Diagnostics as a Service provides a rich set of tools that help you analyze performance and availability issues in your app. 
-        If your app is down or performing slow, you can leverage these tools to identify the root cause. These tools leverage diagnostic 
-        capabilities of different technology stacks to provide you insights on your app performance and availability. To get started, 
-        click on the tile for the tool you want to use.
+        Diagnostics as a Service provides a rich set of tools that help you analyze performance and availability issues in your app.
+        If your app is down or performing slow, you can leverage these tools to identify the root cause. These tools leverage
+        diagnostic capabilities of different technology stacks to provide you insights on your app performance and availability.
+        To get started, click on the tile for the tool you want to use.
     </p>
 
-    <div style="margin-bottom: 10px;">
+    <div style="margin-bottom: 10px;" *ngIf="platform !=null && platform === operatingSystem.windows">
 
         <div *ngIf="toolCategory !=null && (toolCategory.Subcategories | toolstack:AppStack | platformfilter:platform  | apptype:appType).length > 0">
             <div class="col zoomIn animated category-box" *ngFor="let subcategory of toolCategory.Subcategories | toolstack:AppStack | platformfilter:platform | apptype:appType"
@@ -54,7 +54,8 @@
 
     <div *ngIf="platform !=null && platform === operatingSystem.linux">
         <div class="alert alert-danger">
-            Diagnostics as a Service is supported only on Windows Platform
+            Diagnostics as a Service is supported on Windows Platform only.
         </div>
     </div>
+   
 </div>

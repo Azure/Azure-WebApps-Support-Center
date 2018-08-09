@@ -66,3 +66,10 @@ label {
     background-color:#eeeeee;
     border-radius:5px;
 }
+
+.custom-action-note{
+    color: #0058ad;
+    font-size: smaller;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}

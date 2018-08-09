@@ -27,7 +27,7 @@ export class DaasMainComponent implements OnInit {
   appType: AppType;
   sku: Sku;
   showToolsDropdown: boolean = false;
-  operatingSystem:any = OperatingSystem;
+  operatingSystem:any = OperatingSystem; 
 
   constructor(private _siteService: SiteService, private _logger: AvailabilityLoggingService,
     private _categoryService: CategoriesService,
