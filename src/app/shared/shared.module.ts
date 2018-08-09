@@ -67,7 +67,6 @@ import { NetworkTraceToolComponent } from './components/tools/network-trace-tool
 import { ServiceIncidentService } from './services/service-incident.service';
 import { IncidentSummaryComponent } from './components/incident-summary/incident-summary.component';
 import { DaasValidatorComponent } from './components/daas/daas-validator.component';
-import { DaasSessionsDetailedComponent } from './components/daas-sessions-detailed/daas-sessions-detailed.component';
 import { GenericApiService } from './services/generic-api.service';
 import { TabTitleResolver } from './resolvers/tab-name.resolver';
 import { AseService } from './services/ase.service';
@@ -75,6 +74,7 @@ import { AutohealingService } from './services/autohealing.service';
 import { TimespanComponent } from './components/timespan/timespan.component';
 import { ToggleButtonComponent } from './components/toggle-button/toggle-button.component';
 import { ToolStackPipe, AppTypePipe, SkuPipe, PlatformPipe } from './pipes/categoryfilters.pipe';
+import { DaasMainComponent } from './components/daas-main/daas-main.component';
 
 @NgModule({
     declarations: [
@@ -122,7 +122,7 @@ import { ToolStackPipe, AppTypePipe, SkuPipe, PlatformPipe } from './pipes/categ
         NetworkTraceToolComponent,
         IncidentSummaryComponent,
         DaasValidatorComponent,
-        DaasSessionsDetailedComponent,
+        DaasMainComponent,
         LiveAgentChatComponent,
         TimespanComponent,
         ToggleButtonComponent

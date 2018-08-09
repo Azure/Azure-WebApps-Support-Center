@@ -20,12 +20,12 @@ import { ConnectionDiagnoserToolComponent } from '../shared/components/tools/con
 import { NetworkTraceToolComponent } from '../shared/components/tools/network-trace-tool/network-trace-tool.component';
 import { IncidentSummaryComponent } from '../shared/components/incident-summary/incident-summary.component';
 import { ToolNames } from '../shared/models/tools-constants';
-import { DaasSessionsDetailedComponent } from '../shared/components/daas-sessions-detailed/daas-sessions-detailed.component';
 import { GenericDetectorComponent } from './generic-detector/generic-detector.component';
 import { Injectable } from '@angular/core';
 import { GenericApiService } from '../shared/services/generic-api.service';
 import { TabTitleResolver } from '../shared/resolvers/tab-name.resolver';
 import { AutohealingComponent } from '../auto-healing/autohealing.component';
+import { DaasMainComponent } from '../shared/components/daas-main/daas-main.component';
 
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
@@ -407,7 +407,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     // Diagnostics
     {
         path: _siteResourceUrl + '/diagnostics/tools/daas',
-        component: DaasSessionsDetailedComponent,
+        component: DaasMainComponent,
         data: {
             navigationTitle: ToolNames.Diagnostics,
             cacheComponent: true
@@ -415,7 +415,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     },
     {
         path: _slotResourceUrl + '/diagnostics/tools/daas',
-        component: DaasSessionsDetailedComponent,
+        component: DaasMainComponent,
         data: {
             navigationTitle: ToolNames.Diagnostics,
             cacheComponent: true

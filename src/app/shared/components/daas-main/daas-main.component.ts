@@ -12,12 +12,12 @@ import { IDiagnosticProperties } from '../../models/diagnosticproperties';
 import { AppAnalysisService } from '../../services/appanalysis.service';
 
 @Component({
-  selector: 'daas-sessions-detailed',
+  selector: 'daas-main',
   providers: [CategoriesService],
-  templateUrl: './daas-sessions-detailed.component.html',
-  styleUrls: ['./daas-sessions-detailed.component.css']
+  templateUrl: './daas-main.component.html',
+  styleUrls: ['./daas-main.component.css']
 })
-export class DaasSessionsDetailedComponent implements OnInit {
+export class DaasMainComponent implements OnInit {
 
   siteToBeDiagnosed: SiteDaasInfo;
   scmPath: string = "";
