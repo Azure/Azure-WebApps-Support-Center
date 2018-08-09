@@ -74,6 +74,7 @@ import { AseService } from './services/ase.service';
 import { AutohealingService } from './services/autohealing.service';
 import { TimespanComponent } from './components/timespan/timespan.component';
 import { ToggleButtonComponent } from './components/toggle-button/toggle-button.component';
+import { ToolStackPipe, AppTypePipe, SkuPipe, PlatformPipe } from './pipes/categoryfilters.pipe';
 
 @NgModule({
     declarations: [
@@ -83,6 +84,10 @@ import { ToggleButtonComponent } from './components/toggle-button/toggle-button.
         GroupByPipe,
         MapValuesPipe,
         DateTimeDiffPipe,
+        ToolStackPipe,
+        AppTypePipe,
+        SkuPipe,
+        PlatformPipe,
         BlogComponent,
         OpenTicketComponent,
         DowntimeTimelineComponent,
@@ -101,7 +106,7 @@ import { ToggleButtonComponent } from './components/toggle-button/toggle-button.
         VerticalDisplayListItemComponent,
         SolutionTypeTagComponent,
         StepWizardComponent,
-        DaasSessionsComponent,        
+        DaasSessionsComponent,
         ProfilerComponent,
         ProfilerToolComponent,
         MemoryDumpToolComponent,
@@ -140,6 +145,10 @@ import { ToggleButtonComponent } from './components/toggle-button/toggle-button.
         GroupByPipe,
         MapValuesPipe,
         DateTimeDiffPipe,
+        ToolStackPipe,
+        AppTypePipe,
+        SkuPipe,
+        PlatformPipe,
         BlogComponent,
         OpenTicketComponent,
         DowntimeTimelineComponent,

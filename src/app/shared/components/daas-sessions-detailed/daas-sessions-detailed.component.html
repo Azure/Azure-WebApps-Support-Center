@@ -2,52 +2,59 @@
     <div class="header1">Diagnostics as a Service </div>
 
     <p>
-        Diagnostics as a Service provides a rich set of tools that help you analyze your applcation effectively. There is a rich 
-        set of tools that allow web developers to diagnose common issues like performance and server errors easily. Tools are designed 
-        keeping in mind common application stacks and each set of tools helps you identify issues for that technology stack. To get started, 
+        Diagnostics as a Service provides a rich set of tools that help you analyze performance and availability issues in your app. 
+        If your app is down or performing slow, you can leverage these tools to identify the root cause. These tools leverage diagnostic 
+        capabilities of different technology stacks to provide you insights on your app performance and availability. To get started, 
         click on the tile for the tool you want to use.
     </p>
 
-    <div class="row" style="margin-bottom: 10px;">
-        <div *ngFor="let category of allProblemCategories;let i = index">
+    <div style="margin-bottom: 10px;">
 
-            <div class="col zoomIn animated category-box" *ngFor="let subcategory of category.Subcategories"
-                [style.background-color]="category.BgColor" [style.color]="category.TextColor" [routerLink]="[subcategory.Href]"
+        <div *ngIf="toolCategory !=null && (toolCategory.Subcategories | toolstack:AppStack | platformfilter:platform  | apptype:appType).length > 0">
+            <div class="col zoomIn animated category-box" *ngFor="let subcategory of toolCategory.Subcategories | toolstack:AppStack | platformfilter:platform | apptype:appType"
+                [style.background-color]="toolCategory.BgColor" [style.color]="toolCategory.TextColor" [routerLink]="getRoute(subcategory.Href)"
                 (click)="logCategorySelected(subcategory.Name)">
                 <div class="category-content">{{subcategory.Name}}</div>
             </div>
-
-            <!-- <div class="content">
-                Showing tools for
-                <strong>{{ AppStack }}</strong>.
-                <div style="display:inline-block" class="dropup">
-                    <a class="dropdown-toggle" (click)="showToolsDropdown = !showToolsDropdown">Change Stack</a>
-                    <ul class="dropdown-menu" style="cursor: pointer" aria-labelledby="dropdownMenu1" [ngClass]="{'show': showToolsDropdown ===
-                        true, 'hide': showToolsDropdown === false}">
-                        <li (click)="onStackChanged('ASP.Net')">
-                            <a>ASP.Net</a>
-                        </li>
-                        <li (click)="onStackChanged('ASP.Net Core')">
-                            <a>ASP.NET Core</a>
-                        </li>
-                        <li (click)="onStackChanged('Java')">
-                            <a>Java</a>
-                        </li>
-                        <li (click)="onStackChanged('PHP')">
-                            <a>PHP</a>
-                        </li>
-                    </ul>
+            <div class="area">
+                <div class="content">
+                    Showing tools for
+                    <strong>{{ AppStack }}</strong>.
+                    <div style="display:inline-block" class="dropdown">
+                        <a class="dropdown-toggle" (click)="showToolsDropdown = !showToolsDropdown">Change Stack</a>
+                        <ul class="dropdown-menu" style="cursor: pointer" aria-labelledby="dropdownMenu1" [ngClass]="{'show': showToolsDropdown ===
+                                    true, 'hide': showToolsDropdown === false}">
+                            <li (click)="onStackChanged('ASP.Net')">
+                                <a>ASP.Net</a>
+                            </li>
+                            <li (click)="onStackChanged('ASP.Net Core')">
+                                <a>ASP.NET Core</a>
+                            </li>
+                            <li (click)="onStackChanged('Java')">
+                                <a>Java</a>
+                            </li>
+                            <li (click)="onStackChanged('PHP')">
+                                <a>PHP</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div> -->
+            </div>
+        </div>
 
-
+        <div style="margin-top:20px">
+            <p>
+                Below is the list of all the diagnostic sessions collected in the past for this web app.
+            </p>
+            <div class="sessions">
+                <daas-sessions [diagnoserNameLookup]="" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed"></daas-sessions>
+            </div>
         </div>
     </div>
 
-    <p>
-        The below table lists all the diagnostic sessions for this Web App.
-    </p>
-    <div class="sessions">
-        <daas-sessions [diagnoserNameLookup]="" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed"></daas-sessions>
+    <div *ngIf="platform !=null && platform === operatingSystem.linux">
+        <div class="alert alert-danger">
+            Diagnostics as a Service is supported only on Windows Platform
+        </div>
     </div>
 </div>
