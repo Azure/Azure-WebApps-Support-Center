@@ -39,7 +39,8 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
   minProcessExecutionTime: number;
   minProcessExecutionTimeExpanded: boolean = false;
   showAutoHealHistory: boolean = false;
-  detectorHasData:boolean = false;
+  detectorHasData: boolean = false;
+  validationWarning: string[];
 
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, protected _route: ActivatedRoute, protected _appAnalysisService: AppAnalysisService) {
     super(_route, _appAnalysisService);
@@ -54,7 +55,7 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
     this.detectorMetrics = response.metrics;
     this.detectorMetricsTitle = this.detectorMetricsTitle != undefined && this.detectorMetricsTitle != '' ?
       this.detectorMetricsTitle : response.detectorDefinition.displayName;
-    this.detectorHasData = this.detectorResponse && this.detectorResponse.data.length >  0;
+    this.detectorHasData = this.detectorResponse && this.detectorResponse.data.length > 0;
   }
 
   ngOnInit() {
@@ -256,6 +257,7 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
 
   updateSummaryText() {
     this.currentSettings = JSON.stringify(this.autohealingSettings);
+    this.validateAutoHealRules();
   }
 
   reset() {
@@ -272,5 +274,63 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
     this.triggerSelected = -1;
     this.actionCollapsed = true;
     this.minProcessExecutionTimeExpanded = false;
+  }
+
+  validateAutoHealRules() {
+    this.validationWarning = [];
+
+    const minProcessExecutionTimeNotSet: string = "To avoid mitigation actions to kick in immediately after process starts, it is advisable to set the startup time to at least 600 seconds (10 minutes). This will ensure that mitigation actions don't kick in during app's cold start.";
+    const actionSetToRecycle: string = "Even though the recyle happens in an overlapped recycling manner, please ensure that the rules configured don't end up recycling your process too many times to avoid any performance hits or app downtimes during cold start of the application.";
+    const diagnosticToolChosenCustom: string = "You have chosen a custom action to execute whenever mitigation kicks in.";
+    const diagnosticToolChosen: string = " If this is a production app, please ensure that you try these out on a deployment slot first to ensure any downtimes to your application.";
+    const memoryRuleChosenWithCustomAction: string = "memoryRuleChosenWithCustomAction";
+    const diagnosticJavaToolChosen: string = "The java diagnostic tools use either jMap or jStack process to collect dumps. Both these tools freeze the process while collecting data and the app cannot serve any requests during this time and performance will be impacted. It may take longer to collect these dumps if the process is consuming high memory or has a high number of active threads.";
+    const diagnosticMemoryDumpChosen: string = "You have chosen to collect a memory dump of the process. Please note that during the time the memory dump is getting generated, the process is frozen and cannot serve any requests. The amount of time it takes to capture the memory dump depends upon the memory consumption of the process and for processes consuming high memory, it will take longer to generate the dump.";
+    const diagnosticProfilerWithThreadStacksChosen: string = "When the profiler is chosen along with thread stacks option, the process is frozen for a few seconds to dump all raw thread stacks. This option is advisable if you are experiencing huge delays (in minutes) to serve the requests or if the application is experiencing deadlocks. During this time, the process cannot serve any requests and application performance will be impacted.";
+    const diagnosticProfilerChosen: string = "The profiling tool is light weight but incurs some CPU overhead during the data collection process.";
+
+    if (this.autohealingSettings != null && this.autohealingSettings.autoHealEnabled && this.autohealingSettings.autoHealRules != null && this.autohealingSettings.autoHealRules.actions != null && this.autohealingSettings.autoHealRules.triggers != null) {
+
+      if (FormatHelper.timespanToSeconds(this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime) < 600) {
+        this.validationWarning.push(minProcessExecutionTimeNotSet);
+      }
+
+      if (this.autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.Recycle) {
+        this.validationWarning.push(actionSetToRecycle);
+      }
+
+      if (this.autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction
+        && this.autohealingSettings.autoHealRules.actions.customAction != null
+        && this.autohealingSettings.autoHealRules.actions.customAction.exe != null) {
+        if (this.autohealingSettings.autoHealRules.actions.customAction.exe.toLowerCase() === 'd:\\home\\data\\daas\\bin\\daasconsole.exe') {
+          let customActionParam = this.autohealingSettings.autoHealRules.actions.customAction.parameters;
+
+          if (customActionParam.indexOf("\"Memory Dump\"") > 0) {
+            this.validationWarning.push(diagnosticMemoryDumpChosen + diagnosticToolChosen);
+          }
+          else if (customActionParam.indexOf("\"JAVA Memory Dump\"") > 0 || customActionParam.indexOf("\"JAVA Thread Dump\"") > 0) {
+            this.validationWarning.push(diagnosticJavaToolChosen + diagnosticToolChosen);
+          }
+          else if (customActionParam.indexOf("\"CLR Profiler With ThreadStacks\"") > 0) {
+            this.validationWarning.push(diagnosticProfilerWithThreadStacksChosen + diagnosticToolChosen)
+          }
+          else if (customActionParam.indexOf("\"CLR Profiler\"") > 0) {
+            this.validationWarning.push(diagnosticProfilerChosen + diagnosticToolChosen)
+          }
+        }
+        else{
+          this.validationWarning.push(diagnosticToolChosenCustom + diagnosticToolChosen);
+        }
+      }
+
+      if (this.autohealingSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction
+        && this.autohealingSettings.autoHealRules.actions.customAction != null
+        && this.autohealingSettings.autoHealRules.actions.customAction.exe != null
+        && this.autohealingSettings.autoHealRules.actions.customAction.exe.toLowerCase() === 'd:\\home\\data\\daas\\bin\\daasconsole.exe'
+        && this.autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0) {
+        this.validationWarning.push(memoryRuleChosenWithCustomAction);
+      }
+
+    }
   }
 }

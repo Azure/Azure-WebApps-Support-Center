@@ -82,6 +82,7 @@
     padding: 10px;
     padding-right: 30px;
     border-radius: 10px;
+    width:70%;
 }
 
 .saveSection {
@@ -137,4 +138,13 @@ label {
 .btn.btn-primary:disabled{
     background-color: #0059ade7;
     border-color: #0059ade7;
+}
+
+.alert-section{
+    margin-top:5px;
+    font-size: inherit;
+    width:70%;
+    padding: 10px;
+    padding-right: 30px;
+    border-radius: 10px;
 }
