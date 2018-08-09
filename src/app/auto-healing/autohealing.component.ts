@@ -8,6 +8,7 @@ import { IDetectorResponse } from '../shared/models/detectorresponse';
 import { FormatHelper } from '../shared/utilities/formattingHelper';
 import { AppAnalysisService } from '../shared/services/appanalysis.service';
 import { AutoHealSettings, AutoHealCustomAction, AutoHealRules, AutoHealActions, AutoHealTriggers, AutoHealActionType } from '../shared/models/autohealing';
+import { AvailabilityLoggingService } from '../shared/services/logging/availability.logging.service';
 
 @Component({
   selector: 'autohealing',
@@ -42,7 +43,7 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
   detectorHasData: boolean = false;
   validationWarning: string[];
 
-  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, protected _route: ActivatedRoute, protected _appAnalysisService: AppAnalysisService) {
+  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, private _logger:AvailabilityLoggingService, protected _route: ActivatedRoute, protected _appAnalysisService: AppAnalysisService) {
     super(_route, _appAnalysisService);
   }
 
@@ -141,6 +142,7 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
   }
 
   saveChanges() {
+    this._logger.LogClickEvent("SaveAutoHealSettings","AutoHealing");
     this.savingAutohealSettings = true;
     this._autohealingService.updateAutohealSettings(this.siteToBeDiagnosed, this.autohealingSettings)
       .subscribe(savedAutoHealSettings => {
@@ -161,6 +163,7 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
         this.initComponent(savedAutoHealSettings);
       },
         err => {
+          this._logger.LogError(`Failed with an error ${JSON.stringify(err)} while saving autoheal settings`, "AutoHealing");
           this.savingAutohealSettings = false;
           this.errorMessageSaving = `Failed with an error ${JSON.stringify(err)} while saving autoheal settings`;
         });
