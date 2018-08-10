@@ -34,7 +34,6 @@ export class UriElementsService {
         TODO : Need to add start time and end time parameters
     */
 
-    
     private _diagnosticsPath = "/extensions/daas/api/";
     private _diagnosticsSessionsAllPath = this._diagnosticsPath + "sessions/all";
     private _diagnosticsSessionsPath = this._diagnosticsPath + "sessions";
@@ -46,8 +45,7 @@ export class UriElementsService {
     private _diagnosticsSingleSessionDeletePath = this._diagnosticsSingleSessionPath + "delete";
     private _diagnosticsDatabaseTestPath = this._diagnosticsPath + "databasetest";
     private _networkTraceStartPath = "/networkTrace/start"
-    private _diagnosticsWebJobStatePath:string = this._supportApi + 'diagnostics/{subscriptionId}/{resourceGroup}/{siteName}/daaswebjobstate';
-    private _diagnosticsWebJobStartPath:string = this._supportApi + 'diagnostics/{subscriptionId}/{resourceGroup}/{siteName}/daaswebjobstart';
+    private _webjobsPath :string = '/webjobs';
 
     getDiagnosticsDiagnosersUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDiagnosersPath;
@@ -95,30 +93,9 @@ export class UriElementsService {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDatabaseTestPath;
     };
 
-    getDaasWebJobStateUrl(site:SiteInfoMetaData)
+    getWebJobs(site:SiteInfoMetaData)
     {
-        var resource = site.siteName;
-        if (site.slot !== '') {
-            resource = `${site.siteName}(${site.slot})`;
-        }
-
-        return this._diagnosticsWebJobStatePath
-        .replace('{subscriptionId}', site.subscriptionId)
-        .replace('{resourceGroup}', site.resourceGroupName)
-        .replace('{siteName}', resource);
-    }
-
-    startDaasWebJobUrl(site:SiteInfoMetaData)
-    {
-        var resource = site.siteName;
-        if (site.slot !== '') {
-            resource = `${site.siteName}(${site.slot})`;
-        }
-
-        return this._diagnosticsWebJobStartPath
-        .replace('{subscriptionId}', site.subscriptionId)
-        .replace('{resourceGroup}', site.resourceGroupName)
-        .replace('{siteName}', resource);
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._webjobsPath;
     }
 
     getSiteRestartUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {

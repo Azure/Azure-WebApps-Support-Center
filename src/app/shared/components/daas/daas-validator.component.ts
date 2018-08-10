@@ -60,7 +60,8 @@ export class DaasValidatorComponent implements OnInit {
               
               if (!this.foundDiagnoserWarnings) {
                 this.checkingDaasWebJobStatus = true;
-                this.checkDaasWebJobState().subscribe(webjobstate => {
+                this._daasService.getDaasWebjobState(this.siteToBeDiagnosed).retry(2)
+                .subscribe(webjobstate => {
                   this.checkingDaasWebJobStatus = false;
                   if (webjobstate != "Running") {
                     this.daasRunnerJobRunning = false;
@@ -84,29 +85,7 @@ export class DaasValidatorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.validateDaasSettings();
-  }
-
-  // Implementing a retry logic if DAAS Webjob is not running because just my making a HTTP call,
-  // we are able to warm upthe kudu site and this webjob might just start after a few seconds.
-  checkDaasWebJobState(): Observable<string> {
-    let retryCount: number = 0;
-    return this._daasService.getDaasWebjobState(this.siteToBeDiagnosed)
-      .map(response => {
-
-        if (response.json() !== "Running" && retryCount < 2) {
-          retryCount++;
-          throw response;
-        }
-        return response;
-      })
-      .map(response => {
-        return response.text() ? response.json() : '';
-      })
-      .retryWhen(obs => {
-        return obs.delay(3000);
-      });
   }
 
 }
