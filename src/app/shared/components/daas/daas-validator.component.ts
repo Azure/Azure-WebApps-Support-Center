@@ -57,21 +57,36 @@ export class DaasValidatorComponent implements OnInit {
                   return;
                 }
               }
-              
+
               if (!this.foundDiagnoserWarnings) {
                 this.checkingDaasWebJobStatus = true;
-                this._daasService.getDaasWebjobState(this.siteToBeDiagnosed).retry(2)
-                .subscribe(webjobstate => {
-                  this.checkingDaasWebJobStatus = false;
-                  if (webjobstate != "Running") {
+                let retryCount: number = 0;
+                this._daasService.getDaasWebjobState(this.siteToBeDiagnosed)
+                  .map(webjobstate => {
+                    if (webjobstate !== "Running" && retryCount < 2) {
+                      ++retryCount;
+                      throw webjobstate;
+                    }
+                    return webjobstate;
+                  })
+                  .retryWhen(obs => {
+                    // take(3) is required in case the original ARM call fails
+                    return obs.delay(4000).take(3).concat(Observable.throw(new Error('Retry limit exceeded!')))
+                  })
+                  .subscribe(webjobstate => {
+                    this.checkingDaasWebJobStatus = false;
+                    if (webjobstate !== "Running") {
+                      this.daasRunnerJobRunning = false;
+                      return;
+                    }
+                    else {
+                      this.DaasValidated.emit(true);
+                    }
+                  }, error => {
+                    // We come in this block if the ARM call to get webjob fails
+                    this.checkingDaasWebJobStatus = false;
                     this.daasRunnerJobRunning = false;
-                    return;
-                  }
-                  else{
-                    this.DaasValidated.emit(true);
-                  }
-                });
-                
+                  });
               }
             },
               error => {
