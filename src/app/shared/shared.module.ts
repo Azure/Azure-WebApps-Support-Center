@@ -187,7 +187,8 @@ import { DaasScaleupComponent } from './components/daas/daas-scaleup/daas-scaleu
         IncidentSummaryComponent,
         LiveAgentChatComponent,
         TimespanComponent,
-        ToggleButtonComponent
+        ToggleButtonComponent,
+        DaasScaleupComponent
     ]
 })
 export class SharedModule {

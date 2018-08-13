@@ -15,10 +15,11 @@
         <div *ngIf="!checkingSupportedTier && !supportedTier">
           <div class="focus-box focus-box-warning">
             <div>
-              <strong>Error</strong> - This tool is supported only in Standard, Premium or Isolated tiers because the diagnostic
+              <strong>Error</strong> - This tool is supported only in <strong>Standard, Premium</strong> or <strong>Isolated</strong> tiers because the diagnostic
               tools require the Always-On setting to be enabled to collect data.
             </div>
           </div>
+          <daas-scaleup></daas-scaleup>
         </div>
         <div class="col" *ngIf="checkingSupportedTier">
           <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>

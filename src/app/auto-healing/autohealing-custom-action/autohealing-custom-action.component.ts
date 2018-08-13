@@ -28,7 +28,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   Diagnosers = [{ Name: "Memory Dump", Description: "Collects memory dumps of the process and the child processes hosting your app and analyzes them for errors" },
   { Name: "CLR Profiler", Description: "Profiles ASP.NET application code to identify exceptions and performance issues" },
-  { Name: "CLR Profiler With ThreadStacks", Description: "Profiles ASP.NET application code to identify exceptions and performance issues and dumps stacks to identify deadlocks" },
+  { Name: "CLR Profiler With Thread Stacks", Description: "Profiles ASP.NET application code to identify exceptions and performance issues and dumps stacks to identify deadlocks" },
   { Name: "JAVA Memory Dump", Description: "Collects a binary memory dump using jMap of all java.exe processes running for this web app" },
   { Name: "JAVA Thread Dump", Description: "Collects jStack output of all java.exe processes running for this app and analyzes the same" }];
   DiagnoserOptions = [
@@ -49,8 +49,8 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
       if (serverFarm) {
         if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
           this.supportedTier = true;
+          this.checkingSupportedTier = false;
           this._siteService.getAlwaysOnSetting(this.siteToBeDiagnosed).subscribe(alwaysOnSetting => {
-            this.checkingSupportedTier = false;
             if (alwaysOnSetting) {
               this.alwaysOnEnabled = true;
             }
@@ -61,12 +61,18 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
           this.initComponent();
         }
+        else {
+          this.checkingSupportedTier = false;
+        }
 
         // This is required in case someone lands on Mitigate page
         // without ever hitting DAAS endpoint. Browsing to any DAAS 
         // endpoint, will ensure that DaaSConsole is copied to the
         // right folders and will allow autohealing to work correctly
         this.makeDaasWarmupCall();
+      }
+      else {
+        this.checkingSupportedTier = false;
       }
     });
 

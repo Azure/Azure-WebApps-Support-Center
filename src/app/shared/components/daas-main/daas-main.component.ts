@@ -28,6 +28,8 @@ export class DaasMainComponent implements OnInit {
   sku: Sku;
   showToolsDropdown: boolean = false;
   operatingSystem:any = OperatingSystem; 
+  checkingSupportedTier:boolean = true;
+  supportedTier:boolean = false;
 
   constructor(private _siteService: SiteService, private _logger: AvailabilityLoggingService,
     private _categoryService: CategoriesService,
@@ -51,6 +53,7 @@ export class DaasMainComponent implements OnInit {
         this.sku = Sku[site.sku];
 
         this._authService.getStartupInfo().subscribe((startupInfo: StartupInfo) => {
+          this.checkingSupportedTier = false;
           let resourceUriParts = this._siteService.parseResourceUri(startupInfo.resourceId);
           this._appAnalysisService.getDiagnosticProperties(resourceUriParts.subscriptionId, resourceUriParts.resourceGroup, resourceUriParts.siteName, resourceUriParts.slotName).subscribe((data: IDiagnosticProperties) => {
             this.AppStack = data && data.appStack && data.appStack != "" ? data.appStack : "ASP.Net";
@@ -58,6 +61,7 @@ export class DaasMainComponent implements OnInit {
             this._categoryService.Categories.subscribe(categories => {
               let toolsCategories = categories.filter(x => x.Name === "Diagnostic Tools");
               if (toolsCategories.length > 0 && (this.sku & Sku.Paid)){
+                this.supportedTier = true;
                 this.toolCategory= toolsCategories[0];
               }
             });

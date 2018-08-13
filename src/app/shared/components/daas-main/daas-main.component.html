@@ -7,8 +7,17 @@
         diagnostic capabilities of different technology stacks to provide you insights on your app performance and availability.
         To get started, click on the tile for the tool you want to use.
     </p>
-
-    <div style="margin-bottom: 10px;" *ngIf="platform !=null && platform === operatingSystem.windows">
+    <div *ngIf="!checkingSupportedTier && !supportedTier">
+        <div class="focus-box focus-box-warning" style="margin-top:20px">
+            <div>
+                <strong>Error</strong> - This tool is supported only on
+                <b>Standard, Premium </b> and
+                <b>Isolated</b> SKU's only.
+            </div>
+        </div>
+        <daas-scaleup></daas-scaleup>
+    </div>
+    <div style="margin-bottom: 10px;" *ngIf="platform !=null && platform === operatingSystem.windows && supportedTier">
 
         <div *ngIf="toolCategory !=null && (toolCategory.Subcategories | toolstack:AppStack | platformfilter:platform  | apptype:appType).length > 0">
             <div class="col zoomIn animated category-box" *ngFor="let subcategory of toolCategory.Subcategories | toolstack:AppStack | platformfilter:platform | apptype:appType"
@@ -57,5 +66,5 @@
             Diagnostics as a Service is supported on Windows Platform only.
         </div>
     </div>
-   
+
 </div>

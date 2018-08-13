@@ -297,7 +297,7 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
 
       this.validationWarning.push(appDomainRestartWarning);
 
-      if (FormatHelper.timespanToSeconds(this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime) < 600) {
+      if (this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime!=null && FormatHelper.timespanToSeconds(this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime) < 600) {
         this.validationWarning.push(minProcessExecutionTimeNotSet);
       }
 

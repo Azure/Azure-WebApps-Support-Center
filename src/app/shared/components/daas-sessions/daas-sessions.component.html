@@ -68,7 +68,7 @@
                     <b>{{ session.StartTime }} UTC</b>
                     <span>- {{ session.StartTime | datetimediff }} ago</span>
 
-                    <div class="inline" style="margin-left:30px" *ngIf="!isSessionInProgress(i)">
+                    <div class="inline" style="margin-left:30px" *ngIf="!isSessionInProgress(session)">
                         <div class="inline tool-tip hotspot-clickable" style="font-size:medium" >
                             <span style="margin-left:30px;width:250px;margin-top:30px" class="tool-tip-text">Click here to delete this session and any collected logs and reports generated for this session</span>
                             <i class="fa fa-trash" aria-hidden="true" (click)="deleteSession(i)"></i>
