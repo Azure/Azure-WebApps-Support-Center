@@ -1,15 +1,17 @@
 <div *ngIf="!checkingSupportedTier && !supportedTier">
   <div class="focus-box focus-box-warning" style="margin-top:20px">
     <div>
-      <strong>Error</strong> - This tool is supported only on Dedicated SKU's
+      <strong>Error</strong> - This tool is supported only on Standard, Premium and Isolated SKU's      
     </div>
-  </div>  
+  </div>
+  <daas-scaleup></daas-scaleup>  
 </div>
 
 <div *ngIf="!daasRunnerJobRunning" class="focus-box focus-box-warning" style="margin-top:20px">
   <div>
     <strong>Error</strong> - We found that the DAAS Web job is in a stopped state. Please go to WebJobs under this Web App and start
-    the DAAS Web job manually and re-run this tool.
+    the DAAS Web job manually and re-run this tool. If this is the first time you are running these tools, try hitting the refresh button
+    after a few seconds
   </div>
 </div>
 

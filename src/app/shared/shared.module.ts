@@ -75,6 +75,7 @@ import { TimespanComponent } from './components/timespan/timespan.component';
 import { ToggleButtonComponent } from './components/toggle-button/toggle-button.component';
 import { ToolStackPipe, AppTypePipe, SkuPipe, PlatformPipe } from './pipes/categoryfilters.pipe';
 import { DaasMainComponent } from './components/daas-main/daas-main.component';
+import { DaasScaleupComponent } from './components/daas/daas-scaleup/daas-scaleup.component';
 
 @NgModule({
     declarations: [
@@ -125,7 +126,8 @@ import { DaasMainComponent } from './components/daas-main/daas-main.component';
         DaasMainComponent,
         LiveAgentChatComponent,
         TimespanComponent,
-        ToggleButtonComponent
+        ToggleButtonComponent,
+        DaasScaleupComponent
     ],
     imports: [
         HttpModule,
