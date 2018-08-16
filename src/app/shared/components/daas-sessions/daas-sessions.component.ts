@@ -29,7 +29,7 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
 
     @Input() refreshSessions: boolean = false;
     showDetailedView: boolean = false;
-    allSessions: string = "../../tools/diagnosticsessions";
+    allSessions: string = "../../tools/daas";
     subscription: Subscription;
 
 
@@ -66,8 +66,8 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
         }
     }
 
-    reducedSession(obj:Session) {
-        return {SessionId: obj.SessionId, DiagnoserSessions: obj.DiagnoserSessions, Status: obj.Status};
+    reducedSession(obj: Session) {
+        return { SessionId: obj.SessionId, DiagnoserSessions: obj.DiagnoserSessions, Status: obj.Status };
     };
 
     checkSessions() {
@@ -143,12 +143,11 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
     }
 
     toggleExpanded(i: number): void {
-        // this._logger.LogClickEvent(`Connection String-${this.dbTestResult[i].Name}`, "DiagnosticTools");
         this.sessions[i].Expanded = !this.sessions[i].Expanded;
     }
 
     hasErrors(session: Session): boolean {
-        return session.Status == SessionStatus.Error;        
+        return session.Status == SessionStatus.Error;
     }
 
     isSessionInProgress(session: Session): boolean {
@@ -163,6 +162,23 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
             counter++;
         }
         return sessions;
+    }
+
+    deleteSession(sessionIndex: number) {
+        if (sessionIndex > -1) {
+            let sessionToDelete = this.sessions[sessionIndex];
+            sessionToDelete.Expanded = true;
+            sessionToDelete.DeletingFailure = "";
+            sessionToDelete.Deleting = true;
+            this._daasService.deleteDaasSession(this.siteToBeDiagnosed, sessionToDelete.SessionId)
+                .subscribe(resp => {
+                    sessionToDelete.Deleting = false;
+                    this.sessions.splice(sessionIndex, 1);
+                },err => {
+                    sessionToDelete.Deleting = false;
+                    sessionToDelete.DeletingFailure = "Failed while deleting the session with an error : " + err;
+                    });
+        }
     }
 
     ngOnDestroy(): void {

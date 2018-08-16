@@ -211,13 +211,8 @@ h3.not-bold, h4.not-bold, h5.not-bold {
     font-weight: 400;
 }
 
-a {
-  color: #5bc0de;
-}
-
 a:hover{
   cursor: pointer;
-  color: #5bc0de;
 }
 
 .corner-menu-item {

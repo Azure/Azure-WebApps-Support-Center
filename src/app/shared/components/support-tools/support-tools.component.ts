@@ -22,6 +22,7 @@ export class SupportToolsComponent {
     public premiumTools: any[];
 
     public mitigateLink: string;
+    public diagnosticsLink: string;
 
     currentSite: Site;
     hasReadAccessToServerFarm: boolean;
@@ -53,6 +54,7 @@ export class SupportToolsComponent {
 
     initialize() {
         this.mitigateLink = "tools/mitigate";
+        this.diagnosticsLink = "tools/daas"
 
         this.supportTools.push({
             title: "Metrics per Instance (Apps)",
@@ -112,16 +114,6 @@ export class SupportToolsComponent {
             action: () => {
                 this.logToolUse(SupportBladeDefinitions.FREBLogs.Identifier);
                 this._portalActionService.openSupportIFrame(SupportBladeDefinitions.FREBLogs)
-            }
-        });
-
-        this.supportTools.push({
-            title: "Diagnostics as a Service",
-            description: "Run a Diagnostics as a Service session for a deep analysis of your application",
-            enabled: true,
-            action: () => {
-                this.logToolUse(SupportBladeDefinitions.DaaS.Identifier);
-                this._portalActionService.openSupportIFrame(SupportBladeDefinitions.DaaS)
             }
         });
 

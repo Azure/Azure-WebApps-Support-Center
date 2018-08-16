@@ -60,26 +60,30 @@ export class DaasService {
         return <Observable<DiagnoserDefinition[]>>this._armClient.getResourceWithoutEnvelope<DiagnoserDefinition[]>(resourceUri, null, true);
     }
 
-    getDatabaseTest(site:SiteInfoMetaData): Observable<DatabaseTestConnectionResult[]>
-    {
+    getDatabaseTest(site: SiteInfoMetaData): Observable<DatabaseTestConnectionResult[]> {
         let resourceUri: string = this._uriElementsService.getDatabaseTestUrl(site);
-        return <Observable<DatabaseTestConnectionResult[]>>this._armClient.getResourceWithoutEnvelope<Session>(resourceUri,null, true);
+        return <Observable<DatabaseTestConnectionResult[]>>this._armClient.getResourceWithoutEnvelope<Session>(resourceUri, null, true);
     }
 
-    getDaasWebjobState(site:SiteDaasInfo): Observable<Response>
-    {
-        let url: string = this._uriElementsService.getDaasWebJobStateUrl(site);        
-        let requestHeaders: Headers = this._getHeaders();
-        let options = new RequestOptions({headers: requestHeaders , method: "GET"});
-        return this._http.get(url, options);
+    getDaasWebjobState(site: SiteDaasInfo): Observable<string> {
+        let resourceUri: string = this._uriElementsService.getWebJobs(site);
+        return this._armClient.getResourceCollection<any>(resourceUri, null, true).map(response => {
+            if (Array.isArray(response) && response.length > 0) {
+                let daasWebJob = response.filter(x => x.id.toLowerCase().endsWith("/daas"));
+                if (daasWebJob != null && daasWebJob.length > 0 && daasWebJob[0].properties != null) {
+                    return daasWebJob[0].properties.status;
+                }
+                else{
+                    return "";
+                }
+            }
+        }
+        );
     }
 
-    starttDaasWebjob(site:SiteDaasInfo): Observable<Response>
-    {
-        let url: string = this._uriElementsService.startDaasWebJobUrl(site);        
-        let requestHeaders: Headers = this._getHeaders();
-        let bodyString: string = '';        
-        return this._http.post(url, bodyString, { headers: requestHeaders });
+    deleteDaasSession(site: SiteDaasInfo, sessionId: string): Observable<any> {
+        let resourceUri: string = this._uriElementsService.getDiagnosticsSingleSessionDeleteUrl(site, sessionId);
+        return <Observable<any>>(this._armClient.deleteResource(resourceUri, null, true));
     }
 
     private _getHeaders(): Headers {

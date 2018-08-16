@@ -7,7 +7,7 @@
 <div>
     <div class="col" *ngIf="checkingExistingSessions" style="height:30px">
         <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-        Populating diagnostic sessions... 
+        Populating diagnostic sessions...
     </div>
 
     <div *ngIf="!checkingExistingSessions && !showDetailedView">
@@ -57,23 +57,37 @@
 
         <div style="margin-top:20px" *ngFor="let session of sessions; let i = index">
             <div class="panel panel-default">
-                <div class="panel-heading" (click)="toggleExpanded(i)">
+                <div class="panel-heading">
                     <span *ngIf="!isSessionInProgress(session)">
                         <i class="fa health-icon fa-exclamation-triangle warning-icon-color" *ngIf="hasErrors(session)" aria-hidden="true"></i>
                         <i class="fa health-icon fa-check-circle healthy-icon-color" *ngIf="!hasErrors(session)" aria-hidden="true"></i>
                     </span>
                     <span *ngIf="isSessionInProgress(session)">
-                        <i class="fa health-icon fa-hourglass-half warning-icon-color" aria-hidden="true"></i>                        
+                        <i class="fa health-icon fa-hourglass-half warning-icon-color" aria-hidden="true"></i>
                     </span>
                     <b>{{ session.StartTime }} UTC</b>
                     <span>- {{ session.StartTime | datetimediff }} ago</span>
-                    <span class="pull-right">
+
+                    <div class="inline" style="margin-left:30px" *ngIf="!isSessionInProgress(session)">
+                        <div class="inline tool-tip hotspot-clickable" style="font-size:medium" >
+                            <span style="margin-left:30px;width:250px;margin-top:30px" class="tool-tip-text">Click here to delete this session and any collected logs and reports generated for this session</span>
+                            <i class="fa fa-trash" aria-hidden="true" (click)="deleteSession(i)"></i>
+                        </div>
+                        <span *ngIf="session.Deleting">
+                            <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                            Deleting...
+                        </span>
+                    </div>
+                    <span class="pull-right" (click)="toggleExpanded(i)">
                         <i class="fa fa-plus" *ngIf="!session.Expanded" aria-hidden="true"></i>
                         <i class="fa fa-minus" *ngIf="session.Expanded" aria-hidden="true"></i>
                     </span>
                 </div>
                 <div class="panel-body" *ngIf="session.Expanded">
                     <div>
+                        <div *ngIf="session.DeletingFailure" class="alert alert-danger">
+                            {{ session.DeletingFailure}}
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-hover table-bordered">
                                 <thead class="thead-light">
@@ -110,7 +124,7 @@
                                                         {{ report.FileName }}
                                                     </a>
                                                 </li>
-                                            </ul>                                            
+                                            </ul>
                                             <div style="width: 100%;text-align: center;" *ngIf="diagnoser.AnalyzerErrors.length > 0" class="tool-tip">
                                                 <i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
                                                 <span class="tool-tip-text">{{diagnoser.AnalyzerErrors[0]}}</span>
@@ -124,7 +138,6 @@
                                                 Waiting...
                                             </div>
                                         </td>
-
                                     </tr>
 
                                 </tbody>

@@ -8,5 +8,5 @@ export class ToolNames {
     public static PHPProcessAnalyzer: string = "Analyze PHP Process";
     public static DatabaseTester: string = "Check Connection Strings";
     public static NetworkTrace: string = "Collect Network Trace";
-    public static DiagnosticSessions: string = "Diagnostic Sessions";
+    public static Diagnostics: string = "Diagnostics";
 }

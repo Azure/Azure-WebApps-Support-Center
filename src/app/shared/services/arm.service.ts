@@ -78,6 +78,16 @@ export class ArmService {
         return this._cache.get(url, request, invalidateCache);
     }
 
+    deleteResource<T>(resourceUri: string, apiVersion?: string, invalidateCache: boolean = false): Observable<any> {
+        var url: string = `${this.armUrl}${resourceUri}${resourceUri.indexOf('?') >= 0 ? '&' : '?'}api-version=${!!apiVersion ? apiVersion : this.websiteApiVersion}`
+        return this._http.delete(url, { headers: this.getHeaders() })
+            .map((response: Response) => {
+                let body = response.text();
+                return body && body.length > 0 ? response.json() : "";
+            })
+            .catch(this.handleError);
+    }
+
     postResourceWithoutEnvelope<T, S>(resourceUri: string, body?: S, apiVersion?: string, invalidateCache: boolean = false): Observable<boolean | {} | T> {
         var url: string = `${this.armUrl}${resourceUri}${resourceUri.indexOf('?') >= 0 ? '&' : '?'}api-version=${!!apiVersion ? apiVersion : this.websiteApiVersion}`
         let bodyString: string = '';
@@ -154,7 +164,7 @@ export class ArmService {
     }
 
     private handleError(error: Response): any {
-        return Observable.throw(error.text().length > 0 ? (error.json().error || 'Server error') : error.status + "-" + error.statusText);
+        return Observable.throw(error.text().length > 0 ? (error.json().error || error.json().Message || 'Server error') : error.status + "-" + error.statusText);
     }
 
     getResourceCollection<T>(resourceId: string, apiVersion?: string, invalidateCache: boolean = false): Observable<{} | ResponseMessageEnvelope<T>[]> {

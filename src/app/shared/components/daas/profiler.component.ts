@@ -100,8 +100,19 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
             else if (clrDiagnoser.AnalyzerStatus === 2) {
 
                 // once we are at the analyzer, lets just set all instances's status to 
-                // analyzing as we will reach here once all the collectors have finsihed                
+                // analyzing as we will reach here once all the collectors have finsihed
                 this.sessionStatus = 4;
+
+                this.WizardStepStatus = "";
+                if (clrDiagnoser.AnalyzerStatusMessages.length > 0) {
+                    var thisInstanceMessages = clrDiagnoser.AnalyzerStatusMessages.filter(x => x.EntityType.startsWith(this.selectedInstance));
+                    if (thisInstanceMessages != null) {
+                        var messagesLength = thisInstanceMessages.length;
+                        if (messagesLength > 0) {
+                            this.WizardStepStatus = thisInstanceMessages[messagesLength - 1].Message
+                        }
+                    }
+                }
 
             }
         }

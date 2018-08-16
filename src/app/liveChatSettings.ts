@@ -18,11 +18,12 @@ export class LiveChatSettings {
         "32440123",     //Configuration and Management/Configuring SSL
         "32440122",     //Configuration and Management/Configuring custom domain names
         "32542210",     //Configuration and Management/IP Configuration
+        "32581615",     //Configuration and Management/Deployment Slots
         "32589277"      //How Do I/Configure domains and certificates
     ];
 
     // This indicates the time after which Live Chat will pop up. 
-    public static InactivityTimeoutInMs: Number = 10000;
+    public static InactivityTimeoutInMs: Number = 5000;
 
     // Live Chat Business Hours
     public static BuisnessStartDay: Number = 1; // Monday

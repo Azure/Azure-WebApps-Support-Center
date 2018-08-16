@@ -12,6 +12,7 @@ import { SearchResultsComponent } from './components/search-results/search-resul
 import { FormsModule } from '../../../node_modules/@angular/forms';
 import { GenericDetectorComponent } from '../shared/components/generic-detector/generic-detector.component';
 import { TabTitleResolver } from '../shared/resolvers/tab-name.resolver';
+import { DaasMainComponent } from '../shared/components/daas-main/daas-main.component';
 
 export const HomeRoutes = RouterModule.forChild([
   {

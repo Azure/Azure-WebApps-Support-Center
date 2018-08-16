@@ -112,15 +112,15 @@ export class DaasComponent implements OnInit, OnDestroy {
 
     }
 
-   
+
     checkRunningSessions() {
         this.operationInProgress = true;
-        this.operationStatus = "Checking active sessions...";        
+        this.operationStatus = "Checking active sessions...";
 
         this._daasService.getDaasActiveSessionsWithDetails(this.siteToBeDiagnosed).retry(2)
             .subscribe(sessions => {
                 this.operationInProgress = false;
-                this.operationStatus = "";                                            
+                this.operationStatus = "";
 
                 var runningSession;
                 for (var index = 0; index < sessions.length; index++) {
@@ -191,6 +191,16 @@ export class DaasComponent implements OnInit, OnDestroy {
             }
             else if (daasDiagnoser.AnalyzerStatus === 2) {
                 this.WizardStepStatus = "";
+                if (daasDiagnoser.AnalyzerStatusMessages.length > 0) {
+                    var thisInstanceMessages = daasDiagnoser.AnalyzerStatusMessages.filter(x => x.EntityType.startsWith(this.selectedInstance));
+                    if (thisInstanceMessages != null) {
+                        var messagesLength = thisInstanceMessages.length;
+                        if (messagesLength > 0) {
+                            this.WizardStepStatus = thisInstanceMessages[messagesLength - 1].Message
+                        }
+                    }
+                }
+
                 this.sessionStatus = 3;
             }
         }
@@ -236,7 +246,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     }
 
     collectDiagnoserData() {
-        
+
         this.instancesChanged = false;
         this.operationInProgress = true;
         this.operationStatus = "Validating instances..."

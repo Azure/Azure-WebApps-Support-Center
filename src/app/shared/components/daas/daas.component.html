@@ -13,6 +13,12 @@
                 <tr *ngIf="!error">
                     <td valign="top">
                         Instance(s):
+                        <div class="tool-tip">
+                            <i class="fa fa-info-circle" style="color:rgb(84, 143, 255)"></i>
+                            <span class="tool-tip-text" style="width:250px;left:5px"> It may take up to 10 minutes for the instances to update if you recently Scaled-Up or Scaled-down
+                                the App Service Plan.
+                            </span>
+                        </div>
                     </td>
                     <td class="highlight-blue">
                         <div *ngFor="let instance of instancesSelected;let i = index">

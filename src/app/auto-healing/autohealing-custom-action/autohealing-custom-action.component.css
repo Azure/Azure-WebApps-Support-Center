@@ -31,7 +31,7 @@
 }
 
 .diagnostic-options {
-    border: Solid 1px #0058ad;
+    border: 1px #0058ad solid;
     border-radius: 0px 0px 5px 5px;
     padding: 0px 0px 0px 5px;
     margin-left:1px;
@@ -65,4 +65,11 @@ label {
 .final-action{
     background-color:#eeeeee;
     border-radius:5px;
+}
+
+.custom-action-note{
+    color: #0058ad;
+    font-size: smaller;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }

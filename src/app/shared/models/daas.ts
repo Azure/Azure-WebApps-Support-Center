@@ -61,7 +61,9 @@ export class Session {
     TimeSpan: string;
     DiagnoserSessions: Diagnoser[];
     Status: SessionStatus;
-    Expanded:boolean;
+    Expanded: boolean;
+    Deleting: boolean = false;
+    DeletingFailure: string = '';
 }
 
 export interface DiagnoserDefinition {
@@ -84,7 +86,7 @@ export interface DatabaseTestConnectionResult {
     IsEnvironmentVariable: boolean;
     MaskedConnectionString: string;
     DisplayClearText: boolean;
-    Expanded:boolean;
+    Expanded: boolean;
 }
 
 export enum ConnectionDatabaseType {

@@ -15,10 +15,11 @@
         <div *ngIf="!checkingSupportedTier && !supportedTier">
           <div class="focus-box focus-box-warning">
             <div>
-              <strong>Error</strong> - This tool is supported only in Standard, Premium or Isolated tiers because the diagnostic tools require the Always-On setting
-              to be enabled to collect data.
+              <strong>Error</strong> - This tool is supported only in <strong>Standard, Premium</strong> or <strong>Isolated</strong> tiers because the diagnostic
+              tools require the Always-On setting to be enabled to collect data.
             </div>
           </div>
+          <daas-scaleup></daas-scaleup>
         </div>
         <div class="col" *ngIf="checkingSupportedTier">
           <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
@@ -27,9 +28,9 @@
         <div *ngIf="!checkingSupportedTier && supportedTier && !alwaysOnEnabled">
           <div class="focus-box focus-box-warning">
             <div>
-              <strong>Error</strong> - We determined that the web app does not have Always-On enabled and due to these the
-              diagnostic tools will not work reliably with AutoHeal. Please turn on the Always-On setting by going to the properties
-              of the web app and  then configure mitigation tools.
+              <strong>Error</strong> - We determined that the web app does not have Always-On enabled and due to these the diagnostic
+              tools will not work reliably with AutoHeal. Please turn on the Always-On setting by going to the properties
+              of the web app and then configure mitigation tools.
             </div>
           </div>
         </div>
@@ -94,9 +95,13 @@
       Action chosen:
       <span *ngIf="customActionType === 'Diagnostics'" class="final-action">D:\home\data\DaaS\bin\DaasConsole.exe -{{diagnoserOption.option}} "{{diagnoser.Name}}" 60</span>
       <span *ngIf="customActionType === 'Custom'" class="final-action">{{this.customActionExe}} {{this.customActionParams}} </span>
+      <div class="custom-action-note">
+        <strong>Note:</strong> The custom action is executed only once during the lifetime of the worker process
+      </div>
       <div style="margin-top:10px;margin-bottom: 10px">
         <button type="button" class="btn btn-primary btn-sm" (click)="saveCustomAction()">Save</button>
       </div>
+
     </div>
   </div>
 

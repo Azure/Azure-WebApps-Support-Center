@@ -34,18 +34,18 @@ export class UriElementsService {
         TODO : Need to add start time and end time parameters
     */
 
-    
     private _diagnosticsPath = "/extensions/daas/api/";
     private _diagnosticsSessionsAllPath = this._diagnosticsPath + "sessions/all";
     private _diagnosticsSessionsPath = this._diagnosticsPath + "sessions";
     private _diagnosticsSessionsDetailsPath = this._diagnosticsPath + "sessions" + "/{type}/{details}";
     private _diagnosticsDiagnosersPath = this._diagnosticsPath + "diagnosers";
     private _diagnosticsInstancesPath = this._diagnosticsPath + "instances";
-    private _diagnosticsSingleSessionPath = this._diagnosticsPath + "session/{sessionId}/{details}";
+    private _diagnosticsSingleSessionPath = this._diagnosticsPath + "session/{sessionId}/";
+    private _diagnosticsSingleSessionDetailsPath = this. _diagnosticsSingleSessionPath + "{details}";
+    private _diagnosticsSingleSessionDeletePath = this._diagnosticsSingleSessionPath + "delete";
     private _diagnosticsDatabaseTestPath = this._diagnosticsPath + "databasetest";
     private _networkTraceStartPath = "/networkTrace/start"
-    private _diagnosticsWebJobStatePath:string = this._supportApi + 'diagnostics/{subscriptionId}/{resourceGroup}/{siteName}/daaswebjobstate';
-    private _diagnosticsWebJobStartPath:string = this._supportApi + 'diagnostics/{subscriptionId}/{resourceGroup}/{siteName}/daaswebjobstart';
+    private _webjobsPath :string = '/webjobs';
 
     getDiagnosticsDiagnosersUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDiagnosersPath;
@@ -79,39 +79,23 @@ export class UriElementsService {
     }
 
     getDiagnosticsSingleSessionUrl(site: SiteDaasInfo, sessionId: string, detailed: boolean) {
-        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSingleSessionPath
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSingleSessionDetailsPath
         .replace("{sessionId}", sessionId)
         .replace("{details}", detailed.toString());
+    };
+
+    getDiagnosticsSingleSessionDeleteUrl(site: SiteDaasInfo, sessionId: string) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSingleSessionDeletePath
+        .replace("{sessionId}", sessionId);
     };
 
     getDatabaseTestUrl(site: SiteInfoMetaData) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDatabaseTestPath;
     };
 
-    getDaasWebJobStateUrl(site:SiteInfoMetaData)
+    getWebJobs(site:SiteInfoMetaData)
     {
-        var resource = site.siteName;
-        if (site.slot !== '') {
-            resource = `${site.siteName}(${site.slot})`;
-        }
-
-        return this._diagnosticsWebJobStatePath
-        .replace('{subscriptionId}', site.subscriptionId)
-        .replace('{resourceGroup}', site.resourceGroupName)
-        .replace('{siteName}', resource);
-    }
-
-    startDaasWebJobUrl(site:SiteInfoMetaData)
-    {
-        var resource = site.siteName;
-        if (site.slot !== '') {
-            resource = `${site.siteName}(${site.slot})`;
-        }
-
-        return this._diagnosticsWebJobStartPath
-        .replace('{subscriptionId}', site.subscriptionId)
-        .replace('{resourceGroup}', site.resourceGroupName)
-        .replace('{siteName}', resource);
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._webjobsPath;
     }
 
     getSiteRestartUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
