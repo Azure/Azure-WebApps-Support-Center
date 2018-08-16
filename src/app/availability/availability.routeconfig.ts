@@ -26,9 +26,13 @@ import { AutohealingComponent } from '../auto-healing/autohealing.component';
 import { GenericDetectorComponent } from '../shared/components/generic-detector/generic-detector.component';
 
 
-const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
-const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
-const _hostingEnvironmentResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/hostingenvironments/:name';
+// const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/';
+// const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot/';
+// const _hostingEnvironmentResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/hostingenvironments/:name/';
+
+const _siteResourceUrl: string = '';
+const _slotResourceUrl: string = '';
+const _hostingEnvironmentResourceUrl: string = '';
 
 const AvailabilityCommonRouteConfig: Route[] = [
     {
@@ -76,7 +80,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     */
 
    {
-        path: _siteResourceUrl + '/detectors/:detectorName',
+        path: _siteResourceUrl + 'detectors/:detectorName',
         component: GenericDetectorComponent,
         resolve: {
             navigationTitle: TabTitleResolver
@@ -86,7 +90,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/detectors/:detectorName',
+        path: _slotResourceUrl + 'detectors/:detectorName',
         component: GenericDetectorComponent,
         resolve: {
             navigationTitle: TabTitleResolver
@@ -96,7 +100,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _hostingEnvironmentResourceUrl + '/detectors/:detectorName',
+        path: _hostingEnvironmentResourceUrl + 'detectors/:detectorName',
         component: GenericDetectorComponent,
         resolve: {
             navigationTitle: TabTitleResolver
@@ -107,7 +111,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     },
     // Web App Error Analysis
     {
-        path: _siteResourceUrl + '/diagnostics/availability/analysis',
+        path: _siteResourceUrl + 'diagnostics/availability/analysis',
         component: AppAnalysisComponent,
         data: {
             navigationTitle: 'App Error Analysis',
@@ -115,7 +119,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/availability/analysis',
+        path: _slotResourceUrl + 'diagnostics/availability/analysis',
         component: AppAnalysisComponent,
         data: {
             navigationTitle: 'App Error Analysis',
@@ -125,7 +129,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
 
     // Web App Performance Analysis
     {
-        path: _siteResourceUrl + '/diagnostics/performance/analysis',
+        path: _siteResourceUrl + 'diagnostics/performance/analysis',
         component: PerfAnalysisComponent,
         data: {
             navigationTitle: 'App Performance Analysis',
@@ -133,7 +137,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/performance/analysis',
+        path: _slotResourceUrl + 'diagnostics/performance/analysis',
         component: PerfAnalysisComponent,
         data: {
             navigationTitle: 'App Performance Analysis',
@@ -143,7 +147,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
 
     // Web App Restart Analysis
     {
-        path: _siteResourceUrl + '/diagnostics/availability/apprestartanalysis',
+        path: _siteResourceUrl + 'diagnostics/availability/apprestartanalysis',
         component: WebAppRestartComponent,
         data: {
             navigationTitle: 'App Restart Analysis',
@@ -151,7 +155,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/availability/apprestartanalysis',
+        path: _slotResourceUrl + 'diagnostics/availability/apprestartanalysis',
         component: WebAppRestartComponent,
         data: {
             navigationTitle: 'App Restart Analysis',
@@ -161,7 +165,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
 
     // Memory Analysis
     {
-        path: _siteResourceUrl + '/diagnostics/availability/memoryanalysis',
+        path: _siteResourceUrl + 'diagnostics/availability/memoryanalysis',
         component: MemoryAnalysisComponent,
         data: {
             navigationTitle: 'Memory Analysis',
@@ -169,7 +173,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/availability/memoryanalysis',
+        path: _slotResourceUrl + 'diagnostics/availability/memoryanalysis',
         component: MemoryAnalysisComponent,
         data: {
             navigationTitle: 'Memory Analysis',
@@ -178,7 +182,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     },
     // TCP Connections Analysis
     {
-        path: _siteResourceUrl + '/diagnostics/availability/tcpconnectionsanalysis',
+        path: _siteResourceUrl + 'diagnostics/availability/tcpconnectionsanalysis',
         component: TcpConnectionsAnalysisComponent,
         data: {
             navigationTitle: 'TCP Connections Analysis',
@@ -186,7 +190,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/availability/tcpconnectionsanalysis',
+        path: _slotResourceUrl + 'diagnostics/availability/tcpconnectionsanalysis',
         component: TcpConnectionsAnalysisComponent,
         data: {
             navigationTitle: 'TCP Connections Analysis',
@@ -194,27 +198,27 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _siteResourceUrl + '/diagnostics/availability',
+        path: _siteResourceUrl + 'diagnostics/availability',
         children: AvailabilityCommonRouteConfig
     },
     {
-        path: _slotResourceUrl + '/diagnostics/availability',
+        path: _slotResourceUrl + 'diagnostics/availability',
         children: AvailabilityCommonRouteConfig
     },
 
     // Web App Slow
     {
-        path: _siteResourceUrl + '/diagnostics/performance',
+        path: _siteResourceUrl + 'diagnostics/performance',
         children: PerformanceCommonRouteConfig
     },
     {
-        path: _slotResourceUrl + '/diagnostics/performance',
+        path: _slotResourceUrl + 'diagnostics/performance',
         children: PerformanceCommonRouteConfig
     },
 
     // Service Incident Summary
     {
-        path: _siteResourceUrl + '/diagnostics/incidents',
+        path: _siteResourceUrl + 'diagnostics/incidents',
         component: IncidentSummaryComponent,
         data: {
             navigationTitle: 'Service Incidents',
@@ -222,7 +226,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/incidents',
+        path: _slotResourceUrl + 'diagnostics/incidents',
         component: IncidentSummaryComponent,
         data: {
             navigationTitle: 'Service Incidents',
@@ -232,7 +236,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
 
     // CLR Profiling Tool
     {
-        path: _siteResourceUrl + '/diagnostics/tools/profiler',
+        path: _siteResourceUrl + 'diagnostics/tools/profiler',
         component: ProfilerToolComponent,
         data: {
             navigationTitle: ToolNames.Profiler,
@@ -240,7 +244,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/tools/profiler',
+        path: _slotResourceUrl + 'diagnostics/tools/profiler',
         component: ProfilerToolComponent,
         data: {
             navigationTitle: ToolNames.Profiler,
@@ -250,7 +254,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
 
     // Memory Dump
     {
-        path: _siteResourceUrl + '/diagnostics/tools/memorydump',
+        path: _siteResourceUrl + 'diagnostics/tools/memorydump',
         component: MemoryDumpToolComponent,
         data: {
             navigationTitle: ToolNames.MemoryDump,
@@ -258,7 +262,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/tools/memorydump',
+        path: _slotResourceUrl + 'diagnostics/tools/memorydump',
         component: MemoryDumpToolComponent,
         data: {
             navigationTitle: ToolNames.MemoryDump,
@@ -267,7 +271,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     },    
     // Java Thread Dump
     {
-        path: _siteResourceUrl + '/diagnostics/tools/javathreaddump',
+        path: _siteResourceUrl + 'diagnostics/tools/javathreaddump',
         component: JavaThreadDumpToolComponent,
         data: {
             navigationTitle: ToolNames.JavaThreadDump,
@@ -275,7 +279,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/tools/javathreaddump',
+        path: _slotResourceUrl + 'diagnostics/tools/javathreaddump',
         component: JavaThreadDumpToolComponent,
         data: {
             navigationTitle: ToolNames.JavaThreadDump,
@@ -284,7 +288,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     },
     // Java Memory Dump
     {
-        path: _siteResourceUrl + '/diagnostics/tools/javamemorydump',
+        path: _siteResourceUrl + 'diagnostics/tools/javamemorydump',
         component: JavaMemoryDumpToolComponent,
         data: {
             navigationTitle: ToolNames.JavaMemoryDump,
@@ -292,7 +296,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/tools/javamemorydump',
+        path: _slotResourceUrl + 'diagnostics/tools/javamemorydump',
         component: JavaMemoryDumpToolComponent,
         data: {
             navigationTitle: ToolNames.JavaMemoryDump,
@@ -302,7 +306,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     
     // HTTP Log Analyzer 
     {
-        path: _siteResourceUrl + '/diagnostics/tools/httploganalyzer',
+        path: _siteResourceUrl + 'diagnostics/tools/httploganalyzer',
         component: HttpLogAnalysisToolComponent,
         data: {
             navigationTitle: ToolNames.HttpLogAnalyzer,
@@ -310,7 +314,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/tools/httploganalyzer',
+        path: _slotResourceUrl + 'diagnostics/tools/httploganalyzer',
         component: HttpLogAnalysisToolComponent,
         data: {
             navigationTitle: ToolNames.HttpLogAnalyzer,
@@ -319,7 +323,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     },
     // PHP Log Analyzer 
     {
-        path: _siteResourceUrl + '/diagnostics/tools/phploganalyzer',
+        path: _siteResourceUrl + 'diagnostics/tools/phploganalyzer',
         component: PhpLogsAnalyzerToolComponent,
         data: {
             navigationTitle: ToolNames.PHPLogAnalyzer,
@@ -327,7 +331,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/tools/phploganalyzer',
+        path: _slotResourceUrl + 'diagnostics/tools/phploganalyzer',
         component: PhpLogsAnalyzerToolComponent,
         data: {
             navigationTitle: ToolNames.PHPLogAnalyzer,
@@ -337,7 +341,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     ,
     // PHP Process Analyzer 
     {
-        path: _siteResourceUrl + '/diagnostics/tools/phpprocessanalyzer',
+        path: _siteResourceUrl + 'diagnostics/tools/phpprocessanalyzer',
         component: PhpProcessAnalyzerToolComponent,
         data: {
             navigationTitle: ToolNames.PHPProcessAnalyzer,
@@ -345,7 +349,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/tools/phpprocessanalyzer',
+        path: _slotResourceUrl + 'diagnostics/tools/phpprocessanalyzer',
         component: PhpProcessAnalyzerToolComponent,
         data: {
             navigationTitle: ToolNames.PHPProcessAnalyzer,
@@ -355,7 +359,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     ,
     // Database Test Tool
     {
-        path: _siteResourceUrl + '/diagnostics/tools/databasetester',
+        path: _siteResourceUrl + 'diagnostics/tools/databasetester',
         component: ConnectionDiagnoserToolComponent,
         data: {
             navigationTitle: ToolNames.DatabaseTester,
@@ -363,7 +367,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/tools/databasetester',
+        path: _slotResourceUrl + 'diagnostics/tools/databasetester',
         component: ConnectionDiagnoserToolComponent,
         data: {
             navigationTitle: ToolNames.DatabaseTester,
@@ -373,14 +377,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     ,
     // Autohealing
     {
-        path: _siteResourceUrl + '/diagnostics/tools/mitigate',
+        path: _siteResourceUrl + 'diagnostics/tools/mitigate',
         component: AutohealingComponent,
         data: {
             navigationTitle: 'Mitigate',
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/tools/mitigate',
+        path: _slotResourceUrl + 'diagnostics/tools/mitigate',
         component: AutohealingComponent,
         data: {
             navigationTitle: 'Mitigate',
@@ -388,14 +392,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     }
     ,    
     {
-        path: _siteResourceUrl + '/diagnostics/tools/networktrace',
+        path: _siteResourceUrl + 'diagnostics/tools/networktrace',
         component: NetworkTraceToolComponent,
         data: {
             navigationTitle: ToolNames.NetworkTrace,
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/tools/networktrace',
+        path: _slotResourceUrl + 'diagnostics/tools/networktrace',
         component: NetworkTraceToolComponent,
         data: {
             navigationTitle: ToolNames.NetworkTrace,
@@ -404,7 +408,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     ,    
     // DiagnosticSessions
     {
-        path: _siteResourceUrl + '/diagnostics/tools/diagnosticsessions',
+        path: _siteResourceUrl + 'diagnostics/tools/diagnosticsessions',
         component: DaasSessionsDetailedComponent,
         data: {
             navigationTitle: ToolNames.DiagnosticSessions,
@@ -412,7 +416,7 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
         }
     },
     {
-        path: _slotResourceUrl + '/diagnostics/tools/diagnosticsessions',
+        path: _slotResourceUrl + 'diagnostics/tools/diagnosticsessions',
         component: DaasSessionsDetailedComponent,
         data: {
             navigationTitle: ToolNames.DiagnosticSessions,

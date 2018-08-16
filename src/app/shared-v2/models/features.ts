@@ -1,3 +1,5 @@
+import { NavigationExtras } from "@angular/router";
+
 export interface FeatureType {
     name: string;
     id: string;
@@ -26,12 +28,16 @@ export class FeatureTypes {
     static Documentation: FeatureType =
         {
             id: 'docs',
-            name: 'Docuementation',
+            name: 'Documentation',
             icon: 'fa-book',
             color: 'rgb(138, 87, 85)'
         };
 
     static All: FeatureType[] = [FeatureTypes.Detector, FeatureTypes.Tool, FeatureTypes.Documentation]
+}
+
+export interface FeatureAction {
+    (): void;
 }
 
 export interface Feature {
@@ -40,6 +46,17 @@ export interface Feature {
     description: string;
     category: string;
     featureType: FeatureType;
-    path: string;
-    href: string;
+    clickAction: FeatureAction;
 }
+
+// export class GenericDetectorFeature extends Feature {
+//     onClick() {
+//         let navigationExtras: NavigationExtras = {
+//             queryParamsHandling: 'preserve',
+//             preserveFragment: true,
+//             relativeTo: this._activatedRoute.parent
+//           };
+      
+//           this._router.navigate(path.split('/'), navigationExtras);
+//     }
+// }

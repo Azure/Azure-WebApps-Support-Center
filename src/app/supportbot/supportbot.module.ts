@@ -33,6 +33,8 @@ import { DocumentSearchComponent } from './message-flow/document-search/document
 import { DocumentSearchResultsComponent } from './message-flow/document-search-results/document-search-results.component';
 import { SharedV2Module } from '../shared-v2/shared-v2.module';
 import { DiagnosticDataModule } from 'applens-diagnostics';
+import { GenericCategoryFlow } from './message-flow/v2-flows/generic-category.flow';
+import { AvailabilityPerformanceFlow } from './message-flow/v2-flows/availability-performance.flow';
 
 const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
 const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
@@ -69,7 +71,7 @@ const _hostingEnvironmentResourceUrl: string = 'subscriptions/:subscriptionid/re
                 path: _siteResourceUrl + '/diagnostics',
                 component: HomepageComponent,
                 data: {
-                    navigationTitle: 'Home',
+                    navigationTitle: 'Legacy Home',
                     cacheComponent: true
                 }
             },
@@ -77,7 +79,7 @@ const _hostingEnvironmentResourceUrl: string = 'subscriptions/:subscriptionid/re
                 path: _slotResourceUrl + '/diagnostics',
                 component: HomepageComponent,
                 data: {
-                    navigationTitle: 'Home',
+                    navigationTitle: 'Legacy Home',
                     cacheComponent: true
                 }
             },
@@ -85,7 +87,7 @@ const _hostingEnvironmentResourceUrl: string = 'subscriptions/:subscriptionid/re
                 path: _hostingEnvironmentResourceUrl + '/diagnostics',
                 component: HomepageComponent,
                 data: {
-                    navigationTitle: 'Home',
+                    navigationTitle: 'Legacy Home',
                     cacheComponent: true
                 }
             },
@@ -123,7 +125,9 @@ const _hostingEnvironmentResourceUrl: string = 'subscriptions/:subscriptionid/re
         FeedbackMessageFlow,
         CpuAnalysisChatFlow,
         TalkToAgentMessageFlow,
-        MessageProcessor
+        MessageProcessor,
+        AvailabilityPerformanceFlow,
+        GenericCategoryFlow
     ]
 })
 export class SupportBotModule {

@@ -1,17 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
-
-import { IAppAnalysisResponse } from '../shared/models/appanalysisresponse';
-import { Observable } from 'rxjs/Observable';
 import { Message } from './models/message';
 import { MessageProcessor } from './message-processor.service';
-import { AppAnalysisService } from '../shared/services/appanalysis.service';
-import { WindowService } from '../startup/services/window.service';
 
 @Component({
     selector: 'support-bot',
-    templateUrl: 'support-bot.component.html'
+    templateUrl: 'support-bot.component.html',
+    providers: [MessageProcessor]
 })
 export class SupportBotComponent implements OnInit {
     @ViewChild('scrollMe') myScrollContainer: ElementRef;
@@ -26,7 +20,7 @@ export class SupportBotComponent implements OnInit {
     slotName: string;
     hostingEnvironmentName: string;
 
-    @Input() overrideMessageProcessor: MessageProcessor;
+    @Input() startingKey: string;
 
     constructor(private _messageProcessor: MessageProcessor) {
         this.messages = [];
@@ -35,8 +29,8 @@ export class SupportBotComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if(this.overrideMessageProcessor) {
-            this._messageProcessor = this.overrideMessageProcessor;
+        if(this.startingKey) {
+            this._messageProcessor.setCurrentKey(this.startingKey);
         }
 
         // this.subscriptionId = this._route.snapshot.params['subscriptionid'];

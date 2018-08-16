@@ -75,6 +75,7 @@ import { DiagnosticDataModule } from '../../../node_modules/applens-diagnostics'
 import { AutohealingService } from './services/autohealing.service';
 import { TimespanComponent } from './components/timespan/timespan.component';
 import { ToggleButtonComponent } from './components/toggle-button/toggle-button.component';
+import { VersionMessageComponent } from './components/version-message/version-message.component';
 
 @NgModule({
     declarations: [
@@ -123,7 +124,8 @@ import { ToggleButtonComponent } from './components/toggle-button/toggle-button.
         TabsComponent,
         GenericDetectorComponent,
         TimespanComponent,
-        ToggleButtonComponent
+        ToggleButtonComponent,
+        VersionMessageComponent
     ],
     imports: [
         HttpModule,
@@ -183,7 +185,8 @@ import { ToggleButtonComponent } from './components/toggle-button/toggle-button.
         TabsComponent,
         GenericDetectorComponent,
         TimespanComponent,
-        ToggleButtonComponent
+        ToggleButtonComponent,
+        VersionMessageComponent
     ]
 })
 export class SharedModule {

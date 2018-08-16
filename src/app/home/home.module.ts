@@ -8,7 +8,6 @@ import { CategoryChatComponent } from './components/category-chat/category-chat.
 import { CategoryTileComponent } from './components/category-tile/category-tile.component';
 import { CategoryTabResolver, CategoryChatResolver } from './resolvers/category-tab.resolver';
 import { SupportBotModule } from '../supportbot/supportbot.module';
-import { GenericCategoryFlow } from './message-flows/generic-category.flow';
 import { SearchResultsComponent } from './components/search-results/search-results.component';
 import { FormsModule } from '../../../node_modules/@angular/forms';
 import { GenericDetectorComponent } from '../shared/components/generic-detector/generic-detector.component';
@@ -56,6 +55,6 @@ export const HomeRoutes = RouterModule.forChild([
     FormsModule
   ],
   declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent],
-  providers: [CategoryTabResolver, CategoryChatResolver, GenericCategoryFlow]
+  providers: [CategoryTabResolver, CategoryChatResolver]
 })
 export class HomeModule { }

@@ -1,13 +1,12 @@
-<div class="category-container" *ngIf="!selectedDetector">
-  <div *ngFor="let detector of detectors">
-    <div class="category" (click)="select(detector)" [style.visibility]="!selectedDetector || selectedDetector === detector ? 'visible' : 'hidden'"
-      [class.selected-category]="selectedDetector && selectedDetector === detector">
+<div class="category-container" *ngIf="!featureSelected">
+  <div *ngFor="let feature of features">
+    <div class="category" (click)="select(feature)">
       <div>
-        {{detector.name}}
+        {{feature.name}}
       </div>
     </div>
   </div>
 </div>
-<div *ngIf="selectedDetector">
+<div *ngIf="featureSelected">
   <dynamic-component [componentData]="message"></dynamic-component>
-</div>
+</div>  

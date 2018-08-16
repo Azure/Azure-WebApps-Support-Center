@@ -4,4 +4,6 @@ export interface Category {
     description: string;
     keywords: string[];
     color: string;
+    createFlowForCategory: boolean;
+    overridePath?: string;
 }

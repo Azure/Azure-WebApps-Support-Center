@@ -1,11 +1,11 @@
 import { Component, OnInit, Injector, EventEmitter, Output, AfterViewInit } from '@angular/core';
 import { DiagnosticService } from 'applens-diagnostics';
 import { Message } from '../../models/message';
-import { CategoryChatState } from '../../../shared-v2/models/category-chat-state';
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
 import { Observable } from 'rxjs';
 import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';
 import { LoadingStatus, DetectorResponse, Rendering, DetectorListRendering, DiagnosticData, HealthStatus } from 'applens-diagnostics';
+import { CategoryChatStateService } from '../../../shared-v2/services/category-chat-state.service';
 
 @Component({
   selector: 'detector-summary',
@@ -14,18 +14,16 @@ import { LoadingStatus, DetectorResponse, Rendering, DetectorListRendering, Diag
 })
 export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMessageComponent {
 
-  state: CategoryChatState;
-
   @Output() onViewUpdate = new EventEmitter();
   @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
 
   detectorSummaryViewModels: DetectorSummaryViewModel[] = [];
 
-  constructor(private _injector: Injector, private _diagnosticService: DiagnosticService, private _router: Router, private _activatedRoute: ActivatedRoute) { }
+  constructor(private _injector: Injector, private _diagnosticService: DiagnosticService, private _router: Router, private _activatedRoute: ActivatedRoute,
+    private _chatState: CategoryChatStateService) { }
 
   ngOnInit() {
-    this.state = this._injector.get('state');
-    this._diagnosticService.getDetector(this.state.selectedDetector.id).subscribe(response => {
+    this._diagnosticService.getDetector(this._chatState.selectedFeature.id).subscribe(response => {
       console.log(response);
       this.processDetectorResponse(response).subscribe(() => {
         this.onComplete.emit({status: true});
@@ -113,9 +111,9 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
 }
 
 export class DetectorSummaryMessage extends Message {
-  constructor(state: CategoryChatState, messageDelayInMs: number = 1000) {
+  constructor(messageDelayInMs: number = 1000) {
 
-    super(DetectorSummaryComponent, { state: state }, messageDelayInMs);
+    super(DetectorSummaryComponent, {}, messageDelayInMs);
   }
 }
 

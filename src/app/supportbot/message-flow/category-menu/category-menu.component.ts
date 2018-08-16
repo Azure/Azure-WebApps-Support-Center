@@ -1,10 +1,12 @@
 import { Component, OnInit, AfterViewInit, Output, EventEmitter, Injector } from '@angular/core';
 import { IChatMessageComponent } from '../../../supportbot/interfaces/ichatmessagecomponent';
-import { DetectorMetaData } from '../../../../../node_modules/applens-diagnostics/src/app/diagnostic-data/models/detector';
+import { DetectorMetaData } from 'applens-diagnostics';
 import { Message, TextMessage } from '../../../supportbot/models/message';
-import { CategoryChatState } from '../../../shared-v2/models/category-chat-state';
-import { DiagnosticService } from '../../../../../node_modules/applens-diagnostics';
+import { DiagnosticService } from 'applens-diagnostics';
 import { MessageSender } from '../../models/message-enums';
+import { CategoryChatStateService } from '../../../shared-v2/services/category-chat-state.service';
+import { FeatureService } from '../../../shared-v2/services/feature.service';
+import { Feature } from '../../../shared-v2/models/features';
 
 @Component({
   selector: 'category-menu',
@@ -13,43 +15,49 @@ import { MessageSender } from '../../models/message-enums';
 })
 export class CategoryMenuComponent implements OnInit, AfterViewInit, IChatMessageComponent {
 
-  detectors: DetectorMetaData[];
-  state: CategoryChatState;
-
-  selectedDetector: DetectorMetaData;
-
+  takeFeatureAction: boolean;
+  features: Feature[];
+  featureSelected: boolean = false;
   message: TextMessage;
 
   @Output() onViewUpdate = new EventEmitter();
   @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
 
-  constructor(private _injector: Injector, private _diagnosticService: DiagnosticService) { }
+  constructor(private _injector: Injector, private _diagnosticService: DiagnosticService, private _featureService: FeatureService, private _chatState: CategoryChatStateService) { }
 
   ngOnInit() {
-    this.detectors = this._injector.get('detectors');
-    this.state = this._injector.get('state');
-    this.detectors.forEach(detector => {
-      // Make request for each detector
-      this._diagnosticService.getDetector(detector.id).subscribe();
-    });
+    this.takeFeatureAction = this._injector.get('takeFeatureAction');
+    this.features = this._featureService.getFeaturesForCategory(this._chatState.category);
+    
+    if (!this.takeFeatureAction) {
+      this.features.forEach(detector => {
+        // Make request for each detector
+        this._diagnosticService.getDetector(detector.id).subscribe();
+      });
+    }
   }
 
   ngAfterViewInit() {
     this.onViewUpdate.emit();
   }
 
-  select(detector: DetectorMetaData) {
-    this.state.makeMenuSelection(detector);
-    this.message = new TextMessage(`I am interested in ${detector.name}`, MessageSender.User);
-    this.selectedDetector = detector;
+  select(detector: Feature) {
+    if (this.takeFeatureAction) {
+      detector.clickAction();
+    }
+    else {
+      this._chatState.selectedFeature = detector;
+      this.message = new TextMessage(`I am interested in ${detector.name}`, MessageSender.User);
+      this.featureSelected = true;
+    }
+
     this.onComplete.emit({ status: true, data: {} });
   }
 
 }
 
 export class CategoryMenuMessage extends Message {
-  constructor(detectors: DetectorMetaData[], state: CategoryChatState, messageDelayInMs: number = 1000) {
-
-    super(CategoryMenuComponent, { detectors: detectors, state: state }, messageDelayInMs);
+  constructor(takeFeatureAction: boolean = false, messageDelayInMs: number = 1000) {
+    super(CategoryMenuComponent, { takeFeatureAction: takeFeatureAction }, messageDelayInMs);
   }
 }

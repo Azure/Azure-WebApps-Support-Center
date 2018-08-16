@@ -33,17 +33,25 @@ import { GenericApiService } from './shared/services/generic-api.service';
       //   loadChildren: 'app/supportbot/supportbot.module#SupportBotModule'
       // },
       {
-        path: 'new/subscriptions/:subscriptionId/resourcegroups/:resourceGroup/providers/microsoft.web/sites/:resourceName',
-        // data: {
-        //   navigationTitle: 'Home',
-        // },
+        //path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:resourcename',
+        path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename',
+        loadChildren: 'app/availability/availability.module#AvailabilityModule'
+      },
+      {
+        //path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:resourcename',
+        path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:siteName/slots/:slot',
+        loadChildren: 'app/availability/availability.module#AvailabilityModule'
+      },
+      {
+        path: 'new/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:resourcename',
         loadChildren: 'app/resources/web-sites/web-sites.module#WebSitesModule'
       },
       {
-        path: 'new/subscriptions/:subscriptionId/resourcegroups/:resourceGroup/providers/microsoft.web/hostingenvironment/:resourceName',
-        data: {
-          provider: 'Microsoft.Web'
-        },
+        path: 'new/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:resourcename/slots/:slot',
+        loadChildren: 'app/resources/web-sites/web-sites.module#WebSitesModule'
+      },
+      {
+        path: 'new/subscriptions/:subscriptionid/resourcegroups/:resourceroup/providers/microsoft.web/hostingenvironment/:resourcename',
         loadChildren: 'app/resources/web-hosting-environments/web-hosting-environments.module#WebHostingEnvironmentsModule'
       }
     ])//, { enableTracing: true })//
@@ -52,7 +60,8 @@ import { GenericApiService } from './shared/services/generic-api.service';
     AppComponent
   ],
   providers: [
-    { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
+    CustomReuseStrategy,
+    { provide: RouteReuseStrategy, useExisting: CustomReuseStrategy },
     { provide: DiagnosticService, useExisting: GenericApiService }
   ],
   bootstrap: [AppComponent]

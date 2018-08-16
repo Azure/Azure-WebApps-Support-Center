@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ArmService } from "./arm.service";
-import { AuthService } from "./auth.service";
+import { AuthService } from "../../startup/services/auth.service";
 import { Http } from "@angular/http";
 import { UriElementsService } from "./urielements.service";
 import { Observable } from "rxjs";

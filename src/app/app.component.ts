@@ -19,7 +19,15 @@ export class AppComponent implements OnInit {
     public navigationItems: INavigationItem[];
     public contentMaxHeight: number;
 
-    private newVersionEnabled = true;
+    private _newVersionEnabled = true;
+
+    public get newVersionEnabled() { return this._newVersionEnabled; }
+
+    public set newVersionEnabled(value: boolean) { 
+        console.log(value);
+        this._newVersionEnabled = value;
+        this.navigateToExperience();
+     }
 
     private _hardCodedSupportTopicIdMapping = [
         {
@@ -62,20 +70,22 @@ export class AppComponent implements OnInit {
             console.log('%c Logs that are normally published to the portal kusto logs will show up in the console', 'color: orange')
         }
 
-        this._authService.getStartupInfo()
-            .subscribe(info => {
-                if (this.newVersionEnabled) {
-                    this._router.navigate(['new/' + info.resourceId]);
-                }
-                else {
-                    // For now there will be a hard coded destination.
-                    // In the future we will pass the tool path in with the startup info
-                    var adjustedResourceId = info.resourceId.replace("/providers/microsoft.web", "");
-                    this._router.navigate(['old/' + adjustedResourceId + this.getRouteBasedOnSupportTopicId(info)]);
-                }
-            });
+        this.navigateToExperience();
+    }
 
-        
+    navigateToExperience() {
+        this._authService.getStartupInfo()
+        .subscribe(info => {
+            if (this.newVersionEnabled) {
+                this._router.navigate(['new/' + info.resourceId]);
+            }
+            else {
+                // For now there will be a hard coded destination.
+                // In the future we will pass the tool path in with the startup info
+                var adjustedResourceId = info.resourceId.replace("/providers/microsoft.web", "");
+                this._router.navigate([adjustedResourceId + this.getRouteBasedOnSupportTopicId(info)]);
+            }
+        });
     }
 
     getRouteBasedOnSupportTopicId(info: StartupInfo): string {

@@ -22,8 +22,13 @@ export class CategoryTileComponent implements OnInit {
       preserveFragment: true,
       relativeTo: this._activatedRoute
     };
-    console.log('navigate to' + this.category.id);
+    //console.log('navigate to' + this.category.id);
 
-    this._router.navigate(['categories', this.category.id], navigationExtras);
+    let path = this.category.overridePath ? this.category.overridePath.split('/').filter(s => s !== '') : ['categories', this.category.id];
+
+    console.log('navigate to');
+    console.log(path);
+
+    this._router.navigate(path, navigationExtras);
   }
 }

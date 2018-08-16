@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input, PipeTransform, Pipe, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
 import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { Feature } from '../../../shared-v2/models/features';
 import { NavigationExtras, ActivatedRoute, Router } from '../../../../../node_modules/@angular/router';
@@ -23,17 +23,20 @@ export class SearchResultsComponent implements OnChanges {
   }
 
   navigateToFeature(feature: Feature) {
-    if (feature.path) {
-      let navigationExtras: NavigationExtras = {
-        queryParamsHandling: 'preserve',
-        preserveFragment: true,
-        relativeTo: this._activatedRoute
-      };
+
+    feature.clickAction();    
+
+    // if (feature.path) {
+    //   let navigationExtras: NavigationExtras = {
+    //     queryParamsHandling: 'preserve',
+    //     preserveFragment: true,
+    //     relativeTo: this._activatedRoute
+    //   };
   
-      this._router.navigate(feature.path.split('/'), navigationExtras);
-    }
-    else if (feature.href) {
-      window.open(feature.href, '_blank');
-    }
+    //   this._router.navigate(feature.path.split('/'), navigationExtras);
+    // }
+    // else if (feature.href) {
+    //   window.open(feature.href, '_blank');
+    // }
   }
 }

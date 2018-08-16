@@ -136,6 +136,10 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
         this.siteName = this._route.snapshot.params['sitename'];
         this.slotName = this._route.snapshot.params['slot'] ? this._route.snapshot.params['slot'] : '';
 
+        if (!this.siteName) {
+            this.siteName = this._route.snapshot.params['resourcename'];
+        }
+
         this._loadData();
     }
 

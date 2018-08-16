@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { INavigationItem } from '../../models/inavigationitem';
-import { Router, ActivatedRoute, NavigationEnd } from '../../../../../node_modules/@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import * as _ from 'underscore';
 import { WindowService } from '../../../startup/services/window.service';
+import { CustomReuseStrategy } from '../../../app-route-reusestrategy.service';
 
 @Component({
   selector: 'tabs',
@@ -14,7 +15,7 @@ export class TabsComponent implements OnInit {
   public navigationItems: INavigationItem[];
   public contentMaxHeight: number;
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _windowService: WindowService) {
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _windowService: WindowService, private _routeReuseStrategy: CustomReuseStrategy) {
     this.navigationItems = [];
     this.contentMaxHeight = this._windowService.window.innerHeight - 55;
   }
@@ -77,6 +78,7 @@ export class TabsComponent implements OnInit {
     // We dont want to close the first tab.
     if (index > 0) {
       let tab = this.navigationItems[index];
+      this._routeReuseStrategy.removeCachedRoute(tab.url);
       this.navigationItems.splice(index, 1);
       // this._logger.LogTabClosed(tab.title);
       if (tab.isActive) {
