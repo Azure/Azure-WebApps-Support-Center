@@ -88,16 +88,6 @@ export class SupportToolsComponent {
         });
 
         this.supportTools.push({
-            title: "Live HTTP Traffic",
-            description: "View Live Requests and Failures to your application",
-            enabled: true,
-            action: () => {
-                this.logToolUse(SupportBladeDefinitions.Pulse.Identifier);
-                this._portalActionService.openSupportIFrame(SupportBladeDefinitions.Pulse)
-            }
-        });
-
-        this.supportTools.push({
             title: "Application Events",
             description: "View Event Log which often holds information about failed requests",
             enabled: true,
