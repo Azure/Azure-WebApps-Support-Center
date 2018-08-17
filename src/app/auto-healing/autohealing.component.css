@@ -5,20 +5,21 @@
 
 .header1 {
     font-size: 24px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .header2 {
-    font-size: 20px;
-    margin-top: 25px;
-    margin-bottom: 15px;
+    font-size: 15px;
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 
 .tile {
     display: inline-block;
     margin: 0 2px;
     cursor: pointer;
+    margin-bottom: 10px
 }
 
 .tile-selected {
@@ -28,8 +29,8 @@
 
 .tile-icon {
     padding: 10px;
-    width: 150px;
-    height: 80px;
+    width: 130px;
+    height: 70px;
     -webkit-box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .2);
     box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .2);
     text-align: center;
@@ -42,7 +43,7 @@
 }
 
 .icon-template {
-    font-size: 30px;
+    font-size: 17px;
 }
 
 .tile-content {
@@ -77,9 +78,9 @@
     background-color: #efefef;
     border-bottom-left-radius: 0;
     border: 1px solid #e6e6e6;
-    font-size: 14px;
+    font-size: 12px;
     display: inline-block;
-    padding: 10px;
+    padding: 5px;
     padding-right: 30px;
     border-radius: 10px;
     width:90%;
@@ -142,7 +143,7 @@ label {
 
 .alert-section{
     margin-top:5px;
-    font-size: inherit;
+    font-size: 12px;
     width:90%;
     padding: 10px;
     padding-right: 30px;
