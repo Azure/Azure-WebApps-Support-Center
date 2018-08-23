@@ -156,7 +156,27 @@ export class ArmService {
     }
 
     private handleError(error: Response): any {
-        return Observable.throw(error.text().length > 0 ? (error.json().error || error.json().Message || 'Server error') : error.status + "-" + error.statusText);
+        let actualError
+        if (error.text().length > 0) {
+            try {
+                const errorData = JSON.parse(error.text());
+                if (errorData.error) {
+                    actualError = errorData.error
+                }
+                else if (errorData.Message) {
+                    actualError = errorData.Message
+                }
+                else {
+                    actualError = 'Server Error';
+                }
+            } catch (err) {
+                actualError = error.text();
+            }
+        }
+        else {
+            actualError = error.status + "-" + error.statusText
+        }
+        return Observable.throw(actualError);
     }
 
     getResourceCollection<T>(resourceId: string, apiVersion?: string, invalidateCache: boolean = false): Observable<{} | ResponseMessageEnvelope<T>[]> {
