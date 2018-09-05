@@ -5,7 +5,6 @@ import { SiteDaasInfo } from '../../models/solution-metadata';
 import { Category, Subcategory } from '../../models/problem-category';
 import { OperatingSystem } from '../../models/site';
 import { AppType, StartupInfo } from '../../models/portal';
-import { Sku } from '../../models/server-farm';
 import { AuthService } from '../../services/auth.service';
 import { CategoriesService } from '../../services/categories.service';
 import { IDiagnosticProperties } from '../../models/diagnosticproperties';
@@ -25,7 +24,7 @@ export class DaasMainComponent implements OnInit {
   AppStack: string = "";
   platform: OperatingSystem = OperatingSystem.any;
   appType: AppType;
-  sku: Sku;
+  sku: string;
   showToolsDropdown: boolean = false;
   operatingSystem:any = OperatingSystem; 
   checkingSupportedTier:boolean = true;
@@ -50,7 +49,7 @@ export class DaasMainComponent implements OnInit {
     this._siteService.currentSite.subscribe(site => {
       if (site) {
         this.appType = site.appType;
-        this.sku = Sku[site.sku];
+        this.sku = site.sku;
 
         this._authService.getStartupInfo().subscribe((startupInfo: StartupInfo) => {
           this.checkingSupportedTier = false;
@@ -60,7 +59,7 @@ export class DaasMainComponent implements OnInit {
             this.platform = data && data.isLinux ? OperatingSystem.linux : OperatingSystem.windows;
             this._categoryService.Categories.subscribe(categories => {
               let toolsCategories = categories.filter(x => x.Name === "Diagnostic Tools");
-              if (toolsCategories.length > 0 && (this.sku & Sku.Paid)){
+              if (toolsCategories.length > 0 && (this.sku === "Standard" || this.sku.indexOf("Premium") > -1 || this.sku === "Isolated")){
                 this.supportedTier = true;
                 this.toolCategory= toolsCategories[0];
               }
