@@ -50,6 +50,7 @@ export class DaasMainComponent implements OnInit {
       if (site) {
         this.appType = site.appType;
         this.sku = site.sku;
+        this.sku.toLowerCase()
 
         this._authService.getStartupInfo().subscribe((startupInfo: StartupInfo) => {
           this.checkingSupportedTier = false;
@@ -59,7 +60,7 @@ export class DaasMainComponent implements OnInit {
             this.platform = data && data.isLinux ? OperatingSystem.linux : OperatingSystem.windows;
             this._categoryService.Categories.subscribe(categories => {
               let toolsCategories = categories.filter(x => x.Name === "Diagnostic Tools");
-              if (toolsCategories.length > 0 && (this.sku === "Standard" || this.sku.indexOf("Premium") > -1 || this.sku === "Isolated")){
+              if (toolsCategories.length > 0 && (this.sku.toLowerCase() === "standard" || this.sku.toLowerCase().indexOf("premium") > -1 || this.sku.toLowerCase() === "isolated")){
                 this.supportedTier = true;
                 this.toolCategory= toolsCategories[0];
               }
