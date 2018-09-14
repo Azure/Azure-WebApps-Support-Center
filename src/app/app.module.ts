@@ -12,6 +12,8 @@ import { SharedV2Module } from './shared-v2/shared-v2.module';
 import { StartupModule } from './startup/startup.module';
 import { DiagnosticDataModule, PUBLIC_CONFIGURATION, DiagnosticService } from 'applens-diagnostics';
 import { GenericApiService } from './shared/services/generic-api.service';
+import { TestInputComponent } from './shared/components/test-input/test-input.component';
+import { ResourceRedirectComponent } from './shared/components/resource-redirect/resource-redirect.component';
 
 @NgModule({
   imports: [
@@ -24,36 +26,37 @@ import { GenericApiService } from './shared/services/generic-api.service';
     DiagnosticDataModule.forRoot(PUBLIC_CONFIGURATION),
     BrowserAnimationsModule,
     RouterModule.forRoot([
-      { 
-        path: '', 
-        component: AppComponent 
+      {
+        path: 'test',
+        component: TestInputComponent
       },
-      // {
-      //   path: 'old', 
-      //   loadChildren: 'app/supportbot/supportbot.module#SupportBotModule'
-      // },
+      {
+        path: 'resourceRedirect',
+        component: ResourceRedirectComponent
+      },
       {
         //path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:resourcename',
-        path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename',
+        path: 'legacy/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:sitename',
         loadChildren: 'app/availability/availability.module#AvailabilityModule'
       },
       {
         //path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:resourcename',
-        path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:siteName/slots/:slot',
+        path: 'legacy/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:siteName/slots/:slot',
         loadChildren: 'app/availability/availability.module#AvailabilityModule'
       },
       {
-        path: 'new/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:resourcename',
+        path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:resourcename',
         loadChildren: 'app/resources/web-sites/web-sites.module#WebSitesModule'
       },
       {
-        path: 'new/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:resourcename/slots/:slot',
+        path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:resourcename/slots/:slot',
         loadChildren: 'app/resources/web-sites/web-sites.module#WebSitesModule'
       },
       {
-        path: 'new/subscriptions/:subscriptionid/resourcegroups/:resourceroup/providers/microsoft.web/hostingenvironment/:resourcename',
+        path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/hostingenvironments/:resourcename',
         loadChildren: 'app/resources/web-hosting-environments/web-hosting-environments.module#WebHostingEnvironmentsModule'
       }
+      
     ])//, { enableTracing: true })//
   ],
   declarations: [

@@ -5,6 +5,7 @@ import { WebHostingEnvironmentsService } from './services/web-hosting-environmen
 import { CategoryService } from './services/category.service';
 import { FeatureService } from './services/feature.service';
 import { ContentService } from './services/content.service';
+import { SupportTopicService } from './services/support-topic.service';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ export class SharedV2Module {
         WebHostingEnvironmentsService,
         CategoryService,
         FeatureService,
-        ContentService
+        ContentService,
+        SupportTopicService
       ]
     }
   }

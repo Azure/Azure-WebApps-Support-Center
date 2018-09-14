@@ -1,8 +1,8 @@
 <div class="home-container">
     <div class="input-group input-group-lg search-input-group">
-        <input type="text" class="form-control" aria-label="Topic Search" placeholder="Topic Search" [(ngModel)]="searchValue" (focus)="onSearchBoxFocus(evt)">
+        <input type="text" class="form-control" aria-label="Search App Service Diagnostics" placeholder="Search App Service Diagnostics" [(ngModel)]="searchValue" (focus)="onSearchBoxFocus()">
         <div class="input-group-btn">
-            <button class="btn btn-default" type="button" (click)="searchBoxFocus = false"><i class="fa fa-close"></i></button>
+            <button class="btn btn-default" type="button" (click)="clearSearch()"><i class="fa fa-close"></i></button>
         </div>
     </div>
     <div *ngIf="!searchBoxFocus else searchResults">

@@ -33,18 +33,9 @@ export class SupportBotComponent implements OnInit {
             this._messageProcessor.setCurrentKey(this.startingKey);
         }
 
-        // this.subscriptionId = this._route.snapshot.params['subscriptionid'];
-        // this.resourceGroup = this._route.snapshot.params['resourcegroup'];
-        // this.siteName = this._route.snapshot.params['sitename'];
-        // this.slotName = this._route.snapshot.params['slot'] ? this._route.snapshot.params['slot'] : '';
-        // this.hostingEnvironmentName = this._route.snapshot.params['name'];
         this.chatContainerHeight = window.innerHeight - 60;
 
         this.getMessage();
-
-        // let warmupTasks = Observable.forkJoin(this._getWarmpUpTasks());
-        // warmupTasks.subscribe(data => {
-        // });
     }
 
     scrollToBottom(event?: any): void {
@@ -75,17 +66,4 @@ export class SupportBotComponent implements OnInit {
             }, message.messageDelayInMs);
         }
     }
-
-    // private _getWarmpUpTasks(): Observable<IAppAnalysisResponse>[] {
-
-    //     var analysisList = ["appanalysis", "perfanalysis"]
-    //     var result: Observable<IAppAnalysisResponse>[] = [];
-    //     if(this.siteName && this.siteName != '') {
-    //         analysisList.forEach((item) => {
-    //             result.push(this._analysisService.getAnalysisResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', item));
-    //         });
-    //     }
-
-    //     return result;
-    // }
 }

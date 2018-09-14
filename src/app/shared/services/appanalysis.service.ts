@@ -65,6 +65,11 @@ export class AppAnalysisService {
             .catch(this.handleError);
     }
 
+    makeWarmUpCallsForSite(subscriptionId: string, resourceGroup: string, siteName: string, slot: string) {
+        this.getAnalysisResource(subscriptionId, resourceGroup, siteName, slot, 'availability', 'appanalysis').subscribe();
+        this.getAnalysisResource(subscriptionId, resourceGroup, siteName, slot, 'availability', 'perfanalysis').subscribe();
+    }
+
     private handleError(error: any) {
         return Observable.throw(error);
     }

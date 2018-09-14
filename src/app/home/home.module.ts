@@ -12,7 +12,8 @@ import { SearchResultsComponent } from './components/search-results/search-resul
 import { FormsModule } from '../../../node_modules/@angular/forms';
 import { GenericDetectorComponent } from '../shared/components/generic-detector/generic-detector.component';
 import { TabTitleResolver } from '../shared/resolvers/tab-name.resolver';
-import { DaasMainComponent } from '../shared/components/daas-main/daas-main.component';
+import { SupportTopicRedirectComponent } from './components/support-topic-redirect/support-topic-redirect.component';
+import { TimeControlResolver } from './resolvers/time-control.resolver';
 
 export const HomeRoutes = RouterModule.forChild([
   {
@@ -41,8 +42,13 @@ export const HomeRoutes = RouterModule.forChild([
       cacheComponent: true
     },
     resolve: {
-      navigationTitle: TabTitleResolver
+      time: TimeControlResolver,
+      navigationTitle: TabTitleResolver,
     }
+  },
+  {
+    path: 'supportTopicId',
+    component: SupportTopicRedirectComponent
   }
 ]);
 
@@ -55,7 +61,7 @@ export const HomeRoutes = RouterModule.forChild([
     SupportBotModule,
     FormsModule
   ],
-  declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent],
-  providers: [CategoryTabResolver, CategoryChatResolver]
+  declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent],
+  providers: [CategoryTabResolver, CategoryChatResolver, TimeControlResolver]
 })
 export class HomeModule { }

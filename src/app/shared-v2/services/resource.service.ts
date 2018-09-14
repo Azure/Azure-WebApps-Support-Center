@@ -6,20 +6,28 @@ import { ArmService } from '../../shared/services/arm.service';
 @Injectable()
 export class ResourceService {
 
-  resource: ArmResource;
-  error: any;
+  public resource: ArmResource;
+  public error: any;
 
-  constructor(private _armService: ArmService) {
+  constructor(protected _armService: ArmService) {
 
+  }
+
+  public get resourceIdForRouting() {
+    return this.resource.id.toLowerCase();
   }
   
   registerResource(resourceUri: string): Observable<{} | ArmResource> {
     console.log(resourceUri);
     return this._armService.getArmResource<ArmResource>(resourceUri)
       .map(resource => {
-        console.log(resource);
         this.resource = resource;
+        this.makeWarmUpCalls();
         return resource;
       });
+  }
+
+  protected makeWarmUpCalls() {
+
   }
 }

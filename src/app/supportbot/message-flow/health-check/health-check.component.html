@@ -27,8 +27,7 @@
                         {{healthCheckpoints[selectedCategoryIndex].healthStatusMessage}}
 
                         <div class="row" style="padding-right:20px">
-                                <button type="button" class="btn btn-link pull-right" (click)="logFullReportClick(healthCheckpoints[selectedCategoryIndex].title)"
-                                    [routerLink]="[healthCheckpoints[selectedCategoryIndex].href]">
+                                <button type="button" class="btn btn-link pull-right" (click)="onFullReportClick(healthCheckpoints[selectedCategoryIndex].href, healthCheckpoints[selectedCategoryIndex].title)">
                                     View Full Report <i class="fa fa-chevron-right"></i>
                                 </button>
                         </div>

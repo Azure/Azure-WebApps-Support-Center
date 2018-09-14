@@ -68,9 +68,9 @@ export class LoggingService {
                 if (this._startUpInfo.supportTopicId) {
                     this._supportTopicId = this._startUpInfo.supportTopicId;
                 }
-            }
 
-            this.LogStartUpInfo(this._startUpInfo);
+                this.LogStartUpInfo(this._startUpInfo);
+            }
         });
     }
 

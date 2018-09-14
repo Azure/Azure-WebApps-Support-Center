@@ -1,7 +1,4 @@
-<div style="padding: 200px;width:100%;text-align: center;font-size: 24px" *ngIf="!response">
-    <i _ngcontent-c1="" aria-hidden="true" class="fa fa-circle-o-notch fa-spin spin-icon"></i>
-</div>
-<div *ngIf="response" style="padding:30px 10%">
-    <detector-view [detectorResponse]="response" [startTime]="startTime" [endTime]="endTime"></detector-view>
+<div style="padding:5px 10%">
+    <detector-container [detector]="detector"></detector-container>
 </div>
 

@@ -1,0 +1,16 @@
+.notification {
+    background-color: #436992;
+    color: #ffffff;
+    padding: 5px 25px;
+    /* border: 1px solid #ffae35; */
+    width: 100%;
+    cursor: pointer;
+}
+
+.fa {
+    margin-right: 5px;
+}
+
+.fa-close {
+    font-size: 19px;
+}

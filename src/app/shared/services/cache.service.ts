@@ -35,7 +35,7 @@ export class CacheService {
             if (!invalidateCache) {
                 this.inFlightObservables.set(key, new Subject());
                 this.log(`%c Calling api for ${key}`, 'color: purple');
-                return fallback.do((value) => { this.set(key, value); });
+                return fallback.do((value) => { this.set(key, value); }, error => console.log(error));
             }
             else {
                 return fallback;
@@ -46,6 +46,7 @@ export class CacheService {
     }
 
     set(key: string, value: any): void {
+        this.log(`%cAdding Key: ${key}`, 'color:darkblue');
         this.cache.set(key, { value: value });
         this.notifyInFlightObservers(key, value);
     }

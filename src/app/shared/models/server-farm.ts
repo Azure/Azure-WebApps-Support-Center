@@ -27,9 +27,9 @@ export enum Sku {
     Standard = 1 << 3,
     Premium = 1 << 4,
     Dynamic = 1 << 5,
-    Paid = 1111 << 2,
-    NotDynamic = 11111 << 0,
-    All = 111111 << 0
+    Paid = 25,
+    NotDynamic = 31, // 011111
+    All = 255 // 11111111
 }
 
 export enum WorkerSize {

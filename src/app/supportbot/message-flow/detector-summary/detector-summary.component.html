@@ -1,4 +1,4 @@
-<div class="detector-summary-container">
+<div class="detector-summary-container" *ngIf="!loading else loadingMessage">
   <div class="status-bar" *ngFor="let model of detectorSummaryViewModels" (click)="navigateTo(model.path)">
     <div class="status-bar-icon align-content-center">
         <status-icon [loading]="model.loading" [status]="model.status" [size]="16"></status-icon>
@@ -7,3 +7,7 @@
     <div class="align-content-center"><i class="fa fa-chevron-right"></i></div>
   </div>
 </div>
+
+<ng-template #loadingMessage>
+    <loading-message></loading-message>
+</ng-template>

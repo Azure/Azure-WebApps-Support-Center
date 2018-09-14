@@ -1,0 +1,34 @@
+<div class="tool-container">
+
+  <div class="row">
+    <div class="col col-sm-9" style="margin-left: -10px;">
+      <div class="header1">App Service Diagnostics Tools and Resources</div>
+      <p>These tools can help you diagnose problems insight your app code, or review metric counters for your Web App.</p>
+      <div>
+        <div class="message message-info" *ngIf="stackFound">
+          <i class="fa fa-lightbulb-o"></i>The stack used by your Web App was automatically detected to be
+          <b>{{webSiteService.appStack}}</b>. If incorrect, please select the correct option on the right.
+        </div>
+        <div class="message message-warning" *ngIf="!stackFound">
+          <i class="fa fa-warning"></i>The stack used by your Web App could not be determined. Please choose from the options on the right to only
+          show tools that are relevant to your stack.
+        </div>
+      </div>
+    </div>
+    <div class="col col-sm-3">
+      <div style="float: right;" class="btn-group" role="group" aria-label="...">
+        <button *ngFor="let st of possibleStacks" type="button" class="btn btn-default" (click)="stack = st" [class.btn-primary]="st === stack">{{st}}</button>
+      </div>
+    </div>
+  </div>
+  <collapsible-list [title]="'Diagnostic Tools'" [collapsed]="false">
+    <collapsible-list-item>
+      <tile-list [tiles]="diagnosticToolTiles | website:stack"></tile-list>
+    </collapsible-list-item>
+  </collapsible-list>
+  <collapsible-list [title]="'Support Tools'" [collapsed]="false">
+    <collapsible-list-item>
+      <tile-list [tiles]="supportToolTiles | website"></tile-list>
+    </collapsible-list-item>
+  </collapsible-list>
+</div>

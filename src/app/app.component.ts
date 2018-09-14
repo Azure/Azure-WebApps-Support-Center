@@ -1,14 +1,11 @@
 import { Component, OnInit, isDevMode } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 import { INavigationItem } from "./shared/models/inavigationitem";
-import * as _ from 'underscore';
 import { AuthService } from './startup/services/auth.service';
 import { WindowService } from './startup/services/window.service';
-import { LoggingService } from './shared/services/logging/logging.service';
-import { LiveChatService } from './shared/services/livechat.service';
 import { StartupInfo } from './shared/models/portal';
-import { GenericApiService } from './shared/services/generic-api.service';
 import 'rxjs/add/operator/filter';
+import { environment } from '../environments/environment';
 
 @Component({
     selector: 'sc-app',
@@ -26,7 +23,7 @@ export class AppComponent implements OnInit {
     public set newVersionEnabled(value: boolean) { 
         console.log(value);
         this._newVersionEnabled = value;
-        this.navigateToExperience();
+        //this.navigateToExperience();
      }
 
     private _hardCodedSupportTopicIdMapping = [
@@ -57,7 +54,7 @@ export class AppComponent implements OnInit {
         }
     ]
 
-    constructor(private _authService: AuthService, private _router: Router, private _activatedRoute: ActivatedRoute, private _windowService: WindowService, private _logger: LoggingService, private _genericApi: GenericApiService, private _liveChatService: LiveChatService) {
+    constructor(private _authService: AuthService, private _router: Router, private _windowService: WindowService) {
         this.navigationItems = [];
         this.contentMaxHeight = 0;
     }
@@ -70,37 +67,51 @@ export class AppComponent implements OnInit {
             console.log('%c Logs that are normally published to the portal kusto logs will show up in the console', 'color: orange')
         }
 
-        this.navigateToExperience();
-    }
-
-    navigateToExperience() {
-        this._authService.getStartupInfo()
-        .subscribe(info => {
-            if (this.newVersionEnabled) {
-                this._router.navigate(['new/' + info.resourceId]);
-            }
-            else {
-                // For now there will be a hard coded destination.
-                // In the future we will pass the tool path in with the startup info
-                var adjustedResourceId = info.resourceId.replace("/providers/microsoft.web", "");
-                this._router.navigate([adjustedResourceId + this.getRouteBasedOnSupportTopicId(info)]);
-            }
-        });
-    }
-
-    getRouteBasedOnSupportTopicId(info: StartupInfo): string {
-
-        let path: string;
-
-        // If no support topic id, then default to diagnostics home page
-        if (!info.supportTopicId || info.supportTopicId === '') {
-            path = '/diagnostics';
+        if (this._authService.inIFrame || this._authService.hasLocalStartupInfo) {
+            this._router.navigate(['/resourceRedirect']);
         }
         else {
-            path = `/supportTopic/${info.supportTopicId}`;
+            this._router.navigate(['/test']);
         }
 
-        return path;
+        //this.navigateToExperience();
+    }
+
+    // navigateToExperience() {
+    //     this._authService.getStartupInfo()
+    //     .subscribe(info => {
+    //         if (info && info.resourceId && info.token) {
+    //             if (this.newVersionEnabled) {
+    //                 this._router.navigate([info.resourceId]);
+    //             }
+    //             else {
+    //                 // For now there will be a hard coded destination.
+    //                 // In the future we will pass the tool path in with the startup info
+    //                 var adjustedResourceId = info.resourceId;
+    //                 this._router.navigate(['legacy/' + adjustedResourceId + this.getRouteBasedOnSupportTopicId(info)]);
+    //             }
+    //         }
+    //         else {
+    //             if(!environment.production) {
+    //                 this._router.navigateByUrl('/test');
+    //             }
+    //         }
+    //     });
+    // }
+
+    // getRouteBasedOnSupportTopicId(info: StartupInfo): string {
+
+    //     let path: string;
+
+    //     // If no support topic id, then default to diagnostics home page
+    //     if (!info.supportTopicId || info.supportTopicId === '') {
+    //         path = '/diagnostics';
+    //     }
+    //     else {
+    //         path = `/supportTopic/${info.supportTopicId}`;
+    //     }
+
+    //     return path;
 
         
 
@@ -123,7 +134,7 @@ export class AppComponent implements OnInit {
         //     .catch((error, caught) => {
         //         return '/diagnostics';
         //     });
-    }
+    // }
 
     // selectTab(tab: INavigationItem) {
 

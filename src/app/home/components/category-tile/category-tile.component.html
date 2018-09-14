@@ -7,7 +7,7 @@
     <div>
         <span class="keyword-label">Keywords</span>
         <div class="keywords">
-          <div class="keyword" [style.background-color]="category.color.replace(')',',.5)')" *ngFor="let keyword of category.keywords">
+          <div class="keyword" [style.border-color]="category.color" *ngFor="let keyword of category.keywords">
             {{keyword}}
           </div>
         </div>

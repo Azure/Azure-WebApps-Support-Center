@@ -40,12 +40,13 @@ export class TabsComponent implements OnInit {
           }
         }
 
-        let existingTab = _.find(this.navigationItems, (item) => { return item.url === this._router.url });
+        let url = this._router.url.split('?')[0]
+        let existingTab = _.find(this.navigationItems, (item) => { return item.url.split('?')[0] === url });
 
         if (!existingTab) {
           existingTab = {
             title: navigationTitle,
-            url: this._router.url,
+            url: url,
             params: currentRoute.snapshot.params,
             isActive: false
           };

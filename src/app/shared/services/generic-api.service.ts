@@ -45,15 +45,15 @@ export class GenericApiService {
         }
     }
 
-    public getDetector(detectorName: string) {
+    public getDetector(detectorName: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean) {
 
         if (this.useLocal) {
             let path = `v4${this.resourceId}/detectors/${detectorName}?stampName=waws-prod-bay-085&hostnames=netpractice.azurewebsites.net`;
             return this.invoke<DetectorResponse>(path, 'POST');
         }
         else {
-            let path = `${this.resourceId}/detectors/${detectorName}`;
-            return this._armService.getResource<DetectorResponse>(path)
+            let path = `${this.resourceId}/detectors/${detectorName}?startTime=${startTime}&endTime=${endTime}`;
+            return this._armService.getResource<DetectorResponse>(path, '2015-08-01', refresh)
                 .map((response: ResponseMessageEnvelope<DetectorResponse>) => response.properties);
         } 
     }
@@ -64,6 +64,7 @@ export class GenericApiService {
         let request = this._http.post(url, body, {
             headers: this._getHeaders(path, method)
         })
+        .retry(2)
         .map((response: Response) => <T>(response.json()));
 
         return request;

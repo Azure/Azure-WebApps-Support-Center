@@ -1,0 +1,9 @@
+<div class="tile-container">
+  <div *ngFor="let tile of tiles">
+    <div class="tile" [style.background-color]="tile.backgroundColor" (click)="tile.action()">
+      <div>
+        {{tile.title}}
+      </div>
+    </div>
+  </div>
+</div>

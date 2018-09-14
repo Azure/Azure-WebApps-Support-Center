@@ -78,6 +78,11 @@ import { VersionMessageComponent } from './components/version-message/version-me
 import { ToolStackPipe, AppTypePipe, SkuPipe, PlatformPipe } from './pipes/categoryfilters.pipe';
 import { DaasMainComponent } from './components/daas-main/daas-main.component';
 import { DaasScaleupComponent } from './components/daas/daas-scaleup/daas-scaleup.component';
+import { NotificationComponent } from './components/notification/notification.component';
+import { NotificationService } from './services/notification.service';
+import { TestInputComponent } from './components/test-input/test-input.component';
+import { ResourceRedirectComponent } from './components/resource-redirect/resource-redirect.component';
+import { TileListComponent } from './components/tile-list/tile-list.component';
 
 @NgModule({
     declarations: [
@@ -132,7 +137,11 @@ import { DaasScaleupComponent } from './components/daas/daas-scaleup/daas-scaleu
         TimespanComponent,
         ToggleButtonComponent,
         VersionMessageComponent,
-        DaasScaleupComponent
+        DaasScaleupComponent,
+        NotificationComponent,
+        TestInputComponent,
+        ResourceRedirectComponent,
+        TileListComponent
     ],
     imports: [
         HttpModule,
@@ -198,7 +207,8 @@ import { DaasScaleupComponent } from './components/daas/daas-scaleup/daas-scaleu
         TimespanComponent,
         ToggleButtonComponent,
         VersionMessageComponent,
-        DaasScaleupComponent
+        DaasScaleupComponent,
+        TileListComponent
     ]
 })
 export class SharedModule {
@@ -228,7 +238,8 @@ export class SharedModule {
                 TabTitleResolver,
                 AseService,
                 LiveChatService,
-                AutohealingService
+                AutohealingService,
+                NotificationService
             ]
         }
     }

@@ -36,9 +36,9 @@ import { DiagnosticDataModule } from 'applens-diagnostics';
 import { GenericCategoryFlow } from './message-flow/v2-flows/generic-category.flow';
 import { AvailabilityPerformanceFlow } from './message-flow/v2-flows/availability-performance.flow';
 
-const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename';
-const _slotResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/slots/:slot';
-const _hostingEnvironmentResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/hostingenvironments/:name';
+const _siteResourceUrl: string = 'legacy/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:sitename';
+const _slotResourceUrl: string = 'legacy/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:sitename/slots/:slot';
+const _hostingEnvironmentResourceUrl: string = 'legacy/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/hostingenvironments/:name';
 
 
 @NgModule({
@@ -63,7 +63,8 @@ const _hostingEnvironmentResourceUrl: string = 'subscriptions/:subscriptionid/re
     ],
     imports: [
         RouterModule.forChild(
-            [{
+            [
+                {
                 path: _siteResourceUrl + '/diagnostics',
                 component: HomepageComponent,
                 data: {

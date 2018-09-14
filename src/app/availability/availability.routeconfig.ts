@@ -91,16 +91,16 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
             cacheComponent: true
         }
     },
-    {
-        path: _slotResourceUrl + 'detectors/:detectorName',
-        component: GenericDetectorComponent,
-        resolve: {
-            navigationTitle: TabTitleResolver
-        },
-        data: {
-            cacheComponent: true
-        }
-    },
+    // {
+    //     path: _slotResourceUrl + 'detectors/:detectorName',
+    //     component: GenericDetectorComponent,
+    //     resolve: {
+    //         navigationTitle: TabTitleResolver
+    //     },
+    //     data: {
+    //         cacheComponent: true
+    //     }
+    // },
     {
         path: _hostingEnvironmentResourceUrl + 'detectors/:detectorName',
         component: GenericDetectorComponent,
@@ -120,14 +120,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
             cacheComponent: true
         }
     },
-    {
-        path: _slotResourceUrl + 'diagnostics/availability/analysis',
-        component: AppAnalysisComponent,
-        data: {
-            navigationTitle: 'App Error Analysis',
-            cacheComponent: true
-        }
-    },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/availability/analysis',
+    //     component: AppAnalysisComponent,
+    //     data: {
+    //         navigationTitle: 'App Error Analysis',
+    //         cacheComponent: true
+    //     }
+    // },
 
     // Web App Performance Analysis
     {
@@ -138,14 +138,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
             cacheComponent: true
         }
     },
-    {
-        path: _slotResourceUrl + 'diagnostics/performance/analysis',
-        component: PerfAnalysisComponent,
-        data: {
-            navigationTitle: 'App Performance Analysis',
-            cacheComponent: true
-        }
-    },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/performance/analysis',
+    //     component: PerfAnalysisComponent,
+    //     data: {
+    //         navigationTitle: 'App Performance Analysis',
+    //         cacheComponent: true
+    //     }
+    // },
 
     // Web App Restart Analysis
     {
@@ -156,14 +156,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
             cacheComponent: true
         }
     },
-    {
-        path: _slotResourceUrl + 'diagnostics/availability/apprestartanalysis',
-        component: WebAppRestartComponent,
-        data: {
-            navigationTitle: 'App Restart Analysis',
-            cacheComponent: true
-        }
-    },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/availability/apprestartanalysis',
+    //     component: WebAppRestartComponent,
+    //     data: {
+    //         navigationTitle: 'App Restart Analysis',
+    //         cacheComponent: true
+    //     }
+    // },
 
     // Memory Analysis
     {
@@ -174,14 +174,14 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
             cacheComponent: true
         }
     },
-    {
-        path: _slotResourceUrl + 'diagnostics/availability/memoryanalysis',
-        component: MemoryAnalysisComponent,
-        data: {
-            navigationTitle: 'Memory Analysis',
-            cacheComponent: true
-        }
-    },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/availability/memoryanalysis',
+    //     component: MemoryAnalysisComponent,
+    //     data: {
+    //         navigationTitle: 'Memory Analysis',
+    //         cacheComponent: true
+    //     }
+    // },
     // TCP Connections Analysis
     {
         path: _siteResourceUrl + 'diagnostics/availability/tcpconnectionsanalysis',
@@ -191,32 +191,32 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
             cacheComponent: true
         }
     },
-    {
-        path: _slotResourceUrl + 'diagnostics/availability/tcpconnectionsanalysis',
-        component: TcpConnectionsAnalysisComponent,
-        data: {
-            navigationTitle: 'TCP Connections Analysis',
-            cacheComponent: true
-        }
-    },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/availability/tcpconnectionsanalysis',
+    //     component: TcpConnectionsAnalysisComponent,
+    //     data: {
+    //         navigationTitle: 'TCP Connections Analysis',
+    //         cacheComponent: true
+    //     }
+    // },
     {
         path: _siteResourceUrl + 'diagnostics/availability',
         children: AvailabilityCommonRouteConfig
     },
-    {
-        path: _slotResourceUrl + 'diagnostics/availability',
-        children: AvailabilityCommonRouteConfig
-    },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/availability',
+    //     children: AvailabilityCommonRouteConfig
+    // },
 
     // Web App Slow
     {
         path: _siteResourceUrl + 'diagnostics/performance',
         children: PerformanceCommonRouteConfig
     },
-    {
-        path: _slotResourceUrl + 'diagnostics/performance',
-        children: PerformanceCommonRouteConfig
-    },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/performance',
+    //     children: PerformanceCommonRouteConfig
+    // },
 
     // Service Incident Summary
     {
@@ -227,203 +227,207 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
             cacheComponent: true
         }
     },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/incidents',
+    //     component: IncidentSummaryComponent,
+    //     data: {
+    //         navigationTitle: 'Service Incidents',
+    //         cacheComponent: true
+    //     }
+    // },
     {
-        path: _slotResourceUrl + 'diagnostics/incidents',
-        component: IncidentSummaryComponent,
-        data: {
-            navigationTitle: 'Service Incidents',
-            cacheComponent: true
-        }
-    },
+        path: 'diagnostics/tools',
+        loadChildren: 'app/diagnostic-tools/diagnostic-tools.module#DiagnosticToolsModule'
+    }
 
-    // CLR Profiling Tool
-    {
-        path: _siteResourceUrl + 'diagnostics/tools/profiler',
-        component: ProfilerToolComponent,
-        data: {
-            navigationTitle: ToolNames.Profiler,
-            cacheComponent: true
-        }
-    },
-    {
-        path: _slotResourceUrl + 'diagnostics/tools/profiler',
-        component: ProfilerToolComponent,
-        data: {
-            navigationTitle: ToolNames.Profiler,
-            cacheComponent: true
-        }
-    },
+    // // CLR Profiling Tool
+    // {
+    //     path: _siteResourceUrl + 'diagnostics/tools/profiler',
+    //     component: ProfilerToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.Profiler,
+    //         cacheComponent: true
+    //     }
+    // },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/tools/profiler',
+    //     component: ProfilerToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.Profiler,
+    //         cacheComponent: true
+    //     }
+    // },
 
-    // Memory Dump
-    {
-        path: _siteResourceUrl + 'diagnostics/tools/memorydump',
-        component: MemoryDumpToolComponent,
-        data: {
-            navigationTitle: ToolNames.MemoryDump,
-            cacheComponent: true
-        }
-    },
-    {
-        path: _slotResourceUrl + 'diagnostics/tools/memorydump',
-        component: MemoryDumpToolComponent,
-        data: {
-            navigationTitle: ToolNames.MemoryDump,
-            cacheComponent: true
-        }
-    },    
-    // Java Thread Dump
-    {
-        path: _siteResourceUrl + 'diagnostics/tools/javathreaddump',
-        component: JavaThreadDumpToolComponent,
-        data: {
-            navigationTitle: ToolNames.JavaThreadDump,
-            cacheComponent: true
-        }
-    },
-    {
-        path: _slotResourceUrl + 'diagnostics/tools/javathreaddump',
-        component: JavaThreadDumpToolComponent,
-        data: {
-            navigationTitle: ToolNames.JavaThreadDump,
-            cacheComponent: true
-        }
-    },
-    // Java Memory Dump
-    {
-        path: _siteResourceUrl + 'diagnostics/tools/javamemorydump',
-        component: JavaMemoryDumpToolComponent,
-        data: {
-            navigationTitle: ToolNames.JavaMemoryDump,
-            cacheComponent: true
-        }
-    },
-    {
-        path: _slotResourceUrl + 'diagnostics/tools/javamemorydump',
-        component: JavaMemoryDumpToolComponent,
-        data: {
-            navigationTitle: ToolNames.JavaMemoryDump,
-            cacheComponent: true
-        }
-    },
+    // // Memory Dump
+    // {
+    //     path: _siteResourceUrl + 'diagnostics/tools/memorydump',
+    //     component: MemoryDumpToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.MemoryDump,
+    //         cacheComponent: true
+    //     }
+    // },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/tools/memorydump',
+    //     component: MemoryDumpToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.MemoryDump,
+    //         cacheComponent: true
+    //     }
+    // },    
+    // // Java Thread Dump
+    // {
+    //     path: _siteResourceUrl + 'diagnostics/tools/javathreaddump',
+    //     component: JavaThreadDumpToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.JavaThreadDump,
+    //         cacheComponent: true
+    //     }
+    // },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/tools/javathreaddump',
+    //     component: JavaThreadDumpToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.JavaThreadDump,
+    //         cacheComponent: true
+    //     }
+    // },
+    // // Java Memory Dump
+    // {
+    //     path: _siteResourceUrl + 'diagnostics/tools/javamemorydump',
+    //     component: JavaMemoryDumpToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.JavaMemoryDump,
+    //         cacheComponent: true
+    //     }
+    // },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/tools/javamemorydump',
+    //     component: JavaMemoryDumpToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.JavaMemoryDump,
+    //         cacheComponent: true
+    //     }
+    // },
     
-    // HTTP Log Analyzer 
-    {
-        path: _siteResourceUrl + 'diagnostics/tools/httploganalyzer',
-        component: HttpLogAnalysisToolComponent,
-        data: {
-            navigationTitle: ToolNames.HttpLogAnalyzer,
-            cacheComponent: true
-        }
-    },
-    {
-        path: _slotResourceUrl + 'diagnostics/tools/httploganalyzer',
-        component: HttpLogAnalysisToolComponent,
-        data: {
-            navigationTitle: ToolNames.HttpLogAnalyzer,
-            cacheComponent: true
-        }
-    },
-    // PHP Log Analyzer 
-    {
-        path: _siteResourceUrl + 'diagnostics/tools/phploganalyzer',
-        component: PhpLogsAnalyzerToolComponent,
-        data: {
-            navigationTitle: ToolNames.PHPLogAnalyzer,
-            cacheComponent: true
-        }
-    },
-    {
-        path: _slotResourceUrl + 'diagnostics/tools/phploganalyzer',
-        component: PhpLogsAnalyzerToolComponent,
-        data: {
-            navigationTitle: ToolNames.PHPLogAnalyzer,
-            cacheComponent: true
-        }
-    }
-    ,
-    // PHP Process Analyzer 
-    {
-        path: _siteResourceUrl + 'diagnostics/tools/phpprocessanalyzer',
-        component: PhpProcessAnalyzerToolComponent,
-        data: {
-            navigationTitle: ToolNames.PHPProcessAnalyzer,
-            cacheComponent: true
-        }
-    },
-    {
-        path: _slotResourceUrl + 'diagnostics/tools/phpprocessanalyzer',
-        component: PhpProcessAnalyzerToolComponent,
-        data: {
-            navigationTitle: ToolNames.PHPProcessAnalyzer,
-            cacheComponent: true
-        }
-    }
-    ,
-    // Database Test Tool
-    {
-        path: _siteResourceUrl + 'diagnostics/tools/databasetester',
-        component: ConnectionDiagnoserToolComponent,
-        data: {
-            navigationTitle: ToolNames.DatabaseTester,
-            cacheComponent: true
-        }
-    },
-    {
-        path: _slotResourceUrl + 'diagnostics/tools/databasetester',
-        component: ConnectionDiagnoserToolComponent,
-        data: {
-            navigationTitle: ToolNames.DatabaseTester,
-            cacheComponent: true
-        }
-    }
-    ,
-    // Autohealing
-    {
-        path: _siteResourceUrl + 'diagnostics/tools/mitigate',
-        component: AutohealingComponent,
-        data: {
-            navigationTitle: 'Mitigate',
-        }
-    },
-    {
-        path: _slotResourceUrl + 'diagnostics/tools/mitigate',
-        component: AutohealingComponent,
-        data: {
-            navigationTitle: 'Mitigate',
-        }
-    }
-    ,    
-    {
-        path: _siteResourceUrl + 'diagnostics/tools/networktrace',
-        component: NetworkTraceToolComponent,
-        data: {
-            navigationTitle: ToolNames.NetworkTrace,
-        }
-    },
-    {
-        path: _slotResourceUrl + 'diagnostics/tools/networktrace',
-        component: NetworkTraceToolComponent,
-        data: {
-            navigationTitle: ToolNames.NetworkTrace,
-        }
-    }
-    ,    
-    // Diagnostics
-    {
-        path: _siteResourceUrl + 'diagnostics/tools/daas',
-        component: DaasMainComponent,
-        data: {
-            navigationTitle: ToolNames.Diagnostics,
-            cacheComponent: true
-        }
-    },
-    {
-        path: _slotResourceUrl + 'diagnostics/tools/daas',
-        component: DaasMainComponent,
-        data: {
-            navigationTitle: ToolNames.Diagnostics,
-            cacheComponent: true
-        }
-    }
+    // // HTTP Log Analyzer 
+    // {
+    //     path: _siteResourceUrl + 'diagnostics/tools/httploganalyzer',
+    //     component: HttpLogAnalysisToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.HttpLogAnalyzer,
+    //         cacheComponent: true
+    //     }
+    // },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/tools/httploganalyzer',
+    //     component: HttpLogAnalysisToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.HttpLogAnalyzer,
+    //         cacheComponent: true
+    //     }
+    // },
+    // // PHP Log Analyzer 
+    // {
+    //     path: _siteResourceUrl + 'diagnostics/tools/phploganalyzer',
+    //     component: PhpLogsAnalyzerToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.PHPLogAnalyzer,
+    //         cacheComponent: true
+    //     }
+    // },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/tools/phploganalyzer',
+    //     component: PhpLogsAnalyzerToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.PHPLogAnalyzer,
+    //         cacheComponent: true
+    //     }
+    // }
+    // ,
+    // // PHP Process Analyzer 
+    // {
+    //     path: _siteResourceUrl + 'diagnostics/tools/phpprocessanalyzer',
+    //     component: PhpProcessAnalyzerToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.PHPProcessAnalyzer,
+    //         cacheComponent: true
+    //     }
+    // },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/tools/phpprocessanalyzer',
+    //     component: PhpProcessAnalyzerToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.PHPProcessAnalyzer,
+    //         cacheComponent: true
+    //     }
+    // }
+    // ,
+    // // Database Test Tool
+    // {
+    //     path: _siteResourceUrl + 'diagnostics/tools/databasetester',
+    //     component: ConnectionDiagnoserToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.DatabaseTester,
+    //         cacheComponent: true
+    //     }
+    // },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/tools/databasetester',
+    //     component: ConnectionDiagnoserToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.DatabaseTester,
+    //         cacheComponent: true
+    //     }
+    // }
+    // ,
+    // // Autohealing
+    // {
+    //     path: _siteResourceUrl + 'diagnostics/tools/mitigate',
+    //     component: AutohealingComponent,
+    //     data: {
+    //         navigationTitle: 'Mitigate',
+    //     }
+    // },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/tools/mitigate',
+    //     component: AutohealingComponent,
+    //     data: {
+    //         navigationTitle: 'Mitigate',
+    //     }
+    // }
+    // ,    
+    // {
+    //     path: _siteResourceUrl + 'diagnostics/tools/networktrace',
+    //     component: NetworkTraceToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.NetworkTrace,
+    //     }
+    // },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/tools/networktrace',
+    //     component: NetworkTraceToolComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.NetworkTrace,
+    //     }
+    // }
+    // ,    
+    // // Diagnostics
+    // {
+    //     path: _siteResourceUrl + 'diagnostics/tools/daas',
+    //     component: DaasMainComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.Diagnostics,
+    //         cacheComponent: true
+    //     }
+    // },
+    // {
+    //     path: _slotResourceUrl + 'diagnostics/tools/daas',
+    //     component: DaasMainComponent,
+    //     data: {
+    //         navigationTitle: ToolNames.Diagnostics,
+    //         cacheComponent: true
+    //     }
+    // }
 
 ];

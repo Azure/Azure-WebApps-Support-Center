@@ -26,9 +26,9 @@
     cursor:pointer;
     color:#3999c6;
 }
-.list-item:hover{
+/* .list-item:hover{
     text-decoration: underline;
-}
+} */
 .list-item.disabled{
     color:#8e8e8e;
     cursor: not-allowed;

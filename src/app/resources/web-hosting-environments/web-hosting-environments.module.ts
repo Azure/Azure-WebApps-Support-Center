@@ -6,6 +6,8 @@ import { ResourceService } from '../../shared-v2/services/resource.service';
 import { WebHostingEnvironmentsService } from '../../shared-v2/services/web-hosting-environments.service';
 import { ResourceResolver } from '../../home/resolvers/resource.resolver';
 import { RouterModule } from '@angular/router';
+import { CategoryService } from '../../shared-v2/services/category.service';
+import { AseCategoryService } from './services/ase-category.service';
 
 const ResourceRoutes = RouterModule.forChild([
   {
@@ -19,12 +21,13 @@ const ResourceRoutes = RouterModule.forChild([
   imports: [
     CommonModule,
     SharedV2Module,
-    //SharedModule,
     ResourceRoutes
   ],
   declarations: [],
   providers: [
-    { provide: ResourceService, useClass: WebHostingEnvironmentsService },
+    WebHostingEnvironmentsService,
+    { provide: ResourceService, useExisting: WebHostingEnvironmentsService },
+    { provide: CategoryService, useClass: AseCategoryService },
     ResourceResolver
   ]
 })

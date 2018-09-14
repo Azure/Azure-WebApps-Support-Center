@@ -1,5 +1,5 @@
 import { Component, OnInit, Injector, EventEmitter, Output, AfterViewInit } from '@angular/core';
-import { DiagnosticService } from 'applens-diagnostics';
+import { DiagnosticService, DetectorControlService } from 'applens-diagnostics';
 import { Message } from '../../models/message';
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
 import { Observable } from 'rxjs';
@@ -17,16 +17,19 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
   @Output() onViewUpdate = new EventEmitter();
   @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
 
+  loading: boolean = true;
+
   detectorSummaryViewModels: DetectorSummaryViewModel[] = [];
 
   constructor(private _injector: Injector, private _diagnosticService: DiagnosticService, private _router: Router, private _activatedRoute: ActivatedRoute,
-    private _chatState: CategoryChatStateService) { }
+    private _chatState: CategoryChatStateService, private _detectorControlService: DetectorControlService) { }
 
   ngOnInit() {
-    this._diagnosticService.getDetector(this._chatState.selectedFeature.id).subscribe(response => {
+    this._diagnosticService.getDetector(this._chatState.selectedFeature.id, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString).subscribe(response => {
       console.log(response);
       this.processDetectorResponse(response).subscribe(() => {
-        this.onComplete.emit({status: true});
+        this.loading = false;
+        this.onComplete.emit({ status: true });
       });
     })
   }
@@ -38,7 +41,7 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
   processDetectorResponse(detectorResponse: DetectorResponse): Observable<void[]> {
     let detectorList = detectorResponse.dataset.find(set => (<Rendering>set.renderingProperties).type === 10);
 
-    if(detectorList) {
+    if (detectorList) {
       return this._diagnosticService.getDetectors().flatMap(detectors => {
         let subDetectors = (<DetectorListRendering>detectorList.renderingProperties).detectorIds;
 
@@ -53,14 +56,14 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
         });
 
         return Observable.forkJoin(this.detectorSummaryViewModels.map(detector => {
-          return this._diagnosticService.getDetector(detector.id).map(response => {
+          return this._diagnosticService.getDetector(detector.id, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString).map(response => {
             detector.status = response.status.statusId;
             detector.loading = LoadingStatus.Success;
           });
         }))
-        
+
       })
-      
+
     }
     else {
       let insightResponses = detectorResponse.dataset.filter(set => (<Rendering>set.renderingProperties).type === 7);
@@ -70,6 +73,18 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
           this.detectorSummaryViewModels.push(insight);
         });
       });
+      if (insightResponses.length <= 0) {
+        // If no insights found, return default message
+        this.detectorSummaryViewModels.push(<DetectorSummaryViewModel>{
+          id: 'default',
+          loading: LoadingStatus.Success,
+          name: 'No insights found. Click to view full output.',
+          path: `detectors/${detectorResponse.metadata.id}`,
+          status: HealthStatus.Info
+        });
+      }
+
+
       return Observable.of(null);
     }
   }

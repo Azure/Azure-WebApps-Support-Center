@@ -29,6 +29,7 @@ export class ArmService {
         let request = this._http.get(url, {
             headers: this.getHeaders()
         })
+            .retry(2)
             .map((response: Response) => (<ResponseMessageEnvelope<T>>response.json()))
             .catch(this.handleError);
 
@@ -42,6 +43,7 @@ export class ArmService {
         let request = this._http.get(url, {
             headers: this.getHeaders()
         })
+            .retry(2)
             .map((response: Response) => (<T>response.json()))
             .catch(this.handleError);
 
@@ -68,6 +70,7 @@ export class ArmService {
         }
 
         let request = this._http.post(url, bodyString, { headers: this.getHeaders() })
+            .retry(2)
             .map((response: Response) => {
                 let body = response.text();
 

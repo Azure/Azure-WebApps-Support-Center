@@ -1,0 +1,27 @@
+.tool-container {
+    padding: 20px 30px;
+}
+
+.fa {
+    margin-right: 10px;
+}
+
+.message {
+    padding: 8px;
+    width: fit-content;
+    
+}
+
+.message-info {
+    background-color: #337ab71c;
+}
+
+.message-warning {
+    background-color: #b768331c;
+}
+
+.header1 {
+    font-size: 24px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}

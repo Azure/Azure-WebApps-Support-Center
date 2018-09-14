@@ -1,0 +1,7 @@
+<ng-container *ngIf="notificationService.activeNotification">
+    <div class="notification" (click)="notificationService.activeNotification.action()">
+        <i class="fa" [ngClass]="notificationService.activeNotification.icon"></i> 
+        {{notificationService.activeNotification.title}}
+        <i class="fa fa-close pull-right" (click)="notificationService.dismiss()"></i>
+    </div>
+</ng-container>

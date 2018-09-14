@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Category } from '../../../shared-v2/models/category';
 import { ActivatedRoute, NavigationExtras, Router } from '../../../../../node_modules/@angular/router';
+import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
   selector: 'category-tile',
@@ -11,23 +12,30 @@ export class CategoryTileComponent implements OnInit {
 
   @Input() category: Category;
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute) { }
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _notificationService: NotificationService) { }
 
   ngOnInit() {
   }
 
-  navigateToCategory() {
+  navigateToCategory(): void {
+  
+    if (this.category.overridePath) {
+      console.log('override path:' + this.category.overridePath);
+      this._router.navigateByUrl(this.category.overridePath);
+      return;
+    }
+
+    let path = ['categories', this.category.id];
+
     let navigationExtras: NavigationExtras = {
       queryParamsHandling: 'preserve',
       preserveFragment: true,
       relativeTo: this._activatedRoute
     };
-    //console.log('navigate to' + this.category.id);
 
-    let path = this.category.overridePath ? this.category.overridePath.split('/').filter(s => s !== '') : ['categories', this.category.id];
+    this._notificationService.dismiss();
 
-    console.log('navigate to');
-    console.log(path);
+    console.log('navigate to' + path);
 
     this._router.navigate(path, navigationExtras);
   }

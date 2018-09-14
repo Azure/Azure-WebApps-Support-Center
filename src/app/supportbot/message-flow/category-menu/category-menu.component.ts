@@ -1,12 +1,13 @@
 import { Component, OnInit, AfterViewInit, Output, EventEmitter, Injector } from '@angular/core';
 import { IChatMessageComponent } from '../../../supportbot/interfaces/ichatmessagecomponent';
-import { DetectorMetaData } from 'applens-diagnostics';
+import { DetectorMetaData, DetectorControlService } from 'applens-diagnostics';
 import { Message, TextMessage } from '../../../supportbot/models/message';
 import { DiagnosticService } from 'applens-diagnostics';
 import { MessageSender } from '../../models/message-enums';
 import { CategoryChatStateService } from '../../../shared-v2/services/category-chat-state.service';
 import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { Feature } from '../../../shared-v2/models/features';
+import { Tile } from '../../../shared/components/tile-list/tile-list.component';
 
 @Component({
   selector: 'category-menu',
@@ -15,24 +16,35 @@ import { Feature } from '../../../shared-v2/models/features';
 })
 export class CategoryMenuComponent implements OnInit, AfterViewInit, IChatMessageComponent {
 
+  //Input
   takeFeatureAction: boolean;
   features: Feature[];
+
   featureSelected: boolean = false;
   message: TextMessage;
+
+  tiles: Tile[];
 
   @Output() onViewUpdate = new EventEmitter();
   @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
 
-  constructor(private _injector: Injector, private _diagnosticService: DiagnosticService, private _featureService: FeatureService, private _chatState: CategoryChatStateService) { }
+  constructor(private _injector: Injector, private _diagnosticService: DiagnosticService, private _featureService: FeatureService, 
+    private _chatState: CategoryChatStateService, private _detectorControlService: DetectorControlService) { }
 
   ngOnInit() {
     this.takeFeatureAction = this._injector.get('takeFeatureAction');
     this.features = this._featureService.getFeaturesForCategory(this._chatState.category);
+
+    this.tiles = this.features.map(feature => <Tile>{
+      backgroundColor: '#59b4d9',
+      title: feature.name,
+      action: () => this.select(feature)
+    });
     
     if (!this.takeFeatureAction) {
       this.features.forEach(detector => {
         // Make request for each detector
-        this._diagnosticService.getDetector(detector.id).subscribe();
+        this._diagnosticService.getDetector(detector.id, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString).subscribe();
       });
     }
   }
