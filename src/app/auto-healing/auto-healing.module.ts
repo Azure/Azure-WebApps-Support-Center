@@ -8,6 +8,7 @@ import { AutohealingSlowrequestsRuleComponent } from './autohealing-slowrequests
 import { AutohealingStartupTimeComponent } from './autohealing-startup-time/autohealing-startup-time.component';
 import { AutohealingStatuscodesRuleComponent } from './autohealing-statuscodes-rule/autohealing-statuscodes-rule.component';
 import { AutohealingComponent } from './autohealing.component';
+import { ProactiveAutohealingComponent } from './proactive-autohealing/proactive-autohealing.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { AutohealingComponent } from './autohealing.component';
     AutohealingRequestsRuleComponent,
     AutohealingSlowrequestsRuleComponent,
     AutohealingStartupTimeComponent,
-    AutohealingStatuscodesRuleComponent
+    AutohealingStatuscodesRuleComponent,
+    ProactiveAutohealingComponent
   ],
   imports: [
     SharedModule
