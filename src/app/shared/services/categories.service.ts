@@ -217,6 +217,17 @@ export class CategoriesService {
         });
 
         tools.Subcategories.push({
+            Name: ToolNames.AutoHealing,
+            BgColor: 'rgb(153, 51, 127)',
+            TextColor: 'White',
+            Href: 'tools/mitigate',
+            OperatingSystem: OperatingSystem.windows,
+            AppType: AppType.WebApp,
+            Sku: Sku.NotDynamic,
+            AppStack : ""
+        });
+
+        tools.Subcategories.push({
             Name: ToolNames.PHPLogAnalyzer,
             BgColor: 'rgb(153, 69, 0)',
             TextColor: 'White',

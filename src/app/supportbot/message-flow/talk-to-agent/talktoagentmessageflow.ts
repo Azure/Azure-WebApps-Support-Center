@@ -8,18 +8,18 @@ import { TalkToAgentMessageComponent } from './talk-to-agent-message.component';
 import { SiteService } from '../../../shared/services/site.service';
 import { AuthService } from '../../../startup/services/auth.service';
 import { ResourceType } from '../../../shared/models/portal';
-import { Site, SiteInfoMetaData, SiteExtensions, OperatingSystem } from '../../../shared/models/site';
-import { DemoSubscriptions } from '../../../betaSubscriptions';
-import { AppType } from '../../../shared/models/portal';
+import { Site, SiteInfoMetaData } from '../../../shared/models/site';
+import { LiveChatSettings } from '../../../liveChatSettings';
+import { LiveChatService } from '../../../shared/services/livechat.service';
 
 @Injectable()
 @RegisterMessageFlowWithFactory()
 export class TalkToAgentMessageFlow extends IMessageFlowProvider {
 
     public isApplicable: boolean;
-    private isDemoMode: boolean = false;
+    private isDemoMode: boolean = LiveChatSettings.DemoModeForHomePage;
 
-    constructor(private siteService: SiteService, private authService: AuthService) {
+    constructor(private siteService: SiteService, private authService: AuthService, private liveChatService: LiveChatService) {
         super();
         this.isApplicable = false;
 
@@ -27,17 +27,12 @@ export class TalkToAgentMessageFlow extends IMessageFlowProvider {
             this.siteService.currentSite.subscribe((site: Site) => {
 
                 if (site) {
-                    this.isApplicable = !(site.sku.toLowerCase() === 'free' || site.sku.toLowerCase() === 'shared')
-                        && (site.appType == AppType.WebApp)
-                        && (SiteExtensions.operatingSystem(site) == OperatingSystem.windows);
 
-                    if (this.isDemoMode) {
-                        this.siteService.currentSiteMetaData.subscribe((siteMetaData: SiteInfoMetaData) => {
-                            if (siteMetaData) {
-                                this.isApplicable = this.isApplicable && (DemoSubscriptions.betaSubscriptions.indexOf(siteMetaData.subscriptionId) >= 0);
-                            }
-                        });
-                    }
+                    this.siteService.currentSiteMetaData.subscribe((siteMetaData: SiteInfoMetaData) => {
+                        if (siteMetaData) {
+                            this.isApplicable = this.liveChatService.isChatApplicableForSite(site, siteMetaData, this.isDemoMode);
+                        }
+                    });
                 }
             });
         }

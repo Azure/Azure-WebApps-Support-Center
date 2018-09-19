@@ -2,4 +2,7 @@
     text-align:center;
     vertical-align:middle;
   }
-  
+
+.fa-plus, .fa-minus {
+  cursor: pointer;
+}

@@ -34,7 +34,7 @@ export class SitesCategoryService extends CategoryService {
         id: 'ConfigurationAndManagement',
         name: 'Configuration and Management',
         description: 'Are you having issues with something that you configured specifically for your app? Find out if you misconfigured App Service features, such as backups, deployment slots, and scaling.',
-        keywords: ['Autoscale', 'Failed Backups', 'IPs'],
+        keywords: ['Scaling', 'Swaps', 'Failed Backups', 'IPs', 'Migration'],
         color: 'rgb(249, 213, 180)',
         createFlowForCategory: true
       }
@@ -121,7 +121,7 @@ export class SitesCategoryService extends CategoryService {
         id: 'DiagnosticTools',
         name: 'Diagnostic Tools',
         description: 'Having trouble with certificates and custom domains? Discover any issues related to SSL certificates, authentication, and domain management.',
-        keywords: ['Profiler', 'Memory Dump', 'DaaS'],
+        keywords: ['Profiler', 'Memory Dump', 'DaaS', 'AutoHeal', 'Metrics'],
         color: 'rgb(186, 211, 245)',
         createFlowForCategory: false,
         overridePath: `${siteId}/diagnosticTools`

@@ -8,7 +8,6 @@
   box-sizing: border-box;
   display: inline-block;
   min-height: 20px;
-  width: 32%;
 }
 
 .text-label, label {
@@ -18,7 +17,6 @@
 .settings-wrapper, .setting-control-container {
   display: inline-block;
   vertical-align: middle;
-  width: 66%;
 }
 
 [role=radiogroup] {

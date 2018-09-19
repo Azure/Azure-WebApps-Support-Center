@@ -14,7 +14,6 @@ export class DaasValidatorComponent implements OnInit {
 
   @Input() siteToBeDiagnosed: SiteDaasInfo;
   @Input() diagnoserName: string;
-
   @Output() DaasValidated: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   supportedTier: boolean = false;
@@ -39,9 +38,20 @@ export class DaasValidatorComponent implements OnInit {
     this.foundDiagnoserWarnings = false;
 
     Observable.combineLatest(
-      this._serverFarmService.siteServerFarm,
-      this._siteService.getAlwaysOnSetting(this.siteToBeDiagnosed),
-      this._daasService.getDiagnosers(this.siteToBeDiagnosed).retry(2),
+      this._serverFarmService.siteServerFarm.catch(err => {
+        this.checkingSupportedTier = false;
+        this.error = `Failed with error ${JSON.stringify(err)} while checking web app's tier`;
+        return Observable.of(err);
+      }),
+      this._siteService.getAlwaysOnSetting(this.siteToBeDiagnosed).catch(err => {
+        this.alwaysOnEnabled = false;
+        this.error = `Failed with error ${JSON.stringify(err)} while checking always on setting`;
+        return Observable.of(err);
+      }),
+      this._daasService.getDiagnosers(this.siteToBeDiagnosed).retry(2).catch(err => {
+        this.error = `Failed with error ${JSON.stringify(err)} while retrieving DaaS settings`;
+        return Observable.of(err);
+      })
     ).subscribe(results => {
       this.checkingSupportedTier = false;
       let serverFarm = results[0];
@@ -58,23 +68,20 @@ export class DaasValidatorComponent implements OnInit {
         return;
       }
 
-      let thisDiagnoser = diagnosers.find(x => x.Name === this.diagnoserName);
-      if (thisDiagnoser) {
-        if (thisDiagnoser.Warnings.length > 0) {
-          this.diagnoserWarning = thisDiagnoser.Warnings.join(',');
-          this.foundDiagnoserWarnings = true;
-          return;
+      if (this.error === "") {
+        let thisDiagnoser = diagnosers.find(x => x.Name === this.diagnoserName);
+        if (thisDiagnoser) {
+          if (thisDiagnoser.Warnings.length > 0) {
+            this.diagnoserWarning = thisDiagnoser.Warnings.join(',');
+            this.foundDiagnoserWarnings = true;
+            return;
+          }
+        }
+        if (!this.foundDiagnoserWarnings) {
+          this.checkDaasWebjobState();
         }
       }
-
-      if (!this.foundDiagnoserWarnings) {
-        this.checkDaasWebjobState();
-      }
-    }, err => {
-      this.checkingSupportedTier = false;
-      this.error = `Failed with an error ${JSON.stringify(err)} while retrieving site and DaaS settings`;
     });
-
   }
 
   ngOnInit(): void {
@@ -82,7 +89,6 @@ export class DaasValidatorComponent implements OnInit {
   }
 
   checkDaasWebjobState() {
-
     this.checkingDaasWebJobStatus = true;
     let retryCount: number = 0;
     this._daasService.getDaasWebjobState(this.siteToBeDiagnosed)
@@ -113,6 +119,4 @@ export class DaasValidatorComponent implements OnInit {
         this.error = `Failed while retrieving DaaS webjob state `;
       });
   }
-
-
 }

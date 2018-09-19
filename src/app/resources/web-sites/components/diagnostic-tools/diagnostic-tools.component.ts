@@ -3,6 +3,8 @@ import { SiteFilteredItem } from "../../models/site-filter";
 import { Tile } from "../../../../shared/components/tile-list/tile-list.component";
 import { SiteFeatureService } from "../../services/site-feature.service";
 import { WebSitesService } from "../../services/web-sites.service";
+import { SiteService } from "../../../../shared/services/site.service";
+import { SiteDaasInfo } from "../../../../shared/models/solution-metadata";
 
 
 @Component({
@@ -18,6 +20,9 @@ export class DiagnosticToolsComponent {
   stackFound: boolean = false;
   stack: string;
 
+  siteToBeDiagnosed: SiteDaasInfo;
+  scmPath: string;
+
   possibleStacks: string[] = [
     "ASP.NET",
     "ASP.NET Core",
@@ -26,7 +31,13 @@ export class DiagnosticToolsComponent {
     "All"
   ]
 
-  constructor(private _sitesFeatureService: SiteFeatureService, public webSiteService: WebSitesService) { 
+  constructor(private _sitesFeatureService: SiteFeatureService, public webSiteService: WebSitesService, private _siteService: SiteService) { 
+    this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
+      this.siteToBeDiagnosed = site;
+    });
+
+    this.scmPath = this.webSiteService.resource.properties.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
+
     this.diagnosticToolTiles = this._sitesFeatureService.diagnosticTools.map(tool => {
       return <SiteFilteredItem<Tile>>{
         appType: tool.appType,

@@ -1,6 +1,10 @@
 // This file contains Live Chat Settings
 export class LiveChatSettings {
 
+    // Global Switch that controls whether chat is shown or not. 
+    // If False, it will override, every other setting
+    public static GLOBAL_ON_SWITCH: boolean = false;
+
     // If set to true, Live chat in home page will only show for demo subs
     // If set to false, it will show for all prod subs 
     public static DemoModeForHomePage: boolean = false;
@@ -19,7 +23,10 @@ export class LiveChatSettings {
         "32440122",     //Configuration and Management/Configuring custom domain names
         "32542210",     //Configuration and Management/IP Configuration
         "32581615",     //Configuration and Management/Deployment Slots
-        "32589277"      //How Do I/Configure domains and certificates
+        "32542208",     //Configuration and Management/Backup and Restore
+        "32589276",     //How Do I/Backup and Restore
+        "32589277",     //How Do I/Configure domains and certificates,
+        "32589281"      //How Do I/IP Configuration
     ];
 
     // This indicates the time after which Live Chat will pop up. 
@@ -30,4 +37,37 @@ export class LiveChatSettings {
     public static BuisnessEndDay: Number = 5;   // Friday
     public static BusinessStartHourPST: Number = 7;   // 7 AM PST
     public static BusinessEndHourPST: Number = 17;     // 5 PM PST
+
+    public static PublicHolidays: any = [
+        {
+            // Labor Day
+            date: 3,
+            month: 9,
+            year: 2018
+        },
+        {
+            // Thanksgiving Day
+            date: 22,
+            month: 11,
+            year: 2018
+        },
+        {
+            // Xmas
+            date: 25,
+            month: 12,
+            year: 2018
+        },
+        {
+            // New Yr Eve
+            date: 31,
+            month: 12,
+            year: 2018
+        },
+        {
+            // New Yr
+            date: 1,
+            month: 1,
+            year: 2019
+        }
+    ];
 }

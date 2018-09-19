@@ -133,7 +133,7 @@ export class SiteService {
 
     getSiteAppSettings(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): Observable<any> {
         let url: string = this._uriElementsService.getListAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
-        return this._armClient.postResource(url, {});
+        return this._armClient.postResource(url, {}, null, true);
     }
 
     getSiteConfigSettings(siteInfo:SiteInfoMetaData): Observable<any> {
@@ -174,10 +174,8 @@ export class SiteService {
     }
 
     updateSiteAppSettings(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '', body: any): Observable<any> {
-
         let url: string = this._uriElementsService.getUpdateAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
-
-        return this._armClient.putResource(url, body);
+        return this._armClient.putResource(url, body, null, true);
     }
 
     private _populateSiteInfo(resourceId: string): void {

@@ -106,6 +106,22 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        stack: '',
+        item: {
+          id: ToolNames.AutoHealing,
+          name: ToolNames.AutoHealing,
+          category: 'Diagnostic Tools',
+          description: '',
+          featureType: FeatureTypes.Tool,
+          clickAction: this._createFeatureAction(ToolNames.AutoHealing, 'Diagnostic Tools', () => {
+            this._router.navigateByUrl(`${resourceId}/tools/mitigate`);
+          })
+        }
+      },
+      {
+        appType: AppType.WebApp,
+        platform: OperatingSystem.windows,
+        sku: Sku.NotDynamic,
         stack: 'ASP.NET',
         item: {
           id: ToolNames.Profiler,

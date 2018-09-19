@@ -39,11 +39,11 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
   errorMessageSaving: string = "";
   minProcessExecutionTime: number;
   minProcessExecutionTimeExpanded: boolean = false;
-  showAutoHealHistory: boolean = false;
   detectorHasData: boolean = false;
   validationWarning: string[];
+  selectedTab:string = "autoHealing";
 
-  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, private _logger:AvailabilityLoggingService, protected _route: ActivatedRoute, protected _appAnalysisService: AppAnalysisService) {
+  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, private _logger: AvailabilityLoggingService, protected _route: ActivatedRoute, protected _appAnalysisService: AppAnalysisService) {
     super(_route, _appAnalysisService);
   }
 
@@ -60,6 +60,7 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
   }
 
   ngOnInit() {
+
     super.ngOnInit();
     this._siteService.currentSiteMetaData.subscribe(siteInfo => {
       if (siteInfo) {
@@ -142,7 +143,7 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
   }
 
   saveChanges() {
-    this._logger.LogClickEvent("SaveAutoHealSettings","AutoHealing");
+    this._logger.LogClickEvent("SaveAutoHealSettings", "AutoHealing");
     this.savingAutohealSettings = true;
     this._autohealingService.updateAutohealSettings(this.siteToBeDiagnosed, this.autohealingSettings)
       .subscribe(savedAutoHealSettings => {
@@ -282,7 +283,7 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
   validateAutoHealRules() {
     this.validationWarning = [];
 
-    const appDomainRestartWarning:string = "Saving mitigation settings will restart the application domain for the web app and this can cause logged-in user information, sessions, and in-memory cache to be cleared. Hence, it is advised to make these changes during non-business hours.";
+    const appDomainRestartWarning: string = "Saving mitigation settings will restart the application domain for the web app and this can cause logged-in user information, sessions, and in-memory cache to be cleared. Hence, it is advised to make these changes during non-business hours.";
     const minProcessExecutionTimeNotSet: string = "To avoid mitigation actions to kick in immediately after process starts, it is advisable to set the startup time to at least 600 seconds (10 minutes). This will ensure that mitigation actions don't kick in during app's cold start.";
     const actionSetToRecycle: string = "Even though the recycle happens in an overlapped recycling manner, please ensure that the rules configured don't end up recycling your process too many times to avoid any performance hits or app downtimes during the cold start of the application.";
     const diagnosticToolChosenCustom: string = "You have chosen a custom action to execute whenever mitigation kicks in.";
@@ -297,7 +298,7 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
 
       this.validationWarning.push(appDomainRestartWarning);
 
-      if (this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime!=null && FormatHelper.timespanToSeconds(this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime) < 600) {
+      if (this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime != null && FormatHelper.timespanToSeconds(this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime) < 600) {
         this.validationWarning.push(minProcessExecutionTimeNotSet);
       }
 
@@ -324,7 +325,7 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
             this.validationWarning.push(diagnosticProfilerChosen + diagnosticToolChosen)
           }
         }
-        else{
+        else {
           this.validationWarning.push(diagnosticToolChosenCustom + diagnosticToolChosen);
         }
       }

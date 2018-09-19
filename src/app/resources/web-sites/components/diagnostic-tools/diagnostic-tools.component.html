@@ -31,4 +31,13 @@
       <tile-list [tiles]="supportToolTiles | website"></tile-list>
     </collapsible-list-item>
   </collapsible-list>
+  <div style="margin-top:40px">
+      <p>
+          Below is the list of all the diagnostic sessions collected in the past for this web app.
+      </p>
+      <div class="sessions">
+          <daas-sessions [diagnoserNameLookup]="" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed"></daas-sessions>
+      </div>
+  </div>
+
 </div>

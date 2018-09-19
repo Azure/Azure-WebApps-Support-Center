@@ -78,6 +78,8 @@ export class LiveChatService {
 
                             if (window && window.fcWidget) {
 
+                                this.logger.LogLiveChatWidgetBeginInit(source);
+
                                 window.fcWidget.init({
                                     token: "ac017aa7-7c07-42bc-8fdc-1114fc962803",
                                     host: "https://wchat.freshchat.com",
@@ -114,6 +116,7 @@ export class LiveChatService {
                                 });
 
                                 window.fcWidget.on("widget:loaded", ((resp) => {
+                                    this.logger.LogLiveChatWidgetLoaded(source);
                                     this.getOrCreateUser();
                                 }));
 
@@ -129,8 +132,6 @@ export class LiveChatService {
                     }
                 });
             }
-
-
         });
     }
 
@@ -181,13 +182,14 @@ export class LiveChatService {
     }
 
     // This method indicate whether chat is applicable for current site
-    private isChatApplicableForSite(site: Site, siteMetaData: SiteInfoMetaData, demoMode: boolean): boolean {
+    public isChatApplicableForSite(site: Site, siteMetaData: SiteInfoMetaData, demoMode: boolean): boolean {
 
         if (LiveChatSettings.HideForInternalSubscriptions == true && (DemoSubscriptions.betaSubscriptions.indexOf(siteMetaData.subscriptionId) >= 0)) {
             return false;
         }
 
-        return site && siteMetaData
+        return LiveChatSettings.GLOBAL_ON_SWITCH
+            && site && siteMetaData
             && !(site.sku.toLowerCase() === 'free' || site.sku.toLowerCase() === 'shared')
             && (site.appType == AppType.WebApp)
             && (SiteExtensions.operatingSystem(site) == OperatingSystem.windows)
@@ -205,8 +207,23 @@ export class LiveChatService {
 
         isApplicable = isApplicable
             && (currentDateTime.day() >= LiveChatSettings.BuisnessStartDay && currentDateTime.day() <= LiveChatSettings.BuisnessEndDay)
-            && (currentDateTime.hour() >= LiveChatSettings.BusinessStartHourPST && currentDateTime.hour() < LiveChatSettings.BusinessEndHourPST);
+            && (currentDateTime.hour() >= LiveChatSettings.BusinessStartHourPST && currentDateTime.hour() < LiveChatSettings.BusinessEndHourPST)
+            && !this.isPublicHoliday(currentDateTime);
 
-        return isApplicable;
+        return LiveChatSettings.GLOBAL_ON_SWITCH && isApplicable;
+    }
+
+    private isPublicHoliday(currentDate): boolean {
+
+        for (var iter = 0; iter < LiveChatSettings.PublicHolidays.length; iter++) {
+
+            var element = LiveChatSettings.PublicHolidays[iter];
+
+            if (element.date == currentDate.date() && ((element.month - 1) == currentDate.month()) && element.year == currentDate.year()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

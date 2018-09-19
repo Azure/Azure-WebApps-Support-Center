@@ -41,4 +41,12 @@ export class BotLoggingService extends LoggingService {
     LogLiveChatWidgetClosed(source: string): void {
         this._log(BotEventType[BotEventType.LiveChatWidgetClosed], source, {});
     }
+
+    LogLiveChatWidgetBeginInit(source: string): void{
+        this._log(BotEventType[BotEventType.LiveChatWidgetInit], source, {});
+    }
+
+    LogLiveChatWidgetLoaded(source: string): void {
+        this._log(BotEventType[BotEventType.LiveChatWidgetLoaded], source, {});
+    }
 }
