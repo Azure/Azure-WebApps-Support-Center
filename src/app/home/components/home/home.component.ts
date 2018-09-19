@@ -6,6 +6,7 @@ import { NotificationService, Notification } from '../../../shared/services/noti
 import { Router } from '@angular/router';
 import { DetectorControlService } from 'applens-diagnostics';
 import { FeatureService } from '../../../shared-v2/services/feature.service';
+import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
 
 @Component({
   selector: 'home',
@@ -21,16 +22,24 @@ export class HomeComponent implements OnInit {
   searchValue: string;
   searchBoxFocus: boolean;
 
+  searchLogTimout: any;
+
+  event: any;
+
   constructor(private _resourceService: ResourceService, private _categoryService: CategoryService, private _notificationService: NotificationService, private _router: Router,
-    private _detectorControlService: DetectorControlService, private _featureService: FeatureService) { 
+    private _detectorControlService: DetectorControlService, private _featureService: FeatureService, private _logger: LoggingV2Service) {
     this._categoryService.categories.subscribe(categories => this.categories = categories);
   }
 
   ngOnInit() {
     this.resourceName = this._resourceService.resource.name;
-    this._detectorControlService.setDefault();
+
+    if (!this._detectorControlService.startTime) {
+      this._detectorControlService.setDefault();
+    }
+
     setTimeout(() => {
-      let notification = new Notification('This is the new Diagnose and Solve Experience. Click here to return to the old experience', () => { 
+      let notification = new Notification('This is the new App Service Diagnostics Experience. Click here to return to the old experience', () => {
         this._router.navigateByUrl(`legacy${this._resourceService.resourceIdForRouting}/diagnostics`);
         this._notificationService.dismiss();
       });
@@ -45,5 +54,21 @@ export class HomeComponent implements OnInit {
   clearSearch() {
     this.searchBoxFocus = false;
     this.searchValue = '';
+  }
+
+  updateSearchValue(searchValue) {
+    this.searchValue = searchValue;
+
+    if (this.searchLogTimout) {
+      clearTimeout(this.searchLogTimout);
+    }
+
+    this.searchLogTimout = setTimeout(() => {
+      this._logSearch();
+    }, 5000);
+  }
+
+  private _logSearch() {
+    this._logger.LogSearch(this.searchValue)
   }
 }

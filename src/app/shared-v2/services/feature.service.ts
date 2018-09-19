@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { DiagnosticService, DetectorMetaData } from 'applens-diagnostics';
 import { Category } from '../models/category';
-import { Feature, FeatureType, FeatureTypes } from '../models/features';
+import { Feature, FeatureType, FeatureTypes, FeatureAction } from '../models/features';
 import { ContentService } from './content.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../startup/services/auth.service';
+import { LoggingV2Service } from './logging-v2.service';
 
 @Injectable()
 export class FeatureService {
@@ -13,7 +14,8 @@ export class FeatureService {
 
   protected _features: Feature[] = [];
 
-  constructor(protected _diagnosticApiService: DiagnosticService, protected _contentService: ContentService, protected _router: Router, protected _authService: AuthService) {
+  constructor(protected _diagnosticApiService: DiagnosticService, protected _contentService: ContentService, protected _router: Router, protected _authService: AuthService,
+    protected _logger: LoggingV2Service) {
     this._authService.getStartupInfo().subscribe(startupInfo => {
 
       this._diagnosticApiService.getDetectors().subscribe(detectors => {
@@ -24,10 +26,9 @@ export class FeatureService {
             category: detector.category,
             featureType: FeatureTypes.Detector,
             name: detector.name,
-            clickAction: () => {
+            clickAction: this._createFeatureAction(detector.name, detector.category, () => {
               this._router.navigateByUrl(`${startupInfo.resourceId}/detectors/${detector.id}`);
-            }
-            
+            })
           });
         });
       });
@@ -40,20 +41,25 @@ export class FeatureService {
             description: article.description,
             category: '',
             featureType: FeatureTypes.Documentation,
-            clickAction: () => {
+            clickAction: this._createFeatureAction(article.title, 'Content', () => {
               window.open(article.link, '_blank');
-            }
+            })
           });
         });
       });
     });
   }
 
+  protected _createFeatureAction(name: string, category: string, func: Function): FeatureAction {
+    return () => {
+      this._logger.LogClickEvent(name, 'feature', category);
+      func();
+    }
+  }
+
   getFeaturesForCategory(category: Category) {
     return this._features.filter(feature => feature.category === category.name);
   }
-
-  
 
   getFeatures(searchValue?: string) {
     if(!searchValue || searchValue === '') {

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ResourceService } from './resource.service';
-import { AppAnalysisService } from '../../shared/services/appanalysis.service';
-import { ArmService } from '../../shared/services/arm.service';
-import { OperatingSystem, Site } from '../../shared/models/site';
-import { AppType } from '../../shared/models/portal';
-import { Sku } from '../../shared/models/server-farm';
-import { IDiagnosticProperties } from '../../shared/models/diagnosticproperties';
+import { ResourceService } from '../../../shared-v2/services/resource.service';
+import { OperatingSystem, Site } from '../../../shared/models/site';
+import { AppType } from '../../../shared/models/portal';
+import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
+import { ArmService } from '../../../shared/services/arm.service';
+import { Sku } from '../../../shared/models/server-farm';
+import { IDiagnosticProperties } from '../../../shared/models/diagnosticproperties';
 
 @Injectable()
 export class WebSitesService extends ResourceService {
@@ -22,6 +22,10 @@ export class WebSitesService extends ResourceService {
 
     constructor(protected _armService: ArmService, private _appAnalysisService: AppAnalysisService) {
         super(_armService);
+    }
+
+    public get searchSuffix(): string  {
+        return this.appType === AppType.WebApp ? this.platform === OperatingSystem.windows ? 'Azure Web App' : 'Azure Web App(Linux)' : 'Azure Function';
     }
 
     protected makeWarmUpCalls() {

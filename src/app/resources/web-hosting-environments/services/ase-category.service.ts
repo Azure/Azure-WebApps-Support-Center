@@ -9,11 +9,19 @@ export class AseCategoryService extends CategoryService {
     {
         id: 'Networking',
         name: 'Networking',
-        description: 'This is a networking descriptions which Jen needs to provide to me',
-        keywords: ['Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory'],
+        description: 'Check the network health of your App Service Environment. Run an NSG check to make sure your ASE can operate properly.',
+        keywords: ['NSG', 'Connectivity', 'Outbound Connections', 'Subnet'],
         color: 'rgb(208, 175, 239)',
         createFlowForCategory: true
-    }
+    },
+    {
+      id: 'Scaling',
+      name: 'Scaling',
+      description: 'Find out the current status of your scale operations, why your scale operations may be taking a long time, or why they are failing',
+      keywords: ['Scale Up', 'Scale Out', 'Deployent', 'Stuck'],
+      color: 'rgb(208, 175, 239)',
+      createFlowForCategory: true
+  }
   ]
 
   constructor() { 

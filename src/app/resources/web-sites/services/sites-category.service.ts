@@ -3,9 +3,9 @@ import { CategoryService } from '../../../shared-v2/services/category.service';
 import { Category } from '../../../shared-v2/models/category';
 import { OperatingSystem } from '../../../shared/models/site';
 import { AppType } from '../../../shared/models/portal';
-import { WebSitesService } from '../../../shared-v2/services/web-sites.service';
 import { SiteFilteredItem } from '../models/site-filter';
 import { Sku } from '../../../shared/models/server-farm';
+import { WebSitesService } from './web-sites.service';
 
 @Injectable()
 export class SitesCategoryService extends CategoryService {
@@ -19,8 +19,8 @@ export class SitesCategoryService extends CategoryService {
       item: {
         id: 'AvailabilityAndPerformance',
         name: 'Availability and Performance',
-        description: 'Is your app experiencing downtime or slowness? Discover issues that may impact SLA, caused by your app itself or Azure.',
-        keywords: ['Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory'],
+        description: 'Is your app experiencing downtime or slowness? Click here to run a health checkup to discover issues that may be affect your app’s high availability, by either platform or app issues. ',
+        keywords: ['Health Check', 'Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory'],
         color: 'rgb(208, 175, 239)',
         createFlowForCategory: false
       }
@@ -33,7 +33,7 @@ export class SitesCategoryService extends CategoryService {
       item: {
         id: 'ConfigurationAndManagement',
         name: 'Configuration and Management',
-        description: 'Are you having issues with something that you configured specifically for you app? Find out if you misconfigured App Service features, such as backups, scaling.',
+        description: 'Are you having issues with something that you configured specifically for your app? Find out if you misconfigured App Service features, such as backups, deployment slots, and scaling.',
         keywords: ['Autoscale', 'Failed Backups', 'IPs'],
         color: 'rgb(249, 213, 180)',
         createFlowForCategory: true
@@ -45,8 +45,8 @@ export class SitesCategoryService extends CategoryService {
       stack: '',
       sku: Sku.All,
       item: {
-        id: 'SSL',
-        name: 'SSL',
+        id: 'SSLandDomains',
+        name: 'SSL and Domains',
         description: 'Having trouble with certificates and custom domains? Discover any issues related to SSL certificates, authentication, and domain management.',
         keywords: ['4xx Errors', 'SSL', 'Domains', 'Permissions', 'Auth', 'Cert'],
         color: 'rgb(186, 211, 245)',

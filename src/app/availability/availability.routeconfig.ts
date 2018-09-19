@@ -9,23 +9,10 @@ import { DetectorViewRouteConfig } from './detector-view/detector-view.routeconf
 import { DetectorViewMainComponent } from './detector-view/detector-view-main/detector-view-main.component';
 import { SiteCpuAnalysisDetectorComponent } from './detector-view/detectors/site-cpu-analysis-detector/site-cpu-analysis-detector.component';
 import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalysis/tcp-connections-analysis.component';
-import { ProfilerToolComponent } from '../shared/components/tools/profiler-tool/profiler-tool.component';
-import { MemoryDumpToolComponent } from '../shared/components/tools/memorydump-tool/memorydump-tool.component';
-import { JavaMemoryDumpToolComponent } from '../shared/components/tools/java-memorydump-tool/java-memorydump-tool.component';
-import { JavaThreadDumpToolComponent } from '../shared/components/tools/java-threaddump-tool/java-threaddump-tool.component';
-import { HttpLogAnalysisToolComponent } from '../shared/components/tools/http-loganalysis-tool/http-loganalysis-tool.component';
-import { PhpProcessAnalyzerToolComponent } from '../shared/components/tools/php-processanalyzer-tool/php-processanalyzer-tool.component';
-import { PhpLogsAnalyzerToolComponent } from '../shared/components/tools/php-logsanalyzer-tool/php-logsanalyzer-tool.component';
-import { ConnectionDiagnoserToolComponent } from '../shared/components/tools/connection-diagnoser-tool/connection-diagnoser-tool.component';
-import { NetworkTraceToolComponent } from '../shared/components/tools/network-trace-tool/network-trace-tool.component';
 import { IncidentSummaryComponent } from '../shared/components/incident-summary/incident-summary.component';
-import { ToolNames } from '../shared/models/tools-constants';
 import { GenericDetectorComponent } from '../shared/components/generic-detector/generic-detector.component';
-import { Injectable } from '@angular/core';
-import { GenericApiService } from '../shared/services/generic-api.service';
 import { TabTitleResolver } from '../shared/resolvers/tab-name.resolver';
-import { AutohealingComponent } from '../auto-healing/autohealing.component';
-import { DaasMainComponent } from '../shared/components/daas-main/daas-main.component';
+
 
 
 // const _siteResourceUrl: string = 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/sites/:sitename/';

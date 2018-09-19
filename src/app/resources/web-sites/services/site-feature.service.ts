@@ -5,13 +5,15 @@ import { ContentService } from '../../../shared-v2/services/content.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../startup/services/auth.service';
 import { Feature, FeatureTypes } from '../../../shared-v2/models/features';
-import { WebSitesService } from '../../../shared-v2/services/web-sites.service';
 import { AppType, SupportBladeDefinitions } from '../../../shared/models/portal';
 import { OperatingSystem } from '../../../shared/models/site';
 import { SiteFilteredItem } from '../models/site-filter';
 import { Sku } from '../../../shared/models/server-farm';
 import { ToolNames } from '../../../shared/models/tools-constants';
 import { PortalActionService } from '../../../shared/services/portal-action.service';
+import { WebSitesService } from './web-sites.service';
+import { WebSiteFilter } from '../pipes/site-filter.pipe';
+import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
 
 @Injectable()
 export class SiteFeatureService extends FeatureService {
@@ -20,9 +22,9 @@ export class SiteFeatureService extends FeatureService {
   public supportTools: SiteFilteredItem<Feature>[];
 
   constructor(protected _diagnosticApiService: DiagnosticService, protected _resourceService: WebSitesService, protected _contentService: ContentService, protected _router: Router, 
-    protected _authService: AuthService, private _portalActionService: PortalActionService) {
+    protected _authService: AuthService, private _portalActionService: PortalActionService, private _websiteFilter: WebSiteFilter, protected _logger: LoggingV2Service) {
       
-    super(_diagnosticApiService, _contentService, _router, _authService);
+    super(_diagnosticApiService, _contentService, _router, _authService, _logger);
     this._authService.getStartupInfo().subscribe(startupInfo => { 
       if(this._resourceService.appType == AppType.WebApp && this._resourceService.platform == OperatingSystem.windows) {
         this.getLegacyAvailabilityAndPerformanceFeatures(startupInfo.resourceId).forEach(feature => this._features.push(feature));
@@ -41,9 +43,9 @@ export class SiteFeatureService extends FeatureService {
         category: 'Availability and Performance',
         description: 'Analyze availability of web app',
         featureType: FeatureTypes.Detector,
-        clickAction: () => {
+        clickAction: this._createFeatureAction('appanalysis', 'Availability and Performance', () => {
           this._router.navigateByUrl(`legacy/${resourceId}/diagnostics/availability/analysis`);
-        }
+        })
       },
       {
         id: 'perfanalysis',
@@ -51,9 +53,9 @@ export class SiteFeatureService extends FeatureService {
         category: 'Availability and Performance',
         description: 'Analyze performance of web app',
         featureType: FeatureTypes.Detector,
-        clickAction: () => {
+        clickAction: this._createFeatureAction('perfanalysis', 'Availability and Performance', () => {
           this._router.navigateByUrl(`legacy/${resourceId}/diagnostics/performance/analysis`);
-        }
+        })
       },
       {
         id: 'cpuanalysis',
@@ -61,9 +63,9 @@ export class SiteFeatureService extends FeatureService {
         category: 'Availability and Performance',
         description: 'Analyze CPU Usage of your Web App on all instances and see breakdown of usage of all Web Apps on your server farm',
         featureType: FeatureTypes.Detector,
-        clickAction: () => {
+        clickAction: this._createFeatureAction('cpuanalysis', 'Availability and Performance', () => {
           this._router.navigateByUrl(`legacy/${resourceId}/diagnostics/availability/detectors/sitecpuanalysis`);
-        }
+        })
       },
       {
         id: 'memoryanalysis',
@@ -71,9 +73,9 @@ export class SiteFeatureService extends FeatureService {
         category: 'Availability and Performance',
         description: 'Analyze Memory Usage of your Web App including physical memory, committed memory usage, and page file operations',
         featureType: FeatureTypes.Detector,
-        clickAction: () => {
+        clickAction: this._createFeatureAction('memoryanalysis', 'Availability and Performance', () => {
           this._router.navigateByUrl(`legacy/${resourceId}/diagnostics/availability/memoryanalysis`);
-        }
+        })
       },
       {
         id: 'restartanalysis',
@@ -81,9 +83,9 @@ export class SiteFeatureService extends FeatureService {
         category: 'Availability and Performance',
         description: 'See timeline of Web App restarts as well as the cause of the restart',
         featureType: FeatureTypes.Detector,
-        clickAction: () => {
+        clickAction: this._createFeatureAction('restartanalysis', 'Availability and Performance', () => {
           this._router.navigateByUrl(`legacy/${resourceId}/diagnostics/availability/apprestartanalysis`);
-        }
+        })
       },
       {
         id: 'tcpconnectionsanalysis',
@@ -91,9 +93,9 @@ export class SiteFeatureService extends FeatureService {
         category: 'Availability and Performance',
         description: 'See TCP connection usage and analyze any socket related issues with your Web App',
         featureType: FeatureTypes.Detector,
-        clickAction: () => {
+        clickAction: this._createFeatureAction('tcpconnectionsanalysis', 'Availability and Performance', () => {
           this._router.navigateByUrl(`legacy/${resourceId}/diagnostics/availability/tcpconnectionsanalysis`);
-        }
+        })
       }
     ]
   }
@@ -104,16 +106,16 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
-        stack: '',
+        stack: 'ASP.NET',
         item: {
           id: ToolNames.Profiler,
           name: ToolNames.Profiler,
           category: 'Diagnostic Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction(ToolNames.Profiler, 'Diagnostic Tools', () => {
             this._router.navigateByUrl(`${resourceId}/tools/profiler`);
-          }
+          })
         }
       },
       {
@@ -127,9 +129,9 @@ export class SiteFeatureService extends FeatureService {
           category: 'Diagnostic Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction(ToolNames.MemoryDump, 'Diagnostic Tools', () => {
             this._router.navigateByUrl(`${resourceId}/tools/memorydump`);
-          }
+          })
         }
       },
       {
@@ -143,9 +145,9 @@ export class SiteFeatureService extends FeatureService {
           category: 'Diagnostic Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction(ToolNames.DatabaseTester, 'Diagnostic Tools', () => {
             this._router.navigateByUrl(`${resourceId}/tools/databasetester`);
-          }
+          })
         }
       },
       {
@@ -159,9 +161,9 @@ export class SiteFeatureService extends FeatureService {
           category: 'Diagnostic Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction(ToolNames.NetworkTrace, 'Diagnostic Tools', () => {
             this._router.navigateByUrl(`${resourceId}/tools/networktrace`);
-          }
+          })
         }
       },
       {
@@ -175,9 +177,9 @@ export class SiteFeatureService extends FeatureService {
           category: 'Diagnostic Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction(ToolNames.PHPLogAnalyzer, 'Diagnostic Tools', () => {
             this._router.navigateByUrl(`${resourceId}/tools/phploganalyzer`);
-          }
+          })
         }
       },
       {
@@ -191,9 +193,9 @@ export class SiteFeatureService extends FeatureService {
           category: 'Diagnostic Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction(ToolNames.PHPProcessAnalyzer, 'Diagnostic Tools', () => {
             this._router.navigateByUrl(`${resourceId}/tools/phpprocessanalyzer`);
-          }
+          })
         }
       },
       {
@@ -207,9 +209,9 @@ export class SiteFeatureService extends FeatureService {
           category: 'Diagnostic Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction(ToolNames.JavaMemoryDump, 'Diagnostic Tools', () => {
             this._router.navigateByUrl(`${resourceId}/tools/javamemorydump`);
-          }
+          })
         }
       },
       {
@@ -223,9 +225,9 @@ export class SiteFeatureService extends FeatureService {
           category: 'Diagnostic Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction(ToolNames.JavaThreadDump, 'Diagnostic Tools', () => {
             this._router.navigateByUrl(`${resourceId}/tools/javathreaddump`);
-          }
+          })
         }
       },
     ];
@@ -242,9 +244,9 @@ export class SiteFeatureService extends FeatureService {
           category: 'Support Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction('metrics', 'Support Tools', () => {
             this._portalActionService.openMdmMetricsBlade();
-          }
+          })
         }
       },
       {
@@ -258,9 +260,9 @@ export class SiteFeatureService extends FeatureService {
           category: 'Support Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction(SupportBladeDefinitions.MetricPerInstance.Identifier, 'Support Tools', () => {
             this._portalActionService.openSupportIFrame(SupportBladeDefinitions.MetricPerInstance)
-          }
+          })
         }
       },
       {
@@ -274,9 +276,9 @@ export class SiteFeatureService extends FeatureService {
           category: 'Support Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction(SupportBladeDefinitions.AppServicePlanMetrics.Identifier, 'Support Tools', () => {
             this._portalActionService.openSupportIFrame(SupportBladeDefinitions.AppServicePlanMetrics)
-          }
+          })
         }
       },
       {
@@ -290,9 +292,9 @@ export class SiteFeatureService extends FeatureService {
           category: 'Support Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction(SupportBladeDefinitions.EventViewer.Identifier, 'Support Tools', () => {
             this._portalActionService.openSupportIFrame(SupportBladeDefinitions.EventViewer)
-          }
+          })
         }
       },
       {
@@ -306,9 +308,9 @@ export class SiteFeatureService extends FeatureService {
           category: 'Support Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction(SupportBladeDefinitions.FREBLogs.Identifier, 'Support Tools', () => {
             this._portalActionService.openSupportIFrame(SupportBladeDefinitions.FREBLogs)
-          }
+          })
         }
       },
       {
@@ -322,19 +324,19 @@ export class SiteFeatureService extends FeatureService {
           category: 'Support Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: () => {
+          clickAction: this._createFeatureAction('AdvancedAppRestart', 'Support Tools', () => {
             this._portalActionService.openBladeAdvancedAppRestartBladeForCurrentSite();
-          }
+          })
         }
       }
     ];
 
-    this.diagnosticTools.forEach(tool => {
-      this._features.push(tool.item);
+    this._websiteFilter.transform(this.diagnosticTools).forEach(tool => {
+      this._features.push(tool);
     });
 
-    this.supportTools.forEach(tool => {
-      this._features.push(tool.item);
+    this._websiteFilter.transform(this.supportTools).forEach(tool => {
+      this._features.push(tool);
     });
   }
 }

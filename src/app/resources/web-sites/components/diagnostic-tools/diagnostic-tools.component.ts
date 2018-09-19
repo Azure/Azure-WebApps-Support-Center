@@ -1,8 +1,8 @@
-import { OnInit, Component } from "@angular/core";
+import { Component } from "@angular/core";
 import { SiteFilteredItem } from "../../models/site-filter";
 import { Tile } from "../../../../shared/components/tile-list/tile-list.component";
 import { SiteFeatureService } from "../../services/site-feature.service";
-import { WebSitesService } from "../../../../shared-v2/services/web-sites.service";
+import { WebSitesService } from "../../services/web-sites.service";
 
 
 @Component({
@@ -10,7 +10,7 @@ import { WebSitesService } from "../../../../shared-v2/services/web-sites.servic
   templateUrl: './diagnostic-tools.component.html',
   styleUrls: ['./diagnostic-tools.component.css']
 })
-export class DiagnosticToolsComponent implements OnInit {
+export class DiagnosticToolsComponent {
 
   diagnosticToolTiles: SiteFilteredItem<Tile>[];
   supportToolTiles: SiteFilteredItem<Tile>[];
@@ -22,7 +22,8 @@ export class DiagnosticToolsComponent implements OnInit {
     "ASP.NET",
     "ASP.NET Core",
     "Java",
-    "PHP"
+    "PHP",
+    "All"
   ]
 
   constructor(private _sitesFeatureService: SiteFeatureService, public webSiteService: WebSitesService) { 
@@ -56,11 +57,14 @@ export class DiagnosticToolsComponent implements OnInit {
 
     if (this.webSiteService.appStack && this.webSiteService.appStack != "") {
       this.stackFound = true;
-      this.stack = this.possibleStacks.find(st => st.toLowerCase() === this.webSiteService.appStack);
+      this.selectStack(this.webSiteService.appStack)
     }
   }
 
-  ngOnInit() {
+  selectStack(stack: string) {
+    this.stack = this.possibleStacks.find(st => st.toLowerCase() === stack.toLowerCase());
+    if(!stack) {
+      this.stack = "All";
+    }
   }
-
 }

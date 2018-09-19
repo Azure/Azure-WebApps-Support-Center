@@ -1,6 +1,6 @@
 <div class="home-container">
     <div class="input-group input-group-lg search-input-group">
-        <input type="text" class="form-control" aria-label="Search App Service Diagnostics" placeholder="Search App Service Diagnostics" [(ngModel)]="searchValue" (focus)="onSearchBoxFocus()">
+        <input type="text" class="form-control" aria-label="Search App Service Diagnostics" placeholder="Search App Service Diagnostics" [ngModel]="searchValue" (ngModelChange)="updateSearchValue($event)" (focus)="onSearchBoxFocus(event)">
         <div class="input-group-btn">
             <button class="btn btn-default" type="button" (click)="clearSearch()"><i class="fa fa-close"></i></button>
         </div>
@@ -16,6 +16,9 @@
                 <category-tile [category]="category"></category-tile>
             </div>
         </div>
+        <div class="privacy-statement">
+                <a href="https://azure.microsoft.com/en-us/support/legal/?amp%3Bclcid=0x9">Privacy</a>
+            </div>
     </div>
 </div>
 

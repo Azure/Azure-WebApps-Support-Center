@@ -15,3 +15,9 @@
     align-items: stretch;
     flex-wrap: wrap;
 }
+
+.privacy-statement {
+    width: 100%;
+    text-align: right;
+    padding: 20px 50px;
+}

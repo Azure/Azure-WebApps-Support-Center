@@ -74,7 +74,6 @@ import { DiagnosticDataModule } from '../../../node_modules/applens-diagnostics'
 import { AutohealingService } from './services/autohealing.service';
 import { TimespanComponent } from './components/timespan/timespan.component';
 import { ToggleButtonComponent } from './components/toggle-button/toggle-button.component';
-import { VersionMessageComponent } from './components/version-message/version-message.component';
 import { ToolStackPipe, AppTypePipe, SkuPipe, PlatformPipe } from './pipes/categoryfilters.pipe';
 import { DaasMainComponent } from './components/daas-main/daas-main.component';
 import { DaasScaleupComponent } from './components/daas/daas-scaleup/daas-scaleup.component';
@@ -136,7 +135,6 @@ import { TileListComponent } from './components/tile-list/tile-list.component';
         GenericDetectorComponent,
         TimespanComponent,
         ToggleButtonComponent,
-        VersionMessageComponent,
         DaasScaleupComponent,
         NotificationComponent,
         TestInputComponent,
@@ -206,7 +204,6 @@ import { TileListComponent } from './components/tile-list/tile-list.component';
         GenericDetectorComponent,
         TimespanComponent,
         ToggleButtonComponent,
-        VersionMessageComponent,
         DaasScaleupComponent,
         TileListComponent
     ]

@@ -30,10 +30,10 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
 
     var documentSearch: MessageGroup = new MessageGroup('in-chat-search', [], () => 'feedback');
     documentSearch.messages.push(new TextMessage('I need further assistance.', MessageSender.User));
-    documentSearch.messages.push(new TextMessage('If you describe your problem, I can search relevant documentation and tools that may help you.', MessageSender.System));
+    documentSearch.messages.push(new TextMessage('Please describe your problem below, so I can search relevant documentation and tools that may help you.', MessageSender.System));
     documentSearch.messages.push(new DocumentSearchMessage());
     documentSearch.messages.push(new TextMessage('Was this helpful to finding what you were looking for?', MessageSender.System, 2000));
-    documentSearch.messages.push(new ButtonListMessage(this._getButtonListDidYouFindHelpful('more-help', 'I need further assistance'), 'Was this helpful to finding what you were looking for?'));
+    documentSearch.messages.push(new ButtonListMessage(this._getButtonListDidYouFindHelpful('more-help', 'I need further assistance'), 'Was this helpful to finding what you were looking for?', 'Availability and Performance'));
     documentSearch.messages.push(new TextMessage('Yes I found the right information.', MessageSender.User));
     documentSearch.messages.push(new TextMessage('Great I\'m glad I could be of help!', MessageSender.System));
 
@@ -53,12 +53,11 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
     this.categoriesCreated.push(category);
 
     return this._diagnosticApiService.getDetectors().map((detectors: DetectorMetaData[]) => {
-      console.log('create message flow for ' + category.name);
       var messageGroupList: MessageGroup[] = [];
 
       let mainMenuId: string = `main-menu-${category.id}`;
       let docSearch: string = `in-chat-search-${category.id}`;
-      let moreHelpId: string = `in-chat-search-${category.id}`;
+      let moreHelpId: string = `more-help-${category.id}`;
       let showTiles: string = `show-all-tiles-${category.id}`;
       let feedback: string = `feedback-${category.id}`;
 
@@ -71,16 +70,16 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
       categoryMainMenu.messages.push(new TextMessage('Okay give me a moment while I analyze your app for any issues related to this tile. Once the detectors load, feel free to click to investigate each topic further.', MessageSender.System, 500));
       categoryMainMenu.messages.push(new DetectorSummaryMessage());
       categoryMainMenu.messages.push(new TextMessage('Did you find what you were looking for?', MessageSender.System, 3000));
-      categoryMainMenu.messages.push(new ButtonListMessage(this._getButtonListDidYouFindHelpful(docSearch, 'Search Documentation', showTiles), 'Did you find what you were looking for?'));
+      categoryMainMenu.messages.push(new ButtonListMessage(this._getButtonListDidYouFindHelpful(docSearch, 'Search Documentation', showTiles), 'Did you find what you were looking for?', category.name));
       categoryMainMenu.messages.push(new TextMessage('Yes I found the right information.', MessageSender.User));
       categoryMainMenu.messages.push(new TextMessage('Great I\'m glad I could be of help!', MessageSender.System));
 
       var documentSearch: MessageGroup = new MessageGroup(docSearch, [], () => feedback);
       documentSearch.messages.push(new TextMessage('Search Documentation.', MessageSender.User));
-      documentSearch.messages.push(new TextMessage('If you describe your problem, I can search relevant documentation and tools that may help you.', MessageSender.System));
+      documentSearch.messages.push(new TextMessage('Please describe your problem below, so I can search relevant documentation and tools that may help you.', MessageSender.System));
       documentSearch.messages.push(new DocumentSearchMessage());
       documentSearch.messages.push(new TextMessage('Was this helpful to finding what you were looking for?', MessageSender.System, 2000));
-      documentSearch.messages.push(new ButtonListMessage(this._getButtonListDidYouFindHelpful(moreHelpId, 'I need further assistance', showTiles), 'Was this helpful to finding what you were looking for?'));
+      documentSearch.messages.push(new ButtonListMessage(this._getButtonListDidYouFindHelpful(moreHelpId, 'I need further assistance', showTiles), 'Was this helpful to finding what you were looking for?', category.name));
       documentSearch.messages.push(new TextMessage('Yes I found the right information.', MessageSender.User));
       documentSearch.messages.push(new TextMessage('Great I\'m glad I could be of help!', MessageSender.System));
 
@@ -102,6 +101,7 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
       this.messageFlowList.push(categoryMainMenu);
       this.messageFlowList.push(feedbackGroup);
       this.messageFlowList.push(documentSearch);
+      this.messageFlowList.push(needMoreHelp);
       this.messageFlowList.push(showAllTiles);
 
       return messageGroupList;

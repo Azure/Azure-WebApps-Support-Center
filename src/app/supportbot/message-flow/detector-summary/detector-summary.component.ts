@@ -1,11 +1,13 @@
 import { Component, OnInit, Injector, EventEmitter, Output, AfterViewInit } from '@angular/core';
-import { DiagnosticService, DetectorControlService } from 'applens-diagnostics';
+import { DiagnosticService, DetectorControlService, DetectorMetaData } from 'applens-diagnostics';
 import { Message } from '../../models/message';
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
 import { Observable } from 'rxjs';
 import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';
 import { LoadingStatus, DetectorResponse, Rendering, DetectorListRendering, DiagnosticData, HealthStatus } from 'applens-diagnostics';
 import { CategoryChatStateService } from '../../../shared-v2/services/category-chat-state.service';
+import { ResourceService } from '../../../shared-v2/services/resource.service';
+import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
 
 @Component({
   selector: 'detector-summary',
@@ -21,12 +23,18 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
 
   detectorSummaryViewModels: DetectorSummaryViewModel[] = [];
 
+  detector: DetectorMetaData;
+  fullReportPath: string;
+  showTopLevelFullReport: boolean = false;
+
   constructor(private _injector: Injector, private _diagnosticService: DiagnosticService, private _router: Router, private _activatedRoute: ActivatedRoute,
-    private _chatState: CategoryChatStateService, private _detectorControlService: DetectorControlService) { }
+    private _chatState: CategoryChatStateService, private _detectorControlService: DetectorControlService, private _resourceService: ResourceService,
+    private _logger: LoggingV2Service) { }
 
   ngOnInit() {
     this._diagnosticService.getDetector(this._chatState.selectedFeature.id, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString).subscribe(response => {
-      console.log(response);
+      this.detector = response.metadata;
+      this.fullReportPath = `${this._resourceService.resourceIdForRouting}/detectors/${this.detector.id}`;
       this.processDetectorResponse(response).subscribe(() => {
         this.loading = false;
         this.onComplete.emit({ status: true });
@@ -42,6 +50,7 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
     let detectorList = detectorResponse.dataset.find(set => (<Rendering>set.renderingProperties).type === 10);
 
     if (detectorList) {
+      this.showTopLevelFullReport = true;
       return this._diagnosticService.getDetectors().flatMap(detectors => {
         let subDetectors = (<DetectorListRendering>detectorList.renderingProperties).detectorIds;
 
@@ -51,7 +60,8 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
             loading: LoadingStatus.Loading,
             name: detector.name,
             path: `detectors/${detector.id}`,
-            status: null
+            status: null,
+            type: DetectorSummaryType.ChildDetector
           };
         });
 
@@ -80,13 +90,29 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
           loading: LoadingStatus.Success,
           name: 'No insights found. Click to view full output.',
           path: `detectors/${detectorResponse.metadata.id}`,
-          status: HealthStatus.Info
+          status: HealthStatus.Info,
+          type: DetectorSummaryType.Insight
         });
       }
 
 
       return Observable.of(null);
     }
+  }
+
+  openFullReport() {
+    this._logger.LogDetectorSummaryFullReportSelection(this.detector.id, this.detector.category);
+    this.navigateTo(this.fullReportPath);
+  }
+
+  selectDetectorSummaryItem(item: DetectorSummaryViewModel) {
+    if (item.type === DetectorSummaryType.ChildDetector) {
+      this._logger.LogChildDetectorSelection(this.detector.id, item.id, item.name, item.status, this.detector.category);
+    }
+    else {
+      this._logger.LogDetectorSummaryInsightSelection(this.detector.id, item.name, item.status, this.detector.category);
+    }
+    this.navigateTo(item.path);
   }
 
   navigateTo(path: string) {
@@ -137,5 +163,12 @@ interface DetectorSummaryViewModel {
   name: string;
   path: string;
   loading: LoadingStatus;
-  status: any;
+  status: HealthStatus;
+  type: DetectorSummaryType
+
+}
+
+enum DetectorSummaryType {
+  ChildDetector,
+  Insight
 }

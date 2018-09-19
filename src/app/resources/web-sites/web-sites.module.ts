@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { SharedV2Module } from '../../shared-v2/shared-v2.module';
 import { SharedModule } from '../../shared/shared.module';
 import { ResourceService } from '../../shared-v2/services/resource.service';
-import { WebSitesService } from '../../shared-v2/services/web-sites.service';
 import { ResourceResolver } from '../../home/resolvers/resource.resolver';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -14,6 +13,9 @@ import { SupportTopicService } from '../../shared-v2/services/support-topic.serv
 import { SiteSupportTopicService } from './services/site-support-topic.service';
 import { WebSiteFilter } from './pipes/site-filter.pipe';
 import { DiagnosticToolsComponent } from './components/diagnostic-tools/diagnostic-tools.component';
+import { ContentService } from '../../shared-v2/services/content.service';
+import { WebSitesService } from './services/web-sites.service';
+import { LoggingV2Service } from '../../shared-v2/services/logging-v2.service';
 
 const ResourceRoutes = RouterModule.forChild([
   {
@@ -47,13 +49,16 @@ const ResourceRoutes = RouterModule.forChild([
     WebSiteFilter
   ],
   providers: [
+    ContentService,
     WebSitesService,
     SiteFeatureService,
+    LoggingV2Service,
     { provide: ResourceService, useExisting: WebSitesService },
     { provide: CategoryService, useClass: SitesCategoryService },
     { provide: FeatureService, useExisting: SiteFeatureService },
     { provide: SupportTopicService, useClass: SiteSupportTopicService },
-    ResourceResolver
+    ResourceResolver,
+    WebSiteFilter
   ]
 })
 export class WebSitesModule { }

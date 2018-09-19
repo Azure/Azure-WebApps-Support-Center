@@ -36,7 +36,7 @@ export class CategoriesService {
             }
 
             this._genericApiService.getDetectors().subscribe(resp => {
-                this.addGenericDetectors(resp);
+                this.addGenericDetectors(resp, info.resourceId);
                 this.Categories.next(this._categories);
             });
         })
@@ -44,7 +44,7 @@ export class CategoriesService {
         this.Categories.next(this._categories);
     }
 
-    addGenericDetectors(detectors: DetectorMetaData[]): void {
+    addGenericDetectors(detectors: DetectorMetaData[], resourceId: string): void {
         let generic = <Category>{
             Name: this._authService.resourceType === ResourceType.Site ? (this.appType === AppType.WebApp ? 'Management and Configuration' : "Function App") : 'App Service Environment',
             Collapsed: false,
@@ -57,7 +57,7 @@ export class CategoriesService {
                 Name: detector.name,
                 BgColor: '#1446a0',
                 TextColor: 'White',
-                Href: `../detectors/${detector.id}`,
+                Href:  `${resourceId}/detectors/${detector.id}`,
                 OperatingSystem: OperatingSystem.any,
                 AppStack: "",
                 AppType: AppType.WebApp | AppType.FunctionApp,

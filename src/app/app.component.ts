@@ -21,9 +21,7 @@ export class AppComponent implements OnInit {
     public get newVersionEnabled() { return this._newVersionEnabled; }
 
     public set newVersionEnabled(value: boolean) { 
-        console.log(value);
         this._newVersionEnabled = value;
-        //this.navigateToExperience();
      }
 
     private _hardCodedSupportTopicIdMapping = [

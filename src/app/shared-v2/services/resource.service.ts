@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
+import { Observable, ReplaySubject} from 'rxjs';
 import { ArmResource } from '../models/arm';
 import { ArmService } from '../../shared/services/arm.service';
 
@@ -16,9 +16,16 @@ export class ResourceService {
   public get resourceIdForRouting() {
     return this.resource.id.toLowerCase();
   }
+
+  public get searchSuffix(): string  {
+    return 'Azure';
+  }
+
+  public get loggingMetadata(): Observable<any> {
+    return ReplaySubject.of({});
+  }
   
-  registerResource(resourceUri: string): Observable<{} | ArmResource> {
-    console.log(resourceUri);
+  public registerResource(resourceUri: string): Observable<{} | ArmResource> {
     return this._armService.getArmResource<ArmResource>(resourceUri)
       .map(resource => {
         this.resource = resource;
@@ -26,6 +33,8 @@ export class ResourceService {
         return resource;
       });
   }
+
+  
 
   protected makeWarmUpCalls() {
 

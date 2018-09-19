@@ -18,7 +18,6 @@ export class NotificationService {
   }
 
   pushNotification(notification: Notification) {
-    console.log(notification);
     this.notifications.push(notification);
     this.updateActiveNotification();
   }

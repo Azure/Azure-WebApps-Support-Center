@@ -16,16 +16,16 @@ export class AvailabilityPerformanceFlow extends IMessageFlowProvider {
         let messageGroupList: MessageGroup[] = [];
 
         var availailabilityPerformance: MessageGroup = new MessageGroup('welcome-AvailabilityAndPerformance', [], () => 'feedbackprompt');
-        availailabilityPerformance.messages.push(new TextMessage('Hello! Welcome to App Service diagnostics! My name is Genie and I\'m here to help you diagnose and solve problems.', MessageSender.System));
-        availailabilityPerformance.messages.push(new TextMessage('Let me run a health check for you so you can get a quick view of the health of your app', MessageSender.System));
+        availailabilityPerformance.messages.push(new TextMessage('Hello! Welcome to App Service diagnostics! My name is Genie and I\'m here to help you diagnose and solve problems with your app.', MessageSender.System));
+        availailabilityPerformance.messages.push(new TextMessage('First, let me run a health check for you so you can get a quick overview of the health of your app.', MessageSender.System));
         availailabilityPerformance.messages.push(new HealthCheckMessage());
-        availailabilityPerformance.messages.push(new TextMessage('If you are facing a specific issue, please choose the tile below that best describes the problem you are facing.', MessageSender.System, 2000));
+        availailabilityPerformance.messages.push(new TextMessage('If you have a specific problem you want to investigate, please choose the relevant tile below:', MessageSender.System, 2000));
         availailabilityPerformance.messages.push(new CategoryMenuMessage(true));
 
         var categoryMainMenu: MessageGroup = new MessageGroup('availability-menu', [], () => 'feedback');
         categoryMainMenu.messages.push(new CategoryMenuMessage());
         categoryMainMenu.messages.push(new TextMessage('Did you find what you were looking for?', MessageSender.System, 3000));
-        categoryMainMenu.messages.push(new ButtonListMessage(this._getButtonListDidYouFindHelpful('in-chat-search'), 'Did you find what you were looking for?'));
+        categoryMainMenu.messages.push(new ButtonListMessage(this._getButtonListDidYouFindHelpful('in-chat-search'), 'Did you find what you were looking for?', 'Availability and Performance'));
         categoryMainMenu.messages.push(new TextMessage('Yes I found the right information.', MessageSender.User));
         categoryMainMenu.messages.push(new TextMessage('Great I\'m glad I could be of help!', MessageSender.System));
 

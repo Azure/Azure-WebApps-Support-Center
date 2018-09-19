@@ -16,7 +16,6 @@ export class AseService {
   public currentAseMetaData: AseInfoMetaData;
 
   constructor(private _armClient: ArmService, private _authService: AuthService) {
-    console.log('ase service');
     this._authService.getStartupInfo().subscribe((startUpInfo: StartupInfo) => {
       this._populateAseInfo(startUpInfo.resourceId);
       if (startUpInfo.resourceType === ResourceType.HostingEnvironment) {

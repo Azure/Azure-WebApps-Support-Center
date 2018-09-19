@@ -1,9 +1,9 @@
 <div class="tool-container">
 
   <div class="row">
-    <div class="col col-sm-9" style="margin-left: -10px;">
+    <div class="col col-sm-7" style="margin-left: -10px;">
       <div class="header1">App Service Diagnostics Tools and Resources</div>
-      <p>These tools can help you diagnose problems insight your app code, or review metric counters for your Web App.</p>
+      <p>Sometimes deeper investigation is necessary. With Diagnostic Tools, you can run language-specific tools to profile your app, collect network traces, memory dumps, and more.</p>
       <div>
         <div class="message message-info" *ngIf="stackFound">
           <i class="fa fa-lightbulb-o"></i>The stack used by your Web App was automatically detected to be
@@ -15,9 +15,9 @@
         </div>
       </div>
     </div>
-    <div class="col col-sm-3">
+    <div class="col col-sm-5">
       <div style="float: right;" class="btn-group" role="group" aria-label="...">
-        <button *ngFor="let st of possibleStacks" type="button" class="btn btn-default" (click)="stack = st" [class.btn-primary]="st === stack">{{st}}</button>
+        <button *ngFor="let st of possibleStacks" type="button" class="btn btn-default" (click)="selectStack(st)" [class.btn-primary]="st === stack">{{st}}</button>
       </div>
     </div>
   </div>

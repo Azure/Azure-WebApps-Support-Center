@@ -2,8 +2,25 @@ textarea {
     width: 400px;
 }
 
+.search-container {
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    padding: 5px 15px;
+    width: 80%;
+    height: 450px;
+    overflow-y: hidden;
+}
+
+.blank-output {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 70%;
+    color: #a0a0a0;
+    font-size: 16px;
+}
+
 #documentSearchInput {
-    width: 300px;
+    width: calc(100% - 200px);
 }
 
 .article-container {
@@ -25,4 +42,8 @@ textarea {
 .form-container {
     padding: 10px 0px;
     display: flex;
+}
+
+.article-link {
+    color: #878787
 }

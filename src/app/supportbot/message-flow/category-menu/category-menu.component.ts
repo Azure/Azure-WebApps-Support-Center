@@ -8,6 +8,7 @@ import { CategoryChatStateService } from '../../../shared-v2/services/category-c
 import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { Feature } from '../../../shared-v2/models/features';
 import { Tile } from '../../../shared/components/tile-list/tile-list.component';
+import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
 
 @Component({
   selector: 'category-menu',
@@ -29,7 +30,7 @@ export class CategoryMenuComponent implements OnInit, AfterViewInit, IChatMessag
   @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
 
   constructor(private _injector: Injector, private _diagnosticService: DiagnosticService, private _featureService: FeatureService, 
-    private _chatState: CategoryChatStateService, private _detectorControlService: DetectorControlService) { }
+    private _chatState: CategoryChatStateService, private _detectorControlService: DetectorControlService, private _logger: LoggingV2Service) { }
 
   ngOnInit() {
     this.takeFeatureAction = this._injector.get('takeFeatureAction');
@@ -54,6 +55,8 @@ export class CategoryMenuComponent implements OnInit, AfterViewInit, IChatMessag
   }
 
   select(detector: Feature) {
+    this._logger.LogTopLevelDetector(detector.id, detector.name, detector.category);
+    this._logger.LogClickEvent('TopLevelDetectorSelected', detector.id, detector.category);
     if (this.takeFeatureAction) {
       detector.clickAction();
     }

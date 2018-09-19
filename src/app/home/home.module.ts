@@ -14,6 +14,7 @@ import { GenericDetectorComponent } from '../shared/components/generic-detector/
 import { TabTitleResolver } from '../shared/resolvers/tab-name.resolver';
 import { SupportTopicRedirectComponent } from './components/support-topic-redirect/support-topic-redirect.component';
 import { TimeControlResolver } from './resolvers/time-control.resolver';
+import { ContentService } from '../shared-v2/services/content.service';
 
 export const HomeRoutes = RouterModule.forChild([
   {

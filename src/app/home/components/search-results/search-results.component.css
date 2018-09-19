@@ -43,3 +43,11 @@
     align-items: center;
     justify-content: center;
 }
+
+.feature-title {
+    font-size: 18px;
+}
+
+.feature-category {
+    color: #909090;
+}

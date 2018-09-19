@@ -1,25 +1,26 @@
-<div class="form-container">
-    <form class="form-inline" #form="ngForm" (ngSubmit)="onSubmit(form.value)">
-        <div class="form-group">
-          <label class="sr-only" for="documentSearchInput"></label>
-          <input type="email" class="form-control" name="documentSearchInput" id="documentSearchInput" autocomplete="off" placeholder="Please enter topic or problem of interest...">
-        </div>
-        <button class="btn btn-default">Search Docs</button>
-      </form>
-</div>
+<div class="search-container">
+    <div class="form-container">
+        <form style="width: 100%" class="form-inline" #form="ngForm" (ngSubmit)="onSubmit(form.value)">
+            <input type="text" class="form-control" name="documentSearchInput" id="documentSearchInput" ngModel required autocomplete="off" placeholder="Please enter topic or problem of interest...">
 
-
-<div *ngIf="content">
-  <div class="article-container">
-    <div class="article" *ngFor="let article of content" (click)="openArticle(article.link)">
-      <h5>{{article.title}}
-        <i class="fa fa-external-link"></i>
-      </h5>
-      {{article.description}}
+            <button class="btn btn-default" type="submit">Search Documentation</button>
+          </form>
     </div>
-  </div>
-</div>
+    
+    
+    <div *ngIf="content">
+      <div class="article-container">
+        <div class="article" *ngFor="let article of content" (click)="openArticle(article)">
+          <h5>{{article.title}}
+            <i class="fa fa-external-link"></i>
+          </h5>
+          <div class="article-link">{{getLink(article.link)}}</div>
+          {{article.description}}
+        </div>
+      </div>
+    </div>
 
-<!-- <div>
-    <textarea  placeholder="Please enter topic or problem of interest..."></textarea>
-</div> -->
+    <div *ngIf="!content" class="blank-output">
+      Search to see documentation related to your problem
+    </div>
+</div>

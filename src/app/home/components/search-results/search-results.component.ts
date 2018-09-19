@@ -1,7 +1,8 @@
 import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
 import { FeatureService } from '../../../shared-v2/services/feature.service';
-import { Feature } from '../../../shared-v2/models/features';
+import { Feature, FeatureTypes } from '../../../shared-v2/models/features';
 import { NavigationExtras, ActivatedRoute, Router } from '../../../../../node_modules/@angular/router';
+import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
 
 @Component({
   selector: 'search-results',
@@ -14,7 +15,7 @@ export class SearchResultsComponent implements OnChanges {
 
   features: Feature[];
 
-  constructor(public featureService: FeatureService, private _activatedRoute: ActivatedRoute, private _router: Router) { }
+  constructor(public featureService: FeatureService, private _activatedRoute: ActivatedRoute, private _router: Router, private _logger: LoggingV2Service) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if(changes['searchValue']){
@@ -23,20 +24,16 @@ export class SearchResultsComponent implements OnChanges {
   }
 
   navigateToFeature(feature: Feature) {
-
+    this._logSearchSelection(feature);
     feature.clickAction();    
+  }
 
-    // if (feature.path) {
-    //   let navigationExtras: NavigationExtras = {
-    //     queryParamsHandling: 'preserve',
-    //     preserveFragment: true,
-    //     relativeTo: this._activatedRoute
-    //   };
-  
-    //   this._router.navigate(feature.path.split('/'), navigationExtras);
-    // }
-    // else if (feature.href) {
-    //   window.open(feature.href, '_blank');
-    // }
+  private _logSearch() {
+    this._logger.LogSearch(this.searchValue)
+  }
+
+  private _logSearchSelection(feature: Feature) {
+    this._logSearch();
+    this._logger.LogSearchSelection(this.searchValue, feature.id, feature.name, feature.featureType.name)
   }
 }

@@ -41,3 +41,16 @@ export enum BotEventType{
     LiveChatWidgetOpened,
     LiveChatWidgetClosed
 }
+
+export enum V2EventType {
+    CategorySelected,
+    Search,
+    SearchResultSelected,
+    TopLevelDetectorSelected,
+    DetectorSummarySelected,
+    DetectorSummaryFullReportSelected,
+    DetectorSummaryChildDetectorSelected,
+    DetectorSummaryInsightSelected,
+    ChatSearch,
+    ChatSearchSelected
+}

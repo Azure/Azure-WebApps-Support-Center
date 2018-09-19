@@ -18,11 +18,12 @@ export class TextMessage extends Message {
 }
 
 export class ButtonListMessage extends Message {
-    constructor(buttonList: { title: string, type: ButtonActionType, next_key: string }[], context: string, sender: MessageSender = MessageSender.System) {
+    constructor(buttonList: { title: string, type: ButtonActionType, next_key: string }[], context: string, category: string = 'Support Home', sender: MessageSender = MessageSender.System) {
         super(ButtonMessageComponent, {
             buttonList: buttonList,
             sender: sender,
-            context: context
+            context: context,
+            category: category
         });
     }
 }

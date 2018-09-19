@@ -22,13 +22,13 @@ body{
     box-shadow: 0px 0 5px 0px #e1e1e1;
 }
 .app-nav-tab{
-    margin-top: 8px !important;
+    margin-top: 5px !important;
 }
 .app-nav-tab:hover{
     cursor: hand !important;
 }
 .app-nav-tab.active{
-    margin-top: 5px !important;
+    margin-top: 2px !important;
 }
 .app-nav-tab > a {  
     cursor: pointer !important;
@@ -270,11 +270,19 @@ a:hover{
 	margin-bottom: -1px;
 }
 
+.nav > li > a {
+    padding: 5px 15px;
+}
+
 .nav-tabs > li {
     outline: none;
 }
 /********************************************************************/
 /*** PANEL DEFAULT ***/
+.with-nav-tabs.panel-default .nav-tabs > li > a {
+    background-color: #eeeeee;
+}
+
 .with-nav-tabs.panel-default .nav-tabs > li > a,
 .with-nav-tabs.panel-default .nav-tabs > li > a:hover,
 .with-nav-tabs.panel-default .nav-tabs > li > a:focus {

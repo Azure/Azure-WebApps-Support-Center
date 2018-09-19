@@ -14,6 +14,7 @@ export class ButtonMessageComponent implements OnInit, AfterViewInit, IChatMessa
     buttonCssClasses = ['btn-info', 'btn-warning', 'btn-danger', 'btn-primary'];
     showComponent: boolean = true;
     context: string;
+    category: string;
 
     @Output() onViewUpdate = new EventEmitter();
     @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
@@ -24,6 +25,7 @@ export class ButtonMessageComponent implements OnInit, AfterViewInit, IChatMessa
     ngOnInit(): void {
         this.buttonList = this.injector.get('buttonList');
         this.context = this.injector.get('context');
+        this.category = this.injector.get('category');
     }
 
     ngAfterViewInit(): void {
@@ -32,7 +34,7 @@ export class ButtonMessageComponent implements OnInit, AfterViewInit, IChatMessa
 
     onClick(item: any) {
         this.showComponent = false;
-        this._logger.LogClickEvent(item.title, this.context, 'Support Home');
+        this._logger.LogClickEvent(item.title, this.context, this.category);
         this.onComplete.emit({ status: true, data: item });
     }
 }

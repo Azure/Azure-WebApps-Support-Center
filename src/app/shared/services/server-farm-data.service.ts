@@ -29,11 +29,9 @@ export class ServerFarmDataService {
 
     constructor(private _armService: ArmService, private _uriElementsService: UriElementsService, private _authService: AuthService,
         private _rbacService: RBACService) {
-            console.log('server farm service');
         this._authService.getStartupInfo()
             .subscribe((startUpInfo: StartupInfo) => {
                 if (!startUpInfo) return;
-                console.log(startUpInfo);
                 this.siteResourceId = startUpInfo.resourceId;
                 if (startUpInfo.resourceType === ResourceType.Site) {
                     return this._armService.getResource<Site>(this.siteResourceId)

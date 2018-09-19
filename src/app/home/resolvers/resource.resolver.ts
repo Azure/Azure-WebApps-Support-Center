@@ -10,7 +10,7 @@ export class ResourceResolver implements Resolve<Observable<{} | ArmResource>>{
     constructor(private _resourceService: ResourceService, private _detectorControlService: DetectorControlService) { }
 
     resolve(activatedRouteSnapshot: ActivatedRouteSnapshot): Observable<{} | ArmResource> {
-        if (!this._detectorControlService.duration) {
+        if (!this._detectorControlService.startTime) {
 
             this._detectorControlService.setDefault();
         }

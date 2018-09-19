@@ -1,5 +1,11 @@
 .detector-summary-container {
     margin: 10px 0px;
+    width: fit-content;
+}
+
+.with-full-report {
+    border: 1px solid rgb(0,0,0,.1);
+    padding: 10px;
 }
 
 .status-bar {
@@ -26,4 +32,12 @@
 
 .status-bar-title {
     width: inherit;
+}
+
+.full-report {
+    font-size: 16px;
+}
+
+.full-report-link {
+    float: right;
 }

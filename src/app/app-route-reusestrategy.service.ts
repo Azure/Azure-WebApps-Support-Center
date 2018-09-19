@@ -27,13 +27,10 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
         let url = this._getUrl(route);
 
         if(this.closedTab === url) {
-            console.log('do not store closed tab: ' + this.closedTab);
             this.closedTab = null;
             return;
         }
 
-        
-        console.log('storing: ' + url);
         this.handlers[url] = handle;
     }
 
@@ -68,23 +65,14 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
 
         // never reuse routes with incompatible configurations
         if (future.routeConfig !== curr.routeConfig) {
-            console.log('never reuse routes with incompatible configurations');
             return false;
         }
 
-        // console.log(this._getUrl(future));
-        // console.log(this._getUrl(curr));
-        if(this._getUrl(future) === this._getUrl(curr)){
-            console.log('should reuse route')
-        }
-        
         return this._getUrl(future) === this._getUrl(curr);
         
     }
 
     removeCachedRoute(url: string) {
-        //url = url.replace('/', '');
-        console.info('DELETING: ' + url);
         this.closedTab = url;
         this.handlers[url] = null;
     }
