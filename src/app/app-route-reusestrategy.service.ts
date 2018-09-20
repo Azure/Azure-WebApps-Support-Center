@@ -1,6 +1,6 @@
 import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from "@angular/router";
-import { getParentRenderElement } from "../../node_modules/@angular/core/src/view/util";
-import { Injectable } from "../../node_modules/@angular/core";
+import { getParentRenderElement } from "@angular/core/src/view/util";
+import { Injectable } from "@angular/core";
 
 @Injectable()
 export class CustomReuseStrategy implements RouteReuseStrategy {

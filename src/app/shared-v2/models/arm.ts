@@ -5,4 +5,5 @@ export interface ArmResource {
     kind: string;
     location: string;
     properties: any;
+    tags?: { [key: string]: string }
 }

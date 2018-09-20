@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, Output, EventEmitter, Injector } from '@angular/core';
-import { IChatMessageComponent } from '../../../supportbot/interfaces/ichatmessagecomponent';
+import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
 import { DetectorMetaData, DetectorControlService } from 'applens-diagnostics';
-import { Message, TextMessage } from '../../../supportbot/models/message';
+import { Message, TextMessage } from '../../models/message';
 import { DiagnosticService } from 'applens-diagnostics';
 import { MessageSender } from '../../models/message-enums';
 import { CategoryChatStateService } from '../../../shared-v2/services/category-chat-state.service';

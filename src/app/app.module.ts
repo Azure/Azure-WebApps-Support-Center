@@ -14,13 +14,15 @@ import { DiagnosticDataModule, PUBLIC_CONFIGURATION, DiagnosticService } from 'a
 import { GenericApiService } from './shared/services/generic-api.service';
 import { TestInputComponent } from './shared/components/test-input/test-input.component';
 import { ResourceRedirectComponent } from './shared/components/resource-redirect/resource-redirect.component';
+import { LegacyHomeModule } from './legacy-home/legacy-home.module';
 
 @NgModule({
   imports: [
     BrowserModule,
     StartupModule.forRoot(),
-    SharedV2Module.forRoot(),
-    SupportBotModule,
+    //SharedV2Module.forRoot(),
+    //SupportBotModule,
+    LegacyHomeModule,
     AvailabilityModule,
     SharedModule.forRoot(),
     DiagnosticDataModule.forRoot(PUBLIC_CONFIGURATION),
@@ -41,7 +43,7 @@ import { ResourceRedirectComponent } from './shared/components/resource-redirect
       },
       {
         //path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:resourcename',
-        path: 'legacy/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:siteName/slots/:slot',
+        path: 'legacy/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:sitename/slots/:slot',
         loadChildren: 'app/availability/availability.module#AvailabilityModule'
       },
       {

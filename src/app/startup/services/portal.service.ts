@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable, ReplaySubject} from 'rxjs/Rx';
+import {Observable, ReplaySubject} from 'rxjs';
 import {StartupInfo, Event, Data, Verbs, Action, LogEntryLevel, Message, OpenBladeInfo} from '../../shared/models/portal';
 import {ErrorEvent} from '../../shared/models/error-event';
 import {BroadcastService} from './broadcast.service';

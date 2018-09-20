@@ -1,7 +1,7 @@
 import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
 import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { Feature, FeatureTypes } from '../../../shared-v2/models/features';
-import { NavigationExtras, ActivatedRoute, Router } from '../../../../../node_modules/@angular/router';
+import { NavigationExtras, ActivatedRoute, Router } from '@angular/router';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
 
 @Component({

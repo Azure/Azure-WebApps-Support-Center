@@ -56,6 +56,6 @@ export enum V2EventType {
     DetectorSummaryChildDetectorSelected,
     DetectorSummaryInsightSelected,
     ChatSearch,
-    ChatSearchSelected
-    
+    ChatSearchSelected,
+    NotificationClicked
 }

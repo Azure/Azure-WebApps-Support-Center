@@ -8,13 +8,11 @@ import { CpuAnalysisChatFlow } from '../cpu-analysis-chat/cpu-analysis-chat-flow
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 import { BotLoggingService } from '../../../shared/services/logging/bot.logging.service';
 import { MessageSender, ButtonActionType } from '../../models/message-enums';
-import { TalkToAgentMessageFlow } from '../talk-to-agent/talktoagentmessageflow';
-
 @Injectable()
 @RegisterMessageFlowWithFactory()
 export class HealthCheckMessageFlow extends IMessageFlowProvider {
 
-    constructor(private _appAnalysisService: AppAnalysisService, private _cpuAnalysisChatFlow: CpuAnalysisChatFlow, private _logger: BotLoggingService, private talkToAgentMessageFlow: TalkToAgentMessageFlow) {
+    constructor(private _appAnalysisService: AppAnalysisService, private _cpuAnalysisChatFlow: CpuAnalysisChatFlow, private _logger: BotLoggingService) {
         super();
     }
 
@@ -44,14 +42,7 @@ export class HealthCheckMessageFlow extends IMessageFlowProvider {
 
         messageGroupList.push(healthCheckLaterGroup);
 
-        var noHealthCheckGroup: MessageGroup = new MessageGroup('no-health-check', [], () => {
-            if (this.talkToAgentMessageFlow.isApplicable) {
-                return 'talk-to-agent';
-            }
-            else {
-                return this._getHealthCheckNextGroupId();
-            }
-        });
+        var noHealthCheckGroup: MessageGroup = new MessageGroup('no-health-check', [], () => this._getHealthCheckNextGroupId())
         noHealthCheckGroup.messages.push(new TextMessage('No. Maybe another time.', MessageSender.User, 100));
         messageGroupList.push(noHealthCheckGroup);
 

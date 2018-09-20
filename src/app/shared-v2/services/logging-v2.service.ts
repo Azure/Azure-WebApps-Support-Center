@@ -88,4 +88,13 @@ export class LoggingV2Service extends LoggingService {
       selectionType: selectionType
     });
   }
+
+  LogNotificationClicked(searchValue: string, category: string, selectionName: string, url: string, selectionType: string) {
+    this._log(V2EventType[V2EventType.NotificationClicked], category, {
+      searchValue: searchValue,
+      url: url,
+      selectionName: selectionName,
+      selectionType: selectionType
+    });
+  }
 }

@@ -4,7 +4,7 @@ import { WindowService } from '../../../startup/services/window.service';
 import { ServerFarmDataService } from '../../services/server-farm-data.service';
 import { DaasService } from '../../services/daas.service';
 import { SiteDaasInfo } from '../../models/solution-metadata';
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'underscore';
 

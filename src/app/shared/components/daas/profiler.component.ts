@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { Observable } from 'rxjs/Observable';
 import { Diagnoser, Session, Report } from '../../models/daas';

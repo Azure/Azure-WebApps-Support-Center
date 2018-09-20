@@ -9,7 +9,7 @@ import { CategoryTileComponent } from './components/category-tile/category-tile.
 import { CategoryTabResolver, CategoryChatResolver } from './resolvers/category-tab.resolver';
 import { SupportBotModule } from '../supportbot/supportbot.module';
 import { SearchResultsComponent } from './components/search-results/search-results.component';
-import { FormsModule } from '../../../node_modules/@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { GenericDetectorComponent } from '../shared/components/generic-detector/generic-detector.component';
 import { TabTitleResolver } from '../shared/resolvers/tab-name.resolver';
 import { SupportTopicRedirectComponent } from './components/support-topic-redirect/support-topic-redirect.component';
@@ -57,7 +57,7 @@ export const HomeRoutes = RouterModule.forChild([
   imports: [
     CommonModule,
     SharedModule,
-    SharedV2Module,
+    //SharedV2Module,
     HomeRoutes,
     SupportBotModule,
     FormsModule

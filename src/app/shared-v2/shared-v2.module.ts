@@ -6,6 +6,9 @@ import { SupportTopicService } from './services/support-topic.service';
   imports: [
     CommonModule
   ],
+  providers: [
+    SupportTopicService
+  ],
   declarations: []
 })
 export class SharedV2Module {

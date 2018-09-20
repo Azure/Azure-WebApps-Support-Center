@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Category } from '../../../shared-v2/models/category';
-import { ActivatedRoute, NavigationExtras, Router } from '../../../../../node_modules/@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
 

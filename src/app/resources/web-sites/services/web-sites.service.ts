@@ -10,10 +10,9 @@ import { IDiagnosticProperties } from '../../../shared/models/diagnosticproperti
 @Injectable()
 export class WebSitesService extends ResourceService {
 
-    private _subscription;
-    private _resourceGroup;
-    private _siteName;
-    private _slotName;
+    private _resourceGroup: string;
+    private _siteName: string;
+    private _slotName: string;
 
     public appStack: string = "";
     public platform: OperatingSystem = OperatingSystem.any;
@@ -24,8 +23,15 @@ export class WebSitesService extends ResourceService {
         super(_armService);
     }
 
-    public get searchSuffix(): string  {
+    public get searchSuffix(): string {
         return this.appType === AppType.WebApp ? this.platform === OperatingSystem.windows ? 'Azure Web App' : 'Azure Web App(Linux)' : 'Azure Function';
+    }
+
+    public get isApplicableForLiveChat(): boolean {
+        return this.resource
+        && (this.sku & Sku.Paid) > 0
+        && (this.appType == AppType.WebApp)
+        && (this.platform == OperatingSystem.windows)
     }
 
     protected makeWarmUpCalls() {

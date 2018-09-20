@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { LiveChatService } from '../../services/livechat.service';
+import { LiveChatService } from '../../../shared-v2/services/livechat.service';
 
 @Component({
     selector: 'liveagent-chat',

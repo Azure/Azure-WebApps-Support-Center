@@ -1,29 +1,25 @@
 import { Injectable } from '@angular/core';
-import { OperatingSystem, Site, SiteExtensions, SiteInfoMetaData } from '../models/site';
-import { operators, BehaviorSubject } from 'rxjs';
-import { ToolNames } from '../models/tools-constants';
-import { ResourceType, AppType, StartupInfo } from '../models/portal';
-import { Observable } from 'rxjs/Observable';
 import { DemoSubscriptions } from '../../betaSubscriptions';
 import { LiveChatSettings } from '../../liveChatSettings';
 import { AuthService } from '../../startup/services/auth.service';
-import { SiteService } from './site.service';
 import { WindowService } from '../../startup/services/window.service';
-import { BotLoggingService } from './logging/bot.logging.service';
-import { ArmService } from './arm.service';
+import { BotLoggingService } from '../../shared/services/logging/bot.logging.service';
+import { ArmService } from '../../shared/services/arm.service';
 import * as moment from 'moment-timezone';
-import { Sku } from '../models/server-farm';
+import { ResourceService } from './resource.service';
+import { ArmResource } from '../models/arm';
+import { StartupInfo } from '../../shared/models/portal';
 
 @Injectable()
 export class LiveChatService {
 
     // As we dont have any Resource Service yet, Right now using Site as resource.
     // After refactoring, this has to come from a generic Resource service.
-    private currentResource: Site;
+    private currentResource: ArmResource;
 
     private restoreIdTagName: string;
 
-    constructor(private windowService: WindowService, private authService: AuthService, private siteService: SiteService, private armService: ArmService, private logger: BotLoggingService) {
+    constructor(private windowService: WindowService, private authService: AuthService, private _resourceService: ResourceService, private armService: ArmService, private logger: BotLoggingService) {
 
         let window = this.windowService.window;
 
@@ -61,78 +57,69 @@ export class LiveChatService {
         let externalId: string = '';
         let window = this.windowService.window;
 
-        this.siteService.currentSite.subscribe((site: Site) => {
 
-            if (site) {
-                this.siteService.currentSiteMetaData.subscribe((siteMetaData: SiteInfoMetaData) => {
+        if (this.isChatApplicableForResource(demoMode)) {
 
-                    if (siteMetaData) {
+            this.currentResource = this._resourceService.resource;
+            this.restoreIdTagName = `hidden-related:${this.currentResource.id}/diagnostics/chatRestorationId`;
+            externalId = this.currentResource.id;
 
-                        if (this.isChatApplicableForSite(site, siteMetaData, demoMode)) {
+            restoreId = this.getChatRestoreId();
 
-                            this.currentResource = site;
-                            this.restoreIdTagName = `hidden-related:${this.currentResource.id}/diagnostics/chatRestorationId`;
-                            externalId = site.id;
+            if (window && window.fcWidget) {
 
-                            restoreId = this.getChatRestoreId();
+                this.logger.LogLiveChatWidgetBeginInit(source);
 
-                            if (window && window.fcWidget) {
-
-                                this.logger.LogLiveChatWidgetBeginInit(source);
-
-                                window.fcWidget.init({
-                                    token: "ac017aa7-7c07-42bc-8fdc-1114fc962803",
-                                    host: "https://wchat.freshchat.com",
-                                    open: autoOpen,
-                                    externalId: externalId,
-                                    restoreId: restoreId,
-                                    firstName: this.currentResource.name,
-                                    config: {
-                                        headerProperty: {
-                                            direction: chatPosition
+                window.fcWidget.init({
+                    token: "ac017aa7-7c07-42bc-8fdc-1114fc962803",
+                    host: "https://wchat.freshchat.com",
+                    open: autoOpen,
+                    externalId: externalId,
+                    restoreId: restoreId,
+                    firstName: this.currentResource.name,
+                    config: {
+                        headerProperty: {
+                            direction: chatPosition
+                        },
+                        content: {
+                            placeholders: {
+                                reply_field: 'Describe your problem or reply here',
+                            },
+                            headers: {
+                                channel_response: {
+                                    offline: 'We are currently away. Please leave us a message',
+                                    online:
+                                    {
+                                        minutes: {
+                                            one: "Online",
+                                            more: "Online"
                                         },
-                                        content: {
-                                            placeholders: {
-                                                reply_field: 'Describe your problem or reply here',
-                                            },
-                                            headers: {
-                                                channel_response: {
-                                                    offline: 'We are currently away. Please leave us a message',
-                                                    online:
-                                                    {
-                                                        minutes: {
-                                                            one: "Online",
-                                                            more: "Online"
-                                                        },
-                                                        hours: {
-                                                            one: "Online",
-                                                            more: "Online",
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                        hours: {
+                                            one: "Online",
+                                            more: "Online",
                                         }
                                     }
-                                });
-
-                                window.fcWidget.on("widget:loaded", ((resp) => {
-                                    this.logger.LogLiveChatWidgetLoaded(source);
-                                    this.getOrCreateUser();
-                                }));
-
-                                window.fcWidget.on("widget:opened", (() => {
-                                    this.logger.LogLiveChatWidgetOpened(source);
-                                }));
-
-                                window.fcWidget.on("widget:closed", (() => {
-                                    this.logger.LogLiveChatWidgetClosed(source);
-                                }));
+                                }
                             }
                         }
                     }
                 });
+
+                window.fcWidget.on("widget:loaded", ((resp) => {
+                    this.logger.LogLiveChatWidgetLoaded(source);
+                    this.getOrCreateUser();
+                }));
+
+                window.fcWidget.on("widget:opened", (() => {
+                    this.logger.LogLiveChatWidgetOpened(source);
+                }));
+
+                window.fcWidget.on("widget:closed", (() => {
+                    this.logger.LogLiveChatWidgetClosed(source);
+                }));
             }
-        });
+
+        }
     }
 
     private getOrCreateUser() {
@@ -182,18 +169,15 @@ export class LiveChatService {
     }
 
     // This method indicate whether chat is applicable for current site
-    public isChatApplicableForSite(site: Site, siteMetaData: SiteInfoMetaData, demoMode: boolean): boolean {
+    public isChatApplicableForResource(demoMode: boolean): boolean {
 
-        if (LiveChatSettings.HideForInternalSubscriptions == true && (DemoSubscriptions.betaSubscriptions.indexOf(siteMetaData.subscriptionId) >= 0)) {
+        if (LiveChatSettings.HideForInternalSubscriptions == true && (DemoSubscriptions.betaSubscriptions.indexOf(this._resourceService.subscriptionId) >= 0)) {
             return false;
         }
 
         return LiveChatSettings.GLOBAL_ON_SWITCH
-            && site && siteMetaData
-            && !(site.sku.toLowerCase() === 'free' || site.sku.toLowerCase() === 'shared')
-            && (site.appType == AppType.WebApp)
-            && (SiteExtensions.operatingSystem(site) == OperatingSystem.windows)
-            && (!demoMode || (DemoSubscriptions.betaSubscriptions.indexOf(siteMetaData.subscriptionId) >= 0));
+            && this._resourceService.isApplicableForLiveChat
+            && (!demoMode || (DemoSubscriptions.betaSubscriptions.indexOf(this._resourceService.subscriptionId) >= 0));
     }
 
     // This method indicate whether chat is applicable for support toic or not

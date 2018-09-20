@@ -10,8 +10,10 @@ import { AuthService } from '../../../startup/services/auth.service';
 import { ResourceType } from '../../../shared/models/portal';
 import { Site, SiteInfoMetaData } from '../../../shared/models/site';
 import { LiveChatSettings } from '../../../liveChatSettings';
-import { LiveChatService } from '../../../shared/services/livechat.service';
+import { LiveChatService } from '../../../shared-v2/services/livechat.service';
 
+//TODO: THIS IS NO LONGER REGISTERED ANYWHERE
+// Need to migrate this
 @Injectable()
 @RegisterMessageFlowWithFactory()
 export class TalkToAgentMessageFlow extends IMessageFlowProvider {
@@ -30,7 +32,7 @@ export class TalkToAgentMessageFlow extends IMessageFlowProvider {
 
                     this.siteService.currentSiteMetaData.subscribe((siteMetaData: SiteInfoMetaData) => {
                         if (siteMetaData) {
-                            this.isApplicable = this.liveChatService.isChatApplicableForSite(site, siteMetaData, this.isDemoMode);
+                            this.isApplicable = false//this.liveChatService.isChatApplicableForSite(site, siteMetaData, this.isDemoMode);
                         }
                     });
                 }

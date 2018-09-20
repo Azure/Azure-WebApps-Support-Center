@@ -1,5 +1,5 @@
 import {Injectable, EventEmitter} from '@angular/core';
-import {Observable, Subscription} from 'rxjs/Rx';
+import {Observable, Subscription} from 'rxjs';
 import {ErrorEvent} from '../../shared/models/error-event';
 import {BroadcastEvent} from '../models/broadcast-event';
 

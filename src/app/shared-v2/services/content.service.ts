@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from '../../../../node_modules/rxjs';
+import { Observable } from 'rxjs';
 import { Http, Headers } from '@angular/http';
 import { ResourceService } from './resource.service';
 

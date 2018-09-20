@@ -3,7 +3,7 @@ import { SolutionBaseComponent } from '../../common/solution-base/solution-base.
 import { SolutionData } from '../../../../shared/models/solution';
 import { MetaDataHelper } from '../../../../shared/utilities/metaDataHelper';
 import { SiteDaasInfo } from '../../../../shared/models/solution-metadata';
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { Observable } from 'rxjs/Observable';
 import { Diagnoser, DiagnoserStatusMessage, Session, Report } from '../../../../shared/models/daas';

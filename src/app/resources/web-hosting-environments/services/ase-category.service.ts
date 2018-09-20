@@ -9,10 +9,11 @@ export class AseCategoryService extends CategoryService {
     {
         id: 'Networking',
         name: 'Networking',
-        description: 'Check the network health of your App Service Environment. Run an NSG check to make sure your ASE can operate properly.',
+        description: 'Sometimes an ASE can be unhealthy and scaling operations can take a long time due to changes in NSG, UDRs, Express Route that may inadvertently harm the ASE. Find out if your network setup is configured correctly for your ASE.',
         keywords: ['NSG', 'Connectivity', 'Outbound Connections', 'Subnet'],
         color: 'rgb(208, 175, 239)',
-        createFlowForCategory: true
+        createFlowForCategory: true,
+        chatEnabled: false
     },
     {
       id: 'Scaling',
@@ -20,8 +21,9 @@ export class AseCategoryService extends CategoryService {
       description: 'Find out the current status of your scale operations, why your scale operations may be taking a long time, or why they are failing',
       keywords: ['Scale Up', 'Scale Out', 'Deployent', 'Stuck'],
       color: 'rgb(208, 175, 239)',
-      createFlowForCategory: true
-  }
+      createFlowForCategory: true,
+      chatEnabled: false
+    }
   ]
 
   constructor() { 

@@ -10,6 +10,7 @@ import { ContentService } from '../../shared-v2/services/content.service';
 import { FeatureService } from '../../shared-v2/services/feature.service';
 import { WebHostingEnvironmentsService } from './services/web-hosting-environments.service';
 import { LoggingV2Service } from '../../shared-v2/services/logging-v2.service';
+import { LiveChatService } from '../../shared-v2/services/livechat.service';
 
 const ResourceRoutes = RouterModule.forChild([
   {
@@ -31,6 +32,7 @@ const ResourceRoutes = RouterModule.forChild([
     FeatureService,
     WebHostingEnvironmentsService,
     LoggingV2Service,
+    LiveChatService,
     { provide: ResourceService, useExisting: WebHostingEnvironmentsService },
     { provide: CategoryService, useClass: AseCategoryService },
     ResourceResolver

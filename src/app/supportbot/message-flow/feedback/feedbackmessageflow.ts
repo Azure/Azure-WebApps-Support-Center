@@ -5,15 +5,10 @@ import { MessageGroup } from '../../models/message-group';
 import { RegisterMessageFlowWithFactory } from '../message-flow.factory';
 import { FeedbackComponent } from './feedback.component';
 import { MessageSender, ButtonActionType } from '../../models/message-enums';
-import { TalkToAgentMessageFlow } from '../talk-to-agent/talktoagentmessageflow';
 
 @Injectable()
 @RegisterMessageFlowWithFactory()
 export class FeedbackMessageFlow extends IMessageFlowProvider {
-
-    constructor(private talkToAgentMessageFlow: TalkToAgentMessageFlow) {
-        super();
-    }
 
     GetMessageFlowList(): MessageGroup[] {
         var messageGroupList: MessageGroup[] = [];
@@ -34,14 +29,7 @@ export class FeedbackMessageFlow extends IMessageFlowProvider {
         // TODO : Add Button Message - 1) To Refresh, 2) Return to top
         messageGroupList.push(feedbackGroup);
 
-        var furtherAssistanceGroup: MessageGroup = new MessageGroup('further-assistance', [], () => {
-            if (this.talkToAgentMessageFlow.isApplicable) {
-                return 'talk-to-agent';
-            }
-            else {
-                return 'no-help';
-            }
-        });
+        var furtherAssistanceGroup: MessageGroup = new MessageGroup('further-assistance', [], () => 'no-help')
 
         furtherAssistanceGroup.messages.push(new TextMessage('I need further assistance.', MessageSender.User, 100));
         messageGroupList.push(furtherAssistanceGroup);

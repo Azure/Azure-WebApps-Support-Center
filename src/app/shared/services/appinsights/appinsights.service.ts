@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, Request } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { StartupInfo, ResourceType } from '../../models/portal';
 import { ArmObj } from '../../models/armObj';
 import { Verbs } from '../../models/portal';

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DiagnosticService, DetectorMetaData } from 'applens-diagnostics';
-import { Observable } from '../../../../node_modules/rxjs';
+import { Observable } from 'rxjs';
 import { ResourceService } from './resource.service';
 
 @Injectable()
@@ -29,24 +29,4 @@ export class SupportTopicService {
       return `${this._resourceService.resourceIdForRouting}${detectorPath}`;
     });
   }
-
-  // return this._genericApi.getDetectors().map(detectors => {
-  //     if (detectors) {
-  //         let matchingDetector = detectors.find(detector =>
-  //             detector.supportTopicList &&
-  //             detector.supportTopicList.findIndex(supportTopic => supportTopic.id === info.supportTopicId) >= 0);
-
-  //         if (matchingDetector) {
-  //             return `/detectors/${matchingDetector.id}`;
-  //         }
-  //     }
-
-  //     let matchingMapping = this._hardCodedSupportTopicIdMapping
-  //         .find(supportTopic => supportTopic.supportTopicId === info.supportTopicId && (!info.pesId || info.pesId === '' || supportTopic.pesId === info.pesId))
-
-  //     return matchingMapping ? matchingMapping.path : '/diagnostics';
-  // })
-  //     .catch((error, caught) => {
-  //         return '/diagnostics';
-  //     });
 }

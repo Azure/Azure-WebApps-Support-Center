@@ -6,7 +6,7 @@ import { Message } from '../../models/message';
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
 import { IDetectorResponse } from '../../../shared/models/detectorresponse';
 import { ISolution } from '../../../shared/models/solution';
-import { BehaviorSubject } from 'rxjs/Rx';
+import { BehaviorSubject } from 'rxjs';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 
 @Component({

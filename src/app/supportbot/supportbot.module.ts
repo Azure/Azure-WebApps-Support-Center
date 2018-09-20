@@ -8,7 +8,7 @@ import { StartupMessages } from './message-flow/startup/startupmessages';
 import { MainMenuMessageFlow } from './message-flow/main-menu/mainmenumessageflow';
 import { HealthCheckMessageFlow } from './message-flow/health-check/healthcheckmessageflow';
 import { FeedbackMessageFlow } from './message-flow/feedback/feedbackmessageflow';
-import { TalkToAgentMessageFlow } from './message-flow/talk-to-agent/talktoagentmessageflow';
+//import { TalkToAgentMessageFlow } from './message-flow/talk-to-agent/talktoagentmessageflow';
 import { MessageProcessor } from './message-processor.service';
 
 import { HomepageComponent } from './homepage/homepage.component';
@@ -36,11 +36,6 @@ import { DiagnosticDataModule } from 'applens-diagnostics';
 import { GenericCategoryFlow } from './message-flow/v2-flows/generic-category.flow';
 import { AvailabilityPerformanceFlow } from './message-flow/v2-flows/availability-performance.flow';
 
-const _siteResourceUrl: string = 'legacy/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:sitename';
-const _slotResourceUrl: string = 'legacy/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:sitename/slots/:slot';
-const _hostingEnvironmentResourceUrl: string = 'legacy/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/hostingenvironments/:name';
-
-
 @NgModule({
     declarations: [
         HomepageComponent,
@@ -62,47 +57,6 @@ const _hostingEnvironmentResourceUrl: string = 'legacy/subscriptions/:subscripti
         DocumentSearchResultsComponent
     ],
     imports: [
-        RouterModule.forChild(
-            [
-                {
-                path: _siteResourceUrl + '/diagnostics',
-                component: HomepageComponent,
-                data: {
-                    navigationTitle: 'Legacy Home',
-                    cacheComponent: true
-                }
-            },
-            {
-                path: _slotResourceUrl + '/diagnostics',
-                component: HomepageComponent,
-                data: {
-                    navigationTitle: 'Legacy Home',
-                    cacheComponent: true
-                }
-            },
-            {
-                path: _hostingEnvironmentResourceUrl + '/diagnostics',
-                component: HomepageComponent,
-                data: {
-                    navigationTitle: 'Legacy Home',
-                    cacheComponent: true
-                }
-            },
-            {
-                path: _siteResourceUrl + '/diagnostics/settings/appinsights',
-                component: AppInsightsSettingsComponent,
-                data: {
-                    navigationTitle: 'Application Insights Settings'
-                }
-            },
-            {
-                path: _slotResourceUrl + '/diagnostics/settings/appinsights Settings',
-                component: AppInsightsSettingsComponent,
-                data: {
-                    navigationTitle: 'Application Insights'
-                }
-            }]
-        ),
         SharedModule,
         AvailabilityModule,
         SolutionsModule,
@@ -121,7 +75,7 @@ const _hostingEnvironmentResourceUrl: string = 'legacy/subscriptions/:subscripti
         HealthCheckMessageFlow,
         FeedbackMessageFlow,
         CpuAnalysisChatFlow,
-        TalkToAgentMessageFlow,
+        //TalkToAgentMessageFlow,
         MessageProcessor,
         AvailabilityPerformanceFlow,
         GenericCategoryFlow

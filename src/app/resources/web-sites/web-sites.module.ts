@@ -16,6 +16,7 @@ import { DiagnosticToolsComponent } from './components/diagnostic-tools/diagnost
 import { ContentService } from '../../shared-v2/services/content.service';
 import { WebSitesService } from './services/web-sites.service';
 import { LoggingV2Service } from '../../shared-v2/services/logging-v2.service';
+import { LiveChatService } from '../../shared-v2/services/livechat.service';
 
 const ResourceRoutes = RouterModule.forChild([
   {
@@ -53,6 +54,7 @@ const ResourceRoutes = RouterModule.forChild([
     WebSitesService,
     SiteFeatureService,
     LoggingV2Service,
+    LiveChatService,
     { provide: ResourceService, useExisting: WebSitesService },
     { provide: CategoryService, useClass: SitesCategoryService },
     { provide: FeatureService, useExisting: SiteFeatureService },

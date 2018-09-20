@@ -22,7 +22,8 @@ export class SitesCategoryService extends CategoryService {
         description: 'Is your app experiencing downtime or slowness? Click here to run a health checkup to discover issues that may be affect your app’s high availability, by either platform or app issues. ',
         keywords: ['Health Check', 'Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory'],
         color: 'rgb(208, 175, 239)',
-        createFlowForCategory: false
+        createFlowForCategory: false,
+        chatEnabled: false
       }
     },
     {
@@ -36,7 +37,8 @@ export class SitesCategoryService extends CategoryService {
         description: 'Are you having issues with something that you configured specifically for your app? Find out if you misconfigured App Service features, such as backups, deployment slots, and scaling.',
         keywords: ['Scaling', 'Swaps', 'Failed Backups', 'IPs', 'Migration'],
         color: 'rgb(249, 213, 180)',
-        createFlowForCategory: true
+        createFlowForCategory: true,
+        chatEnabled: false
       }
     },
     {
@@ -50,7 +52,24 @@ export class SitesCategoryService extends CategoryService {
         description: 'Having trouble with certificates and custom domains? Discover any issues related to SSL certificates, authentication, and domain management.',
         keywords: ['4xx Errors', 'SSL', 'Domains', 'Permissions', 'Auth', 'Cert'],
         color: 'rgb(186, 211, 245)',
-        createFlowForCategory: true
+        createFlowForCategory: true,
+        chatEnabled: true
+      }
+    },
+    //Windows and Linux
+    {
+      appType: AppType.WebApp,
+      platform: OperatingSystem.windows | OperatingSystem.linux,
+      stack: '',
+      sku: Sku.All,
+      item: {
+        id: 'BestPractices',
+        name: 'Best Practices',
+        description: 'Review suggestions for the optimal way to configure your application so that it is highly available and ready for production.',
+        keywords: ['AutoScale', 'Traffic Manager', 'AlwaysOn', 'ARR Affinity'],
+        color: 'rgb(208, 228, 176)',
+        createFlowForCategory: true,
+        chatEnabled: false
       }
     },
     // Linux
@@ -65,7 +84,8 @@ export class SitesCategoryService extends CategoryService {
         description: 'Is your app experiencing downtime or slowness? Discover issues that may impact SLA, caused by your app itself or Azure.',
         keywords: ['Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory'],
         color: 'rgb(208, 175, 239)',
-        createFlowForCategory: true
+        createFlowForCategory: true,
+        chatEnabled: false
       }
     },
     // Function App
@@ -80,24 +100,10 @@ export class SitesCategoryService extends CategoryService {
         description: 'Is your Function App performing slower than normal? Investigate performance issues or just check the health of your Function App.',
         keywords: ['Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory', 'Slowness'],
         color: 'rgb(208, 175, 239)',
-        createFlowForCategory: true
-      }
-    },
-    {
-      appType: AppType.FunctionApp,
-      platform: OperatingSystem.windows | OperatingSystem.linux,
-      stack: '',
-      sku: Sku.All,
-      item: {
-        id: 'FunctionsPerformance',
-        name: 'Functions Performance',
-        description: 'Is your Function App performing slower than normal? Investigate performance issues or just check the health of your Function App.',
-        keywords: ['Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory', 'Slowness'],
-        color: 'rgb(208, 175, 239)',
-        createFlowForCategory: true
+        createFlowForCategory: true,
+        chatEnabled: false
       }
     }
-    
   ]
 
   constructor(private _resourceService: WebSitesService) {
@@ -122,7 +128,7 @@ export class SitesCategoryService extends CategoryService {
         name: 'Diagnostic Tools',
         description: 'Having trouble with certificates and custom domains? Discover any issues related to SSL certificates, authentication, and domain management.',
         keywords: ['Profiler', 'Memory Dump', 'DaaS', 'AutoHeal', 'Metrics'],
-        color: 'rgb(186, 211, 245)',
+        color: 'rgb(170, 192, 208)',
         createFlowForCategory: false,
         overridePath: `${siteId}/diagnosticTools`
       }

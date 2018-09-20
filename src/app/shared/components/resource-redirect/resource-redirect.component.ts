@@ -4,6 +4,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import { WindowService } from '../../../startup/services/window.service';
 import { environment } from '../../../../environments/environment';
 import { StartupInfo } from '../../models/portal';
+import { DemoSubscriptions } from '../../../betaSubscriptions';
 
 @Component({
   selector: 'resource-redirect',
@@ -20,20 +21,16 @@ export class ResourceRedirectComponent implements OnInit {
     this.navigateToExperience();
   }
 
-  public get newVersionEnabled() { return this._newVersionEnabled; }
-
-  public set newVersionEnabled(value: boolean) {
-    this._newVersionEnabled = value;
-    this.navigateToExperience();
-  }
-
   navigateToExperience() {
     this._authService.getStartupInfo()
       .subscribe(info => {
         if (info && info.resourceId && info.token) {
+          let split = info.resourceId.split('/');
+          let subscriptionId = split[split.indexOf('subscriptions') + 1];
 
+          this._newVersionEnabled = DemoSubscriptions.betaSubscriptions.indexOf(subscriptionId) >= 0;
 
-          if (this.newVersionEnabled) {
+          if (this._newVersionEnabled || (info.supportTopicId && info.pesId)) {
             let navigationExtras: NavigationExtras = {
               queryParamsHandling: 'merge',
             };

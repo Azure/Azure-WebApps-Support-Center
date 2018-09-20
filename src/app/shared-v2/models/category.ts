@@ -6,4 +6,5 @@ export interface Category {
     color: string;
     createFlowForCategory: boolean;
     overridePath?: string;
+    chatEnabled: boolean;
 }
