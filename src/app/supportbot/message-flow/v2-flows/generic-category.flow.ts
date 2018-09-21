@@ -89,11 +89,7 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
 
       var feedbackGroup: MessageGroup = new MessageGroup(feedback, [], () => mainMenuId);
       feedbackGroup.messages.push(new TextMessage('Please help me improve by providing some feedback. What was my most/least helpful feature? What features would you like to see?', MessageSender.System, 500));
-      feedbackGroup.messages.push(new FeedbackMessage([{
-        title: 'Show Tile Menu',
-        type: ButtonActionType.SwitchToOtherMessageGroup,
-        next_key: showTiles
-      }], 'Feedback', category.name));
+      feedbackGroup.messages.push(new FeedbackMessage([], 'Submit and Show Tile Menu', 'Feedback', category.name));
       feedbackGroup.messages.push(new TextMessage('Thank you!'));
       feedbackGroup.messages.push(new TextMessage(`Feel free to continue to explore the tools within ${category.name}`));
 

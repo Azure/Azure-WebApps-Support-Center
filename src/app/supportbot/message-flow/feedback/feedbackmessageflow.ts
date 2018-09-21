@@ -24,7 +24,7 @@ export class FeedbackMessageFlow extends IMessageFlowProvider {
 
         var feedbackGroup: MessageGroup = new MessageGroup('feedback', [], () => '');
         feedbackGroup.messages.push(new TextMessage('Please help me improve by providing some feedback. What was my most/least helpful feature? What features would you like to see?'));
-        feedbackGroup.messages.push(new FeedbackMessage([], 'Feedback', 'Support Home'));
+        feedbackGroup.messages.push(new FeedbackMessage([], 'Submit', 'Feedback', 'Support Home'));
         feedbackGroup.messages.push(new TextMessage('Thank you!'));
         // TODO : Add Button Message - 1) To Refresh, 2) Return to top
         messageGroupList.push(feedbackGroup);
@@ -55,12 +55,13 @@ export class FeedbackMessageFlow extends IMessageFlowProvider {
 }
 
 export class FeedbackMessage extends Message {
-    constructor(buttonList: { title: string, type: ButtonActionType, next_key: string }[], context: string, category: string = 'Support Home', messageDelayInMs: number = 1000) {
+    constructor(buttonList: { title: string, type: ButtonActionType, next_key: string }[], submitButtonName: string, context: string, category: string = 'Support Home', messageDelayInMs: number = 1000) {
 
         super(FeedbackComponent, {
             buttonList: buttonList,
             context: context,
-            category: category
+            category: category,
+            submitButtonName: submitButtonName
         }, messageDelayInMs);
     }
 }

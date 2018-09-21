@@ -26,8 +26,9 @@ export class FeedbackComponent extends ButtonMessageComponent {
 
     ngOnInit(): void {
         super.ngOnInit();
+        let submit = this._injector.get('submitButtonName', 'Submit');
         this.buttonList.push({
-            title: 'Submit',
+            title: submit,
             next_key: '',
             type: ButtonActionType.Continue
         });
