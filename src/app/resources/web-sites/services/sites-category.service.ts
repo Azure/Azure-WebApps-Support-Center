@@ -17,7 +17,7 @@ export class SitesCategoryService extends CategoryService {
       stack: '',
       sku: Sku.All,
       item: {
-        id: 'AvailabilityAndPerformance',
+        id: 'WindowsAvailabilityAndPerformance',
         name: 'Availability and Performance',
         description: 'Is your app experiencing downtime or slowness? Click here to run a health checkup to discover issues that may be affect your app’s high availability, by either platform or app issues. ',
         keywords: ['Health Check', 'Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory'],
@@ -33,7 +33,7 @@ export class SitesCategoryService extends CategoryService {
       stack: '',
       sku: Sku.All,
       item: {
-        id: 'AvailabilityAndPerformance',
+        id: 'LinuxAvailabilityAndPerformance',
         name: 'Availability and Performance',
         description: 'Is your app experiencing downtime or slowness? Discover issues that may impact SLA, caused by your app itself or Azure.',
         keywords: ['Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory'],
@@ -75,7 +75,7 @@ export class SitesCategoryService extends CategoryService {
     //Windows and Linux
     {
       appType: AppType.WebApp,
-      platform: OperatingSystem.windows | OperatingSystem.linux,
+      platform: OperatingSystem.windows,
       stack: '',
       sku: Sku.All,
       item: {
@@ -96,7 +96,7 @@ export class SitesCategoryService extends CategoryService {
       stack: '',
       sku: Sku.All,
       item: {
-        id: 'AvailabilityAndPerformance',
+        id: 'FunctionsAvailabilityAndPerformance',
         name: 'Availability and Performance',
         description: 'Is your Function App performing slower than normal? Investigate performance issues or just check the health of your Function App.',
         keywords: ['Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory', 'Slowness'],
