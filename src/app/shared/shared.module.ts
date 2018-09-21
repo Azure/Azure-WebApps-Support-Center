@@ -54,8 +54,6 @@ import { IncidentNotificationComponent } from './components/incident-notificatio
 import { HttpLogAnalysisToolComponent } from './components/tools/http-loganalysis-tool/http-loganalysis-tool.component';
 import { PhpProcessAnalyzerToolComponent } from './components/tools/php-processanalyzer-tool/php-processanalyzer-tool.component';
 import { PhpLogsAnalyzerToolComponent } from './components/tools/php-logsanalyzer-tool/php-logsanalyzer-tool.component';
-import { ScrollingTileComponent } from './components/scrolling-tile/scrolling-tile.component';
-import { NguCarouselModule } from '@ngu/carousel';
 import { ConnectionDiagnoserToolComponent } from './components/tools/connection-diagnoser-tool/connection-diagnoser-tool.component';
 import { NetworkTraceToolComponent } from './components/tools/network-trace-tool/network-trace-tool.component';
 import { ServiceIncidentService } from './services/service-incident.service';
@@ -124,7 +122,6 @@ import { TileListComponent } from './components/tile-list/tile-list.component';
         HttpLogAnalysisToolComponent,
         PhpProcessAnalyzerToolComponent,
         PhpLogsAnalyzerToolComponent,
-        ScrollingTileComponent,
         ConnectionDiagnoserToolComponent,
         NetworkTraceToolComponent,
         IncidentSummaryComponent,
@@ -147,7 +144,6 @@ import { TileListComponent } from './components/tile-list/tile-list.component';
         StartupModule,
         FormsModule,
         RouterModule,
-        NguCarouselModule,
         DiagnosticDataModule
     ],
     exports: [
@@ -195,7 +191,6 @@ import { TileListComponent } from './components/tile-list/tile-list.component';
         HttpLogAnalysisToolComponent,
         PhpProcessAnalyzerToolComponent,
         PhpLogsAnalyzerToolComponent,
-        ScrollingTileComponent,
         ConnectionDiagnoserToolComponent,
         NetworkTraceToolComponent,
         IncidentSummaryComponent,

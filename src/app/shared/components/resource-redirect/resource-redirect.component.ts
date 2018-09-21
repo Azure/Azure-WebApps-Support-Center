@@ -30,13 +30,13 @@ export class ResourceRedirectComponent implements OnInit {
 
           this._newVersionEnabled = DemoSubscriptions.betaSubscriptions.indexOf(subscriptionId) >= 0;
 
-          if (this._newVersionEnabled || (info.supportTopicId && info.pesId)) {
+          if (this._newVersionEnabled || (info.supportTopicId)) {
             let navigationExtras: NavigationExtras = {
               queryParamsHandling: 'merge',
             };
 
             let path = info.resourceId.toLowerCase();
-            if (info.supportTopicId && info.pesId) {
+            if (info.supportTopicId) {
               path += `/supportTopicId`;
               navigationExtras.queryParams = {
                 supportTopicId: info.supportTopicId,

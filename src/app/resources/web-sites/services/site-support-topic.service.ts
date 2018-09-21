@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SupportTopicService } from '../../../shared-v2/services/support-topic.service';
 import { DiagnosticService } from 'applens-diagnostics';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class SiteSupportTopicService extends SupportTopicService {

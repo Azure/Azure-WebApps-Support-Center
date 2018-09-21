@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { ArmResource } from '../models/arm';
 import { ArmService } from '../../shared/services/arm.service';
 

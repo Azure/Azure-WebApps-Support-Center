@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Response, Request } from '@angular/http';
-import { Observable } from 'rxjs';
+import { Http } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
 import { StartupInfo, ResourceType } from '../../models/portal';
-import { ArmObj } from '../../models/armObj';
 import { Verbs } from '../../models/portal';
-import { Site } from '../../models/site';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AuthService } from '../../../startup/services/auth.service';
 import { ArmService } from '../arm.service';

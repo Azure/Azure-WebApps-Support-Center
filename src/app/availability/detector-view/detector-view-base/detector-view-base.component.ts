@@ -42,12 +42,14 @@ export class DetectorViewBaseComponent implements OnInit {
             this.subscriptionId = this._route.parent.snapshot.params['subscriptionid'];
             this.resourceGroup = this._route.parent.snapshot.params['resourcegroup'];
             this.siteName = this._route.parent.snapshot.params['sitename'];
+            this.siteName = this.siteName ? this.siteName : this._route.parent.snapshot.params['resourcename'];
             this.slotName = this._route.snapshot.params['slot'] ? this._route.snapshot.params['slot'] : '';    
         }
         else if (this._route.snapshot.params['subscriptionid'] != null){
             this.subscriptionId = this._route.snapshot.params['subscriptionid'];
             this.resourceGroup = this._route.snapshot.params['resourcegroup'];
             this.siteName = this._route.snapshot.params['sitename'];
+            this.siteName = this.siteName ? this.siteName : this._route.snapshot.params['resourcename'];
             this.slotName = this._route.snapshot.params['slot'] ? this._route.snapshot.params['slot'] : '';
         }
         

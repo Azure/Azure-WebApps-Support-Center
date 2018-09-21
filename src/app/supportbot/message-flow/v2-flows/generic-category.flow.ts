@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MessageGroup } from '../../models/message-group';
 import { TextMessage, ButtonListMessage } from '../../models/message';
 import { Category } from '../../../shared-v2/models/category';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { DetectorMetaData, DiagnosticService } from 'applens-diagnostics';
 import { IMessageFlowProvider } from '../../interfaces/imessageflowprovider';
 import { RegisterMessageFlowWithFactory } from '../message-flow.factory';
@@ -37,7 +37,7 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
     documentSearch.messages.push(new TextMessage('Yes I found the right information.', MessageSender.User));
     documentSearch.messages.push(new TextMessage('Great I\'m glad I could be of help!', MessageSender.System));
 
-    
+
     this.messageFlowList.push(documentSearch);
     this.messageFlowList.push(needMoreHelp);
   }
@@ -62,7 +62,7 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
       let feedback: string = `feedback-${category.id}`;
 
       var welcomeCategory: MessageGroup = new MessageGroup(`welcome-${category.id}`, [], () => mainMenuId);
-      welcomeCategory.messages.push(new TextMessage('Hello! Welcome to App Service diagnostics! My name is Genie and I\'m here to help you diagnose and solve problems.'));
+      welcomeCategory.messages.push(new TextMessage('Hello! Welcome to App Service Diagnostics! My name is Genie and I\'m here to help you diagnose and solve problems.'));
       welcomeCategory.messages.push(new TextMessage(`Here are some issues related to ${category.name} that I can help with. Please select the tile that best describes your issue.`, MessageSender.System, 500));
 
       var categoryMainMenu: MessageGroup = new MessageGroup(mainMenuId, [], () => feedback);
@@ -70,7 +70,7 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
       categoryMainMenu.messages.push(new TextMessage('Okay give me a moment while I analyze your app for any issues related to this tile. Once the detectors load, feel free to click to investigate each topic further.', MessageSender.System, 500));
       categoryMainMenu.messages.push(new DetectorSummaryMessage());
       categoryMainMenu.messages.push(new TextMessage('Did you find what you were looking for?', MessageSender.System, 3000));
-      categoryMainMenu.messages.push(new ButtonListMessage(this._getButtonListDidYouFindHelpful(docSearch, 'Search Documentation', showTiles), 'Did you find what you were looking for?', category.name));
+      categoryMainMenu.messages.push(new ButtonListMessage(this._getButtonListDidYouFindHelpful(docSearch, 'Search Documentation', showTiles), 'feature', category.name));
       categoryMainMenu.messages.push(new TextMessage('Yes I found the right information.', MessageSender.User));
       categoryMainMenu.messages.push(new TextMessage('Great I\'m glad I could be of help!', MessageSender.System));
 
@@ -89,7 +89,11 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
 
       var feedbackGroup: MessageGroup = new MessageGroup(feedback, [], () => mainMenuId);
       feedbackGroup.messages.push(new TextMessage('Please help me improve by providing some feedback. What was my most/least helpful feature? What features would you like to see?', MessageSender.System, 500));
-      feedbackGroup.messages.push(new FeedbackMessage());
+      feedbackGroup.messages.push(new FeedbackMessage([{
+        title: 'Show Tile Menu',
+        type: ButtonActionType.SwitchToOtherMessageGroup,
+        next_key: showTiles
+      }], 'Feedback', category.name));
       feedbackGroup.messages.push(new TextMessage('Thank you!'));
       feedbackGroup.messages.push(new TextMessage(`Feel free to continue to explore the tools within ${category.name}`));
 
@@ -126,7 +130,7 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
       title: 'Yes I found the right information',
       type: ButtonActionType.Continue,
       next_key: ''
-    }, 
+    },
     {
       title: furtherAssistanceString,
       type: ButtonActionType.SwitchToOtherMessageGroup,
@@ -140,7 +144,7 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
         next_key: mainMenuId
       });
     }
-    
+
     return buttons;
   }
 }

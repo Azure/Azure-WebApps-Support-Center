@@ -1,19 +1,19 @@
-import {Injectable} from '@angular/core';
-import {Observable, ReplaySubject} from 'rxjs';
-import {StartupInfo, Event, Data, Verbs, Action, LogEntryLevel, Message, OpenBladeInfo} from '../../shared/models/portal';
-import {ErrorEvent} from '../../shared/models/error-event';
-import {BroadcastService} from './broadcast.service';
-import  {BroadcastEvent} from '../models/broadcast-event'
+import { Injectable } from '@angular/core';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { StartupInfo, Event, Data, Verbs, Action, LogEntryLevel, Message, OpenBladeInfo } from '../../shared/models/portal';
+import { ErrorEvent } from '../../shared/models/error-event';
+import { BroadcastService } from './broadcast.service';
+import { BroadcastEvent } from '../models/broadcast-event'
 
 @Injectable()
 export class PortalService {
     public sessionId = "";
     private portalSignature: string = "FxFrameBlade";
-    private startupInfoObservable : ReplaySubject<StartupInfo>;
+    private startupInfoObservable: ReplaySubject<StartupInfo>;
     private appInsightsResourceObservable: ReplaySubject<any>;
     private shellSrc: string;
 
-    constructor(private _broadcastService : BroadcastService) {
+    constructor(private _broadcastService: BroadcastService) {
         this.sessionId = "";
 
         this.startupInfoObservable = new ReplaySubject<StartupInfo>(1);
@@ -27,7 +27,7 @@ export class PortalService {
         return this.startupInfoObservable;
     }
 
-    getAppInsightsResourceInfo(): ReplaySubject<any>{
+    getAppInsightsResourceInfo(): ReplaySubject<any> {
         return this.appInsightsResourceObservable;
     }
 
@@ -39,7 +39,7 @@ export class PortalService {
         // This is a required message. It tells the shell that your iframe is ready to receive messages.
         this.postMessage(Verbs.ready, null);
         this.postMessage(Verbs.getStartupInfo, null);
-        
+
         this._broadcastService.subscribe<ErrorEvent>(BroadcastEvent.Error, error => {
             if (error.details) {
                 this.logMessage(LogEntryLevel.Error, error.details);
@@ -47,7 +47,7 @@ export class PortalService {
         });
     }
 
-    openBlade(bladeInfo : OpenBladeInfo, source : string){
+    openBlade(bladeInfo: OpenBladeInfo, source: string) {
         this.postMessage(Verbs.openBlade, JSON.stringify(bladeInfo));
     }
 
@@ -61,7 +61,7 @@ export class PortalService {
         this.postMessage(Verbs.closeBlades, "");
     }
 
-    logAction(subcomponent: string, action: string, data?: any): void{
+    logAction(subcomponent: string, action: string, data?: any): void {
         let actionStr = JSON.stringify(<Action>{
             subcomponent: subcomponent,
             action: action,
@@ -71,15 +71,15 @@ export class PortalService {
         this.postMessage(Verbs.logAction, actionStr);
     }
 
-    setDirtyState(dirty : boolean) : void{
+    setDirtyState(dirty: boolean): void {
         this.postMessage(Verbs.setDirtyState, JSON.stringify(dirty));
     }
 
-    logMessage(level : LogEntryLevel, message : string, ...restArgs: any[]){
+    logMessage(level: LogEntryLevel, message: string, ...restArgs: any[]) {
         let messageStr = JSON.stringify(<Message>{
-            level : level,
-            message : message,
-            restArgs : restArgs
+            level: level,
+            message: message,
+            restArgs: restArgs
         });
 
         this.postMessage(Verbs.logMessage, messageStr);
@@ -87,7 +87,7 @@ export class PortalService {
 
     private iframeReceivedMsg(event: Event): void {
 
-        if (!event || !event.data || event.data.signature !== this.portalSignature){
+        if (!event || !event.data || event.data.signature !== this.portalSignature) {
             return;
         }
 
@@ -100,27 +100,27 @@ export class PortalService {
             this.sessionId = info.sessionId;
             this.startupInfoObservable.next(info);
         }
-        else if(methodName === Verbs.sendAppInsightsResource){
+        else if (methodName === Verbs.sendAppInsightsResource) {
             let aiResource = data;
             this.appInsightsResourceObservable.next(aiResource);
         }
     }
 
-    public postMessage(verb: string, data: string){
-        if(this.inIFrame()) {
+    public postMessage(verb: string, data: string) {
+        if (this.inIFrame()) {
             window.parent.postMessage(<Data>{
-                signature : this.portalSignature,
+                signature: this.portalSignature,
                 kind: verb,
                 data: data
             }, this.shellSrc);
         }
     }
 
-    private inIFrame() : boolean{
+    private inIFrame(): boolean {
         return window.parent !== window;
     }
 
-    private getQueryStringParameter(name: string){
+    private getQueryStringParameter(name: string) {
         return this.getQueryMap()[name] || "";
     }
 

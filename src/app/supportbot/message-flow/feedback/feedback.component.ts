@@ -1,4 +1,4 @@
-import { Component, Injector, Output, EventEmitter, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Injector, Output, EventEmitter, OnInit, AfterViewInit, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -6,36 +6,50 @@ import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
 import { MessageProcessor } from '../../message-processor.service';
 import { TextMessage } from '../../models/message';
 import { BotLoggingService } from '../../../shared/services/logging/bot.logging.service';
-import { MessageSender } from '../../models/message-enums';
+import { MessageSender, ButtonActionType } from '../../models/message-enums';
+import { ButtonMessageComponent } from '../../common/button-message/button-message.component';
+import { CategoryChatStateService } from '../../../shared-v2/services/category-chat-state.service';
 
 @Component({
     templateUrl: 'feedback.component.html'
 })
-export class FeedbackComponent implements OnInit, AfterViewInit, IChatMessageComponent {
-
-    @Output() onViewUpdate = new EventEmitter();
-    @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
+export class FeedbackComponent extends ButtonMessageComponent {
 
     showComponent: boolean;
     feedbackMessage: string;
 
-    constructor(private _injector: Injector, private _msgProcessor: MessageProcessor, private _logger: BotLoggingService) {
+    constructor(protected _injector: Injector, private _msgProcessor: MessageProcessor, protected _logger: BotLoggingService, @Optional() protected _chatState?: CategoryChatStateService) {
+        super(_injector, _logger, _chatState);
         this.showComponent = true;
         this.feedbackMessage = '';
     }
 
     ngOnInit(): void {
+        super.ngOnInit();
+        this.buttonList.push({
+            title: 'Submit',
+            next_key: '',
+            type: ButtonActionType.Continue
+        });
     }
 
     ngAfterViewInit(): void {
         this.onViewUpdate.emit();
     }
 
+    onClick(item: any) {
+        if (item.title === 'Submit') {
+            this.onSubmit();
+        }
+        else {
+            super.onClick(item);
+        }
+    }
+
     onSubmit(): void {
         if (this.feedbackMessage !== '') {
             this.showComponent = false;
-            this._logger.LogFeedbackMessage(this.feedbackMessage, 'Support Home');
-            this._msgProcessor.addMessageToCurrentGroup(new TextMessage(this.feedbackMessage, MessageSender.User, 300));
+            this._logger.LogFeedbackMessage(this.context, this.feedbackMessage, this.category);
             this.onComplete.emit({
                 status: true,
                 data: {

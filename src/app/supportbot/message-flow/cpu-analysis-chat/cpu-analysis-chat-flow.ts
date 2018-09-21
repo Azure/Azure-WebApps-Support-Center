@@ -79,16 +79,20 @@ export class CpuAnalysisChatFlow extends IMessageFlowProvider {
     }
 
     private _getCpuDetectorResponse() {
-        this._appAnalysisService.getDetectorResource(this.siteInfoMetaData.subscriptionId, this.siteInfoMetaData.resourceGroupName, this.siteInfoMetaData.siteName, this.siteInfoMetaData.slot, 'availability', 'sitecpuanalysis').subscribe(response => {
-            this.cpuDetectorResponse = response;
-            this.cpuDetectorResponseSubject.next(this.cpuDetectorResponse);
-            this.graphData.detectorMetrics.next(response.metrics.filter(x => x.name === "Overall CPU Percent"));
-            this.graphData.instanceDetailMetrics.next(response.metrics.filter(x => x.name !== "Overall CPU Percent"));
-
-            if (response.abnormalTimePeriods.length > 0) {
-                this.solutionListSubject.next(response.abnormalTimePeriods[response.abnormalTimePeriods.length - 1].solutions);
+        this._siteService.currentSite.subscribe(site => {
+            if(site && site.kind && site.kind.toLowerCase().indexOf('linux') === -1 && site.kind.toLowerCase().indexOf('functionapp') === -1) {
+                this._appAnalysisService.getDetectorResource(this.siteInfoMetaData.subscriptionId, this.siteInfoMetaData.resourceGroupName, this.siteInfoMetaData.siteName, this.siteInfoMetaData.slot, 'availability', 'sitecpuanalysis').subscribe(response => {
+                    this.cpuDetectorResponse = response;
+                    this.cpuDetectorResponseSubject.next(this.cpuDetectorResponse);
+                    this.graphData.detectorMetrics.next(response.metrics.filter(x => x.name === "Overall CPU Percent"));
+                    this.graphData.instanceDetailMetrics.next(response.metrics.filter(x => x.name !== "Overall CPU Percent"));
+        
+                    if (response.abnormalTimePeriods.length > 0) {
+                        this.solutionListSubject.next(response.abnormalTimePeriods[response.abnormalTimePeriods.length - 1].solutions);
+                    }
+                });
             }
-        })
+        });
     }
 
     private _getButtonListForHealthCheck(): any {

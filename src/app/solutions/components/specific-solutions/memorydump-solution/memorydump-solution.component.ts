@@ -3,16 +3,7 @@ import { SolutionBaseComponent } from '../../common/solution-base/solution-base.
 import { SolutionData } from '../../../../shared/models/solution';
 import { MetaDataHelper } from '../../../../shared/utilities/metaDataHelper';
 import { SiteDaasInfo } from '../../../../shared/models/solution-metadata';
-import { Subscription } from 'rxjs';
-import { TimerObservable } from 'rxjs/observable/TimerObservable';
-import { Observable } from 'rxjs/Observable';
-import { Diagnoser, DiagnoserStatusMessage, Session, Report } from '../../../../shared/models/daas';
-import { StepWizardSingleStep } from '../../../../shared/models/step-wizard-single-step';
-import { StepWizardComponent } from '../../../../shared/components/step-wizard/step-wizard.component';
-import { DaasSessionsComponent } from '../../../../shared/components/daas-sessions/daas-sessions.component';
 import { SiteService } from '../../../../shared/services/site.service';
-import { DaasService } from '../../../../shared/services/daas.service';
-import { WindowService } from '../../../../startup/services/window.service';
 import { AvailabilityLoggingService } from '../../../../shared/services/logging/availability.logging.service';
 import { ServerFarmDataService } from '../../../../shared/services/server-farm-data.service';
 

@@ -14,12 +14,6 @@ export class SupportBotComponent implements OnInit {
     showTypingMessage: boolean;
     chatContainerHeight: number;
 
-    subscriptionId: string;
-    resourceGroup: string;
-    siteName: string;
-    slotName: string;
-    hostingEnvironmentName: string;
-
     @Input() startingKey: string;
 
     constructor(private _messageProcessor: MessageProcessor) {

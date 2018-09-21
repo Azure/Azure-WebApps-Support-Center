@@ -2,7 +2,6 @@ import { Injectable, Injector } from '@angular/core';
 import { Message } from './models/message';
 import { MessageGroup } from './models/message-group';
 import { MessageFlowFactory } from './message-flow/message-flow.factory';
-import { HealthCheckMessageFlow } from './message-flow/health-check/healthcheckmessageflow';
 import { IMessageFlowProvider } from './interfaces/imessageflowprovider';
 import { ButtonActionType } from './models/message-enums';
 

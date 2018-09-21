@@ -8,7 +8,7 @@ import { AuthService } from '../../../startup/services/auth.service';
 import { ArmService } from '../arm.service';
 import { IncidentNotification, IncidentType, IncidentStatus } from '../../models/icm-incident';
 import { PortalService } from '../../../startup/services/portal.service';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class LoggingService {

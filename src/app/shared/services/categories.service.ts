@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Subcategory, Category } from '../models/problem-category';
-import * as _ from 'underscore';
-import { OperatingSystem, Site, SiteExtensions } from '../models/site';
-import { operators, BehaviorSubject } from 'rxjs/Rx';
+import { OperatingSystem } from '../models/site';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ToolNames } from '../models/tools-constants';
 import { GenericApiService } from './generic-api.service';
 import { AuthService } from '../../startup/services/auth.service';
 import { ResourceType, AppType } from '../models/portal';
-import { DetectorResponse, DetectorMetaData } from 'applens-diagnostics/src/app/diagnostic-data/models/detector';
-import { Observable } from 'rxjs/Observable';
-import { DemoSubscriptions } from '../../betaSubscriptions';
+import { DetectorMetaData } from 'applens-diagnostics/src/app/diagnostic-data/models/detector';
 import { SiteService } from './site.service';
 import { Sku } from '../models/server-farm';
 
@@ -17,6 +14,19 @@ import { Sku } from '../models/server-farm';
 export class CategoriesService {
 
     private _categories: Category[] = [];
+
+    private _colors: string[] = [
+        'rgb(20, 70, 160)',
+        'rgb(153, 51, 127)',
+        'rgb(1, 185, 137)',
+        'rgb(191, 79, 23)',
+    ];
+    private _colorIndex = 0;
+    private _categoryIndex = 0;
+
+    private get nextColor() {
+        return this._colors[this._colorIndex++ % this._colors.length];
+    }
 
     public Categories: BehaviorSubject<Category[]> = new BehaviorSubject<Category[]>([]);
 
@@ -45,15 +55,21 @@ export class CategoriesService {
     }
 
     addGenericDetectors(detectors: DetectorMetaData[], resourceId: string): void {
-        let generic = <Category>{
-            Name: this._authService.resourceType === ResourceType.Site ? (this.appType === AppType.WebApp ? 'Management and Configuration' : "Function App") : 'App Service Environment',
-            Collapsed: false,
-            BgColor: 'rgb(1, 185, 137)',
-            TextColor: 'white',
-            Subcategories: detectors
-            //TODO: below line is temporary to remove linux detectors that we are hardcoding to be in avail + perf section
-            .filter(detector => detector.id.toLowerCase() !== 'linuxappdown' && detector.id.toLowerCase() !== 'linuxcontainerrecycle') 
-            .map(detector => <Subcategory>{
+        detectors.forEach(detector => {
+            let category = this._categories.find(category => category.Name === detector.category);
+            if (!category) {
+                category = <Category>{
+                    Name: detector.category,
+                    Collapsed: false,
+                    BgColor: this.nextColor,
+                    TextColor: 'white',
+                    Subcategories: []
+                }
+
+                this._categories.push(category)
+            }
+
+            category.Subcategories.push(<Subcategory>{
                 Name: detector.name,
                 BgColor: '#1446a0',
                 TextColor: 'White',
@@ -62,19 +78,17 @@ export class CategoriesService {
                 AppStack: "",
                 AppType: AppType.WebApp | AppType.FunctionApp,
                 Sku: Sku.All
-            })
-        }
-
-        this._categories.push(generic);
+            });
+        })
     }
 
     initCategoriesAndSubcategories(): void {
 
         let perf = new Category();
-        perf.Name = "Availability & Performance";
+        perf.Name = "Availability and Performance";
         perf.Collapsed = false;
         perf.Subcategories = [];
-        perf.BgColor = "rgb(20, 70, 160)";
+        perf.BgColor = this.nextColor;
         perf.TextColor = "white";
 
         perf.Subcategories.push({
@@ -169,7 +183,7 @@ export class CategoriesService {
         tools.Name = "Diagnostic Tools";
         tools.Subcategories = [];
         tools.Collapsed = false;
-        tools.BgColor = "rgb(153, 51, 127)";
+        tools.BgColor = this.nextColor;
         tools.TextColor = "white";
 
         tools.Subcategories.push({

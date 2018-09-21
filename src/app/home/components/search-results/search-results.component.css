@@ -6,6 +6,7 @@
     padding:5px;
     display: flex;
     cursor: pointer;
+    min-height: 75px;
 }
 
 .search-result:hover {

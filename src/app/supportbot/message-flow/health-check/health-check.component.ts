@@ -1,6 +1,5 @@
-import { Component, Injector, Output, EventEmitter, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
 
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
 import { Cache } from '../../../shared/models/icache';
@@ -11,7 +10,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
 import * as _ from 'underscore';
 import { OperatingSystem, Site, SiteExtensions } from '../../../shared/models/site';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 import { BotLoggingService } from '../../../shared/services/logging/bot.logging.service';
 import { SiteService } from '../../../shared/services/site.service';

@@ -1,7 +1,6 @@
-import { Component, Input, OnInit, ContentChildren, QueryList } from '@angular/core';
+import { Component, Input, ContentChildren, QueryList } from '@angular/core';
 import { VerticalDisplayListItemComponent } from './vertical-display-list-item/vertical-display-list-item.component';
 import { SolutionTypeTag } from '../../models/solution-type-tag';
-import { BehaviorSubject } from 'rxjs';
 
 
 @Component({

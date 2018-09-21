@@ -8,7 +8,6 @@
                     [routerLink]="[subcategory.Href]" (click)="logCategorySelected(subcategory.Name)">
                     <div class="category-content">{{subcategory.Name}}</div>
                 </div>
-                <!-- <scrolling-tile [Collapsed]="category.Collapsed" [Subcategories]="category.Subcategories" ></scrolling-tile> -->
             </collapsible-list-item>
             <div *ngIf="category.Name ==='Diagnostic Tools'" class="area">
                 <div class="content">

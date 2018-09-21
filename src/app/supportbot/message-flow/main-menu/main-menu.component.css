@@ -1,12 +1,13 @@
 .category-box
 {
-    width: 120px;
+    width: 130px;
     height: 70px;
     border-radius: 3px;
     display: inline-block;
     margin: 10px;
     vertical-align: top;
     cursor: pointer;
+    padding: 10px;
 }
 
 .area {

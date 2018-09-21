@@ -1,7 +1,7 @@
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { Injectable } from "@angular/core";
 import { DetectorControlService } from "applens-diagnostics";
-import { Observable } from "rxjs";
+import { Observable } from "rxjs/Observable";
 
 @Injectable()
 export class TimeControlResolver implements Resolve<Observable<boolean>>{

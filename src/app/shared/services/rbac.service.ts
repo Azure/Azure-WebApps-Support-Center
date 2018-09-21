@@ -1,7 +1,5 @@
-import {Injectable, EventEmitter} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ArmService} from './arm.service';
-import {Observable, Subscription as RxSubscription, Subject, ReplaySubject} from 'rxjs/Rx';
-import {Http, Headers, Response} from '@angular/http';
 import {Permissions, PermissionsAsRegExp} from '../models/arm/permission';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ArmService } from "./arm.service";
 import { UriElementsService } from "./urielements.service";
-import { Observable } from "rxjs";
+import { Observable } from "rxjs/Observable";
 import { AutoHealSettings } from "../models/autohealing";
 import { SiteInfoMetaData } from "../models/site";
 import { ResponseMessageEnvelope } from "../models/responsemessageenvelope";

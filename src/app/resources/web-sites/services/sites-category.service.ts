@@ -26,6 +26,22 @@ export class SitesCategoryService extends CategoryService {
         chatEnabled: false
       }
     },
+    // Linux
+    {
+      appType: AppType.WebApp,
+      platform: OperatingSystem.linux,
+      stack: '',
+      sku: Sku.All,
+      item: {
+        id: 'AvailabilityAndPerformance',
+        name: 'Availability and Performance',
+        description: 'Is your app experiencing downtime or slowness? Discover issues that may impact SLA, caused by your app itself or Azure.',
+        keywords: ['Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory'],
+        color: 'rgb(208, 175, 239)',
+        createFlowForCategory: true,
+        chatEnabled: false
+      }
+    },
     {
       appType: AppType.WebApp,
       platform: OperatingSystem.windows | OperatingSystem.linux,
@@ -65,29 +81,14 @@ export class SitesCategoryService extends CategoryService {
       item: {
         id: 'BestPractices',
         name: 'Best Practices',
-        description: 'Review suggestions for the optimal way to configure your application so that it is highly available and ready for production.',
+        description: 'Are you running your application in production? Review best practice recommendations to best ensure that you running your production application with the optimal configurations and suggestions.',
         keywords: ['AutoScale', 'Traffic Manager', 'AlwaysOn', 'ARR Affinity'],
         color: 'rgb(208, 228, 176)',
         createFlowForCategory: true,
         chatEnabled: false
       }
     },
-    // Linux
-    {
-      appType: AppType.WebApp,
-      platform: OperatingSystem.linux,
-      stack: '',
-      sku: Sku.All,
-      item: {
-        id: 'AvailabilityAndPerformance',
-        name: 'Availability and Performance',
-        description: 'Is your app experiencing downtime or slowness? Discover issues that may impact SLA, caused by your app itself or Azure.',
-        keywords: ['Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory'],
-        color: 'rgb(208, 175, 239)',
-        createFlowForCategory: true,
-        chatEnabled: false
-      }
-    },
+    
     // Function App
     {
       appType: AppType.FunctionApp,

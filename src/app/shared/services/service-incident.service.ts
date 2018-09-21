@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AppAnalysisService } from './appanalysis.service';
 import { SiteService } from './site.service';
 import { IncidentNotification, IncidentStatus } from '../models/icm-incident';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { AuthService } from '../../startup/services/auth.service';
 import { ResourceType } from '../models/portal';
 import { LoggingService } from './logging/logging.service';

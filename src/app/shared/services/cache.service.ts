@@ -1,8 +1,8 @@
-import { Http, Headers, Response, Request } from '@angular/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subscription as RxSubscription, Subject, ReplaySubject } from 'rxjs/Rx';
-
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/do';
 
 interface CacheContent {
     value: any;

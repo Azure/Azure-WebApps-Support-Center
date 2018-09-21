@@ -1,12 +1,9 @@
-import { Component, Injector, OnInit, AfterViewInit, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Injector, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
 import { Message } from '../../models/message';
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
-import { IDetectorResponse } from '../../../shared/models/detectorresponse';
 import { ISolution } from '../../../shared/models/solution';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 
 @Component({

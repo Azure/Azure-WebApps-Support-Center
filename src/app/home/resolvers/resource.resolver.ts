@@ -1,5 +1,5 @@
 import { Resolve, ActivatedRouteSnapshot } from "@angular/router";
-import { Observable } from "rxjs";
+import { Observable } from "rxjs/Observable";
 import { Injectable } from "@angular/core";
 import { ResourceService } from "../../shared-v2/services/resource.service";
 import { ArmResource } from "../../shared-v2/models/arm";

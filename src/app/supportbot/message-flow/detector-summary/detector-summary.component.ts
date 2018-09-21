@@ -2,7 +2,7 @@ import { Component, OnInit, Injector, EventEmitter, Output, AfterViewInit } from
 import { DiagnosticService, DetectorControlService, DetectorMetaData } from 'applens-diagnostics';
 import { Message } from '../../models/message';
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';
 import { LoadingStatus, DetectorResponse, Rendering, DetectorListRendering, DiagnosticData, HealthStatus } from 'applens-diagnostics';
 import { CategoryChatStateService } from '../../../shared-v2/services/category-chat-state.service';

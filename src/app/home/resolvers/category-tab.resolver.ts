@@ -1,8 +1,10 @@
 import { Resolve, ActivatedRouteSnapshot } from "@angular/router";
 import { Injectable } from "@angular/core";
 import { CategoryService } from "../../shared-v2/services/category.service";
-import { Observable } from "rxjs";
+import { Observable } from "rxjs/Observable";
 import { GenericCategoryFlow } from "../../supportbot/message-flow/v2-flows/generic-category.flow";
+
+import 'rxjs/add/operator/first';
 
 @Injectable()
 export class CategoryTabResolver implements Resolve<Observable<string>>{

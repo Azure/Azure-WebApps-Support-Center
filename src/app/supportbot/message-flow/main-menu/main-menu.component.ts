@@ -1,13 +1,12 @@
-import { Component, Injector, Output, EventEmitter, OnInit, AfterViewInit, Input, PipeTransform, Pipe } from '@angular/core';
+import { Component, Injector, Output, EventEmitter, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
 
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
-import { OperatingSystem, SiteExtensions, Site } from '../../../shared/models/site';
+import { OperatingSystem } from '../../../shared/models/site';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { SiteService } from '../../../shared/services/site.service';
 import { CategoriesService } from '../../../shared/services/categories.service';
-import { Category, Subcategory } from '../../../shared/models/problem-category';
+import { Category } from '../../../shared/models/problem-category';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 import { AuthService } from '../../../startup/services/auth.service';
 import { StartupInfo, ResourceType, AppType } from '../../../shared/models/portal';
@@ -34,7 +33,7 @@ export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageCom
     @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
 
     constructor(private _injector: Injector, private _router: Router, private _logger: LoggingService,
-        private _siteService: SiteService, private _categoryService: CategoriesService,
+        private _siteService: SiteService, public categoryService: CategoriesService,
         private _authService: AuthService, private _appAnalysisService: AppAnalysisService) {
 
     }
@@ -50,7 +49,7 @@ export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageCom
                         this._appAnalysisService.getDiagnosticProperties(resourceUriParts.subscriptionId, resourceUriParts.resourceGroup, resourceUriParts.siteName, resourceUriParts.slotName).subscribe((data: IDiagnosticProperties) => {
                             this.AppStack = data && data.appStack && data.appStack != "" ? data.appStack : "ASP.Net";
                             this.platform = data && data.isLinux ? OperatingSystem.linux : OperatingSystem.windows;
-                            this._categoryService.Categories.subscribe(categories => {
+                            this.categoryService.Categories.subscribe(categories => {
                                 this.allProblemCategories = categories;
                             })
                             setTimeout(() => {
@@ -62,7 +61,7 @@ export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageCom
             });
         }
         else {
-            this._categoryService.Categories.subscribe(categories => {
+            this.categoryService.Categories.subscribe(categories => {
                 this.allProblemCategories = categories;
                 setTimeout(() => {
                     this.onComplete.emit({ status: true });

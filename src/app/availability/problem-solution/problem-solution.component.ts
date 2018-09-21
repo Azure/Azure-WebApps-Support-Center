@@ -1,11 +1,8 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { IAppAnalysisResponse, IAbnormalTimePeriod } from '../../shared/models/appanalysisresponse';
-import { IDetectorAbnormalTimePeriod, IDetectorResponse } from '../../shared/models/detectorresponse';
-import { INameValuePair } from '../../shared/models/namevaluepair';
+import { Component, Input, OnInit } from '@angular/core';
+import { IAppAnalysisResponse } from '../../shared/models/appanalysisresponse';
+import { IDetectorAbnormalTimePeriod } from '../../shared/models/detectorresponse';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SolutionFactory } from '../../shared/models/solution-ui-model/solutionfactory';
-import { SupportBladeDefinitions } from '../../shared/models/portal';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ISolution } from '../../shared/models/solution';
 import { AvailabilityLoggingService } from '../../shared/services/logging/availability.logging.service';
 import { DetectorViewStateService } from '../../shared/services/detector-view-state.service';
