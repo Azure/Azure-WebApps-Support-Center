@@ -36,7 +36,6 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
       this.detector = response.metadata;
       this.fullReportPath = `${this._resourceService.resourceIdForRouting}/detectors/${this.detector.id}`;
       this.processDetectorResponse(response).subscribe(() => {
-        this.loading = false;
         this.onComplete.emit({ status: true });
       });
     })
@@ -64,6 +63,8 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
             type: DetectorSummaryType.ChildDetector
           };
         });
+
+        this.loading = false;
 
         return Observable.forkJoin(this.detectorSummaryViewModels.map(detector => {
           return this._diagnosticService.getDetector(detector.id, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString).map(response => {
@@ -95,6 +96,7 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
         });
       }
 
+      this.loading = false;
 
       return Observable.of(null);
     }

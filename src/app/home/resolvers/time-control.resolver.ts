@@ -8,8 +8,7 @@ export class TimeControlResolver implements Resolve<Observable<boolean>>{
     constructor(private _detectorControlService: DetectorControlService) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-        //TODO: This is not working for some reason
-        if (!this._detectorControlService.duration) {
+        if (!this._detectorControlService.startTime) {
 
             this._detectorControlService.setDefault();
         }

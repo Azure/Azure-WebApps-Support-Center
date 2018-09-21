@@ -6,6 +6,7 @@ import { DaasService } from '../../services/daas.service';
 import { SiteDaasInfo } from '../../models/solution-metadata';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/interval';
 import * as _ from 'underscore';
 
 @Component({

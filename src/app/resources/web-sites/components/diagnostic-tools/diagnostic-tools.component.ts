@@ -67,15 +67,19 @@ export class DiagnosticToolsComponent {
     });
 
     if (this.webSiteService.appStack && this.webSiteService.appStack != "") {
-      this.stackFound = true;
       this.selectStack(this.webSiteService.appStack)
     }
   }
 
   selectStack(stack: string) {
     this.stack = this.possibleStacks.find(st => st.toLowerCase() === stack.toLowerCase());
+    
     if(!stack) {
+      this.stackFound = false;
       this.stack = "All";
+    }
+    else {
+      this.stackFound = true;
     }
   }
 }

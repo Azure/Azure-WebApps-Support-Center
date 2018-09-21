@@ -6,6 +6,7 @@ import { SiteService } from '../../shared/services/site.service';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { AuthService } from '../../startup/services/auth.service';
 import { ResourceType, AppType } from '../../shared/models/portal';
+import { DetectorControlService } from 'applens-diagnostics';
 
 @Component({
     selector: 'home-page',
@@ -18,10 +19,14 @@ export class HomepageComponent implements OnInit {
     public isSite: boolean;
     public showSupportTools: boolean;
 
-    constructor(private _windowService: WindowService, private _siteService: SiteService, private _logger: LoggingService, private _authService: AuthService) {
+    constructor(private _windowService: WindowService, private _siteService: SiteService, private _logger: LoggingService, private _authService: AuthService, private _detectorControlService: DetectorControlService) {
         this.listCollection = [];
         this.toolsContainerHeight = 0;
         this.showSupportTools = false;
+
+        if (!this._detectorControlService.startTime) {
+            this._detectorControlService.setDefault();
+        }
     }
 
     ngOnInit(): void {
@@ -31,7 +36,7 @@ export class HomepageComponent implements OnInit {
             this._siteService.currentSite.subscribe(site => {
                 if (site) {
 
-                    if(site.appType != AppType.FunctionApp){
+                    if (site.appType != AppType.FunctionApp) {
                         this.showSupportTools = true;
                     }
 
