@@ -46,12 +46,13 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
   }
 
   processDetectorResponse(detectorResponse: DetectorResponse): Observable<void[]> {
-    let detectorList = detectorResponse.dataset.find(set => (<Rendering>set.renderingProperties).type === 10);
+    let detectorList = detectorResponse.dataset.filter(set => (<Rendering>set.renderingProperties).type === 10);
 
-    if (detectorList) {
+    if (detectorList && detectorList.length > 0) {
       this.showTopLevelFullReport = true;
       return this._diagnosticService.getDetectors().flatMap(detectors => {
-        let subDetectors = (<DetectorListRendering>detectorList.renderingProperties).detectorIds;
+        let subDetectors: string[] = [];
+        detectorList.forEach(childSet => (<DetectorListRendering>childSet.renderingProperties).detectorIds.forEach(detector => subDetectors.push(detector)));
 
         this.detectorSummaryViewModels = detectors.filter(detector => subDetectors.indexOf(detector.id) != -1).map(detector => {
           return <DetectorSummaryViewModel>{
