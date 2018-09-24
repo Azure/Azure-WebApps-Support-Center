@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { LoggingService } from '../../shared/services/logging/logging.service';
 
 @Injectable()
 export class NotificationService {
@@ -7,7 +8,7 @@ export class NotificationService {
 
   notifications: Notification[] = [];
 
-  constructor() { }
+  constructor(private _logger: LoggingService) { }
 
   dismiss() {
     this.activeNotification = null;
@@ -25,6 +26,12 @@ export class NotificationService {
     if (!this.activeNotification) {
       this.activeNotification = this.notifications.pop();
     }
+  }
+
+  currentNotificationAction() {
+    this._logger.LogClickEvent(this.activeNotification.title, 'Notifications', 'Notifications');
+    this.activeNotification.action();
+    this.dismiss();
   }
 }
 

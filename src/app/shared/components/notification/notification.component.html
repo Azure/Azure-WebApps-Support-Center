@@ -1,5 +1,5 @@
 <ng-container *ngIf="notificationService.activeNotification">
-    <div class="notification" (click)="notificationService.activeNotification.action()">
+    <div class="notification" (click)="notificationService.currentNotificationAction()">
         <i class="fa" [ngClass]="notificationService.activeNotification.icon"></i> 
         {{notificationService.activeNotification.title}}
         <i class="fa fa-close pull-right" (click)="notificationService.dismiss()"></i>

@@ -20,11 +20,11 @@ export class AseCategoryService extends CategoryService {
       name: 'Scaling',
       description: 'Find out the current status of your scale operations, why your scale operations may be taking a long time, or why they are failing',
       keywords: ['Scale Up', 'Scale Out', 'Deployent', 'Stuck'],
-      color: 'rgb(208, 175, 239)',
+      color: 'rgb(249, 213, 180)',
       createFlowForCategory: true,
       chatEnabled: false
     }
-  ]
+  ];
 
   constructor() { 
     super();

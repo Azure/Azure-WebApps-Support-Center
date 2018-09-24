@@ -1,6 +1,7 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SupportTopicService } from './services/support-topic.service';
+import { NotificationService } from './services/notification.service';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ export class SharedV2Module {
     return {
       ngModule: SharedV2Module,
       providers: [
-        SupportTopicService
+        SupportTopicService,
+        NotificationService
       ]
     }
   }

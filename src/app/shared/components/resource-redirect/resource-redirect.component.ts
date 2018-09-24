@@ -28,7 +28,8 @@ export class ResourceRedirectComponent implements OnInit {
           let split = info.resourceId.split('/');
           let subscriptionId = split[split.indexOf('subscriptions') + 1];
 
-          this._newVersionEnabled = DemoSubscriptions.betaSubscriptions.indexOf(subscriptionId) >= 0;
+          // Uncomment to enable only for internal subs
+          //this._newVersionEnabled = DemoSubscriptions.betaSubscriptions.indexOf(subscriptionId) >= 0;
 
           if (this._newVersionEnabled || (info.supportTopicId)) {
             let navigationExtras: NavigationExtras = {

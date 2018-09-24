@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
 import { CategoryService } from '../../../shared-v2/services/category.service';
 import { Category } from '../../../shared-v2/models/category';
-import { NotificationService, Notification } from '../../../shared/services/notification.service';
+import { NotificationService, Notification } from '../../../shared-v2/services/notification.service';
 import { Router } from '@angular/router';
 import { DetectorControlService } from 'applens-diagnostics';
 import { FeatureService } from '../../../shared-v2/services/feature.service';
@@ -41,7 +41,6 @@ export class HomeComponent implements OnInit {
     setTimeout(() => {
       let notification = new Notification('This is the new App Service Diagnostics Experience. Click here to return to the old experience', () => {
         this._router.navigateByUrl(`legacy${this._resourceService.resourceIdForRouting}/diagnostics`);
-        this._notificationService.dismiss();
       });
       this._notificationService.pushNotification(notification)
     }, 100)
