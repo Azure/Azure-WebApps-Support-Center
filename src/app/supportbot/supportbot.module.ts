@@ -8,7 +8,6 @@ import { StartupMessages } from './message-flow/startup/startupmessages';
 import { MainMenuMessageFlow } from './message-flow/main-menu/mainmenumessageflow';
 import { HealthCheckMessageFlow } from './message-flow/health-check/healthcheckmessageflow';
 import { FeedbackMessageFlow } from './message-flow/feedback/feedbackmessageflow';
-//import { TalkToAgentMessageFlow } from './message-flow/talk-to-agent/talktoagentmessageflow';
 import { MessageProcessor } from './message-processor.service';
 
 import { HomepageComponent } from './homepage/homepage.component';
@@ -75,7 +74,6 @@ import { AvailabilityPerformanceFlow } from './message-flow/v2-flows/availabilit
         HealthCheckMessageFlow,
         FeedbackMessageFlow,
         CpuAnalysisChatFlow,
-        //TalkToAgentMessageFlow,
         MessageProcessor,
         AvailabilityPerformanceFlow,
         GenericCategoryFlow

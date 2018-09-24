@@ -6,7 +6,7 @@ import { SiteDaasInfo } from '../../../../shared/models/solution-metadata';
 import { SiteService } from '../../../../shared/services/site.service';
 import { AvailabilityLoggingService } from '../../../../shared/services/logging/availability.logging.service';
 import { ServerFarmDataService } from '../../../../shared/services/server-farm-data.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs'
 
 @Component({
     templateUrl: 'profiling-solution.component.html',

@@ -1,15 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ArmService } from './arm.service';
-import { Cache } from '../models/icache';
 import { IAppAnalysisResponse } from '../models/appanalysisresponse';
 import { IDetectorResponse } from '../models/detectorresponse';
 import { IDiagnosticProperties } from '../models/diagnosticproperties';
 import { ResponseMessageEnvelope, ResponseMessageCollectionEnvelope } from '../models/responsemessageenvelope';
 import { IDetectorDefinition } from '../models/detectordefinition';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+import { Observable } from 'rxjs'
 import { UriElementsService } from './urielements.service';
 import { AvailabilityLoggingService } from './logging/availability.logging.service';
 

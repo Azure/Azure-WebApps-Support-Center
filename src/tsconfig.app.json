@@ -8,6 +8,9 @@
     "paths": {
       "moment": [
         "../node_modules/moment/min/moment.min.js"
+      ],
+      "rxjs": [
+        "./app/vendor/rxjs.ts"
       ]
     }
   },

@@ -3,7 +3,7 @@ import { SupportBladeDefinitions } from '../../models/portal';
 import { SolutionUIModelBase } from '../../models/solution-ui-model/solution-ui-model-base';
 import { SolutionMetadata } from '../../models/solution-ui-model/solutionproperties';
 import { ActionType } from '../../models/enumerations';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { ReplaySubject } from 'rxjs'
 import { PortalActionService } from '../../services/portal-action.service';
 import { WindowService } from '../../../startup/services/window.service';
 import { AvailabilityLoggingService } from '../../services/logging/availability.logging.service';

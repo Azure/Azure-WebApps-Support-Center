@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MessageGroup } from '../../models/message-group';
 import { TextMessage, ButtonListMessage } from '../../models/message';
 import { Category } from '../../../shared-v2/models/category';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs'
 import { DetectorMetaData, DiagnosticService } from 'applens-diagnostics';
 import { IMessageFlowProvider } from '../../interfaces/imessageflowprovider';
 import { RegisterMessageFlowWithFactory } from '../message-flow.factory';

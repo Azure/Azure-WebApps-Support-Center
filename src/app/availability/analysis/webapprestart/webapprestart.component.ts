@@ -7,13 +7,13 @@ import { INameValuePair } from '../../../shared/models/namevaluepair';
 import { Cache } from '../../../shared/models/icache';
 import { GraphHelper } from '../../../shared/utilities/graphHelper';
 import { SupportBladeDefinitions, BladeOptions } from '../../../shared/models/portal';
-import * as _ from 'underscore';
 import { IMyDpOptions, IMyDate, IMyDateModel } from 'mydatepicker';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 import { AvailabilityLoggingService } from '../../../shared/services/logging/availability.logging.service';
 import { AuthService } from '../../../startup/services/auth.service';
 import { WindowService } from '../../../startup/services/window.service';
 import { PortalActionService } from '../../../shared/services/portal-action.service';
+import { GroupByPipe } from '../../../shared/pipes/groupBy.pipe';
 
 declare let d3: any;
 
@@ -76,7 +76,8 @@ export class WebAppRestartComponent implements OnInit {
 
     dateModel: any;
 
-    constructor(private _route: ActivatedRoute, private _analysisService: AppAnalysisService, private _logger: AvailabilityLoggingService, private _authService: AuthService, private _windowService: WindowService, private _portalActionService: PortalActionService) {
+    constructor(private _route: ActivatedRoute, private _analysisService: AppAnalysisService, private _logger: AvailabilityLoggingService, private _authService: AuthService, 
+        private _windowService: WindowService, private _portalActionService: PortalActionService, private groupBy: GroupByPipe) {
         this._logger.LogAnalysisInitialized('App Restart Analysis');
         this.loadingAnalysis = true;
 
@@ -154,9 +155,7 @@ export class WebAppRestartComponent implements OnInit {
                         chart.dispatch.changeState({ disabled: { 0: false } })
                     };
 
-                    let workerprocessrecycle = _.find(response.payload, function (item) {
-                        return item.source === 'workerprocessrecycle';
-                    });
+                    let workerprocessrecycle = response.payload.find((item) => item.source === 'workerprocessrecycle');
 
                     if (workerprocessrecycle) {
                         if (workerprocessrecycle.metrics && workerprocessrecycle.metrics.length > 0 && workerprocessrecycle.metrics[0].values.length > 0) {
@@ -181,8 +180,10 @@ export class WebAppRestartComponent implements OnInit {
 
         let self = this;
 
-        metrics.forEach(function (item) {
-            let groupByRoleInstances = _.groupBy(item.values, function (sample: IMetricSample) { return sample.roleInstance ? sample.roleInstance.replace('(', '[').replace(')', ']') : 'Overall' });
+        metrics.forEach((item) => {
+            //let groupByRoleInstances = _.groupBy(item.values, function (sample: IMetricSample) { return sample.roleInstance ? sample.roleInstance.replace('(', '[').replace(')', ']') : 'Overall' });
+
+            let groupByRoleInstances = this.groupBy.transform(item.values, 'roleInstance');
 
             Object.keys(groupByRoleInstances).forEach(function (item: any) {
                 if (Object.keys(self.metricsPerInstance).indexOf(item) === -1) {
@@ -233,7 +234,7 @@ export class WebAppRestartComponent implements OnInit {
             let xDate = new Date(d.getTime());
             let yValue = 0;
 
-            let element = _.find(metricSamples, function (item: IMetricSample) {
+            let element = metricSamples.find((item: IMetricSample) => {
                 return xDate.getTime() === (new Date(item.timestamp)).getTime();
             });
 
@@ -257,7 +258,7 @@ export class WebAppRestartComponent implements OnInit {
     }
 
     getHelpfulTipName(evidence: INameValuePair[]): string {
-        let displayName = _.find(evidence, function (item) { return item.name === 'displayedName' });
+        let displayName = evidence.find(item => item.name === 'displayedName' );
         if (displayName) {
             return displayName.value;
         }
@@ -266,7 +267,7 @@ export class WebAppRestartComponent implements OnInit {
     }
 
     OpenHelpulTip(evidence: INameValuePair[]): void {
-        let feature = _.find(evidence, function (item) { return item.name === 'feature' });
+        let feature = evidence.find(item => item.name === 'feature' );
         if (!feature) {
             return;
         }

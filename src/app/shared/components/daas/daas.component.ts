@@ -1,9 +1,9 @@
 import { Component, Input, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { SiteDaasInfo } from '../../models/solution-metadata';
 import { Session, Diagnoser, Report, DiagnoserDefinition } from '../../models/daas';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs'
 import { StepWizardSingleStep } from '../../models/step-wizard-single-step';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs'
 import { SiteService } from '../../services/site.service';
 import { DaasService } from '../../services/daas.service';
 import { WindowService } from '../../../startup/services/window.service';

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs'
 import { StartupInfo } from '../../shared/models/portal';
 import { ArmObj } from '../../shared/models/armObj';
 import { SiteService } from '../../shared/services/site.service';

@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { IAppAnalysisResponse, IAbnormalTimePeriod, IAnalysisData } from '../../../shared/models/appanalysisresponse';
 import { IDetectorAbnormalTimePeriod, IDetectorResponse } from '../../../shared/models/detectorresponse';
 import { SummaryViewModel, SummaryHealthStatus } from '../../../shared/models/summary-view-model';
-import 'rxjs/add/operator/map';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 import { AvailabilityLoggingService } from '../../../shared/services/logging/availability.logging.service';
 

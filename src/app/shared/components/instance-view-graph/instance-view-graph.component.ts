@@ -1,11 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
 import { IMetricSet } from '../../models/detectorresponse';
-import { Observable } from 'rxjs/Observable';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { ReplaySubject } from 'rxjs'
 import { GraphHelper } from '../../utilities/graphHelper';
 import { ChartSeries, ChartType } from '../../models/chartdata';
-import 'rxjs/add/operator/map';
 
 @Component({
     selector: 'instance-view-graph',

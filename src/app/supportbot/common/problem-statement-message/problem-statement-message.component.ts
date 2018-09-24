@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
 import { IDetectorResponse } from '../../../shared/models/detectorresponse';
 import { Message } from '../../models/message';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs'
 import { BotLoggingService } from '../../../shared/services/logging/bot.logging.service';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 

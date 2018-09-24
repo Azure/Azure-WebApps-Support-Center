@@ -2,7 +2,7 @@ import { Component, OnInit, trigger, state, animate, transition, style } from '@
 import { ActivatedRoute } from '@angular/router';
 import { IAppAnalysisResponse } from '../../shared/models/appanalysisresponse';
 import { IDetectorResponse, IMetricSet } from '../../shared/models/detectorresponse';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs'
 import { IAbnormalTimePeriod } from '../../shared/models/appanalysisresponse';
 import { StartupInfo } from '../../shared/models/portal';
 import { ISolution } from '../../shared/models/solution';

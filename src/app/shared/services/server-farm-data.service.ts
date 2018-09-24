@@ -4,11 +4,7 @@ import { ServerFarm } from '../models/server-farm';
 import { StartupInfo, ResourceType } from '../models/portal';
 
 import { ResponseMessageEnvelope } from '../models/responsemessageenvelope';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+import { BehaviorSubject } from 'rxjs'
 import { ArmService } from './arm.service';
 import { UriElementsService } from './urielements.service';
 import { AuthService } from '../../startup/services/auth.service';

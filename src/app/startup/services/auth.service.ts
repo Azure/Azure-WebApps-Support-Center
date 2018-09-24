@@ -1,7 +1,6 @@
-import { Http, Headers } from '@angular/http';
+import { Http } from '@angular/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { Observable } from 'rxjs'
 import { StartupInfo, ResourceType } from '../../shared/models/portal';
 import { PortalService } from './portal.service';
 

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
 import { SolutionUIModelBase } from '../../../../shared/models/solution-ui-model/solution-ui-model-base';
 import { SolutionMetadata } from '../../../../shared/models/solution-ui-model/solutionproperties';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { ReplaySubject } from 'rxjs'
 import { SolutionFactory } from '../../../../shared/models/solution-ui-model/solutionfactory';
 import { SolutionHolder } from '../../../../shared/models/solution-holder';
 import { ISolution } from '../../../../shared/models/solution';

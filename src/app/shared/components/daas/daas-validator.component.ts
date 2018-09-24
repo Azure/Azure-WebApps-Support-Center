@@ -3,7 +3,7 @@ import { ServerFarmDataService } from '../../services/server-farm-data.service';
 import { DaasService } from '../../services/daas.service';
 import { SiteDaasInfo } from '../../models/solution-metadata';
 import { DiagnoserDefinition } from '../../models/daas';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs'
 import { SiteService } from '../../services/site.service';
 
 @Component({

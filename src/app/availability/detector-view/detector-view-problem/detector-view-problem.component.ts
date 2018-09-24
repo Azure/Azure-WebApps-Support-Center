@@ -4,7 +4,7 @@ import { GraphHelper } from '../../../shared/utilities/graphHelper';
 import { SolutionUIModelBase } from '../../../shared/models/solution-ui-model/solution-ui-model-base';
 import { ISolution } from '../../../shared/models/solution';
 import { SolutionFactory } from '../../../shared/models/solution-ui-model/solutionfactory';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { ReplaySubject } from 'rxjs'
 import { SiteService } from '../../../shared/services/site.service';
 import { PortalActionService } from '../../../shared/services/portal-action.service';
 import { AvailabilityLoggingService } from '../../../shared/services/logging/availability.logging.service';

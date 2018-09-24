@@ -6,8 +6,8 @@ import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
 import { IMetricSet } from '../../../shared/models/detectorresponse';
 import { Message } from '../../models/message';
 import { ChartType } from '../../../shared/models/chartdata';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs'
+import { BehaviorSubject } from 'rxjs'
 import { BotLoggingService } from '../../../shared/services/logging/bot.logging.service';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 

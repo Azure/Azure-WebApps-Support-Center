@@ -1,11 +1,6 @@
 import { Component, OnInit, isDevMode } from '@angular/core';
 import { Router } from '@angular/router';
-import { INavigationItem } from "./shared/models/inavigationitem";
 import { AuthService } from './startup/services/auth.service';
-import { WindowService } from './startup/services/window.service';
-import { StartupInfo } from './shared/models/portal';
-import 'rxjs/add/operator/filter';
-import { environment } from '../environments/environment';
 
 @Component({
     selector: 'sc-app',
@@ -21,7 +16,7 @@ export class AppComponent implements OnInit {
         this._newVersionEnabled = value;
      }
 
-    constructor(private _authService: AuthService, private _router: Router) {
+    constructor(private _router: Router) {
     }
 
     ngOnInit() {
@@ -31,11 +26,13 @@ export class AppComponent implements OnInit {
             console.log('%c Logs that are normally published to the portal kusto logs will show up in the console', 'color: orange')
         }
 
-        if (this._authService.inIFrame || this._authService.hasLocalStartupInfo) {
-            this._router.navigate(['/resourceRedirect']);
-        }
-        else {
-            this._router.navigate(['/test']);
-        }
+        this._router.navigate(['/resourceRedirect']);
+
+        // if (window.parent !== window) {
+        //     this._router.navigate(['/resourceRedirect']);
+        // }
+        // else {
+        //     this._router.navigate(['/test']);
+        // }
     }
 }

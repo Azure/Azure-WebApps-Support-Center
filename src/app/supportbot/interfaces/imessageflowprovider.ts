@@ -1,6 +1,6 @@
 import { MessageGroup } from '../models/message-group';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs'
+import { BehaviorSubject } from 'rxjs'
 
 export class IMessageFlowProvider {
     protected additionalMessageFlows: BehaviorSubject<MessageGroup[]> = new BehaviorSubject<MessageGroup[]>(null);

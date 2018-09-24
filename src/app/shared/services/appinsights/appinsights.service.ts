@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs'
 import { StartupInfo, ResourceType } from '../../models/portal';
 import { Verbs } from '../../models/portal';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs'
 import { AuthService } from '../../../startup/services/auth.service';
 import { ArmService } from '../arm.service';
 import { SiteService } from '../site.service';
@@ -152,7 +152,7 @@ export class AppInsightsService {
 
     ExecuteQuery(query: string): Observable<any> {
         if (!this.isNotNullOrEmpty(query)) {
-            return Observable.from([]);
+            return Observable.of([]);
         }
 
         let resourceUri: string = `${this.appInsightsSettings.resourceUri}/api/query?query=${encodeURIComponent(query)}`;

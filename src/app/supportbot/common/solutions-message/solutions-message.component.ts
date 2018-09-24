@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Message } from '../../models/message';
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
 import { ISolution } from '../../../shared/models/solution';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs'
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 
 @Component({

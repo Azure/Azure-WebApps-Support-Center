@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { INavigationItem } from '../../models/inavigationitem';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import * as _ from 'underscore';
-import { WindowService } from '../../../startup/services/window.service';
 import { CustomReuseStrategy } from '../../../app-route-reusestrategy.service';
 
 @Component({
@@ -15,9 +13,9 @@ export class TabsComponent implements OnInit {
   public navigationItems: INavigationItem[];
   public contentMaxHeight: number;
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _windowService: WindowService, private _routeReuseStrategy: CustomReuseStrategy) {
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _routeReuseStrategy: CustomReuseStrategy) {
     this.navigationItems = [];
-    this.contentMaxHeight = this._windowService.window.innerHeight - 55;
+    this.contentMaxHeight = window.innerHeight - 55;
   }
 
   ngOnInit() {
@@ -41,7 +39,7 @@ export class TabsComponent implements OnInit {
         }
 
         let url = this._router.url.split('?')[0]
-        let existingTab = _.find(this.navigationItems, (item) => { return item.url.split('?')[0] === url });
+        let existingTab = this.navigationItems.find(item => { return item.url.split('?')[0] === url });
 
         if (!existingTab) {
           existingTab = {

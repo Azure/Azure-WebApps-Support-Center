@@ -8,8 +8,6 @@ import { PortalService } from '../../startup/services/portal.service';
 import { ArmService } from './arm.service';
 import { AuthService } from '../../startup/services/auth.service';
 
-import 'rxjs/add/operator/mergeMap';
-
 @Injectable()
 export class PortalActionService {
     public apiVersion = "2016-08-01";

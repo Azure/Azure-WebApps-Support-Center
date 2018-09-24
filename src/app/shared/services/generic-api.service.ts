@@ -1,13 +1,9 @@
 import { Http, Headers, Response, Request } from '@angular/http';
 import { Injectable, EventEmitter } from '@angular/core';
 import { ResponseMessageEnvelope } from '../models/responsemessageenvelope'
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs'
 import { AuthService } from '../../startup/services/auth.service';
 import { ArmService } from './arm.service';
-
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
 import { DetectorResponse, DetectorMetaData } from 'applens-diagnostics/src/app/diagnostic-data/models/detector';
 
 @Injectable()

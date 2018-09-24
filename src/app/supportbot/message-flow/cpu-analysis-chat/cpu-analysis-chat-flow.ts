@@ -7,8 +7,8 @@ import { SolutionsMessage } from '../../common/solutions-message/solutions-messa
 import { GraphMessage, GraphMessageData } from '../../common/graph-message/graph-message.component';
 import { ProblemStatementMessage } from '../../common/problem-statement-message/problem-statement-message.component';
 import { IDetectorResponse } from '../../../shared/models/detectorresponse';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs'
+import { BehaviorSubject } from 'rxjs'
 import { ISolution } from '../../../shared/models/solution';
 import { SiteInfoMetaData } from '../../../shared/models/site';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';

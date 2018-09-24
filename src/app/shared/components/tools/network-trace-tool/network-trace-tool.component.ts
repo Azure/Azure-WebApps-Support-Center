@@ -6,7 +6,7 @@ import { StepWizardSingleStep } from '../../../models/step-wizard-single-step';
 import { SiteInfoMetaData } from '../../../models/site';
 import { ServerFarmDataService } from '../../../services/server-farm-data.service';
 import { UriElementsService } from '../../../services/urielements.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs'
 import { ArmService } from '../../../services/arm.service';
 import { NetworkTraceResult } from '../../../models/network-trace';
 

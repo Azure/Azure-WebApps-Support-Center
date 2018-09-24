@@ -1,12 +1,10 @@
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
 import { IDetectorResponse } from '../../shared/models/detectorresponse';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs'
 import { GraphHelper } from '../../shared/utilities/graphHelper';
 import { SupportBladeDefinitions } from '../../shared/models/portal';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+import { BehaviorSubject } from 'rxjs'
 import { PortalActionService } from '../../shared/services/portal-action.service';
 import { AvailabilityLoggingService } from '../../shared/services/logging/availability.logging.service';
 

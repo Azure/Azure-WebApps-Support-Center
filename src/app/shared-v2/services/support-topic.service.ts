@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DiagnosticService, DetectorMetaData } from 'applens-diagnostics';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs'
 import { ResourceService } from './resource.service';
 
 @Injectable()

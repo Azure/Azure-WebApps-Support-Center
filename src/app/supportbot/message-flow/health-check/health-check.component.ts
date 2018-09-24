@@ -6,11 +6,9 @@ import { Cache } from '../../../shared/models/icache';
 import { IDetectorResponse } from '../../../shared/models/detectorresponse';
 import { IAppAnalysisResponse } from '../../../shared/models/appanalysisresponse';
 import { GraphHelper } from '../../../shared/utilities/graphHelper';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin';
-import * as _ from 'underscore';
+import { Observable } from 'rxjs';
 import { OperatingSystem, Site, SiteExtensions } from '../../../shared/models/site';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 import { BotLoggingService } from '../../../shared/services/logging/bot.logging.service';
 import { SiteService } from '../../../shared/services/site.service';
@@ -223,9 +221,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
 
         detectorResponses.forEach((item: IDetectorResponse) => {
             let name = item.detectorDefinition.name;
-            let category = _.find(this.healthCheckpoints, (entry) => {
-                return entry.detector.toLowerCase() === name.toLowerCase();
-            });
+            let category = this.healthCheckpoints.find(entry => entry.detector.toLowerCase() === name.toLowerCase());
 
             if (category) {
                 switch (category.detector.toLowerCase()) {

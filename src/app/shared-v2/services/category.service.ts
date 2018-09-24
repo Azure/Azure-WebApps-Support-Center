@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Category } from '../models/category';
 import { DiagnosticService } from 'applens-diagnostics';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs'
 
 @Injectable()
 export class CategoryService {

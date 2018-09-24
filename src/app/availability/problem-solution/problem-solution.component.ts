@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IAppAnalysisResponse } from '../../shared/models/appanalysisresponse';
 import { IDetectorAbnormalTimePeriod } from '../../shared/models/detectorresponse';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs'
 import { ISolution } from '../../shared/models/solution';
 import { AvailabilityLoggingService } from '../../shared/services/logging/availability.logging.service';
 import { DetectorViewStateService } from '../../shared/services/detector-view-state.service';

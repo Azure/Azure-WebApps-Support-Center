@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subcategory, Category } from '../models/problem-category';
 import { OperatingSystem } from '../models/site';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs'
 import { ToolNames } from '../models/tools-constants';
 import { GenericApiService } from './generic-api.service';
 import { AuthService } from '../../startup/services/auth.service';

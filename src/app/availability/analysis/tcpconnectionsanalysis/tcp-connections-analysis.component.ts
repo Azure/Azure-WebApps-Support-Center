@@ -4,8 +4,7 @@ import { IDetectorAbnormalTimePeriod, IDetectorResponse } from '../../../shared/
 import { SummaryViewModel, SummaryHealthStatus } from '../../../shared/models/summary-view-model';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs'
 import { ActivatedRoute } from '@angular/router';
 import { MetaDataHelper } from '../../../shared/utilities/metaDataHelper';
 import '../../../shared/polyfills/string'

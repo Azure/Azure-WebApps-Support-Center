@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs'
 import { StartupInfo } from '../../shared/models/portal';
 import { AppInsightsService } from '../../shared/services/appinsights/appinsights.service';
 import { PortalActionService } from '../../shared/services/portal-action.service';

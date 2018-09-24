@@ -2,7 +2,7 @@ import { Injectable, Host } from '@angular/core';
 import { ArmService } from './arm.service';
 import { AuthService } from '../../startup/services/auth.service';
 import { StartupInfo, ResourceType } from '../models/portal';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs'
 import { HostingEnvironment, AseInfoMetaData } from '../models/hostingEnvironment';
 import { ResponseMessageEnvelope } from '../models/responsemessageenvelope';
 

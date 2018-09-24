@@ -2,11 +2,7 @@ import { SolutionUIModelBase } from './solution-ui-model-base';
 import { SolutionProperties, SubAction } from './solutionproperties';
 import { SolutionType, ActionType, ActionStatus } from '../enumerations';
 import { INameValuePair } from '../namevaluepair';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/finally';
+import { Observable } from 'rxjs'
 import { AvailabilityLoggingService } from '../../services/logging/availability.logging.service';
 import { SiteService } from '../../services/site.service';
 
