@@ -12,15 +12,13 @@ const _hostingEnvironmentResourceUrl: string = 'legacy/subscriptions/:subscripti
 @NgModule({
   imports: [
     CommonModule,
-    //TODO: When releasing publicly, call these pages 'Legacy Home'
     RouterModule.forChild(
       [
         {
           path: _siteResourceUrl + '/diagnostics',
           component: HomepageComponent,
           data: {
-            navigationTitle: 'Home',
-            //navigationTitle: 'Legacy Home',
+            navigationTitle: 'Legacy Home',
             cacheComponent: true
           }
         },
@@ -28,8 +26,7 @@ const _hostingEnvironmentResourceUrl: string = 'legacy/subscriptions/:subscripti
           path: _slotResourceUrl + '/diagnostics',
           component: HomepageComponent,
           data: {
-            navigationTitle: 'Home',
-            //navigationTitle: 'Legacy Home',
+            navigationTitle: 'Legacy Home',
             cacheComponent: true
           }
         },
@@ -37,8 +34,7 @@ const _hostingEnvironmentResourceUrl: string = 'legacy/subscriptions/:subscripti
           path: _hostingEnvironmentResourceUrl + '/diagnostics',
           component: HomepageComponent,
           data: {
-            navigationTitle: 'Home',
-            //navigationTitle: 'Legacy Home',
+            navigationTitle: 'Legacy Home',
             cacheComponent: true
           }
         },
