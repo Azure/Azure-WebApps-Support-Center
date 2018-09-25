@@ -6,7 +6,7 @@ textarea {
     border: 1px solid rgba(0, 0, 0, 0.14);
     padding: 5px 15px;
     width: 80%;
-    height: 450px;
+    height: 350px;
     overflow-y: hidden;
 }
 
@@ -25,6 +25,8 @@ textarea {
 
 .article-container {
     display: flex;
+    overflow-y: scroll;
+    height: 270px;
 }
 
 .article {

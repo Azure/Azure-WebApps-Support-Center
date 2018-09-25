@@ -1,10 +1,10 @@
 .detector-summary-container {
     margin: 10px 0px;
-    width: fit-content;
+    display: table;
 }
 
 .with-full-report {
-    border: 1px solid #0000001a;
+    border: 1px solid #dddddd;
     padding: 10px;
 }
 

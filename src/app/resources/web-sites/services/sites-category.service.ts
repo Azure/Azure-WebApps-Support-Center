@@ -127,7 +127,7 @@ export class SitesCategoryService extends CategoryService {
       item: {
         id: 'DiagnosticTools',
         name: 'Diagnostic Tools',
-        description: 'Having trouble with certificates and custom domains? Discover any issues related to SSL certificates, authentication, and domain management.',
+        description: 'Sometimes deeper investigation is necessary. With Diagnostic Tools, you can run language-specific tools to profile your app, collect network traces, memory dumps, and more.',
         keywords: ['Profiler', 'Memory Dump', 'DaaS', 'AutoHeal', 'Metrics'],
         color: 'rgb(170, 192, 208)',
         createFlowForCategory: false,

@@ -23,11 +23,15 @@
             "styles": [
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/@swimlane/ngx-datatable/release/index.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css",
               "src/styles/global.css",
               "src/styles/bot.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
           },
           "configurations": {
             "production": {
