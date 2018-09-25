@@ -75,7 +75,7 @@ export class SitesCategoryService extends CategoryService {
     //Windows and Linux
     {
       appType: AppType.WebApp,
-      platform: OperatingSystem.windows,
+      platform: OperatingSystem.windows | OperatingSystem.linux,
       stack: '',
       sku: Sku.All,
       item: {
