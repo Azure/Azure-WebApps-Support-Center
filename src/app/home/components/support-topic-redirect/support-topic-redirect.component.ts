@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SupportTopicService } from '../../../shared-v2/services/support-topic.service';
+import { SiteSupportTopicService } from '../../../resources/web-sites/services/site-support-topic.service';
 
 @Component({
   selector: 'support-topic-redirect',
@@ -9,7 +9,7 @@ import { SupportTopicService } from '../../../shared-v2/services/support-topic.s
 })
 export class SupportTopicRedirectComponent implements OnInit {
 
-  constructor(private _activatedRoute: ActivatedRoute, private _router: Router, private _supportTopicService: SupportTopicService) { }
+  constructor(private _activatedRoute: ActivatedRoute, private _router: Router, private _supportTopicService: SiteSupportTopicService) { }
 
   ngOnInit() {
     this._supportTopicService.getPathForSupportTopic(this._activatedRoute.snapshot.queryParams.supportTopicId, this._activatedRoute.snapshot.queryParams.pesId).subscribe(path => {

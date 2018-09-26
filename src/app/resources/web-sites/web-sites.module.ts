@@ -55,6 +55,7 @@ const ResourceRoutes = RouterModule.forChild([
     SiteFeatureService,
     LoggingV2Service,
     LiveChatService,
+    SiteSupportTopicService,
     { provide: ResourceService, useExisting: WebSitesService },
     { provide: CategoryService, useClass: SitesCategoryService },
     { provide: FeatureService, useExisting: SiteFeatureService },
