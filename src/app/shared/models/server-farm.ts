@@ -26,9 +26,10 @@ export enum Sku {
     Basic = 1 << 2,
     Standard = 1 << 3,
     Premium = 1 << 4,
-    Dynamic = 1 << 5,
-    Paid = 25,
-    NotDynamic = 31, // 011111
+    PremiumV2 = 1 << 5,
+    Dynamic = 1 << 6,
+    Paid = 60, // 111100
+    NotDynamic = 63, // 0111111
     All = 255 // 11111111
 }
 
