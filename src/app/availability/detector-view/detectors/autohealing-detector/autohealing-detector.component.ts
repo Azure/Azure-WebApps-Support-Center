@@ -12,15 +12,13 @@ import { IDetectorResponse } from '../../../../shared/models/detectorresponse';
 })
 export class AutohealingDetectorComponent extends DetectorViewBaseComponent implements OnInit {
 
-  detectorHasData: boolean = false;
-
   constructor(protected _route: ActivatedRoute, protected _appAnalysisService: AppAnalysisService, protected _detectorControlService: DetectorControlService) {
     super(_route, _appAnalysisService, _detectorControlService);
   }
   getDetectorName(): string {
     return "autoheal";
   }
-  
+
   static getDetectorName(): string {
     return 'autoheal';
   }
@@ -34,6 +32,6 @@ export class AutohealingDetectorComponent extends DetectorViewBaseComponent impl
     this.detectorMetrics = response.metrics;
     this.detectorMetricsTitle = this.detectorMetricsTitle != undefined && this.detectorMetricsTitle != '' ?
       this.detectorMetricsTitle : response.detectorDefinition.displayName;
-    this.detectorHasData = this.detectorResponse && this.detectorResponse.data.length > 0;
+
   }
 }
