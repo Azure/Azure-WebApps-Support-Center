@@ -80,6 +80,9 @@ import { NotificationService } from '../shared-v2/services/notification.service'
 import { TestInputComponent } from './components/test-input/test-input.component';
 import { ResourceRedirectComponent } from './components/resource-redirect/resource-redirect.component';
 import { TileListComponent } from './components/tile-list/tile-list.component';
+import { BackendCtrlService } from './services/backend-ctrl.service';
+import { GenericCommsService } from './services/generic-comms.service';
+import { GenericCommsComponent } from './components/generic-comms/generic-comms.component';
 
 @NgModule({
     declarations: [
@@ -136,7 +139,8 @@ import { TileListComponent } from './components/tile-list/tile-list.component';
         NotificationComponent,
         TestInputComponent,
         ResourceRedirectComponent,
-        TileListComponent
+        TileListComponent,
+        GenericCommsComponent
     ],
     imports: [
         HttpModule,
@@ -200,7 +204,8 @@ import { TileListComponent } from './components/tile-list/tile-list.component';
         TimespanComponent,
         ToggleButtonComponent,
         DaasScaleupComponent,
-        TileListComponent
+        TileListComponent,
+        GenericCommsComponent
     ]
 })
 export class SharedModule {
@@ -232,6 +237,8 @@ export class SharedModule {
                 LiveChatService,
                 AutohealingService,
                 NotificationService,
+                BackendCtrlService,
+                GenericCommsService,
                 GroupByPipe
             ]
         }

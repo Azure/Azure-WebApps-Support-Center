@@ -1,6 +1,5 @@
 import { Component, OnInit, isDevMode } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from './startup/services/auth.service';
 
 @Component({
     selector: 'sc-app',

@@ -676,3 +676,7 @@ a:hover{
 ngu-tile > .tile {
     box-shadow: none !important;
 }
+
+.comm-action-button:hover {
+    text-decoration: none;
+}

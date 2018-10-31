@@ -8,11 +8,12 @@ import { AppComponent } from './app.component';
 import { CustomReuseStrategy } from './app-route-reusestrategy.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StartupModule } from './startup/startup.module';
-import { DiagnosticDataModule, PUBLIC_CONFIGURATION, DiagnosticService } from 'applens-diagnostics';
+import { DiagnosticDataModule, PUBLIC_CONFIGURATION, DiagnosticService, CommsService } from 'applens-diagnostics';
 import { GenericApiService } from './shared/services/generic-api.service';
 import { TestInputComponent } from './shared/components/test-input/test-input.component';
 import { ResourceRedirectComponent } from './shared/components/resource-redirect/resource-redirect.component';
 import { LegacyHomeModule } from './legacy-home/legacy-home.module';
+import { GenericCommsService } from './shared/services/generic-comms.service';
 
 @NgModule({
   imports: [
@@ -52,7 +53,7 @@ import { LegacyHomeModule } from './legacy-home/legacy-home.module';
         path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/hostingenvironments/:resourcename',
         loadChildren: 'app/resources/web-hosting-environments/web-hosting-environments.module#WebHostingEnvironmentsModule'
       }
-      
+
     ])
   ],
   declarations: [
@@ -61,7 +62,8 @@ import { LegacyHomeModule } from './legacy-home/legacy-home.module';
   providers: [
     CustomReuseStrategy,
     { provide: RouteReuseStrategy, useExisting: CustomReuseStrategy },
-    { provide: DiagnosticService, useExisting: GenericApiService }
+    { provide: DiagnosticService, useExisting: GenericApiService },
+    { provide: CommsService, useExisting: GenericCommsService }
   ],
   bootstrap: [AppComponent]
 })

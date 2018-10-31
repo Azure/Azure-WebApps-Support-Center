@@ -1,23 +1,15 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# compiled output
-/dist
-/dist-server
-/tmp
-/out-tsc
+# Build Directories
+/bin
+/obj
 /wwwroot
 
-# dependencies
-/node_modules
+# Publishing Profiles
+/Properties/PublishProfiles
 
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+# User Project File
+*.csproj.user
 
 # IDE - VSCode
 .vscode/*
@@ -25,6 +17,10 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# IDE - Visual Studio
+.vs/*
+*.sln
 
 # misc
 /.sass-cache
@@ -35,16 +31,13 @@ npm-debug.log
 testem.log
 /typings
 
-# e2e
-/e2e/*.js
-/e2e/*.map
-
 # System Files
 .DS_Store
 Thumbs.db
 
-# localhost self signed cert
-/ssl/*.crt
-/ssl/*.key
+# local app settings
+appsettings.Development.json
+appsettings.Local.json
 
-package-lock.json
+# Nuget
+/packages

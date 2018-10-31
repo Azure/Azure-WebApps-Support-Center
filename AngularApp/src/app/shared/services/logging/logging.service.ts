@@ -187,4 +187,15 @@ export class LoggingService {
             active: hasActiveIncident
         });
     }
+
+    LogAzureCommShown(incidentId: string, incidentTitle: string, commType: string, expanded: boolean, isActive: boolean, lastIncidentUpdate: string) {
+        this._log(CommonLogEventType[CommonLogEventType.AzureComm], 'AzureComm', {
+            incidentId: incidentId,
+            incidentTitle: incidentTitle,
+            expandedByDefault: expanded,
+            isActive: isActive,
+            lastIncidentUpdate: lastIncidentUpdate,
+            type: commType
+        });
+    }
 }

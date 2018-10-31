@@ -10,7 +10,8 @@ export enum CommonLogEventType {
     TabClosed,
     IncidentNotification,
     IncidentDetails,
-    IncidentDismissed
+    IncidentDismissed,
+    AzureComm
 }
 
 export enum AvailabilityEventType {
