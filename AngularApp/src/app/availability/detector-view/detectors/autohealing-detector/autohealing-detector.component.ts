@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { IDetectorResponse } from '../../../../shared/models/detectorresponse';
+import { DetectorViewBaseComponent } from '../../detector-view-base/detector-view-base.component';
 import { ActivatedRoute } from '@angular/router';
 import { AppAnalysisService } from '../../../../shared/services/appanalysis.service';
-import { DetectorViewBaseComponent } from '../../detector-view-base/detector-view-base.component';
 import { DetectorControlService } from 'applens-diagnostics';
-import { IDetectorResponse } from '../../../../shared/models/detectorresponse';
 
 @Component({
   selector: 'autohealing-detector',
   templateUrl: './autohealing-detector.component.html',
   styleUrls: ['./autohealing-detector.component.css']
 })
+
 export class AutohealingDetectorComponent extends DetectorViewBaseComponent implements OnInit {
 
   constructor(protected _route: ActivatedRoute, protected _appAnalysisService: AppAnalysisService, protected _detectorControlService: DetectorControlService) {
