@@ -3,7 +3,6 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { SolutionsModule } from '../solutions/solutions.module';
 import { DiagnosticDataModule, PUBLIC_CONFIGURATION } from 'applens-diagnostics';
-import { AutoHealingModule } from '../auto-healing/auto-healing.module';
 
 import { AvailabilityComponent } from './availability.component';
 import { AppCurrentHealthComponent } from './currenthealth/app-current-health.component';
@@ -38,6 +37,7 @@ import { AppInsightsDependenciesComponent } from './app-insights/dependencies/ap
 import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalysis/tcp-connections-analysis.component';
 import { ProblemSolutionComponent } from './problem-solution/problem-solution.component';
 import { DetectorLoaderComponent } from './detector-view/detector-loader/detector-loader.component';
+import { AutohealingDetectorComponent } from './detector-view/detectors/autohealing-detector/autohealing-detector.component';
 
 @NgModule({
     declarations: [
@@ -73,13 +73,13 @@ import { DetectorLoaderComponent } from './detector-view/detector-loader/detecto
         AppInsightsDependenciesComponent,
         ProblemSolutionComponent,
         DetectorLoaderComponent,
+        AutohealingDetectorComponent,
     ],
     imports: [
         RouterModule.forChild(AvailabilityAndPerformanceCategoryRouteConfig),
         SharedModule,
         SolutionsModule,
-        DiagnosticDataModule,
-        AutoHealingModule
+        DiagnosticDataModule
     ],
     exports: [
         ObservationsComponent,
@@ -88,7 +88,9 @@ import { DetectorLoaderComponent } from './detector-view/detector-loader/detecto
         DetectorViewProblemComponent,
         AppInsightsTileComponent,
         AppInsightsSettingsComponent,
-        ProblemSolutionComponent
+        ProblemSolutionComponent,
+        AutohealingDetectorComponent,
+        DetectorLoaderComponent
     ]
 })
 export class AvailabilityModule {

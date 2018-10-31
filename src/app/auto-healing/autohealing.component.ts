@@ -1,22 +1,18 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DetectorViewBaseComponent } from '../availability/detector-view/detector-view-base/detector-view-base.component';
 import { SiteInfoMetaData } from '../shared/models/site';
 import { SiteService } from '../shared/services/site.service';
 import { AutohealingService } from '../shared/services/autohealing.service';
-import { IDetectorResponse } from '../shared/models/detectorresponse';
 import { FormatHelper } from '../shared/utilities/formattingHelper';
-import { AppAnalysisService } from '../shared/services/appanalysis.service';
 import { AutoHealSettings, AutoHealCustomAction, AutoHealRules, AutoHealActions, AutoHealTriggers, AutoHealActionType } from '../shared/models/autohealing';
 import { AvailabilityLoggingService } from '../shared/services/logging/availability.logging.service';
-import { DetectorControlService } from '../../../node_modules/applens-diagnostics';
 
 @Component({
   selector: 'autohealing',
   templateUrl: './autohealing.component.html',
   styleUrls: ['./autohealing.component.css']
 })
-export class AutohealingComponent extends DetectorViewBaseComponent implements OnInit {
+export class AutohealingComponent implements OnInit {
   @Input()
   autohealingSettings: AutoHealSettings;
   originalAutoHealSettings: AutoHealSettings;
@@ -44,25 +40,15 @@ export class AutohealingComponent extends DetectorViewBaseComponent implements O
   validationWarning: string[];
   selectedTab:string = "autoHealing";
 
-  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, private _logger: AvailabilityLoggingService, protected _route: ActivatedRoute, protected _appAnalysisService: AppAnalysisService, protected _detectorControlService: DetectorControlService) {
-    super(_route, _appAnalysisService, _detectorControlService);
+  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, private _logger: AvailabilityLoggingService, protected _route: ActivatedRoute) {
   }
 
-  getDetectorName(): string {
-    return "autoheal";
-  }
 
-  processDetectorResponse(response: IDetectorResponse) {
-    this.detectorResponse = response;
-    this.detectorMetrics = response.metrics;
-    this.detectorMetricsTitle = this.detectorMetricsTitle != undefined && this.detectorMetricsTitle != '' ?
-      this.detectorMetricsTitle : response.detectorDefinition.displayName;
-    this.detectorHasData = this.detectorResponse && this.detectorResponse.data.length > 0;
-  }
+ 
 
   ngOnInit() {
 
-    super.ngOnInit();
+
     this._siteService.currentSiteMetaData.subscribe(siteInfo => {
       if (siteInfo) {
         this.siteToBeDiagnosed = siteInfo;
