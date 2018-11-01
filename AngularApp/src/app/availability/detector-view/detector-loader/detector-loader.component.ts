@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, ComponentFactory, ComponentFactoryResolver, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, ComponentFactory, ComponentFactoryResolver, OnDestroy, ComponentRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DetectorViewBaseComponent } from '../detector-view-base/detector-view-base.component';
 import { DetectorControlService, LoadingStatus } from '../../../../../node_modules/applens-diagnostics';
@@ -42,6 +42,7 @@ export class DetectorLoaderComponent implements OnInit, OnDestroy {
 
   dynamicDetectorInstance: DetectorViewBaseComponent;
   componentFactory: ComponentFactory<{}>;
+  componentRef: ComponentRef<{}>;
 
   @ViewChild('dynamicDataContainer', { read: ViewContainerRef }) dynamicDetectorContainer: ViewContainerRef;
 
@@ -67,6 +68,8 @@ export class DetectorLoaderComponent implements OnInit, OnDestroy {
 
     let component = this._activatedRoute.snapshot.data['detectorComponent'];
     this.componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
+    this.componentRef = this.dynamicDetectorContainer.createComponent(this.componentFactory);
+    this.dynamicDetectorInstance = <DetectorViewBaseComponent>(this.componentRef.instance);
 
     this.detectorName = component.getDetectorName();
 
@@ -92,6 +95,8 @@ export class DetectorLoaderComponent implements OnInit, OnDestroy {
   private _refresh() {
     this.loading = true;
     this.detectorResponse = null;
+    //this.dynamicDetectorContainer.clear();
+    this.dynamicDetectorInstance.detectorResponseObject = null;
     this._clearRequestSubscriptions();
     this._getData(true);
   }
@@ -99,9 +104,8 @@ export class DetectorLoaderComponent implements OnInit, OnDestroy {
   private _getData(invalidateCache: boolean = false) {
     this.detectorSubscription = this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, this.category, this.detectorName, invalidateCache, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString)
       .subscribe(response => {
-        this.dynamicDetectorContainer.clear();
-        let componentRef = this.dynamicDetectorContainer.createComponent(this.componentFactory);
-        this.dynamicDetectorInstance = <DetectorViewBaseComponent>(componentRef.instance);
+        // let componentRef = this.dynamicDetectorContainer.createComponent(this.componentFactory);
+        
         this.dynamicDetectorInstance.detectorResponseObject = response;
         this.loading = false;
       });

@@ -48,6 +48,11 @@ export class InstanceViewGraphComponent implements OnInit {
                     this.selectInstance(this.selectedInstance && this.selectedInstance !== '' ? this.selectedInstance : this.allChartData[0].roleInstance);
                 }
             }
+            else {
+                this.allChartData = null;
+                this.allInstances = null;
+                this.chartData = null;
+            }
         });
     }
 

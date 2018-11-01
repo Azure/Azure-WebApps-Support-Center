@@ -98,6 +98,11 @@ export class DetectorViewProblemComponent implements OnInit {
                     }
                     this.loading = false;
                 }
+                else {
+                    this.abnormalTimePeriods = [];
+                    this.solutionUIModel = [];
+                    this.loading = true;
+                }
             });
         }
     }

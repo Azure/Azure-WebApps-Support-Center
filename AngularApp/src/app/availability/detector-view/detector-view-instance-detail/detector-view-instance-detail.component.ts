@@ -31,6 +31,11 @@ export class DetectorViewInstanceDetailComponent extends DetectorViewBaseCompone
     instanceDetailChartType: ChartType;
     instanceDetailYAxisLabel: string;
 
+    refresh() {
+        super.refresh();
+        this.instanceDetailMetrics = null;
+    }
+
     logInstanceSelected(instance: string){
         this._logger.LogDetectorViewInstanceSelected(this.getDetectorName(), instance);
     }

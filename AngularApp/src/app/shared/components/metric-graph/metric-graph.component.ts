@@ -44,6 +44,9 @@ export class MetricGraphComponent implements OnInit {
                 this.chartOptions.chart.margin.bottom = 40;
                 this.chartData = GraphHelper.parseMetricsToChartDataPerInstance(metricSets, 0, false, this.instancesToSelect);
             }
+            else {
+                this.chartData = null;
+            }
         });
     }
 }
