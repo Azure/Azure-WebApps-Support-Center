@@ -12,6 +12,7 @@ import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalys
 import { IncidentSummaryComponent } from '../shared/components/incident-summary/incident-summary.component';
 import { GenericDetectorComponent } from '../shared/components/generic-detector/generic-detector.component';
 import { TabTitleResolver } from '../shared/resolvers/tab-name.resolver';
+import { DetectorLoaderComponent } from './detector-view/detector-loader/detector-loader.component';
 
 const AvailabilityCommonRouteConfig: Route[] = [
     {
@@ -28,9 +29,10 @@ const AvailabilityCommonRouteConfig: Route[] = [
     },
     {
         path: 'detectors/sitecpuanalysis/focus',
-        component: SiteCpuAnalysisDetectorComponent,
+        component: DetectorLoaderComponent,
         data: {
-            navigationTitle: 'CPU Analysis'
+            navigationTitle: 'CPU Analysis',
+            detectorComponent: SiteCpuAnalysisDetectorComponent
         }
     }
 ];
@@ -43,9 +45,10 @@ const PerformanceCommonRouteConfig: Route[] = [
     },
     {
         path: 'detectors/sitecpuanalysis/focus',
-        component: SiteCpuAnalysisDetectorComponent,
+        component: DetectorLoaderComponent,
         data: {
-            navigationTitle: 'CPU Analysis'
+            navigationTitle: 'CPU Analysis',
+            detectorComponent: SiteCpuAnalysisDetectorComponent
         }
     }
 ];
