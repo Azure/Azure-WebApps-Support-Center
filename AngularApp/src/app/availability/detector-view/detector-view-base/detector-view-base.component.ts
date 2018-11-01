@@ -66,7 +66,6 @@ export class DetectorViewBaseComponent implements OnInit {
 
 
         this.detectorResponseSubject.subscribe(response => {
-           
             if(this.setFirstValue && !response) {
                 this.refresh();
             }
@@ -81,7 +80,6 @@ export class DetectorViewBaseComponent implements OnInit {
     protected refresh() {
         this.detectorResponse = null;
         this.detectorMetrics = null;
-        //this.detectorMetricsTitle = null;
     }
 
     processTopLevelDetectorResponse(response: IDetectorResponse) {

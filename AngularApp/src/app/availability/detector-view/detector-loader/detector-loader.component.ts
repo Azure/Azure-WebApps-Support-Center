@@ -95,7 +95,6 @@ export class DetectorLoaderComponent implements OnInit, OnDestroy {
   private _refresh() {
     this.loading = true;
     this.detectorResponse = null;
-    //this.dynamicDetectorContainer.clear();
     this.dynamicDetectorInstance.detectorResponseObject = null;
     this._clearRequestSubscriptions();
     this._getData(true);
@@ -104,8 +103,6 @@ export class DetectorLoaderComponent implements OnInit, OnDestroy {
   private _getData(invalidateCache: boolean = false) {
     this.detectorSubscription = this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, this.category, this.detectorName, invalidateCache, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString)
       .subscribe(response => {
-        // let componentRef = this.dynamicDetectorContainer.createComponent(this.componentFactory);
-        
         this.dynamicDetectorInstance.detectorResponseObject = response;
         this.loading = false;
       });
