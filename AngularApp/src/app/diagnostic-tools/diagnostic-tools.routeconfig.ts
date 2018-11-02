@@ -11,6 +11,7 @@ import { AutohealingComponent } from "../auto-healing/autohealing.component";
 import { NetworkTraceToolComponent } from "../shared/components/tools/network-trace-tool/network-trace-tool.component";
 import { DaasMainComponent } from "../shared/components/daas-main/daas-main.component";
 import { Route } from "@angular/router";
+import { AutohealingDetectorComponent } from "../availability/detector-view/detectors/autohealing-detector/autohealing-detector.component";
 
 export const DiagnosticToolsRoutes: Route[] = [
     // CLR Profiling Tool
@@ -91,6 +92,7 @@ export const DiagnosticToolsRoutes: Route[] = [
         component: AutohealingComponent,
         data: {
             navigationTitle: 'Mitigate',
+            detectorComponent:AutohealingDetectorComponent
         }
     },
     // Network Trace 

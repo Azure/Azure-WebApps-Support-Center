@@ -14,12 +14,13 @@ import { CommittedMemoryUsageComponent } from '../detectors/committed-memory-det
 import { PageFileOperationsComponent } from '../detectors/page-operations-detector/page-operations-detector.component';
 import { AspNetCoreComponent } from '../detectors/aspnetcore-detector/aspnetcore-detector.component';
 import { Subscription } from 'rxjs';
+import { AutohealingDetectorComponent } from '../detectors/autohealing-detector/autohealing-detector.component';
 
 @Component({
   selector: 'detector-loader',
   templateUrl: './detector-loader.component.html',
   styleUrls: ['./detector-loader.component.css'],
-  entryComponents: [SiteCpuAnalysisDetectorComponent, SiteMemoryAnalysisDetectorComponent,ThreadDetectorComponent, FrebAnalysisDetectorComponent, PhpLogAnalyzerComponent, DockerContainerIntializationComponent, CommittedMemoryUsageComponent, PageFileOperationsComponent, AspNetCoreComponent, DetectorViewBaseComponent ],
+  entryComponents: [SiteCpuAnalysisDetectorComponent, SiteMemoryAnalysisDetectorComponent, ThreadDetectorComponent, FrebAnalysisDetectorComponent, PhpLogAnalyzerComponent, DockerContainerIntializationComponent, CommittedMemoryUsageComponent, PageFileOperationsComponent, AspNetCoreComponent, AutohealingDetectorComponent, DetectorViewBaseComponent],
 })
 export class DetectorLoaderComponent implements OnInit, OnDestroy {
 
@@ -84,7 +85,7 @@ export class DetectorLoaderComponent implements OnInit, OnDestroy {
     if (this.updateSubscription) {
       this.updateSubscription.unsubscribe();
     }
-    
+
     this._clearRequestSubscriptions();
   }
 
@@ -108,7 +109,7 @@ export class DetectorLoaderComponent implements OnInit, OnDestroy {
 
   private _clearRequestSubscriptions() {
     if (this.detectorSubscription) {
-        this.detectorSubscription.unsubscribe();
+      this.detectorSubscription.unsubscribe();
     }
   }
 }

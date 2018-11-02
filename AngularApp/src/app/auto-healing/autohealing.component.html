@@ -155,17 +155,6 @@
     </div>
   </div>
   <div *ngIf="selectedTab === 'autoHealingHistory'" style="border: 1px solid #adb0b7">
-    <div *ngIf="detectorHasData">
-      <div style="margin-left:10px;margin-top:15px">
-        The below graph shows all the autohealing invocations in the last 24 hours
-      </div>
-      <div style="padding:15px">
-        <metric-graph [metricSets]="detectorMetrics" [title]="detectorMetricsTitle" [chartType]="metricsChartType"
-          [yAxisLabel]="detectorMetricsYAxisLabel"></metric-graph>
-      </div>
-    </div>
-    <div *ngIf="!detectorHasData" style="margin:10px">
-      Found no Autoheal events for this web app in the last 24 hours.
-    </div>
+    <detector-loader ></detector-loader>
   </div>
 </div>

@@ -12,6 +12,7 @@ import { CommittedMemoryUsageComponent } from './detectors/committed-memory-dete
 import { PageFileOperationsComponent } from './detectors/page-operations-detector/page-operations-detector.component';
 import { AspNetCoreComponent } from "./detectors/aspnetcore-detector/aspnetcore-detector.component";
 import { DetectorLoaderComponent } from './detector-loader/detector-loader.component';
+import { AutohealingDetectorComponent } from './detectors/autohealing-detector/autohealing-detector.component';
 
 export const DetectorViewRouteConfig: Route[] = [
     {
@@ -84,6 +85,14 @@ export const DetectorViewRouteConfig: Route[] = [
         data: {
             navigationTitle: 'AspNetCore Logs',
             detectorComponent: AspNetCoreComponent
+        } 
+    },
+    { 
+        path: 'autoheal', 
+        component: DetectorLoaderComponent,
+        data: {
+            navigationTitle: 'Autohealing Events',
+            detectorComponent: AutohealingDetectorComponent
         } 
     },
     { 
