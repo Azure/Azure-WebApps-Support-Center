@@ -104,13 +104,19 @@ namespace Backend.Services
                     if (rca != null && ((currentTimeUTC - rca.PublishedTime) <= _commAlertWindow))
                     {
                         rca.IsAlert = true;
-                        rca.IsExpanded = ((currentTimeUTC - rca.PublishedTime) <= _commExpandedWindow);
+                        rca.IsExpanded = false;
+                        // NOTE:- For now, resolved incidents will be collapsed by Default.
+                        // Uncommenting below line would make resolved incidents expanded by default for certain timespan.
+                        //rca.IsExpanded = ((currentTimeUTC - rca.PublishedTime) <= _commExpandedWindow);
                         impactedServiceComm = rca;
                     }
                     else if ((currentTimeUTC - mostRecentImpactedServiceComm.PublishedTime) <= _commAlertWindow)
                     {
                         mostRecentImpactedServiceComm.IsAlert = true;
-                        mostRecentImpactedServiceComm.IsExpanded = ((currentTimeUTC - mostRecentImpactedServiceComm.PublishedTime) <= _commExpandedWindow);
+                        mostRecentImpactedServiceComm.IsExpanded = false;
+                        // NOTE:- For now, resolved incidents will be collapsed by Default.
+                        // Uncommenting below line would make resolved incidents expanded by default for certain timespan.
+                        //mostRecentImpactedServiceComm.IsExpanded = ((currentTimeUTC - mostRecentImpactedServiceComm.PublishedTime) <= _commExpandedWindow);
                         impactedServiceComm = mostRecentImpactedServiceComm;
                     }
                 }
