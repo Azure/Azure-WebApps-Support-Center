@@ -78,7 +78,7 @@ export class UriElementsService {
         return this._getSiteResourceUrl(subscriptionId, resourceGroupName, siteName, slot) + this._virtualNetworkConnections;
     }
 
-    getDiagnosticsSingleSessionUrl(site: SiteDaasInfo, sessionId: string, detailed: boolean) {
+    getDiagnosticsSingleSessionUrl(site: SiteDaasInfo, sessionId: string, detailed: any) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSingleSessionDetailsPath
         .replace("{sessionId}", sessionId)
         .replace("{details}", detailed.toString());

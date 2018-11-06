@@ -35,6 +35,12 @@ export class DaasService {
         let resourceUri: string = this._uriElementsService.getDiagnosticsSessionsUrl(site);
         return <Observable<string>>(this._armClient.postResource(resourceUri, session, null, true));
     }
+    
+    cancelDaasSession(site: SiteDaasInfo, sessionId: string): Observable<boolean> {
+        let resourceUri: string = this._uriElementsService.getDiagnosticsSingleSessionUrl(site, sessionId, "cancel");
+        return <Observable<boolean>>(this._armClient.postResource(resourceUri, null, null, true));
+    }
+
     getDaasSessionsWithDetails(site: SiteDaasInfo): Observable<Session[]> {
         let resourceUri: string = this._uriElementsService.getDiagnosticsSessionsDetailsUrl(site, "all", true);
         return <Observable<Session[]>>this._armClient.getResourceWithoutEnvelope<Session[]>(resourceUri, null, true);
@@ -73,7 +79,7 @@ export class DaasService {
                 if (daasWebJob != null && daasWebJob.length > 0 && daasWebJob[0].properties != null) {
                     return daasWebJob[0].properties.status;
                 }
-                else{
+                else {
                     return "";
                 }
             }
