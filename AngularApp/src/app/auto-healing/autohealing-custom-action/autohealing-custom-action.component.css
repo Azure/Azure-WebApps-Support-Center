@@ -33,7 +33,7 @@
 .diagnostic-options {
     border: 1px #0058ad solid;
     border-radius: 0px 0px 5px 5px;
-    padding: 0px 0px 0px 5px;
+    padding: 0px 0px 0px 10px;
     margin-left:1px;
 }
 
@@ -72,4 +72,14 @@ label {
     font-size: smaller;
     margin-top: 5px;
     margin-bottom: 5px;
+}
+
+.alert-section{
+    margin-top:5px;
+    font-size: 12px;
+    width:90%;
+    padding: 10px;
+    padding-right: 30px;
+    padding-bottom: 10px;
+    border-radius: 10px;
 }

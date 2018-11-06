@@ -39,7 +39,6 @@
 .tile:hover {
     -webkit-box-shadow: 6px 6px 20px 0 rgba(0, 0, 0, .2);
     box-shadow: 6px 6px 20px 0 rgba(0, 0, 0, .2);
-    margin: 0 2px
 }
 
 .icon-template {

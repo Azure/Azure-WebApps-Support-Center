@@ -22,8 +22,7 @@ export class NetworkTraceToolComponent implements OnInit {
     NetworkTraceStatus = NetworkTraceStatus;
     scmPath: string;
     duration: number = 60;
-    supportedTier: boolean = false;
-    checkingValidity: boolean = true;
+
     siteToBeDiagnosed: SiteInfoMetaData;
     files: any[] = [];
     armOperationStatus: string = "";
@@ -33,6 +32,11 @@ export class NetworkTraceToolComponent implements OnInit {
     durationRemaining: number;
     status: NetworkTraceStatus = NetworkTraceStatus.Initial;
     traceLocation: string = "d:\\home\\logfiles\\networktrace";
+
+    checkingValidity: boolean = true;
+    networkTraceDisabled: boolean = false;
+    traceDisabledReason: NetworkTraceDisabledReason;
+    NetworkTraceDisabledReasonType = NetworkTraceDisabledReason;
 
     constructor(private _http: Http, private _siteService: SiteService, private _uriElementsService: UriElementsService, private _armClient: ArmService, private _serverFarmService: ServerFarmDataService, private _loggerLocal: AvailabilityLoggingService) {
         this._siteService.currentSiteMetaData.subscribe(siteInfo => {
@@ -44,12 +48,18 @@ export class NetworkTraceToolComponent implements OnInit {
     ngOnInit(): void {
         this.scmPath = this._siteService.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
+        // Network Trace tool doesn't work on ASE's yet
+        if (this._siteService.currentSiteStatic.hostingEnvironmentId != null && this._siteService.currentSiteStatic.hostingEnvironmentId !== "") {
+            this.checkingValidity = false;
+            this.networkTraceDisabled = true;
+            this.traceDisabledReason = NetworkTraceDisabledReason.AppOnAppServiceEnvironment;
+            return;
+        }
+
         this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
             if (serverFarm) {
                 // Specifically not checking for Isolated as Network Trace tool is not working on ASE currently
                 if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier.indexOf("Premium") > -1) {
-                    this.supportedTier = true;
-
                     this._siteService.getSiteAppSettings(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.siteToBeDiagnosed.siteName, this.siteToBeDiagnosed.slot).subscribe(settingsResponse => {
                         if (settingsResponse && settingsResponse.properties) {
                             if (settingsResponse.properties["WEBSITE_LOCAL_CACHE_OPTION"]) {
@@ -63,13 +73,28 @@ export class NetworkTraceToolComponent implements OnInit {
                         this._siteService.getVirtualNetworkConnectionsInformation(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.siteToBeDiagnosed.siteName, this.siteToBeDiagnosed.slot).subscribe(virtualNetworkConnectionsResponse => {
                             this.checkingValidity = false;
                             if (virtualNetworkConnectionsResponse && virtualNetworkConnectionsResponse.length > 0) {
-                                this.supportedTier = false;
+                                this.networkTraceDisabled = true;
+                                this.traceDisabledReason = NetworkTraceDisabledReason.AppConnectedToVNet;
                             }
                         });
                     });
                 }
+                else {
+                    this.checkingValidity = false;
+                    this.networkTraceDisabled = true;
+                    this.traceDisabledReason = NetworkTraceDisabledReason.AppNotOnDedicatedTier;
+                    return;
+                }
+            }
+            else {
+                this.checkingValidity = false;
+                this.networkTraceDisabled = true;
+                this.traceDisabledReason = NetworkTraceDisabledReason.NoPermsOnAppServicePlan;
+                return;
             }
         }, error => {
+            this.checkingValidity = false;
+            this.networkTraceDisabled = true;
             this.errorMessage = error.code + ":" + error.message;
         });
     }
@@ -188,4 +213,11 @@ enum NetworkTraceStatus {
     InProgress,
     AlreadyRunning,
     Completed
+}
+
+enum NetworkTraceDisabledReason {
+    AppOnAppServiceEnvironment,
+    AppConnectedToVNet,
+    AppNotOnDedicatedTier,
+    NoPermsOnAppServicePlan
 }

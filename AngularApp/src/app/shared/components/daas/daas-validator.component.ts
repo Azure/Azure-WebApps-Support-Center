@@ -17,6 +17,7 @@ export class DaasValidatorComponent implements OnInit {
   @Output() DaasValidated: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   supportedTier: boolean = false;
+  checkingSkuSucceeded: boolean = false;
   diagnoserWarning: string = "";
   daasRunnerJobRunning: boolean = true;
   checkingDaasWebJobStatus: boolean = false;
@@ -57,15 +58,24 @@ export class DaasValidatorComponent implements OnInit {
       let serverFarm = results[0];
       this.alwaysOnEnabled = results[1];
       let diagnosers: DiagnoserDefinition[] = results[2];
-      if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
-        this.supportedTier = true;
-      }
-      else {
-        return;
+
+      if (serverFarm != null) {
+        this.checkingSkuSucceeded = true;
+        if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
+          this.supportedTier = true;
+        }
+        else {
+          return;
+        }
       }
 
       if (!this.alwaysOnEnabled) {
         return;
+      }
+      else {
+        // If AlwaysOn is set to TRUE, we can be sure that the site is running in a 
+        // supported tier as AlwaysOn is not available in BASIC SKU
+        this.supportedTier = true;
       }
 
       if (this.error === "") {

@@ -33,3 +33,11 @@ td {
 .wizardcontainer {
     width:60%;
 }
+
+.pastNetworkTracesMessage{
+    margin-top: 25px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    padding: 7px;
+    background-color: #efefef;
+}

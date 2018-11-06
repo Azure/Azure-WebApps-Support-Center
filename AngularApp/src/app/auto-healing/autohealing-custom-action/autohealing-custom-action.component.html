@@ -1,10 +1,12 @@
 <div class="row" style="margin-bottom: 5px;margin-left:0;margin-top:10px">
 
   <div class="btn-group" role="group" aria-label="...">
-    <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':customActionType==='Diagnostics'}" (click)="customActionType='Diagnostics';initDiagnosticsIfRequired()">
+    <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':customActionType==='Diagnostics'}"
+      (click)="customActionType='Diagnostics';initDiagnosticsIfRequired()">
       Run Diagnostics
     </button>
-    <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':customActionType==='Custom'}" (click)="customActionType='Custom'">
+    <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':customActionType==='Custom'}"
+      (click)="customActionType='Custom'">
       Run Any Executable
     </button>
   </div>
@@ -12,10 +14,11 @@
   <div class="panel panel-default">
     <div class="panel-body">
       <div *ngIf="customActionType == 'Diagnostics'">
-        <div *ngIf="!checkingSupportedTier && !supportedTier">
+        <div *ngIf="!checkingSupportedTier && !supportedTier && checkingSkuSucceeded">
           <div class="focus-box focus-box-warning">
             <div>
-              <strong>Error</strong> - This tool is supported only in <strong>Standard, Premium</strong> or <strong>Isolated</strong> tiers because the diagnostic
+              <strong>Error</strong> - This tool is supported only in <strong>Standard, Premium</strong> or <strong>Isolated</strong>
+              tiers because the diagnostic
               tools require the Always-On setting to be enabled to collect data.
             </div>
           </div>
@@ -25,17 +28,19 @@
           <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
           Checking if the WebApp is running in a supported Tier
         </div>
-        <div *ngIf="!checkingSupportedTier && supportedTier && !alwaysOnEnabled">
+        <div *ngIf="!checkingSupportedTier && (supportedTier || !checkingSkuSucceeded) && !alwaysOnEnabled">
           <div class="focus-box focus-box-warning">
             <div>
-              <strong>Error</strong> - We determined that the web app does not have Always-On enabled and due to these the diagnostic
-              tools will not work reliably with AutoHeal. Please turn on the Always-On setting by going to the properties
+              <strong>Error</strong> - We determined that the web app does not have Always-On enabled and due to these
+              the diagnostic
+              tools will not work reliably with AutoHeal. Please turn on the Always-On setting by going to the
+              properties
               of the web app and then configure mitigation tools.
             </div>
           </div>
         </div>
 
-        <div *ngIf="alwaysOnEnabled && supportedTier && !checkingSupportedTier && customAction != null">
+        <div *ngIf="alwaysOnEnabled && (supportedTier || !checkingSkuSucceeded) && !checkingSupportedTier && customAction != null">
           <div class="row">
             <div class="detail-cards">
               <ng-container *ngFor="let item of Diagnosers;let i = index">
@@ -51,20 +56,31 @@
             Tool Options
           </div>
           <div class="row diagnostic-options">
-            <div style="margin-top: 10px;">
-              Configure additional options that control how the diagnostic tools chosen above should behave:
+            <div class="row">
+              <div style="margin-top: 10px;">
+                Configure additional options that control how the diagnostic tools chosen above should behave:
+              </div>
+              <div class="col-sm-3">
+                <ng-container *ngFor="let option of DiagnoserOptions">
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="optradio" [checked]="diagnoserOption.option === option.option" [value]="option.option"
+                        (change)="chooseDiagnoserAction(option)"> {{ option.option }}
+                    </label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="col-sm-9">
+                <div class="diagnoser-option"> {{ diagnoserOption.Description}} </div>
+              </div>
             </div>
-            <div class="col-sm-3">
-              <ng-container *ngFor="let option of DiagnoserOptions">
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optradio" [checked]="diagnoserOption.option === option.option" [value]="option.option" (change)="chooseDiagnoserAction(option)"> {{ option.option }}
-                  </label>
-                </div>
-              </ng-container>
-            </div>
-            <div class="col-sm-9">
-              <div class="diagnoser-option"> {{ diagnoserOption.Description}} </div>
+            <div class="row" style="margin-bottom: 5px; margin-left: 5px">
+              <div class="alert-section alert-danger" *ngIf="showDiagnoserOptionWarning">
+                You have chosen a tool option that does not restart the process. This can cause
+                auto-healing actions to kick in multiple times thus generating a lot of data. It is
+                recommended to choose <strong>CollectKillAnalyze</strong> option to ensure that the process gets
+                restarted after collecting data.
+              </div>
             </div>
           </div>
         </div>
@@ -77,7 +93,8 @@
             <input style="width:400px" type="text" id="executable" aria-describedby="executableHelp" (input)="updateCustomActionExe($event.target.value)"
               [ngModel]="customActionExe" placeholder="for e.g. d:\home\data\anycustomexe.exe">
             <div>
-              <small id="executableHelp" class="form-text text-muted">This process will be launched when the above mentioned triggers are met</small>
+              <small id="executableHelp" class="form-text text-muted">This process will be launched when the above
+                mentioned triggers are met</small>
             </div>
           </div>
         </div>
@@ -91,12 +108,14 @@
       </div>
     </div>
 
-    <div *ngIf="customActionType == 'Custom' || ( alwaysOnEnabled && supportedTier && !checkingSupportedTier)" style="margin-top:15px;margin-left:15px">
+    <div *ngIf="customActionType == 'Custom' || ( alwaysOnEnabled && (supportedTier || !checkingSkuSucceeded) && !checkingSupportedTier)" style="margin-top:15px;margin-left:15px">
       Action chosen:
-      <span *ngIf="customActionType === 'Diagnostics'" class="final-action">D:\home\data\DaaS\bin\DaasConsole.exe -{{diagnoserOption.option}} "{{diagnoser.Name}}" 60</span>
-      <span *ngIf="customActionType === 'Custom'" class="final-action">{{this.customActionExe}} {{this.customActionParams}} </span>
+      <span *ngIf="customActionType === 'Diagnostics'" class="final-action">D:\home\data\DaaS\bin\DaasConsole.exe
+        -{{diagnoserOption.option}} "{{diagnoser.Name}}" 60</span>
+      <span *ngIf="customActionType === 'Custom'" class="final-action">{{this.customActionExe}}
+        {{this.customActionParams}} </span>
       <div class="custom-action-note">
-        <strong>Note:</strong> The custom action is executed only once during the lifetime of the worker process
+        <strong>Note:</strong> The custom action is executed <strong>each time</strong> the auto-healing condition is met in the process
       </div>
       <div style="margin-top:10px;margin-bottom: 10px">
         <button type="button" class="btn btn-primary btn-sm" (click)="saveCustomAction()">Save</button>

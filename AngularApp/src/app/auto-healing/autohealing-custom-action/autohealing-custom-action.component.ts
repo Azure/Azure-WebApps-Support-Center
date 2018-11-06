@@ -20,11 +20,13 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   @Output() customActionChanged: EventEmitter<AutoHealCustomAction> = new EventEmitter<AutoHealCustomAction>();
 
   checkingSupportedTier: boolean = true;
+  checkingSkuSucceeded: boolean = false;
   supportedTier: boolean = false;
   alwaysOnEnabled: boolean = false;
 
   diagnoser: any = null;
   diagnoserOption: any = null;
+  showDiagnoserOptionWarning: boolean = false;
 
   Diagnosers = [{ Name: "Memory Dump", Description: "Collects memory dumps of the process and the child processes hosting your app and analyzes them for errors" },
   { Name: "CLR Profiler", Description: "Profiles ASP.NET application code to identify exceptions and performance issues" },
@@ -46,36 +48,35 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
+      this.checkingSupportedTier = false;
       if (serverFarm) {
+        this.checkingSkuSucceeded = true;
         if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
           this.supportedTier = true;
-          this.checkingSupportedTier = false;
-          this._siteService.getAlwaysOnSetting(this.siteToBeDiagnosed).subscribe(alwaysOnSetting => {
-            if (alwaysOnSetting) {
-              this.alwaysOnEnabled = true;
-            }
-            else {
-              this.alwaysOnEnabled = false;
-            }
-          });
 
-          this.initComponent();
         }
-        else {
-          this.checkingSupportedTier = false;
-        }
-
-        // This is required in case someone lands on Mitigate page
-        // without ever hitting DAAS endpoint. Browsing to any DAAS 
-        // endpoint, will ensure that DaaSConsole is copied to the
-        // right folders and will allow autohealing to work correctly
-        this.makeDaasWarmupCall();
       }
       else {
-        this.checkingSupportedTier = false;
+        // serverFarm can be NULL for users with Website contributor access only
+        // In those cases, lets check if AlwaysOn is enabled or not
+        this.checkingSkuSucceeded = false;
       }
-    });
+      this._siteService.getAlwaysOnSetting(this.siteToBeDiagnosed).subscribe(alwaysOnSetting => {
+        if (alwaysOnSetting) {
+          this.alwaysOnEnabled = true;
+        }
+        else {
+          this.alwaysOnEnabled = false;
+        }
+      });
 
+      this.initComponent();
+      // This is required in case someone lands on Mitigate page
+      // without ever hitting DAAS endpoint. Browsing to any DAAS 
+      // endpoint, will ensure that DaaSConsole is copied to the
+      // right folders and will allow autohealing to work correctly
+      this.makeDaasWarmupCall();
+    });
   }
 
   makeDaasWarmupCall(): any {
@@ -90,7 +91,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
     if (this.customAction == null) {
       this.customAction = new AutoHealCustomAction();
       this.customAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
-      this.diagnoserOption = this.DiagnoserOptions[2];
+      this.diagnoserOption = this.DiagnoserOptions[0];
       this.diagnoser = this.Diagnosers[0];
       this.customAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
       return;
@@ -120,7 +121,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
     }
 
     if (this.diagnoserOption == null) {
-      this.diagnoserOption = this.DiagnoserOptions[2];
+      this.diagnoserOption = this.DiagnoserOptions[0];
     }
   }
 
@@ -155,6 +156,12 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   chooseDiagnoserAction(val) {
     this.diagnoserOption = val;
+    if (this.diagnoserOption.option !== "CollectKillAnalyze") {
+      this.showDiagnoserOptionWarning = true;
+    }
+    else {
+      this.showDiagnoserOptionWarning = false;
+    }
 
   }
 
@@ -198,6 +205,12 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
       let diagnoserOptionIndex = this.DiagnoserOptions.findIndex(item => item.option === diagnoserOption)
       if (diagnoserOptionIndex > -1) {
         this.diagnoserOption = this.DiagnoserOptions[diagnoserOptionIndex];
+        if (this.diagnoserOption.option !== "CollectKillAnalyze") {
+          this.showDiagnoserOptionWarning = true;
+        }
+        else {
+          this.showDiagnoserOptionWarning = false;
+        }
         let firstQuote = param.indexOf('"');
         let secondQuote = param.indexOf('"', firstQuote + 1);
         let diagnoserName = '';

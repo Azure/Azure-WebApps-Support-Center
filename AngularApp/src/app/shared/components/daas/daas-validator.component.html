@@ -1,4 +1,4 @@
-<div *ngIf="!checkingSupportedTier && !supportedTier">
+<div *ngIf="!checkingSupportedTier && checkingSkuSucceeded && !supportedTier">
   <div class="focus-box focus-box-warning" style="margin-top:20px;margin-left:10px">
     <div>
       <strong>Error</strong> - This tool is supported only on <b>Standard, Premium </b> and <b>Isolated</b> SKU's only with <strong>AlwaysOn</strong> setting enabled to TRUE
@@ -17,12 +17,12 @@
   </div>
 </div>
 
-<div *ngIf="!checkingSupportedTier && supportedTier && !alwaysOnEnabled">
+<div *ngIf="!checkingSupportedTier && (supportedTier || !checkingSkuSucceeded) && !alwaysOnEnabled">
   <div class="focus-box focus-box-warning">
     <div>
       <strong>Error</strong> - We determined that the web app does not have Always-On enabled and due to these the diagnostic
-      tools will not work reliably with AutoHeal. Please turn on the Always-On setting by going to the properties
-      of the web app and then run these tools.
+      tools will not work reliably with AutoHeal. Please turn on the Always-On setting by going to the Application Settings
+      for the web app and then run these tools.
     </div>
   </div>
 </div>

@@ -26,24 +26,42 @@
             <a href='https://www.wireshark.org/'>Wireshark</a> that can open the network captures. </li>
     </ul>
 
-    <div *ngIf="!supportedTier && !checkingValidity">
+    <div *ngIf="!checkingValidity && networkTraceDisabled">
         <div class="focus-box focus-box-warning" style="margin-top:20px">
-            <div>
-                <strong>Error</strong> - This tool is supported only on Web App running on Dedicated SKU's and not
-                connected to Azure Virtual networks
+            <div *ngIf="traceDisabledReason === NetworkTraceDisabledReasonType.AppNotOnDedicatedTier">
+                <strong>Error</strong> - This tool is supported only on App running on Dedicated SKU's (Basic,
+                Standard, Premium and PremiumV2)
             </div>
-        </div>
-    </div>
-
-    <div *ngIf="errorMessage">
-        <div class="focus-box focus-box-warning" style="margin-top:20px">
-            <div>
+            <div *ngIf="traceDisabledReason === NetworkTraceDisabledReasonType.AppConnectedToVNet">
+                <strong>Error</strong> - This tool is not supported only on App connected to Azure Virtual Networks
+            </div>
+            <div *ngIf="traceDisabledReason === NetworkTraceDisabledReasonType.NoPermsOnAppServicePlan">
+                <strong>Error</strong> - It appears that you do not have permissions on the App Service Plan. This
+                happens typically if you have Website Contributor access only and no permissions on the App Service
+                Plan
+            </div>
+            <div *ngIf="traceDisabledReason === NetworkTraceDisabledReasonType.AppOnAppServiceEnvironment">
+                <strong>Error</strong> - This tool is not supported only on Web App that are part of App Service
+                Environments
+            </div>
+            <div *ngIf="errorMessage !=''">
                 <strong>Error</strong> - {{ errorMessage }}
             </div>
         </div>
     </div>
 
-    <div *ngIf="supportedTier && !errorMessage && status < NetworkTraceStatus.Started">
+    <div class="col" *ngIf="checkingValidity">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Checking App configuration...
+    </div>
+
+    <div *ngIf="!checkingValidity && !networkTraceDisabled && status < NetworkTraceStatus.Started">
+        
+        <div class="pastNetworkTracesMessage">
+            View past collected Network traces in <strong>{{traceLocation}}</strong> folder in <a href='https://{{scmPath}}'>Kudu
+                Console</a> for the App.
+        </div>
+
         <div style="margin-top:20px;">
             Choose duration to collect the Network Trace
             <select [(ngModel)]="duration" [disabled]="status >= NetworkTraceStatus.Starting">
@@ -57,10 +75,6 @@
         </div>
 
         <div style="margin-top:10px">
-            <div class="col" *ngIf="checkingValidity">
-                <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                Checking App configuration...
-            </div>
             <button [disabled]="status >= NetworkTraceStatus.Starting" class="btn btn-primary" (click)="collectNetworkTrace()">Collect
                 Network Trace</button>
         </div>
@@ -73,7 +87,9 @@
                 </div>
                 <div *ngIf="durationRemaining > 0" style="display: table-cell;">
                     Network trace started and will automatically stop after
-                    <strong>{{ durationRemaining }}</strong> seconds.
+                    <strong>{{ durationRemaining }}</strong> seconds. Network traces collected will be available in
+                    <strong>{{traceLocation}}</strong> folder in <a href='https://${this.scmPath}'>Kudu Console</a> for
+                    the App.
                 </div>
                 <div *ngIf="durationRemaining <= 0" style="display: table-cell;">
                     Stopping trace and collecting files (Note:This step can take a few minutes to complete)
