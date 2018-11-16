@@ -12,6 +12,7 @@ import { ChartSeries, ChartType } from '../../models/chartdata';
 export class InstanceViewGraphComponent implements OnInit {
     constructor() {
         this.chartOptions = GraphHelper.getDefaultChartOptions();
+        this.chartOptions.chart.height = 300;
         this.chartType = ChartType.lineChart;
     }
 
@@ -59,6 +60,7 @@ export class InstanceViewGraphComponent implements OnInit {
     selectInstance(instance: string) {
         this.selectedInstance = instance;
         this.chartData = this.allChartData.filter((series: ChartSeries) => series.roleInstance === this.selectedInstance);
+        this.chartOptions.chart.showLegend = this.chartData.length <= 24;
         this.updateInstance.emit(this.selectedInstance);
     }
 }
