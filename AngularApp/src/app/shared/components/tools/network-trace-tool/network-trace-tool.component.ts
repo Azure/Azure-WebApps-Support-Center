@@ -160,7 +160,6 @@ export class NetworkTraceToolComponent implements OnInit {
                     this.subscriptionOperationStatus.unsubscribe();
                     let body = resp.text();
                     if (body && body.length > 0) {
-                        //let output: ResponseMessageEnvelope<NetworkTraceResult[]> = JSON.parse(body);
                         let output: NetworkTraceResult[] = JSON.parse(body);
                         this.files = [];
                         if (output != null) {
