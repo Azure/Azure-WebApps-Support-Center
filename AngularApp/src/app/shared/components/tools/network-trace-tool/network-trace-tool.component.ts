@@ -160,12 +160,16 @@ export class NetworkTraceToolComponent implements OnInit {
                     this.subscriptionOperationStatus.unsubscribe();
                     let body = resp.text();
                     if (body && body.length > 0) {
-                        let output: ResponseMessageEnvelope<NetworkTraceResult[]> = JSON.parse(body);
+                        //let output: ResponseMessageEnvelope<NetworkTraceResult[]> = JSON.parse(body);
+                        let output: NetworkTraceResult[] = JSON.parse(body);
                         this.files = [];
-                        if (output.properties != null) {
-                            output.properties.forEach(element => {
+                        if (output != null) {
+                            output.forEach(element => {
                                 if (element.status.toLowerCase() === "Succeeded".toLowerCase()) {
-                                    this.files.push({ name: element.path, url: this.getHttpPathFromFileName(element.path) });
+                                    if (element.path !== "")
+                                    {
+                                        this.files.push({ name: element.path, url: this.getHttpPathFromFileName(element.path) });
+                                    }
                                 }
                             });
                         }
