@@ -28,7 +28,7 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
 
     @Input() refreshSessions: boolean = false;
     showDetailedView: boolean = false;
-    allSessions: string = "../../tools/daas";
+    allSessions: string = "../../diagnosticTools";
     subscription: Subscription;
 
 
