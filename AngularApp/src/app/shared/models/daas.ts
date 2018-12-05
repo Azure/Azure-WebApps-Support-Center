@@ -94,7 +94,8 @@ export enum ConnectionDatabaseType {
     SqlServer,
     MySql,
     Custom,
-    Dynamic
+    Dynamic,
+    NotSupported
 }
 
 export interface ExceptionDetails {

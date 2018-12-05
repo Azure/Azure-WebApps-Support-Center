@@ -33,11 +33,10 @@ export class ConnectionDiagnoserToolComponent implements OnInit {
         this.checkConnectionStrings();
     }
 
-    checkConnectionStrings()
-    {
+    checkConnectionStrings() {
         this.retrievingInfo = true;
         this.dbTestResult = [];
-        
+
         this._logger.LogClickEvent("Check Connection Strings", "DiagnosticTools");
 
         this._daasService.getDatabaseTest(this.siteToBeDiagnosed)
@@ -85,5 +84,9 @@ export class ConnectionDiagnoserToolComponent implements OnInit {
         else {
             return ConnectionDatabaseType[conn.DatabaseType];
         }
+    }
+
+    isDatabaseTypeSupported(conn: DatabaseTestConnectionResult): boolean {
+        return conn.DatabaseType !== ConnectionDatabaseType.NotSupported
     }
 }

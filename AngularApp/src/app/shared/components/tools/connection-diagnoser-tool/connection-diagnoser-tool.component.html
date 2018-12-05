@@ -28,7 +28,8 @@
             <div class="panel panel-default">
                 <div class="panel-heading" (click)="toggleExpanded(i)">
                     <span style="padding: 0px 10px 0px 0px">
-                        <i class="fa health-icon fa-exclamation-circle unhealthy-icon-color" *ngIf="!connection.Succeeded" aria-hidden="true"></i>
+                        <i class="fa health-icon fa-exclamation-circle unhealthy-icon-color" *ngIf="!connection.Succeeded && isDatabaseTypeSupported(connection)" aria-hidden="true"></i>
+                        <i class="fa health-icon fa-info-circle warning-icon-color" *ngIf="!connection.Succeeded && !isDatabaseTypeSupported(connection)" aria-hidden="true"></i>
                         <i class="fa health-icon fa-check-circle healthy-icon-color" *ngIf="connection.Succeeded" aria-hidden="true"></i>
                     </span>
                     <b>{{ connection.Name }}</b>
