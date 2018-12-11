@@ -1,0 +1,7 @@
+{
+  "extends": "tslint-config-swimlane/base",
+  "rulesDirectory": [],
+  "rules": {
+    "prefer-conditional-expression": false
+  }
+}

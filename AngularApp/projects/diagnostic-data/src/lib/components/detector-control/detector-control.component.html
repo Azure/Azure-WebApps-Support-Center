@@ -1,0 +1,56 @@
+<div class="outer-container">
+  <div class="control-container">
+
+    <!-- <div class="control-group">
+      <div class="control">
+        <input class="date-input" [(ngModel)]="startTime" (keyup.enter)="setManualDate()"/>
+      </div>
+      
+      <div class="control">
+          <input class="date-input" [(ngModel)]="endTime" (keyup.enter)="setManualDate()"/>
+      </div>
+    </div> -->
+
+    <div class="control-group" *ngIf="detectorControlService.duration">
+      <div (click)="detectorControlService.moveBackwardDuration()" class="control">
+        <i class="fa fa-chevron-left"></i>
+        Last {{detectorControlService.duration.displayName}}
+      </div>
+      <div (click)="detectorControlService.moveForwardDuration()" class="control">
+        Next {{detectorControlService.duration.displayName}}
+        <i class="fa fa-chevron-right"></i>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div *ngFor="let duration of detectorControlService.durationSelections | internal:isInternal" class="control" (click)="detectorControlService.selectDuration(duration)"
+        [class.control-selected]="detectorControlService.duration === duration">{{duration.displayName}}</div>
+    </div>
+
+    <div class="control-group">
+      <div class="control date-control">
+        <input class="date-input" aria-label="Start Time" [(ngModel)]="startTime" (keyup.enter)="setManualDate()" />
+      </div>
+
+      <div class="control date-control">
+        <input class="date-input" aria-label="End Time" [(ngModel)]="endTime" (keyup.enter)="setManualDate()" />
+      </div>
+      <div class="control control-static">
+        UTC
+      </div>
+    </div>
+
+    <div class="control-group" *ngIf="isInternal">
+        <div class="control" (click)="detectorControlService.toggleInternalExternal()">
+          <span *ngIf="detectorControlService.isInternalView">Internal</span>
+          <span *ngIf="!detectorControlService.isInternalView">External</span>
+        </div>
+      </div>
+
+    <div class="control-group">
+      <div class="control" (click)="detectorControlService.refresh()">
+        <i class="fa fa-refresh"></i>
+      </div>
+    </div>
+  </div>
+</div>

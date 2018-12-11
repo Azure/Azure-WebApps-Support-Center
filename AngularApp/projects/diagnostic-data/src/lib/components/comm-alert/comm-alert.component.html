@@ -1,0 +1,60 @@
+<div *ngIf="commAlertToShow" class="comm-container" [ngClass]="{'comm-active': commAlertToShow.status === 0, 'comm-resolved': commAlertToShow.status === 1}">
+  
+  <div (click)="isAlertExpanded = !isAlertExpanded" class="comm-title">
+    <span>{{commAlertTitle}}</span>
+    <span style="float:right">
+      <i *ngIf="!isAlertExpanded" class="fa fa-chevron-down" aria-hidden="true"></i>
+      <i *ngIf="isAlertExpanded" class="fa fa-chevron-up" aria-hidden="true"></i>
+    </span> 
+  </div>
+
+  <div class="comm-body" *ngIf="isAlertExpanded">
+    
+    <!--<div *ngIf="isPublic" class="comm-source-link">
+      <a href="https://app.azure.com/h/{{commAlertToShow.incidentId}}" target="_blank">Open Service Health <i class="fa fa fa-external-link" aria-hidden="true"></i></a>
+    </div>-->
+    
+    <div class="comm-info-container">
+    
+      <div class="comm-info-row">
+        <div class="comm-info-label">Issue</div>
+        <div class="issue-title">{{commAlertToShow.title}}</div>
+      </div>
+      <div class="comm-info-row">
+        <div style="display:inline-block;width:30%">
+            <div class="comm-info-label">Status</div>
+            <div class="comm-info-data">
+              <span *ngIf="commAlertToShow.status === 0">Active</span>
+              <span *ngIf="commAlertToShow.status === 1">Resolved</span>          
+            </div>
+        </div>
+        <div style="display:inline-block">
+            <div class="comm-info-label">Last Updated On: (UTC)</div>
+            <div class="comm-info-data">{{commPublishedTime}}</div>
+        </div>
+      </div>
+
+      <div *ngIf="!isPublic" class="comm-info-row">
+          <div style="display:inline-block;width:30%;vertical-align: top">
+              <div class="comm-info-label">Impacted Region(s)</div>
+              <div class="comm-info-data">{{impactedRegions}}</div>
+          </div>
+          <div style="display:inline-block;vertical-align: top">
+              <div class="comm-info-label">Impacted Service(s)</div>
+              <div class="comm-info-data">{{impactedServices}}</div>
+          </div>
+      </div>
+  
+      <div class="comm-info-row">
+        <div class="comm-info-label">Details</div>
+        <div class="comm-info-data">
+          <div [innerHTML]="commAlertToShow.richTextMessage"></div>
+        </div>
+      </div>
+
+      <div *ngIf="isPublic" class="comm-info-row" style="margin-bottom:10px">
+        <a class="comm-action-button" href="https://app.azure.com/h/{{commAlertToShow.incidentId}}" target="_blank">Download Summary(PDF) or Request RCA in Azure Service Health <i class="fa fa fa-external-link" aria-hidden="true"></i></a>
+      </div>
+    </div>
+  </div>
+</div>

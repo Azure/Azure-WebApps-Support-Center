@@ -1,0 +1,21 @@
+.group-header {
+    padding:5px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.expander {
+    width:40px;
+}
+
+.group-key {
+    font-size:20px;
+    white-space: normal;
+}
+
+.hit-count {
+    margin-right:10px;
+    font-size:16px;
+}

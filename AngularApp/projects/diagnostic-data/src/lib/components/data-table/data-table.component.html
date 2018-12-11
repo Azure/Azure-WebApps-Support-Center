@@ -1,0 +1,26 @@
+<data-container [title]="renderingProperties.title" [description]="renderingProperties.description">
+  <ng-container *ngIf="!renderingProperties.groupByColumnName && !(renderingProperties.groupByColumnName === ''); else groupedTable">
+    <ngx-datatable #myTable class="bootstrap with-shadow" [rows]="rows" [columns]="columns" [columnMode]="'force'" [limit]="rowLimit" [headerHeight]="30"
+       [rowHeight]="'auto'">
+    </ngx-datatable>
+  </ng-container>
+
+  <ng-template #groupedTable>
+    <ngx-datatable #myTable class="bootstrap with-shadow" [rows]="rows" [columns]="columns" [columnMode]="'force'" [limit]="rowLimit" [headerHeight]="30"
+      [rowHeight]="'auto'" [groupRowsBy]="renderingProperties.groupByColumnName" [groupExpansionDefault]="false">
+      <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
+        <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template>
+          <div class="group-header" style="padding-left:5px;" (click)="toggleExpandGroup(group)">
+            <div class="expander">
+                <i class="fa" [class.fa-chevron-right]="!expanded" [class.fa-chevron-down]="expanded"></i>
+            </div>
+            <span class="hit-count badge badge-info label label-primary">{{group.value.length}}</span>
+            <div class="group-key">
+              {{group.key}}
+            </div>
+          </div>
+        </ng-template>
+      </ngx-datatable-group-header>
+    </ngx-datatable>
+  </ng-template>
+</data-container>

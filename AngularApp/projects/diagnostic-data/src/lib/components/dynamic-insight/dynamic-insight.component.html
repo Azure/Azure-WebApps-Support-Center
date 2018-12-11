@@ -1,0 +1,16 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h5 class="panel-title" [class.clickable-header]="insight.innerDiagnosticData" (click)="insight.expanded = !insight.expanded">
+      <span class="fa status-icon" [class.fa-exclamation-circle]="insight.status === InsightStatus.Critical" [class.fa-exclamation-triangle]="insight.status === InsightStatus.Warning"
+        [class.fa-check-circle]="insight.status === InsightStatus.Success" [class.fa-info-circle]="insight.status === InsightStatus.Info"></span>
+      {{insight.title}}
+
+      <span *ngIf="insight.innerDiagnosticData" class="fa expand-icon" [class.fa-angle-down]="!insight.expanded" [class.fa-angle-up]="insight.expanded"></span>
+    </h5>
+  </div>
+
+  <div class="panel-body" *ngIf="insight.expanded">
+    <div *ngIf="insight.description" [innerHtml]="insight.description"></div>
+    <dynamic-data [diagnosticData]="insight.innerDiagnosticData" [startTime]="startTime" [endTime]="endTime"></dynamic-data>
+  </div>
+</div>

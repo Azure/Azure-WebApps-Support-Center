@@ -1,0 +1,16 @@
+<ng-template #header>
+    {{renderingProperties.title}}
+    <button class="btn btn-default" style="float:right;margin-top: -7px" *ngIf="!isPublic" (click)="copyMarkdown()">
+        <span class="fa fa-copy"></span>
+        Copy to Email
+    </button>
+    <button class="btn btn-default" style="float:right;margin-top: -7px;margin-right:10px" *ngIf="!isPublic" (click)="openEmail()">
+        <span class="fa fa-envelope"></span>
+        Open in Outlook
+    </button>
+
+</ng-template>
+
+<data-container [headerTemplate]="header" [title]="renderingProperties.title">
+    <markdown [data]="markdown"></markdown>
+</data-container>

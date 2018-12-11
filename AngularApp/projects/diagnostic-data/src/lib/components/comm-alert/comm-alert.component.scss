@@ -1,0 +1,68 @@
+.comm-container {
+    margin:10px 20px 20px 20px;
+    border: 1px solid;
+    border-left-width: 10px;
+}
+.comm-active {
+    border-color:  #ffd1d1;
+    border-left-color: #e90000;
+}
+.comm-resolved {
+    border-color:  #ffe4bb;
+    border-left-color: #ffa51e;
+}
+.comm-title {
+    padding:10px;
+    cursor: pointer;
+    user-select: none;
+}
+.comm-body {
+    position:relative;
+    margin-top:5px;
+}
+.comm-source-link{
+    display:inline;
+    position: absolute;
+    right:10px;
+    top:0;
+}
+.comm-action-button{
+    color:white;
+    padding:10px;
+    background-color:#2966ba;
+    border-radius:2px;
+}
+.comm-info-container{
+    padding:10px;
+    margin-top:15px;
+}
+.comm-info-row{}
+.comm-info-row + .comm-info-row{
+    margin-top:20px;
+}
+.comm-info-label{
+    font-weight: 100;
+    font-size: 12px;
+}
+.issue-title{
+    font-size: 18px;
+    color: #3c3c3c;
+    margin-top:0px;
+}
+.comm-info-data{
+    font-size: 14px;
+    color: #3c3c3c;
+    margin-top:0px;
+}
+.comm-active .comm-title {
+    background-color:#ffdede;
+}
+.comm-active .comm-info-label{
+    color: #ab0000;
+}
+.comm-resolved .comm-title {
+    background-color:#ffe4bb;
+}
+.comm-resolved .comm-info-label{
+    color: #b36b00;
+}

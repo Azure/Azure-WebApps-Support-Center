@@ -1,0 +1,13 @@
+<ng-template #graphView>
+        <nvd3-graph [chartData]="selectedSeries" [chartType]="renderingProperties.graphType" [chartOptions]="graphOptions" *ngIf="selectedSeries"
+                [startTime]="startTime" [endTime]="endTime"></nvd3-graph>
+        <div *ngIf="!selectedSeries">Loading Data...</div>
+</ng-template>
+
+<data-container *ngIf="renderingProperties.title; else noContainer" [title]="renderingProperties.title" [description]="renderingProperties.description">
+        <ng-container *ngTemplateOutlet="graphView"></ng-container>
+</data-container>
+
+<ng-template #noContainer>
+        <ng-container *ngTemplateOutlet="graphView"></ng-container>
+</ng-template>

@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../out-tsc/app",
+    "types": [],
+    "paths": {
+      "moment": [
+        "../../node_modules/moment/min/moment.min.js",
+        "../node_modules/moment/min/moment.min.js"
+      ],
+      "diagnostic-data": [
+        "dist/diagnostic-data",
+      ],
+      "diagnostic-data/*": [
+        "dist/diagnostic-data",
+      ]
+    }
+  },
+  "exclude": [
+    "test.ts",
+    "**/*.spec.ts"
+  ]
+}
