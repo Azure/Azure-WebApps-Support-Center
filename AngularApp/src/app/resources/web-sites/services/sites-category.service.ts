@@ -114,16 +114,17 @@ export class SitesCategoryService extends CategoryService {
       this._sitesCategories
       .filter(
         siteCategory => siteCategory.appType & this._resourceService.appType && 
+        siteCategory.sku & this._resourceService.sku &&
         siteCategory.platform & this._resourceService.platform)
       .map(siteCategory => siteCategory.item));
   }
 
   private _getDiagnosticToolsCategory(siteId: string): SiteFilteredItem<Category> {
     return <SiteFilteredItem<Category>>{
-      appType: AppType.WebApp,
+      appType: AppType.WebApp | AppType.FunctionApp,
       platform: OperatingSystem.windows,
       stack: '',
-      sku: Sku.All,
+      sku: Sku.NotDynamic,
       item: {
         id: 'DiagnosticTools',
         name: 'Diagnostic Tools',

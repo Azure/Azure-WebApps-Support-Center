@@ -5,6 +5,7 @@ import { SiteFeatureService } from "../../services/site-feature.service";
 import { WebSitesService } from "../../services/web-sites.service";
 import { SiteService } from "../../../../shared/services/site.service";
 import { SiteDaasInfo } from "../../../../shared/models/solution-metadata";
+import { AppType } from "../../../../shared/models/portal";
 
 
 @Component({
@@ -18,6 +19,7 @@ export class DiagnosticToolsComponent {
   supportToolTiles: SiteFilteredItem<Tile>[];
   premiumToolTiles: SiteFilteredItem<Tile>[];
 
+  isFunctionApp: boolean = false;
   stackFound: boolean = false;
   stack: string;
 
@@ -35,6 +37,7 @@ export class DiagnosticToolsComponent {
   constructor(private _sitesFeatureService: SiteFeatureService, public webSiteService: WebSitesService, private _siteService: SiteService) { 
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
       this.siteToBeDiagnosed = site;
+      this.isFunctionApp = (this.webSiteService.appType === AppType.FunctionApp);
     });
 
     this.scmPath = this.webSiteService.resource.properties.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);

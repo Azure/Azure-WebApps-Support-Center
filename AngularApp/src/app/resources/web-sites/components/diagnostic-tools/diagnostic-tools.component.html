@@ -26,12 +26,12 @@
       <tile-list [tiles]="diagnosticToolTiles | website:stack"></tile-list>
     </collapsible-list-item>
   </collapsible-list>
-  <collapsible-list [title]="'Support Tools'" [collapsed]="false">
+  <collapsible-list *ngIf="!isFunctionApp" [title]="'Support Tools'" [collapsed]="false">
     <collapsible-list-item>
       <tile-list [tiles]="supportToolTiles | website"></tile-list>
     </collapsible-list-item>
   </collapsible-list>
-  <collapsible-list [title]="'Premium Tools'" [collapsed]="false">
+  <collapsible-list *ngIf="!isFunctionApp" [title]="'Premium Tools'" [collapsed]="false">
     <collapsible-list-item>
       <tile-list [tiles]="premiumToolTiles | website"></tile-list>
     </collapsible-list-item>
