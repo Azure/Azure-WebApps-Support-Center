@@ -42,11 +42,11 @@
 
         <div *ngIf="autohealingSettings.autoHealEnabled">
           <div class="header2">1. Define Conditions</div>
-          <div class="tile-content">
+          <div class="autohealtile-content">
             <ng-container *ngFor="let trigger of triggers; let i = index;">
-              <div class="tile" tabindex="0" (click)="updateTriggerStatus(i)" [class.active]="triggerSelected ===  i"
+              <div class="autohealtile" tabindex="0" (click)="updateTriggerStatus(i)" [class.active]="triggerSelected ===  i"
                 [class.activeAction]="triggers[i].IsConfigured">
-                <div class="tile-icon">
+                <div class="autohealtile-icon">
                   <div class="icon-template">
                     <i [class]="trigger.Icon"></i>
                   </div>
@@ -68,10 +68,10 @@
           </div>
 
           <div class="header2">2. Configure Actions</div>
-          <div class="tile-content">
+          <div class="autohealtile-content">
             <ng-container *ngFor="let action of actions; let i = index;">
-              <div class="tile" [class.activeAction]="actionSelected == i" (click)="updateActionStatus(i)">
-                <div class="tile-icon">
+              <div class="autohealtile" [class.activeAction]="actionSelected == i" (click)="updateActionStatus(i)">
+                <div class="autohealtile-icon">
                   <div class="icon-template">
                     <i [class]="action.Icon" aria-hidden="true"></i>
                   </div>
@@ -91,9 +91,9 @@
           </div>
 
           <div class="header2">3. Override when Action executes (Optional)</div>
-          <div class="tile-content">
-            <div class="tile" [class.activeAction]="minProcessExecutionTime > 0" (click)="minProcessExecutionTimeExpanded = !minProcessExecutionTimeExpanded">
-              <div class="tile-icon">
+          <div class="autohealtile-content">
+            <div class="autohealtile" [class.activeAction]="minProcessExecutionTime > 0" (click)="minProcessExecutionTimeExpanded = !minProcessExecutionTimeExpanded">
+              <div class="autohealtile-icon">
                 <div class="icon-template">
                   <i class="fa fa-clock-o" aria-hidden="true"></i>
                 </div>
@@ -101,7 +101,7 @@
               </div>
             </div>
           </div>
-          <div class="tile-content" *ngIf="minProcessExecutionTimeExpanded">
+          <div class="autohealtile-content" *ngIf="minProcessExecutionTimeExpanded">
             <div class="forminput">
               <autohealing-startup-time [minProcessExecutionTime]="minProcessExecutionTime"
                 (minProcessExecutionTimeChange)="saveMinProcessTimeChanged($event)">
@@ -110,7 +110,7 @@
           </div>
 
           <div class="header2">4. Review and Save your Settings</div>
-          <div class="summary tile-content">
+          <div class="summary autohealtile-content">
             <div *ngIf="originalSettings">
               <strong>Current Settings</strong>
               <autohealing-config-summary [autohealSettings]="originalSettings">
@@ -124,7 +124,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="!retrievingAutohealSettings  && !errorMessage && saveEnabled && validationWarning.length > 0" class="tile-content alert alert-danger alert-section">
+      <div *ngIf="!retrievingAutohealSettings  && !errorMessage && saveEnabled && validationWarning.length > 0" class="autohealtile-content alert alert-danger alert-section">
         <strong>CAUTION</strong>
         <ul style="margin-top:5px">
           <li *ngFor="let warning of validationWarning">
@@ -132,7 +132,7 @@
           </li>
         </ul>
       </div>
-      <div *ngIf="!retrievingAutohealSettings  && !errorMessage" class="saveSection tile-content">
+      <div *ngIf="!retrievingAutohealSettings  && !errorMessage" class="saveSection autohealtile-content">
         <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="saveChanges()">Save</button>
         <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="reset()">Cancel</button>
         <div *ngIf="savingAutohealSettings" class="inline">
