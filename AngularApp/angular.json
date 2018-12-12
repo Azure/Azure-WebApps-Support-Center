@@ -147,12 +147,31 @@
             "tsConfig": "projects/applens/tsconfig.app.json",
             "assets": [
               "projects/applens/src/favicon.ico",
-              "projects/applens/src/assets"
+              "projects/applens/src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/ngx-monaco-editor/assets/monaco",
+                "output": "/assets/monaco"
+              }
             ],
             "styles": [
-              "projects/applens/src/styles.css"
+              "node_modules/nvd3/build/nv.d3.css",
+              "node_modules/font-awesome/css/font-awesome.css",
+              "node_modules/@swimlane/ngx-datatable/release/index.css",
+              "node_modules/prismjs/themes/prism-okaidia.css",
+              "projects/applens/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/moment/min/moment.min.js",
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/admin-lte/dist/js/adminlte.js",
+              "node_modules/marked/lib/marked.js",
+              "node_modules/prismjs/prism.js",
+              "node_modules/prismjs/components/prism-clike.min.js",
+              "node_modules/prismjs/components/prism-csharp.min.js",
+              "node_modules/prismjs/components/prism-css.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
           },
           "configurations": {
             "production": {

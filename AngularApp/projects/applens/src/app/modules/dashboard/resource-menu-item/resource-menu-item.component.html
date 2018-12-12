@@ -1,0 +1,8 @@
+<li class="nav-item" data-toggle="tooltip" data-placement="right" (click)="navigate()" [class.nav-item-selected]="selected">
+  <a class="nav-link" >
+      <div class="inline" *ngIf="resourceService.imgSrc && resourceService.imgSrc !== ''">
+          <img id="resourceImage" [src]="resourceService.imgSrc"/>
+      </div>
+      <div class="nav-link-text inline"></div>
+  </a>
+</li>

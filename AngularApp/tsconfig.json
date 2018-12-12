@@ -25,9 +25,9 @@
       ],
       "diagnostic-data/*": [
         "dist/diagnostic-data/*",
-        "../dist/diagnostic-data",
-        "../../dist/diagnostic-data",
-        "../../../dist/diagnostic-data"
+        "../dist/diagnostic-data/*",
+        "../../dist/diagnostic-data/*",
+        "../../../dist/diagnostic-data/*"
       ]
     }
   }

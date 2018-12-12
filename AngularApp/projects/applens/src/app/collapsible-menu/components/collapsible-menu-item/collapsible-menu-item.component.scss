@@ -1,0 +1,49 @@
+.menu-item-children {
+    overflow-y: hidden;
+}
+
+.menu-item {
+    cursor: pointer;
+    font-family: az_ea_font,"Segoe UI",wf_segoe-ui_normal,"Segoe WP",Tahoma,Arial,sans-serif;
+    
+}
+
+.expand-icon {
+    /* float: right; */
+    min-width: 10px;
+    font-size: 12px;
+}
+
+/* DARK THEME */
+
+:host-context(.dark-theme) .menu-item {
+    color:#e2e2e2;
+    padding: 5px 5px 5px 15px;
+    font-size: 14px;
+}
+
+:host-context(.dark-theme) .menu-item:hover,
+:host-context(.dark-theme) .menu-item.selected {
+    color:#fff;
+    background-color: #222222;
+}
+
+/* LIGHT THEME */
+:host-context(.light-theme) .menu-item {
+    color:#1d1d1d;
+    font-size: 12px;
+    padding: 10px 5px 9px 15px;
+}
+
+:host-context(.light-theme) .menu-item {
+    border-bottom: 1px solid #ccc;
+}
+
+:host-context(.light-theme) .menu-item:hover,
+:host-context(.light-theme) .menu-item.selected {
+    background-color: rgba(0,137,250,.1);
+}
+
+.menu-label > b {
+    color: #ffb353;
+}

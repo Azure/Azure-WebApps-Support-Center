@@ -1,0 +1,19 @@
+.content {
+    position: absolute;
+    height:100%;
+    width: 100%;
+}
+
+.main-container {
+    padding-left: 250px;
+    height: 100%;
+}
+
+.dropdown-item {
+    cursor: pointer;    
+}
+
+.dropdown-menu > .disabled {
+    cursor: not-allowed;
+    color: #dddddd;
+}

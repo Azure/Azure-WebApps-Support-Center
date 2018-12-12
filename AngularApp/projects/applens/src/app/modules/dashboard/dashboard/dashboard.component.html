@@ -1,0 +1,17 @@
+<header class="main-header">
+  <a (click)="reloadHome()" class="logo">
+    <span class="logo-lg">
+        <span style="color:#ffb353">App</span>Lens
+    </span>
+  </a>
+
+  <nav class="navbar navbar-static-top" role="navigation">
+    <!-- <time-picker></time-picker> -->
+  </nav>
+</header>
+
+<side-nav></side-nav>
+
+<div class="content-wrapper white-background" [style.height]="contentHeight">
+    <router-outlet></router-outlet>
+</div>

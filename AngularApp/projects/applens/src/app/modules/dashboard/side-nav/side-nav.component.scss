@@ -1,0 +1,44 @@
+
+.sidebar-menu > li > a {
+    cursor: pointer;
+}
+
+.sidenav-item-selected {
+    background-color: #1f1f1f;
+}
+
+.applens-menu-item {
+    color: #eeeeee;
+    word-wrap: break-word;
+}
+
+.applens-menu-item:hover {
+    color: #ffffff;
+}
+
+.secondary-icon{
+    font-size:12px;
+    margin-left:5px;
+}
+
+.resource-container {
+    height: 40px;
+    font-size: 16px;
+}
+
+.resource-logo {
+    max-width: 25px;
+}
+
+.user-panel > .info {
+    left: 30px;
+}
+
+.user-panel {
+    cursor: pointer;
+}
+
+.user-panel.active,
+.user-panel:hover {
+    background: #1e282c;
+}

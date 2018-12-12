@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit {
 
     this._authService.getStartupInfo().subscribe(startupInfo => {
       if (startupInfo.additionalParameters && Object.keys(startupInfo.additionalParameters).length > 0) {
-        let path = startupInfo.resourceId.toLowerCase();
+        let path = 'resource' + startupInfo.resourceId.toLowerCase();
         path = this._updateRouteBasedOnAdditionalParameters(path, startupInfo.additionalParameters)
 
         this._router.navigateByUrl(path);

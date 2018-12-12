@@ -14,7 +14,7 @@
       "diagnostic-data/*": [
         "dist/diagnostic-data",
       ]
-    }
+    },
   },
   "exclude": [
     "test.ts",

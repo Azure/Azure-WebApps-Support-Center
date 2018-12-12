@@ -1,1 +1,53 @@
+/* External Libraries */
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+@import "~ngx-smart-modal/ngx-smart-modal.css";
+
+/* @import "~startbootstrap-sb-admin/css/sb-admin.min.scss"; */
+
+@import "~admin-lte/dist/css/AdminLTE.min.css";
+@import "~admin-lte/dist/css/skins/skin-blue-light.css";
+@import "~admin-lte/dist/css/skins/skin-purple-light.css";
+@import "~admin-lte/dist/css/skins/skin-blue.css";
+
+/* Must import diagnostic-data css */
+// @import 'app/diagnostic-data/diagnostic-data.scss';n
+
 /* You can add global styles to this file, and also import other style files */
+body {
+    margin: 0px;
+}
+
+.skin-purple-light .sidebar-menu > li:hover > a, .skin-purple-light .sidebar-menu > li.active > a {
+    background: #ececec;
+}
+
+.critical-color {
+    color: #ff0000;
+}
+
+.warning-color {
+    color: #ff9104;
+}
+
+.success-color {
+    color: #3da907;
+}
+
+.info-color {
+    color: #3a9bc7;
+}
+
+.color-ghostwhite {
+    color: #e0e0e0;
+}
+
+.wide-modal {
+    max-width: 100%;
+    width: 600px;
+  }
+
+  .wide-modal .nsm-content {
+      width: 560px;
+      padding: 0px;
+  }

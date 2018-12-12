@@ -1,0 +1,33 @@
+<div style="padding:20px">
+
+  <div *ngIf="detectorResponse && !detectorResponse.dataProvidersMetadata">
+    No data provider metadata in response
+  </div>
+
+  <div *ngIf="detectorResponse && detectorResponse.dataProvidersMetadata" class="panel panel-default">
+    <ng-container *ngFor="let providerMetadata of detectorResponse.dataProvidersMetadata">
+      <div class="panel-heading">
+        <h5 class="panel-title ">
+          {{ providerMetadata.providerName }}
+        </h5>
+      </div>
+      <div class="panel-body">
+        <div class="panel-body data-container-body">
+          <ng-container *ngFor="let property of providerMetadata.propertyBag">
+            <div style="margin-bottom: 10px" *ngIf="property.key == 'Query' && property.value">
+              <pre><code>{{ property.value.text }}</code></pre>
+              <div style="margin-bottom: 5px">
+                <a class="kustolink" [attr.href]="property.value.url" target='_blank'>Run in Kusto Web Explorer</a>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <div>
+    <loader-view *ngIf="loadingDetector" message="Loading Detector...">
+    </loader-view>
+  </div>
+</div>

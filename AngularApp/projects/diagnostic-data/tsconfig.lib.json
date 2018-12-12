@@ -17,6 +17,11 @@
       "es2015"
     ]
   },
+  "stylePreprocessorOptions": {
+    "includePaths": [
+      "src/lib/scss"
+    ]
+  },
   "angularCompilerOptions": {
     "annotateForClosureCompiler": true,
     "skipTemplateCodegen": true,

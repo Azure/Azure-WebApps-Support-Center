@@ -1,0 +1,133 @@
+<div class="view-container">
+
+    <ngx-smart-modal #publishModal identifier="publishModal">
+        <div>
+            <h4>Confirm?</h4>
+            <hr style="margin-top: 10px;margin-bottom: 10px;">
+            <span>Published changes will be live in Applens and App Services "Diagnose and Solve" blade for external customers
+                if the detector is marked public.</span>
+
+            <div style="margin-top:10px;margin-bottom: 10px">
+                <button type="button" class="btn btn-primary" (click)="publish()" [class.disabled]="modalPublishingButtonDisabled">{{modalPublishingButtonText}}</button>
+                <button type="button" class="btn btn-danger" (click)="publishModal.close()">Cancel</button>
+            </div>
+        </div>
+    </ngx-smart-modal>
+
+    <ngx-smart-modal #devModeModal identifier="devModeModal" [customClass]="'wide-modal'">
+        <div class="modal-header" style="background-color: #373277; padding: 10px 15px 10px 15px">
+            <h4 class="modal-title" id="myModalLabel" style="color:white">Get Developing Options</h4>
+        </div>
+        <div class="modal-content">
+            <div id="dev-box">
+                <div>       
+                    <h4 style="font-weight: bold; color:#373277">Local Development Prerequisites</h4>
+                    <p>1. Make sure you have installed
+                        <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a> and <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp" target="_blank">C# extension </a> locally.</p>
+                    <p>2. Install
+                        <a href="https://nodejs.org/en/" target="_blank">Node.js 
+                        </a>  with version 8.x or later.</p>
+                    <p>2. Install
+                            <a href="https://git-scm.com/download/win" target="_blank">Git
+                            </a>  locally.</p>
+                    <br>
+
+                    <h4 style="font-weight: bold; color: #373277">Local Development Instructions</h4>
+                    <p>1. Download local detector packages</p>
+                    <p>2. Extract the zip file</p>
+                    <p>3. Launch the startup.cmd</p>
+                </div>
+
+                <a class="custom-btn custom" href="https://msit.microsoftstream.com/video/a90ea3b0-55bb-4b96-a43b-a4de363e1f4a?list=studio" target="_blank">
+                    <i class="fa fa-play-circle"></i> Watch Demo Video
+                </a>
+
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="hiddenModal" [checked]="hideModal" (change)="hideModal = !hideModal">
+                    <label class="form-check-lable" for="hiddenModal" style="color:lightslategray; font-weight: 100; margin-top: 30px">Don't show this message automatically</label>
+                </div>
+                <div style="margin-top:0px;margin-bottom: 10px; padding-top: 10px; padding-bottom: 20px">
+                    <button type="button" class="btn" style="background-color: #373277; color:white; padding:0px 10px 0px 0px; margin-right: 10px; height: 35px;"
+                        (click)="downloadLocalDevTools()" [class.disabled]="localDevButtonDisabled">
+                        <img src="assets\img\Local-Dev-Logo.png"> {{localDevText}}
+                    </button>
+                    <span style="font-weight:bold">OR</span>
+                    <button type="button" class="btn" style="background-color: white; border-color: #373277; color:#373277; height: 33px; margin-left: 10px; height: 35px;"
+                        (click)="dismissDevModal()">Continue Online</button>
+                </div>
+            </div>
+        </div>
+    </ngx-smart-modal>
+
+    <div *ngIf="showAlert" class="alert alert-container" [ngClass]="alertClass" role="alert">
+        {{alertMessage}}
+    </div>
+    <loader-view *ngIf="!code" message="Starting onboarding flow ..."></loader-view>
+
+    <div *ngIf="code" class="onboarding-container">
+        <split [direction]="horizontal" gutterSize="8" gutterColor="#dff0ff">
+            <split-area size="60">
+                <split direction="vertical" gutterSize="8" gutterColor="rgb(249, 233, 212)">
+                    <split-area size="85">
+                        <detector-control *ngIf="mode === DevelopMode.Create || mode === DevelopMode.Edit"></detector-control>
+                        <div class="code-container-header">
+
+                            <div class="file-tab active">
+                                {{fileName}}
+                            </div>
+
+                            <div (click)="confirmPublish()" class="action-button publish-button" [class.disabled]="publishButtonDisabled">
+                                <i class="fa fa-cloud-upload"></i>
+                                {{publishButtonText}}
+                            </div>
+
+                            <div (click)="runCompilation()" class="action-button run-button" [ngClass]="{'disabled': runButtonDisabled }">
+                                <i [ngClass]="runButtonIcon"></i>
+                                {{runButtonText}}
+                            </div>
+
+                            <div (click)="getDevOptions()" class="action-button run-button" [ngClass]="{'disabled': localDevButtonDisabled }">
+                                <i [ngClass]="devOptionsIcon"></i>
+                                {{localDevText}}
+                            </div>
+                        </div>
+
+                        <ngx-monaco-editor style="height:calc(100% - 100px)" [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
+
+                    </split-area>
+                    <split-area size="15">
+                        <div class="compilation-output-container">
+                            <div *ngFor="let item of buildOutput" class="compilation-output">{{item}}</div>
+                        </div>
+                    </split-area>
+                </split>
+
+            </split-area>
+            <split-area size="40">
+                <div class="invocation-output-title-container">
+                    <div class="invocation-title" [ngClass]="[!showDataSources ? 'active' : '']" (click)="queryResponse ? showDataSources=false : false">
+                        Detector Output
+                    </div>
+                    <div class="invocation-title" [ngClass]="[showDataSources ? 'active' : '']" (click)="queryResponse ? showDataSources=true : false">
+                        Data Sources
+                    </div>
+                </div>
+
+                <div style="padding:10px">
+                    <detector-view *ngIf="queryResponse && !showDataSources" [detectorResponse]="queryResponse.invocationOutput" [startTime]="startTime"
+                        [endTime]="endTime" [error]="errorState" [showEdit]="false"></detector-view>
+
+                    <tab-data-sources *ngIf="queryResponse && showDataSources" [onboardingMode]="true" [detectorResponse]="queryResponse.invocationOutput">
+                    </tab-data-sources>
+                    <nav class="container">
+                        <a (click)="getDevOptions()" tooltip="Local VS Development" class="buttons">
+                            <span>
+                                <span class="rotate"></span>
+                            </span>
+                        </a>
+                    </nav>
+                </div>
+            </split-area>
+        </split>
+    </div>
+</div>

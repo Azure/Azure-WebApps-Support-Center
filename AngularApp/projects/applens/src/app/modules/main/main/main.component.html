@@ -1,0 +1,61 @@
+<div class="container-fluid" [style.height]="contentHeight" style="background-color: #e4e4e4;">
+  <div class="row" style="padding-top: 200px">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Search Applens</h3>
+        </div>
+
+        <form #form="ngForm" (ngSubmit)="onSubmit(form.value)">
+          <div class="form-group">
+            <div class="form-row">
+              <div class="col-md-6">
+                <label>Resource Type</label>
+                <div class="dropdown" [class.show]="showResourceTypeOptions">
+                  <button class="btn btn-default dropdown-toggle" type="button" (click)="showResourceTypeOptions = !showResourceTypeOptions"
+                    id="dropdownMenu1">
+                    {{this.selectedResourceType.displayName}}
+                    <span class="caret"></span>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenu1" [class.show]="showResourceTypeOptions">
+                    <li *ngFor="let type of resourceTypes" (click)="selectResourceType(type)">
+                      <a>{{type.displayName}}</a>
+                    </li>
+
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="!this.selectedResourceType.caseId" class="col-md-6">
+                <label>Resource Name</label>
+                <input class="form-control" [(ngModel)]="resourceName" name="resourceName" type="text" aria-describedby="nameHelp" placeholder="Enter resource name">
+              </div>
+              <div  *ngIf="this.selectedResourceType.caseId" class="col-md-6">
+                <label>Case Number</label>
+                <input class="form-control" [(ngModel)]="resourceName" name="resourceName" type="text" aria-describedby="nameHelp" placeholder="Enter case number">
+              </div>
+            </div>
+            <div class="form-row" *ngIf="!this.selectedResourceType.caseId">
+              <div class="col-md-6">
+                <label>Start Time</label>
+                <input id="startTime" name="startTime" class="form-control input-sm" [(ngModel)]="startTime" [owlDateTimeTrigger]="start"
+                  [owlDateTime]="start">
+                 <owl-date-time #start></owl-date-time>
+              </div>
+              <div class="col-md-6">
+                <label>End Time</label>
+                <input id="endTime" name="endTime" class="form-control input-sm" [(ngModel)]="endTime" [owlDateTimeTrigger]="end" [owlDateTime]="end">
+                <owl-date-time #end></owl-date-time>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" style="padding:15px;text-align:right">
+            <button class="btn btn-primary" style="width:50px;margin-top: 10px;" [disabled]="!(resourceName && resourceName.length > 0)" type="Submit">Go</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-6" *ngIf="showCaseCleansingOption">
+        <a (click)="caseCleansingNavigate()">Review case tagging</a>
+      </div>
+    </div>
+  </div>
+</div>

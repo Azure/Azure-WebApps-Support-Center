@@ -1,0 +1,5 @@
+<div class="container-fluid" [style.height]="contentHeight" style="background-color: #e4e4e4;">
+    <div class="big-text" *ngIf="loading">Searching for ASE ...</div>
+    <div class="big-text" *ngIf="!loading && error">{{error}}</div>
+    <div class="big-text" *ngIf="!loading && !error">Redirecting to ASE {{hostingEnvironment}}</div>
+</div>

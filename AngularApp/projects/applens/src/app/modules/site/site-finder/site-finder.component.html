@@ -1,0 +1,26 @@
+<div class="container-fluid" [style.height]="contentHeight" style="background-color: #e4e4e4;">
+  <div class="big-text" *ngIf="loading">Searching for site ...</div>
+  <div class="big-text" *ngIf="!loading && error">Site {{site}} not found</div>
+  <div class="big-text" *ngIf="!loading && !error && matchingSites.length == 1">Redirecting to {{site}}</div>
+  <div *ngIf="!loading && !error && matchingSites.length > 0">
+
+    <div class="" style="width:100%;height:100%;padding:50px">
+      <div>
+        <h3>Multiple sites with the name '{{matchingSites[0].SiteName}}' found. Pick the correct one:</h3>
+      </div>
+      <div class="" style="margin:5px;float:left" *ngFor="let site of matchingSites">
+        <div class="panel" style="width: 40rem;">
+          <div class="panel-body">
+            <h5 class="panel-title">{{site.SiteName}}
+              <span *ngIf="site.SlotName && site.SlotName.length > 0">({{site.SlotName}})</span>
+            </h5>
+            <p class="panel-text">{{site.Subscription}}</p>
+            <p class="panel-text">{{site.ResourceGroupName}}</p>
+            <p class="panel-text">{{site.StampName}}</p>
+            <a (click)="navigateToSite(site)" class="btn btn-primary">Select</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

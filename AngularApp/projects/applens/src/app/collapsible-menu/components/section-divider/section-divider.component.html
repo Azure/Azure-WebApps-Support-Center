@@ -1,0 +1,14 @@
+<div class="section-divider" [class.not-expandable]="!collapsible" (click)="expanded = !expanded">
+  <div>
+      <i class="fa section-expand-icon" *ngIf="collapsible" [class.fa-caret-right]="!expanded" [class.fa-caret-down]="expanded"></i>
+  </div>
+  <div>
+      {{label.toUpperCase()}}
+  </div>
+  
+</div>
+<div class="section-children">
+  <div class="expandable-content" [@expand]="!collapsible || expanded ? 'shown' : 'hidden'">
+      <ng-content></ng-content>
+  </div>
+</div>

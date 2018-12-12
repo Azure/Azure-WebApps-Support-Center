@@ -1,0 +1,37 @@
+<div style="padding:20px">
+  <div style="margin-left: -20px">
+    <comm-alert></comm-alert>
+  </div>
+  <div *ngFor="let key of keys">
+    <b>{{key}}:</b> {{resource[key]}}
+  </div>
+  <br/>
+  <br/>
+  <h3>Detectors Enabled For Support Topics</h3>
+  <table>
+    <thead>
+      <th>
+        Pes Id
+      </th>
+      <th>
+        Support Topic Id
+      </th>
+      <th>
+        Detector
+      </th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of supportTopicIdMapping">
+        <td>
+          {{s.supportTopic.pesId}}
+        </td>
+        <td>
+          {{s.supportTopic.id}}
+        </td>
+        <td>
+          {{s.detectorName}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

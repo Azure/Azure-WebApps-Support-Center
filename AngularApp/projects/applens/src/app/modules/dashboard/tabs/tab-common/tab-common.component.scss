@@ -1,0 +1,33 @@
+.active-tab {
+  color: rgb(68, 68, 68);
+  background-color: #fff !important;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+}
+
+body {
+  padding: 10px;
+}
+
+.tab-container {
+  overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #c6c5ff;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(92, 97, 133); 
+}
