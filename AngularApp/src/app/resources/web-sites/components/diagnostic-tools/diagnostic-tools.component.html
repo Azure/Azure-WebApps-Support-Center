@@ -3,46 +3,42 @@
   <div class="row">
     <div class="col col-sm-7" style="margin-left: -10px;">
       <div class="header1">App Service Diagnostics Tools and Resources</div>
-      <p>Sometimes deeper investigation is necessary. With Diagnostic Tools, you can run language-specific tools to profile your app, collect network traces, memory dumps, and more.</p>
+      <p>Sometimes deeper investigation is necessary. With Diagnostic Tools, you can run language-specific tools to
+        profile your app, collect network traces, memory dumps, and more.</p>
       <div>
         <div class="message message-info" *ngIf="stackFound">
           <i class="fa fa-lightbulb-o"></i>The stack used by your Web App was automatically detected to be
           <b>{{webSiteService.appStack}}</b>. If incorrect, please select the correct option on the right.
         </div>
         <div class="message message-warning" *ngIf="!stackFound">
-          <i class="fa fa-warning"></i>The stack used by your Web App could not be determined. Please choose from the options on the right to only
+          <i class="fa fa-warning"></i>The stack used by your Web App could not be determined. Please choose from the
+          options on the right to only
           show tools that are relevant to your stack.
         </div>
       </div>
     </div>
     <div class="col col-sm-5">
       <div style="float: right;" class="btn-group" role="group" aria-label="...">
-        <button *ngFor="let st of possibleStacks" type="button" class="btn btn-default" (click)="selectStack(st)" [class.btn-primary]="st === stack">{{st}}</button>
+        <button *ngFor="let st of possibleStacks" type="button" class="btn btn-default" (click)="selectStack(st)"
+          [class.btn-primary]="st === stack">{{st}}</button>
       </div>
     </div>
   </div>
-  <collapsible-list [title]="'Diagnostic Tools'" [collapsed]="false">
+
+  <collapsible-list *ngFor="let toolCategory of toolCategories | website:stack" [title]="toolCategory.title" [collapsed]="false">
     <collapsible-list-item>
-      <tile-list [tiles]="diagnosticToolTiles | website:stack"></tile-list>
+      <tile-list [tiles]="toolCategory.tools | website:stack"></tile-list>
     </collapsible-list-item>
   </collapsible-list>
-  <collapsible-list *ngIf="!isFunctionApp" [title]="'Support Tools'" [collapsed]="false">
-    <collapsible-list-item>
-      <tile-list [tiles]="supportToolTiles | website"></tile-list>
-    </collapsible-list-item>
-  </collapsible-list>
-  <collapsible-list *ngIf="!isFunctionApp" [title]="'Premium Tools'" [collapsed]="false">
-    <collapsible-list-item>
-      <tile-list [tiles]="premiumToolTiles | website"></tile-list>
-    </collapsible-list-item>
-  </collapsible-list>
+
   <div style="margin-top:40px">
-      <p>
-          Below is the list of all the diagnostic sessions collected in the past for this web app. To save disk space, older diagnostic sessions and their data collected will be deleted automatically.
-      </p>
-      <div class="sessions">
-          <daas-sessions [diagnoserNameLookup]="" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed"></daas-sessions>
-      </div>
+    <p>
+      Below is the list of all the diagnostic sessions collected in the past for this web app. To save disk space,
+      older diagnostic sessions and their data collected will be deleted automatically.
+    </p>
+    <div class="sessions">
+      <daas-sessions [diagnoserNameLookup]="" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed"></daas-sessions>
+    </div>
   </div>
 
 </div>
