@@ -156,9 +156,16 @@
             ],
             "styles": [
               "node_modules/nvd3/build/nv.d3.css",
-              "node_modules/font-awesome/css/font-awesome.css",
+              "node_modules/font-awesome/css/font-awesome.min.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/@swimlane/ngx-datatable/release/index.css",
+              "node_modules/@swimlane/ngx-datatable/release/themes/bootstrap.css",
+              "node_modules/@swimlane/ngx-datatable/release/assets/icons.css",
               "node_modules/prismjs/themes/prism-okaidia.css",
+              "node_modules/ng-pick-datetime/assets/style/picker.min.css",
+              "node_modules/ngx-smart-modal/ngx-smart-modal.css",
+              "node_modules/admin-lte/dist/css/AdminLTE.min.css",
+              "node_modules/admin-lte/dist/css/skins/skin-blue.css",
               "projects/applens/src/styles.scss"
             ],
             "scripts": [
@@ -324,8 +331,10 @@
             ],
             "styles": [
               "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/@swimlane/ngx-datatable/release/index.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/@swimlane/ngx-datatable/release/index.css",
+              "node_modules/@swimlane/ngx-datatable/release/themes/bootstrap.css",
+              "node_modules/@swimlane/ngx-datatable/release/assets/icons.css",
               "projects/app-service-diagnostics/src/styles.scss",
               "projects/app-service-diagnostics/src/styles/main.scss"
             ],
@@ -394,7 +403,8 @@
               "projects/app-service-diagnostics/tsconfig.spec.json"
             ],
             "exclude": [
-              "**/node_modules/**"
+              "**/node_modules/**",
+              "**/availability/**"
             ]
           }
         }
