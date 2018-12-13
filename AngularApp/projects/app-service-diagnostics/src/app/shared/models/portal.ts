@@ -10,8 +10,8 @@ export interface StartupInfo {
     pesId?: string; 
     supportTopicId?: string;
     workflowId?: string; 
-    resourceType:ResourceType;
-    additionalParameters: any;
+    resourceType?:ResourceType;
+    additionalParameters?: any;
 }
 
 export enum ResourceType {
