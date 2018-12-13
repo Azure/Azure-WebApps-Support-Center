@@ -1,3 +1,4 @@
+import { WebSiteFilter } from './../pipes/site-filter.pipe';
 import { Injectable } from '@angular/core';
 import { CategoryService } from '../../../shared-v2/services/category.service';
 import { Category } from '../../../shared-v2/models/category';
@@ -107,15 +108,12 @@ export class SitesCategoryService extends CategoryService {
     }
   ]
 
-  constructor(private _resourceService: WebSitesService) {
+  constructor(private _resourceService: WebSitesService, private _websiteFilter: WebSiteFilter) {
     super();
     this._sitesCategories.push(this._getDiagnosticToolsCategory(this._resourceService.resourceIdForRouting));
     this._addCategories(
-      this._sitesCategories
-      .filter(
-        siteCategory => siteCategory.appType & this._resourceService.appType && 
-        siteCategory.platform & this._resourceService.platform)
-      .map(siteCategory => siteCategory.item));
+      this._websiteFilter.transform(this._sitesCategories)
+    );
   }
 
   private _getDiagnosticToolsCategory(siteId: string): SiteFilteredItem<Category> {
