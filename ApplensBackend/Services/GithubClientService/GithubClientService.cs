@@ -183,7 +183,79 @@ namespace AppLensV3
 
             return string.Empty;
         }
-        
+
+        public async Task<string> GetCommitContent(string detectorId, string sha)
+        {
+            try
+            {
+                string filePath = $"{detectorId.ToLower()}/{detectorId.ToLower()}.csx";
+                CommitRequest request = new CommitRequest
+                {
+                    Path = filePath,
+                    Sha = _branch
+                };
+
+                var commitContent = await _octokitClient.Repository.Content.GetAllContentsByRef(_userName, _repoName, filePath, sha);
+                return commitContent?[0].Content;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<DetectorCommit>> GetAllCommits(string detectorId)
+        {
+            try
+            {
+                string filePath = $"{detectorId.ToLower()}/{detectorId.ToLower()}.csx";
+                CommitRequest request = new CommitRequest
+                {
+                    Path = filePath,
+                    Sha = _branch
+                };
+
+                var allCommits = await _octokitClient.Repository.Commit.GetAll(_userName, _repoName, request);
+                List<DetectorCommit> detectorCommits = new List<DetectorCommit>();
+
+                var commits = allCommits.Select(p => new Tuple<string, DateTimeOffset, string>(p.Sha, p.Commit.Committer.Date, p.Commit.Message)).OrderByDescending(o => o.Item2);
+
+                String previousSha = String.Empty;
+                String currentSha = String.Empty;
+
+                for (int i = commits.Count() - 1; i >= 0; i--)
+                {
+                    var commit = commits.ElementAt(i);
+                    previousSha = currentSha;
+                    currentSha = commit.Item1;
+
+                    if (commit.Item3.Contains("CommittedBy"))
+                    {
+                        string author = commit.Item3.Split(new string[] { "CommittedBy :" }, StringSplitOptions.RemoveEmptyEntries).Last();
+                        author = author.Replace("@microsoft.com", "", StringComparison.OrdinalIgnoreCase);
+                        string date = commit.Item2.ToString().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).First();
+                        detectorCommits.Add(new DetectorCommit(currentSha, author, date, previousSha));
+                    }
+                }
+                return detectorCommits;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        private async Task<Tuple<string, string>> GetDetectorFilesDiff(string detectorId, string currentSha, string previousSha)
+        {
+            string filePath = $"{detectorId.ToLower()}/{detectorId.ToLower()}.csx";
+            var currentFileObjectTask = _octokitClient.Repository.Content.GetAllContentsByRef(_userName, _repoName, filePath, currentSha);
+            var previousFileContentTask = _octokitClient.Repository.Content.GetAllContentsByRef(_userName, _repoName, filePath, currentSha);
+            var currentFileObject = await currentFileObjectTask;
+            var previousFileObject = await previousFileContentTask;
+
+            return new Tuple<string, string>(currentFileObject?[0].Content, previousFileObject?[0].Content);
+        }
+
         private async Task CreateOrUpdateFile(string filePath, string content, string commitMessage, bool convertContentToBase64 = true)
         {
             try

@@ -1,8 +1,8 @@
-import { NgModule, ModuleWithProviders, InjectionToken } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Nvd3GraphComponent } from './components/nvd3-graph/nvd3-graph.component';
 import { TimeSeriesGraphComponent } from './components/time-series-graph/time-series-graph.component';
-import { NvD3Component, NvD3Module } from 'ng2-nvd3';
+import { NvD3Module } from 'ng2-nvd3';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MarkdownModule } from 'ngx-markdown';
 
@@ -38,6 +38,7 @@ import { DetectorControlService } from './services/detector-control.service';
 import { DetectorContainerComponent } from './components/detector-container/detector-container.component';
 import { CommAlertComponent } from './components/comm-alert/comm-alert.component';
 import { CommsService } from './services/comms.service';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 @NgModule({
   imports: [
@@ -45,14 +46,15 @@ import { CommsService } from './services/comms.service';
     NvD3Module,
     NgxDatatableModule,
     MarkdownModule.forRoot(),
-    FormsModule
+    FormsModule,
+    MonacoEditorModule.forRoot()
   ],
   providers: [
     ClipboardService
   ],
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
-    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent, 
+    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent,
     DropdownComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent],
   exports: [FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
     LoaderViewComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent],
@@ -72,4 +74,4 @@ export class DiagnosticDataModule {
       ]
     }
   }
- }
+}

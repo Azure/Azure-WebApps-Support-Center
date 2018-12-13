@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DiagnosticApiService } from './diagnostic-api.service';
-import {Package} from '../models/package';
 import { Observable } from 'rxjs';
+import { DetectorCommit } from '../models/detector-commit';
 
 @Injectable()
 export class GithubApiService {
@@ -22,5 +22,13 @@ export class GithubApiService {
 
   public getSystemMonitoringFile(detectorId: string, invokerId: string): Observable<string> {
     return this._diagnosticApiService.get<string>(`api/github/detectors/${detectorId}/statistics/${invokerId}`, true);
+  }
+
+  public getDetectorChangelist(detectorId: string): Observable<DetectorCommit[]> {
+    return this._diagnosticApiService.getDetectorChangelist(detectorId);
+  }
+  
+   public getCommitContent(detectorId: string, sha: string): Observable<string> {
+    return this._diagnosticApiService.getCommitContent(detectorId, sha);
   }
 }

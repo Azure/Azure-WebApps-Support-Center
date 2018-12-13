@@ -70,8 +70,21 @@ export class DiagnosticApiService {
     return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true);
   }
 
+  public getDetectorChangelist(detectorId: string): Observable<any> {
+    let url: string = `${this.diagnosticApi}api/github/detectors/${detectorId}/changelist`;
+     return this._httpClient.get(url, {
+      headers: this._getHeaders()
+    });
+  }
+   public getCommitContent(detectorId: string, sha: string): Observable<any> {
+    let url: string = `${this.diagnosticApi}api/github/detectors/${detectorId}/commit/${sha}`;
+     return this._httpClient.get(url, {
+      headers: this._getHeaders()
+    });
+  }
+
   public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true): Observable<T> {
-    var url: string = `${this.diagnosticApi}api/invoke`
+    let url: string = `${this.diagnosticApi}api/invoke`
 
     let request = this._httpClient.post<T>(url, body, {
       headers: this._getHeaders(path, method, internalView)
@@ -86,7 +99,7 @@ export class DiagnosticApiService {
 
   public get<T>(path: string, invalidateCache: boolean = false): Observable<T> {
 
-    var url: string = `${this.diagnosticApi}${path}`;
+    let url: string = `${this.diagnosticApi}${path}`;
 
     let request = this._httpClient.get<T>(url, {
       headers: this._getHeaders()
@@ -96,7 +109,7 @@ export class DiagnosticApiService {
   }
 
   private _getHeaders(path?: string, method?: HttpMethod, internalView: boolean = true): HttpHeaders {
-    var headers = new HttpHeaders();
+    let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', 'application/json');
     headers = headers.set('x-ms-internal-client', String(true));
