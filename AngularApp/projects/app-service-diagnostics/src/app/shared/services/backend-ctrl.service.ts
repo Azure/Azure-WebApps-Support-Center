@@ -1,23 +1,23 @@
 
-import { map, mergeMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Http, Headers, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CacheService } from '../../shared/services/cache.service';
 import { AuthService } from '../../startup/services/auth.service';
 import { StartupInfo } from '../../shared/models/portal';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class BackendCtrlService {
 
-  constructor(private _http: Http, private _cacheService: CacheService, private _authService: AuthService) { }
+  constructor(private _http: HttpClient, private _cacheService: CacheService, private _authService: AuthService) { }
 
   public get apiEndpoint(): string {
     return environment.backendHost;
   }
 
-  public get<T>(path: string, headers: Headers = null, invalidateCache: boolean = false): Observable<T> {
+  public get<T>(path: string, headers: HttpHeaders = null, invalidateCache: boolean = false): Observable<T> {
 
     return this._authService.getStartupInfo().pipe(
       mergeMap((startupInfo: StartupInfo) => {
@@ -31,16 +31,17 @@ export class BackendCtrlService {
       }));
   }
 
-  private _getHeaders(startupInfo: StartupInfo, additionalHeaders: Headers): Headers {
-    var headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Accept', 'application/json');
-    headers.append('Authorization', `Bearer ${startupInfo.token}`);
+  private _getHeaders(startupInfo: StartupInfo, additionalHeaders: HttpHeaders): HttpHeaders {
+    var headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${startupInfo.token}`
+    });
 
     if (additionalHeaders) {
-      additionalHeaders.forEach((val, name, temp) => {
-        if (!headers.has(name)) {
-          headers.append(name, val[0]);
+      additionalHeaders.keys().forEach(key => {
+        if (!headers.has(key)) {
+          headers = headers.set(key, additionalHeaders.get(key))
         }
       });
     }

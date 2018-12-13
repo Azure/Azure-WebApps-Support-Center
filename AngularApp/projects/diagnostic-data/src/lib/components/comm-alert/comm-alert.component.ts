@@ -35,6 +35,8 @@ export class CommAlertComponent implements OnInit {
 
   ngOnInit() {
 
+    console.log('comm-alert');
+
     this.commsService.getServiceHealthCommunications().subscribe((commsList: Communication[]) => {
       this.azureServiceCommList = commsList;
       let commAlert = commsList.find((comm: Communication) => comm.isAlert === true);
