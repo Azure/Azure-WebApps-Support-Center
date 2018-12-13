@@ -8,7 +8,6 @@ import { UriElementsService } from '../../../services/urielements.service';
 import { Observable, Subscription, interval } from 'rxjs'
 import { ArmService } from '../../../services/arm.service';
 import { NetworkTraceResult } from '../../../models/network-trace';
-import { map } from 'rxjs/operators/map';
 
 @Component({
     templateUrl: 'network-trace-tool.component.html',

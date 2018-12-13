@@ -8,9 +8,7 @@ import { LoadingStatus, DetectorResponse, Rendering, DetectorListRendering, Diag
 import { CategoryChatStateService } from '../../../shared-v2/services/category-chat-state.service';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
-import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'detector-summary',

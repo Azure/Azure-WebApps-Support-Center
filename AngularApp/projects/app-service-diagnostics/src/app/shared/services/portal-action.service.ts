@@ -7,7 +7,7 @@ import { WindowService } from '../../startup/services/window.service';
 import { PortalService } from '../../startup/services/portal.service';
 import { ArmService } from './arm.service';
 import { AuthService } from '../../startup/services/auth.service';
-import { map } from 'rxjs/operators/map';
+import { map } from 'rxjs/operators';
 import { filter } from 'rxjs/operators';
 
 @Injectable()

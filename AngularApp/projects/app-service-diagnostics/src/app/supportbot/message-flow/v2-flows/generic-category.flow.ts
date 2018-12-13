@@ -1,10 +1,8 @@
-import { of } from 'rxjs/observable/of';
-import {map} from 'rxjs/operators/map';
 import { Injectable } from '@angular/core';
 import { MessageGroup } from '../../models/message-group';
 import { TextMessage, ButtonListMessage } from '../../models/message';
 import { Category } from '../../../shared-v2/models/category';
-import { Observable } from 'rxjs'
+import { Observable, of } from 'rxjs'
 import { DetectorMetaData, DiagnosticService } from 'diagnostic-data';
 import { IMessageFlowProvider } from '../../interfaces/imessageflowprovider';
 import { RegisterMessageFlowWithFactory } from '../message-flow.factory';
@@ -13,6 +11,7 @@ import { CategoryMenuMessage } from '../category-menu/category-menu.component';
 import { DetectorSummaryMessage } from '../detector-summary/detector-summary.component';
 import { DocumentSearchMessage } from '../document-search/document-search.component';
 import { FeedbackMessage } from '../feedback/feedbackmessageflow';
+import { map } from 'rxjs/operators';
 
 
 @Injectable()

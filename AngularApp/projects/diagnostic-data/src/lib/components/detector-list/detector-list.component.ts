@@ -11,7 +11,7 @@ import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { DetectorControlService } from '../../services/detector-control.service';
 import { map } from 'rxjs/internal/operators/map';
-import { catchError } from 'rxjs/operators/catchError';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'detector-list',

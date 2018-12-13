@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
 import { DiagnosticData, DataTableRendering, RenderingType } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 
