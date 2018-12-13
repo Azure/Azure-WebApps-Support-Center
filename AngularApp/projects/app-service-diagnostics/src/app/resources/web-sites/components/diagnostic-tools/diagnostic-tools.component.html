@@ -21,19 +21,9 @@
       </div>
     </div>
   </div>
-  <collapsible-list [title]="'Diagnostic Tools'" [collapsed]="false">
+  <collapsible-list *ngFor="let toolCategory of toolCategories | website:stack" [title]="toolCategory.title" [collapsed]="false">
     <collapsible-list-item>
-      <tile-list [tiles]="diagnosticToolTiles | website:stack"></tile-list>
-    </collapsible-list-item>
-  </collapsible-list>
-  <collapsible-list [title]="'Support Tools'" [collapsed]="false">
-    <collapsible-list-item>
-      <tile-list [tiles]="supportToolTiles | website"></tile-list>
-    </collapsible-list-item>
-  </collapsible-list>
-  <collapsible-list [title]="'Premium Tools'" [collapsed]="false">
-    <collapsible-list-item>
-      <tile-list [tiles]="premiumToolTiles | website"></tile-list>
+      <tile-list [tiles]="toolCategory.tools | website:stack"></tile-list>
     </collapsible-list-item>
   </collapsible-list>
   <div style="margin-top:40px">

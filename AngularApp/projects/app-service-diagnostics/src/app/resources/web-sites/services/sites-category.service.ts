@@ -120,10 +120,10 @@ export class SitesCategoryService extends CategoryService {
 
   private _getDiagnosticToolsCategory(siteId: string): SiteFilteredItem<Category> {
     return <SiteFilteredItem<Category>>{
-      appType: AppType.WebApp,
+      appType: AppType.WebApp | AppType.FunctionApp,
       platform: OperatingSystem.windows,
       stack: '',
-      sku: Sku.All,
+      sku: Sku.NotDynamic,
       item: {
         id: 'DiagnosticTools',
         name: 'Diagnostic Tools',

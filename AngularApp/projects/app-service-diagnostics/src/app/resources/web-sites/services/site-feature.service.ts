@@ -141,7 +141,7 @@ export class SiteFeatureService extends FeatureService {
   addDiagnosticTools(resourceId: string) {
     this.diagnosticTools = [
       {
-        appType: AppType.WebApp,
+        appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
         stack: '',
@@ -157,7 +157,7 @@ export class SiteFeatureService extends FeatureService {
         }
       },
       {
-        appType: AppType.WebApp,
+        appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
         stack: 'ASP.NET',
@@ -173,7 +173,7 @@ export class SiteFeatureService extends FeatureService {
         }
       },
       {
-        appType: AppType.WebApp,
+        appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
         stack: '',
@@ -189,7 +189,7 @@ export class SiteFeatureService extends FeatureService {
         }
       },
       {
-        appType: AppType.WebApp,
+        appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
         stack: '',
@@ -205,7 +205,7 @@ export class SiteFeatureService extends FeatureService {
         }
       },
       {
-        appType: AppType.WebApp,
+        appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
         stack: '',
@@ -221,7 +221,7 @@ export class SiteFeatureService extends FeatureService {
         }
       },
       {
-        appType: AppType.WebApp,
+        appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
         stack: 'PHP',
@@ -237,7 +237,7 @@ export class SiteFeatureService extends FeatureService {
         }
       },
       {
-        appType: AppType.WebApp,
+        appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
         stack: 'PHP',
@@ -253,7 +253,7 @@ export class SiteFeatureService extends FeatureService {
         }
       },
       {
-        appType: AppType.WebApp,
+        appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
         stack: 'Java',
@@ -269,7 +269,7 @@ export class SiteFeatureService extends FeatureService {
         }
       },
       {
-        appType: AppType.WebApp,
+        appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
         stack: 'Java',

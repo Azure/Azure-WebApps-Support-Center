@@ -15,19 +15,19 @@
     margin-bottom: 5px;
 }
 
-.tile {
+.autohealtile {
     display: inline-block;
     margin: 0 2px;
     cursor: pointer;
     margin-bottom: 10px
 }
 
-.tile-selected {
+.autohealtile-selected {
     border: 2px solid #0058ad;
     margin: 0;
 }
 
-.tile-icon {
+.autohealtile-icon {
     padding: 10px;
     width: 130px;
     height: 70px;
@@ -36,7 +36,7 @@
     text-align: center;
 }
 
-.tile:hover {
+.autohealtile:hover {
     -webkit-box-shadow: 6px 6px 20px 0 rgba(0, 0, 0, .2);
     box-shadow: 6px 6px 20px 0 rgba(0, 0, 0, .2);
 }
@@ -45,7 +45,7 @@
     font-size: 17px;
 }
 
-.tile-content {
+.autohealtile-content {
     margin-left: 15px;
 }
 

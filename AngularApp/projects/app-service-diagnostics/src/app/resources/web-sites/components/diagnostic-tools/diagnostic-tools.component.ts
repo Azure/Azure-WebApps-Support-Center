@@ -5,6 +5,9 @@ import { SiteFeatureService } from "../../services/site-feature.service";
 import { WebSitesService } from "../../services/web-sites.service";
 import { SiteService } from "../../../../shared/services/site.service";
 import { SiteDaasInfo } from "../../../../shared/models/solution-metadata";
+import { AppType } from "../../../../shared/models/portal";
+import { OperatingSystem } from "../../../../shared/models/site";
+import { Sku } from "../../../../shared/models/server-farm";
 
 
 @Component({
@@ -14,9 +17,7 @@ import { SiteDaasInfo } from "../../../../shared/models/solution-metadata";
 })
 export class DiagnosticToolsComponent {
 
-  diagnosticToolTiles: SiteFilteredItem<Tile>[];
-  supportToolTiles: SiteFilteredItem<Tile>[];
-  premiumToolTiles: SiteFilteredItem<Tile>[];
+  toolCategories: SiteFilteredItem<any>[] = [];
 
   stackFound: boolean = false;
   stack: string;
@@ -32,49 +33,76 @@ export class DiagnosticToolsComponent {
     "All"
   ]
 
-  constructor(private _sitesFeatureService: SiteFeatureService, public webSiteService: WebSitesService, private _siteService: SiteService) { 
+  constructor(private _sitesFeatureService: SiteFeatureService, public webSiteService: WebSitesService, private _siteService: SiteService) {
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
       this.siteToBeDiagnosed = site;
     });
 
     this.scmPath = this.webSiteService.resource.properties.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
-    this.diagnosticToolTiles = this._sitesFeatureService.diagnosticTools.map(tool => {
-      return <SiteFilteredItem<Tile>>{
-        appType: tool.appType,
-        platform: tool.platform,
-        sku: tool.sku,
-        stack: tool.stack,
-        item: {
-          title: tool.item.name,
-          action: tool.item.clickAction
-        }
+    this.toolCategories.push(<SiteFilteredItem<any>>{
+      appType: AppType.WebApp | AppType.FunctionApp,
+      platform: OperatingSystem.windows,
+      sku: Sku.NotDynamic,
+      stack: '',
+      item: {
+        title: 'Diagnostic Tools',
+        tools: this._sitesFeatureService.diagnosticTools.map(tool => {
+          return <SiteFilteredItem<Tile>>{
+            appType: tool.appType,
+            platform: tool.platform,
+            sku: tool.sku,
+            stack: tool.stack,
+            item: {
+              title: tool.item.name,
+              action: tool.item.clickAction
+            }
+          }
+        })
       }
     });
 
-    this.supportToolTiles = this._sitesFeatureService.supportTools.map(tool => {
-      return <SiteFilteredItem<Tile>>{
-        appType: tool.appType,
-        platform: tool.platform,
-        sku: tool.sku,
-        stack: tool.stack,
-        item: {
-          title: tool.item.name,
-          action: tool.item.clickAction
-        }
+    this.toolCategories.push(<SiteFilteredItem<any>>{
+      appType: AppType.WebApp,
+      platform: OperatingSystem.windows,
+      sku: Sku.NotDynamic,
+      stack: '',
+      item: {
+        title: 'Support Tools',
+        tools: this._sitesFeatureService.supportTools.map(tool => {
+          return <SiteFilteredItem<Tile>>{
+            appType: tool.appType,
+            platform: tool.platform,
+            sku: tool.sku,
+            stack: tool.stack,
+            item: {
+              title: tool.item.name,
+              action: tool.item.clickAction
+            }
+          }
+        })
       }
     });
 
-    this.premiumToolTiles =  this._sitesFeatureService.premiumTools.map(tool => {
-      return <SiteFilteredItem<Tile>>{
-        appType: tool.appType,
-        platform: tool.platform,
-        sku: tool.sku,
-        stack: tool.stack,
-        item: {
-          title: tool.item.name,
-          action: tool.item.clickAction
-        }
+    this.toolCategories.push(<SiteFilteredItem<any>>{
+      appType: AppType.WebApp,
+      platform: OperatingSystem.windows,
+      sku: Sku.NotDynamic,
+      stack: '',
+      item: {
+        title: 'Premium Tools',
+        tools: this._sitesFeatureService.premiumTools.map(tool => {
+          return <SiteFilteredItem<Tile>>{
+            appType: tool.appType,
+            platform: tool.platform,
+            sku: tool.sku,
+            stack: tool.stack,
+            item: {
+              title: tool.item.name,
+              action: tool.item.clickAction
+            }
+          }
+        })
       }
     });
 
@@ -85,8 +113,8 @@ export class DiagnosticToolsComponent {
 
   selectStack(stack: string) {
     this.stack = this.possibleStacks.find(st => st.toLowerCase() === stack.toLowerCase());
-    
-    if(!stack) {
+
+    if (!stack) {
       this.stackFound = false;
       this.stack = "All";
     }
