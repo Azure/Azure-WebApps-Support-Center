@@ -1,0 +1,8 @@
+﻿{
+  "_commment": "Please help provide startTime and endTime with YYYY-MM-DD, examples: 2018-09-27. StartTime should be no later than EndTime",
+  "ResourceId": "",
+  "StartTime": "",
+  "EndTime": "",
+  "IsInternalClient": "",
+  "IsInternalView": ""
+}

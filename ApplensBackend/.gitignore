@@ -1,0 +1,43 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Build Directories
+/bin
+/obj
+/wwwroot
+
+# Publishing Profiles
+/Properties/PublishProfiles
+
+# User Project File
+*.csproj.user
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDE - Visual Studio
+.vs/*
+*.sln
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+testem.log
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# local app settings
+appsettings.Development.json
+appsettings.Local.json
+
+# Nuget
+/packages

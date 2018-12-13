@@ -5,13 +5,18 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "applens": "ng serve applens",
     "ssl": "ng serve app-service-diagnostics --ssl --sslCert ./ssl/server.crt --sslKey ./ssl/server.key",
     "asd": "concurrently -k \"npm run ssl\" \"npm run lib\"",
-    "build": "ng build --prod",
+    "build-lib": "ng build diagnostic-data",
+    "build-applens": "ng build applens --prod",
+    "build-asd": "ng build app-service-diagnostics --prod",
+    "build": "npm run build-lib & npm run build-applens && npm run build-asd",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "lib": "ng build diagnostic-data --watch",
+    "generate-report": "ng build app-service-diagnostics --prod",
     "bundle-report": "webpack-bundle-analyzer ../Backend/wwwroot/stats.json -p 8889"
   },
   "dependencies": {
@@ -41,7 +46,7 @@
     "jquery": "^3.3.1",
     "moment": "^2.22.1",
     "ng-pick-datetime": "^6.0.16",
-    "ng-pick-datetime-moment": "^1.0.7",
+    "ng-pick-datetime-moment": "1.0.7",
     "ng2-nvd3": "^2.0.0",
     "ngx-markdown": "^6.1.0",
     "ngx-monaco-editor": "^6.0.0",
@@ -54,9 +59,9 @@
     "zone.js": "^0.8.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.8.0",
-    "@angular-devkit/build-ng-packagr": "^0.8.0",
-    "@angular-devkit/build-optimizer": "^0.8.0",
+    "@angular-devkit/build-angular": "0.8.0",
+    "@angular-devkit/build-ng-packagr": "0.8.0",
+    "@angular-devkit/build-optimizer": "0.8.0",
     "@angular/cli": "^6.1.5",
     "@angular/compiler-cli": "^6.1.10",
     "@angular/language-service": "^6.0.0",
@@ -82,7 +87,7 @@
     "tslib": "^1.9.0",
     "tslint": "~5.9.1",
     "typescript": "^2.7.2",
-    "webpack": "^4.24.0",
+    "webpack": "4.24.0",
     "webpack-bundle-analyzer": "^3.0.2"
   }
 }
