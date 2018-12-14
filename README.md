@@ -1,59 +1,97 @@
-# Azure App Services Diagnostics Portal
+# Azure App Services Diagnostics Portal And Applens
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.5.
+This is the repository for Azure App Service diagnostics experience. 
 
 ## Prerequisites
 - [Node 6.*](https://nodejs.org/en/download/)
 - Node Package Manager (npm)
 - Typescript
   `npm install -g typescript`
+- Angular-CLI
+  `npm install -g @angular/cli@6`
+  
+## Project Structure
+
+```
+root
+│   
+└───AngularApp
+│   │   This is the home of the angular code for App Service Diangositics Portal and Applens
+|   |
+|   |   angular.json - This is the angular-cli configruation file
+│   │
+│   └───projects
+|       |   This is the list of projects registered in angular.json
+|       |
+│       └───app-service-diagnostics
+|       |   |    This is the code for the external App Service Diangostics Portal 
+|       |
+|       └───applens
+|       |   |    This is the code for Applens
+|       |
+|       └───diagnostic-data
+|           |    This is a library containing the common component and services 
+|           |    that are used to generate detector views in ASD/Applens.
+|           |    Any component or feature that you want to use both internally 
+|           |    or externally should be put here
+│
+└───Backend
+│   │   ASP.Net Core Backend for App Service Diagnostics Portal
+|
+└───ApplensBackend
+│   │   ASP.Net Core Backend for Applens
+```
 
 ## Getting Started
 - Clone repo `git clone https://github.com/Azure/Azure-WebApps-Support-Center.git`
-- Navigate to project root folder and run `npm install` (This will install all the required packages.)
+- Navigate to the angular root folder `AngularApp` and run `npm install` (This will install all the required packages.)
 
-## Development server
+## App Service Diagnostics Portal
 
-- You need to update `app/shared/services/auth.service.ts` with the Authorization Token. (only for local development)
-- Replace `<token>` with the authorization token (note:- Do not put Bearer)
+### Development server
+
+- You need to update `projects/app-service-diagnostics/src/app/startup/services/auth.service.ts` with the Authorization Token and resource ID. (only for local development)
 - To get the token, you can use <a href="https://github.com/projectkudu/ARMClient">ArmClient</a> `ARMClient.exe token [tenant|subscription]`. This will copy token to clipboard.
+- Get a resource id that you want to test. A good way to do this is to take it from Applens or Azure Portal route.
+- Put values in `auth.service`
+
+```Typescript
+private localStartUpInfo: StartupInfo = <StartupInfo>{
+    sessionId: '',
+    token: '[PUT TOKEN HERE]',
+    subscriptions: null,
+    resourceId: '[PUT RESOURCE ID HERE]',
+    workflowId: '',
+    supportTopicId: ''
+};
+```
+
 - Run `ng serve` for a dev server, or alternatively `npm start`. Navigate to `http://localhost:3000/`. The app will automatically reload if you change any of the source files.
 
-## SSL Development Server
+### SSL Development Server
 
 - To run with ssl, you will need to create a self signed certificate and install it in Trusted Root. Go to the `ssl` folder for directions on how to create this certificate. 
 - Once you have completed this, you can run an ssl server with the command `npm run ssl`. You can navigate to `https://localhost:3000/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
+### Testing Local Changes in the Portal
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- In order to test your local changes in the portal, you can use the following links:
+  - [Local](https://ms.portal.azure.com/?websitesextension_ext=appsvc.env%3Dlocal): This will load the iframe from `https://localhost:3000`. Must be running in *ssl* mode. 
+  - [Staging](https://ms.portal.azure.com/?websitesextension_ext=appsvc.env%3Dstaging): This will load the iframe from `https://supportcenter-bay-staging.azurewebsites.net`
+  
+### Back End
 
-## Build
+- Right now the back end is optional as it is not required for functionality of the angular project. 
+- You will need appropriate secrets to be added to appsettings.Development.json.
+- Open the `Backend` project in Visual Studio 2017 and run it in `IIS Express` mode. 
 
-Run `ng build` to build the project. The build artifacts will be stored in the `wwwroot/` directory. Use the `-prod` flag for a production build.
+### Production Build
 
-## Running unit tests
+- The production build commands for the angular projects are as follows:
+  - `npm run build-applens` - Build Applens. Build output is placed in `ApplensBackend/wwwroot`.
+  - `npm run build-asd` - Build App Service Diagnostic Portal. Build output is placed in `Backend/wwwroot`.
+  - `npm run build` - Build both App Service Diagnostic Portal and Applens.
+- If you have the appropriate Publishing Profiles, you can deploy these changes to the staging slots. 
+- TODO: Azure Dev Ops Integration
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
-# Contributing
-
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.microsoft.com.
-
-When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
