@@ -8,7 +8,7 @@ import { AuthService } from '../../../startup/services/auth.service';
 import { ArmService } from '../arm.service';
 import { IncidentNotification, IncidentType, IncidentStatus } from '../../models/icm-incident';
 import { PortalService } from '../../../startup/services/portal.service';
-import { Observable, forkJoin } from 'rxjs'
+import { Observable, forkJoin } from 'rxjs';
 
 @Injectable()
 export class LoggingService {
@@ -31,20 +31,20 @@ export class LoggingService {
             this._startUpInfo = data;
 
             if (this._startUpInfo && this._startUpInfo.resourceId) {
-                let parts = this._startUpInfo.resourceId.toLowerCase().split('/');
+                const parts = this._startUpInfo.resourceId.toLowerCase().split('/');
 
-                let subscriptionIndex = parts.indexOf('subscriptions');
+                const subscriptionIndex = parts.indexOf('subscriptions');
                 this._subscriptionId = subscriptionIndex !== -1 ? parts[subscriptionIndex + 1] : '';
 
-                let resourceGroupIndex = parts.indexOf('resourcegroups');
+                const resourceGroupIndex = parts.indexOf('resourcegroups');
                 this._resourceGroup = resourceGroupIndex !== -1 ? parts[resourceGroupIndex + 1] : '';
 
-                let siteIndex = parts.indexOf('sites');
-                let hostingEnvironmentIndex = parts.indexOf('hostingenvironments');
-                let resourceIndex = parts.indexOf('resourcename');
+                const siteIndex = parts.indexOf('sites');
+                const hostingEnvironmentIndex = parts.indexOf('hostingenvironments');
+                const resourceIndex = parts.indexOf('resourcename');
                 this._resourceName = resourceIndex !== -1 ? parts[resourceIndex + 1] : siteIndex !== -1 ? parts[siteIndex + 1] : hostingEnvironmentIndex !== -1 ? parts[hostingEnvironmentIndex + 1] : '';
 
-                let providerIndex = parts.indexOf('providers');
+                const providerIndex = parts.indexOf('providers');
                 this._resourceType = providerIndex !== -1 ? parts[providerIndex + 1] + '/' + parts[providerIndex + 2] : '';
 
                 if (this._startUpInfo.workflowId) {
@@ -56,14 +56,14 @@ export class LoggingService {
                 }
 
                 if (siteIndex !== -1) {
-                    var siteSpecificDataRequests = forkJoin(
+                    const siteSpecificDataRequests = forkJoin(
                         this._armServiceInstance.getResource<IDiagnosticProperties>(this._startUpInfo.resourceId + '/diagnostics/properties'),
                         this._armServiceInstance.getResource<Site>(this._startUpInfo.resourceId)
                     );
-                    
+
                     siteSpecificDataRequests.subscribe(partialObserver => {
-                        let propertiesEnvelope: ResponseMessageEnvelope<IDiagnosticProperties> = <ResponseMessageEnvelope<IDiagnosticProperties>>partialObserver[0];
-                        let resourceEnvelope: ResponseMessageEnvelope<Site> = <ResponseMessageEnvelope<Site>>partialObserver[0];
+                        const propertiesEnvelope: ResponseMessageEnvelope<IDiagnosticProperties> = <ResponseMessageEnvelope<IDiagnosticProperties>>partialObserver[0];
+                        const resourceEnvelope: ResponseMessageEnvelope<Site> = <ResponseMessageEnvelope<Site>>partialObserver[0];
 
                         if (propertiesEnvelope && propertiesEnvelope.properties) {
                             this.appStackInfo = propertiesEnvelope.properties.appStack;
@@ -76,8 +76,7 @@ export class LoggingService {
 
                         this.LogStartUpInfo(this._startUpInfo);
                     });
-                }
-                else {
+                } else {
                     this.LogStartUpInfo(this._startUpInfo);
                 }
             }
@@ -86,7 +85,7 @@ export class LoggingService {
 
     protected _log(id: string, category: string, args: any = null): void {
 
-        var commonArgs = {
+        const commonArgs = {
             ticketBladeWorkflowId: this._ticketBladeWorkflowId,
             subscriptionId: this._subscriptionId,
             resourceGroup: this._resourceGroup,
@@ -98,7 +97,7 @@ export class LoggingService {
             supportTopicId: this._supportTopicId
         };
 
-        var combinedArgs = {};
+        const combinedArgs = {};
         Object.keys(commonArgs).forEach((key: string) => combinedArgs[key] = commonArgs[key]);
         if (args) {
             Object.keys(args).forEach((key: string) => combinedArgs[key] = args[key]);
@@ -111,15 +110,15 @@ export class LoggingService {
         this._portalServiceInstance.logAction(id, category, combinedArgs);
     }
 
-    LogMessage(message: string, category: string = "Availability") {
+    LogMessage(message: string, category: string = 'Availability') {
         this._log(CommonLogEventType[CommonLogEventType.Message].toString(), category, { message: message });
     }
 
-    LogError(errorMessage: string, category: string = "Availability") {
+    LogError(errorMessage: string, category: string = 'Availability') {
         this._log(CommonLogEventType[CommonLogEventType.Error].toString(), category, { message: errorMessage });
     }
 
-    LogClickEvent(name: string, containerName: string = "", category: string = "Availability") {
+    LogClickEvent(name: string, containerName: string = '', category: string = 'Availability') {
         this._log(CommonLogEventType[CommonLogEventType.Click].toString(), category, {
             name: name,
             containerName: containerName
@@ -138,7 +137,7 @@ export class LoggingService {
         });
     }
 
-    LogStartUpInfo(startupInfo: StartupInfo, category: string = "Availability") {
+    LogStartUpInfo(startupInfo: StartupInfo, category: string = 'Availability') {
         this._log(CommonLogEventType[CommonLogEventType.StartUp].toString(), category, {
             featureUri: startupInfo.featureUri ? startupInfo.featureUri : '',
             sessionId: startupInfo.sessionId ? startupInfo.sessionId : '',
@@ -147,20 +146,20 @@ export class LoggingService {
         });
     }
 
-    LogMissingSolution(solutionId: number, category: string = "Availability") {
+    LogMissingSolution(solutionId: number, category: string = 'Availability') {
         this._log(CommonLogEventType[CommonLogEventType.MissingSolution], category, {
             solutionId: solutionId.toString()
         });
     }
 
-    LogFeedback(source: string, helpful: boolean, category: string = "Availability") {
+    LogFeedback(source: string, helpful: boolean, category: string = 'Availability') {
         this._log(CommonLogEventType[CommonLogEventType.Feedback], category, {
             source: source,
             helpful: helpful
         });
     }
 
-    LogFeedbackMessage(source: string, message: string, category: string = "Availability") {
+    LogFeedbackMessage(source: string, message: string, category: string = 'Availability') {
         this._log(CommonLogEventType[CommonLogEventType.FeedbackMessage], category, {
             source: source,
             message: message

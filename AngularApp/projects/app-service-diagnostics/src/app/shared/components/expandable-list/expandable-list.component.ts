@@ -1,5 +1,5 @@
 import { Component, Input, AfterViewInit, ContentChildren, QueryList } from '@angular/core';
-import { ExpandableListItemComponent } from './expandable-list-item.component'
+import { ExpandableListItemComponent } from './expandable-list-item.component';
 
 @Component({
     selector: 'expandable-list',
@@ -10,11 +10,11 @@ export class ExpandableListComponent implements AfterViewInit {
 
     @Input() title: string;
 
-    @ContentChildren(ExpandableListItemComponent) listItemComponents: QueryList<ExpandableListItemComponent>; 
+    @ContentChildren(ExpandableListItemComponent) listItemComponents: QueryList<ExpandableListItemComponent>;
 
-    constructor(){ }
+    constructor() { }
 
-    ngAfterViewInit(){
+    ngAfterViewInit() {
 
     }
 }

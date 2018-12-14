@@ -2,7 +2,7 @@ import { Injectable, Host } from '@angular/core';
 import { ArmService } from './arm.service';
 import { AuthService } from '../../startup/services/auth.service';
 import { StartupInfo, ResourceType } from '../models/portal';
-import { BehaviorSubject } from 'rxjs'
+import { BehaviorSubject } from 'rxjs';
 import { HostingEnvironment, AseInfoMetaData } from '../models/hostingEnvironment';
 import { ResponseMessageEnvelope } from '../models/responsemessageenvelope';
 
@@ -28,7 +28,7 @@ export class AseService {
   }
 
   private _populateAseInfo(resourceId: string): void {
-    let pieces = resourceId.toLowerCase().split('/');
+    const pieces = resourceId.toLowerCase().split('/');
 
     this.currentAseMetaData = <AseInfoMetaData>{
         resourceUri: resourceId,
@@ -37,7 +37,7 @@ export class AseService {
         name: pieces[pieces.indexOf('hostingenvironments') + 1]
     };
 
-    this.currentAseMetaDataSubject.next(this.currentAseMetaData)
+    this.currentAseMetaDataSubject.next(this.currentAseMetaData);
 }
 
 }

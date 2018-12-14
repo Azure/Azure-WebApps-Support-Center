@@ -1,14 +1,14 @@
-﻿export interface DeploymentLocations{
+export interface DeploymentLocations {
     locations: Location[];
-    hostingEnvironmentDeploymentInfos : Location[];
+    hostingEnvironmentDeploymentInfos: Location[];
 }
 
-export interface Location{
-    name : string;
-    description? : string;
-    sortOrder? : number;
-    displayName? : string;
-    location? : string;
+export interface Location {
+    name: string;
+    description?: string;
+    sortOrder?: number;
+    displayName?: string;
+    location?: string;
 }
 
 // export interface HostingEnvironmentInfo{

@@ -1,4 +1,4 @@
-﻿import { ArmObj } from './armObj';
+import { ArmObj } from './armObj';
 import { AppType } from './portal';
 
 export interface Site {
@@ -48,5 +48,5 @@ export interface SiteRestartData {
 export enum OperatingSystem {
     windows = 1 << 0,
     linux = 1 << 1,
-    any = 11 << 0 
+    any = 11 << 0
 }

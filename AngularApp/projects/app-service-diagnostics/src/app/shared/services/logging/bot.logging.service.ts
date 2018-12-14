@@ -12,8 +12,8 @@ export class BotLoggingService extends LoggingService {
     constructor(private _portalService: PortalService, private _authService: AuthService, private _armService: ArmService) {
         super(_portalService, _authService, _armService);
     }
-    
-    LogStartUpInfo(startupInfo: StartupInfo, category: string = "Availability") {
+
+    LogStartUpInfo(startupInfo: StartupInfo, category: string = 'Availability') {
         //This is a No-Op so that it only gets logged in base
     }
 
@@ -42,7 +42,7 @@ export class BotLoggingService extends LoggingService {
         this._log(BotEventType[BotEventType.LiveChatWidgetClosed], source, {});
     }
 
-    LogLiveChatWidgetBeginInit(source: string): void{
+    LogLiveChatWidgetBeginInit(source: string): void {
         this._log(BotEventType[BotEventType.LiveChatWidgetInit], source, {});
     }
 

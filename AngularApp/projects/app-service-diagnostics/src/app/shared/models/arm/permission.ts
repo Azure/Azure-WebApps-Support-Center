@@ -1,6 +1,6 @@
-﻿export interface Permissions{
-    actions : string[];
-    notActions : string[];
+export interface Permissions {
+    actions: string[];
+    notActions: string[];
 }
 
 export interface PermissionsAsRegExp {

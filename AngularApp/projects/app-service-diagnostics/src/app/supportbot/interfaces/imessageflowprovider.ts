@@ -1,5 +1,5 @@
 import { MessageGroup } from '../models/message-group';
-import { Observable ,  BehaviorSubject } from 'rxjs'
+import { Observable ,  BehaviorSubject } from 'rxjs';
 
 export class IMessageFlowProvider {
     protected additionalMessageFlows: BehaviorSubject<MessageGroup[]> = new BehaviorSubject<MessageGroup[]>(null);

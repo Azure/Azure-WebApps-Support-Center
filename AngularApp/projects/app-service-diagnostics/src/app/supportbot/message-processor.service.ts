@@ -19,15 +19,15 @@ export class MessageProcessor {
 
         this._messageFlowProviders = MessageFlowFactory.getMessageFlowProviders().map(provider => {
             return this._injector.get(provider);
-        })
+        });
 
         let messageGroups: MessageGroup[] = [];
         this._messageFlowProviders.forEach(provider => {
             messageGroups = messageGroups.concat(provider.GetMessageFlowList());
             provider.SubscribeToAdditionalMessageFlowLists().subscribe(newMessageGroups => {
                 this._messageGroups.concat(newMessageGroups);
-            })
-        })
+            });
+        });
 
         this._messageGroups = messageGroups;
 
@@ -45,7 +45,7 @@ export class MessageProcessor {
     }
 
     private _getMessageGroupByKey(key: string): MessageGroup {
-        let msgGroup = this._messageGroups.find(p => p.key === key);
+        const msgGroup = this._messageGroups.find(p => p.key === key);
         if (!msgGroup) {
             // TODO : Log Error Here for missing Message Group.
         }
@@ -70,7 +70,7 @@ export class MessageProcessor {
                 return null;
             }
 
-            let nextKey = this._currentMessageGroup.next_key();
+            const nextKey = this._currentMessageGroup.next_key();
 
             if (nextKey === '') {
                 return null;
@@ -86,7 +86,7 @@ export class MessageProcessor {
             return null;
         }
 
-        let nextMessge: Message = this._currentMessageGroup.messages[this._currentMessageIterator];
+        const nextMessge: Message = this._currentMessageGroup.messages[this._currentMessageIterator];
         this._currentMessageIterator++;
 
         return nextMessge;

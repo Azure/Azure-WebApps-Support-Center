@@ -17,7 +17,7 @@ import { DocumentSearchComponent } from '../message-flow/document-search/documen
 
 @Component({
     selector: 'dynamic-component',
-    entryComponents: [TextMessageComponent, MainMenuComponent, ButtonMessageComponent, HealthCheckComponent, FeedbackComponent, 
+    entryComponents: [TextMessageComponent, MainMenuComponent, ButtonMessageComponent, HealthCheckComponent, FeedbackComponent,
         SolutionsMessageComponent, GraphMessageComponent, ProblemStatementMessageComponent, TalkToAgentMessageComponent, CategoryMenuComponent,
         DetectorSummaryComponent, DocumentSearchComponent, DocumentSearchResultsComponent],
     template: `
@@ -37,16 +37,16 @@ export class DynamicComponent {
             return;
         }
 
-        let inputProviders = Object.keys(message.parameters).map((inputName) => { return { provide: inputName, useValue: message.parameters[inputName] }; });
-        let resolvedInputs = ReflectiveInjector.resolve(inputProviders);
+        const inputProviders = Object.keys(message.parameters).map((inputName) => ({ provide: inputName, useValue: message.parameters[inputName] }));
+        const resolvedInputs = ReflectiveInjector.resolve(inputProviders);
 
         // Create injector out of the data we want to pass down and this components injector
-        let injector = ReflectiveInjector.fromResolvedProviders(resolvedInputs, this.dynamicComponentContainer.parentInjector);
+        const injector = ReflectiveInjector.fromResolvedProviders(resolvedInputs, this.dynamicComponentContainer.parentInjector);
 
-        let factory = this.resolver.resolveComponentFactory(message.component);
+        const factory = this.resolver.resolveComponentFactory(message.component);
 
         // Create the component using the factory and the injector
-        let component = factory.create(injector);
+        const component = factory.create(injector);
 
         // Insert the component into the dom container
         this.dynamicComponentContainer.insert(component.hostView);

@@ -10,9 +10,9 @@ import { AvailabilityLoggingService } from '../../../services/logging/availabili
 export abstract class DaasBaseComponent  {
 
     diagnoserName: string;
-    siteToBeDiagnosed: SiteDaasInfo    
-    scmPath: string;    
-    refreshSessions:boolean = false;
+    siteToBeDiagnosed: SiteDaasInfo;
+    scmPath: string;
+    refreshSessions: boolean = false;
 
     constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
 
@@ -20,7 +20,7 @@ export abstract class DaasBaseComponent  {
             this.siteToBeDiagnosed = site;
         });
     }
-        
+
     updateSessions(event) {
         this.refreshSessions = event;
     }

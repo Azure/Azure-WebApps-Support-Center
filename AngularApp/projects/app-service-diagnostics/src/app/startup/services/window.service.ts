@@ -9,7 +9,7 @@ function _getWindow(): any {
 export class WindowService {
     window: any = _getWindow();
 
-    public open(url: string, target?: string ){
+    public open(url: string, target?: string ) {
         this.window.open(url);
     }
 }

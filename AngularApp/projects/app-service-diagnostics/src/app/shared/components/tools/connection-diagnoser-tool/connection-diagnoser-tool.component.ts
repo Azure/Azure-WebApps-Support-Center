@@ -13,7 +13,7 @@ import { AvailabilityLoggingService } from '../../../services/logging/availabili
 })
 export class ConnectionDiagnoserToolComponent implements OnInit {
 
-    siteToBeDiagnosed: SiteInfoMetaData
+    siteToBeDiagnosed: SiteInfoMetaData;
     dbTestResult: DatabaseTestConnectionResult[];
     error: any;
     retrievingInfo: boolean = true;
@@ -37,7 +37,7 @@ export class ConnectionDiagnoserToolComponent implements OnInit {
         this.retrievingInfo = true;
         this.dbTestResult = [];
 
-        this._logger.LogClickEvent("Check Connection Strings", "DiagnosticTools");
+        this._logger.LogClickEvent('Check Connection Strings', 'DiagnosticTools');
 
         this._daasService.getDatabaseTest(this.siteToBeDiagnosed)
             .subscribe(result => {
@@ -60,7 +60,7 @@ export class ConnectionDiagnoserToolComponent implements OnInit {
                     return (x.Succeeded === y.Succeeded) ? 0 : x ? 1 : -1;
                 });
 
-                this._logger.LogMessage(`TotalConnections=${this.total};Suceeded=${this.succeeded}`, "DiagnosticTools");
+                this._logger.LogMessage(`TotalConnections=${this.total};Suceeded=${this.succeeded}`, 'DiagnosticTools');
             },
                 error => {
                     this.retrievingInfo = false;
@@ -69,7 +69,7 @@ export class ConnectionDiagnoserToolComponent implements OnInit {
     }
 
     toggleExpanded(i: number): void {
-        this._logger.LogClickEvent(`Connection String-${this.dbTestResult[i].Name}`, "DiagnosticTools");
+        this._logger.LogClickEvent(`Connection String-${this.dbTestResult[i].Name}`, 'DiagnosticTools');
         this.dbTestResult[i].Expanded = !this.dbTestResult[i].Expanded;
     }
 
@@ -79,14 +79,13 @@ export class ConnectionDiagnoserToolComponent implements OnInit {
 
     getDatabaseTypeName(conn: DatabaseTestConnectionResult): string {
         if (conn.FilePath !== null) {
-            return "Config file";
-        }
-        else {
+            return 'Config file';
+        } else {
             return ConnectionDatabaseType[conn.DatabaseType];
         }
     }
 
     isDatabaseTypeSupported(conn: DatabaseTestConnectionResult): boolean {
-        return conn.DatabaseType !== ConnectionDatabaseType.NotSupported
+        return conn.DatabaseType !== ConnectionDatabaseType.NotSupported;
     }
 }

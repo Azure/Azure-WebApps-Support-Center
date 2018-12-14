@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
 import { IDetectorResponse } from '../../../shared/models/detectorresponse';
 import { Message } from '../../models/message';
-import { BehaviorSubject } from 'rxjs'
+import { BehaviorSubject } from 'rxjs';
 import { BotLoggingService } from '../../../shared/services/logging/bot.logging.service';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 
@@ -22,7 +22,7 @@ export class ProblemStatementMessageComponent implements AfterViewInit, IChatMes
 
     ngAfterViewInit(): void {
         (<BehaviorSubject<IDetectorResponse>>this.injector.get('response')).subscribe(detectorResponse => {
-            this.detectorResponse = detectorResponse; 
+            this.detectorResponse = detectorResponse;
 
             this.onViewUpdate.emit();
 

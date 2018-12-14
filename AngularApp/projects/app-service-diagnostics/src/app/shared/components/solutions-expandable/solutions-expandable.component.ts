@@ -3,7 +3,7 @@ import { SupportBladeDefinitions } from '../../models/portal';
 import { SolutionUIModelBase } from '../../models/solution-ui-model/solution-ui-model-base';
 import { SolutionMetadata } from '../../models/solution-ui-model/solutionproperties';
 import { ActionType } from '../../models/enumerations';
-import { ReplaySubject } from 'rxjs'
+import { ReplaySubject } from 'rxjs';
 import { PortalActionService } from '../../services/portal-action.service';
 import { WindowService } from '../../../startup/services/window.service';
 import { AvailabilityLoggingService } from '../../services/logging/availability.logging.service';
@@ -20,7 +20,7 @@ export class SolutionsExpandableComponent implements OnInit {
 
     @Input() set solutionModel(model: SolutionUIModelBase[]) {
         this._solutionModelSubject.next(model);
-    };
+    }
 
     allSolutionsUIModels: SolutionUIModelBase[];
 
@@ -36,10 +36,10 @@ export class SolutionsExpandableComponent implements OnInit {
     }
 
     getBlogHtmlText(metaData: SolutionMetadata): string {
-        let messageSplit = metaData.message.split("*");
-        let linkText = messageSplit[1];
-        let aElement = '<a (click)=\"openBlogUrl(' + metaData.og_Url + ')\">' + linkText + '</a>';
-        let fullHtml = messageSplit[0] + aElement + messageSplit[2];
+        const messageSplit = metaData.message.split('*');
+        const linkText = messageSplit[1];
+        const aElement = '<a (click)=\"openBlogUrl(' + metaData.og_Url + ')\">' + linkText + '</a>';
+        const fullHtml = messageSplit[0] + aElement + messageSplit[2];
         return fullHtml;
     }
 
@@ -55,12 +55,11 @@ export class SolutionsExpandableComponent implements OnInit {
         let type = 'other';
         if (solution.properties.actionType === ActionType.Inline) {
             type = 'inline';
-        }
-        else if (solution.properties.actionType === ActionType.Blade) {
+        } else if (solution.properties.actionType === ActionType.Blade) {
             type = 'openblade';
         }
 
-        this._logger.LogSolutionTried(solution.properties.title, solution.rank.toString(), type, "Open Blog Link");
+        this._logger.LogSolutionTried(solution.properties.title, solution.rank.toString(), type, 'Open Blog Link');
         this._windowService.window.open(blogEntry.og_Url);
     }
 }

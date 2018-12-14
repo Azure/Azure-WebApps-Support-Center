@@ -53,8 +53,7 @@ export class HomepageComponent implements OnInit {
                     this.listCollection.push(this._getContributeItems());
                 }
             });
-        }
-        else {
+        } else {
             this.listCollection.push(this._getAseFAQItems());
             this.listCollection.push(this._getAseResourceCenterItems());
             this.listCollection.push(this._getCommunityItems());
@@ -66,7 +65,7 @@ export class HomepageComponent implements OnInit {
     }
 
     public openUrl(link: string, name: string, container: string): void {
-        this._logger.LogClickEvent(name, container, "Support Home");
+        this._logger.LogClickEvent(name, container, 'Support Home');
         this._windowService.window.open(link, '_blank');
     }
 
@@ -93,7 +92,7 @@ export class HomepageComponent implements OnInit {
                 title: 'About Azure Support Plans',
                 href: 'https://goo.gl/1JzP1P'
             }]
-        }
+        };
     }
 
     private _getLinuxResourceCenterItems() {
@@ -116,7 +115,7 @@ export class HomepageComponent implements OnInit {
                 title: 'About Azure Support Plans',
                 href: 'https://goo.gl/1JzP1P'
             }]
-        }
+        };
     }
 
     private _getAseResourceCenterItems() {
@@ -136,7 +135,7 @@ export class HomepageComponent implements OnInit {
                 title: 'Integrate with Application Gateway',
                 href: 'https://goo.gl/QeMoa4'
             }]
-        }
+        };
     }
 
     private _getFAQItems() {
@@ -156,7 +155,7 @@ export class HomepageComponent implements OnInit {
                 title: 'Configuration and Management FAQs',
                 href: 'https://goo.gl/AVqGCS'
             }]
-        }
+        };
     }
 
     private _getLinuxFAQItems() {
@@ -167,7 +166,7 @@ export class HomepageComponent implements OnInit {
                 title: 'Azure App Service on Linux FAQ',
                 href: 'https://goo.gl/Mu1LCE'
             }]
-        }
+        };
     }
 
     private _getAseFAQItems() {
@@ -187,7 +186,7 @@ export class HomepageComponent implements OnInit {
                 title: 'More info about Network Security Groups',
                 href: 'https://goo.gl/5jw7tc'
             }]
-        }
+        };
     }
 
     private _getCommunityItems() {
@@ -207,7 +206,7 @@ export class HomepageComponent implements OnInit {
                 title: 'Azure @ ServerFault',
                 href: 'https://serverfault.com/questions/tagged/azure'
             }]
-        }
+        };
     }
 
     private _getRecentUpdateItems() {
@@ -236,7 +235,7 @@ export class HomepageComponent implements OnInit {
                 title: 'Java Updates',
                 href: 'https://www.java.com/en/download/faq/index_general.xml'
             }]
-        }
+        };
     }
 
     private _getContributeItems() {
@@ -247,6 +246,6 @@ export class HomepageComponent implements OnInit {
                 title: 'Github repo',
                 href: 'https://github.com/Azure/Azure-AppServices-Diagnostics-Portal'
             }]
-        }
+        };
     }
 }

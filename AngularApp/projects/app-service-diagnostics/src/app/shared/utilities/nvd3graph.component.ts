@@ -17,18 +17,18 @@ export class nvD3 {
     this.el = elementRef.nativeElement;
   }
 
-  ngOnChanges(changes: SimpleChanges){
+  ngOnChanges(changes: SimpleChanges) {
     this.updateWithOptions(this.options);
   }
 
-  updateWithOptions(options: any){
-    let self = this;
+  updateWithOptions(options: any) {
+    const self = this;
 
     // Clearing
     this.clearElement();
 
     // Exit if options are not yet bound
-    if (!options) return;
+    if (!options) { return; }
 
     // Initialize chart with specific type
     this.chart = nv.models[options.chart.type]();
@@ -36,13 +36,12 @@ export class nvD3 {
     // Generate random chart ID
     this.chart.id = Math.random().toString(36).substr(2, 15);
 
-    for (let key in this.chart) {
-      if (!this.chart.hasOwnProperty(key)) continue;
+    for (const key in this.chart) {
+      if (!this.chart.hasOwnProperty(key)) { continue; }
 
-      let value = this.chart[key];
+      const value = this.chart[key];
 
-      if (key[0] === '_'){}
-      else if ([
+      if (key[0] === '_') {} else if ([
           'clearHighlights',
           'highlightPoint',
           'id',
@@ -52,13 +51,9 @@ export class nvD3 {
           'open',
           'close',
           'tooltipContent'
-        ].indexOf(key) >= 0){}
-
-      else if (key === 'dispatch'){
+        ].indexOf(key) >= 0) {} else if (key === 'dispatch') {
         this.configureEvents(this.chart[key], options.chart[key]);
-      } 
-
-      else if ([
+      } else if ([
           'bars',
           'bars1',
           'bars2',
@@ -96,24 +91,16 @@ export class nvD3 {
           // stacked is a component for stackedAreaChart, but a boolean for multiBarChart and multiBarHorizontalChart
         (key === 'stacked' && options.chart.type === 'stackedAreaChart')) {
         this.configure(this.chart[key], options.chart[key], options.chart.type);
-      }
-
-      //TODO: need to fix bug in nvd3
-      else if ((key === 'xTickFormat' || key === 'yTickFormat') && options.chart.type === 'lineWithFocusChart') {}
-      else if ((key === 'tooltips') && options.chart.type === 'boxPlotChart') {}
-      else if ((key === 'tooltipXContent' || key === 'tooltipYContent') && options.chart.type === 'scatterChart') {}
-
-      else if (options.chart[key] === undefined || options.chart[key] === null) {}
-      else this.chart[key](options.chart[key]);
+      } else if ((key === 'xTickFormat' || key === 'yTickFormat') && options.chart.type === 'lineWithFocusChart') {} else if ((key === 'tooltips') && options.chart.type === 'boxPlotChart') {} else if ((key === 'tooltipXContent' || key === 'tooltipYContent') && options.chart.type === 'scatterChart') {} else if (options.chart[key] === undefined || options.chart[key] === null) {} else { this.chart[key](options.chart[key]); }
     }
 
     this.updateWithData(this.data);
 
     nv.addGraph(function() {
-      if (!self.chart) return;
+      if (!self.chart) { return; }
 
       // Remove resize handler. Due to async execution should be placed here, not in the clearElement
-      if (self.chart.resizeHandler) self.chart.resizeHandler.clear();
+      if (self.chart.resizeHandler) { self.chart.resizeHandler.clear(); }
 
       // Update the chart when window resizes
       self.chart.resizeHandler = nv.utils.windowResize(function() {
@@ -124,21 +111,21 @@ export class nvD3 {
     }, options.chart['callback']);
   }
 
-  updateWithData(data: any){
+  updateWithData(data: any) {
     if (data) {
       // remove whole svg element with old data
       d3.select(this.el).select('svg').remove();
 
-      var h, w;
+      let h, w;
 
       // Select the current element to add <svg> element and to render the chart in
       this.svg = d3.select(this.el).append('svg');
       if (h = this.options.chart.height) {
-        if (!isNaN(+h)) h += 'px';
+        if (!isNaN(+h)) { h += 'px'; }
         this.svg.attr('height', h).style({height: h});
       }
       if (w = this.options.chart.width) {
-        if (!isNaN(+w)) w += 'px';
+        if (!isNaN(+w)) { w += 'px'; }
         this.svg.attr('width', w).style({width: w});
       } else {
         this.svg.attr('width', '100%').style({width: '100%'});
@@ -148,21 +135,17 @@ export class nvD3 {
     }
   }
 
-  configure(chart: any, options: any, chartType: any){
-    if (chart && options){
+  configure(chart: any, options: any, chartType: any) {
+    if (chart && options) {
 
-      for (let key in chart) {
-        if (!chart.hasOwnProperty(key)) continue;
+      for (const key in chart) {
+        if (!chart.hasOwnProperty(key)) { continue; }
 
-        let value = chart[key];
+        const value = chart[key];
 
-        if (key[0] === '_'){}
-        else if (key === 'dispatch') this.configureEvents(value, options[key]);
-        else if (key === 'tooltip') this.configure(chart[key], options[key], chartType);
-        else if (key === 'contentGenerator') {
-          if (options[key]) chart[key](options[key]);
-        }
-        else if ([
+        if (key[0] === '_') {} else if (key === 'dispatch') { this.configureEvents(value, options[key]); } else if (key === 'tooltip') { this.configure(chart[key], options[key], chartType); } else if (key === 'contentGenerator') {
+          if (options[key]) { chart[key](options[key]); }
+        } else if ([
             'axis',
             'clearHighlights',
             'defined',
@@ -175,28 +158,26 @@ export class nvD3 {
             'open',
             'close'
           ].indexOf(key) === -1) {
-          if (options[key] === undefined || options[key] === null){}
-          else chart[key](options[key]);
+          if (options[key] === undefined || options[key] === null) {} else { chart[key](options[key]); }
         }
       }
 
     }
   }
 
-  configureEvents(dispatch: any, options: any): void{
-    if (dispatch && options){
-      for (let key in dispatch) {
-        if (!dispatch.hasOwnProperty(key)) continue;
+  configureEvents(dispatch: any, options: any): void {
+    if (dispatch && options) {
+      for (const key in dispatch) {
+        if (!dispatch.hasOwnProperty(key)) { continue; }
 
-        let value = dispatch[key];
+        const value = dispatch[key];
 
-        if (options[key] === undefined || options[key] === null){}
-        else dispatch.on(key + '._', options[key]);
+        if (options[key] === undefined || options[key] === null) {} else { dispatch.on(key + '._', options[key]); }
       }
     }
   }
 
-  clearElement(){
+  clearElement() {
     this.el.innerHTML = '';
 
     // remove tooltip if exists
@@ -206,7 +187,7 @@ export class nvD3 {
 
     // To be compatible with old nvd3 (v1.7.1)
     if (nv.graphs && this.chart) {
-      for (var i = nv.graphs.length - 1; i >= 0; i--) {
+      for (let i = nv.graphs.length - 1; i >= 0; i--) {
         if (nv.graphs[i] && (nv.graphs[i].id === this.chart.id)) {
           nv.graphs.splice(i, 1);
         }
@@ -215,7 +196,7 @@ export class nvD3 {
     if (nv.tooltip && nv.tooltip.cleanup) {
       nv.tooltip.cleanup();
     }
-    if (this.chart && this.chart.resizeHandler) this.chart.resizeHandler.clear();
+    if (this.chart && this.chart.resizeHandler) { this.chart.resizeHandler.clear(); }
     this.chart = null;
   }
 }

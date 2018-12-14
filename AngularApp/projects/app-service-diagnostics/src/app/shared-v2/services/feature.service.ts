@@ -54,7 +54,7 @@ export class FeatureService {
     return () => {
       this._logger.LogClickEvent(name, 'feature', category);
       func();
-    }
+    };
   }
 
   getFeaturesForCategory(category: Category) {
@@ -62,7 +62,7 @@ export class FeatureService {
   }
 
   getFeatures(searchValue?: string) {
-    if(!searchValue || searchValue === '') {
+    if (!searchValue || searchValue === '') {
       return this._features;
     }
 
@@ -70,7 +70,7 @@ export class FeatureService {
     return this._features.filter(feature => {
       return feature.name.toLowerCase().indexOf(searchValue) != -1
         || (feature.category && feature.category.toLowerCase().indexOf(searchValue) != -1)
-        || (feature.description && feature.description.toLowerCase().indexOf(searchValue) != -1)
+        || (feature.description && feature.description.toLowerCase().indexOf(searchValue) != -1);
     });
   }
 }

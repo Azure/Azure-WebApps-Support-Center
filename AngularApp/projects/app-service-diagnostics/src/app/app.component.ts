@@ -11,7 +11,7 @@ export class AppComponent implements OnInit {
 
     public get newVersionEnabled() { return this._newVersionEnabled; }
 
-    public set newVersionEnabled(value: boolean) { 
+    public set newVersionEnabled(value: boolean) {
         this._newVersionEnabled = value;
      }
 
@@ -21,8 +21,8 @@ export class AppComponent implements OnInit {
     ngOnInit() {
 
         if (isDevMode()) {
-            console.log('%c Support Center is running in dev mode', 'color: orange')
-            console.log('%c Logs that are normally published to the portal kusto logs will show up in the console', 'color: orange')
+            console.log('%c Support Center is running in dev mode', 'color: orange');
+            console.log('%c Logs that are normally published to the portal kusto logs will show up in the console', 'color: orange');
         }
 
         this._router.navigate(['/resourceRedirect']);

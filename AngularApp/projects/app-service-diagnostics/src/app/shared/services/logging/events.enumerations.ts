@@ -27,14 +27,14 @@ export enum AvailabilityEventType {
     DetectorViewInstanceSelected,
     AppRestartAnalysisSummary,
     MemorySummaryStatus,
-    SummaryViewExpanded, 
+    SummaryViewExpanded,
     SolutionDisplayed,
     SolutionFeedback,
     AppInsightsSettings,
     AppInsightsExceptionSummary
 }
 
-export enum BotEventType{
+export enum BotEventType {
     HealthCheckInvoked,
     HealthCheckResults,
     HealthCheckReportStats,

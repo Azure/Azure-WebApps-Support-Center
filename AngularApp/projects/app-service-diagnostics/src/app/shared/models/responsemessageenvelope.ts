@@ -8,8 +8,8 @@ export interface ResponseMessageEnvelope<T> {
     properties: T;
 }
 
-export interface ResponseMessageCollectionEnvelope<T>{
-    id:string;
-    nextLink:string;
-    value: T[]
+export interface ResponseMessageCollectionEnvelope<T> {
+    id: string;
+    nextLink: string;
+    value: T[];
 }

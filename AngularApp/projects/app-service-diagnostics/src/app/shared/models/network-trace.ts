@@ -1,5 +1,5 @@
-export interface NetworkTraceResult{
-    path:string;
-    status:string;
-    message:string;
+export interface NetworkTraceResult {
+    path: string;
+    status: string;
+    message: string;
 }

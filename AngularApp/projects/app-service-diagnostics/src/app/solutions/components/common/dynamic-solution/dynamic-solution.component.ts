@@ -29,12 +29,12 @@ export class DynamicSolutionComponent implements AfterViewInit {
     constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
 
     ngAfterViewInit(): void {
-        let componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.solutionHolder.component);
+        const componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.solutionHolder.component);
 
-        let viewContainerRef = this.solutionPlaceHolder.viewContainerRef;
+        const viewContainerRef = this.solutionPlaceHolder.viewContainerRef;
         viewContainerRef.clear();
-    
-        let componentRef = viewContainerRef.createComponent(componentFactory);
+
+        const componentRef = viewContainerRef.createComponent(componentFactory);
         (<SolutionBaseComponent>componentRef.instance).data = this.solutionHolder.data;
     }
 }

@@ -22,15 +22,15 @@ export class CategoryTileComponent implements OnInit {
 
     this._logger.LogCategorySelected(this.category.name);
     this._logger.LogClickEvent('CategorySelection', 'HomeV2', this.category.name);
-  
+
     if (this.category.overridePath) {
       this._router.navigateByUrl(this.category.overridePath);
       return;
     }
 
-    let path = ['categories', this.category.id];
+    const path = ['categories', this.category.id];
 
-    let navigationExtras: NavigationExtras = {
+    const navigationExtras: NavigationExtras = {
       queryParamsHandling: 'preserve',
       preserveFragment: true,
       relativeTo: this._activatedRoute

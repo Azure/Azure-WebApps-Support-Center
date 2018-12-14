@@ -32,7 +32,7 @@ export class TalkToAgentMessageFlow extends IMessageFlowProvider {
 
                     this.siteService.currentSiteMetaData.subscribe((siteMetaData: SiteInfoMetaData) => {
                         if (siteMetaData) {
-                            this.isApplicable = false//this.liveChatService.isChatApplicableForSite(site, siteMetaData, this.isDemoMode);
+                            this.isApplicable = false;//this.liveChatService.isChatApplicableForSite(site, siteMetaData, this.isDemoMode);
                         }
                     });
                 }
@@ -42,9 +42,9 @@ export class TalkToAgentMessageFlow extends IMessageFlowProvider {
 
     public GetMessageFlowList(): MessageGroup[] {
 
-        var messageGroupList: MessageGroup[] = [];
+        let messageGroupList: MessageGroup[] = [];
 
-        var msgGroup: MessageGroup = new MessageGroup('talk-to-agent', [], () => '');
+        let msgGroup: MessageGroup = new MessageGroup('talk-to-agent', [], () => '');
         msgGroup.messages.push(new TextMessage('Do you want to talk about Azure App Service Certificate or Domain issue?'));
         msgGroup.messages.push(new ButtonListMessage(this.getProdIssueButtonList(), 'Talk-To-Agent'));
         msgGroup.messages.push(new TextMessage('Yes', MessageSender.User, 100));
@@ -53,7 +53,7 @@ export class TalkToAgentMessageFlow extends IMessageFlowProvider {
         msgGroup.messages.push(new TextMessage('I connected you to one of our agents who can assist you further. Thank you.', MessageSender.System, 1000));
         messageGroupList.push(msgGroup);
 
-        var noProdIssueGroup: MessageGroup = new MessageGroup('no-prod-issue', [], () => 'no-help');
+        let noProdIssueGroup: MessageGroup = new MessageGroup('no-prod-issue', [], () => 'no-help');
         noProdIssueGroup.messages.push(new TextMessage('No, not right now', MessageSender.User, 100));
         messageGroupList.push(noProdIssueGroup);
 

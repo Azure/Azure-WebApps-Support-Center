@@ -9,22 +9,21 @@ export class AutohealingStartupTimeComponent implements OnInit {
 
   constructor() { }
 
-  editMode:boolean = false;
-  
-  @Input() minProcessExecutionTime: number
+  editMode: boolean = false;
+
+  @Input() minProcessExecutionTime: number;
   @Output() minProcessExecutionTimeChange: EventEmitter<number> = new EventEmitter<number>();
 
-  localMinProcessExecutionTime: number
+  localMinProcessExecutionTime: number;
 
   configureMinProcessExecutionTime() {
     this.editMode = true;
   }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     if (this.minProcessExecutionTime) {
-      this.localMinProcessExecutionTime = this.minProcessExecutionTime;      
-    }
-    else {
+      this.localMinProcessExecutionTime = this.minProcessExecutionTime;
+    } else {
       this.localMinProcessExecutionTime = 0;
     }
   }
@@ -38,8 +37,7 @@ export class AutohealingStartupTimeComponent implements OnInit {
   isValid(): boolean {
     if (this.localMinProcessExecutionTime != null && this.localMinProcessExecutionTime != this.minProcessExecutionTime && this.localMinProcessExecutionTime <= 7200) {
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }

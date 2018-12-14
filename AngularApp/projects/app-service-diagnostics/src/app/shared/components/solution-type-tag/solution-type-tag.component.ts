@@ -10,5 +10,5 @@ export class SolutionTypeTagComponent {
     @Input() tagType: SolutionTypeTag;
     @Input() textSize: string = '11px';
 
-    localTagType = SolutionTypeTag;    
+    localTagType = SolutionTypeTag;
 }

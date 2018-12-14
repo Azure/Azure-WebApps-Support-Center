@@ -1,6 +1,6 @@
-import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from "@angular/router";
-import { getParentRenderElement } from "@angular/core/src/view/util";
-import { Injectable, ComponentRef } from "@angular/core";
+import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from '@angular/router';
+import { getParentRenderElement } from '@angular/core/src/view/util';
+import { Injectable, ComponentRef } from '@angular/core';
 
 @Injectable()
 export class CustomReuseStrategy implements RouteReuseStrategy {
@@ -13,10 +13,10 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
     * Determines if this route (and its subtree) should be detached to be reused later.
     */
     shouldDetach(route: ActivatedRouteSnapshot): boolean {
-        let url = this._getUrl(route);
+        const url = this._getUrl(route);
 
-        if (!route.routeConfig) return false;
-        if (route.routeConfig.loadChildren) return false;
+        if (!route.routeConfig) { return false; }
+        if (route.routeConfig.loadChildren) { return false; }
         return !!route.data && !!(route.data as any).cacheComponent;
     }
 
@@ -24,7 +24,7 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
      * Stores the detached route.
      */
     store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
-        let url = this._getUrl(route);
+        const url = this._getUrl(route);
 
         if (this.closedTab === url) {
             this._deactivateOutlet(handle);
@@ -39,7 +39,7 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
      * Determines if this route (and its subtree) should be reattached.
      */
     shouldAttach(route: ActivatedRouteSnapshot): boolean {
-        let url = this._getUrl(route);
+        const url = this._getUrl(route);
         return !!route.routeConfig && !!this.handlers[url];
     }
 
@@ -48,10 +48,10 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
      */
     retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle {
 
-        if (!route.routeConfig) return null;
-        if (route.routeConfig.loadChildren) return null;
+        if (!route.routeConfig) { return null; }
+        if (route.routeConfig.loadChildren) { return null; }
 
-        let url = this._getUrl(route);
+        const url = this._getUrl(route);
         return this.handlers[url];
     }
 
@@ -81,16 +81,16 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
 
     private _deactivateOutlet(handle: DetachedRouteHandle): void {
         if (handle) {
-            const componentRef: ComponentRef<any> = handle['componentRef']
+            const componentRef: ComponentRef<any> = handle['componentRef'];
             if (componentRef) {
-                componentRef.destroy()
+                componentRef.destroy();
             }
         }
     }
 
     private _getUrl(route: ActivatedRouteSnapshot): string {
-        let topLevelParent = this._getParent(route);
-        let fullUrl = '/' + this._getFullUrl(topLevelParent);
+        const topLevelParent = this._getParent(route);
+        const fullUrl = '/' + this._getFullUrl(topLevelParent);
 
         return fullUrl;
     }
@@ -104,13 +104,13 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
             return null;
         }
 
-        let childRoute = this._getFullUrl(route.firstChild);
+        const childRoute = this._getFullUrl(route.firstChild);
         if (!route.url || route.url.length === 0) {
             return childRoute;
         }
 
-        let currentRoute = route.url.join('/');
-        let returnValue = childRoute && childRoute !== '' ? [currentRoute, childRoute].join('/') : currentRoute;
+        const currentRoute = route.url.join('/');
+        const returnValue = childRoute && childRoute !== '' ? [currentRoute, childRoute].join('/') : currentRoute;
         return returnValue;
     }
 }

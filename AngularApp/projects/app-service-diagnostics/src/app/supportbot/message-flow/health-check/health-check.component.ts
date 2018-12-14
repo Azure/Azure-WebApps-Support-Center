@@ -42,7 +42,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
 
     currentSite: Site;
 
-    private _requestsColors: string[] = ["rgb(0, 188, 242)", "rgb(127, 186, 0)", "rgb(155, 79, 150)", "rgb(255, 140, 0)", "rgb(232, 17, 35)"];
+    private _requestsColors: string[] = ['rgb(0, 188, 242)', 'rgb(127, 186, 0)', 'rgb(155, 79, 150)', 'rgb(255, 140, 0)', 'rgb(232, 17, 35)'];
     private _analysisData: Cache<IAppAnalysisResponse>;
 
     constructor(private _route: ActivatedRoute, private _analysisService: AppAnalysisService, private _logger: BotLoggingService, private _siteService: SiteService,
@@ -53,14 +53,14 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
         this._logger.LogHealthCheckInvoked();
 
         this._siteService.currentSite.subscribe(site => {
-            let checkpoints: any[] = [];
+            const checkpoints: any[] = [];
 
             checkpoints.push({
                 category: 'availability',
                 detector: 'runtimeavailability',
                 title: 'Requests and Errors',
                 graphOptions: (() => {
-                    var options = GraphHelper.getDefaultChartOptions('lineChart', this._requestsColors, 300);
+                    const options = GraphHelper.getDefaultChartOptions('lineChart', this._requestsColors, 300);
                     options.chart.yAxis.tickFormat = d3.format('d');
                     options.chart.yAxis.axisLabel = 'Request Count';
                     options.chart.forceY = [0, 10];
@@ -78,7 +78,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
                 detector: 'sitelatency',
                 title: 'App Performance',
                 graphOptions: (() => {
-                    var options = GraphHelper.getDefaultChartOptions('lineChart', this._requestsColors, 300);
+                    const options = GraphHelper.getDefaultChartOptions('lineChart', this._requestsColors, 300);
                     options.chart.yAxis.tickFormat = d3.format('d');
                     options.chart.yAxis.axisLabel = 'Response Time (ms)';
                     options.chart.forceY = [0, 10];
@@ -98,7 +98,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
                     detector: 'sitecpuanalysis',
                     title: 'CPU Usage',
                     graphOptions: (() => {
-                        var options = GraphHelper.getDefaultChartOptions('lineChart', this._requestsColors, 300);
+                        const options = GraphHelper.getDefaultChartOptions('lineChart', this._requestsColors, 300);
                         options.chart.yAxis.tickFormat = d3.format('.1f');
                         options.chart.yAxis.axisLabel = 'CPU Usage (%)';
                         options.chart.forceY = [0, 10];
@@ -117,7 +117,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
                     detector: 'sitememoryanalysis',
                     title: 'Memory Usage',
                     graphOptions: (() => {
-                        var options = GraphHelper.getDefaultChartOptions('lineChart', this._requestsColors, 300);
+                        const options = GraphHelper.getDefaultChartOptions('lineChart', this._requestsColors, 300);
                         options.chart.yAxis.tickFormat = d3.format('.1f');
                         options.chart.yAxis.axisLabel = 'Memory Usage (%)';
                         options.chart.forceY = [0, 10];
@@ -161,8 +161,8 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
     }
 
     onFullReportClick(href: string, title: string) {
-        let slot = this.slotName && this.slotName != '' ? `/slots/${this.slotName}` : '';
-        this._router.navigateByUrl(`resource/subscriptions/${this.subscriptionId}/resourcegroups/${this.resourceGroup}/providers/microsoft.web/sites/${this.siteName}${slot}/legacy/diagnostics/${href}`)
+        const slot = this.slotName && this.slotName != '' ? `/slots/${this.slotName}` : '';
+        this._router.navigateByUrl(`resource/subscriptions/${this.subscriptionId}/resourcegroups/${this.resourceGroup}/providers/microsoft.web/sites/${this.siteName}${slot}/legacy/diagnostics/${href}`);
         this.logFullReportClick(title);
     }
 
@@ -182,7 +182,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
                 });
                 this.onComplete.emit({ status: true });
             }
-        })
+        });
 
     }
 
@@ -204,26 +204,24 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
     }
 
     private _handleRuntimeAvailabilityResponse(data: IDetectorResponse) {
-        let category = this.healthCheckpoints.find(entry => entry.detector.toLowerCase() === 'runtimeavailability');
+        const category = this.healthCheckpoints.find(entry => entry.detector.toLowerCase() === 'runtimeavailability');
 
-        let requestMetrics = data.metrics.filter(p => (p.name.toLowerCase().indexOf('availability') < 0));
+        const requestMetrics = data.metrics.filter(p => (p.name.toLowerCase().indexOf('availability') < 0));
         category.graphData = GraphHelper.parseMetricsToChartData(requestMetrics, 0, true);
-        var currentAppHealth = undefined;
+        let currentAppHealth;
         if (data.data && data.data.length > 0) {
-            currentAppHealth = data.data[0].find(p => p.name.toLocaleLowerCase() === "currentapphealth");
+            currentAppHealth = data.data[0].find(p => p.name.toLocaleLowerCase() === 'currentapphealth');
         }
 
         if (currentAppHealth && currentAppHealth.value.toLocaleLowerCase() === 'unhealthy') {
             category.healthStatus = HealthStatus.Critical;
             category.healthStatusMessage = 'Your Web App is currently experiencing HTTP server errors. Please "View Full Report" to see more detailed observations and quick solutions.';
-        }
-        else {
+        } else {
 
             if (data.abnormalTimePeriods && data.abnormalTimePeriods.length > 0) {
                 category.healthStatus = HealthStatus.Warning;
                 category.healthStatusMessage = 'Your Web App is currently running healthy. However, we have detected downtime in the last 24 hours during which your Web App was experiencing errors. Please "View Full Report" to see more detailed observations and troubleshooting advice.';
-            }
-            else {
+            } else {
                 category.healthStatus = HealthStatus.Success;
                 category.healthStatusMessage = 'Your Web App is currently running healthy. Check out "View Full Report" if you would like to check the availability of your Web App from the last 24 hours.';
             }
@@ -235,7 +233,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
     }
 
     private _handleSiteLatencyResponse(data: IDetectorResponse) {
-        let category = this.healthCheckpoints.find(entry => entry.detector.toLowerCase() === 'sitelatency');
+        const category = this.healthCheckpoints.find(entry => entry.detector.toLowerCase() === 'sitelatency');
 
         category.graphData = GraphHelper.parseMetricsToChartData(data.metrics);
         if (category.graphData && category.graphData.length > 0) {
@@ -249,8 +247,7 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
         if (data.abnormalTimePeriods && data.abnormalTimePeriods.length > 0) {
             category.healthStatus = HealthStatus.Warning;
             category.healthStatusMessage = 'Your Web App has experienced performance issues in the last 24 hours. Please "View Full Report" to further analyze your Web App response time and view troubleshooting advice.';
-        }
-        else {
+        } else {
             category.healthStatus = HealthStatus.Success;
             category.healthStatusMessage = 'Your Web App currently has no performance issues. Check out "View Full Report" if you would like to check your Web App response time.';
         }
@@ -262,26 +259,24 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
     }
 
     private _handleCpuResponse(data: IDetectorResponse) {
-        let category = this.healthCheckpoints.find(entry => entry.detector.toLowerCase() === 'sitecpuanalysis');
+        const category = this.healthCheckpoints.find(entry => entry.detector.toLowerCase() === 'sitecpuanalysis');
 
-        let metrics = data.metrics.filter(p => (p.name.toLowerCase().indexOf('percent') > -1));
+        const metrics = data.metrics.filter(p => (p.name.toLowerCase().indexOf('percent') > -1));
         category.graphData = GraphHelper.parseMetricsToChartDataPerInstance(metrics);
 
-        var currentHealth = undefined;
+        let currentHealth;
         if (data.data && data.data.length > 0) {
-            currentHealth = data.data[0].find(p => p.name.toLocaleLowerCase() === "currenthealth");
+            currentHealth = data.data[0].find(p => p.name.toLocaleLowerCase() === 'currenthealth');
         }
 
         if (currentHealth && currentHealth.value.toLocaleLowerCase() === 'unhealthy') {
             category.healthStatus = HealthStatus.Critical;
             category.healthStatusMessage = 'Your Web App is currently experiencing high CPU usage. Please "View Full Report" to further analyze your CPU usage per instance breakdown.';
-        }
-        else {
+        } else {
             if (data.abnormalTimePeriods && data.abnormalTimePeriods.length > 0) {
                 category.healthStatus = HealthStatus.Warning;
                 category.healthStatusMessage = 'Your Web App has experienced high CPU usage in the last 24 hours. Please "View Full Report" to further analyze your CPU usage per instance breakdown.';
-            }
-            else {
+            } else {
                 category.healthStatus = HealthStatus.Success;
                 category.healthStatusMessage = 'Your Web App currently has normal CPU usage. Check out "View Full Report" if you would like to check the CPU usage per instance breakdown.';
             }
@@ -293,26 +288,24 @@ export class HealthCheckComponent implements OnInit, AfterViewInit, IChatMessage
     }
 
     private _handleMemoryResponse(data: IDetectorResponse) {
-        let category = this.healthCheckpoints.find(entry => entry.detector.toLowerCase() === 'sitememoryanalysis');
+        const category = this.healthCheckpoints.find(entry => entry.detector.toLowerCase() === 'sitememoryanalysis');
 
-        let memoryMetrics = data.metrics.filter(p => (p.name.toLowerCase().indexOf('percent') > -1));
+        const memoryMetrics = data.metrics.filter(p => (p.name.toLowerCase().indexOf('percent') > -1));
         category.graphData = GraphHelper.parseMetricsToChartDataPerInstance(memoryMetrics);
 
-        var currentHealth = undefined;
+        let currentHealth;
         if (data.data && data.data.length > 0) {
-            currentHealth = data.data[0].find(p => p.name.toLocaleLowerCase() === "currenthealth");
+            currentHealth = data.data[0].find(p => p.name.toLocaleLowerCase() === 'currenthealth');
         }
 
         if (currentHealth && currentHealth.value.toLocaleLowerCase() === 'unhealthy') {
             category.healthStatus = HealthStatus.Critical;
             category.healthStatusMessage = 'Your Web App is currently experiencing high memory usage. Please "View Full Report" to further analyze your memory usage per instance breakdown.';
-        }
-        else {
+        } else {
             if (data.abnormalTimePeriods && data.abnormalTimePeriods.length > 0) {
                 category.healthStatus = HealthStatus.Warning;
                 category.healthStatusMessage = 'Your Web App has experienced high memory usage in the last 24 hours. Please "View Full Report" to further analyze your memory usage per instance breakdown.';
-            }
-            else {
+            } else {
                 category.healthStatus = HealthStatus.Success;
                 category.healthStatusMessage = 'Your Web App currently has normal memory usage. Check out "View Full Report" if you would like to check the memory usage per instance breakdown.';
             }

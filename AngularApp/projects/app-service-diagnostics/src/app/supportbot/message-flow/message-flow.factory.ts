@@ -15,7 +15,7 @@ export class MessageFlowFactory {
     }
 
     public static getMessageGroups(): MessageGroup[] {
-        var result: MessageGroup[] = [];
+        let result: MessageGroup[] = [];
 
         this._registeredMessageFlowProviders.forEach((p: any) => {
             result = result.concat(p.prototype.GetMessageFlowList());
@@ -29,5 +29,5 @@ export class MessageFlowFactory {
 export function RegisterMessageFlowWithFactory() {
     return function (target: any) {
         MessageFlowFactory.registerMessageFlowProvider(target);
-    }
+    };
 }

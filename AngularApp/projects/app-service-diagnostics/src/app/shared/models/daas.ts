@@ -33,7 +33,7 @@ export interface Report {
     EndTime: string;
     RelativePath: string;
     FileName: string;
-    FullPermanentStoragePath: string
+    FullPermanentStoragePath: string;
 }
 
 export interface Diagnoser {
@@ -76,7 +76,7 @@ export interface DatabaseTestConnectionResult {
     Name: string;
     ConnectionString: string;
     ProviderName: string;
-    ExceptionDetails: ExceptionDetails
+    ExceptionDetails: ExceptionDetails;
     Succeeded: boolean;
     DatabaseType: ConnectionDatabaseType;
     Instance: string;

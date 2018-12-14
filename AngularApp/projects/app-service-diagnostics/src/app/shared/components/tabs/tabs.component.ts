@@ -22,7 +22,7 @@ export class TabsComponent implements OnInit {
   ngOnInit() {
     this._router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
 
-      let navigationTitleStr: string = "navigationTitle";
+      const navigationTitleStr: string = 'navigationTitle';
       let currentRoute = this._activatedRoute.root;
       while (currentRoute.children[0] !== undefined) {
         currentRoute = currentRoute.children[0];
@@ -30,17 +30,17 @@ export class TabsComponent implements OnInit {
 
       if (currentRoute.snapshot.data.hasOwnProperty(navigationTitleStr)) {
 
-        var navigationTitle = currentRoute.snapshot.data[navigationTitleStr];
+        let navigationTitle = currentRoute.snapshot.data[navigationTitleStr];
 
         if (navigationTitle.indexOf(':') >= 0) {
-          let parameterName = navigationTitle.replace(':', '');
+          const parameterName = navigationTitle.replace(':', '');
           if (currentRoute.snapshot.params.hasOwnProperty(parameterName)) {
             navigationTitle = currentRoute.snapshot.params[parameterName];
           }
         }
 
-        let url = this._router.url.split('?')[0]
-        let existingTab = this.navigationItems.find(item => { return item.url.split('?')[0] === url });
+        const url = this._router.url.split('?')[0];
+        let existingTab = this.navigationItems.find(item => item.url.split('?')[0] === url);
 
         if (!existingTab) {
           existingTab = {
@@ -77,7 +77,7 @@ export class TabsComponent implements OnInit {
 
     // We dont want to close the first tab.
     if (index > 0) {
-      let tab = this.navigationItems[index];
+      const tab = this.navigationItems[index];
       this._routeReuseStrategy.removeCachedRoute(tab.url);
       this.navigationItems.splice(index, 1);
       // this._logger.LogTabClosed(tab.title);

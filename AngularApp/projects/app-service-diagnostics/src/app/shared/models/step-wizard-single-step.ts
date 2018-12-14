@@ -1,5 +1,5 @@
 export class StepWizardSingleStep {
     IconType: string;
-    Caption: string;   
+    Caption: string;
     AdditionalText: string;
 }

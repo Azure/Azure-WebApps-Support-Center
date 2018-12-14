@@ -29,7 +29,7 @@ export class CategoryMenuComponent implements OnInit, AfterViewInit, IChatMessag
   @Output() onViewUpdate = new EventEmitter();
   @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
 
-  constructor(private _injector: Injector, private _diagnosticService: DiagnosticService, private _featureService: FeatureService, 
+  constructor(private _injector: Injector, private _diagnosticService: DiagnosticService, private _featureService: FeatureService,
     private _chatState: CategoryChatStateService, private _detectorControlService: DetectorControlService, private _logger: LoggingV2Service) { }
 
   ngOnInit() {
@@ -40,7 +40,7 @@ export class CategoryMenuComponent implements OnInit, AfterViewInit, IChatMessag
       title: feature.name,
       action: () => this.select(feature)
     });
-    
+
     if (!this.takeFeatureAction) {
       this.features.forEach(detector => {
         // Make request for each detector
@@ -58,8 +58,7 @@ export class CategoryMenuComponent implements OnInit, AfterViewInit, IChatMessag
     this._logger.LogClickEvent('TopLevelDetectorSelected', detector.id, detector.category);
     if (this.takeFeatureAction) {
       detector.clickAction();
-    }
-    else {
+    } else {
       this._chatState.selectedFeature = detector;
       this.message = new TextMessage(`I am interested in ${detector.name}`, MessageSender.User);
       this.featureSelected = true;

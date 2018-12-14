@@ -26,7 +26,7 @@ export class FeedbackComponent extends ButtonMessageComponent {
 
     ngOnInit(): void {
         super.ngOnInit();
-        let submit = this._injector.get('submitButtonName', 'Submit');
+        const submit = this._injector.get('submitButtonName', 'Submit');
         this.buttonList.push({
             title: submit,
             next_key: '',
@@ -41,8 +41,7 @@ export class FeedbackComponent extends ButtonMessageComponent {
     onClick(item: any) {
         if (item.title === 'Submit') {
             this.onSubmit();
-        }
-        else {
+        } else {
             super.onClick(item);
         }
     }

@@ -1,6 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from "rxjs";
+import { Observable } from 'rxjs';
 import { Headers } from '@angular/http';
 import { Communication } from 'diagnostic-data';
 import { BackendCtrlService } from './backend-ctrl.service';
@@ -18,10 +18,10 @@ export class GenericCommsService {
 
     return this._authService.getStartupInfo().pipe(
       mergeMap((startupInfo: StartupInfo) => {
-        var additionalHeaders = new HttpHeaders({ 'x-ms-resource': startupInfo.resourceId });
+        const additionalHeaders = new HttpHeaders({ 'x-ms-resource': startupInfo.resourceId });
 
         return this._backendCtrlService.get<Communication[]>(`api/comms`, additionalHeaders).pipe(tap((commList: Communication[]) => {
-          let commAlert = commList.find((comm: Communication) => comm.isAlert === true);
+          const commAlert = commList.find((comm: Communication) => comm.isAlert === true);
           if (commAlert) {
             this._logger.LogAzureCommShown(commAlert.incidentId, commAlert.title, 'ServiceHealth', commAlert.isExpanded, commAlert.status === 0, commAlert.publishedTime);
           }

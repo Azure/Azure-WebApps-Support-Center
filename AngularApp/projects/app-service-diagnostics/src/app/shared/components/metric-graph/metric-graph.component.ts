@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IMetricSet } from '../../models/detectorresponse';
-import { ReplaySubject } from 'rxjs'
+import { ReplaySubject } from 'rxjs';
 import { GraphHelper } from '../../utilities/graphHelper';
 import { ChartSeries, ChartType } from '../../models/chartdata';
 
@@ -13,10 +13,10 @@ export class MetricGraphComponent implements OnInit {
         this.chartType = ChartType.lineChart;
     }
 
-    private _metricSetsSubject: ReplaySubject<IMetricSet[]> = new ReplaySubject<IMetricSet[]>(1); 
+    private _metricSetsSubject: ReplaySubject<IMetricSet[]> = new ReplaySubject<IMetricSet[]>(1);
 
-    @Input() set metricSets(value: IMetricSet[]) { 
-        this._metricSetsSubject.next(value); 
+    @Input() set metricSets(value: IMetricSet[]) {
+        this._metricSetsSubject.next(value);
     }
 
     @Input() title: string;
@@ -32,19 +32,17 @@ export class MetricGraphComponent implements OnInit {
 
     ngOnInit() {
 
-        if(!this.chartOptions)
-        {
+        if (!this.chartOptions) {
             this.chartOptions = GraphHelper.getDefaultChartOptions();
         }
 
         this._metricSetsSubject.subscribe((metricSets: IMetricSet[]) => {
-            if(metricSets){
+            if (metricSets) {
                 this.chartOptions.chart.type = ChartType[this.chartType].toString();
                 this.chartOptions.chart.yAxis.axisLabel = this.yAxisLabel;
                 this.chartOptions.chart.margin.bottom = 40;
                 this.chartData = GraphHelper.parseMetricsToChartDataPerInstance(metricSets, 0, false, this.instancesToSelect);
-            }
-            else {
+            } else {
                 this.chartData = null;
             }
         });

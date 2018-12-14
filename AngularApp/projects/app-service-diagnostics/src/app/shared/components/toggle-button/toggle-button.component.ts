@@ -17,7 +17,7 @@ export class ToggleButtonComponent implements OnInit {
   @Output() selectedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   update(val) {
-    if (this.selected != val){
+    if (this.selected != val) {
     this.selected = val;
     this.selectedChange.emit(this.selected);
     }

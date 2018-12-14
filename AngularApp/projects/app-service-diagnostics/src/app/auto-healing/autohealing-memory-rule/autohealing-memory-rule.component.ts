@@ -9,17 +9,17 @@ import { FormatHelper } from '../../shared/utilities/formattingHelper';
 })
 export class AutohealingMemoryRuleComponent extends AutohealingRuleComponent {
 
-  constructor(){
-    super();    
+  constructor() {
+    super();
   }
 
   addNewRule() {
     this.editMode = true;
   }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     if (this.rule) {
-      this.ruleCopy = this.rule;      
+      this.ruleCopy = this.rule;
     }
   }
 
@@ -29,24 +29,23 @@ export class AutohealingMemoryRuleComponent extends AutohealingRuleComponent {
     this.ruleChange.emit(this.rule);
   }
 
-  
+
   deleteRule() {
     this.rule = 0;
     this.ruleCopy = 0;
-    this.ruleChange.emit(this.rule);    
+    this.ruleChange.emit(this.rule);
   }
 
   isValid(): boolean {
     if (this.ruleCopy <= 102400 || this.ruleCopy > 13 * 1024 * 1024) {
       return false;
-    }
-    else {
+    } else {
       return true;
     }
   }
 
-  formatBytes(bytes){
-    return FormatHelper.formatBytes(bytes,2);
+  formatBytes(bytes) {
+    return FormatHelper.formatBytes(bytes, 2);
   }
 
 

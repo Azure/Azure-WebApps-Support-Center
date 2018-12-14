@@ -2,7 +2,7 @@
 import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { DiagnosticService, DetectorMetaData } from 'diagnostic-data';
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs';
 import { ResourceService } from './resource.service';
 
 @Injectable()
@@ -19,11 +19,11 @@ export class SupportTopicService {
       let detectorPath = '';
 
       if (detectors) {
-        let matchingDetector = detectors.find(detector =>
+        const matchingDetector = detectors.find(detector =>
           detector.supportTopicList &&
           detector.supportTopicList.findIndex(supportTopic => supportTopic.id === supportTopicId) >= 0);
 
-        if(matchingDetector) {
+        if (matchingDetector) {
           detectorPath = `/detectors/${matchingDetector.id}`;
         }
       }

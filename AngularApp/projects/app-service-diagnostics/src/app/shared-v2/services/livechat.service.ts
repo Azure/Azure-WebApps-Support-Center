@@ -21,10 +21,10 @@ export class LiveChatService {
 
     private chatStatus: ChatStatus;
 
-    constructor(private windowService: WindowService, private authService: AuthService, private _resourceService: ResourceService, private armService: ArmService, 
+    constructor(private windowService: WindowService, private authService: AuthService, private _resourceService: ResourceService, private armService: ArmService,
         private logger: BotLoggingService, private _backendApi: BackendCtrlService) {
 
-        let window = this.windowService.window;
+        const window = this.windowService.window;
 
         this.authService.getStartupInfo().subscribe((startupInfo: StartupInfo) => {
             this._backendApi.get<ChatStatus>('api/chat/status').subscribe((status: ChatStatus) => {
@@ -32,27 +32,27 @@ export class LiveChatService {
                 if (this.isChatApplicableForSupportTopic(startupInfo)) {
 
                     setTimeout(() => {
-    
+
                         this.startChat(false, '', LiveChatSettings.DemoModeForCaseSubmission, 'ltr');
-    
+
                     }, LiveChatSettings.InactivityTimeoutInMs);
-    
-    
-                    window.fcWidget.on("widget:loaded", ((resp) => {
-    
+
+
+                    window.fcWidget.on('widget:loaded', ((resp) => {
+
                         if (window.fcWidget.isOpen() != true) {
                             setTimeout(() => {
                                 // Raise an event for trigger message campaign
                                 window.fcWidget.track('supportCaseSubmission', {
                                     supportTopicId: startupInfo.supportTopicId
                                 });
-    
+
                             }, 1000);
                         }
-    
+
                     }));
                 }
-            })
+            });
         });
     }
 
@@ -60,7 +60,7 @@ export class LiveChatService {
 
         let restoreId: string = '';
         let externalId: string = '';
-        let window = this.windowService.window;
+        const window = this.windowService.window;
 
 
         if (this.isChatApplicableForResource(demoMode)) {
@@ -76,8 +76,8 @@ export class LiveChatService {
                 this.logger.LogLiveChatWidgetBeginInit(source);
 
                 window.fcWidget.init({
-                    token: "ac017aa7-7c07-42bc-8fdc-1114fc962803",
-                    host: "https://wchat.freshchat.com",
+                    token: 'ac017aa7-7c07-42bc-8fdc-1114fc962803',
+                    host: 'https://wchat.freshchat.com',
                     open: autoOpen,
                     externalId: externalId,
                     restoreId: restoreId,
@@ -96,12 +96,12 @@ export class LiveChatService {
                                     online:
                                     {
                                         minutes: {
-                                            one: "Online",
-                                            more: "Online"
+                                            one: 'Online',
+                                            more: 'Online'
                                         },
                                         hours: {
-                                            one: "Online",
-                                            more: "Online",
+                                            one: 'Online',
+                                            more: 'Online',
                                         }
                                     }
                                 }
@@ -110,16 +110,16 @@ export class LiveChatService {
                     }
                 });
 
-                window.fcWidget.on("widget:loaded", ((resp) => {
+                window.fcWidget.on('widget:loaded', ((resp) => {
                     this.logger.LogLiveChatWidgetLoaded(source);
                     this.getOrCreateUser();
                 }));
 
-                window.fcWidget.on("widget:opened", (() => {
+                window.fcWidget.on('widget:opened', (() => {
                     this.logger.LogLiveChatWidgetOpened(source);
                 }));
 
-                window.fcWidget.on("widget:closed", (() => {
+                window.fcWidget.on('widget:closed', (() => {
                     this.logger.LogLiveChatWidgetClosed(source);
                 }));
             }
@@ -129,7 +129,7 @@ export class LiveChatService {
 
     private getOrCreateUser() {
 
-        let window = this.windowService.window;
+        const window = this.windowService.window;
 
         if (window.fcWidget) {
 
@@ -154,12 +154,12 @@ export class LiveChatService {
 
         this.currentResource.tags[this.restoreIdTagName] = restoreId;
 
-        let body: any = {
+        const body: any = {
             tags: this.currentResource.tags
         };
 
         // Limitation : If for the first time, resource was opened by RBAC role which doesn't have access to patch the resource,
-        // then the current chat session will not be restored next-time. 
+        // then the current chat session will not be restored next-time.
         // TODO : We might need to store this restoreId somewhere else globally.
         this.armService.patchResource(this.currentResource.id, body).subscribe((data: any) => { });
     }
@@ -188,7 +188,7 @@ export class LiveChatService {
     // This method indicate whether chat is applicable for support toic or not
     private isChatApplicableForSupportTopic(startupInfo: StartupInfo): boolean {
 
-        var isApplicable: boolean = startupInfo
+        let isApplicable: boolean = startupInfo
             && startupInfo.workflowId && startupInfo.workflowId !== ''
             && startupInfo.supportTopicId && startupInfo.supportTopicId !== '' && (LiveChatSettings.enabledSupportTopics.indexOf(startupInfo.supportTopicId) >= 0);
 
@@ -212,10 +212,10 @@ export class LiveChatService {
     // }
 
     // private isChatHoursOn(currentDateTime): boolean {
-    //     var isBusinessHour = (currentDateTime.day() >= LiveChatSettings.BuisnessStartDay && currentDateTime.day() <= LiveChatSettings.BuisnessEndDay) 
+    //     var isBusinessHour = (currentDateTime.day() >= LiveChatSettings.BuisnessStartDay && currentDateTime.day() <= LiveChatSettings.BuisnessEndDay)
     //     && (currentDateTime.hour() >= LiveChatSettings.BusinessStartHourPST && currentDateTime.hour() < LiveChatSettings.BusinessEndHourPST);
 
-    //     var isWeeklyChatOffHour = (currentDateTime.day() === LiveChatSettings.WeeklyChatOffHours.Day) && 
+    //     var isWeeklyChatOffHour = (currentDateTime.day() === LiveChatSettings.WeeklyChatOffHours.Day) &&
     //                             (currentDateTime.hour() > LiveChatSettings.WeeklyChatOffHours.StartHourPST || (currentDateTime.hour() === LiveChatSettings.WeeklyChatOffHours.StartHourPST && currentDateTime.minutes() >= LiveChatSettings.WeeklyChatOffHours.StartMinutesPST)) &&
     //                             (currentDateTime.hour() < LiveChatSettings.WeeklyChatOffHours.EndHourPST || (currentDateTime.hour() === LiveChatSettings.WeeklyChatOffHours.EndHourPST && currentDateTime.minutes() <= LiveChatSettings.WeeklyChatOffHours.EndMinutePST));
 

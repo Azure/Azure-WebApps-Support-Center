@@ -11,9 +11,9 @@ import { PortalActionService } from '../../services/portal-action.service';
 export class DefaultSolutionsComponent  {
     showSolutions: boolean = false;
     bladeOptions: BladeOptions;
-    
 
-    constructor(private _portalService: PortalService, private _portalActionService : PortalActionService) {
+
+    constructor(private _portalService: PortalService, private _portalActionService: PortalActionService) {
         this.bladeOptions = BladeOptions;
     }
 
@@ -49,13 +49,13 @@ export class DefaultSolutionsComponent  {
                 break;
         }
 
-        let supportOptionInfo =  { resourceUri: this._portalActionService.currentSite.id, blade: supportOption };
-        this._portalService.logAction("SupportCenter:", "CommonSolutions-OpenBlade", supportOptionInfo);
-       
+        const supportOptionInfo =  { resourceUri: this._portalActionService.currentSite.id, blade: supportOption };
+        this._portalService.logAction('SupportCenter:', 'CommonSolutions-OpenBlade', supportOptionInfo);
+
     }
 
-    logLinkClick(link: string){
-        this._portalService.logAction("SupportCenter:", "CommonSolutions-OpenLink", { link: link});
+    logLinkClick(link: string) {
+        this._portalService.logAction('SupportCenter:', 'CommonSolutions-OpenLink', { link: link});
     }
 
 }

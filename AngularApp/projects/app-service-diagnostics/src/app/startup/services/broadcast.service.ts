@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { Subscription } from 'rxjs'
+import { Subscription } from 'rxjs';
 import { ErrorEvent } from '../../shared/models/error-event';
 import { BroadcastEvent } from '../models/broadcast-event';
 
@@ -16,12 +16,12 @@ export class BroadcastService {
     }
 
     broadcast<T>(eventType: BroadcastEvent, obj?: T) {
-        var emitter = <EventEmitter<T>>this.getEventEmitter(eventType);
+        const emitter = <EventEmitter<T>>this.getEventEmitter(eventType);
         emitter.emit(obj);
     }
 
     subscribe<T>(eventType: BroadcastEvent, callback: (obj?: T) => void, errorCallback?: (obj: any) => void, completedCallback?: (obj: any) => void): Subscription {
-        var emitter = <EventEmitter<T>>this.getEventEmitter(eventType);
+        const emitter = <EventEmitter<T>>this.getEventEmitter(eventType);
         return emitter.subscribe(callback, errorCallback, completedCallback);
     }
 
@@ -37,7 +37,7 @@ export class BroadcastService {
     clearDirtyState(reason?: string, all?: boolean) {
         reason = reason || this.defaultDirtyReason;
 
-        if (!this.dirtyStateMap[reason]) return;
+        if (!this.dirtyStateMap[reason]) { return; }
 
         if (all) {
             delete this.dirtyStateMap[reason];
@@ -60,7 +60,7 @@ export class BroadcastService {
 
     // http://stackoverflow.com/a/20494546/3234163
     isEmptyMap(map: any): boolean {
-        for (var key in map) {
+        for (const key in map) {
             if (map.hasOwnProperty(key)) {
                 return false;
             }

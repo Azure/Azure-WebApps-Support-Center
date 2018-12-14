@@ -18,27 +18,27 @@ export class AppAnalysisService {
 
     constructor(private _armService: ArmService, private _uriElementsService: UriElementsService, private _logger: AvailabilityLoggingService, private _detectorControlService: DetectorControlService) { }
 
-    getAnalysisResource(subscriptionId: string, resourceGroup: string, siteName: string, slot: string, diagnosticCategory:string, analysisName: string, invalidateCache: boolean = false, startTime: string = null, endTime: string = null): Observable<IAppAnalysisResponse> {
+    getAnalysisResource(subscriptionId: string, resourceGroup: string, siteName: string, slot: string, diagnosticCategory: string, analysisName: string, invalidateCache: boolean = false, startTime: string = null, endTime: string = null): Observable<IAppAnalysisResponse> {
         startTime = startTime ? startTime : this._detectorControlService.startTimeString;
         endTime = endTime ? endTime : this._detectorControlService.endTimeString;
-        let resourceUrl: string = this._uriElementsService.getAnalysisResourceUrl(subscriptionId, resourceGroup, siteName, diagnosticCategory, analysisName, slot, startTime, endTime);
+        const resourceUrl: string = this._uriElementsService.getAnalysisResourceUrl(subscriptionId, resourceGroup, siteName, diagnosticCategory, analysisName, slot, startTime, endTime);
         return this._armService.postResource<ResponseMessageEnvelope<IAppAnalysisResponse>, any>(resourceUrl, null, null, invalidateCache).pipe(
             map((response: ResponseMessageEnvelope<IAppAnalysisResponse>) => <IAppAnalysisResponse>response.properties),
             catchError(this.handleError));
     }
 
-    getDetectors(subscriptionId: string, resourceGroup: string, siteName: string, diagnosticCategory:string, slot: string): Observable<IDetectorDefinition[]> {
-        let resourceUrl: string = this._uriElementsService.getDetectorsUrl(subscriptionId, resourceGroup, siteName, diagnosticCategory, slot);
+    getDetectors(subscriptionId: string, resourceGroup: string, siteName: string, diagnosticCategory: string, slot: string): Observable<IDetectorDefinition[]> {
+        const resourceUrl: string = this._uriElementsService.getDetectorsUrl(subscriptionId, resourceGroup, siteName, diagnosticCategory, slot);
         return this._armService.getResource<any>(resourceUrl).pipe(
             map((response: ResponseMessageCollectionEnvelope<ResponseMessageEnvelope<IDetectorDefinition>>) =>
                 response.value.map((item: ResponseMessageEnvelope<IDetectorDefinition>) => <IDetectorDefinition>item.properties)),
             catchError(this.handleError));
     }
 
-    getDetectorResource(subscriptionId: string, resourceGroup: string, siteName: string, slot: string, diagnosticCategory:string, detectorName: string, invalidateCache: boolean = false, startTime: string = null, endTime: string = null): Observable<IDetectorResponse> {
+    getDetectorResource(subscriptionId: string, resourceGroup: string, siteName: string, slot: string, diagnosticCategory: string, detectorName: string, invalidateCache: boolean = false, startTime: string = null, endTime: string = null): Observable<IDetectorResponse> {
         startTime = startTime ? startTime : this._detectorControlService.startTimeString;
         endTime = endTime ? endTime : this._detectorControlService.endTimeString;
-        let resourceUrl: string = this._uriElementsService.getDetectorResourceUrl(subscriptionId, resourceGroup, siteName, slot, diagnosticCategory, detectorName, startTime, endTime);
+        const resourceUrl: string = this._uriElementsService.getDetectorResourceUrl(subscriptionId, resourceGroup, siteName, slot, diagnosticCategory, detectorName, startTime, endTime);
 
         return this._armService.postResource<ResponseMessageEnvelope<IDetectorResponse>, any>(resourceUrl, null, null, invalidateCache).pipe(
             map((response: ResponseMessageEnvelope<IDetectorResponse>) => <IDetectorResponse>response.properties),
@@ -48,7 +48,7 @@ export class AppAnalysisService {
 
                     let isAppCurrentlyHealthy: boolean = true;
 
-                    let currentAppHealth = data.data[0].find(p => p.name.toLowerCase() === "currentapphealth");
+                    const currentAppHealth = data.data[0].find(p => p.name.toLowerCase() === 'currentapphealth');
                     if (currentAppHealth) {
                         if (currentAppHealth.value.toLowerCase() === 'unhealthy') {
                             isAppCurrentlyHealthy = false;
@@ -62,7 +62,7 @@ export class AppAnalysisService {
     }
 
     getDiagnosticProperties(subscriptionId: string, resourceGroup: string, siteName: string, slot: string, invalidateCache: boolean = false): Observable<IDiagnosticProperties> {
-        let resourceUrl: string = this._uriElementsService.getDiagnosticPropertiesUrl(subscriptionId, resourceGroup, siteName, slot);
+        const resourceUrl: string = this._uriElementsService.getDiagnosticPropertiesUrl(subscriptionId, resourceGroup, siteName, slot);
 
         return this._armService.getResource<ResponseMessageEnvelope<IDiagnosticProperties>>(resourceUrl, null, invalidateCache).pipe(
             map((response: ResponseMessageEnvelope<IDiagnosticProperties>) => <IDiagnosticProperties>response.properties),

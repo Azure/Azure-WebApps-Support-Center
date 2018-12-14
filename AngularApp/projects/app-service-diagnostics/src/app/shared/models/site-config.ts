@@ -1,4 +1,4 @@
-﻿import {ArmObj} from './armObj';
+import {ArmObj} from './armObj';
 
 export interface SiteConfig extends ArmObj {
     properties: {
@@ -46,11 +46,11 @@ export interface AzureTableStorageApplicationLogsConfig {
 }
 
 export class LogLevel {
-    public static Off = "Off";
-    public static Verbose: "Verbose";
-    public static Information = "Information";
-    public static Warning = "Warning";
-    public static Error = "Error";
+    public static Off = 'Off';
+    public static Verbose: 'Verbose';
+    public static Information = 'Information';
+    public static Warning = 'Warning';
+    public static Error = 'Error';
 }
 
 export interface FileSystemApplicationLogsConfig {

@@ -25,15 +25,15 @@ export class DowntimeTimelineComponent implements OnChanges {
     @Output() selectedDowntimeIndexChange: EventEmitter<number> = new EventEmitter<number>();
 
     ngOnChanges(changes: any): void {
-        let self = this;
+        const self = this;
         if (changes['appAnalysisResponse']) {
             this.downtimeDisplayInfo = [];
-            let response = this.appAnalysisResponse;
+            const response = this.appAnalysisResponse;
             if (response && response.abnormalTimePeriods) {
-                let startTime = new Date(response.startTime);
-                let endTime = new Date(response.endTime);
+                const startTime = new Date(response.startTime);
+                const endTime = new Date(response.endTime);
 
-                let fullDuration = endTime.getTime() - startTime.getTime();
+                const fullDuration = endTime.getTime() - startTime.getTime();
 
                 let currentStart = new Date(startTime);
                 let abnormalTimePeriodCount = 0;
@@ -46,7 +46,7 @@ export class DowntimeTimelineComponent implements OnChanges {
                             percent: width,
                             isDowntime: false,
                             index: -1
-                        })
+                        });
                     }
 
                     width = (new Date(downtime.endTime).getTime() - (new Date(downtime.startTime).getTime() - 300000)) / fullDuration * 100;
@@ -57,7 +57,7 @@ export class DowntimeTimelineComponent implements OnChanges {
                         percent: width,
                         isDowntime: true,
                         index: abnormalTimePeriodCount++
-                    })
+                    });
                     currentStart = new Date(new Date(downtime.endTime).getTime());
                 });
 
@@ -87,10 +87,10 @@ export class DowntimeTimelineComponent implements OnChanges {
 
     protected formatDateTime(datetime: Date): string {
         // TODO: this is a hack and there has to be a better way
-        let hours = datetime.getUTCHours();
-        let hoursString = hours < 10 ? '0' + hours : hours;
-        let minutes = datetime.getUTCMinutes();
-        let minutesString = minutes < 10 ? '0' + minutes : minutes;
+        const hours = datetime.getUTCHours();
+        const hoursString = hours < 10 ? '0' + hours : hours;
+        const minutes = datetime.getUTCMinutes();
+        const minutesString = minutes < 10 ? '0' + minutes : minutes;
         return (datetime.getUTCMonth() + 1) + '/' + datetime.getUTCDate() + ' ' + hoursString + ':' + minutesString + ' UTC';
     }
 

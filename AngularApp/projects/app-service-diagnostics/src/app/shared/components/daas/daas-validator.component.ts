@@ -20,21 +20,21 @@ export class DaasValidatorComponent implements OnInit {
 
   supportedTier: boolean = false;
   checkingSkuSucceeded: boolean = false;
-  diagnoserWarning: string = "";
+  diagnoserWarning: string = '';
   daasRunnerJobRunning: boolean = true;
   checkingDaasWebJobStatus: boolean = false;
   checkingSupportedTier: boolean = true;
   foundDiagnoserWarnings: boolean = false;
   alwaysOnEnabled: boolean = true;
-  error: string = "";
+  error: string = '';
 
   constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService) {
   }
 
   validateDaasSettings() {
-    this.error = "";
+    this.error = '';
     this.supportedTier = false;
-    this.diagnoserWarning = "";
+    this.diagnoserWarning = '';
     this.daasRunnerJobRunning = true;
     this.checkingDaasWebJobStatus = false;
     this.checkingSupportedTier = true;
@@ -59,31 +59,29 @@ export class DaasValidatorComponent implements OnInit {
         }))
     ).subscribe(results => {
       this.checkingSupportedTier = false;
-      let serverFarm = results[0];
+      const serverFarm = results[0];
       this.alwaysOnEnabled = results[1];
-      let diagnosers: DiagnoserDefinition[] = results[2];
+      const diagnosers: DiagnoserDefinition[] = results[2];
 
       if (serverFarm != null) {
         this.checkingSkuSucceeded = true;
-        if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
+        if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier.indexOf('Premium') > -1 || serverFarm.sku.tier === 'Isolated') {
           this.supportedTier = true;
-        }
-        else {
+        } else {
           return;
         }
       }
 
       if (!this.alwaysOnEnabled) {
         return;
-      }
-      else {
-        // If AlwaysOn is set to TRUE, we can be sure that the site is running in a 
+      } else {
+        // If AlwaysOn is set to TRUE, we can be sure that the site is running in a
         // supported tier as AlwaysOn is not available in BASIC SKU
         this.supportedTier = true;
       }
 
-      if (this.error === "") {
-        let thisDiagnoser = diagnosers.find(x => x.Name === this.diagnoserName);
+      if (this.error === '') {
+        const thisDiagnoser = diagnosers.find(x => x.Name === this.diagnoserName);
         if (thisDiagnoser) {
           if (thisDiagnoser.Warnings.length > 0) {
             this.diagnoserWarning = thisDiagnoser.Warnings.join(',');
@@ -107,7 +105,7 @@ export class DaasValidatorComponent implements OnInit {
     let retryCount: number = 0;
     this._daasService.getDaasWebjobState(this.siteToBeDiagnosed).pipe(
       map(webjobstate => {
-        if (webjobstate !== "Running" && retryCount < 2) {
+        if (webjobstate !== 'Running' && retryCount < 2) {
           ++retryCount;
           throw webjobstate;
         }
@@ -115,15 +113,14 @@ export class DaasValidatorComponent implements OnInit {
       }),
       retryWhen(obs => {
         // take(3) is required in case the original ARM call fails
-        return obs.pipe(delay(4000),take(3),concat(observableThrowError(new Error('Retry limit exceeded!'))))
+        return obs.pipe(delay(4000), take(3), concat(observableThrowError(new Error('Retry limit exceeded!'))));
       }))
       .subscribe(webjobstate => {
         this.checkingDaasWebJobStatus = false;
-        if (webjobstate !== "Running") {
+        if (webjobstate !== 'Running') {
           this.daasRunnerJobRunning = false;
           return;
-        }
-        else {
+        } else {
           this.DaasValidated.emit(true);
         }
       }, error => {

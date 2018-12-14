@@ -22,12 +22,12 @@ export class SiteFeatureService extends FeatureService {
   public supportTools: SiteFilteredItem<Feature>[];
   public premiumTools: SiteFilteredItem<Feature>[];
 
-  constructor(protected _diagnosticApiService: DiagnosticService, protected _resourceService: WebSitesService, protected _contentService: ContentService, protected _router: Router, 
+  constructor(protected _diagnosticApiService: DiagnosticService, protected _resourceService: WebSitesService, protected _contentService: ContentService, protected _router: Router,
     protected _authService: AuthService, private _portalActionService: PortalActionService, private _websiteFilter: WebSiteFilter, protected _logger: LoggingV2Service) {
-      
+
     super(_diagnosticApiService, _contentService, _router, _authService, _logger);
-    this._authService.getStartupInfo().subscribe(startupInfo => { 
-      if(this._resourceService.appType == AppType.WebApp && this._resourceService.platform == OperatingSystem.windows) {
+    this._authService.getStartupInfo().subscribe(startupInfo => {
+      if (this._resourceService.appType == AppType.WebApp && this._resourceService.platform == OperatingSystem.windows) {
         this.getLegacyAvailabilityAndPerformanceFeatures(startupInfo.resourceId).forEach(feature => this._features.push(feature));
       }
       this.addDiagnosticTools(startupInfo.resourceId);
@@ -98,7 +98,7 @@ export class SiteFeatureService extends FeatureService {
           this._router.navigateByUrl(`resource/${resourceId}/legacy/diagnostics/availability/tcpconnectionsanalysis`);
         })
       }
-    ]
+    ];
   }
 
   addPremiumTools() {
@@ -135,7 +135,7 @@ export class SiteFeatureService extends FeatureService {
           })
         }
       }
-    ]
+    ];
   }
 
   addDiagnosticTools(resourceId: string) {
@@ -347,7 +347,7 @@ export class SiteFeatureService extends FeatureService {
           description: '',
           featureType: FeatureTypes.Tool,
           clickAction: this._createFeatureAction(SupportBladeDefinitions.EventViewer.Identifier, 'Support Tools', () => {
-            this._portalActionService.openSupportIFrame(SupportBladeDefinitions.EventViewer)
+            this._portalActionService.openSupportIFrame(SupportBladeDefinitions.EventViewer);
           })
         }
       },
@@ -363,7 +363,7 @@ export class SiteFeatureService extends FeatureService {
           description: '',
           featureType: FeatureTypes.Tool,
           clickAction: this._createFeatureAction(SupportBladeDefinitions.FREBLogs.Identifier, 'Support Tools', () => {
-            this._portalActionService.openSupportIFrame(SupportBladeDefinitions.FREBLogs)
+            this._portalActionService.openSupportIFrame(SupportBladeDefinitions.FREBLogs);
           })
         }
       },

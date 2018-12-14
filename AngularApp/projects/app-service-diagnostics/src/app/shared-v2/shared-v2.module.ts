@@ -15,6 +15,6 @@ export class SharedV2Module {
       providers: [
         NotificationService
       ]
-    }
+    };
   }
 }

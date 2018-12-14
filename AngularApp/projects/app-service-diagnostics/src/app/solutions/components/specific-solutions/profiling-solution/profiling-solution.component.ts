@@ -6,7 +6,7 @@ import { SiteDaasInfo } from '../../../../shared/models/solution-metadata';
 import { SiteService } from '../../../../shared/services/site.service';
 import { AvailabilityLoggingService } from '../../../../shared/services/logging/availability.logging.service';
 import { ServerFarmDataService } from '../../../../shared/services/server-farm-data.service';
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs';
 
 @Component({
     templateUrl: 'profiling-solution.component.html',
@@ -18,22 +18,22 @@ export class ProfilingSolutionComponent implements SolutionBaseComponent, OnInit
 
     @Input() data: SolutionData;
 
-    title: string = "Collect a Profiler Trace";
-    description: string = "If your app is down or performing slow, you can collect a profiling trace to identify the root cause of the issue. Profiling is light weight and is designed for production scenarios.";
+    title: string = 'Collect a Profiler Trace';
+    description: string = 'If your app is down or performing slow, you can collect a profiling trace to identify the root cause of the issue. Profiling is light weight and is designed for production scenarios.';
 
     thingsToKnowBefore: string[] = [
-        "Once the profiler trace is started, reproduce the issue by browsing to the web app",
-        "The profiler trace will automatically stop after 60 seconds.",
-        "If thread report option is enabled, then raw stack traces of threads inside the process will be collected as well.",
-        "With thread report option, your App may be paused for a few seconds till all the threads are dumped.",         
-        "Your web app will not be restarted as a result of running the profiler.",
-        "A profiler trace will help to identify issues in an ASP.NET application only and ASP.NET core is not yet supported",
-    ]
+        'Once the profiler trace is started, reproduce the issue by browsing to the web app',
+        'The profiler trace will automatically stop after 60 seconds.',
+        'If thread report option is enabled, then raw stack traces of threads inside the process will be collected as well.',
+        'With thread report option, your App may be paused for a few seconds till all the threads are dumped.',
+        'Your web app will not be restarted as a result of running the profiler.',
+        'A profiler trace will help to identify issues in an ASP.NET application only and ASP.NET core is not yet supported',
+    ];
 
     siteToBeDiagnosed: SiteDaasInfo;
     scmPath: string;
     couldNotFindSite: boolean = false;
-    refreshSessions:boolean = false;
+    refreshSessions: boolean = false;
 
     constructor(private _siteService: SiteService, private _logger: AvailabilityLoggingService, private _serverFarmService: ServerFarmDataService) {
     }
@@ -41,17 +41,17 @@ export class ProfilingSolutionComponent implements SolutionBaseComponent, OnInit
     ngOnInit(): void {
 
         this._logger.LogSolutionDisplayed('CLR Profiling', this.data.solution.order.toString(), 'bot-sitecpuanalysis');
-        let siteInfo = MetaDataHelper.getSiteDaasData(this.data.solution.data);
+        const siteInfo = MetaDataHelper.getSiteDaasData(this.data.solution.data);
 
         this._serverFarmService.sitesInServerFarm.subscribe(sites => {
             if (sites) {
-                let targetedSite = sites.find(site => site.name.toLowerCase() === siteInfo.siteName.toLowerCase());
+                const targetedSite = sites.find(site => site.name.toLowerCase() === siteInfo.siteName.toLowerCase());
 
                 if (targetedSite) {
                     let siteName = targetedSite.name;
                     let slotName = '';
                     if (targetedSite.name.indexOf('(') >= 0) {
-                        let parts = targetedSite.name.split('(');
+                        const parts = targetedSite.name.split('(');
                         siteName = parts[0];
                         slotName = parts[1].replace(')', '');
                     }
@@ -61,12 +61,11 @@ export class ProfilingSolutionComponent implements SolutionBaseComponent, OnInit
                         resourceGroupName: targetedSite.resourceGroup,
                         siteName: siteName,
                         slot: slotName
-                    }
+                    };
 
                     this.scmPath = targetedSite.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
-                }
-                else {
+                } else {
                     this.couldNotFindSite = true;
                 }
             }

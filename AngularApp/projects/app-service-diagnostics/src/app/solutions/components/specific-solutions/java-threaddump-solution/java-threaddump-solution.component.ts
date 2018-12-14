@@ -14,28 +14,28 @@ class InstanceSelection {
 
 @Component({
     templateUrl: 'java-threaddump-solution.component.html',
-    styleUrls: ['../../../styles/solutions.scss'        
+    styleUrls: ['../../../styles/solutions.scss'
     ]
 })
 export class JavaThreadDumpSolutionComponent implements SolutionBaseComponent, OnInit {
 
     @Input() data: SolutionData;
 
-    title: string = "Collect a Java Thread dump";
-    description: string = "If your Java app is performing slow or not responding at all, you can collect a jStack log to identify the state of threads running the java.exe";
-    
+    title: string = 'Collect a Java Thread dump';
+    description: string = 'If your Java app is performing slow or not responding at all, you can collect a jStack log to identify the state of threads running the java.exe';
+
     thingsToKnowBefore: string[] = [
-        "Collecting a jStack log will freeze the process until the jStack log is collected so process cannot serve any requests during the time jStack is running.",
-        "jStack logs are collected for all the Java process (java.exe) running on the instance.",
-        "jStack takes a few seconds to run but if there are many threads, it can take slightly longer to collect this data.",
-        "Your App will not be restarted as a result of collecting the jStack logs."
-    ]
+        'Collecting a jStack log will freeze the process until the jStack log is collected so process cannot serve any requests during the time jStack is running.',
+        'jStack logs are collected for all the Java process (java.exe) running on the instance.',
+        'jStack takes a few seconds to run but if there are many threads, it can take slightly longer to collect this data.',
+        'Your App will not be restarted as a result of collecting the jStack logs.'
+    ];
 
     siteToBeDiagnosed: SiteDaasInfo;
     scmPath: string;
     couldNotFindSite: boolean = false;
 
-    diagnoserName: string = "JAVA Thread Dump";
+    diagnoserName: string = 'JAVA Thread Dump';
     refreshSessions: boolean = false;
 
     constructor(private _siteService: SiteService, private _logger: AvailabilityLoggingService, private _serverFarmService: ServerFarmDataService) {
@@ -44,17 +44,17 @@ export class JavaThreadDumpSolutionComponent implements SolutionBaseComponent, O
     ngOnInit(): void {
 
         this._logger.LogSolutionDisplayed(this.diagnoserName, this.data.solution.order.toString(), 'bot-sitecpuanalysis');
-        let siteInfo = MetaDataHelper.getSiteDaasData(this.data.solution.data);
+        const siteInfo = MetaDataHelper.getSiteDaasData(this.data.solution.data);
 
         this._serverFarmService.sitesInServerFarm.subscribe(sites => {
             if (sites) {
-                let targetedSite = sites.find(site => site.name.toLowerCase() === siteInfo.siteName.toLowerCase());
+                const targetedSite = sites.find(site => site.name.toLowerCase() === siteInfo.siteName.toLowerCase());
 
                 if (targetedSite) {
                     let siteName = targetedSite.name;
                     let slotName = '';
                     if (targetedSite.name.indexOf('(') >= 0) {
-                        let parts = targetedSite.name.split('(');
+                        const parts = targetedSite.name.split('(');
                         siteName = parts[0];
                         slotName = parts[1].replace(')', '');
                     }
@@ -64,11 +64,10 @@ export class JavaThreadDumpSolutionComponent implements SolutionBaseComponent, O
                         resourceGroupName: targetedSite.resourceGroup,
                         siteName: siteName,
                         slot: slotName
-                    }
+                    };
 
                     this.scmPath = targetedSite.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
-                }
-                else {
+                } else {
                     this.couldNotFindSite = true;
                 }
             }

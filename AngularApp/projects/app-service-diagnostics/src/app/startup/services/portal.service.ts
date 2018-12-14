@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs'
+import { ReplaySubject } from 'rxjs';
 import { StartupInfo, Event, Data, Verbs, Action, LogEntryLevel, Message, OpenBladeInfo } from '../../shared/models/portal';
 import { ErrorEvent } from '../../shared/models/error-event';
 import { BroadcastService } from './broadcast.service';
-import { BroadcastEvent } from '../models/broadcast-event'
+import { BroadcastEvent } from '../models/broadcast-event';
 
 @Injectable()
 export class PortalService {
-    public sessionId = "";
-    private portalSignature: string = "FxFrameBlade";
+    public sessionId = '';
+    private portalSignature: string = 'FxFrameBlade';
     private startupInfoObservable: ReplaySubject<StartupInfo>;
     private appInsightsResourceObservable: ReplaySubject<any>;
     private shellSrc: string;
 
     constructor(private _broadcastService: BroadcastService) {
-        this.sessionId = "";
+        this.sessionId = '';
 
         this.startupInfoObservable = new ReplaySubject<StartupInfo>(1);
         this.appInsightsResourceObservable = new ReplaySubject<any>(1);
@@ -32,7 +32,7 @@ export class PortalService {
     }
 
     initializeIframe(): void {
-        this.shellSrc = this.getQueryStringParameter("trustedAuthority");
+        this.shellSrc = this.getQueryStringParameter('trustedAuthority');
 
         window.addEventListener(Verbs.message, this.iframeReceivedMsg.bind(this), false);
 
@@ -52,17 +52,17 @@ export class PortalService {
     }
 
     openSupportRequestBlade(obj: any, source: string): void {
-        this.logAction(source, "open-blade-input" + obj.bladeName, null);
-        let inputStr = JSON.stringify(obj);
+        this.logAction(source, 'open-blade-input' + obj.bladeName, null);
+        const inputStr = JSON.stringify(obj);
         this.postMessage(Verbs.openSupportRequestBlade, inputStr);
     }
 
     closeBlades() {
-        this.postMessage(Verbs.closeBlades, "");
+        this.postMessage(Verbs.closeBlades, '');
     }
 
     logAction(subcomponent: string, action: string, data?: any): void {
-        let actionStr = JSON.stringify(<Action>{
+        const actionStr = JSON.stringify(<Action>{
             subcomponent: subcomponent,
             action: action,
             data: data
@@ -76,7 +76,7 @@ export class PortalService {
     }
 
     logMessage(level: LogEntryLevel, message: string, ...restArgs: any[]) {
-        let messageStr = JSON.stringify(<Message>{
+        const messageStr = JSON.stringify(<Message>{
             level: level,
             message: message,
             restArgs: restArgs
@@ -91,17 +91,16 @@ export class PortalService {
             return;
         }
 
-        var data = event.data.data;
-        let methodName = event.data.kind;
-        console.log("[iFrame] Received mesg: " + methodName);
+        const data = event.data.data;
+        const methodName = event.data.kind;
+        console.log('[iFrame] Received mesg: ' + methodName);
 
         if (methodName === Verbs.sendStartupInfo) {
-            let info = <StartupInfo>data;
+            const info = <StartupInfo>data;
             this.sessionId = info.sessionId;
             this.startupInfoObservable.next(info);
-        }
-        else if (methodName === Verbs.sendAppInsightsResource) {
-            let aiResource = data;
+        } else if (methodName === Verbs.sendAppInsightsResource) {
+            const aiResource = data;
             this.appInsightsResourceObservable.next(aiResource);
         }
     }
@@ -121,15 +120,15 @@ export class PortalService {
     }
 
     private getQueryStringParameter(name: string) {
-        return this.getQueryMap()[name] || "";
+        return this.getQueryMap()[name] || '';
     }
 
     private getQueryMap(): any {
-        var query = window.location.search.substring(1);
-        var parameterList = query.split("&");
-        var map = {};
-        for (var i = 0; i < parameterList.length; i++) {
-            var pair = parameterList[i].split("=");
+        const query = window.location.search.substring(1);
+        const parameterList = query.split('&');
+        const map = {};
+        for (let i = 0; i < parameterList.length; i++) {
+            const pair = parameterList[i].split('=');
             map[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
         }
         return map;

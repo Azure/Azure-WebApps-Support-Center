@@ -23,7 +23,7 @@ export class SupportBotComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if(this.startingKey) {
+        if (this.startingKey) {
             this._messageProcessor.setCurrentKey(this.startingKey);
         }
 
@@ -40,8 +40,8 @@ export class SupportBotComponent implements OnInit {
     }
 
     getMessage(event?: any): void {
-        let self = this;
-        let message = this._messageProcessor.getNextMessage(event);
+        const self = this;
+        const message = this._messageProcessor.getNextMessage(event);
 
         if (message) {
 

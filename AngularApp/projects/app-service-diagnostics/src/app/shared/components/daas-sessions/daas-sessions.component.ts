@@ -18,7 +18,7 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
     checkingExistingSessions: boolean;
     sessions: Session[];
 
-    @Input() public diagnoserNameLookup: string = "";
+    @Input() public diagnoserNameLookup: string = '';
     @Input() public siteToBeDiagnosed: SiteDaasInfo;
     @Input() public scmPath: string;
     @Input() public showDetailsLink: boolean = true;
@@ -28,20 +28,20 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
 
     @Input() refreshSessions: boolean = false;
     showDetailedView: boolean = false;
-    allSessions: string = "../../diagnosticTools";
+    allSessions: string = '../../diagnosticTools';
     subscription: Subscription;
 
 
     constructor(private _windowService: WindowService, private _serverFarmService: ServerFarmDataService, private _daasService: DaasService) {
         this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
             if (serverFarm) {
-                if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier.indexOf("Premium") > -1) {
+                if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier === 'Basic' || serverFarm.sku.tier.indexOf('Premium') > -1) {
                     this.supportedTier = true;
                 }
             }
         }, error => {
             //TODO: handle error
-        })
+        });
 
     }
 
@@ -53,7 +53,7 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
 
     ngOnInit(): void {
 
-        if (this.diagnoserNameLookup === "") {
+        if (this.diagnoserNameLookup === '') {
             this.showDetailedView = true;
         }
 
@@ -67,13 +67,13 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
 
     reducedSession(obj: Session) {
         return { SessionId: obj.SessionId, DiagnoserSessions: obj.DiagnoserSessions, Status: obj.Status };
-    };
+    }
 
     checkSessions() {
         this._daasService.getDaasSessionsWithDetails(this.siteToBeDiagnosed).pipe(retry(2))
             .subscribe(sessions => {
-                var newSessions = sessions.map(this.reducedSession);
-                var existingSessions = this.sessions.map(this.reducedSession);
+                const newSessions = sessions.map(this.reducedSession);
+                const existingSessions = this.sessions.map(this.reducedSession);
 
                 if (newSessions.length === existingSessions.length && newSessions.filter(newSession => existingSessions.findIndex(session => session === newSession) === -1).length > 0) {
                     this.sessions = this.setExpanded(sessions);
@@ -82,14 +82,12 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
     }
 
     populateSessions() {
-        if (this.diagnoserNameLookup.startsWith("CLR Profiler")) {
-            this.DiagnoserHeading = "profiling sessions";
-        }
-        else if (this.diagnoserNameLookup === "Memory Dump") {
-            this.DiagnoserHeading = "dumps collected";
-        }
-        else {
-            this.DiagnoserHeading = "diagnostic sessions";
+        if (this.diagnoserNameLookup.startsWith('CLR Profiler')) {
+            this.DiagnoserHeading = 'profiling sessions';
+        } else if (this.diagnoserNameLookup === 'Memory Dump') {
+            this.DiagnoserHeading = 'dumps collected';
+        } else {
+            this.DiagnoserHeading = 'diagnostic sessions';
         }
 
         this.checkingExistingSessions = true;
@@ -98,8 +96,7 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
                 this.checkingExistingSessions = false;
                 if (this.showDetailedView) {
                     this.sessions = this.setExpanded(sessions);
-                }
-                else {
+                } else {
                     this.sessions = this.takeTopFiveDiagnoserSessions(sessions);
                 }
 
@@ -107,7 +104,7 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
     }
 
     takeTopFiveDiagnoserSessions(sessions: Session[]): Session[] {
-        var arrayToReturn = new Array<Session>();
+        let arrayToReturn = new Array<Session>();
         sessions.forEach(session => {
             session.DiagnoserSessions.forEach(diagnoser => {
                 if (diagnoser.Name.startsWith(this.diagnoserNameLookup)) {
@@ -124,15 +121,14 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
 
     getInstanceNameFromReport(reportName: string): string {
 
-        if (!this.diagnoserNameLookup.startsWith("CLR Profiler")) {
+        if (!this.diagnoserNameLookup.startsWith('CLR Profiler')) {
             return reportName;
         }
 
-        var reportNameArray = reportName.split("_");
+        const reportNameArray = reportName.split('_');
         if (reportNameArray.length > 0) {
             return reportNameArray[0];
-        }
-        else {
+        } else {
             return reportName;
         }
     }
@@ -154,7 +150,7 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
     }
 
     setExpanded(sessions: Session[]): Session[] {
-        let maxValue = (sessions.length > 3 ? 3 : sessions.length)
+        const maxValue = (sessions.length > 3 ? 3 : sessions.length);
         let counter = 0;
         while (counter < maxValue) {
             sessions[counter].Expanded = true;
@@ -165,17 +161,17 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
 
     deleteSession(sessionIndex: number) {
         if (sessionIndex > -1) {
-            let sessionToDelete = this.sessions[sessionIndex];
+            const sessionToDelete = this.sessions[sessionIndex];
             sessionToDelete.Expanded = true;
-            sessionToDelete.DeletingFailure = "";
+            sessionToDelete.DeletingFailure = '';
             sessionToDelete.Deleting = true;
             this._daasService.deleteDaasSession(this.siteToBeDiagnosed, sessionToDelete.SessionId)
                 .subscribe(resp => {
                     sessionToDelete.Deleting = false;
                     this.sessions.splice(sessionIndex, 1);
-                },err => {
+                }, err => {
                     sessionToDelete.Deleting = false;
-                    sessionToDelete.DeletingFailure = "Failed while deleting the session with an error : " + err;
+                    sessionToDelete.DeletingFailure = 'Failed while deleting the session with an error : ' + err;
                     });
         }
     }
@@ -192,13 +188,13 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
 export class DateTimeDiffPipe implements PipeTransform {
     transform(datetime: string): string {
 
-        var utc = new Date(new Date().toUTCString()).getTime();
-        let newDate = new Date(datetime + 'Z');
-        var oneDay = 1000 * 60 * 60 * 24;
-        var duration = utc.valueOf() - newDate.valueOf();
-        var inDays = Math.round(duration / oneDay);
-        var inHours = Math.round(duration * 24 / oneDay);
-        var inMinutes = Math.round(duration * 24 * 60 / oneDay);
-        return (inDays > 0 ? inDays.toString() + " day(s)" : (inHours > 0 ? inHours.toString() + " hour(s)" : inMinutes.toString() + " minute(s)"));
+        const utc = new Date(new Date().toUTCString()).getTime();
+        const newDate = new Date(datetime + 'Z');
+        const oneDay = 1000 * 60 * 60 * 24;
+        const duration = utc.valueOf() - newDate.valueOf();
+        const inDays = Math.round(duration / oneDay);
+        const inHours = Math.round(duration * 24 / oneDay);
+        const inMinutes = Math.round(duration * 24 * 60 / oneDay);
+        return (inDays > 0 ? inDays.toString() + ' day(s)' : (inHours > 0 ? inHours.toString() + ' hour(s)' : inMinutes.toString() + ' minute(s)'));
     }
 }

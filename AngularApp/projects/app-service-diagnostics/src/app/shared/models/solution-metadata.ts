@@ -1,10 +1,10 @@
-import { SiteInfoMetaData } from "./site";
+import { SiteInfoMetaData } from './site';
 
 export class ApplicationRestartInfo extends SiteInfoMetaData {
     instances: InstanceInfo[];
 }
 
-export class SiteDaasInfo extends SiteInfoMetaData {    
+export class SiteDaasInfo extends SiteInfoMetaData {
     instances: string[];
 }
 

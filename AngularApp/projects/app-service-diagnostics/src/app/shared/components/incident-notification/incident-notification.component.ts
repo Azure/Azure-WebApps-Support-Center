@@ -21,7 +21,7 @@ export class IncidentNotificationComponent {
     resourceId: string;
 
     constructor(public incidentService: ServiceIncidentService, private _router: Router, private _authService: AuthService, private _logger: LoggingService) {
-        this._authService.getStartupInfo().subscribe(info => { this.resourceId = info.resourceId.toLowerCase().replace('/providers/microsoft.web', '') });
+        this._authService.getStartupInfo().subscribe(info => { this.resourceId = info.resourceId.toLowerCase().replace('/providers/microsoft.web', ''); });
     }
 
     openIncidentView() {

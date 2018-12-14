@@ -19,6 +19,6 @@ export class BlogComponent implements OnChanges {
     }
 
     openBlogUrl(): void {
-        this._windowService.window.open(this.blogEntry.og_Url, "_blank");
+        this._windowService.window.open(this.blogEntry.og_Url, '_blank');
     }
 }

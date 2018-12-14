@@ -1,10 +1,3 @@
-
-// @import '~@swimlane/ngx-datatable/release/index.css';
-// @import '~@swimlane/ngx-datatable/release/themes/bootstrap.css';
-// @import '~@swimlane/ngx-datatable/release/assets/icons.css';
-
-/* TEMP: Must copy css from diag data until I figure out how to properly include it in package */
-
 .ngx-datatable.bootstrap {
     border: 1px solid #dddddd;
 }
@@ -44,6 +37,12 @@
 .ngx-datatable.bootstrap .datatable-footer .datatable-pager a,
 .ngx-datatable.bootstrap .datatable-header .datatable-header-cell .datatable-header-cell-label {
     color: #3a3a3a;
+}
+
+.btn {
+    & + & {
+        margin-left:5px;
+    }
 }
 
 .critical-color {

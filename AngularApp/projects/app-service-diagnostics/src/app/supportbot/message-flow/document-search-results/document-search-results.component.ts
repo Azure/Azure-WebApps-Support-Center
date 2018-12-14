@@ -14,7 +14,7 @@ export class DocumentSearchResultsComponent implements OnInit, AfterViewInit, IC
 
   @Output() onViewUpdate = new EventEmitter();
   @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
-  
+
   constructor(private _injector: Injector, private _contentService: ContentService) { }
 
   ngOnInit() {

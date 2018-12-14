@@ -26,10 +26,9 @@ export class FeedbackFormComponent {
         this.yesSelected = helpful;
         this.noSelected = !helpful;
         this._logger.LogFeedback(this.source, helpful);
-        if(this.yesSelected){
+        if (this.yesSelected) {
             this.showThanksMessage = true;
-        }
-        else{
+        } else {
             this.showMessageBox = true;
         }
     }

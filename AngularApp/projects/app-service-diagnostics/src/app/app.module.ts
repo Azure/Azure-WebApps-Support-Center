@@ -20,7 +20,7 @@ import { environment } from '../environments/environment';
     HttpClientModule,
     SharedModule.forRoot(),
     StartupModule.forRoot(),
-    DiagnosticDataModule.forRoot(environment.production ? PUBLIC_PROD_CONFIGURATION : PUBLIC_DEV_CONFIGURATION),    
+    DiagnosticDataModule.forRoot(environment.production ? PUBLIC_PROD_CONFIGURATION : PUBLIC_DEV_CONFIGURATION),
     BrowserAnimationsModule,
     RouterModule.forRoot([
       {

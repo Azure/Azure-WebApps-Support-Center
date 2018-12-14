@@ -21,9 +21,9 @@ export class BackendCtrlService {
 
     return this._authService.getStartupInfo().pipe(
       mergeMap((startupInfo: StartupInfo) => {
-        var url: string = `${this.apiEndpoint}${path}`;
+        const url: string = `${this.apiEndpoint}${path}`;
 
-        let request = this._http.get(url, {
+        const request = this._http.get(url, {
           headers: this._getHeaders(startupInfo, headers)
         });
 
@@ -32,7 +32,7 @@ export class BackendCtrlService {
   }
 
   private _getHeaders(startupInfo: StartupInfo, additionalHeaders: HttpHeaders): HttpHeaders {
-    var headers = new HttpHeaders({
+    let headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': `Bearer ${startupInfo.token}`
@@ -41,7 +41,7 @@ export class BackendCtrlService {
     if (additionalHeaders) {
       additionalHeaders.keys().forEach(key => {
         if (!headers.has(key)) {
-          headers = headers.set(key, additionalHeaders.get(key))
+          headers = headers.set(key, additionalHeaders.get(key));
         }
       });
     }

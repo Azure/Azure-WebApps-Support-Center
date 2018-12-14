@@ -8,7 +8,7 @@ export interface IAppAnalysisResponse {
     endTime: string;
     abnormalTimePeriods: IAbnormalTimePeriod[];
     payload: IAnalysisData[];
-    nonCorrelatedDetectors: IDetectorDefinition[]
+    nonCorrelatedDetectors: IDetectorDefinition[];
 }
 
 export interface IAbnormalTimePeriod {
@@ -18,8 +18,8 @@ export interface IAbnormalTimePeriod {
     solutions: ISolution[];
 }
 
-export interface IAnalysisData{
-    source:string;
+export interface IAnalysisData {
+    source: string;
     detectorDefinition: IDetectorDefinition;
     metrics: IMetricSet[];
     data: INameValuePair[][];

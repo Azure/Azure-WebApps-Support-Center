@@ -21,8 +21,7 @@ export class CacheService {
             if (invalidateCache) {
                 this.log(`%cInvalidating ${key}`, 'color: orange');
                 this.cache.delete(key);
-            }
-            else {
+            } else {
                 this.log(`%cGetting from cache ${key}`, 'color: green');
                 return of(this.cache.get(key).value);
             }
@@ -35,9 +34,9 @@ export class CacheService {
             this.log(`%c Calling api for ${key}`, 'color: purple');
             return fallback.pipe(
                 tap(
-                    (value) => { 
-                        this.set(key, value); 
-                    }, 
+                    (value) => {
+                        this.set(key, value);
+                    },
                     (error) => {
                         this.inFlightObservables.delete(key);
                     }),

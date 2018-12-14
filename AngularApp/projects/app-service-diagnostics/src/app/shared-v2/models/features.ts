@@ -1,4 +1,4 @@
-import { NavigationExtras } from "@angular/router";
+import { NavigationExtras } from '@angular/router';
 
 export interface FeatureType {
     name: string;
@@ -33,12 +33,10 @@ export class FeatureTypes {
             color: 'rgb(138, 87, 85)'
         };
 
-    static All: FeatureType[] = [FeatureTypes.Detector, FeatureTypes.Tool, FeatureTypes.Documentation]
+    static All: FeatureType[] = [FeatureTypes.Detector, FeatureTypes.Tool, FeatureTypes.Documentation];
 }
 
-export interface FeatureAction {
-    (): void;
-}
+export type FeatureAction = () => void;
 
 export interface Feature {
     name: string;
@@ -56,7 +54,7 @@ export interface Feature {
 //             preserveFragment: true,
 //             relativeTo: this._activatedRoute.parent
 //           };
-      
+
 //           this._router.navigate(path.split('/'), navigationExtras);
 //     }
 // }

@@ -89,7 +89,7 @@ export class SitesCategoryService extends CategoryService {
         chatEnabled: false
       }
     },
-    
+
     // Function App
     {
       appType: AppType.FunctionApp,
@@ -106,7 +106,7 @@ export class SitesCategoryService extends CategoryService {
         chatEnabled: false
       }
     }
-  ]
+  ];
 
   constructor(private _resourceService: WebSitesService, private _websiteFilter: WebSiteFilter) {
     super();
@@ -131,6 +131,6 @@ export class SitesCategoryService extends CategoryService {
         createFlowForCategory: false,
         overridePath: `resource${siteId}/diagnosticTools`
       }
-    }
+    };
   }
 }

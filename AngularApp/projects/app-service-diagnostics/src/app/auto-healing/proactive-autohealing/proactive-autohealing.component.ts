@@ -14,10 +14,10 @@ export class ProactiveAutohealingComponent implements OnInit {
   proactiveAutoHealEnabled: boolean = true;
   retrievingProactiveSettings: boolean = true;
   saveEnabled: boolean = false;
-  errorMessage: string = "";
+  errorMessage: string = '';
   siteInfoMetadata: SiteInfoMetaData;
-  savingProactiveAutohealSettings:boolean = false;
-  changesSaved:boolean = false;
+  savingProactiveAutohealSettings: boolean = false;
+  changesSaved: boolean = false;
 
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService) { }
 
@@ -59,6 +59,6 @@ export class ProactiveAutohealingComponent implements OnInit {
       err => {
         this.savingProactiveAutohealSettings = false;
         this.errorMessage = `Failed while saving proactive autoheal settings an error ${JSON.stringify(err)} while retrieving pro-active autoheal settings`;
-      })
+      });
   }
 }

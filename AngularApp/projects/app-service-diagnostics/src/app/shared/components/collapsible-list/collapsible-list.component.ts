@@ -14,6 +14,6 @@ export class CollapsibleListComponent {
 
     @ContentChildren(CollapsibleListItemComponent) listItemComponents: QueryList<CollapsibleListItemComponent>;
 
-    constructor() {      
+    constructor() {
      }
 }

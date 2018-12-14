@@ -1,13 +1,13 @@
-import { Pipe, PipeTransform } from "@angular/core";
-import { Subcategory } from "../models/problem-category";
-import { AppType } from "../models/portal";
-import { OperatingSystem } from "../models/site";
-import { Sku } from "../models/server-farm";
+import { Pipe, PipeTransform } from '@angular/core';
+import { Subcategory } from '../models/problem-category';
+import { AppType } from '../models/portal';
+import { OperatingSystem } from '../models/site';
+import { Sku } from '../models/server-farm';
 
 @Pipe({ name: 'toolstack' })
 export class ToolStackPipe implements PipeTransform {
     transform(subcategories: Subcategory[], stack: string): Subcategory[] {
-        return subcategories.filter(x => (x.AppStack === "" || x.AppStack.toLowerCase().indexOf(stack.toLowerCase()) > -1));
+        return subcategories.filter(x => (x.AppStack === '' || x.AppStack.toLowerCase().indexOf(stack.toLowerCase()) > -1));
     }
 }
 

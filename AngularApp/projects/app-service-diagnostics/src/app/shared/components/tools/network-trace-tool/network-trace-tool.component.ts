@@ -5,7 +5,7 @@ import { AvailabilityLoggingService } from '../../../services/logging/availabili
 import { SiteInfoMetaData } from '../../../models/site';
 import { ServerFarmDataService } from '../../../services/server-farm-data.service';
 import { UriElementsService } from '../../../services/urielements.service';
-import { Observable, Subscription, interval } from 'rxjs'
+import { Observable, Subscription, interval } from 'rxjs';
 import { ArmService } from '../../../services/arm.service';
 import { NetworkTraceResult } from '../../../models/network-trace';
 
@@ -16,21 +16,21 @@ import { NetworkTraceResult } from '../../../models/network-trace';
 
 export class NetworkTraceToolComponent implements OnInit {
 
-    title: string = "Collect a Network Trace";
-    description: string = "If your app is facing issues while connecting to a remote server, you can use this tool to collect a network trace on the instance(s) serving the Web App.";
+    title: string = 'Collect a Network Trace';
+    description: string = 'If your app is facing issues while connecting to a remote server, you can use this tool to collect a network trace on the instance(s) serving the Web App.';
     NetworkTraceStatus = NetworkTraceStatus;
     scmPath: string;
     duration: number = 60;
 
     siteToBeDiagnosed: SiteInfoMetaData;
     files: any[] = [];
-    armOperationStatus: string = "";
+    armOperationStatus: string = '';
     subscriptionOperationStatus: Subscription;
     subscriptionTimer: Subscription;
-    errorMessage: string = "";
+    errorMessage: string = '';
     durationRemaining: number;
     status: NetworkTraceStatus = NetworkTraceStatus.Initial;
-    traceLocation: string = "d:\\home\\logfiles\\networktrace";
+    traceLocation: string = 'd:\\home\\logfiles\\networktrace';
 
     checkingValidity: boolean = true;
     networkTraceDisabled: boolean = false;
@@ -48,7 +48,7 @@ export class NetworkTraceToolComponent implements OnInit {
         this.scmPath = this._siteService.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
         // Network Trace tool doesn't work on ASE's yet
-        if (this._siteService.currentSiteStatic.hostingEnvironmentId != null && this._siteService.currentSiteStatic.hostingEnvironmentId !== "") {
+        if (this._siteService.currentSiteStatic.hostingEnvironmentId != null && this._siteService.currentSiteStatic.hostingEnvironmentId !== '') {
             this.checkingValidity = false;
             this.networkTraceDisabled = true;
             this.traceDisabledReason = NetworkTraceDisabledReason.AppOnAppServiceEnvironment;
@@ -62,18 +62,17 @@ export class NetworkTraceToolComponent implements OnInit {
                     this.networkTraceDisabled = true;
                     this.traceDisabledReason = NetworkTraceDisabledReason.NoPermsOnAppServicePlan;
                     return;
-                }
-                else {
+                } else {
                     this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
                         if (serverFarm) {
                             // Specifically not checking for Isolated as Network Trace tool is not working on ASE currently
-                            if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier === "Basic" || serverFarm.sku.tier.indexOf("Premium") > -1) {
+                            if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier === 'Basic' || serverFarm.sku.tier.indexOf('Premium') > -1) {
                                 this._siteService.getSiteAppSettings(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.siteToBeDiagnosed.siteName, this.siteToBeDiagnosed.slot).subscribe(settingsResponse => {
                                     if (settingsResponse && settingsResponse.properties) {
-                                        if (settingsResponse.properties["WEBSITE_LOCAL_CACHE_OPTION"]) {
-                                            let localCacheEnabled = settingsResponse.properties["WEBSITE_LOCAL_CACHE_OPTION"] == "Always";
+                                        if (settingsResponse.properties['WEBSITE_LOCAL_CACHE_OPTION']) {
+                                            const localCacheEnabled = settingsResponse.properties['WEBSITE_LOCAL_CACHE_OPTION'] == 'Always';
                                             if (localCacheEnabled) {
-                                                this.traceLocation = "d:\\home\\logfiles\\{InstanceId}\\networktrace"
+                                                this.traceLocation = 'd:\\home\\logfiles\\{InstanceId}\\networktrace';
                                             }
                                         }
                                     }
@@ -86,8 +85,7 @@ export class NetworkTraceToolComponent implements OnInit {
                                         }
                                     });
                                 });
-                            }
-                            else {
+                            } else {
                                 this.checkingValidity = false;
                                 this.networkTraceDisabled = true;
                                 this.traceDisabledReason = NetworkTraceDisabledReason.AppNotOnDedicatedTier;
@@ -97,7 +95,7 @@ export class NetworkTraceToolComponent implements OnInit {
                     }, error => {
                         this.checkingValidity = false;
                         this.networkTraceDisabled = true;
-                        this.errorMessage = error.code + ":" + error.message;
+                        this.errorMessage = error.code + ':' + error.message;
                     });
                 }
             }
@@ -106,12 +104,12 @@ export class NetworkTraceToolComponent implements OnInit {
 
     collectNetworkTrace() {
         this.status = NetworkTraceStatus.Starting;
-        this._loggerLocal.LogClickEvent("Collect Network Trace", "DiagnosticTools");
-        let resourceUri: string = this._uriElementsService.getNetworkTraceUrl(this.siteToBeDiagnosed) + "?durationInSeconds=" + this.duration;
+        this._loggerLocal.LogClickEvent('Collect Network Trace', 'DiagnosticTools');
+        const resourceUri: string = this._uriElementsService.getNetworkTraceUrl(this.siteToBeDiagnosed) + '?durationInSeconds=' + this.duration;
         this._armClient.postResourceFullResponse(resourceUri, true).subscribe((result: HttpResponse<{}>) => {
-            if (result.headers.get("Location") != null) {
+            if (result.headers.get('Location') != null) {
                 this.status = NetworkTraceStatus.Started;
-                this.armOperationStatus = result.headers.get("Location");
+                this.armOperationStatus = result.headers.get('Location');
                 this.durationRemaining = this.duration;
                 this.subscriptionTimer = interval(5000).subscribe(res => {
                     this.durationRemaining = this.durationRemaining - 5;
@@ -121,34 +119,31 @@ export class NetworkTraceToolComponent implements OnInit {
                             this.checkNetworkTraceOperationStatus();
                         });
                     }
-                })
+                });
             }
         }, error => {
             if (error.status != null && (error.status === 400 || error.status === 403 || error.status === 409)) {
-                let errorMsg = this.getErrorMessage(error);
+                const errorMsg = this.getErrorMessage(error);
                 if (errorMsg.toLowerCase().indexOf('OperationName: CaptureNetworkTrace'.toLowerCase()) > -1 || errorMsg.toLowerCase().indexOf('OperationName: NetworkTrace'.toLowerCase()) > -1) {
                     this.status = NetworkTraceStatus.AlreadyRunning;
-                }
-                else {
+                } else {
                     this.errorMessage = errorMsg;
                 }
-            }
-            else {
+            } else {
                 this.errorMessage = JSON.stringify(error);
             }
         });
     }
 
     getErrorMessage(error: any): string {
-        let actualError: string = "";
+        let actualError: string = '';
         if (error.text().length > 0) {
             try {
                 const errorData = JSON.parse(error.text());
                 if (errorData.Message) {
-                    actualError = error.status + " - " + errorData.Message
-                }
-                else {
-                    actualError = error.status + " - " + error.text();
+                    actualError = error.status + ' - ' + errorData.Message;
+                } else {
+                    actualError = error.status + ' - ' + error.text();
                 }
             } catch (err) {
                 actualError = error.text();
@@ -158,15 +153,14 @@ export class NetworkTraceToolComponent implements OnInit {
     }
 
     checkNetworkTraceOperationStatus() {
-        if (this.armOperationStatus !== "") {
+        if (this.armOperationStatus !== '') {
             this._armClient.getResourceFullUrl(this.armOperationStatus, true).subscribe((resp: NetworkTraceResult[]) => {
                 if (resp != null) {
                     this.status = NetworkTraceStatus.Completed;
                     this.subscriptionOperationStatus.unsubscribe();
                     resp.forEach(element => {
-                        if (element.status.toLowerCase() === "Succeeded".toLowerCase()) {
-                            if (element.path !== "")
-                            {
+                        if (element.status.toLowerCase() === 'Succeeded'.toLowerCase()) {
+                            if (element.path !== '') {
                                 this.files.push({ name: element.path, url: this.getHttpPathFromFileName(element.path) });
                             }
                         }
@@ -179,22 +173,22 @@ export class NetworkTraceToolComponent implements OnInit {
                 //     if (body && body.length > 0) {
                 //         let output: NetworkTraceResult[] = JSON.parse(body);
                 //         this.files = [];
-                        
+
                 //     }
                 // }
-            })
+            });
         }
     }
 
     getHttpPathFromFileName(fileName: string) {
         let result = fileName.replace(/D:\\home/gi, 'api/vfs');
-        result = result.replace(/\\/, "/");
-        result = `https://${this.scmPath}/${result}`
+        result = result.replace(/\\/, '/');
+        result = `https://${this.scmPath}/${result}`;
         return result;
     }
 
     makeArmCall<S>(resourceUri: string, isPostRequest: boolean = true, fullUrlPassed: boolean = false, body?: S, apiVersion?: string): Observable<Response | {}> {
-        var url: string = `${this._armClient.armUrl}${resourceUri}${resourceUri.indexOf('?') >= 0 ? '&' : '?'}api-version=${!!apiVersion ? apiVersion : this._armClient.websiteApiVersion}`
+        let url: string = `${this._armClient.armUrl}${resourceUri}${resourceUri.indexOf('?') >= 0 ? '&' : '?'}api-version=${!!apiVersion ? apiVersion : this._armClient.websiteApiVersion}`;
         if (fullUrlPassed) {
             url = resourceUri;
         }
@@ -204,8 +198,7 @@ export class NetworkTraceToolComponent implements OnInit {
         }
         if (isPostRequest) {
             return this._http.post<S>(url, bodyString, { headers: this._armClient.getHeaders() });
-        }
-        else {
+        } else {
             return this._http.get<S>(url, { headers: this._armClient.getHeaders() });
         }
     }

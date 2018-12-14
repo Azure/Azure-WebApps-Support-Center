@@ -1,4 +1,4 @@
-﻿import {ArmObj} from './armObj';
+import {ArmObj} from './armObj';
 
 export interface PublishingCredentials extends ArmObj {
     properties: {
@@ -6,5 +6,5 @@ export interface PublishingCredentials extends ArmObj {
         publishingUserName: string;
         publishingPassword: string;
         scmUri: string;
-    }
+    };
 }

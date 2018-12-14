@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subcategory, Category } from '../models/problem-category';
 import { OperatingSystem } from '../models/site';
-import { BehaviorSubject } from 'rxjs'
+import { BehaviorSubject } from 'rxjs';
 import { ToolNames } from '../models/tools-constants';
 import { GenericApiService } from './generic-api.service';
 import { AuthService } from '../../startup/services/auth.service';
@@ -49,7 +49,7 @@ export class CategoriesService {
                 this.addGenericDetectors(resp, info.resourceId);
                 this.Categories.next(this._categories);
             });
-        })
+        });
 
         this.Categories.next(this._categories);
     }
@@ -64,9 +64,9 @@ export class CategoriesService {
                     BgColor: this.nextColor,
                     TextColor: 'white',
                     Subcategories: []
-                }
+                };
 
-                this._categories.push(category)
+                this._categories.push(category);
             }
 
             category.Subcategories.push(<Subcategory>{
@@ -75,21 +75,21 @@ export class CategoriesService {
                 TextColor: 'White',
                 Href:  `${resourceId}/detectors/${detector.id}`,
                 OperatingSystem: OperatingSystem.any,
-                AppStack: "",
+                AppStack: '',
                 AppType: AppType.WebApp | AppType.FunctionApp,
                 Sku: Sku.All
             });
-        })
+        });
     }
 
     initCategoriesAndSubcategories(): void {
 
-        let perf = new Category();
-        perf.Name = "Availability and Performance";
+        const perf = new Category();
+        perf.Name = 'Availability and Performance';
         perf.Collapsed = false;
         perf.Subcategories = [];
         perf.BgColor = this.nextColor;
-        perf.TextColor = "white";
+        perf.TextColor = 'white';
 
         perf.Subcategories.push({
             Name: 'Web App Down',
@@ -99,7 +99,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp,
             Sku: Sku.NotDynamic,
-            AppStack : ""
+            AppStack : ''
         });
 
         perf.Subcategories.push({
@@ -110,7 +110,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.linux,
             AppType: AppType.WebApp,
             Sku: Sku.NotDynamic,
-            AppStack : ""
+            AppStack : ''
         });
 
         perf.Subcategories.push({
@@ -121,7 +121,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows | OperatingSystem.linux,
             AppType: AppType.WebApp,
             Sku: Sku.NotDynamic,
-            AppStack : ""
+            AppStack : ''
         });
 
         perf.Subcategories.push({
@@ -132,7 +132,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp,
             Sku: Sku.NotDynamic,
-            AppStack : ""
+            AppStack : ''
         });
 
         perf.Subcategories.push({
@@ -143,7 +143,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp,
             Sku: Sku.NotDynamic,
-            AppStack : ""
+            AppStack : ''
         });
 
         perf.Subcategories.push({
@@ -154,7 +154,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp,
             Sku: Sku.NotDynamic,
-            AppStack : ""
+            AppStack : ''
         });
 
         perf.Subcategories.push({
@@ -165,7 +165,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.linux,
             AppType: AppType.WebApp,
             Sku: Sku.NotDynamic,
-            AppStack : ""
+            AppStack : ''
         });
 
         perf.Subcategories.push({
@@ -176,15 +176,15 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp | AppType.FunctionApp,
             Sku: Sku.NotDynamic,
-            AppStack : ""
+            AppStack : ''
         });
 
-        let tools = new Category();
-        tools.Name = "Diagnostic Tools";
+        const tools = new Category();
+        tools.Name = 'Diagnostic Tools';
         tools.Subcategories = [];
         tools.Collapsed = false;
         tools.BgColor = this.nextColor;
-        tools.TextColor = "white";
+        tools.TextColor = 'white';
 
         tools.Subcategories.push({
             Name: ToolNames.Profiler,
@@ -194,7 +194,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp | AppType.FunctionApp,
             Sku: Sku.NotDynamic,
-            AppStack : "ASP.Net"
+            AppStack : 'ASP.Net'
         });
 
         tools.Subcategories.push({
@@ -205,7 +205,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp | AppType.FunctionApp,
             Sku: Sku.NotDynamic,
-            AppStack : ""
+            AppStack : ''
         });
 
         tools.Subcategories.push({
@@ -216,7 +216,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp | AppType.FunctionApp,
             Sku: Sku.NotDynamic,
-            AppStack : ""
+            AppStack : ''
         });
 
         tools.Subcategories.push({
@@ -227,7 +227,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp | AppType.FunctionApp,
             Sku: Sku.NotDynamic,
-            AppStack : ""
+            AppStack : ''
         });
 
         tools.Subcategories.push({
@@ -238,7 +238,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp | AppType.FunctionApp,
             Sku: Sku.NotDynamic,
-            AppStack : ""
+            AppStack : ''
         });
 
         tools.Subcategories.push({
@@ -249,9 +249,9 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp | AppType.FunctionApp,
             Sku: Sku.NotDynamic,
-            AppStack : "PHP"
+            AppStack : 'PHP'
         });
-        
+
         tools.Subcategories.push({
             Name: ToolNames.PHPProcessAnalyzer,
             BgColor: 'rgb(0, 148, 153)',
@@ -260,7 +260,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp | AppType.FunctionApp,
             Sku: Sku.NotDynamic,
-            AppStack : "PHP"
+            AppStack : 'PHP'
         });
 
         tools.Subcategories.push({
@@ -271,7 +271,7 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp | AppType.FunctionApp,
             Sku: Sku.NotDynamic,
-            AppStack : "Java"
+            AppStack : 'Java'
         });
 
         tools.Subcategories.push({
@@ -282,9 +282,9 @@ export class CategoriesService {
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp | AppType.FunctionApp,
             Sku: Sku.NotDynamic,
-            AppStack : "Java"
+            AppStack : 'Java'
         });
-        
+
         this._categories.push(perf);
         this._categories.push(tools);
     }

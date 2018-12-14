@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
 import { IMetricSet } from '../../models/detectorresponse';
-import { ReplaySubject } from 'rxjs'
+import { ReplaySubject } from 'rxjs';
 import { GraphHelper } from '../../utilities/graphHelper';
 import { ChartSeries, ChartType } from '../../models/chartdata';
 
@@ -48,8 +48,7 @@ export class InstanceViewGraphComponent implements OnInit {
                 if (this.allInstances.length > 0) {
                     this.selectInstance(this.selectedInstance && this.selectedInstance !== '' ? this.selectedInstance : this.allChartData[0].roleInstance);
                 }
-            }
-            else {
+            } else {
                 this.allChartData = null;
                 this.allInstances = null;
                 this.chartData = null;

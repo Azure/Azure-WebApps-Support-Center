@@ -14,7 +14,7 @@ export class WebSitesService extends ResourceService {
     private _siteName: string;
     private _slotName: string;
 
-    public appStack: string = "";
+    public appStack: string = '';
     public platform: OperatingSystem = OperatingSystem.any;
     public appType: AppType = AppType.WebApp;
     public sku: Sku = Sku.All;
@@ -30,8 +30,8 @@ export class WebSitesService extends ResourceService {
     public get isApplicableForLiveChat(): boolean {
         return this.resource
         && (this.sku & Sku.Paid) > 0
-        && (this.appType == AppType.WebApp)
-        && (this.platform == OperatingSystem.windows)
+        && (this.appType & AppType.WebApp) > 0
+        && (this.platform & OperatingSystem.windows) > 0;
     }
 
     protected makeWarmUpCalls() {
@@ -40,16 +40,16 @@ export class WebSitesService extends ResourceService {
     }
 
     private _populateSiteInfo(): void {
-        let pieces = this.resource.id.toLowerCase().split('/');
+        const pieces = this.resource.id.toLowerCase().split('/');
         this._subscription = pieces[pieces.indexOf('subscriptions') + 1];
         this._resourceGroup = pieces[pieces.indexOf('resourcegroups') + 1];
         this._siteName = pieces[pieces.indexOf('sites') + 1];
         this._slotName = pieces.indexOf('slots') >= 0 ? pieces[pieces.indexOf('slots') + 1] : '';
 
-        let site: Site = <Site>this.resource.properties;
+        const site: Site = <Site>this.resource.properties;
 
         this._appAnalysisService.getDiagnosticProperties(this._subscription, this._resourceGroup, this._siteName, this._slotName).subscribe((data: IDiagnosticProperties) => {
-            this.appStack = data && data.appStack && data.appStack != "" ? data.appStack : "";
+            this.appStack = data && data.appStack && data.appStack != '' ? data.appStack : '';
         });
 
         this.appType = site.kind.toLowerCase().indexOf('functionapp') >= 0 ? AppType.FunctionApp : AppType.WebApp;

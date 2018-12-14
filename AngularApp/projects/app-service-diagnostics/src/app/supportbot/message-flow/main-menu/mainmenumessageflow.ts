@@ -18,9 +18,9 @@ export class MainMenuMessageFlow extends IMessageFlowProvider {
 
     GetMessageFlowList(): MessageGroup[] {
 
-        var messageGroupList: MessageGroup[] = [];
+        const messageGroupList: MessageGroup[] = [];
 
-        var mainMenuGroup: MessageGroup = new MessageGroup('main-menu', [], () => {
+        const mainMenuGroup: MessageGroup = new MessageGroup('main-menu', [], () => {
             return this._authService.resourceType === ResourceType.Site ? 'health-check' : 'feedbackprompt';
         });
         mainMenuGroup.messages.push(new TextMessage('If you know what’s wrong with your app, please select a problem category', MessageSender.System, 2000));
@@ -34,7 +34,7 @@ export class MainMenuMessageFlow extends IMessageFlowProvider {
 
 export class MainMenuMessage extends Message {
     constructor(messageDelayInMs: number = 1000) {
-        
+
         super(MainMenuComponent, {}, messageDelayInMs);
     }
 }

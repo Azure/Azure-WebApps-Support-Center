@@ -15,8 +15,8 @@ interface String extends StringPolyfills {
 // http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format
 if (!String.prototype.format) {
   String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match: any, number: any) { 
+    const args = arguments;
+    return this.replace(/{(\d+)}/g, function(match: any, number: any) {
       return typeof args[number] != 'undefined'
         ? args[number]
         : match

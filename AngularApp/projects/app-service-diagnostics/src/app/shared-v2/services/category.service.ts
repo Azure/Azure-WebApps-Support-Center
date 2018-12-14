@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Category } from '../models/category';
 import { DiagnosticService } from 'diagnostic-data';
-import { BehaviorSubject } from 'rxjs'
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class CategoryService {
@@ -13,7 +13,7 @@ export class CategoryService {
   private _commonCategories: Category[] = [];
 
   constructor() {
-    this._addCategories(this._commonCategories)
+    this._addCategories(this._commonCategories);
   }
 
   protected _addCategories(categories: Category[]) {

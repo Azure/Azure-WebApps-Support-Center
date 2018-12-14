@@ -32,7 +32,7 @@ export class DocumentSearchComponent implements AfterViewInit, IChatMessageCompo
     this._logger.LogChatSearch(formValue.documentSearchInput, this._chatState.category.name);
     this.searchValue = formValue.documentSearchInput;
     this._contentService.searchWeb(formValue.documentSearchInput).subscribe(searchResults => {
-      if(searchResults && searchResults.webPages && searchResults.webPages.value && searchResults.webPages.value.length > 0) {
+      if (searchResults && searchResults.webPages && searchResults.webPages.value && searchResults.webPages.value.length > 0) {
         this.content = searchResults.webPages.value.map(result => {
           return {
             title: result.name,
@@ -49,7 +49,7 @@ export class DocumentSearchComponent implements AfterViewInit, IChatMessageCompo
     });
   }
 
-  openArticle(article : any) {
+  openArticle(article: any) {
     this._logger.LogChatSearchSelection(this.searchValue, this._chatState.category.name, article.title, article.link, 'content');
     window.open(article.link, '_blank');
   }

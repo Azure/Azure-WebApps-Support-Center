@@ -1,8 +1,8 @@
 import { IDetectorAbnormalTimePeriod, IMetricSet } from './detectorresponse';
-import { IAnalysisData } from './appanalysisresponse'
+import { IAnalysisData } from './appanalysisresponse';
 
 export interface SummaryViewModel {
-    detectorName: string,
+    detectorName: string;
     loading: boolean;
     health: SummaryHealthStatus;
     detectorAbnormalTimePeriod: IDetectorAbnormalTimePeriod;
@@ -14,7 +14,7 @@ export interface SummaryViewModel {
     mainMetricGraphDescription: string;
     perInstanceGraphTitle: string;
     perInstanceGraphDescription;
-    emptyDataResponse:string;
+    emptyDataResponse: string;
 }
 
 export enum SummaryHealthStatus {

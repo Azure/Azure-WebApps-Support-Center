@@ -4,7 +4,7 @@ import { ApplicationRestartInfo, InstanceInfo, SiteDaasInfo } from '../models/so
 export class MetaDataHelper {
 
     static getMetaDataValue(metaData: INameValuePair[][], key: string): string {
-        let searchKey = key.toLowerCase();
+        const searchKey = key.toLowerCase();
         let returnValue = null;
         if (metaData && metaData.length > 0) {
             metaData.forEach(element => {
@@ -19,8 +19,8 @@ export class MetaDataHelper {
     }
 
     static getMetaDataValues(metaData: INameValuePair[][], key: string): string[] {
-        let values: string[] = [];
-        let searchKey = key.toLowerCase();
+        const values: string[] = [];
+        const searchKey = key.toLowerCase();
         if (metaData && metaData.length > 0) {
             metaData.forEach(element => {
                 element.forEach(nameValuePair => {
@@ -35,67 +35,65 @@ export class MetaDataHelper {
     }
 
     static getSiteDaasData(metaData: INameValuePair[][]): SiteDaasInfo {
-        if(metaData.length > 0) {
+        if (metaData.length > 0) {
 
-            var siteNameWithSlot = MetaDataHelper.getValueForName(metaData[0], 'sitename');
-            var siteName = "";
-            var slotName = "";
+            const siteNameWithSlot = MetaDataHelper.getValueForName(metaData[0], 'sitename');
+            let siteName = '';
+            let slotName = '';
 
             if (siteNameWithSlot.indexOf('(') >= 0) {
-                let parts = siteNameWithSlot.split('(');
+                const parts = siteNameWithSlot.split('(');
                 siteName = parts[0];
                 slotName = parts[1].replace(')', '');
-            }
-            else
-            {
+            } else {
                 siteName = siteNameWithSlot;
             }
 
-            let siteDaasInfo: SiteDaasInfo = {
+            const siteDaasInfo: SiteDaasInfo = {
                 resourceUri: '',
                 subscriptionId: MetaDataHelper.getValueForName(metaData[0], 'subscriptionid'),
-                resourceGroupName: MetaDataHelper.getValueForName(metaData[0], 'resourcegroup'), 
+                resourceGroupName: MetaDataHelper.getValueForName(metaData[0], 'resourcegroup'),
                 siteName: siteName,
-                slot:slotName,
+                slot: slotName,
                 instances: []
-            }           
+            };
 
             return siteDaasInfo;
         }
     }
 
     static getRestartData(metaData: INameValuePair[][]): ApplicationRestartInfo {
-        if(metaData.length > 0) {
-            let restartInfo: ApplicationRestartInfo = {
+        if (metaData.length > 0) {
+            const restartInfo: ApplicationRestartInfo = {
                 resourceUri: '',
                 subscriptionId: MetaDataHelper.getValueForName(metaData[0], 'subscriptionid'),
-                resourceGroupName: MetaDataHelper.getValueForName(metaData[0], 'resourcegroup'), 
+                resourceGroupName: MetaDataHelper.getValueForName(metaData[0], 'resourcegroup'),
                 siteName: MetaDataHelper.getValueForName(metaData[0], 'sitename'),
                 slot: '', // In this case slot is part of siteName - TODO: reconsider changing this on back end
                 instances: []
-            }
+            };
 
             return restartInfo;
         }
     }
 
     static getAdvancedApplicationRestartData(metaData: INameValuePair[][]): ApplicationRestartInfo {
-        if(metaData.length > 0) {
-            let restartInfo = this.getRestartData(metaData);
+        if (metaData.length > 0) {
+            const restartInfo = this.getRestartData(metaData);
 
             metaData.forEach((nameValuePairSet: INameValuePair[]) => {
                 restartInfo.instances.push(<InstanceInfo>{
                     machineName: MetaDataHelper.getValueForName(nameValuePairSet, 'machinename'),
                     instanceId: MetaDataHelper.getValueForName(nameValuePairSet, 'instanceid')
-                })
-            })
+                });
+            });
 
             return restartInfo;
         }
     }
 
     static getValueForName(nameValuePairSet: INameValuePair[], name: string): string {
-        let matchingNameValuePair = nameValuePairSet.find(nvp => nvp.name.toLowerCase() === name.toLowerCase());
+        const matchingNameValuePair = nameValuePairSet.find(nvp => nvp.name.toLowerCase() === name.toLowerCase());
         return matchingNameValuePair && matchingNameValuePair.value ? matchingNameValuePair.value : '';
     }
 }

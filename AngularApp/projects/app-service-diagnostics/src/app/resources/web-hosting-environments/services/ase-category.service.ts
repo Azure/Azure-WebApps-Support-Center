@@ -26,7 +26,7 @@ export class AseCategoryService extends CategoryService {
     }
   ];
 
-  constructor() { 
+  constructor() {
     super();
     this._addCategories(this._aseCategories);
   }

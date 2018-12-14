@@ -20,16 +20,16 @@ import { AuthService } from '../../../startup/services/auth.service';
 export class DaasMainComponent implements OnInit {
 
   siteToBeDiagnosed: SiteDaasInfo;
-  scmPath: string = "";
+  scmPath: string = '';
   toolCategory: Category;
-  AppStack: string = "";
+  AppStack: string = '';
   platform: OperatingSystem = OperatingSystem.any;
   appType: AppType;
   sku: string;
   showToolsDropdown: boolean = false;
-  operatingSystem:any = OperatingSystem; 
-  checkingSupportedTier:boolean = true;
-  supportedTier:boolean = false;
+  operatingSystem: any = OperatingSystem;
+  checkingSupportedTier: boolean = true;
+  supportedTier: boolean = false;
 
   constructor(private _siteService: SiteService, private _logger: AvailabilityLoggingService,
     private _categoryService: CategoriesService,
@@ -51,19 +51,19 @@ export class DaasMainComponent implements OnInit {
       if (site) {
         this.appType = site.appType;
         this.sku = site.sku;
-        this.sku.toLowerCase()
+        this.sku.toLowerCase();
 
         this._authService.getStartupInfo().subscribe((startupInfo: StartupInfo) => {
           this.checkingSupportedTier = false;
-          let resourceUriParts = this._siteService.parseResourceUri(startupInfo.resourceId);
+          const resourceUriParts = this._siteService.parseResourceUri(startupInfo.resourceId);
           this._appAnalysisService.getDiagnosticProperties(resourceUriParts.subscriptionId, resourceUriParts.resourceGroup, resourceUriParts.siteName, resourceUriParts.slotName).subscribe((data: IDiagnosticProperties) => {
-            this.AppStack = data && data.appStack && data.appStack != "" ? data.appStack : "ASP.Net";
+            this.AppStack = data && data.appStack && data.appStack != '' ? data.appStack : 'ASP.Net';
             this.platform = data && data.isLinux ? OperatingSystem.linux : OperatingSystem.windows;
             this._categoryService.Categories.subscribe(categories => {
-              let toolsCategories = categories.filter(x => x.Name === "Diagnostic Tools");
-              if (toolsCategories.length > 0 && (this.sku.toLowerCase() === "standard" || this.sku.toLowerCase().indexOf("premium") > -1 || this.sku.toLowerCase() === "isolated")){
+              const toolsCategories = categories.filter(x => x.Name === 'Diagnostic Tools');
+              if (toolsCategories.length > 0 && (this.sku.toLowerCase() === 'standard' || this.sku.toLowerCase().indexOf('premium') > -1 || this.sku.toLowerCase() === 'isolated')) {
                 this.supportedTier = true;
-                this.toolCategory= toolsCategories[0];
+                this.toolCategory = toolsCategories[0];
               }
             });
           });
@@ -75,6 +75,6 @@ export class DaasMainComponent implements OnInit {
   }
 
   getRoute(route: string): string {
-    return "../../" + route;
+    return '../../' + route;
   }
 }

@@ -13,7 +13,7 @@ import { AuthService } from './services/auth.service';
   ],
   declarations: []
 })
-export class StartupModule { 
+export class StartupModule {
   static forRoot(): ModuleWithProviders {
     return {
         ngModule: StartupModule,
@@ -23,6 +23,6 @@ export class StartupModule {
             BroadcastService,
             AuthService
         ]
-    }
+    };
 }
 }

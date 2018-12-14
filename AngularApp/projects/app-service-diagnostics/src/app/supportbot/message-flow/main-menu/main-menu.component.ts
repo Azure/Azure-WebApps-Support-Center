@@ -23,7 +23,7 @@ import { Sku } from '../../../shared/models/server-farm';
 export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageComponent {
 
     allProblemCategories: Category[] = [];
-    AppStack: string = "";
+    AppStack: string = '';
     platform: OperatingSystem = OperatingSystem.any;
     appType: AppType;
     sku: Sku;
@@ -45,13 +45,13 @@ export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageCom
                     this.appType = site.appType;
                     this.sku = Sku[site.sku];
                     this._authService.getStartupInfo().subscribe((startupInfo: StartupInfo) => {
-                        let resourceUriParts = this._siteService.parseResourceUri(startupInfo.resourceId);
+                        const resourceUriParts = this._siteService.parseResourceUri(startupInfo.resourceId);
                         this._appAnalysisService.getDiagnosticProperties(resourceUriParts.subscriptionId, resourceUriParts.resourceGroup, resourceUriParts.siteName, resourceUriParts.slotName).subscribe((data: IDiagnosticProperties) => {
-                            this.AppStack = data && data.appStack && data.appStack != "" ? data.appStack : "ASP.Net";
+                            this.AppStack = data && data.appStack && data.appStack != '' ? data.appStack : 'ASP.Net';
                             this.platform = data && data.isLinux ? OperatingSystem.linux : OperatingSystem.windows;
                             this.categoryService.Categories.subscribe(categories => {
                                 this.allProblemCategories = categories;
-                            })
+                            });
                             setTimeout(() => {
                                 this.onComplete.emit({ status: true });
                             }, 2000);
@@ -59,8 +59,7 @@ export class MainMenuComponent implements OnInit, AfterViewInit, IChatMessageCom
                     });
                 }
             });
-        }
-        else {
+        } else {
             this.categoryService.Categories.subscribe(categories => {
                 this.allProblemCategories = categories;
                 setTimeout(() => {

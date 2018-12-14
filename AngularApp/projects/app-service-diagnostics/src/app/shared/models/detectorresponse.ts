@@ -1,7 +1,7 @@
 import { IDetectorDefinition } from './detectordefinition';
 import { INameValuePair } from './namevaluepair';
 import { IssueType } from './enumerations';
-import { ISolution } from './solution'; 
+import { ISolution } from './solution';
 
 export interface IDetectorResponse {
     startTime: string;
@@ -20,7 +20,7 @@ export interface IMetricSet {
     startTime: string;
     endTime: string;
     timeGrain: string;
-    values: IMetricSample[]
+    values: IMetricSample[];
 }
 
 export interface IMetricSample {
@@ -40,14 +40,14 @@ export interface IDetectorAbnormalTimePeriod {
     priority: number;
     metaData: INameValuePair[][];
     type: IssueType;
-    solutions: ISolution[]
+    solutions: ISolution[];
 }
 
-export interface IDetectorMetaData{
+export interface IDetectorMetaData {
     dataSource: IDataSource;
 }
 
-export interface IDataSource{
+export interface IDataSource {
     instructions: string[];
-    dataSourceUri: INameValuePair[][]
+    dataSourceUri: INameValuePair[][];
 }

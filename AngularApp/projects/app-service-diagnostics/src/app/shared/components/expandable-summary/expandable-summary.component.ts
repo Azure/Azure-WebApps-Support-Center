@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges, SimpleChange } from
 import { IMetricSet } from '../../models/detectorresponse';
 import { SummaryViewModel, SummaryHealthStatus } from '../../models/summary-view-model';
 import { ChartType } from '../../models/chartdata';
-import { BehaviorSubject } from 'rxjs'
+import { BehaviorSubject } from 'rxjs';
 import { AvailabilityLoggingService } from '../../services/logging/availability.logging.service';
 import { LoadingStatus } from 'diagnostic-data';
 
@@ -41,9 +41,9 @@ export class ExpandableSummaryComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes['summaryViewModel']) {           
+        if (changes['summaryViewModel']) {
             const _changedSummaryViewModel: SimpleChange = changes.summaryViewModel;
-            if (_changedSummaryViewModel.currentValue && _changedSummaryViewModel.previousValue) {                
+            if (_changedSummaryViewModel.currentValue && _changedSummaryViewModel.previousValue) {
                 this.summaryModel = null;
                 this.mainMetricSets = null;
                 this.detailMetricSets = null;
@@ -51,7 +51,7 @@ export class ExpandableSummaryComponent implements OnInit, OnChanges {
                 this.metricsContainData = false;
                 this._summaryViewModelSubject.next(_changedSummaryViewModel.currentValue);
             }
-        }       
+        }
     }
 
     ngOnInit(): void {
@@ -67,9 +67,9 @@ export class ExpandableSummaryComponent implements OnInit, OnChanges {
                     }
                 });
 
-                let abnormalTimePeriod = this.summaryModel.detectorAbnormalTimePeriod;
+                const abnormalTimePeriod = this.summaryModel.detectorAbnormalTimePeriod;
                 if (abnormalTimePeriod && abnormalTimePeriod.metaData.length > 0) {
-                    let markupStringNameValuePair = abnormalTimePeriod.metaData[0].find(x => x.name === "MarkupString");
+                    const markupStringNameValuePair = abnormalTimePeriod.metaData[0].find(x => x.name === 'MarkupString');
                     this.markupString = markupStringNameValuePair ? markupStringNameValuePair.value : null;
                 }
             }

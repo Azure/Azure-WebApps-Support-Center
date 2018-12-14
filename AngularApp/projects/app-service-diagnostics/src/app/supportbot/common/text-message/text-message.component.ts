@@ -20,7 +20,7 @@ export class TextMessageComponent implements OnInit, AfterViewInit, IChatMessage
 
     ngOnInit(): void {
         this.message = this.injector.get('message');
-        let sender = this.injector.get('sender');
+        const sender = this.injector.get('sender');
         if (sender === MessageSender.User) {
             this.messageByUser = true;
         }

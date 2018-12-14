@@ -1,13 +1,13 @@
-import { Component } from "@angular/core";
-import { SiteFilteredItem } from "../../models/site-filter";
-import { Tile } from "../../../../shared/components/tile-list/tile-list.component";
-import { SiteFeatureService } from "../../services/site-feature.service";
-import { WebSitesService } from "../../services/web-sites.service";
-import { SiteService } from "../../../../shared/services/site.service";
-import { SiteDaasInfo } from "../../../../shared/models/solution-metadata";
-import { AppType } from "../../../../shared/models/portal";
-import { OperatingSystem } from "../../../../shared/models/site";
-import { Sku } from "../../../../shared/models/server-farm";
+import { Component } from '@angular/core';
+import { SiteFilteredItem } from '../../models/site-filter';
+import { Tile } from '../../../../shared/components/tile-list/tile-list.component';
+import { SiteFeatureService } from '../../services/site-feature.service';
+import { WebSitesService } from '../../services/web-sites.service';
+import { SiteService } from '../../../../shared/services/site.service';
+import { SiteDaasInfo } from '../../../../shared/models/solution-metadata';
+import { AppType } from '../../../../shared/models/portal';
+import { OperatingSystem } from '../../../../shared/models/site';
+import { Sku } from '../../../../shared/models/server-farm';
 
 
 @Component({
@@ -26,12 +26,12 @@ export class DiagnosticToolsComponent {
   scmPath: string;
 
   possibleStacks: string[] = [
-    "ASP.NET",
-    "ASP.NET Core",
-    "Java",
-    "PHP",
-    "All"
-  ]
+    'ASP.NET',
+    'ASP.NET Core',
+    'Java',
+    'PHP',
+    'All'
+  ];
 
   constructor(private _sitesFeatureService: SiteFeatureService, public webSiteService: WebSitesService, private _siteService: SiteService) {
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
@@ -57,7 +57,7 @@ export class DiagnosticToolsComponent {
               title: tool.item.name,
               action: tool.item.clickAction
             }
-          }
+          };
         })
       }
     });
@@ -79,7 +79,7 @@ export class DiagnosticToolsComponent {
               title: tool.item.name,
               action: tool.item.clickAction
             }
-          }
+          };
         })
       }
     });
@@ -101,13 +101,13 @@ export class DiagnosticToolsComponent {
               title: tool.item.name,
               action: tool.item.clickAction
             }
-          }
+          };
         })
       }
     });
 
-    if (this.webSiteService.appStack && this.webSiteService.appStack != "") {
-      this.selectStack(this.webSiteService.appStack)
+    if (this.webSiteService.appStack && this.webSiteService.appStack != '') {
+      this.selectStack(this.webSiteService.appStack);
     }
   }
 
@@ -116,9 +116,8 @@ export class DiagnosticToolsComponent {
 
     if (!stack) {
       this.stackFound = false;
-      this.stack = "All";
-    }
-    else {
+      this.stack = 'All';
+    } else {
       this.stackFound = true;
     }
   }

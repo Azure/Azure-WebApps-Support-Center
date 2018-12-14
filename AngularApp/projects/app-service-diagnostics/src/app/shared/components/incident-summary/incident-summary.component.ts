@@ -12,7 +12,7 @@ export class IncidentSummaryComponent implements OnInit {
   IncidentStatus = IncidentStatus;
 
   constructor(public incidentService: ServiceIncidentService) {
-        
+
   }
 
   ngOnInit() {

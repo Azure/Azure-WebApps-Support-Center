@@ -39,7 +39,7 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
       this.processDetectorResponse(response).subscribe(() => {
         this.onComplete.emit({ status: true });
       });
-    })
+    });
   }
 
   ngAfterViewInit() {
@@ -47,13 +47,13 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
   }
 
   processDetectorResponse(detectorResponse: DetectorResponse): Observable<void[]> {
-    let detectorList = detectorResponse.dataset.filter(set => (<Rendering>set.renderingProperties).type === 10);
+    const detectorList = detectorResponse.dataset.filter(set => (<Rendering>set.renderingProperties).type === 10);
 
     if (detectorList && detectorList.length > 0) {
       this.showTopLevelFullReport = true;
       return this._diagnosticService.getDetectors().pipe(
         mergeMap((detectors: DetectorMetaData[]) => {
-          let subDetectors: string[] = [];
+          const subDetectors: string[] = [];
           detectorList.forEach(childSet => (<DetectorListRendering>childSet.renderingProperties).detectorIds.forEach(detector => subDetectors.push(detector)));
 
           this.detectorSummaryViewModels = detectors.filter(detector => subDetectors.indexOf(detector.id) != -1).map(detector => {
@@ -69,7 +69,7 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
 
           this.loading = false;
 
-          let tasks = this.detectorSummaryViewModels.map(detector => {
+          const tasks = this.detectorSummaryViewModels.map(detector => {
             return this._diagnosticService.getDetector(detector.id, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString).pipe(
               map(response => {
                 detector.status = response.status.statusId;
@@ -79,13 +79,12 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
 
           return forkJoin(tasks);
         })
-      )
+      );
 
-    }
-    else {
-      let insightResponses = detectorResponse.dataset.filter(set => (<Rendering>set.renderingProperties).type === 7);
+    } else {
+      const insightResponses = detectorResponse.dataset.filter(set => (<Rendering>set.renderingProperties).type === 7);
       insightResponses.forEach(diagnosticData => {
-        let insights = this.parseInsights(diagnosticData, detectorResponse.metadata.id);
+        const insights = this.parseInsights(diagnosticData, detectorResponse.metadata.id);
         insights.forEach(insight => {
           this.detectorSummaryViewModels.push(insight);
         });
@@ -116,15 +115,14 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
   selectDetectorSummaryItem(item: DetectorSummaryViewModel) {
     if (item.type === DetectorSummaryType.ChildDetector) {
       this._logger.LogChildDetectorSelection(this.detector.id, item.id, item.name, item.status, this.detector.category);
-    }
-    else {
+    } else {
       this._logger.LogDetectorSummaryInsightSelection(this.detector.id, item.name, item.status, this.detector.category);
     }
     this.navigateTo(item.path);
   }
 
   navigateTo(path: string) {
-    let navigationExtras: NavigationExtras = {
+    const navigationExtras: NavigationExtras = {
       queryParamsHandling: 'preserve',
       preserveFragment: true,
       relativeTo: this._activatedRoute.parent
@@ -134,16 +132,16 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
   }
 
   private parseInsights(diagnosticData: DiagnosticData, detectorId: string): DetectorSummaryViewModel[] {
-    let insights: DetectorSummaryViewModel[] = [];
-    let data = diagnosticData.table;
+    const insights: DetectorSummaryViewModel[] = [];
+    const data = diagnosticData.table;
 
-    let statusColumnIndex = 0;
-    let insightColumnIndex = 1;
+    const statusColumnIndex = 0;
+    const insightColumnIndex = 1;
 
     for (let i: number = 0; i < data.rows.length; i++) {
-      let row = data.rows[i];
+      const row = data.rows[i];
       let insight: DetectorSummaryViewModel;
-      let insightName = row[insightColumnIndex];
+      const insightName = row[insightColumnIndex];
       if ((insight = insights.find(insight => insight.name === insightName)) == null) {
         insights.push(<DetectorSummaryViewModel>{
           id: insightName,
@@ -172,7 +170,7 @@ interface DetectorSummaryViewModel {
   path: string;
   loading: LoadingStatus;
   status: HealthStatus;
-  type: DetectorSummaryType
+  type: DetectorSummaryType;
 
 }
 

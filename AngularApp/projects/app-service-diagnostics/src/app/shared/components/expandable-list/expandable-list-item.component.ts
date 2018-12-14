@@ -17,8 +17,8 @@ export class ExpandableListItemComponent {
 
     @Output() onSelected: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(){ 
-        this.titleColor= '#000000';
+    constructor() {
+        this.titleColor = '#000000';
     }
 
     toggleView() {

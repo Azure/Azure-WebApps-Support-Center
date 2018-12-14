@@ -14,7 +14,7 @@ export class AvailabilityLoggingService extends LoggingService {
         super(_portalService, _authService, _armService);
     }
 
-    LogStartUpInfo(startupInfo: StartupInfo, category: string = "Availability") {
+    LogStartUpInfo(startupInfo: StartupInfo, category: string = 'Availability') {
         //This is a No-Op so that it only gets logged in base
     }
 
@@ -25,12 +25,12 @@ export class AvailabilityLoggingService extends LoggingService {
     }
 
     LogCurrentHealth(isHealthy: boolean) {
-        this._log(AvailabilityEventType[AvailabilityEventType.CurrentAppHealth], "Availability", { isHealthy: isHealthy });
+        this._log(AvailabilityEventType[AvailabilityEventType.CurrentAppHealth], 'Availability', { isHealthy: isHealthy });
     }
 
     LogDowntimeVisitedSummary(startTime: string, endTime: string, isDowntimeNow: boolean, observationSources: string[], solutions: string[]) {
 
-        this._log(AvailabilityEventType[AvailabilityEventType.DowntimeVisitedSummary], "Availability",
+        this._log(AvailabilityEventType[AvailabilityEventType.DowntimeVisitedSummary], 'Availability',
             {
                 startTime: startTime,
                 endTime: endTime,
@@ -42,9 +42,9 @@ export class AvailabilityLoggingService extends LoggingService {
             });
     }
 
-    LogSolutionExpanded(name: string, order: string, downtimeStartTime: string = "", downtimeEndTime: string = "", isDowntimeNow: string = "") {
+    LogSolutionExpanded(name: string, order: string, downtimeStartTime: string = '', downtimeEndTime: string = '', isDowntimeNow: string = '') {
 
-        this._log(AvailabilityEventType[AvailabilityEventType.SolutionExpanded], "Availability", {
+        this._log(AvailabilityEventType[AvailabilityEventType.SolutionExpanded], 'Availability', {
             solution: name,
             order: order,
             downtimeStartTime: downtimeStartTime,
@@ -54,16 +54,16 @@ export class AvailabilityLoggingService extends LoggingService {
     }
 
     LogSolutionDisplayed(name: string, order: string, source: string) {
-        this._log(AvailabilityEventType[AvailabilityEventType.SolutionDisplayed], "Availability", {
+        this._log(AvailabilityEventType[AvailabilityEventType.SolutionDisplayed], 'Availability', {
             solution: name,
             order: order,
             source: source
         });
     }
 
-    LogSolutionTried(name: string, order: string, actionType: string, actionName: string, downtimeStartTime: string = "", downtimeEndTime: string = "", isDowntimeNow: string = "") {
+    LogSolutionTried(name: string, order: string, actionType: string, actionName: string, downtimeStartTime: string = '', downtimeEndTime: string = '', isDowntimeNow: string = '') {
 
-        this._log(AvailabilityEventType[AvailabilityEventType.SolutionTried], "Availability", {
+        this._log(AvailabilityEventType[AvailabilityEventType.SolutionTried], 'Availability', {
             solution: name,
             order: order,
             actionType: actionType,
@@ -76,14 +76,14 @@ export class AvailabilityLoggingService extends LoggingService {
 
     LogInlineActionTriggered(actionName: string, solutionName: string) {
 
-        this._log(AvailabilityEventType[AvailabilityEventType.InlineActionTriggered], "Availability", {
+        this._log(AvailabilityEventType[AvailabilityEventType.InlineActionTriggered], 'Availability', {
             solution: solutionName,
             action: actionName
         });
     }
 
     LogInlineSubActionSummary(subAction: string, action: string, subActionStatus: string) {
-        this._log(AvailabilityEventType[AvailabilityEventType.InlineSubActionSummary], "Availability", {
+        this._log(AvailabilityEventType[AvailabilityEventType.InlineSubActionSummary], 'Availability', {
             subAction: subAction,
             action: action,
             subActionStatus: subActionStatus
@@ -91,14 +91,14 @@ export class AvailabilityLoggingService extends LoggingService {
     }
 
     LogAppAnalysisSummary(numberOfDowntimes: string) {
-        this._log(AvailabilityEventType[AvailabilityEventType.AppAnalysisSummary], "Availability", {
+        this._log(AvailabilityEventType[AvailabilityEventType.AppAnalysisSummary], 'Availability', {
             numberOfDowntimes: numberOfDowntimes
         });
     }
 
-    LogDetectorViewOpened(source: string, rank: number, downtimeStartTime: string = "", downtimeEndTime: string = "", isDowntimeNow: string = "") {
+    LogDetectorViewOpened(source: string, rank: number, downtimeStartTime: string = '', downtimeEndTime: string = '', isDowntimeNow: string = '') {
 
-        this._log(AvailabilityEventType[AvailabilityEventType.DetectorViewOpened], "Availability", {
+        this._log(AvailabilityEventType[AvailabilityEventType.DetectorViewOpened], 'Availability', {
             source: source,
             rank: rank,
             downtimeStartTime: downtimeStartTime,
@@ -109,48 +109,48 @@ export class AvailabilityLoggingService extends LoggingService {
 
     LogDetectorViewInstanceSelected(source: string, instance: string) {
 
-        this._log(AvailabilityEventType[AvailabilityEventType.DetectorViewInstanceSelected], "Availability", {
+        this._log(AvailabilityEventType[AvailabilityEventType.DetectorViewInstanceSelected], 'Availability', {
             source: name,
             instance: instance
         });
     }
 
     LogAppRestartAnalysisSummary(day: string, numberOfResons: string) {
-        this._log(AvailabilityEventType[AvailabilityEventType.AppRestartAnalysisSummary], "Availability", {
+        this._log(AvailabilityEventType[AvailabilityEventType.AppRestartAnalysisSummary], 'Availability', {
             day: day,
             numberOfReasons: numberOfResons
         });
     }
 
     LogMemorySummaryStatus(detector: string, status: SummaryHealthStatus) {
-        this._log(AvailabilityEventType[AvailabilityEventType.MemorySummaryStatus], "Availability", {
+        this._log(AvailabilityEventType[AvailabilityEventType.MemorySummaryStatus], 'Availability', {
             detector: detector,
             status: status
         });
     }
 
     LogSummaryViewExpanded(detector: string, status: SummaryHealthStatus) {
-        this._log(AvailabilityEventType[AvailabilityEventType.SummaryViewExpanded], "Availability", {
+        this._log(AvailabilityEventType[AvailabilityEventType.SummaryViewExpanded], 'Availability', {
             detector: detector,
             status: status
         });
     }
 
     LogSolutionFeedback(solutionName: string, helpful: boolean) {
-        this._log(AvailabilityEventType[AvailabilityEventType.SolutionFeedback], "Availability", {
+        this._log(AvailabilityEventType[AvailabilityEventType.SolutionFeedback], 'Availability', {
             source: solutionName,
             helpful: helpful
         });
     }
 
-    LogAppInsightsSettings(appInsightsEnabled: boolean){
-        this._log(AvailabilityEventType[AvailabilityEventType.AppInsightsSettings], "Availability", {
+    LogAppInsightsSettings(appInsightsEnabled: boolean) {
+        this._log(AvailabilityEventType[AvailabilityEventType.AppInsightsSettings], 'Availability', {
             enabled: appInsightsEnabled
         });
     }
 
     LogAppInsightsExceptionSummary(startTime: string, endTime: string, exceptionTypes: string[]) {
-        this._log(AvailabilityEventType[AvailabilityEventType.AppInsightsExceptionSummary], "Availability", {
+        this._log(AvailabilityEventType[AvailabilityEventType.AppInsightsExceptionSummary], 'Availability', {
             startTime: startTime,
             endTime: endTime,
             exceptionTypes: exceptionTypes ? exceptionTypes.toString().replace(new RegExp(',', 'g'), '|') : ''

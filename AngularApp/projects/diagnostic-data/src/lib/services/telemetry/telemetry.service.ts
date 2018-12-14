@@ -23,7 +23,7 @@ export class TelemetryService {
         }
 
         this.eventPropertiesSubject.subscribe((data: any) => {
-            if (data){
+            if (data) {
                 for (const id of Object.keys(data)) {
                     if (data.hasOwnProperty(id)) {
                         this.eventPropertiesLocalCopy[id] = String(data[id]);

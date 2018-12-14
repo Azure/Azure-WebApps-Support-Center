@@ -67,9 +67,9 @@ export class SolutionFactory {
             case 106:
                 return new OtherSolutions.ContactDatabaseProvider(rank, _logger);
             case 107:
-                return new OtherSolutions.IncreasePHPTimeOUt(rank, parameters, _logger, siteService);  
+                return new OtherSolutions.IncreasePHPTimeOUt(rank, parameters, _logger, siteService);
             case 109:
-                return new OtherSolutions.SetPHPMemoryLimit(rank, parameters, _logger, siteService);    
+                return new OtherSolutions.SetPHPMemoryLimit(rank, parameters, _logger, siteService);
             case 110:
                 return new OtherSolutions.EnablePHPLogging(rank, parameters, _logger, siteService);
             case 111:

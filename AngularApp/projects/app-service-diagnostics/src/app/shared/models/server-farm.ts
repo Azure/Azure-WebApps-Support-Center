@@ -7,17 +7,17 @@ export interface ServerFarm extends ArmObj {
         workerSize: WorkerSize;
         numberOfWorkers: number;
         numberOfSites: number;
-    }
+    };
     sku: {
         name: string;
         tier: string;
         family: string;
         capacity: number;
-    }
+    };
     additionalProperties: {
         cores: number;
         ramInGB: number;
-    }
+    };
 }
 
 export enum Sku {

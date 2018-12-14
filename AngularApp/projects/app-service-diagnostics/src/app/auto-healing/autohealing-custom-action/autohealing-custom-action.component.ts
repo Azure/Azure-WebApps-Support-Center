@@ -28,15 +28,15 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   diagnoserOption: any = null;
   showDiagnoserOptionWarning: boolean = false;
 
-  Diagnosers = [{ Name: "Memory Dump", Description: "Collects memory dumps of the process and the child processes hosting your app and analyzes them for errors" },
-  { Name: "CLR Profiler", Description: "Profiles ASP.NET application code to identify exceptions and performance issues" },
-  { Name: "CLR Profiler With Thread Stacks", Description: "Profiles ASP.NET application code to identify exceptions and performance issues and dumps stacks to identify deadlocks" },
-  { Name: "JAVA Memory Dump", Description: "Collects a binary memory dump using jMap of all java.exe processes running for this web app" },
-  { Name: "JAVA Thread Dump", Description: "Collects jStack output of all java.exe processes running for this app and analyzes the same" }];
+  Diagnosers = [{ Name: 'Memory Dump', Description: 'Collects memory dumps of the process and the child processes hosting your app and analyzes them for errors' },
+  { Name: 'CLR Profiler', Description: 'Profiles ASP.NET application code to identify exceptions and performance issues' },
+  { Name: 'CLR Profiler With Thread Stacks', Description: 'Profiles ASP.NET application code to identify exceptions and performance issues and dumps stacks to identify deadlocks' },
+  { Name: 'JAVA Memory Dump', Description: 'Collects a binary memory dump using jMap of all java.exe processes running for this web app' },
+  { Name: 'JAVA Thread Dump', Description: 'Collects jStack output of all java.exe processes running for this app and analyzes the same' }];
   DiagnoserOptions = [
-    { option: "CollectKillAnalyze", Description: "With this option, the above selected tool's data will collected, analyzed and the process will be recycled." },
-    { option: "CollectLogs", Description: "With this option, only the above selected tool's data will collected. No analysis will be performed and process will not be restarted." },
-    { option: "Troubleshoot", Description: "With this option, the above selected tool's data will collected and then analyzed. This will not cause the process to restart. " }
+    { option: 'CollectKillAnalyze', Description: 'With this option, the above selected tool\'s data will collected, analyzed and the process will be recycled.' },
+    { option: 'CollectLogs', Description: 'With this option, only the above selected tool\'s data will collected. No analysis will be performed and process will not be restarted.' },
+    { option: 'Troubleshoot', Description: 'With this option, the above selected tool\'s data will collected and then analyzed. This will not cause the process to restart. ' }
   ];
   customActionType: string = 'Diagnostics';
   customActionParams: string = '';
@@ -51,12 +51,11 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
       this.checkingSupportedTier = false;
       if (serverFarm) {
         this.checkingSkuSucceeded = true;
-        if (serverFarm.sku.tier === "Standard" || serverFarm.sku.tier.indexOf("Premium") > -1 || serverFarm.sku.tier === "Isolated") {
+        if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier.indexOf('Premium') > -1 || serverFarm.sku.tier === 'Isolated') {
           this.supportedTier = true;
 
         }
-      }
-      else {
+      } else {
         // serverFarm can be NULL for users with Website contributor access only
         // In those cases, lets check if AlwaysOn is enabled or not
         this.checkingSkuSucceeded = false;
@@ -64,15 +63,14 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
       this._siteService.getAlwaysOnSetting(this.siteToBeDiagnosed).subscribe(alwaysOnSetting => {
         if (alwaysOnSetting) {
           this.alwaysOnEnabled = true;
-        }
-        else {
+        } else {
           this.alwaysOnEnabled = false;
         }
       });
 
       this.initComponent();
       // This is required in case someone lands on Mitigate page
-      // without ever hitting DAAS endpoint. Browsing to any DAAS 
+      // without ever hitting DAAS endpoint. Browsing to any DAAS
       // endpoint, will ensure that DaaSConsole is copied to the
       // right folders and will allow autohealing to work correctly
       this.makeDaasWarmupCall();
@@ -97,8 +95,8 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
       return;
     }
 
-    if (this.customActionType === "Diagnostics") {
-      let diagnosticsConfiguredCorrectly = this.isDiagnosticsConfigured();
+    if (this.customActionType === 'Diagnostics') {
+      const diagnosticsConfiguredCorrectly = this.isDiagnosticsConfigured();
       if (!diagnosticsConfiguredCorrectly) {
         this.initDiagnosticsIfRequired();
       }
@@ -107,10 +105,9 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   }
 
   saveCustomAction() {
-    if (this.customActionType === "Diagnostics") {
+    if (this.customActionType === 'Diagnostics') {
       this.updateDaasAction();
-    }
-    else {
+    } else {
       this.updateCustomAction();
     }
   }
@@ -136,15 +133,13 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
         if (invalidSetting) {
           this.initDiagnosticsIfRequired();
         }
-      }
-      else {
+      } else {
         this.customActionType = 'Custom';
         this.customActionExe = this.customAction.exe;
         this.customActionParams = this.customAction.parameters;
       }
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }
@@ -156,10 +151,9 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   chooseDiagnoserAction(val) {
     this.diagnoserOption = val;
-    if (this.diagnoserOption.option !== "CollectKillAnalyze") {
+    if (this.diagnoserOption.option !== 'CollectKillAnalyze') {
       this.showDiagnoserOptionWarning = true;
-    }
-    else {
+    } else {
       this.showDiagnoserOptionWarning = false;
     }
 
@@ -174,49 +168,47 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   }
   updateCustomAction() {
-    let autoHealCustomAction = new AutoHealCustomAction();
-    autoHealCustomAction.exe = this.customActionExe
+    const autoHealCustomAction = new AutoHealCustomAction();
+    autoHealCustomAction.exe = this.customActionExe;
     autoHealCustomAction.parameters = this.customActionParams;
     this.customActionChanged.emit(autoHealCustomAction);
   }
 
   updateDaasAction() {
     if (this.alwaysOnEnabled === true) {
-      let autoHealDaasAction = new AutoHealCustomAction();
+      const autoHealDaasAction = new AutoHealCustomAction();
       autoHealDaasAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
       autoHealDaasAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
       this.customActionChanged.emit(autoHealDaasAction);
-    }
-    else {
-      let emptyAction = new AutoHealCustomAction();
-      emptyAction.exe = "";
-      emptyAction.parameters = "";
+    } else {
+      const emptyAction = new AutoHealCustomAction();
+      emptyAction.exe = '';
+      emptyAction.parameters = '';
       this.customActionChanged.emit(emptyAction);
     }
   }
 
   getDiagnoserNameAndOptionFromParameter(param: string): boolean {
     let invalidSetting = true;
-    let paramArray = param.split(' ');
+    const paramArray = param.split(' ');
     let diagnoserOption = paramArray[0];
     if (diagnoserOption.startsWith('-')) {
       diagnoserOption = diagnoserOption.substring(1);
 
-      let diagnoserOptionIndex = this.DiagnoserOptions.findIndex(item => item.option === diagnoserOption)
+      const diagnoserOptionIndex = this.DiagnoserOptions.findIndex(item => item.option === diagnoserOption);
       if (diagnoserOptionIndex > -1) {
         this.diagnoserOption = this.DiagnoserOptions[diagnoserOptionIndex];
-        if (this.diagnoserOption.option !== "CollectKillAnalyze") {
+        if (this.diagnoserOption.option !== 'CollectKillAnalyze') {
           this.showDiagnoserOptionWarning = true;
-        }
-        else {
+        } else {
           this.showDiagnoserOptionWarning = false;
         }
-        let firstQuote = param.indexOf('"');
-        let secondQuote = param.indexOf('"', firstQuote + 1);
+        const firstQuote = param.indexOf('"');
+        const secondQuote = param.indexOf('"', firstQuote + 1);
         let diagnoserName = '';
         if (secondQuote > firstQuote && secondQuote > 0 && firstQuote > 0) {
           diagnoserName = param.substring(firstQuote + 1, secondQuote);
-          let diagnoserIndex = this.Diagnosers.findIndex(item => item.Name === diagnoserName)
+          const diagnoserIndex = this.Diagnosers.findIndex(item => item.Name === diagnoserName);
           if (diagnoserIndex > -1) {
             this.diagnoser = this.Diagnosers[diagnoserIndex];
             invalidSetting = false;

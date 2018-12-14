@@ -12,7 +12,7 @@ import { filter } from 'rxjs/operators';
 
 @Injectable()
 export class PortalActionService {
-    public apiVersion = "2016-08-01";
+    public apiVersion = '2016-08-01';
 
     public currentSite: ResponseMessageEnvelope<Site>;
 
@@ -29,124 +29,124 @@ export class PortalActionService {
     }
 
     public openBladeScaleUpBlade() {
-        let bladeInfo = {
-            detailBlade: "scaleup",
+        const bladeInfo = {
+            detailBlade: 'scaleup',
             detailBladeInputs: {}
         };
         this._portalService.postMessage(Verbs.openScaleUpBlade, JSON.stringify(bladeInfo));
     }
 
     public openBladeScaleOutBlade() {
-        var scaleOutInputs = {
+        const scaleOutInputs = {
             resourceId: this.currentSite.properties.serverFarmId
         };
 
-        let bladeInfo = {
-            detailBlade: "AutoScaleSettingsBlade",
-            extension: "Microsoft_Azure_Monitoring",
+        const bladeInfo = {
+            detailBlade: 'AutoScaleSettingsBlade',
+            extension: 'Microsoft_Azure_Monitoring',
             detailBladeInputs: scaleOutInputs
         };
 
-        this._portalService.openBlade(bladeInfo, "troubleshoot");
+        this._portalService.openBlade(bladeInfo, 'troubleshoot');
     }
 
     public openMdmMetricsBlade() {
-        let bladeInfo = {
-            detailBlade: "MetricsBladeV2",
-            extension: "Microsoft_Azure_Monitoring",
+        const bladeInfo = {
+            detailBlade: 'MetricsBladeV2',
+            extension: 'Microsoft_Azure_Monitoring',
             detailBladeInputs: {
                 id: this.currentSite.id
             }
         };
 
-        this._portalService.openBlade(bladeInfo, "troubleshoot");
+        this._portalService.openBlade(bladeInfo, 'troubleshoot');
     }
 
     public openMdmMetricsV3Blade(resourceUri?: string) {
-        let bladeInfo = {
-            detailBlade: "MetricsBladeV3",
-            extension: "Microsoft_Azure_Monitoring",
+        const bladeInfo = {
+            detailBlade: 'MetricsBladeV3',
+            extension: 'Microsoft_Azure_Monitoring',
             detailBladeInputs: {
                 ResourceId: !!resourceUri ? resourceUri : this.currentSite.id
             }
         };
 
-        this._portalService.openBlade(bladeInfo, "troubleshoot");
+        this._portalService.openBlade(bladeInfo, 'troubleshoot');
     }
 
     public openAppInsightsBlade() {
-        let bladeInfo = {
-            detailBlade: "AppServicesEnablementBlade",
-            extension: "AppInsightsExtension",
+        const bladeInfo = {
+            detailBlade: 'AppServicesEnablementBlade',
+            extension: 'AppInsightsExtension',
             detailBladeInputs: {
                 resourceUri: this.currentSite.id,
                 linkedComponent: <any>null
             }
         };
 
-        this._portalService.openBlade(bladeInfo, "troubleshoot");
+        this._portalService.openBlade(bladeInfo, 'troubleshoot');
     }
 
     public openAppInsightsFailuresBlade(appInsightsResourceUri: string) {
-        let bladeInfo = {
-            detailBlade: "FailuresCuratedFrameBlade",
-            extension: "AppInsightsExtension",
+        const bladeInfo = {
+            detailBlade: 'FailuresCuratedFrameBlade',
+            extension: 'AppInsightsExtension',
             detailBladeInputs: {
                 ResourceId: appInsightsResourceUri,
-                ConfigurationId: ""
+                ConfigurationId: ''
             }
         };
 
-        this._portalService.openBlade(bladeInfo, "troubleshoot");
+        this._portalService.openBlade(bladeInfo, 'troubleshoot');
     }
 
     public openAppInsightsPerformanceBlade(appInsightsResourceUri: string) {
-        let bladeInfo = {
-            detailBlade: "PerformanceCuratedFrameBlade",
-            extension: "AppInsightsExtension",
+        const bladeInfo = {
+            detailBlade: 'PerformanceCuratedFrameBlade',
+            extension: 'AppInsightsExtension',
             detailBladeInputs: {
                 ResourceId: appInsightsResourceUri,
-                ConfigurationId: ""
+                ConfigurationId: ''
             }
         };
 
-        this._portalService.openBlade(bladeInfo, "troubleshoot");
+        this._portalService.openBlade(bladeInfo, 'troubleshoot');
     }
 
     public openSupportIFrame(supportBlade: SupportBladeDefinition) {
 
-        let bladeInfo = {
-            detailBlade: "SupportIFrame",
+        const bladeInfo = {
+            detailBlade: 'SupportIFrame',
             detailBladeInputs: this._getSupportSiteInput(this.currentSite, supportBlade.Identifier, supportBlade.Title)
         };
 
-        this._portalService.openBlade(bladeInfo, "troubleshoot");
+        this._portalService.openBlade(bladeInfo, 'troubleshoot');
     }
 
     public openPHPDebuggingBlade() {
-        let resourceUriSplit = this.currentSite.id.split("/");
+        const resourceUriSplit = this.currentSite.id.split('/');
 
-        let bladeInfo = {
-            detailBlade: "ZendZRayBlade",
+        const bladeInfo = {
+            detailBlade: 'ZendZRayBlade',
             detailBladeInputs: {
                 WebsiteId: this.getWebsiteId(resourceUriSplit[2], resourceUriSplit[4], resourceUriSplit[8]),
             }
         };
 
-        this._portalService.openBlade(bladeInfo, "troubleshoot");
+        this._portalService.openBlade(bladeInfo, 'troubleshoot');
     }
 
     public openTifoilSecurityBlade() {
-        let resourceUriSplit = this.currentSite.id.split("/");
+        const resourceUriSplit = this.currentSite.id.split('/');
 
-        let bladeInfo = {
-            detailBlade: "TinfoilSecurityBlade",
+        const bladeInfo = {
+            detailBlade: 'TinfoilSecurityBlade',
             detailBladeInputs: {
                 WebsiteId: this.getWebsiteId(resourceUriSplit[2], resourceUriSplit[4], resourceUriSplit[8]),
             }
         };
 
-        this._portalService.openBlade(bladeInfo, "troubleshoot");
+        this._portalService.openBlade(bladeInfo, 'troubleshoot');
     }
 
     public openBladeAdvancedAppRestartBladeForCurrentSite() {
@@ -154,13 +154,13 @@ export class PortalActionService {
     }
 
     public openBladeAdvancedAppRestartBlade(sitesToGet: SiteRestartData[], instancesToRestart: string[], site?: Site) {
-        let resourceUris = [];
-        for (var i = 0; i < sitesToGet.length; i++) {
-            resourceUris.push(sitesToGet[i].resourceUri);;
+        const resourceUris = [];
+        for (let i = 0; i < sitesToGet.length; i++) {
+            resourceUris.push(sitesToGet[i].resourceUri);
         }
 
-        let bladeInfo = {
-            detailBlade: "AdvancedAppRestartBlade",
+        const bladeInfo = {
+            detailBlade: 'AdvancedAppRestartBlade',
             detailBladeInputs: {
                 resourceUri: this.currentSite.id,
                 resourceUris: resourceUris,
@@ -168,7 +168,7 @@ export class PortalActionService {
             }
         };
 
-        this._portalService.openBlade(bladeInfo, "troubleshoot");
+        this._portalService.openBlade(bladeInfo, 'troubleshoot');
     }
 
     private getWebsiteId(subscriptionId: string, resourceGroup: string, siteName: string): any {
@@ -176,19 +176,19 @@ export class PortalActionService {
             Name: siteName,
             SubscriptionId: subscriptionId,
             ResourceGroup: resourceGroup
-        }
+        };
     }
 
     // TODO: This is probably not the correct home for this
     public openAutoHealSite(site?: Site) {
-        let url = "https://mawssupport.trafficmanager.net/?sitename=" + this.currentSite.name + "&tab=mitigate&source=ibiza";
+        const url = 'https://mawssupport.trafficmanager.net/?sitename=' + this.currentSite.name + '&tab=mitigate&source=ibiza';
         this._windowService.window.open(url);
     }
 
     private _getSupportSiteInput(site: ResponseMessageEnvelope<Site>, feature: string, title: string) {
         return {
             ResourceId: site.id,
-            source: "troubleshoot",
+            source: 'troubleshoot',
             title: title,
             feature: feature
         };

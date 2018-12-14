@@ -20,9 +20,9 @@ export class SupportTopicRedirectComponent implements OnInit {
 
       this._authService.getStartupInfo().subscribe(startupInfo => {
 
-        if (startupInfo.source && startupInfo.source.toLowerCase() == ("CaseSubmissionV2-NonContext").toLowerCase()) {
-          let notification = new Notification('To continue with case submission, close App Service Diagnostics', null, 'fa-info-circle');
-          this._notificationService.pushNotification(notification)
+        if (startupInfo.source && startupInfo.source.toLowerCase() == ('CaseSubmissionV2-NonContext').toLowerCase()) {
+          const notification = new Notification('To continue with case submission, close App Service Diagnostics', null, 'fa-info-circle');
+          this._notificationService.pushNotification(notification);
         }
       });
     });

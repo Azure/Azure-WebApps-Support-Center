@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, of } from 'rxjs'
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { StartupInfo, ResourceType, AppType } from '../models/portal';
-import { Site, SiteInfoMetaData } from '../models/site'
+import { Site, SiteInfoMetaData } from '../models/site';
 import { ResponseMessageEnvelope } from '../models/responsemessageenvelope';
 import { ArmService } from './arm.service';
 import { AuthService } from '../../startup/services/auth.service';
@@ -36,7 +36,7 @@ export class SiteService {
         });
     }
 
-    // I am making the assumption that two sites on the same server farm must be in the same sub 
+    // I am making the assumption that two sites on the same server farm must be in the same sub
     // but they don't necessarily have to be in the same resource group
     private findTargetedSite(siteName: string): Observable<Site> {
         siteName = siteName.toLowerCase();
@@ -47,15 +47,15 @@ export class SiteService {
                 }
 
                 return this._serverFarmService.sitesInServerFarm.pipe(map(sitesInServerFarm => {
-                    return sitesInServerFarm.find(site => site.name.toLowerCase() === siteName)
+                    return sitesInServerFarm.find(site => site.name.toLowerCase() === siteName);
                 }));
             })
-        )
+        );
     }
 
     parseResourceUri(resourceUri: string): any {
 
-        var output = {
+        const output = {
             subscriptionId: '',
             resourceGroup: '',
             siteName: '',
@@ -66,24 +66,24 @@ export class SiteService {
             return output;
         }
 
-        let resourceUriParts = resourceUri.toLowerCase().split("/");
+        const resourceUriParts = resourceUri.toLowerCase().split('/');
 
-        let subscriptionIndex = resourceUriParts.indexOf('subscriptions');
+        const subscriptionIndex = resourceUriParts.indexOf('subscriptions');
         if (subscriptionIndex > -1) {
             output.subscriptionId = resourceUriParts[subscriptionIndex + 1];
         }
 
-        let resourceGroupIndex = resourceUriParts.indexOf('resourcegroups');
+        const resourceGroupIndex = resourceUriParts.indexOf('resourcegroups');
         if (resourceGroupIndex > -1) {
             output.resourceGroup = resourceUriParts[resourceGroupIndex + 1];
         }
 
-        let sitesIndex = resourceUriParts.indexOf('sites');
+        const sitesIndex = resourceUriParts.indexOf('sites');
         if (sitesIndex > -1) {
             output.siteName = resourceUriParts[sitesIndex + 1];
         }
 
-        let slotIndex = resourceUriParts.indexOf('slots');
+        const slotIndex = resourceUriParts.indexOf('slots');
         if (slotIndex > -1) {
             output.slotName = resourceUriParts[slotIndex + 1];
         }
@@ -93,16 +93,16 @@ export class SiteService {
 
     restartSite(subscriptionId: string, resourceGroup: string, siteName: string): Observable<boolean> {
         return this.findTargetedSite(siteName).pipe(mergeMap((targetedSite: Site) => {
-            var slotName = '';
-            var mainSiteName = targetedSite.name;
+            let slotName = '';
+            let mainSiteName = targetedSite.name;
 
             if (targetedSite.name.indexOf('(') >= 0) {
-                let parts = targetedSite.name.split('(');
+                const parts = targetedSite.name.split('(');
                 mainSiteName = parts[0];
                 slotName = parts[1].replace(')', '');
             }
 
-            let resourceUri: string = this._uriElementsService.getSiteRestartUrl(subscriptionId, targetedSite.resourceGroup, mainSiteName, slotName);
+            const resourceUri: string = this._uriElementsService.getSiteRestartUrl(subscriptionId, targetedSite.resourceGroup, mainSiteName, slotName);
             return <Observable<boolean>>(this._armClient.postResource(resourceUri, null, null, true));
         }));
     }
@@ -110,19 +110,19 @@ export class SiteService {
     killW3wpOnInstance(subscriptionId: string, resourceGroup: string, siteName: string, scmHostName: string, instanceId: string): Observable<boolean> {
         return this.findTargetedSite(siteName).pipe(mergeMap((targetedSite: Site) => {
             if (targetedSite.enabledHostNames.length > 0) {
-                let scmHostNameFromSiteObject = targetedSite.enabledHostNames.find(hostname => hostname.indexOf(".scm.") > 0);
+                const scmHostNameFromSiteObject = targetedSite.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
                 if (scmHostNameFromSiteObject !== null && scmHostNameFromSiteObject.length > 0) {
                     scmHostName = scmHostNameFromSiteObject;
                 }
             }
 
-            let url: string = this._uriElementsService.getKillSiteProcessUrl(subscriptionId, targetedSite.resourceGroup, targetedSite.name);
-            let body: any = {
-                "InstanceId": instanceId,
-                "ScmHostName": scmHostName
+            const url: string = this._uriElementsService.getKillSiteProcessUrl(subscriptionId, targetedSite.resourceGroup, targetedSite.name);
+            const body: any = {
+                'InstanceId': instanceId,
+                'ScmHostName': scmHostName
             };
 
-            let requestHeaders: HttpHeaders = this._getHeaders();
+            const requestHeaders: HttpHeaders = this._getHeaders();
 
             return this._http.post(url, body, { headers: requestHeaders })
                 .pipe(map((response: Response) => response.ok));
@@ -130,12 +130,12 @@ export class SiteService {
     }
 
     getSiteAppSettings(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): Observable<any> {
-        let url: string = this._uriElementsService.getListAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
+        const url: string = this._uriElementsService.getListAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
         return this._armClient.postResource(url, {}, null, true);
     }
 
     getSiteConfigSettings(siteInfo: SiteInfoMetaData): Observable<any> {
-        let url: string = this._uriElementsService.getConfigWebUrl(siteInfo);
+        const url: string = this._uriElementsService.getConfigWebUrl(siteInfo);
         return this._armClient.getResource<ResponseMessageEnvelope<any>>(url).pipe(map((response: ResponseMessageEnvelope<any>) => {
             return response.properties;
         }));
@@ -149,7 +149,7 @@ export class SiteService {
 
     getVirtualNetworkConnectionsInformation(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): Observable<any> {
 
-        let url: string = this._uriElementsService.getVirtualNetworkConnections(subscriptionId, resourceGroup, siteName, slot);
+        const url: string = this._uriElementsService.getVirtualNetworkConnections(subscriptionId, resourceGroup, siteName, slot);
         return this._armClient.getResource(url);
     }
 
@@ -157,8 +157,8 @@ export class SiteService {
         return this.currentSiteMetaData.pipe(map(siteInfo => {
             if (siteInfo) {
 
-                let siteInfoMetaData = siteInfo;
-                let siteToBeDiagnosed = new SiteDaasInfo();
+                const siteInfoMetaData = siteInfo;
+                const siteToBeDiagnosed = new SiteDaasInfo();
 
                 siteToBeDiagnosed.subscriptionId = siteInfo.subscriptionId;
                 siteToBeDiagnosed.resourceGroupName = siteInfo.resourceGroupName;
@@ -172,12 +172,12 @@ export class SiteService {
     }
 
     updateSiteAppSettings(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '', body: any): Observable<any> {
-        let url: string = this._uriElementsService.getUpdateAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
+        const url: string = this._uriElementsService.getUpdateAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
         return this._armClient.putResource(url, body, null, true);
     }
 
     private _populateSiteInfo(resourceId: string): void {
-        let pieces = resourceId.toLowerCase().split('/');
+        const pieces = resourceId.toLowerCase().split('/');
         this.currentSiteMetaData.next(<SiteInfoMetaData>{
             resourceUri: resourceId,
             subscriptionId: pieces[pieces.indexOf('subscriptions') + 1],

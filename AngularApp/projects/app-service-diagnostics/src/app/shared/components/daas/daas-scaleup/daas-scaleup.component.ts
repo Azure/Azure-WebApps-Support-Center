@@ -20,11 +20,11 @@ export class DaasScaleupComponent  {
             }
         }, error => {
             //TODO: handle error
-        })
+        });
     }
 
     openBlade() {
-        this._logger.LogClickEvent("ScaleUp", "DaaS");
+        this._logger.LogClickEvent('ScaleUp', 'DaaS');
         this._portalActionService.openBladeScaleUpBlade();
 
     }

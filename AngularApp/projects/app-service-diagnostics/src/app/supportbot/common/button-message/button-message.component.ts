@@ -23,20 +23,19 @@ export class ButtonMessageComponent implements OnInit, AfterViewInit, IChatMessa
     }
 
     ngOnInit(): void {
-        let buttons = <{ title: string, type: ButtonActionType, next_key: string }[]>this.injector.get('buttonList', []);
+        const buttons = <{ title: string, type: ButtonActionType, next_key: string }[]>this.injector.get('buttonList', []);
         buttons.forEach(button => {
             this.buttonList.push(button);
         });
 
-        let context = this.injector.get('context', '');
+        const context = this.injector.get('context', '');
 
-        if(context === 'feature' && this._chatState && this._chatState.selectedFeature) {
+        if (context === 'feature' && this._chatState && this._chatState.selectedFeature) {
             this.context = `${context}:${this._chatState.selectedFeature.id}`;
-        }
-        else {
+        } else {
             this.context = context;
         }
-        
+
         this.category = this.injector.get('category', '');
     }
 

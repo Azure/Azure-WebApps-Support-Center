@@ -12,8 +12,8 @@ export class AutohealingStatuscodesRuleComponent extends AutohealingRuleComponen
 
   currentRule: StatusCodesBasedTrigger;
   currentEditIndex: number = -1;
-  
-  constructor(){
+
+  constructor() {
     super();
   }
 
@@ -22,45 +22,44 @@ export class AutohealingStatuscodesRuleComponent extends AutohealingRuleComponen
     if (!this.rule) {
       this.rule = [];
     }
-    this.editMode = true;   
+    this.editMode = true;
     this.currentEditIndex = -1;
   }
 
   deleteStatusCodeRule(i: number) {
     if (i > -1) {
-      this.rule.splice(i, 1)
+      this.rule.splice(i, 1);
       this.ruleChange.emit(this.rule);
     }
   }
 
   editStatusCodeRule(i: number) {
     if (i > -1) {
-      this.currentRule = {...this.rule[i]}; 
+      this.currentRule = {...this.rule[i]};
       this.editMode = true;
-      this.currentEditIndex = i;      
+      this.currentEditIndex = i;
     }
 
   }
 
   saveRule() {
     this.editMode = false;
-    if (this.currentRule.subStatus == null){
+    if (this.currentRule.subStatus == null) {
       this.currentRule.subStatus = 0;
     }
-    if (this.currentRule.win32Status == null){
+    if (this.currentRule.win32Status == null) {
       this.currentRule.win32Status = 0;
     }
     if (this.currentEditIndex < 0) {
       this.rule.push(this.currentRule);
-    }
-    else {
+    } else {
       this.rule[this.currentEditIndex] = this.currentRule;
     }
 
     this.ruleChange.emit(this.rule);
   }
 
-  isValid():boolean{
+  isValid(): boolean {
     return (this.currentRule.count > 0 && this.currentRule.status > 100 && this.currentRule.status < 530 && (this.currentRule.timeInterval && FormatHelper.timespanToSeconds(this.currentRule.timeInterval) > 0));
   }
 }

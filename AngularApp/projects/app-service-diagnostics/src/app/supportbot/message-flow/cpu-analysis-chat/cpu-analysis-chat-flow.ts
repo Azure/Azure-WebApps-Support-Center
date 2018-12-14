@@ -7,7 +7,7 @@ import { SolutionsMessage } from '../../common/solutions-message/solutions-messa
 import { GraphMessage, GraphMessageData } from '../../common/graph-message/graph-message.component';
 import { ProblemStatementMessage } from '../../common/problem-statement-message/problem-statement-message.component';
 import { IDetectorResponse } from '../../../shared/models/detectorresponse';
-import { Observable ,  BehaviorSubject } from 'rxjs'
+import { Observable ,  BehaviorSubject } from 'rxjs';
 import { ISolution } from '../../../shared/models/solution';
 import { SiteInfoMetaData } from '../../../shared/models/site';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
@@ -29,14 +29,14 @@ export class CpuAnalysisChatFlow extends IMessageFlowProvider {
     private siteInfoMetaData: SiteInfoMetaData;
 
     private graphData: GraphMessageData = {
-        detectorMetricsTitle: "Overall CPU Usage per Instance",
-        detectorMetricsDescription: "This graphs shows the total CPU usage on each of the instances where your application is running. " +
-            "Below you can look at a specific instance and see how much CPU each app is consuming.",
-        instanceDetailTitle: "App CPU Usage Breakdown",
-        instanceDetailDescription: "This shows the average CPU usage, in percent out of 100, for each application in the given time window.",
+        detectorMetricsTitle: 'Overall CPU Usage per Instance',
+        detectorMetricsDescription: 'This graphs shows the total CPU usage on each of the instances where your application is running. ' +
+            'Below you can look at a specific instance and see how much CPU each app is consuming.',
+        instanceDetailTitle: 'App CPU Usage Breakdown',
+        instanceDetailDescription: 'This shows the average CPU usage, in percent out of 100, for each application in the given time window.',
         detectorMetrics: new BehaviorSubject(null),
         instanceDetailMetrics: new BehaviorSubject(null)
-    }
+    };
 
 
     constructor(private _appAnalysisService: AppAnalysisService, private _siteService: SiteService, private _authService: AuthService) {
@@ -52,9 +52,9 @@ export class CpuAnalysisChatFlow extends IMessageFlowProvider {
     }
 
     GetMessageFlowList(): MessageGroup[] {
-        var messageGroupList: MessageGroup[] = [];
+        const messageGroupList: MessageGroup[] = [];
 
-        var cpuAnalysisGroup: MessageGroup = new MessageGroup('cpuanalysis', [], () => 'feedbackprompt');
+        const cpuAnalysisGroup: MessageGroup = new MessageGroup('cpuanalysis', [], () => 'feedbackprompt');
         cpuAnalysisGroup.messages.push(new TextMessage('I noticed that your app was experiencing high CPU usage within the last 24 hours. Would you like me to show you more details about the issues we found?'));
         cpuAnalysisGroup.messages.push(new ButtonListMessage(this._getButtonListForHealthCheck(), 'Show CPU Analysis'));
         cpuAnalysisGroup.messages.push(new TextMessage('Yes I want to see CPU issues', MessageSender.User, 0));
@@ -68,7 +68,7 @@ export class CpuAnalysisChatFlow extends IMessageFlowProvider {
 
         messageGroupList.push(cpuAnalysisGroup);
 
-        var noCpuAnalysisGroup: MessageGroup = new MessageGroup('nocpuanalysis', [], () => 'feedbackprompt');
+        const noCpuAnalysisGroup: MessageGroup = new MessageGroup('nocpuanalysis', [], () => 'feedbackprompt');
         noCpuAnalysisGroup.messages.push(new TextMessage('No Thanks', MessageSender.User, 0));
         noCpuAnalysisGroup.messages.push(new TextMessage('No problem. You can still access all the data by going to \'High CPU\' above'));
 
@@ -79,13 +79,13 @@ export class CpuAnalysisChatFlow extends IMessageFlowProvider {
 
     private _getCpuDetectorResponse() {
         this._siteService.currentSite.subscribe(site => {
-            if(site && site.kind && site.kind.toLowerCase().indexOf('linux') === -1 && site.kind.toLowerCase().indexOf('functionapp') === -1) {
+            if (site && site.kind && site.kind.toLowerCase().indexOf('linux') === -1 && site.kind.toLowerCase().indexOf('functionapp') === -1) {
                 this._appAnalysisService.getDetectorResource(this.siteInfoMetaData.subscriptionId, this.siteInfoMetaData.resourceGroupName, this.siteInfoMetaData.siteName, this.siteInfoMetaData.slot, 'availability', 'sitecpuanalysis').subscribe(response => {
                     this.cpuDetectorResponse = response;
                     this.cpuDetectorResponseSubject.next(this.cpuDetectorResponse);
-                    this.graphData.detectorMetrics.next(response.metrics.filter(x => x.name === "Overall CPU Percent"));
-                    this.graphData.instanceDetailMetrics.next(response.metrics.filter(x => x.name !== "Overall CPU Percent"));
-        
+                    this.graphData.detectorMetrics.next(response.metrics.filter(x => x.name === 'Overall CPU Percent'));
+                    this.graphData.instanceDetailMetrics.next(response.metrics.filter(x => x.name !== 'Overall CPU Percent'));
+
                     if (response.abnormalTimePeriods.length > 0) {
                         this.solutionListSubject.next(response.abnormalTimePeriods[response.abnormalTimePeriods.length - 1].solutions);
                     }

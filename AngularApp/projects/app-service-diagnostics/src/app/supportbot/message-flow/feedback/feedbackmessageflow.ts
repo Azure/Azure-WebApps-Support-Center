@@ -11,9 +11,9 @@ import { MessageSender, ButtonActionType } from '../../models/message-enums';
 export class FeedbackMessageFlow extends IMessageFlowProvider {
 
     GetMessageFlowList(): MessageGroup[] {
-        var messageGroupList: MessageGroup[] = [];
+        const messageGroupList: MessageGroup[] = [];
 
-        var feedbackPromptGroup: MessageGroup = new MessageGroup('feedbackprompt', [], () => 'feedback');
+        const feedbackPromptGroup: MessageGroup = new MessageGroup('feedbackprompt', [], () => 'feedback');
 
         feedbackPromptGroup.messages.push(new TextMessage('Thanks for using App Service diagnostics. Did you find this experience useful?', MessageSender.System, 2500));
         feedbackPromptGroup.messages.push(new ButtonListMessage(this._getButtonListForHealthCheckFeedback(), 'Was diagnoser useful?'));
@@ -22,19 +22,19 @@ export class FeedbackMessageFlow extends IMessageFlowProvider {
 
         messageGroupList.push(feedbackPromptGroup);
 
-        var feedbackGroup: MessageGroup = new MessageGroup('feedback', [], () => '');
+        const feedbackGroup: MessageGroup = new MessageGroup('feedback', [], () => '');
         feedbackGroup.messages.push(new TextMessage('Please help me improve by providing some feedback. What was my most/least helpful feature? What features would you like to see?'));
         feedbackGroup.messages.push(new FeedbackMessage([], 'Submit', 'Feedback', 'Support Home'));
         feedbackGroup.messages.push(new TextMessage('Thank you!'));
         // TODO : Add Button Message - 1) To Refresh, 2) Return to top
         messageGroupList.push(feedbackGroup);
 
-        var furtherAssistanceGroup: MessageGroup = new MessageGroup('further-assistance', [], () => 'no-help')
+        const furtherAssistanceGroup: MessageGroup = new MessageGroup('further-assistance', [], () => 'no-help');
 
         furtherAssistanceGroup.messages.push(new TextMessage('I need further assistance.', MessageSender.User, 100));
         messageGroupList.push(furtherAssistanceGroup);
 
-        var noHelpMessageGroup: MessageGroup = new MessageGroup('no-help', [], () => 'feedback');
+        const noHelpMessageGroup: MessageGroup = new MessageGroup('no-help', [], () => 'feedback');
         noHelpMessageGroup.messages.push(new TextMessage('Sorry to hear that I could not be of more help. Please explore our additional resources in the right hand column, especially our popular Support Tools, FAQs, and Community forums.', MessageSender.System));
         messageGroupList.push(noHelpMessageGroup);
 

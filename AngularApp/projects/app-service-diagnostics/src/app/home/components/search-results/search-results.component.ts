@@ -19,7 +19,7 @@ export class SearchResultsComponent implements OnChanges {
   constructor(public featureService: FeatureService, private _activatedRoute: ActivatedRoute, private _router: Router, private _logger: LoggingV2Service, private _notificationService: NotificationService) { }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(changes['searchValue']){
+    if (changes['searchValue']) {
       this.features = this.featureService.getFeatures(this.searchValue);
     }
   }
@@ -27,15 +27,15 @@ export class SearchResultsComponent implements OnChanges {
   navigateToFeature(feature: Feature) {
     this._notificationService.dismiss();
     this._logSearchSelection(feature);
-    feature.clickAction();    
+    feature.clickAction();
   }
 
   private _logSearch() {
-    this._logger.LogSearch(this.searchValue)
+    this._logger.LogSearch(this.searchValue);
   }
 
   private _logSearchSelection(feature: Feature) {
     this._logSearch();
-    this._logger.LogSearchSelection(this.searchValue, feature.id, feature.name, feature.featureType.name)
+    this._logger.LogSearchSelection(this.searchValue, feature.id, feature.name, feature.featureType.name);
   }
 }

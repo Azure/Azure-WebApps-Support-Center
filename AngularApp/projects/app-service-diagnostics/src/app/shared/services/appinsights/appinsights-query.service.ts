@@ -10,29 +10,29 @@ export class AppInsightsQueryService {
 
     GetTopExceptions(startTimeUTC: string, endTimeUTC: string, recordsLimit: number = 5, invalidateCache: boolean = false) {
 
-        let query: string = `
+        const query: string = `
         exceptions
-        | where timestamp >= datetime(${startTimeUTC}) and timestamp <= datetime(${endTimeUTC})  
-        | where client_Type == "PC" 
+        | where timestamp >= datetime(${startTimeUTC}) and timestamp <= datetime(${endTimeUTC})
+        | where client_Type == "PC"
         | summarize count() by outerMessage, problemId, type
         | top ${recordsLimit} by count_ desc`;
 
-        let requests = this.appinsightsService.ExecuteQuery(query);
+        const requests = this.appinsightsService.ExecuteQuery(query);
 
         return this.cache.get(`AppInsightExceptions-${startTimeUTC}--${endTimeUTC}`, requests, invalidateCache);
     }
 
     GetTopSlowestDependencies(startTimeUTC: string, endTimeUTC: string, recordsLimit: number = 5, invalidateCache: boolean = false) {
 
-        let query: string = `
+        const query: string = `
         dependencies
-        | where timestamp >= datetime(${startTimeUTC}) and timestamp <= datetime(${endTimeUTC})  
+        | where timestamp >= datetime(${startTimeUTC}) and timestamp <= datetime(${endTimeUTC})
         | where type != "Ajax"
         | summarize round(avg(duration), 2), round(percentile(duration, 50), 2), round(percentile(duration, 90), 2), round(percentile(duration, 95), 2), count()  by name, type
         | where percentile_duration_95 > 100
         | top ${recordsLimit} by avg_duration desc`;
 
-        let requests = this.appinsightsService.ExecuteQuery(query);
+        const requests = this.appinsightsService.ExecuteQuery(query);
         return this.cache.get(`AppInsightDependencies-${startTimeUTC}--${endTimeUTC}`, requests, invalidateCache);
     }
 

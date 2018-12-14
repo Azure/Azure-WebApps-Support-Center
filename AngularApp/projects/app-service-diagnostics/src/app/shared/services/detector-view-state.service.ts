@@ -14,7 +14,7 @@ export class DetectorViewStateService {
 
     getDetectorViewState(detectorName: string): IDetectorAbnormalTimePeriod {
         if (this.detectorViewStates[detectorName]) {
-            let abnormalTimePeriod = this.detectorViewStates[detectorName];
+            const abnormalTimePeriod = this.detectorViewStates[detectorName];
             delete this.detectorViewStates[detectorName];
             return abnormalTimePeriod;
         }

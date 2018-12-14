@@ -34,11 +34,11 @@ export class HomeComponent implements OnInit {
     this._authService.getStartupInfo().subscribe(startupInfo => {
       if (startupInfo.additionalParameters && Object.keys(startupInfo.additionalParameters).length > 0) {
         let path = 'resource' + startupInfo.resourceId.toLowerCase();
-        path = this._updateRouteBasedOnAdditionalParameters(path, startupInfo.additionalParameters)
+        path = this._updateRouteBasedOnAdditionalParameters(path, startupInfo.additionalParameters);
 
         this._router.navigateByUrl(path);
       }
-    })
+    });
   }
 
   ngOnInit() {
@@ -75,12 +75,12 @@ export class HomeComponent implements OnInit {
       let featurePath: string = additionalParameters.featurePath;
       featurePath = featurePath.startsWith('/') ? featurePath.replace('/', '') : featurePath;
 
-      return `${route}/${featurePath}`
+      return `${route}/${featurePath}`;
     }
   }
 
 
   private _logSearch() {
-    this._logger.LogSearch(this.searchValue)
+    this._logger.LogSearch(this.searchValue);
   }
 }

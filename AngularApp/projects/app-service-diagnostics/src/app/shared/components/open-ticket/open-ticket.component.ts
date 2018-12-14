@@ -7,7 +7,7 @@ import { PortalService } from '../../../startup/services/portal.service';
 })
 export class OpenTicketComponent {
 
-    constructor(private _portalService: PortalService){
+    constructor(private _portalService: PortalService) {
     }
 
     openSupportTicketBlade(): void {

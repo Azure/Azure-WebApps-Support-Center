@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { SupportTopicService } from '../../../shared-v2/services/support-topic.service';
 import { DiagnosticService } from 'diagnostic-data';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
-import { Observable, of } from 'rxjs'
+import { Observable, of } from 'rxjs';
 import { OperatingSystem } from '../../../shared/models/site';
 
 @Injectable()
@@ -35,22 +35,21 @@ export class SiteSupportTopicService extends SupportTopicService {
       supportTopicId: '32581616',
       path: '/diagnostics/availability/memoryanalysis',
     }
-  ]
+  ];
 
   constructor(protected _diagnosticService: DiagnosticService, protected _webSiteService: WebSitesService) {
     super(_diagnosticService, _webSiteService);
   }
 
   getPathForSupportTopic(supportTopicId: string, pesId: string): Observable<string> {
-    let matchingMapping = this._hardCodedSupportTopicIdMapping.find(
+    const matchingMapping = this._hardCodedSupportTopicIdMapping.find(
       supportTopic => supportTopic.supportTopicId === supportTopicId &&
         (!pesId || pesId === '' || supportTopic.pesId === pesId)
     );
 
     if (matchingMapping && this._webSiteService.platform == OperatingSystem.windows) {
       return of(`/legacy${matchingMapping.path}`);
-    }
-    else {
+    } else {
       return super.getPathForSupportTopic(supportTopicId, pesId);
     }
   }

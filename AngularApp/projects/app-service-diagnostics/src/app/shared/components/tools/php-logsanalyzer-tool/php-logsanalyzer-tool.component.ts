@@ -14,25 +14,24 @@ import { AvailabilityLoggingService } from '../../../services/logging/availabili
 })
 export class PhpLogsAnalyzerToolComponent extends DaasBaseComponent implements OnInit {
 
-    title: string = "Collect and Analyze PHP error logs";
-    description: string = "This tool analyzes PHP logs for your App and generates a report filtering out errors and warnings.";
-    
-    thingsToKnowBefore: string[] = [        
-        "It will only work if PHP Logging is enabled for your Web App.",
-        "Your Web App will not be restarted while running this tool."
+    title: string = 'Collect and Analyze PHP error logs';
+    description: string = 'This tool analyzes PHP logs for your App and generates a report filtering out errors and warnings.';
 
-    ]
-    
-    constructor(private _siteServiceLocal: SiteService, private _daasServiceLocal: DaasService, private _windowServiceLocal: WindowService, private _loggerLocal: AvailabilityLoggingService)
-    {
+    thingsToKnowBefore: string[] = [
+        'It will only work if PHP Logging is enabled for your Web App.',
+        'Your Web App will not be restarted while running this tool.'
+
+    ];
+
+    constructor(private _siteServiceLocal: SiteService, private _daasServiceLocal: DaasService, private _windowServiceLocal: WindowService, private _loggerLocal: AvailabilityLoggingService) {
         super(_siteServiceLocal, _daasServiceLocal, _windowServiceLocal, _loggerLocal);
     }
     ngOnInit(): void {
 
-        this.diagnoserName = "PHP Error Logs";
+        this.diagnoserName = 'PHP Error Logs';
         this.scmPath = this._siteServiceLocal.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
     }
 
-    
+
 }

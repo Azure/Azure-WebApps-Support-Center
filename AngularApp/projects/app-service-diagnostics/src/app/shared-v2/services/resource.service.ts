@@ -1,7 +1,7 @@
 
 import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs';
 import { ArmResource } from '../models/arm';
 import { ArmService } from '../../shared/services/arm.service';
 
@@ -16,7 +16,7 @@ export class ResourceService {
   constructor(protected _armService: ArmService) { }
 
   private _initialize() {
-    let pieces = this.resource.id.toLowerCase().split('/');
+    const pieces = this.resource.id.toLowerCase().split('/');
     this._subscription = pieces[pieces.indexOf('subscriptions') + 1];
   }
 

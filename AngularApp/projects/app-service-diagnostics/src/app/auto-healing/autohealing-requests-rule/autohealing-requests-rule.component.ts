@@ -10,10 +10,10 @@ import { FormatHelper } from '../../shared/utilities/formattingHelper';
 })
 export class AutohealingRequestsRuleComponent extends AutohealingRuleComponent implements OnInit {
 
-  constructor(){
+  constructor() {
     super();
   }
-  
+
   addNewRule() {
     this.rule = new RequestsBasedTrigger();
     this.ruleCopy = new RequestsBasedTrigger();
@@ -23,8 +23,7 @@ export class AutohealingRequestsRuleComponent extends AutohealingRuleComponent i
   isValid(): boolean {
     if (this.ruleCopy && this.ruleCopy.timeInterval && this.ruleCopy.timeInterval !== '') {
       return (FormatHelper.timespanToSeconds(this.ruleCopy.timeInterval) > 0 && this.ruleCopy.count > 0);
-    }
-    else {
+    } else {
       return false;
     }
   }

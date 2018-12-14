@@ -1,17 +1,17 @@
-import { ToolNames } from "../shared/models/tools-constants";
-import { ProfilerToolComponent } from "../shared/components/tools/profiler-tool/profiler-tool.component";
-import { MemoryDumpToolComponent } from "../shared/components/tools/memorydump-tool/memorydump-tool.component";
-import { JavaThreadDumpToolComponent } from "../shared/components/tools/java-threaddump-tool/java-threaddump-tool.component";
-import { JavaMemoryDumpToolComponent } from "../shared/components/tools/java-memorydump-tool/java-memorydump-tool.component";
-import { HttpLogAnalysisToolComponent } from "../shared/components/tools/http-loganalysis-tool/http-loganalysis-tool.component";
-import { PhpLogsAnalyzerToolComponent } from "../shared/components/tools/php-logsanalyzer-tool/php-logsanalyzer-tool.component";
-import { PhpProcessAnalyzerToolComponent } from "../shared/components/tools/php-processanalyzer-tool/php-processanalyzer-tool.component";
-import { ConnectionDiagnoserToolComponent } from "../shared/components/tools/connection-diagnoser-tool/connection-diagnoser-tool.component";
-import { AutohealingComponent } from "../auto-healing/autohealing.component";
-import { NetworkTraceToolComponent } from "../shared/components/tools/network-trace-tool/network-trace-tool.component";
-import { DaasMainComponent } from "../shared/components/daas-main/daas-main.component";
-import { Route } from "@angular/router";
-import { AutohealingDetectorComponent } from "../availability/detector-view/detectors/autohealing-detector/autohealing-detector.component";
+import { ToolNames } from '../shared/models/tools-constants';
+import { ProfilerToolComponent } from '../shared/components/tools/profiler-tool/profiler-tool.component';
+import { MemoryDumpToolComponent } from '../shared/components/tools/memorydump-tool/memorydump-tool.component';
+import { JavaThreadDumpToolComponent } from '../shared/components/tools/java-threaddump-tool/java-threaddump-tool.component';
+import { JavaMemoryDumpToolComponent } from '../shared/components/tools/java-memorydump-tool/java-memorydump-tool.component';
+import { HttpLogAnalysisToolComponent } from '../shared/components/tools/http-loganalysis-tool/http-loganalysis-tool.component';
+import { PhpLogsAnalyzerToolComponent } from '../shared/components/tools/php-logsanalyzer-tool/php-logsanalyzer-tool.component';
+import { PhpProcessAnalyzerToolComponent } from '../shared/components/tools/php-processanalyzer-tool/php-processanalyzer-tool.component';
+import { ConnectionDiagnoserToolComponent } from '../shared/components/tools/connection-diagnoser-tool/connection-diagnoser-tool.component';
+import { AutohealingComponent } from '../auto-healing/autohealing.component';
+import { NetworkTraceToolComponent } from '../shared/components/tools/network-trace-tool/network-trace-tool.component';
+import { DaasMainComponent } from '../shared/components/daas-main/daas-main.component';
+import { Route } from '@angular/router';
+import { AutohealingDetectorComponent } from '../availability/detector-view/detectors/autohealing-detector/autohealing-detector.component';
 
 export const DiagnosticToolsRoutes: Route[] = [
     // CLR Profiling Tool
@@ -50,7 +50,7 @@ export const DiagnosticToolsRoutes: Route[] = [
             cacheComponent: true
         }
     },
-    // HTTP Log Analyzer 
+    // HTTP Log Analyzer
     {
         path: 'httploganalyzer',
         component: HttpLogAnalysisToolComponent,
@@ -59,7 +59,7 @@ export const DiagnosticToolsRoutes: Route[] = [
             cacheComponent: true
         }
     },
-    // PHP Log Analyzer 
+    // PHP Log Analyzer
     {
         path: 'phploganalyzer',
         component: PhpLogsAnalyzerToolComponent,
@@ -68,7 +68,7 @@ export const DiagnosticToolsRoutes: Route[] = [
             cacheComponent: true
         }
     },
-    // PHP Process Analyzer 
+    // PHP Process Analyzer
     {
         path: 'phpprocessanalyzer',
         component: PhpProcessAnalyzerToolComponent,
@@ -92,10 +92,10 @@ export const DiagnosticToolsRoutes: Route[] = [
         component: AutohealingComponent,
         data: {
             navigationTitle: 'Mitigate',
-            detectorComponent:AutohealingDetectorComponent
+            detectorComponent: AutohealingDetectorComponent
         }
     },
-    // Network Trace 
+    // Network Trace
     {
         path: 'networktrace',
         component: NetworkTraceToolComponent,

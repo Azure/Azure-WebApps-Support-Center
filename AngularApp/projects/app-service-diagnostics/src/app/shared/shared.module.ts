@@ -183,9 +183,9 @@ import { GenericCommsComponent } from './components/generic-comms/generic-comms.
         VerticalDisplayListItemComponent,
         SolutionTypeTagComponent,
         StepWizardComponent,
-        DaasSessionsComponent,        
+        DaasSessionsComponent,
         ProfilerComponent,
-        ProfilerToolComponent,        
+        ProfilerToolComponent,
         DaasComponent,
         DaasValidatorComponent,
         MemoryDumpToolComponent,
@@ -241,6 +241,6 @@ export class SharedModule {
                 GenericCommsService,
                 GroupByPipe
             ]
-        }
+        };
     }
 }

@@ -23,13 +23,13 @@ export class ResourceRedirectComponent implements OnInit {
     this._authService.getStartupInfo()
       .subscribe(info => {
         if (info && info.resourceId && info.token) {
-          
+
           // Uncomment to enable only for internal subs
           //let split = info.resourceId.split('/');
           //let subscriptionId = split[split.indexOf('subscriptions') + 1];
           //this._newVersionEnabled = DemoSubscriptions.betaSubscriptions.indexOf(subscriptionId) >= 0;
 
-          let navigationExtras: NavigationExtras = {
+          const navigationExtras: NavigationExtras = {
             queryParamsHandling: 'merge',
           };
 
@@ -45,8 +45,7 @@ export class ResourceRedirectComponent implements OnInit {
           this._router.navigateByUrl(
             this._router.createUrlTree([path], navigationExtras)
           );
-        }
-        else {
+        } else {
           if (!environment.production) {
             this._router.navigateByUrl('/test');
           }
@@ -59,7 +58,7 @@ export class ResourceRedirectComponent implements OnInit {
       let featurePath: string = additionalParameters.featurePath;
       featurePath = featurePath.startsWith('/') ? featurePath.replace('/', '') : featurePath;
 
-      return `${route}/${featurePath}`
+      return `${route}/${featurePath}`;
     }
   }
 
@@ -70,8 +69,7 @@ export class ResourceRedirectComponent implements OnInit {
     // If no support topic id, then default to diagnostics home page
     if (!info.supportTopicId || info.supportTopicId === '') {
       path = '/diagnostics';
-    }
-    else {
+    } else {
       path = `/supportTopic/${info.supportTopicId}`;
     }
 

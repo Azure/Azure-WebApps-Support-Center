@@ -16,17 +16,17 @@ export class GenericDetectorComponent {
 
     this._authServiceInstance.getStartupInfo().subscribe(startUpInfo => {
       if (startUpInfo) {
-        let resourceId = startUpInfo.resourceId ? startUpInfo.resourceId : '';
-        let ticketBladeWorkflowId = startUpInfo.workflowId ? startUpInfo.workflowId : '';
-        let supportTopicId = startUpInfo.supportTopicId ? startUpInfo.supportTopicId : '';
-        let sessionId = startUpInfo.sessionId ? startUpInfo.sessionId : '';
+        const resourceId = startUpInfo.resourceId ? startUpInfo.resourceId : '';
+        const ticketBladeWorkflowId = startUpInfo.workflowId ? startUpInfo.workflowId : '';
+        const supportTopicId = startUpInfo.supportTopicId ? startUpInfo.supportTopicId : '';
+        const sessionId = startUpInfo.sessionId ? startUpInfo.sessionId : '';
 
-        let eventProperties: { [name: string]: string } = {
-          "ResourceId": resourceId,
-          "TicketBladeWorkflowId": ticketBladeWorkflowId,
-          "SupportTopicId": supportTopicId,
-          "PortalSessionId": sessionId
-        }
+        const eventProperties: { [name: string]: string } = {
+          'ResourceId': resourceId,
+          'TicketBladeWorkflowId': ticketBladeWorkflowId,
+          'SupportTopicId': supportTopicId,
+          'PortalSessionId': sessionId
+        };
        this._telemetryService.eventPropertiesSubject.next(eventProperties);
       }
     });

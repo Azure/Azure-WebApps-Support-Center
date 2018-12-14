@@ -47,18 +47,18 @@ export class SupportToolsComponent {
                             if (SiteExtensions.operatingSystem(this.currentSite) === OperatingSystem.windows) {
                                 this.initialize();
                             }
-                        })
+                        });
                 }
             });
     }
 
     initialize() {
-        this.mitigateLink = "tools/mitigate";
-        this.diagnosticsLink = "tools/daas"
+        this.mitigateLink = 'tools/mitigate';
+        this.diagnosticsLink = 'tools/daas';
 
         this.supportTools.push({
-            title: "Metrics per Instance (Apps)",
-            description: "View Performance Counters as well as Metrics for your application",
+            title: 'Metrics per Instance (Apps)',
+            description: 'View Performance Counters as well as Metrics for your application',
             enabled: true,
             action: () => {
                 this.logToolUse(SupportBladeDefinitions.MetricPerInstance.Identifier);
@@ -67,19 +67,19 @@ export class SupportToolsComponent {
         });
 
         this.supportTools.push({
-            title: "Performance Counters",
-            description: "",
+            title: 'Performance Counters',
+            description: '',
             enabled: true,
             action: () => {
                 this.logToolUse(SupportBladeDefinitions.MetricPerInstance.Identifier);
-                this._portalActionService.openMdmMetricsBlade()
+                this._portalActionService.openMdmMetricsBlade();
             }
         });
 
         this.supportTools.push({
-            title: "Metrics per Instance (App Service Plan)",
-            description: this.hasReadAccessToServerFarm ? "View Metrics for applications on your App Service Plan" :
-                "You do not have access to the the app service plan to which this site belongs",
+            title: 'Metrics per Instance (App Service Plan)',
+            description: this.hasReadAccessToServerFarm ? 'View Metrics for applications on your App Service Plan' :
+                'You do not have access to the the app service plan to which this site belongs',
             enabled: this.hasReadAccessToServerFarm,
             action: () => {
                 this.logToolUse(SupportBladeDefinitions.AppServicePlanMetrics.Identifier);
@@ -88,51 +88,51 @@ export class SupportToolsComponent {
         });
 
         this.supportTools.push({
-            title: "Application Events",
-            description: "View Event Log which often holds information about failed requests",
+            title: 'Application Events',
+            description: 'View Event Log which often holds information about failed requests',
             enabled: true,
             action: () => {
                 this.logToolUse(SupportBladeDefinitions.EventViewer.Identifier);
-                this._portalActionService.openSupportIFrame(SupportBladeDefinitions.EventViewer)
+                this._portalActionService.openSupportIFrame(SupportBladeDefinitions.EventViewer);
             }
         });
 
         this.supportTools.push({
-            title: "Failed Request Tracing Logs",
-            description: "View detailed logs for failed requests. This requires you to enable Failed Request Tracing",
+            title: 'Failed Request Tracing Logs',
+            description: 'View detailed logs for failed requests. This requires you to enable Failed Request Tracing',
             enabled: true,
             action: () => {
                 this.logToolUse(SupportBladeDefinitions.FREBLogs.Identifier);
-                this._portalActionService.openSupportIFrame(SupportBladeDefinitions.FREBLogs)
+                this._portalActionService.openSupportIFrame(SupportBladeDefinitions.FREBLogs);
             }
         });
 
         this.supportTools.push({
-            title: "Advanced Application Restart",
-            description: "Restart your app on a specific instance",
+            title: 'Advanced Application Restart',
+            description: 'Restart your app on a specific instance',
             enabled: true,
             action: () => {
-                this.logToolUse("AdvancedAppRestart");
+                this.logToolUse('AdvancedAppRestart');
                 this._portalActionService.openBladeAdvancedAppRestartBladeForCurrentSite();
             }
         });
 
         this.premiumTools.push({
-            title: "PHP Debugging",
-            description: "",
+            title: 'PHP Debugging',
+            description: '',
             enabled: true,
             action: () => {
-                this.logToolUse("PHPDebugging", "Premium Tools");
+                this.logToolUse('PHPDebugging', 'Premium Tools');
                 this._portalActionService.openPHPDebuggingBlade();
             }
         });
 
         this.premiumTools.push({
-            title: "Security Scanning",
-            description: "",
+            title: 'Security Scanning',
+            description: '',
             enabled: true,
             action: () => {
-                this.logToolUse("TinfoilSecurity", "Premium Tools");
+                this.logToolUse('TinfoilSecurity', 'Premium Tools');
                 this._portalActionService.openTifoilSecurityBlade();
             }
         });
@@ -140,7 +140,7 @@ export class SupportToolsComponent {
         this.initialized = true;
     }
 
-    logToolUse(tool: string, container = "Support Tools"): void {
+    logToolUse(tool: string, container = 'Support Tools'): void {
         this._logger.LogClickEvent(tool, container);
     }
 }

@@ -2,7 +2,7 @@ import { SolutionUIModelBase } from './solution-ui-model-base';
 import { SolutionProperties, SubAction } from './solutionproperties';
 import { SolutionType, ActionType, ActionStatus } from '../enumerations';
 import { INameValuePair } from '../namevaluepair';
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs';
 import { AvailabilityLoggingService } from '../../services/logging/availability.logging.service';
 import { SiteService } from '../../services/site.service';
 
@@ -17,7 +17,7 @@ export abstract class InlineSolutionUIModel extends SolutionUIModelBase {
     run(): void {
         if (this.properties && this.properties.subActions && this.properties.subActions.length > 0) {
 
-            this._logger.LogSolutionTried(this.properties.title, this.rank.toString(), "inline", this.properties.actionText);
+            this._logger.LogSolutionTried(this.properties.title, this.rank.toString(), 'inline', this.properties.actionText);
             this._logger.LogInlineActionTriggered(this.properties.actionText, this.properties.title);
 
             this._startRunningSubActions(0);
@@ -41,8 +41,7 @@ export abstract class InlineSolutionUIModel extends SolutionUIModelBase {
             if (data === true) {
                 this.properties.subActions[index].status = ActionStatus.Passed;
                 status = 'passed';
-            }
-            else {
+            } else {
                 this.properties.subActions[index].status = ActionStatus.Failed;
                 status = 'failed';
             }
@@ -68,18 +67,18 @@ export class RestartProcessSolution extends InlineSolutionUIModel {
         super(rank, new SolutionProperties(), _logger);
 
         this.properties.id = 1;
-        this.properties.title = "Restart site process on specific instance(s)";
-        this.properties.description = "This action will only kill a specific process on specified instances. Other processes are not affected and the whole site is not restarted.";
+        this.properties.title = 'Restart site process on specific instance(s)';
+        this.properties.description = 'This action will only kill a specific process on specified instances. Other processes are not affected and the whole site is not restarted.';
         this.properties.type = SolutionType.QuickSolution;
         this.properties.actionType = ActionType.Inline;
-        this.properties.actionText = "Restart site process on instance(s)";
+        this.properties.actionText = 'Restart site process on instance(s)';
 
-        for (var iter = 0; parameters && iter < parameters.length; iter++) {
-            let subAction = new SubAction();
+        for (let iter = 0; parameters && iter < parameters.length; iter++) {
+            const subAction = new SubAction();
 
-            let processNameItem = parameters[iter].find(p => p.name.toLowerCase() === "processname");
-            let siteNameItem = parameters[iter].find(p => p.name.toLowerCase() === "sitename");
-            let machineNameItem = parameters[iter].find(p => p.name.toLowerCase() === "machinename");
+            const processNameItem = parameters[iter].find(p => p.name.toLowerCase() === 'processname');
+            const siteNameItem = parameters[iter].find(p => p.name.toLowerCase() === 'sitename');
+            const machineNameItem = parameters[iter].find(p => p.name.toLowerCase() === 'machinename');
             subAction.parameter = parameters[iter];
             subAction.title = `Stop ${processNameItem.value}(${siteNameItem.value}) on ${machineNameItem.value}`;
 
@@ -89,13 +88,13 @@ export class RestartProcessSolution extends InlineSolutionUIModel {
 
     public executeSubAction(subAction: SubAction): Observable<boolean> {
 
-        let subscriptionId = subAction.parameter.find(p => p.name.toLowerCase() === "subscriptionid").value;
-        let resourceGroup = subAction.parameter.find(p => p.name.toLowerCase() === "resourcegroup").value;
-        let siteName = subAction.parameter.find(p => p.name.toLowerCase() === "sitename").value;
-        let instanceId = subAction.parameter.find(p => p.name.toLowerCase() === "instanceid").value;
+        const subscriptionId = subAction.parameter.find(p => p.name.toLowerCase() === 'subscriptionid').value;
+        const resourceGroup = subAction.parameter.find(p => p.name.toLowerCase() === 'resourcegroup').value;
+        const siteName = subAction.parameter.find(p => p.name.toLowerCase() === 'sitename').value;
+        const instanceId = subAction.parameter.find(p => p.name.toLowerCase() === 'instanceid').value;
 
         // This will be overridden if possible in siteService.killW3wpOnInstance()
-        let scmHostName = `https://${siteName}.scm.azurewebsites.net`;
+        const scmHostName = `https://${siteName}.scm.azurewebsites.net`;
 
         return this._siteService.killW3wpOnInstance(subscriptionId, resourceGroup, siteName, scmHostName, instanceId);
     }
@@ -108,15 +107,15 @@ export class RestartSiteSolution extends InlineSolutionUIModel {
         super(rank, new SolutionProperties(), _logger);
 
         this.properties.id = 2;
-        this.properties.title = "Restart your app";
-        this.properties.description = "This action will restart the whole application across all the instances where it is running.";
+        this.properties.title = 'Restart your app';
+        this.properties.description = 'This action will restart the whole application across all the instances where it is running.';
         this.properties.type = SolutionType.QuickSolution;
         this.properties.actionType = ActionType.Inline;
-        this.properties.actionText = "Restart Application";
+        this.properties.actionText = 'Restart Application';
 
-        for (var iter = 0; parameters && iter < parameters.length; iter++) {
-            let subAction = new SubAction();
-            let siteNameItem = parameters[iter].find(p => p.name.toLowerCase() === "sitename");
+        for (let iter = 0; parameters && iter < parameters.length; iter++) {
+            const subAction = new SubAction();
+            const siteNameItem = parameters[iter].find(p => p.name.toLowerCase() === 'sitename');
             subAction.parameter = parameters[iter];
             subAction.title = `Restart App : ${siteNameItem.value}`;
 
@@ -126,9 +125,9 @@ export class RestartSiteSolution extends InlineSolutionUIModel {
 
     executeSubAction(subAction: SubAction): Observable<boolean> {
 
-        let subscriptionId = subAction.parameter.find(p => p.name.toLowerCase() === "subscriptionid").value;
-        let resourceGroup = subAction.parameter.find(p => p.name.toLowerCase() === "resourcegroup").value;
-        let siteName = subAction.parameter.find(p => p.name.toLowerCase() === "sitename").value;
+        const subscriptionId = subAction.parameter.find(p => p.name.toLowerCase() === 'subscriptionid').value;
+        const resourceGroup = subAction.parameter.find(p => p.name.toLowerCase() === 'resourcegroup').value;
+        const siteName = subAction.parameter.find(p => p.name.toLowerCase() === 'sitename').value;
 
         if (subscriptionId && resourceGroup && siteName) {
             return this._siteService.restartSite(subscriptionId, resourceGroup, siteName);

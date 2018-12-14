@@ -14,7 +14,7 @@ const ResourceRoutes = RouterModule.forChild([
   //   path: 'legacy/subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:sitename/slots/:slot',
   //   loadChildren: 'app/availability/availability.module#AvailabilityModule'
   // },
-  
+
   // Web Apps
   {
     path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/sites/:resourcename',
@@ -31,7 +31,7 @@ const ResourceRoutes = RouterModule.forChild([
     loadChildren: './web-hosting-environments/web-hosting-environments.module#WebHostingEnvironmentsModule'
   }
 
-])
+]);
 
 @NgModule({
   imports: [

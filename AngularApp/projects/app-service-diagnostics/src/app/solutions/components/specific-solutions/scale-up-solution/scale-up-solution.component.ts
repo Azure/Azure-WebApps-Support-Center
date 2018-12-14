@@ -17,17 +17,17 @@ export class ScaleUpSolutionComponent implements SolutionBaseComponent {
 
     @Input() data: SolutionData;
 
-    title: string = "Scale up your App Service Plan";
-    description: string = "Increase the size of the instances in your app service plan. Each instance will have more cores (CPU), memory, and disk space.";
+    title: string = 'Scale up your App Service Plan';
+    description: string = 'Increase the size of the instances in your app service plan. Each instance will have more cores (CPU), memory, and disk space.';
 
     whyToScale: string[] = [
-        "Your app is designed to do a lot of processing that requires a high amount of CPU and you want more cores for each instance",
-        "Your app is designed to need a lot of memory. You want each instance to have a larger RAM size. "
+        'Your app is designed to do a lot of processing that requires a high amount of CPU and you want more cores for each instance',
+        'Your app is designed to need a lot of memory. You want each instance to have a larger RAM size. '
     ];
 
     whyNotToScale: string[] = [
-        "Your app is experiencing high CPU or memory, but it is not designed to. This could be the result of a bug in your app code and scaling will not necessarily help.",
-        "You experience high resource usage during the hours of peak traffic for your app. A more cost effective solution would be AutoScale."
+        'Your app is experiencing high CPU or memory, but it is not designed to. This could be the result of a bug in your app code and scaling will not necessarily help.',
+        'You experience high resource usage during the hours of peak traffic for your app. A more cost effective solution would be AutoScale.'
     ];
 
     currentServerFarm: ServerFarm;
@@ -44,7 +44,7 @@ export class ScaleUpSolutionComponent implements SolutionBaseComponent {
             }
         }, error => {
             //TODO: handle error
-        })
+        });
     }
 
     ngOnInit() {
@@ -53,19 +53,18 @@ export class ScaleUpSolutionComponent implements SolutionBaseComponent {
     }
 
     generateSuggestion() {
-        let sizeId = parseInt(this.currentServerFarm.sku.name.replace(this.currentServerFarm.sku.family, ''));
+        const sizeId = parseInt(this.currentServerFarm.sku.name.replace(this.currentServerFarm.sku.family, ''));
 
         // TODO: if it is an ASE, we should offer premium sized instances
 
         if (sizeId < 3) {
             this.suggestion = `You can increase your App Service Plan to the next tier <b>${this.currentServerFarm.sku.family + (sizeId + 1)}</b>. ` +
                 `This would increase your RAM size to <b>${this.currentServerFarm.additionalProperties.ramInGB * 2}GB</b> ` +
-                `and the number of cores to <b>${this.currentServerFarm.additionalProperties.cores * 2}</b>.`
+                `and the number of cores to <b>${this.currentServerFarm.additionalProperties.cores * 2}</b>.`;
 
-            this.secondarySuggestion = "<b>Note:</b> Scaling up will increase the cost of your App Service Plan. You can try scaling up and see if it solves your problem, and if not scale back down."
-        }
-        else {
-            this.suggestion = 'You are already scaled to the maximum instance size. You could try scaling out instead.'
+            this.secondarySuggestion = '<b>Note:</b> Scaling up will increase the cost of your App Service Plan. You can try scaling up and see if it solves your problem, and if not scale back down.';
+        } else {
+            this.suggestion = 'You are already scaled to the maximum instance size. You could try scaling out instead.';
         }
     }
 

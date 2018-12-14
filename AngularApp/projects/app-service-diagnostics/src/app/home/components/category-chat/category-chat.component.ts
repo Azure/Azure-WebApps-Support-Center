@@ -17,7 +17,7 @@ export class CategoryChatComponent implements OnInit {
 
   category: Category;
 
-  constructor(private _injector: Injector, private _activatedRoute: ActivatedRoute, private _categoryService: CategoryService, private _chatState: CategoryChatStateService) { 
+  constructor(private _injector: Injector, private _activatedRoute: ActivatedRoute, private _categoryService: CategoryService, private _chatState: CategoryChatStateService) {
 
     this._categoryService.categories.subscribe(categories => {
       this.category = categories.find(category => category.id === this._activatedRoute.snapshot.params.category);
@@ -25,7 +25,7 @@ export class CategoryChatComponent implements OnInit {
 
       this.startingKey = `welcome-${this.category.id}`;
     });
-    
+
   }
 
   ngOnInit() {

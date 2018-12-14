@@ -1,6 +1,6 @@
 import { Http } from '@angular/http';
 import { Injectable } from '@angular/core';
-import { Observable ,  of } from 'rxjs'
+import { Observable ,  of } from 'rxjs';
 import { StartupInfo, ResourceType } from '../../shared/models/portal';
 import { PortalService } from './portal.service';
 import { map } from 'rxjs/operators';
@@ -19,7 +19,7 @@ export class AuthService {
         resourceId: '',
         workflowId: '',
         supportTopicId: ''
-    }
+    };
 
     public get hasLocalStartupInfo() {
         return this.localStartUpInfo && this.localStartUpInfo.token && this.localStartUpInfo.resourceId;
@@ -51,7 +51,7 @@ export class AuthService {
             if (this.localStartUpInfo.token.startsWith('Bearer ')) {
                 this.localStartUpInfo.token = this.localStartUpInfo.token.replace('Bearer ', '');
             }
-            startupInfo = of<StartupInfo>(this.localStartUpInfo)
+            startupInfo = of<StartupInfo>(this.localStartUpInfo);
         }
 
         return startupInfo.pipe(

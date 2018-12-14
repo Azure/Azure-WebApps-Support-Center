@@ -19,7 +19,7 @@ import { JavaThreadDumpSolutionComponent } from './components/specific-solutions
 
 @NgModule({
     declarations: [
-        DynamicSolutionPlaceHolderDirective, 
+        DynamicSolutionPlaceHolderDirective,
         DynamicSolutionComponent,
         SolutionsWidgetComponent,
         SiteRestartComponent,
