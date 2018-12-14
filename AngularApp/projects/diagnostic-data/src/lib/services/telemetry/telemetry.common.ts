@@ -6,7 +6,7 @@ export const TelemetryEventNames = {
     ChildDetectorsSummary: 'ChildDetectorsSummary',
     MarkdownClicked: 'MarkdownClicked',
     StarRatingSubmitted: 'StarRatingSubmitted'
-}
+};
 
 export interface ITelemetryProvider {
     // Log a user action or other occurrence.
@@ -14,7 +14,7 @@ export interface ITelemetryProvider {
 
     // Log an exception you have caught. (Exceptions caught by the browser are also logged.)
     logException(exception: Error, handledAt?: string, properties?: any, measurements?: any, severityLevel?: any);
-    
+
     // Logs that a page displayed to the user.
     logPageView(name: string, url: string, properties?: any, measurements?: any, duration?: number);
 

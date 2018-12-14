@@ -8,7 +8,6 @@ import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 
 @Component({
-  selector: 'insights',
   templateUrl: './insights.component.html',
   styleUrls: ['./insights.component.scss']
 })
@@ -34,26 +33,26 @@ export class InsightsComponent extends DataRenderBaseComponent {
   }
 
   private parseInsights() {
-    let insights: Insight[] = [];
-    let data = this.diagnosticData.table;
+    const insights: Insight[] = [];
+    const data = this.diagnosticData.table;
 
-    let statusColumnIndex = 0;
-    let insightColumnIndex = 1;
-    let nameColumnIndex = 2;
-    let valueColumnIndex = 3;
-    let isExpandedIndex = 4;
+    const statusColumnIndex = 0;
+    const insightColumnIndex = 1;
+    const nameColumnIndex = 2;
+    const valueColumnIndex = 3;
+    const isExpandedIndex = 4;
 
     for (let i: number = 0; i < data.rows.length; i++) {
-      let row = data.rows[i];
+      const row = data.rows[i];
       let insight: Insight;
-      let insightName = row[insightColumnIndex];
-      if ((insight = insights.find(insight => insight.title === insightName)) == null) {
-        let isExpanded: boolean = row.length > isExpandedIndex ? row[isExpandedIndex].toLowerCase() === 'true' : false
+      const insightName = row[insightColumnIndex];
+      if ((insight = insights.find(ins => ins.title === insightName)) == null) {
+        const isExpanded: boolean = row.length > isExpandedIndex ? row[isExpandedIndex].toLowerCase() === 'true' : false;
         insight = new Insight(row[statusColumnIndex], insightName, isExpanded);
         insights.push(insight);
       }
 
-      let nameColumnValue = row[nameColumnIndex];
+      const nameColumnValue = row[nameColumnIndex];
       if (nameColumnValue && nameColumnValue.length > 0) {
         insight.data[nameColumnValue] = row[valueColumnIndex];
       }
@@ -76,10 +75,10 @@ export class InsightsComponent extends DataRenderBaseComponent {
   }
 
   logInsightClickEvent(insightName: string, isExpanded: boolean, status: string) {
-    let eventProps: { [name: string]: string } = {
-      "Title": insightName,
-      "IsExpanded": String(isExpanded),
-      "Status": status
+    const eventProps: { [name: string]: string } = {
+      'Title': insightName,
+      'IsExpanded': String(isExpanded),
+      'Status': status
     };
 
     this.logEvent(TelemetryEventNames.InsightsTitleClicked, eventProps);

@@ -8,10 +8,18 @@ export class TimeUtilities {
     }
 
     public static roundDown(date: momentNs.Moment, duration: momentNs.Duration) {
-        duration.months() && date.startOf('month').month(date.month() - date.month() % duration.months());
-        duration.days() && date.startOf('day').days(date.days() - date.days() % duration.days());
-        duration.hours() && date.startOf('hour').hours(date.hours() - date.hours() % duration.hours());
-        duration.minutes() && date.startOf('minute').minutes(date.minutes() - date.minutes() % duration.minutes());
+        if (duration.months() > 0) {
+            date.startOf('month').month(date.month() - date.month() % duration.months());
+        }
+        if (duration.days() > 0 ) {
+            date.startOf('day').days(date.days() - date.days() % duration.days());
+        }
+        if (duration.hours() > 0 ) {
+            date.startOf('hour').hours(date.hours() - date.hours() % duration.hours());
+        }
+        if (duration.minutes() > 0 ) {
+            date.startOf('minute').minutes(date.minutes() - date.minutes() % duration.minutes());
+        }
     }
 }
 

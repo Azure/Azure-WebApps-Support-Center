@@ -9,11 +9,6 @@ import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 })
 
 export class StarRatingComponent {
-  constructor(protected telemetryService: TelemetryService) {
-  }
-
-  ngOnInit() {
-  }
 
   @Input() isModal: boolean;
   @Input() ratingEventProperties: any;
@@ -21,11 +16,13 @@ export class StarRatingComponent {
 
   showThanksMessage: boolean = false;
   rating: number = 0;
-  comments: string = "Start your rating.";
+  comments: string = 'Start your rating.';
   feedbackText: string;
 
-
   hideWholeForm: boolean;
+
+  constructor(protected telemetryService: TelemetryService) {
+  }
 
   setStar(data: any, comments?: any) {
     this.rating = data;
@@ -33,7 +30,7 @@ export class StarRatingComponent {
   }
 
   public feedbackMessageSubmitted() {
-    var eventProps = {
+    const eventProps = {
       Rating: String(this.rating),
       Feedback: this.feedbackText
     };
@@ -44,10 +41,12 @@ export class StarRatingComponent {
   }
 
   protected logEvent(eventMessage: string, eventProperties?: any, measurements?: any) {
-    for (let id in this.ratingEventProperties) {
-      eventProperties[id] = String(this.ratingEventProperties[id]);
+    for (const id of Object.keys(this.ratingEventProperties)) {
+      if (this.ratingEventProperties.hasOwnProperty(id)) {
+        eventProperties[id] = String(this.ratingEventProperties[id]);
+      }
     }
     this.telemetryService.logEvent(eventMessage, eventProperties, measurements);
   }
-  
+
 }

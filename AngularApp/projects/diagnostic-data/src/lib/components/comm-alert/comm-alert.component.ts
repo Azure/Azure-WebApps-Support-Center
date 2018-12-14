@@ -14,7 +14,8 @@ const moment = momentNs;
 export class CommAlertComponent implements OnInit {
 
   private activeAlertTitle: string = 'An Azure service outage may be impacting this subscription. (Issue : {title})';
-  private resolvedAlertTitle: string = 'An Azure service outage that was impacting this subscription was recently resolved. (Issue : {title})';
+  private resolvedAlertTitle: string =
+    'An Azure service outage that was impacting this subscription was recently resolved. (Issue : {title})';
   private azureServiceCommList: Communication[];
 
   @Input() autoExpand: boolean = false;
@@ -39,19 +40,18 @@ export class CommAlertComponent implements OnInit {
 
     this.commsService.getServiceHealthCommunications().subscribe((commsList: Communication[]) => {
       this.azureServiceCommList = commsList;
-      let commAlert = commsList.find((comm: Communication) => comm.isAlert === true);
+      const commAlert = commsList.find((comm: Communication) => comm.isAlert === true);
       if (commAlert) {
         this.commAlertToShow = commAlert;
         this.isAlertExpanded = this.autoExpand && this.commAlertToShow.isExpanded;
         this.commPublishedTime = moment.utc(this.commAlertToShow.publishedTime).format('YYYY-MM-DD HH:mm A');
         if (commAlert.status === CommunicationStatus.Active) {
           this.commAlertTitle = this.activeAlertTitle;
-        }
-        else {
+        } else {
           this.commAlertTitle = this.resolvedAlertTitle;
         }
 
-        this.commAlertTitle = this.commAlertTitle.replace("{title}", commAlert.title);
+        this.commAlertTitle = this.commAlertTitle.replace('{title}', commAlert.title);
         this._getImpactedServices();
       }
     });
@@ -59,28 +59,27 @@ export class CommAlertComponent implements OnInit {
 
   private _getImpactedServices() {
 
-    var impactedServices: string[] = [];
-    var impactedRegions: string[] = [];
+    let impactedServices: string[] = [];
+    let impactedRegions: string[] = [];
 
-    let allCommsForImpactingIncident = this.azureServiceCommList.filter(x => x.incidentId === this.commAlertToShow.incidentId);
+    const allCommsForImpactingIncident = this.azureServiceCommList.filter(x => x.incidentId === this.commAlertToShow.incidentId);
     allCommsForImpactingIncident.forEach(item => {
       impactedServices = impactedServices.concat(item.impactedServices.map(y => y.name));
 
-      var regions = item.impactedServices.map(z => z.regions);
+      const regions = item.impactedServices.map(z => z.regions);
       impactedRegions = impactedRegions.concat(...regions);
 
     });
 
-    let impactedServicesArray = impactedServices.filter((value, index, arr) => arr.indexOf(value) == index);
+    const impactedServicesArray = impactedServices.filter((value, index, arr) => arr.indexOf(value) === index);
 
     this.impactedServices = impactedServicesArray && impactedServicesArray.toString();
-    let uniqueRegions = impactedRegions.filter((value, index, arr) => arr.indexOf(value) == index);
+    const uniqueRegions = impactedRegions.filter((value, index, arr) => arr.indexOf(value) === index);
 
     if (uniqueRegions.length > 3) {
-      let firstThreeRegions = uniqueRegions.slice(0, 3);
+      const firstThreeRegions = uniqueRegions.slice(0, 3);
       this.impactedRegions = firstThreeRegions && firstThreeRegions.toString().concat(`(+${uniqueRegions.length - 3} more)`);
-    }
-    else {
+    } else {
       this.impactedRegions = uniqueRegions && uniqueRegions.toString();
     }
   }

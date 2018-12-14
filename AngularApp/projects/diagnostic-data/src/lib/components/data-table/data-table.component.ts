@@ -29,8 +29,8 @@ export class DataTableComponent extends DataRenderBaseComponent {
   }
 
   private createNgxDataTableObjects() {
-    this.columns = this.diagnosticData.table.columns.map(column => 
-      <any>{ 
+    this.columns = this.diagnosticData.table.columns.map(column =>
+      <any>{
         name: column.columnName,
         resizable: true,
         sortable: true,
@@ -39,7 +39,7 @@ export class DataTableComponent extends DataRenderBaseComponent {
     this.rows = [];
 
     this.diagnosticData.table.rows.forEach(row => {
-      let rowObject: any = {};
+      const rowObject: any = {};
 
       for (let i: number = 0; i < this.diagnosticData.table.columns.length; i++) {
         rowObject[this.diagnosticData.table.columns[i].columnName] = row[i];
@@ -55,6 +55,6 @@ export class DataTableComponent extends DataRenderBaseComponent {
 
   toggleExpandGroup(group) {
     this.table.groupHeader.toggleExpandGroup(group);
-  } 
+  }
 
 }

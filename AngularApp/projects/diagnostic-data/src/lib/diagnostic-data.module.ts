@@ -72,6 +72,6 @@ export class DiagnosticDataModule {
         DetectorControlService,
         CommsService
       ]
-    }
+    };
   }
 }

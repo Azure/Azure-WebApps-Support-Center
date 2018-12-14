@@ -3,7 +3,7 @@ import { DataRenderBaseComponent } from '../data-render-base/data-render-base.co
 import { DataTableResponseObject, Rendering, DiagnosticData } from '../../models/detector';
 
 @Component({
-  selector: 'dropdown',
+  selector: 'diag-dropdown',
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.scss']
 })
@@ -25,22 +25,22 @@ export class DropdownComponent extends DataRenderBaseComponent {
 
   private parseData(table: DataTableResponseObject) {
 
-    let labelColumn = 0;
-    let keyColumn = 1;
-    let selectedColumn = 2;
-    let valueColumn = 3;
+    const labelColumn = 0;
+    const keyColumn = 1;
+    const selectedColumn = 2;
+    const valueColumn = 3;
 
     this.keyDataMapping = new Map<string, DiagnosticData[]>();
 
     for (let i: number = 0; i < table.rows.length; i++) {
 
-      let row = table.rows[i];
+      const row = table.rows[i];
       this.label = row[labelColumn];
-      let key: string = row[keyColumn];
-      let selected: boolean = row[selectedColumn].toLowerCase() === 'true';
-      let data: string = row[valueColumn];
-      let rawJson: any = JSON.parse(data);
-      let diagnosticDataList: DiagnosticData[] = <DiagnosticData[]>rawJson;
+      const key: string = row[keyColumn];
+      const selected: boolean = row[selectedColumn].toLowerCase() === 'true';
+      const data: string = row[valueColumn];
+      const rawJson: any = JSON.parse(data);
+      const diagnosticDataList: DiagnosticData[] = <DiagnosticData[]>rawJson;
 
       this.keyDataMapping.set(key, diagnosticDataList);
 

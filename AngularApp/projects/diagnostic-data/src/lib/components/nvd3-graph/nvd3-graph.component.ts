@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as momentNs from 'moment';
 import { TimeSeriesType } from '../../models/detector';
-import { nvd3Utilities } from '../../utilities/nvd3-utilities';
+import { Nvd3Utilities } from '../../utilities/nvd3-utilities';
 
 const moment = momentNs;
 
@@ -37,12 +37,12 @@ export class Nvd3GraphComponent implements OnInit {
 
     setTimeout(() => {
       this.loading = false;
-    }, 100)
+    }, 100);
   }
 
   private _updateOptions() {
     if (this.chartType) {
-      this.options.chart.type = nvd3Utilities.getChartType(this.chartType);
+      this.options.chart.type = Nvd3Utilities.getChartType(this.chartType);
     }
 
     if (this.chartOptions) {
@@ -56,13 +56,12 @@ export class Nvd3GraphComponent implements OnInit {
 
   private _updateObject(obj: Object, replacement: any): Object {
     Object.keys(replacement).forEach(key => {
-      let subItem = obj[key];
-      let replace = replacement[key];
+      const subItem = obj[key];
+      const replace = replacement[key];
       // Below returns true if subItem is an object
       if (subItem === Object(subItem)) {
         obj[key] = this._updateObject(subItem, replace);
-      }
-      else {
+      } else {
         obj[key] = replace;
       }
     });
@@ -81,7 +80,7 @@ export class Nvd3GraphComponent implements OnInit {
           bottom: 50,
           left: 50
         },
-        //color: colors,
+        // color: colors,
         useInteractiveGuideline: true,
         transitionDuration: 350,
         showLegend: true,
@@ -103,9 +102,9 @@ export class Nvd3GraphComponent implements OnInit {
           axisLabel: '',
           axisLabelDistance: -10
         },
-        forceY: [0,1]
+        forceY: [0, 1]
       }
-    }
+    };
   }
 
 }

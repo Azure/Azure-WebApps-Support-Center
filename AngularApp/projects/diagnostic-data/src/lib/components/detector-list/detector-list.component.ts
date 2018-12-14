@@ -40,7 +40,8 @@ export class DetectorListComponent extends DataRenderBaseComponent {
 
   private childDetectorsEventProperties = {};
 
-  constructor(private _diagnosticService: DiagnosticService, protected telemetryService: TelemetryService, private _detectorControl: DetectorControlService) {
+  constructor(private _diagnosticService: DiagnosticService, protected telemetryService: TelemetryService,
+    private _detectorControl: DetectorControlService) {
     super(telemetryService);
   }
 
@@ -56,7 +57,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
       this.detectorMetaData = detectors.filter(detector => this.renderingProperties.detectorIds.indexOf(detector.id) >= 0);
       this.detectorViewModels = this.detectorMetaData.map(detector => this.getDetectorViewModel(detector));
 
-      let requests: Observable<any>[] = [];
+      const requests: Observable<any>[] = [];
       this.detectorViewModels.forEach((metaData, index) => {
         requests.push((<Observable<DetectorResponse>>metaData.request).pipe(
           map((response: DetectorResponse) => {
@@ -90,7 +91,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
         this.childDetectorsEventProperties['ChildDetectorsList'] = JSON.stringify(childDetectorData);
         this.logEvent(TelemetryEventNames.ChildDetectorsSummary, this.childDetectorsEventProperties);
       });
-    })
+    });
   }
 
   public retryRequest(metaData: any) {
@@ -114,11 +115,11 @@ export class DetectorListComponent extends DataRenderBaseComponent {
       expanded: false,
       response: null,
       request: this._diagnosticService.getDetector(detector.id, this._detectorControl.startTimeString, this._detectorControl.endTimeString)
-    }
+    };
   }
 
   private updateDetectorViewModelSuccess(viewModel: any, res: DetectorResponse) {
-    let status = res.status.statusId;
+    const status = res.status.statusId;
 
     viewModel.loadingStatus = LoadingStatus.Success,
       viewModel.status = status;
@@ -129,13 +130,13 @@ export class DetectorListComponent extends DataRenderBaseComponent {
   }
 
   toggleDetectorHeaderStatus(viewModel: any) {
-    viewModel.expanded = viewModel.loadingStatus == LoadingStatus.Success && !viewModel.expanded;
-    let clickDetectorEventProperties = {
-      "ChildDetectorName": viewModel.title,
-      "ChildDetectorId": viewModel.metadata.id,
-      "IsExpanded": viewModel.expanded,
-      "Status": viewModel.status
-    }
+    viewModel.expanded = viewModel.loadingStatus === LoadingStatus.Success && !viewModel.expanded;
+    const clickDetectorEventProperties = {
+      'ChildDetectorName': viewModel.title,
+      'ChildDetectorId': viewModel.metadata.id,
+      'IsExpanded': viewModel.expanded,
+      'Status': viewModel.status
+    };
 
     // Log children detectors click
     this.logEvent(TelemetryEventNames.ChildDetectorClicked, clickDetectorEventProperties);

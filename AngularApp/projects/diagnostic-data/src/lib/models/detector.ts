@@ -9,12 +9,12 @@ export interface DetectorResponse {
     dataset: DiagnosticData[];
     metadata: DetectorMetaData;
     status: Status;
-    dataProvidersMetadata: DataProviderMetadata[]
+    dataProvidersMetadata: DataProviderMetadata[];
 }
 
 export interface Status {
-    statusId: HealthStatus,
-    message: string
+    statusId: HealthStatus;
+    message: string;
 }
 
 export enum HealthStatus {
@@ -31,7 +31,7 @@ export interface DiagnosticData {
 }
 
 export interface DataTableResponseObject {
-    //tableName: string;
+    // tableName: string;
     columns: DataTableResponseColumn[];
     rows: string[][];
 }
@@ -52,24 +52,24 @@ export interface DetectorMetaData {
 }
 
 export interface DataProviderMetadata {
-    providerName:string;
+    providerName: string;
     propertyBag: PropertyBag[];
 
 }
 
 export interface PropertyBag {
     key: string;
-    value: any; 
+    value: any;
 }
 
-export interface KustoPropertyBagValue{
+export interface KustoPropertyBagValue {
     text: string;
     url: string;
 }
 
 export interface SupportTopic {
-    id: string,
-    pesId: string
+    id: string;
+    pesId: string;
 }
 
 export enum RenderingType {
@@ -95,14 +95,14 @@ export enum TimeSeriesType {
 }
 
 export class DataTableDataType {
-    static Boolean: string = "Boolean";
-    static Byte: string = "Byte";
-    static DateTime: string = "DateTime";
-    static Double: string = "Double";
-    static Int16: string = "Int16";
-    static Int32: string = "Int32";
-    static Int64: string = "Int64";
-    static String: string = "String";
+    static Boolean: string = 'Boolean';
+    static Byte: string = 'Byte';
+    static DateTime: string = 'DateTime';
+    static Double: string = 'Double';
+    static Int16: string = 'Int16';
+    static Int32: string = 'Int32';
+    static Int64: string = 'Int64';
+    static String: string = 'String';
 
     static NumberTypes: string[] = [ DataTableDataType.Double, DataTableDataType.Int64, DataTableDataType.Int32, DataTableDataType.Int16 ];
 }
@@ -149,11 +149,11 @@ export interface InsightsRendering extends Rendering {
 }
 
 export interface DynamicInsightRendering extends Rendering {
-    status: HealthStatus,
-    innerRendering: Rendering,
-    expanded: boolean
+    status: HealthStatus;
+    innerRendering: Rendering;
+    expanded: boolean;
 }
 
 export interface DetectorListRendering extends Rendering {
-    detectorIds: string[]
+    detectorIds: string[];
 }

@@ -1,11 +1,11 @@
-import { TimeSeriesType } from "../models/detector";
+import { TimeSeriesType } from '../models/detector';
 
-export class nvd3Utilities {
+export class Nvd3Utilities {
     public static getChartType(chartType: TimeSeriesType) {
         let type: string;
 
         switch (chartType as TimeSeriesType) {
-            case TimeSeriesType.StackedAreaGraph: 
+            case TimeSeriesType.StackedAreaGraph:
                 type = 'stackedAreaChart';
                 break;
             case TimeSeriesType.BarGraph:

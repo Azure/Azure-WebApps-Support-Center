@@ -2,7 +2,6 @@
 import {filter} from 'rxjs/operators';
 import { Component, OnInit, PipeTransform, Pipe } from '@angular/core';
 import { Router, ActivatedRoute, NavigationExtras, NavigationEnd } from '@angular/router';
-import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { CollapsibleMenuItem } from '../../../collapsible-menu/components/collapsible-menu-item/collapsible-menu-item.component';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';

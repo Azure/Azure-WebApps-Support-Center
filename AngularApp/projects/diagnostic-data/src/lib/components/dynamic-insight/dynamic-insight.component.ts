@@ -18,7 +18,7 @@ export class DynamicInsightComponent extends DataRenderBaseComponent {
 
   InsightStatus = HealthStatus;
 
-  constructor(private _markdownService: MarkdownService, protected telemetryService: TelemetryService){
+  constructor(private _markdownService: MarkdownService, protected telemetryService: TelemetryService) {
     super(telemetryService);
   }
 
@@ -30,9 +30,9 @@ export class DynamicInsightComponent extends DataRenderBaseComponent {
   }
 
   private parseInsight() {
-    
+
     // Make sure that we don't render a box within the insight
-    this.renderingProperties.innerRendering.title = "";
+    this.renderingProperties.innerRendering.title = '';
 
     this.insight = <DynamicInsight> {
       title: this.renderingProperties.title,
@@ -43,6 +43,6 @@ export class DynamicInsightComponent extends DataRenderBaseComponent {
         renderingProperties: this.renderingProperties.innerRendering,
         table: this.diagnosticData.table
       }
-    }
+    };
   }
 }

@@ -3,7 +3,6 @@ import { DataRenderBaseComponent } from '../data-render-base/data-render-base.co
 import { RenderingType, Rendering, DiagnosticData } from '../../models/detector';
 
 @Component({
-  selector: 'email',
   templateUrl: './email.component.html',
   styleUrls: ['./email.component.scss']
 })

@@ -5,7 +5,16 @@
     "types": [
       "jasmine",
       "node"
-    ]
+    ],
+    "paths": {
+      "moment": [
+        "../../node_modules/moment/min/moment.min.js",
+        "../node_modules/moment/min/moment.min.js"
+      ],
+      "diagnostic-data": [
+        "projects/diagnostic-data/src/public_api",
+      ]
+    }
   },
   "files": [
     "src/test.ts",

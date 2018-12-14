@@ -7,6 +7,19 @@ import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagn
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 
+const emailTemplate = `To:
+Subject: Case Email
+X-Unsent: 1
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+<body>
+    {body}
+</body>
+</html>`;
+
+
 @Component({
   selector: 'markdown-view',
   templateUrl: './markdown.component.html',
@@ -19,7 +32,8 @@ export class MarkdownComponent extends DataRenderBaseComponent {
   markdown: string;
   isPublic: boolean;
 
-  constructor(private _markdownService: MarkdownService, private _clipboard: ClipboardService, @Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, protected telemetryService: TelemetryService) {
+  constructor(private _markdownService: MarkdownService, private _clipboard: ClipboardService,
+    @Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, protected telemetryService: TelemetryService) {
     super(telemetryService);
     this.isPublic = config && config.isPublic;
   }
@@ -32,42 +46,42 @@ export class MarkdownComponent extends DataRenderBaseComponent {
   }
 
   private createViewModel() {
-    let rows = this.diagnosticData.table.rows;
+    const rows = this.diagnosticData.table.rows;
     if (rows.length > 0 && rows[0].length > 0) {
       this.markdown = rows[0][0];
     }
   }
 
   copyMarkdown() {
-    let markdownHtml = this._markdownService.compile(this.markdown);
+    const markdownHtml = this._markdownService.compile(this.markdown);
     this._clipboard.copyAsHtml(markdownHtml);
 
     // Send telemetry event for clicking copyMarkdown
-    let copytoEmailEventProps: { [name: string]: string } = {
-      "Title": this.renderingProperties.title,
-      "ButtonClicked": "Copy to Email"
+    const copytoEmailEventProps: { [name: string]: string } = {
+      'Title': this.renderingProperties.title,
+      'ButtonClicked': 'Copy to Email'
     };
     this.logEvent(TelemetryEventNames.MarkdownClicked, copytoEmailEventProps);
   }
 
   openEmail() {
-    let markdownHtml = this._markdownService.compile(this.markdown);
-    let mailto = this.emailTemplate.replace('{body}', markdownHtml);
-    let data = new Blob([mailto], { type: 'text/plain' });
-    let textFile = window.URL.createObjectURL(data);
+    const markdownHtml = this._markdownService.compile(this.markdown);
+    const mailto = emailTemplate.replace('{body}', markdownHtml);
+    const data = new Blob([mailto], { type: 'text/plain' });
+    const textFile = window.URL.createObjectURL(data);
 
     this.download('CaseEmail.eml', textFile);
 
     // Send telemetry event for clicking openEmail
-    let openOutlookEventProps: { [name: string]: string } = {
-      "Title": this.renderingProperties.title,
-      "ButtonClicked": "Open in Outlook"
+    const openOutlookEventProps: { [name: string]: string } = {
+      'Title': this.renderingProperties.title,
+      'ButtonClicked': 'Open in Outlook'
     };
     this.logEvent(TelemetryEventNames.MarkdownClicked, openOutlookEventProps);
   }
 
   download(filename, text) {
-    var element = document.createElement('a');
+    const element = document.createElement('a');
     element.setAttribute('href', text);
     element.setAttribute('download', filename);
 
@@ -78,16 +92,4 @@ export class MarkdownComponent extends DataRenderBaseComponent {
 
     document.body.removeChild(element);
   }
-
-  readonly emailTemplate = `To: 
-Subject: Case Email
-X-Unsent: 1
-Content-Type: text/html
-
-<!DOCTYPE html>
-<html>
-<body>
-    {body}
-</body>
-</html>`
 }

@@ -12,7 +12,7 @@ export class ClipboardService {
   copyAsHtml(htmlString: string) {
 
     clipboard(htmlString, {
-      asHtml:true
+      asHtml: true
     });
   }
 }

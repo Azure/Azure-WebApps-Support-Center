@@ -22,7 +22,7 @@ export class DetectorViewComponent implements OnInit {
 
   private detectorResponseSubject: BehaviorSubject<DetectorResponse> = new BehaviorSubject<DetectorResponse>(null);
   private errorSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  
+
   public detectorEventProperties: { [name: string]: string };
   public ratingEventProperties: { [name: string]: string };
   public authorEmails: string;
@@ -32,7 +32,7 @@ export class DetectorViewComponent implements OnInit {
   @Input()
   set detectorResponse(value: DetectorResponse) {
     this.detectorResponseSubject.next(value);
-  };
+  }
 
   @Input()
   set error(value: any) {
@@ -44,18 +44,19 @@ export class DetectorViewComponent implements OnInit {
 
   @Input() showEdit: boolean = true;
   @Input() insideDetectorList: boolean = false;
-  @Input() parentDetectorId: string = "";
+  @Input() parentDetectorId: string = '';
   @Input() isSystemInvoker: boolean = false;
-  @Input() authorInfo: string = "";
-  @Input() feedbackDetector: string = "";
+  @Input() authorInfo: string = '';
+  @Input() feedbackDetector: string = '';
 
-  constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private telemetryService: TelemetryService, private detectorControlService: DetectorControlService) {
+  constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private telemetryService: TelemetryService,
+    private detectorControlService: DetectorControlService) {
     this.isPublic = config && config.isPublic;
   }
 
   ngOnInit() {
     this.loadDetector();
-    
+
     this.detectorControlService.update.subscribe(validUpdate => {
       if (validUpdate) {
 
@@ -77,35 +78,33 @@ export class DetectorViewComponent implements OnInit {
       this.detectorDataLocalCopy = data;
       if (data) {
         this.detectorEventProperties = {
-          "StartTime": String(this.startTime),
-          "EndTime": String(this.endTime),
-          "DetectorId": data.metadata.id,
-          "ParentDetectorId": this.parentDetectorId,
-          "Url": window.location.href
-        }
+          'StartTime': String(this.startTime),
+          'EndTime': String(this.endTime),
+          'DetectorId': data.metadata.id,
+          'ParentDetectorId': this.parentDetectorId,
+          'Url': window.location.href
+        };
 
         this.ratingEventProperties = {
-          "DetectorId": data.metadata.id
-        }
+          'DetectorId': data.metadata.id
+        };
 
         this.feedbackDetector = this.isSystemInvoker ? this.feedbackDetector : data.metadata.id;
-        
-        if (!this.isSystemInvoker && data.metadata && data.metadata.author)
-        {
+
+        if (!this.isSystemInvoker && data.metadata && data.metadata.author) {
           this.authorInfo = data.metadata.author;
         }
 
-        if (this.authorInfo !== "")
-        {    
-          let separators = [' ', ',', ';', ':'];
-          let authors = this.authorInfo.split(new RegExp(separators.join('|'), 'g'));
-          let authorsArray: string[] = [];
+        if (this.authorInfo !== '') {
+          const separators = [' ', ',', ';', ':'];
+          const authors = this.authorInfo.split(new RegExp(separators.join('|'), 'g'));
+          const authorsArray: string[] = [];
           authors.forEach(author => {
             if (author && author.length > 0) {
               authorsArray.push(`${author}@microsoft.com`);
             }
           });
-          this.authorEmails = authorsArray.join(";");
+          this.authorEmails = authorsArray.join(';');
         }
 
         this.logInsights(data);
@@ -122,38 +121,38 @@ export class DetectorViewComponent implements OnInit {
       let warningCount: number = 0;
       let infoCount: number = 0;
       let defaultCount: number = 0;
-      let insightsList = [];
-      let insightsNameList: string[] = [];
+      const insightsList = [];
+      const insightsNameList: string[] = [];
 
-      let statusColumnIndex = 0;
-      let insightColumnIndex = 1;
-      let isExpandedIndex = 4;
+      const statusColumnIndex = 0;
+      const insightColumnIndex = 1;
+      const isExpandedIndex = 4;
 
       data.dataset.forEach(dataset => {
         if (dataset.renderingProperties && dataset.renderingProperties.type === RenderingType.Insights) {
           dataset.table.rows.forEach(row => {
             if ((insightsNameList.find(insightName => insightName === row[insightColumnIndex])) == null) {
               {
-                let isExpanded: boolean = row.length > isExpandedIndex ? row[isExpandedIndex].toLowerCase() === 'true' : false
-                var insightInstance = {
-                  "Name": row[insightColumnIndex],
-                  "Status": row[statusColumnIndex],
-                  "IsExpandedByDefault": isExpanded
-                }
+                const isExpanded: boolean = row.length > isExpandedIndex ? row[isExpandedIndex].toLowerCase() === 'true' : false;
+                const insightInstance = {
+                  'Name': row[insightColumnIndex],
+                  'Status': row[statusColumnIndex],
+                  'IsExpandedByDefault': isExpanded
+                };
                 insightsList.push(insightInstance);
                 insightsNameList.push(row[insightColumnIndex]);
 
                 switch (row[statusColumnIndex]) {
-                  case "Critical":
+                  case 'Critical':
                     criticalCount++;
                     break;
-                  case "Warning":
+                  case 'Warning':
                     warningCount++;
                     break;
-                  case "Success":
+                  case 'Success':
                     successCount++;
                     break;
-                  case "Info":
+                  case 'Info':
                     infoCount++;
                     break;
                   default:
@@ -167,19 +166,19 @@ export class DetectorViewComponent implements OnInit {
 
       totalCount = insightsList.length;
 
-      var insightSummary = {
-        "Total": totalCount,
-        "Critical": criticalCount,
-        "Warning": warningCount,
-        "Success": successCount,
-        "Info": infoCount,
-        "Default": defaultCount
-      }
+      const insightSummary = {
+        'Total': totalCount,
+        'Critical': criticalCount,
+        'Warning': warningCount,
+        'Success': successCount,
+        'Info': infoCount,
+        'Default': defaultCount
+      };
 
       this.insightsListEventProperties = {
-        "InsightsList": JSON.stringify(insightsList),
-        "InsightsSummary": JSON.stringify(insightSummary)
-      }
+        'InsightsList': JSON.stringify(insightsList),
+        'InsightsSummary': JSON.stringify(insightSummary)
+      };
 
       this.logEvent(TelemetryEventNames.InsightsSummary, this.insightsListEventProperties);
     }
@@ -187,8 +186,10 @@ export class DetectorViewComponent implements OnInit {
 
 
   protected logEvent(eventMessage: string, eventProperties?: any, measurements?: any) {
-    for (let id in this.detectorEventProperties) {
-      eventProperties[id] = String(this.detectorEventProperties[id]);
+    for (const id of Object.keys(this.detectorEventProperties)) {
+      if (this.detectorEventProperties.hasOwnProperty(id)) {
+        eventProperties[id] = String(this.detectorEventProperties[id]);
+      }
     }
     this.telemetryService.logEvent(eventMessage, eventProperties, measurements);
   }

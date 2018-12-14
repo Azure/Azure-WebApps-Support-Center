@@ -40,16 +40,16 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
     super.processData(data);
 
     if (data) {
-      let start = this.startTime;
-      let end = this.endTime;
-      let timeGrain = this.timeGrainInMinutes;
+      const start = this.startTime;
+      const end = this.endTime;
+      const timeGrain = this.timeGrainInMinutes;
 
       TimeUtilities.roundDownByMinute(start, this.timeGrainInMinutes);
       TimeUtilities.roundDownByMinute(end, this.timeGrainInMinutes);
       end.minute(end.minute() - end.minute() % timeGrain).second(0);
       this.startTime = start;
       this.endTime = end;
-      
+
       this.renderingProperties = <TimeSeriesPerInstanceRendering>data.renderingProperties;
       this.dataTable = data.table;
       this.graphOptions = data.renderingProperties.graphOptions;
@@ -73,18 +73,18 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
   }
 
   private _processDiagnosticData(data: DiagnosticData) {
-    let timestampColumnIndex = data.table.columns.findIndex(column => column.dataType === DataTableDataType.DateTime);
-    let instances = this._determineInstances(data.table);
+    const timestampColumnIndex = data.table.columns.findIndex(column => column.dataType === DataTableDataType.DateTime);
+    const instances = this._determineInstances(data.table);
     this.instances = instances;
 
     if (!instances || instances.length <= 0) {
       return;
     }
 
-    let allSeries: DetailedInstanceTimeSeries[] = [];
-    let tablePoints: InstanceTablePoint[] = [];
-    if (!this.renderingProperties.counterColumnName || this.renderingProperties.counterColumnName == '') {
-      let valueColumns: DataTableResponseColumn[] = data.table.columns.filter(column => DataTableDataType.NumberTypes.indexOf(column.dataType) >= 0);
+    const allSeries: DetailedInstanceTimeSeries[] = [];
+    const tablePoints: InstanceTablePoint[] = [];
+    if (!this.renderingProperties.counterColumnName || this.renderingProperties.counterColumnName === '') {
+      const valueColumns: DataTableResponseColumn[] = data.table.columns.filter(column => DataTableDataType.NumberTypes.indexOf(column.dataType) >= 0);
       this.counters = valueColumns.map(col => col.columnName);
       valueColumns.forEach(column => instances.forEach(instance =>
         allSeries.push(<DetailedInstanceTimeSeries>{
@@ -97,13 +97,13 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
         })));
 
       data.table.rows.forEach(row => {
-        let instance = this._getInstanceFromRow(data.table, row);
+        const instance = this._getInstanceFromRow(data.table, row);
         valueColumns.forEach(column => {
-          let columnIndex: number = data.table.columns.indexOf(column);
+          const columnIndex: number = data.table.columns.indexOf(column);
 
-          let timestamp = moment.utc(row[timestampColumnIndex]);
+          const timestamp = moment.utc(row[timestampColumnIndex]);
 
-          let point: InstanceTablePoint = <InstanceTablePoint>{
+          const point: InstanceTablePoint = <InstanceTablePoint>{
             timestamp: timestamp,
             value: parseFloat(row[columnIndex]),
             counterName: column.columnName,
@@ -113,12 +113,11 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
           tablePoints.push(point);
         });
       });
-    }
-    else {
-      let counterNameColumnIndex = data.table.columns.findIndex(column => column.columnName.toLowerCase() === 'countername');
-      let uniqueCounterNames = data.table.rows.map(row => row[counterNameColumnIndex]).filter((item, index, array) => array.indexOf(item) === index);
+    } else {
+      const counterNameColumnIndex = data.table.columns.findIndex(column => column.columnName.toLowerCase() === 'countername');
+      const uniqueCounterNames = data.table.rows.map(row => row[counterNameColumnIndex]).filter((item, index, array) => array.indexOf(item) === index);
       // Only allow one value column => default is first number column
-      let counterValueColumnIndex = data.table.columns.findIndex(column => DataTableDataType.NumberTypes.indexOf(column.dataType) >= 0);
+      const counterValueColumnIndex = data.table.columns.findIndex(column => DataTableDataType.NumberTypes.indexOf(column.dataType) >= 0);
 
       this.counters = uniqueCounterNames;
 
@@ -137,10 +136,10 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
 
       data.table.rows.forEach(row => {
 
-        let timestamp = moment.utc(row[timestampColumnIndex]);
-        let instance = this._getInstanceFromRow(data.table, row);
+        const timestamp = moment.utc(row[timestampColumnIndex]);
+        const instance = this._getInstanceFromRow(data.table, row);
 
-        let point: InstanceTablePoint = <InstanceTablePoint>{
+        const point: InstanceTablePoint = <InstanceTablePoint>{
           timestamp: timestamp,
           value: parseFloat(row[counterValueColumnIndex]),
           instance: instance,
@@ -153,14 +152,14 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
 
     allSeries.forEach(series => {
 
-      let pointsForThisSeries =
+      const pointsForThisSeries =
         tablePoints
           .filter(point => point.instance.equals(series.instance) && point.counterName === series.name)
-          .sort((b, a) => { return a.timestamp.diff(b.timestamp) });
+          .sort((b, a) => a.timestamp.diff(b.timestamp));
 
       let pointToAdd = pointsForThisSeries.pop();
 
-      for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrainInMinutes, 'minutes')) {
+      for (const d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrainInMinutes, 'minutes')) {
         let value = this.defaultValue;
 
         if (pointToAdd && d.isSame(moment.utc(pointToAdd.timestamp))) {
@@ -181,9 +180,9 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
   }
 
   private _getInstanceFromRow(table: DataTableResponseObject, row: string[]) {
-    let roleInstanceColumnIndex = table.columns.findIndex(column => column.columnName.toLowerCase() === 'roleinstance');
-    let tenantColumnIndex = table.columns.findIndex(column => column.columnName.toLowerCase() === 'tenant');
-    let machineNameColumnIndex = table.columns.findIndex(column => column.columnName.toLowerCase() === 'machinename');
+    const roleInstanceColumnIndex = table.columns.findIndex(column => column.columnName.toLowerCase() === 'roleinstance');
+    const tenantColumnIndex = table.columns.findIndex(column => column.columnName.toLowerCase() === 'tenant');
+    const machineNameColumnIndex = table.columns.findIndex(column => column.columnName.toLowerCase() === 'machinename');
 
     return new InstanceDetails(roleInstanceColumnIndex >= 0 ? row[roleInstanceColumnIndex] : '',
       tenantColumnIndex >= 0 ? row[tenantColumnIndex] : '',
@@ -191,9 +190,9 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
   }
 
   private _determineInstances(table: DataTableResponseObject) {
-    let roleInstanceColumnIndex = table.columns.findIndex(column => column.columnName.toLowerCase() === 'roleinstance');
-    let tenantColumnIndex = table.columns.findIndex(column => column.columnName.toLowerCase() === 'tenant');
-    let machineNameColumnIndex = table.columns.findIndex(column => column.columnName.toLowerCase() === 'machinename');
+    const roleInstanceColumnIndex = table.columns.findIndex(column => column.columnName.toLowerCase() === 'roleinstance');
+    const tenantColumnIndex = table.columns.findIndex(column => column.columnName.toLowerCase() === 'tenant');
+    const machineNameColumnIndex = table.columns.findIndex(column => column.columnName.toLowerCase() === 'machinename');
 
     if (roleInstanceColumnIndex === -1 && tenantColumnIndex === -1 && machineNameColumnIndex === -1) {
       this.error = 'Could not find appropriate instance name columns';
@@ -204,11 +203,11 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
       this.warning = 'If you are only grouping instances by RoleInstance name, your query may be invalid for megastamps';
     }
 
-    let roleInstances: InstanceDetails[] = [];
+    const roleInstances: InstanceDetails[] = [];
     table.rows.forEach(row => {
-      let roleInstance = roleInstanceColumnIndex >= 0 ? row[roleInstanceColumnIndex] : '';
-      let tenant = tenantColumnIndex >= 0 ? row[tenantColumnIndex] : '';
-      let machineName = machineNameColumnIndex >= 0 ? row[machineNameColumnIndex] : '';
+      const roleInstance = roleInstanceColumnIndex >= 0 ? row[roleInstanceColumnIndex] : '';
+      const tenant = tenantColumnIndex >= 0 ? row[tenantColumnIndex] : '';
+      const machineName = machineNameColumnIndex >= 0 ? row[machineNameColumnIndex] : '';
 
       if (!roleInstances.find(instance => instance.roleInstance === roleInstance && instance.tenant === tenant && instance.machineName === machineName)) {
         roleInstances.push(new InstanceDetails(roleInstance, tenant, machineName));
@@ -219,7 +218,7 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
   }
 
   private _getTimeStampColumn() {
-    let timeStampColumn = this.renderingProperties.timestampColumnName ?
+    const timeStampColumn = this.renderingProperties.timestampColumnName ?
       this.dataTable.columns.findIndex(column => this.renderingProperties.timestampColumnName === column.columnName) :
       this.dataTable.columns.findIndex(column => column.dataType === DataTableDataType.DateTime);
 
@@ -227,7 +226,7 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
   }
 
   private _getRoleInstanceColumn() {
-    let timeStampColumn = this.renderingProperties.roleInstanceColumnName ?
+    const timeStampColumn = this.renderingProperties.roleInstanceColumnName ?
       this.dataTable.columns.findIndex(column => this.renderingProperties.roleInstanceColumnName === column.columnName) :
       this.dataTable.columns.findIndex(column => column.columnName === 'RoleInstance');
 
@@ -237,10 +236,10 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
   }
 
   private _getCounterNameColumn() {
-    let timeStampColumn = this.renderingProperties.counterColumnName ?
+    const timeStampColumn = this.renderingProperties.counterColumnName ?
       this.dataTable.columns.findIndex(column => this.renderingProperties.counterColumnName === column.columnName) :
       this.dataTable.columns.findIndex(column => column.columnName !== this.renderingProperties.roleInstanceColumnName
-        && column.dataType == DataTableDataType.String);
+        && column.dataType === DataTableDataType.String);
 
     return timeStampColumn;
   }

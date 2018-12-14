@@ -1,10 +1,10 @@
-import { Observable } from "rxjs";
-import { Injectable } from "@angular/core";
-import { DetectorResponse, DetectorMetaData } from "../models/detector";
+import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { DetectorResponse, DetectorMetaData } from '../models/detector';
 
 @Injectable()
 export class DiagnosticService {
-    //TODO: Figure out if this can be done with an abstract class
+    // TODO: Figure out if this can be done with an abstract class
     // Ran into difficulties in Support Center when this was abstract
     // This class is never supposed to be used directly
     // In applens we provide this withValue: applens-diagnostics.service

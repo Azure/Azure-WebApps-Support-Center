@@ -21,12 +21,12 @@ export class DetectorControlService {
       duration: momentNs.duration(6, 'hours'),
       internalOnly: false
     },
-    { 
+    {
       displayName: '1d',
       duration: momentNs.duration(1, 'days'),
       internalOnly: false
     },
-    { 
+    {
       displayName: '3d',
       duration: momentNs.duration(3, 'days'),
       internalOnly: true
@@ -37,7 +37,7 @@ export class DetectorControlService {
   private _startTime: momentNs.Moment;
   private _endTime: momentNs.Moment;
 
-  //TODO: allow for this to be changed with dropdown
+  // TODO: allow for this to be changed with dropdown
   private _internalView = true;
 
   public internalClient: boolean = false;
@@ -66,16 +66,13 @@ export class DetectorControlService {
     if (start && end) {
       startTime = moment.utc(start);
       endTime = moment.utc(end);
-    }
-    else if (start) {
+    } else if (start) {
       startTime = moment.utc(start);
       endTime = startTime.clone().add(1, 'days');
-    }
-    else if (end) {
+    } else if (end) {
       endTime = moment.utc(end);
       startTime = endTime.clone().subtract(1, 'days');
-    }
-    else {
+    } else {
       this.selectDuration(this.durationSelections[2]);
       return;
     }
@@ -106,7 +103,7 @@ export class DetectorControlService {
   }
 
   public refresh() {
-    this._duration ? this.selectDuration(this._duration): this._refreshData();
+    this._duration ? this.selectDuration(this._duration) : this._refreshData();
   }
 
   public toggleInternalExternal() {
@@ -123,20 +120,20 @@ export class DetectorControlService {
     return this._error;
   }
 
-  public get startTime(): momentNs.Moment { return this._startTime }
+  public get startTime(): momentNs.Moment { return this._startTime; }
 
-  public get endTime(): momentNs.Moment { return this._endTime }
+  public get endTime(): momentNs.Moment { return this._endTime; }
 
-  public get duration(): DurationSelector { return this._duration }
+  public get duration(): DurationSelector { return this._duration; }
 
-  public get startTimeString(): string { return this.startTime.format(this.stringFormat) }
+  public get startTimeString(): string { return this.startTime.format(this.stringFormat); }
 
-  public get endTimeString(): string { return this.endTime.format(this.stringFormat) }
+  public get endTimeString(): string { return this.endTime.format(this.stringFormat); }
 
-  public get isInternalView(): boolean { return this._internalView }
+  public get isInternalView(): boolean { return this._internalView; }
 
-  public get shouldRefresh(): boolean { 
-    let temp = this._shouldRefresh;
+  public get shouldRefresh(): boolean {
+    const temp = this._shouldRefresh;
     this._shouldRefresh = false;
     return temp;
   }

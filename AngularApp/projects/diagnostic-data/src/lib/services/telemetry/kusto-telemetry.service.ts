@@ -14,19 +14,19 @@ export class KustoTelemetryService implements ITelemetryProvider {
     logException() {
     }
 
-    logMetric() { 
+    logMetric() {
     }
 
 
-    logTrace(){
+    logTrace() {
     }
 
-    logPageView(){
+    logPageView() {
     }
 
     logUserInteraction() {
     }
 
-    flush(){
+    flush() {
     }
 }

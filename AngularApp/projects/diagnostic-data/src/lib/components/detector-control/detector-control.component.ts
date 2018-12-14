@@ -30,27 +30,27 @@ export class DetectorControlComponent implements OnInit {
         this.endTime = this.detectorControlService.endTimeString;
       }
 
-      let timeParams = {
+      const timeParams = {
         'startTime': this.detectorControlService.startTime.format('YYYY-MM-DDTHH:mm'),
         'endTime': this.detectorControlService.endTime.format('YYYY-MM-DDTHH:mm')
-      }
+      };
       this._router.navigate([], { queryParams: timeParams, relativeTo: this._activatedRoute });
 
     });
   }
 
   setManualDate() {
-    this.detectorControlService.setCustomStartEnd(this.startTime, this.endTime)
+    this.detectorControlService.setCustomStartEnd(this.startTime, this.endTime);
   }
 }
 
 @Pipe({
-  name:'internal',
+  name: 'internal',
   pure: false
 })
 export class InternalPipe implements PipeTransform {
   transform(items: DurationSelector[], internalClient: boolean) {
-    return items ? items.filter(item => !item.internalOnly || internalClient): items;
+    return items ? items.filter(item => !item.internalOnly || internalClient) : items;
   }
 }
 

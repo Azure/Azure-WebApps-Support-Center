@@ -17,12 +17,12 @@ export class StatusIconComponent implements OnChanges {
   LoadingStatus = LoadingStatus;
 
   statusColor: string;
-  statusIcon: string
+  statusIcon: string;
 
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(changes && changes['status'] && this.status !== null) {
+    if (changes && changes['status'] && this.status !== null) {
       this.statusColor = StatusStyles.getColorByStatus(this.status);
       this.statusIcon = StatusStyles.getIconByStatus(this.status);
     }

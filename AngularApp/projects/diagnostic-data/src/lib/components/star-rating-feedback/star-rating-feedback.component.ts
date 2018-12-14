@@ -23,11 +23,10 @@ export class StarRatingFeedbackComponent {
 
   setStar(data: any) {
     this.rating = data + 1;
-    for (var i = 0; i <= 4; i++) {
+    for (let i = 0; i <= 4; i++) {
       if (i <= data) {
         this.starList[i] = false;
-      }
-      else {
+      } else {
         this.starList[i] = true;
       }
     }

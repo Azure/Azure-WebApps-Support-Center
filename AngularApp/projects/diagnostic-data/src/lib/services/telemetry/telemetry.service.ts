@@ -13,7 +13,8 @@ export class TelemetryService {
     eventPropertiesSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
     private eventPropertiesLocalCopy: { [name: string]: string } = {};
 
-    constructor(private _appInsightsService: AppInsightsTelemetryService, private _kustoService: KustoTelemetryService, @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig) {
+    constructor(private _appInsightsService: AppInsightsTelemetryService, private _kustoService: KustoTelemetryService,
+        @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig) {
         if (config.useKustoForTelemetry) {
             this.telemetryProviders.push(this._kustoService);
         }
@@ -22,8 +23,12 @@ export class TelemetryService {
         }
 
         this.eventPropertiesSubject.subscribe((data: any) => {
-            for (let id in data) {
-                this.eventPropertiesLocalCopy[id] = String(data[id]);
+            if (data){
+                for (const id of Object.keys(data)) {
+                    if (data.hasOwnProperty(id)) {
+                        this.eventPropertiesLocalCopy[id] = String(data[id]);
+                    }
+                }
             }
         });
     }
@@ -36,36 +41,38 @@ export class TelemetryService {
         properties: { [name: string]: string },
         measurements?: any) {
         if (this.eventPropertiesLocalCopy) {
-            for (let id in this.eventPropertiesLocalCopy) {
-                properties[id] = String(this.eventPropertiesLocalCopy[id]);
+            for (const id of Object.keys(this.eventPropertiesLocalCopy)) {
+                if (this.eventPropertiesLocalCopy.hasOwnProperty(id)) {
+                    properties[id] = String(this.eventPropertiesLocalCopy[id]);
+                }
             }
         }
-        
-        for (var telemetryProvider of this.telemetryProviders) {
+
+        for (const telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logEvent(eventMessage, properties, measurements);
         }
     }
 
     public logPageView(name: string, properties?: any, measurements?: any, url?: string, duration?: number) {
-        for (var telemetryProvider of this.telemetryProviders) {
+        for (const telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logPageView(name, url, properties, measurements, duration);
         }
     }
 
     public logException(exception: Error, handledAt?: string, properties?: any, measurements?: any, severityLevel?: SeverityLevel) {
-        for (var telemetryProvider of this.telemetryProviders) {
+        for (const telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logException(exception, handledAt, properties, measurements, severityLevel);
         }
     }
 
     public logTrace(message: string, customProperties?: any, customMetrics?: any) {
-        for (var telemetryProvider of this.telemetryProviders) {
+        for (const telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logTrace(message, customProperties);
         }
     }
 
     public logMetric(name: string, average: number, sampleCount?: number, min?: number, max?: number, properties?: any) {
-        for (var telemetryProvider of this.telemetryProviders) {
+        for (const telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logMetric(name, average, sampleCount, min, max, properties);
         }
     }

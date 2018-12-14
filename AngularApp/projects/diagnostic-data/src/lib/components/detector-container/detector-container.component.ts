@@ -21,9 +21,10 @@ export class DetectorContainerComponent implements OnInit {
 
   @Input() set detector(detector: string) {
     this._detectorSubject.next(detector);
-  };
+  }
 
-  constructor(private _route: ActivatedRoute, private _diagnosticService: DiagnosticService, public detectorControlService: DetectorControlService) { }
+  constructor(private _route: ActivatedRoute, private _diagnosticService: DiagnosticService,
+    public detectorControlService: DetectorControlService) { }
 
   ngOnInit() {
     this.detectorControlService.update.subscribe(isValidUpdate => {
@@ -47,7 +48,8 @@ export class DetectorContainerComponent implements OnInit {
   }
 
   getDetectorResponse() {
-    this._diagnosticService.getDetector(this._detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString, this.detectorControlService.shouldRefresh,  this.detectorControlService.isInternalView)
+    this._diagnosticService.getDetector(this._detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
+      this.detectorControlService.shouldRefresh,  this.detectorControlService.isInternalView)
       .subscribe((response: DetectorResponse) => {
         this.detectorResponse = response;
       }, (error: any) => {

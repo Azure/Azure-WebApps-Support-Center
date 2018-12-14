@@ -1,9 +1,9 @@
-import { GraphSeries } from "../components/nvd3-graph/nvd3-graph.component";
+import { GraphSeries } from '../components/nvd3-graph/nvd3-graph.component';
 import * as momentNs from 'moment';
 
 export interface TimeSeries {
   name: string;
-  series: GraphSeries
+  series: GraphSeries;
 }
 
 export interface InstanceTimeSeries extends TimeSeries {
@@ -31,12 +31,12 @@ export class InstanceDetails {
   }
 
   private _getDisplayName() {
-    if (this.machineName && this.machineName!== '') {
+    if (this.machineName && this.machineName !== '') {
       return this.machineName;
     }
 
-    let truncatedTenant = this.tenant && this.tenant != '' ? this.tenant.substr(0,4) + '-' : '';
-    let truncatedInstance = this.roleInstance.replace('DedicatedWebWorkerRole_IN', '').replace('DedicatedLinuxWebWorkerRole_IN', '');
+    const truncatedTenant = this.tenant && this.tenant !== '' ? this.tenant.substr(0, 4) + '-' : '';
+    const truncatedInstance = this.roleInstance.replace('DedicatedWebWorkerRole_IN', '').replace('DedicatedLinuxWebWorkerRole_IN', '');
 
     return `${truncatedTenant}${truncatedInstance}`;
   }

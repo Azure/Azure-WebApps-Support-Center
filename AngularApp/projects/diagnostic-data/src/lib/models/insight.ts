@@ -1,5 +1,5 @@
-import { Dictionary } from "../utilities/extensions";
-import { Rendering, DiagnosticData, HealthStatus } from "./detector";
+import { Dictionary } from '../utilities/extensions';
+import { Rendering, DiagnosticData, HealthStatus } from './detector';
 
 export class InsightBase {
     status: HealthStatus;
@@ -12,7 +12,7 @@ export class InsightBase {
 }
 
 export class Insight extends InsightBase {
-    
+
     data: Dictionary<string>;
 
     isExpanded: boolean = false;

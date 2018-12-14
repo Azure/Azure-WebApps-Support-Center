@@ -41,7 +41,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
     if (data) {
       this.renderingProperties = <TimeSeriesRendering>data.renderingProperties;
       this.graphOptions = this.renderingProperties.graphOptions;
-      this.customizeXAxis = this.graphOptions && this.graphOptions.customizeX &&  this.graphOptions.customizeX === "true";
+      this.customizeXAxis = this.graphOptions && this.graphOptions.customizeX &&  this.graphOptions.customizeX === 'true';
       this.timeGrain = this._getInitialTimegrain();
       this.dataTable = data.table;
       this._processDiagnosticData(data);
@@ -54,9 +54,9 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   }
 
   private _processDiagnosticData(data: DiagnosticData) {
-    let timestampColumn = this._getTimeStampColumnIndex();
-    let counterNameColumnIndex = this._getCounterNameColumnIndex();
-    let numberValueColumns = this._getCounterValueColumns();
+    const timestampColumn = this._getTimeStampColumnIndex();
+    const counterNameColumnIndex = this._getCounterNameColumnIndex();
+    const numberValueColumns = this._getCounterValueColumns();
 
     let uniqueCounterNames: string[] = [];
     if (counterNameColumnIndex >= 0) {
@@ -64,34 +64,33 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
       uniqueCounterNames = data.table.rows.map(row => row[counterNameColumnIndex]).filter((item, index, array) => array.indexOf(item) === index);
     }
 
-    let timeSeriesDictionary = {};
+    const timeSeriesDictionary = {};
 
     numberValueColumns.forEach(column => {
       if (uniqueCounterNames.length > 0) {
         uniqueCounterNames.forEach(counterName => {
-          let seriesName = this._getSeriesName(column.columnName, counterName);
+          const seriesName = this._getSeriesName(column.columnName, counterName);
           timeSeriesDictionary[seriesName] = <TimeSeries>{ name: seriesName, series: <GraphSeries>{ key: seriesName, values: [] } };
         });
-      }
-      else {
-        let seriesName = column.columnName;
+      } else {
+        const seriesName = column.columnName;
         timeSeriesDictionary[seriesName] = <TimeSeries>{ name: seriesName, series: <GraphSeries>{ key: seriesName, values: [] } };
       }
     });
 
-    let tablePoints: TablePoint[] = [];
+    const tablePoints: TablePoint[] = [];
 
     let lastTimeStamp: momentNs.Moment = this.startTime;
 
     data.table.rows.forEach(row => {
       numberValueColumns.forEach(column => {
-        let columnIndex: number = data.table.columns.indexOf(column);
+        const columnIndex: number = data.table.columns.indexOf(column);
 
-        let timestamp = moment.utc(row[timestampColumn]);
+        const timestamp = moment.utc(row[timestampColumn]);
 
         if (!this.customizeXAxis && timestamp.isAfter(lastTimeStamp)) {
-          let currentGcf = this._getGreatestCommonFactor(timestamp)
-          if(currentGcf.asMilliseconds() < this.timeGrain.asMilliseconds()) {
+          const currentGcf = this._getGreatestCommonFactor(timestamp);
+          if (currentGcf.asMilliseconds() < this.timeGrain.asMilliseconds()) {
             this.timeGrain = currentGcf;
           }
         }
@@ -99,13 +98,13 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
         lastTimeStamp = timestamp;
 
         if (row[columnIndex]) {
-          let point: TablePoint = <TablePoint>{
+          const point: TablePoint = <TablePoint>{
             timestamp: timestamp,
             value: parseFloat(row[columnIndex]),
             column: column.columnName,
             counterName: counterNameColumnIndex >= 0 ? row[counterNameColumnIndex] : null
           };
-  
+
           tablePoints.push(point);
         }
       });
@@ -122,19 +121,19 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
     Object.keys(timeSeriesDictionary).forEach(key => {
 
-      let pointsForThisSeries =
+      const pointsForThisSeries =
         tablePoints
           .filter(point => this._getSeriesName(point.column, point.counterName) === key)
-          .sort((b, a) => { return !this.customizeXAxis ? a.timestamp.diff(b.timestamp) : b.timestamp.diff(a.timestamp) }); 
+          .sort((b,  a) => !this.customizeXAxis ? a.timestamp.diff(b.timestamp) :  b.timestamp.diff(a.timestamp));
 
       if (!this.customizeXAxis) {
         let pointToAdd = pointsForThisSeries.pop();
 
-        while (pointToAdd && pointToAdd.timestamp && pointToAdd.timestamp.isBefore(this.startTime)) {
-          pointToAdd = pointsForThisSeries.pop();
+        while  (pointToAdd && pointToAdd.timestamp && pointToAdd.timestamp.isBefore(this.startTime)) {
+          pointToAdd =  pointsForThisSeries.pop();
         }
 
-        for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrain)) {
+        for (const d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrain)) {
           let value = this.defaultValue;
           if (pointToAdd && d.isSame(moment.utc(pointToAdd.timestamp))) {
             value = pointToAdd.value;
@@ -142,8 +141,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
           }
           timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: d.clone(), y: value });
         }
-      }
-      else {
+      } else {
         pointsForThisSeries.forEach(pointToAdd => {
           if (pointToAdd.timestamp.isBefore(this.startTime)) {
             this.startTime = pointToAdd.timestamp;
@@ -157,15 +155,15 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   }
 
   private _getGreatestCommonFactor(timestamp: momentNs.Moment): momentNs.Duration {
-    let minuteGcf = this._gcd(timestamp.minutes(), 60);
-    if (minuteGcf !== 60) return moment.duration(minuteGcf, 'minutes'); 
+    const minuteGcf = this._gcd(timestamp.minutes(), 60);
+    if (minuteGcf !== 60) { return moment.duration(minuteGcf, 'minutes'); }
 
-    let hourGcf = this._gcd(timestamp.hours(), 24);
-    if (hourGcf !== 24) return moment.duration(hourGcf, 'hours');
+    const hourGcf = this._gcd(timestamp.hours(), 24);
+    if (hourGcf !== 24) { return moment.duration(hourGcf, 'hours'); }
 
-    let daysInMonth = timestamp.daysInMonth();
-    let daysGcf = hourGcf === 24 ? this._gcd(timestamp.days(), daysInMonth): 0;
-    if (daysGcf !== daysInMonth) return moment.duration(daysGcf, 'days');
+    const daysInMonth = timestamp.daysInMonth();
+    const daysGcf = hourGcf === 24 ? this._gcd(timestamp.days(), daysInMonth) : 0;
+    if (daysGcf !== daysInMonth) { return moment.duration(daysGcf, 'days'); }
 
     return moment.duration(1, 'month');
 
@@ -174,19 +172,19 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   private _gcd(a: number, b: number) {
     a = Math.abs(a);
     b = Math.abs(b);
-    if (b > a) {var temp = a; a = b; b = temp;}
+    if (b > a) {const temp = a; a = b; b = temp; }
     while (true) {
-        if (b == 0) return a;
+        if (b === 0) { return a; }
         a %= b;
-        if (a == 0) return b;
+        if (a === 0) { return b; }
         b %= a;
     }
   }
 
   // Initial Time Grain: The max allowed for each range
   private _getInitialTimegrain(): momentNs.Duration {
-    let rangeInMonths = Math.abs(this.startTime.diff(this.endTime, 'months'));
-    let rangeInHours = Math.abs(this.startTime.diff(this.endTime, 'hours'));
+    const rangeInMonths = Math.abs(this.startTime.diff(this.endTime, 'months'));
+    const rangeInHours = Math.abs(this.startTime.diff(this.endTime, 'hours'));
 
     // Greater than 1 month: 1 month
     if (rangeInMonths > 1 || this.customizeXAxis && rangeInMonths === 1) {
@@ -196,7 +194,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
     if (rangeInHours >= 168) {
       return moment.duration(7, 'days');
     }
-    
+
     // 1 days -> 7 days
     if (rangeInHours > 24) {
       return moment.duration(1, 'days');
@@ -208,8 +206,8 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
   // No data time grain: The default in the case of one or no data points
   private _getNoDataTimegrain() {
-    let rangeInMonths = Math.abs(this.startTime.diff(this.endTime, 'months'));
-    let rangeInHours = Math.abs(this.startTime.diff(this.endTime, 'hours'));
+    const rangeInMonths = Math.abs(this.startTime.diff(this.endTime, 'months'));
+    const rangeInHours = Math.abs(this.startTime.diff(this.endTime, 'hours'));
 
     // Greater than 1 month: 1 month
     if (rangeInMonths > 1) {
@@ -219,7 +217,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
     if (rangeInHours >= 168) {
       return moment.duration(1, 'days');
     }
-    
+
     // 1 days -> 7 days
     if (rangeInHours > 24) {
       return moment.duration(1, 'hours');
@@ -230,8 +228,8 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   }
 
   private _prepareStartAndEndTime() {
-    let start = this.startTime;
-    let end = this.endTime;
+    const start = this.startTime;
+    const end = this.endTime;
 
     TimeUtilities.roundDown(start, this.timeGrain);
     TimeUtilities.roundDown(end, this.timeGrain);
@@ -245,7 +243,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   }
 
   private _getTimeStampColumnIndex(): number {
-    let columnIndex = this.renderingProperties.timestampColumnName ?
+    const columnIndex = this.renderingProperties.timestampColumnName ?
       this.dataTable.columns.findIndex(column => this.renderingProperties.timestampColumnName === column.columnName) :
       this.dataTable.columns.findIndex(column => column.dataType === DataTableDataType.DateTime);
 
@@ -253,15 +251,15 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   }
 
   private _getCounterNameColumnIndex(): number {
-    let columnIndex = this.renderingProperties.counterColumnName ?
+    const columnIndex = this.renderingProperties.counterColumnName ?
       this.dataTable.columns.findIndex(column => this.renderingProperties.counterColumnName === column.columnName) :
-      this.dataTable.columns.findIndex(column => column.dataType == DataTableDataType.String);
+      this.dataTable.columns.findIndex(column => column.dataType === DataTableDataType.String);
 
     return columnIndex;
   }
 
   private _getCounterValueColumns() {
-    let columns = this.renderingProperties.seriesColumns ?
+    const columns = this.renderingProperties.seriesColumns ?
       this.dataTable.columns.filter(column => this.renderingProperties.seriesColumns.indexOf(column.columnName) > 0) :
       this.dataTable.columns.filter(column => DataTableDataType.NumberTypes.indexOf(column.dataType) >= 0);
 

@@ -130,6 +130,8 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     { provide: DiagnosticService, useExisting: ApplensDiagnosticService },
     { provide: CommsService, useExisting: ApplensCommsService }
   ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent, SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent, TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, TabDetectorChangelistComponent]
+  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent, 
+    SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent, 
+    TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, TabDetectorChangelistComponent]
 })
 export class DashboardModule { }

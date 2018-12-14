@@ -4,6 +4,10 @@ import { DiagnosticData, RenderingType } from '../../models/detector';
 import * as momentNs from 'moment';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 
+export interface DataRenderer {
+  diagnosticDataInput: DiagnosticData;
+}
+
 @Component({
   templateUrl: './data-render-base.component.html'
 })
@@ -15,7 +19,7 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
 
   @Input() set diagnosticDataInput(detector: DiagnosticData) {
     this._diagnosticDataSubject.next(detector);
-  };
+  }
 
   diagnosticData: DiagnosticData;
 
@@ -24,9 +28,6 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
   @Input() detectorEventProperties: any;
 
   constructor(protected telemetryService: TelemetryService) {
-  }
-
-  ngOnChanges() {
   }
 
   ngOnInit() {
@@ -42,13 +43,11 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
   }
 
   protected logEvent(eventMessage: string, eventProperties?: any, measurements?: any) {
-    for (let id in this.detectorEventProperties) {
-      eventProperties[id] = String(this.detectorEventProperties[id]);
+    for (const id of Object.keys(this.detectorEventProperties)) {
+      if (this.detectorEventProperties.hasOwnProperty(id)) {
+        eventProperties[id] = String(this.detectorEventProperties[id]);
+      }
     }
     this.telemetryService.logEvent(eventMessage, eventProperties, measurements);
   }
-}
-
-export interface DataRenderer {
-  diagnosticDataInput: DiagnosticData;
 }
