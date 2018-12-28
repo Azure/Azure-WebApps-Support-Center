@@ -23,8 +23,9 @@
                     </td>
                     <td class="highlight-blue">
                         <div *ngFor="let instance of instancesSelected;let i = index">
-                            <input type="checkbox" [attr.aria-label]="instance.InstanceName" [disabled]="sessionInProgress" value="{{ instance.InstanceName }}"
-                                name="{{ instance.InstanceName }}" [(ngModel)]="instancesSelected[i].Selected" /> {{
+                            <input type="checkbox" [attr.aria-label]="instance.InstanceName" [disabled]="sessionInProgress"
+                                value="{{ instance.InstanceName }}" name="{{ instance.InstanceName }}" [(ngModel)]="instancesSelected[i].Selected" />
+                            {{
                             instance.InstanceName}}
                         </div>
                     </td>
@@ -52,21 +53,12 @@
                     <step-wizard [CurrentStep]="sessionStatus" [WizardSteps]="WizardSteps" [WizardStepStatus]="WizardStepStatus"></step-wizard>
                 </div>
 
-                <!-- Uncomment the Cancel button once DaaS logic to fix cancellation is corrected -->
-                <!-- <button class="btn btn-primary btn-sm" (click)="cancellationRequested=true" *ngIf="!cancellationRequested">Cancel</button> -->
-                <div *ngIf="cancellationRequested && !cancellingSession">
-                    <div><strong>Caution:</strong> Based on the stage of the diagnostic tool that you are running, cancelling a session might end
-                        up killing the process serving the app and this can impact in-flight requests. Are you sure you want to continue ?</div>
-                    <button type="button" class="btn btn-default btn-xs" (click)="cancelSession()">
-                        Yes
-                    </button>
-                    <button type="button" class="btn btn-default btn-xs" (click)="cancellationRequested=false">
-                        No
-                    </button>
-                </div>
-                <div *ngIf="cancellingSession">
-                    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                    Cancelling session...
+                <div *ngIf="sessionStatus >= 3 " style="margin-top:10px">
+                    <button class="btn btn-primary btn-sm" (click)="cancelSession()" *ngIf="!cancellingSession">Cancel</button>
+                    <div *ngIf="cancellingSession">
+                        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                        Cancelling...
+                    </div>
                 </div>
             </div>
         </div>

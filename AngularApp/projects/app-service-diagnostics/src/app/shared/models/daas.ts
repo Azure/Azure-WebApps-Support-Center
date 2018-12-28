@@ -107,3 +107,37 @@ export interface ExceptionDetails {
     HResult: number;
 
 }
+export enum AnalysisStatus {
+    NotStarted,
+    InProgress,
+    Completed
+}
+
+export class MonitoringSession {
+    SessionId: string;
+    StartDate: string;
+    EndDate: string;
+    ProcessesToMonitor: string;
+    MonitorScmProcess: boolean;
+    CpuThreshold: number;
+    ThresholdSeconds: number;
+    MonitorDuration: number;
+    ActionToExecute: string;
+    ArgumentsToAction: string;
+    MaxAction: number;
+    KillProcess: boolean;
+    FilesCollected: MonitoringFile[];
+    AnalysisStatus:AnalysisStatus;
+}
+
+export interface MonitoringFile {
+    FileName: string;
+    RelativePath: string
+    ReportFile: string;
+    ReportFileRelativePath:string;
+}
+
+export interface MonitoringLogsPerInstance {
+    Instance: string;
+    Logs: string
+}

@@ -83,6 +83,7 @@ import { TileListComponent } from './components/tile-list/tile-list.component';
 import { BackendCtrlService } from './services/backend-ctrl.service';
 import { GenericCommsService } from './services/generic-comms.service';
 import { GenericCommsComponent } from './components/generic-comms/generic-comms.component';
+import { CpuMonitoringToolComponent } from './components/tools/cpu-monitoring-tool/cpu-monitoring-tool.component';
 
 @NgModule({
     declarations: [
@@ -140,7 +141,8 @@ import { GenericCommsComponent } from './components/generic-comms/generic-comms.
         TestInputComponent,
         ResourceRedirectComponent,
         TileListComponent,
-        GenericCommsComponent
+        GenericCommsComponent,
+        CpuMonitoringToolComponent
     ],
     imports: [
         HttpModule,

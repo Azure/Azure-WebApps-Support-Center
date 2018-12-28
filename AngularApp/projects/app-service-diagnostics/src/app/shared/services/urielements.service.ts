@@ -41,9 +41,16 @@ export class UriElementsService {
     private _diagnosticsDiagnosersPath = this._diagnosticsPath + 'diagnosers';
     private _diagnosticsInstancesPath = this._diagnosticsPath + 'instances';
     private _diagnosticsSingleSessionPath = this._diagnosticsPath + 'session/{sessionId}/';
-    private _diagnosticsSingleSessionDetailsPath = this. _diagnosticsSingleSessionPath + '{details}';
+    private _diagnosticsSingleSessionDetailsPath = this._diagnosticsSingleSessionPath + '{details}';
     private _diagnosticsSingleSessionDeletePath = this._diagnosticsSingleSessionPath + 'delete';
     private _diagnosticsDatabaseTestPath = this._diagnosticsPath + 'databasetest';
+    private _diagnosticsMonitoringPath = this._diagnosticsPath + "CpuMonitoring";
+    private _diagnosticsMonitoringSessionActive = this._diagnosticsMonitoringPath + "/active"
+    private _diagnosticsMonitoringSessionLogs = this._diagnosticsMonitoringPath + "/monitoringlogs"
+    private _diagnosticsMonitoringSessionStop = this._diagnosticsMonitoringPath + "/stop"
+    private _diagnosticsMonitoringAllSessions = this._diagnosticsMonitoringPath;
+    private _diagnosticsMonitoringSingleSession = this._diagnosticsMonitoringPath + "/{sessionId}";
+    private _diagnosticsMonitoringAnalyzeSession = this._diagnosticsMonitoringPath + "/analyze?sessionId={sessionId}";
     private _networkTraceStartPath = '/networkTrace/start';
     private _webjobsPath: string = '/webjobs';
 
@@ -61,7 +68,7 @@ export class UriElementsService {
 
     getDiagnosticsSessionsDetailsUrl(site: SiteDaasInfo, type: string, detailed: boolean) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSessionsDetailsPath.replace('{type}', type)
-        .replace('{details}', detailed.toString());
+            .replace('{details}', detailed.toString());
     }
 
     getDiagnosticsInstancesUrl(site: SiteDaasInfo) {
@@ -78,17 +85,42 @@ export class UriElementsService {
 
     getDiagnosticsSingleSessionUrl(site: SiteDaasInfo, sessionId: string, detailed: any) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSingleSessionDetailsPath
-        .replace('{sessionId}', sessionId)
-        .replace('{details}', detailed.toString());
+            .replace('{sessionId}', sessionId)
+            .replace('{details}', detailed.toString());
     }
 
     getDiagnosticsSingleSessionDeleteUrl(site: SiteDaasInfo, sessionId: string) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSingleSessionDeletePath
-        .replace('{sessionId}', sessionId);
+            .replace('{sessionId}', sessionId);
     }
 
     getDatabaseTestUrl(site: SiteInfoMetaData) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDatabaseTestPath;
+    }
+
+    getMonitoringSessionsUrl(site: SiteDaasInfo) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsMonitoringAllSessions;
+    }
+
+    getActiveMonitoringSessionUrl(site: SiteDaasInfo) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsMonitoringSessionActive;
+    }
+
+    getActiveMonitoringSessionLogsUrl(site: SiteDaasInfo) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsMonitoringSessionLogs;
+    }
+    stopMonitoringSessionUrl(site: SiteDaasInfo) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsMonitoringSessionStop;
+    }
+
+    getMonitoringSessionUrl(site: SiteDaasInfo, sessionId: string) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsMonitoringSingleSession
+            .replace('{sessionId}', sessionId);
+    }
+
+    getAnalyzeMonitoringSessionUrl(site: SiteDaasInfo, sessionId: string) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsMonitoringAnalyzeSession
+            .replace('{sessionId}', sessionId);
     }
 
     getWebJobs(site: SiteInfoMetaData) {
@@ -120,7 +152,7 @@ export class UriElementsService {
 
     getDetectorsUrl(subscriptionId: string, resourceGroup: string, siteName: string, diagnosticCategory: string, slot: string = ''): string {
         return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) +
-               this._detectorsUrlFormat.replace('{diagnosticCategory}', diagnosticCategory);
+            this._detectorsUrlFormat.replace('{diagnosticCategory}', diagnosticCategory);
     }
 
     getDetectorResourceUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '', diagnosticCategory: string, detectorName: string, startTime: string = '', endTime: string = ''): string {
@@ -137,7 +169,7 @@ export class UriElementsService {
 
     getHostingEnvironmentDetectorsUrl(subscriptionId: string, resourceGroup: string, name: string, diagnosticCategory: string): string {
         return this._getHostingEnvironmentResourceUrl(subscriptionId, resourceGroup, name) +
-               this._detectorsUrlFormat.replace('{diagnosticCategory}', diagnosticCategory);
+            this._detectorsUrlFormat.replace('{diagnosticCategory}', diagnosticCategory);
     }
 
     getHostingEnvironmentDetectorResourceUrl(subscriptionId: string, resourceGroup: string, name: string, diagnosticCategory: string, detectorName: string, startTime: string = '', endTime: string = ''): string {

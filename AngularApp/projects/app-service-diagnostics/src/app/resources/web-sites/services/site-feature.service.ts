@@ -224,6 +224,22 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        stack: '',
+        item: {
+          id: ToolNames.CpuMonitoring,
+          name: ToolNames.CpuMonitoring,
+          category: 'Diagnostic Tools',
+          description: '',
+          featureType: FeatureTypes.Tool,
+          clickAction: this._createFeatureAction(ToolNames.CpuMonitoring, 'Diagnostic Tools', () => {
+            this._router.navigateByUrl(`resource${resourceId}/tools/cpumonitoring`);
+          })
+        }
+      },
+      {
+        appType: AppType.WebApp | AppType.FunctionApp,
+        platform: OperatingSystem.windows,
+        sku: Sku.NotDynamic,
         stack: 'PHP',
         item: {
           id: ToolNames.PHPLogAnalyzer,

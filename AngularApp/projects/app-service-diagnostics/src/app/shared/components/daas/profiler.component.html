@@ -23,8 +23,9 @@
                     </td>
                     <td class="highlight-blue">
                         <div *ngFor="let instance of instancesSelected;let i = index">
-                            <input [attr.aria-label]="instance.InstanceName" type="checkbox" [disabled]="sessionInProgress" value="{{ instance.InstanceName }}"
-                                name="{{ instance.InstanceName }}" [(ngModel)]="instancesSelected[i].Selected" /> {{
+                            <input [attr.aria-label]="instance.InstanceName" type="checkbox" [disabled]="sessionInProgress"
+                                value="{{ instance.InstanceName }}" name="{{ instance.InstanceName }}" [(ngModel)]="instancesSelected[i].Selected" />
+                            {{
                             instance.InstanceName}}
                         </div>
                     </td>
@@ -41,7 +42,8 @@
                     class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
 
                 <div style="margin-top:5px">
-                    <input type="checkbox" [attr.aria-label]="'Add thread report'" [(ngModel)]="collectStackTraces" [disabled]="sessionInProgress" /> Add
+                    <input type="checkbox" [attr.aria-label]="'Add thread report'" [(ngModel)]="collectStackTraces"
+                        [disabled]="sessionInProgress" /> Add
                     thread report
                     <div class="tool-tip" style="z-index:2">
                         <i class="fa fa-info-circle" style="color:rgb(84, 143, 255)"></i>
@@ -72,11 +74,12 @@
 
                     <step-wizard [CurrentStep]="sessionStatus" [WizardSteps]="WizardSteps" [WizardStepStatus]="WizardStepStatus"></step-wizard>
                 </div>
-                <!-- Uncomment the Cancel button once DaaS logic to fix cancellation is corrected -->
-                <!-- <button class="btn btn-primary btn-sm" (click)="cancelSession()" *ngIf="!cancellingSession">Cancel</button> -->
-                <div *ngIf="cancellingSession">
-                    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                    Cancelling...
+                <div *ngIf="sessionStatus >= 4" style="margin-top:10px">
+                    <button class="btn btn-primary btn-sm" (click)="cancelSession()" *ngIf="!cancellingSession">Cancel</button>
+                    <div *ngIf="cancellingSession">
+                        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                        Cancelling...
+                    </div>
                 </div>
             </div>
         </div>
