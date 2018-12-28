@@ -2,191 +2,193 @@
   <div class="header1">{{ title }}</div>
   <p>{{ description }}</p>
 
-  <daas-validator [siteToBeDiagnosed]="siteToBeDiagnosed" diagnoserName="CPU Monitoring" (DaasValidated)="onDaasValidated($event)"></daas-validator>
+  <div class="wizardcontainer">
+    <daas-validator [siteToBeDiagnosed]="siteToBeDiagnosed" diagnoserName="CPU Monitoring" (DaasValidated)="onDaasValidated($event)"></daas-validator>
 
-  <div *ngIf="daasValidated">
-    <div class="action-box" *ngIf="siteToBeDiagnosed">
-      <div>
-        <table style="border:none">
-          <tr>
-            <td>App: </td>
-            <td class="highlight-blue">
-              <b>{{siteToBeDiagnosed.siteName}}</b>
-            </td>
-          </tr>
-        </table>
+    <div *ngIf="daasValidated">
+      <div class="action-box" *ngIf="siteToBeDiagnosed">
+        <div>
+          <table style="border:none">
+            <tr>
+              <td>App: </td>
+              <td class="highlight-blue">
+                <b>{{siteToBeDiagnosed.siteName}}</b>
+              </td>
+            </tr>
+          </table>
 
-        <div *ngIf="!operationInProgress" style="margin-top:15px">
+          <div *ngIf="!operationInProgress" style="margin-top:15px">
 
-          <toggle-button ToggleText="Monitoring Enabled" [selected]="monitoringEnabled" (selectedChange)="monitoringEnabled = $event;checkForChanges()">
-          </toggle-button>
+            <toggle-button ToggleText="Monitoring Enabled" [selected]="monitoringEnabled" (selectedChange)="monitoringEnabled = $event;checkForChanges()">
+            </toggle-button>
 
-          <div class="form-group" *ngIf="editMode && monitoringEnabled" style="margin-top:15px">
-            <div class="row">
-              <div class="col-sm-6">
-                <label id="cpuThresholdhelp" for="cpuThreshold">CPU percentage</label>
+            <div class="form-group" *ngIf="editMode && monitoringEnabled" style="margin-top:15px">
+              <div class="row">
+                <div class="col-sm-6">
+                  <label id="cpuThresholdhelp" for="cpuThreshold">CPU percentage</label>
+                </div>
+                <div class="col-sm-4">
+                  <select [attr.aria-label]="'select CPU percent'" id="cpuThreshold" [(ngModel)]="monitoringSession.CpuThreshold">
+                    <option value="65">65%</option>
+                    <option value="70">70%</option>
+                    <option value="75">75%</option>
+                    <option value="80">80%</option>
+                    <option value="85">85%</option>
+                    <option value="90">90%</option>
+                    <option value="95">95%</option>
+                  </select>
+                </div>
               </div>
-              <div class="col-sm-4">
-                <select [attr.aria-label]="'select CPU percent'" id="cpuThreshold" [(ngModel)]="monitoringSession.CpuThreshold">
-                  <option value="65">65%</option>
-                  <option value="70">70%</option>
-                  <option value="75">75%</option>
-                  <option value="80">80%</option>
-                  <option value="85">85%</option>
-                  <option value="90">90%</option>
-                  <option value="95">95%</option>
-                </select>
+              <div class="row">
+                <div class="col-sm-6">
+                  <label for="monitorDuration">Check Every</label>
+                </div>
+                <div class="col-sm-4">
+                  <select [attr.aria-label]="'select CPU percent'" id="monitorDuration" [(ngModel)]="monitoringSession.MonitorDuration">
+                    <option value="15">15 seconds</option>
+                    <option value="30">30 seconds</option>
+                    <option value="45">45 seconds</option>
+                    <option value="60">60 seconds</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <label for="thresholdSeconds">Seconds above threshold</label>
+                </div>
+                <div class="col-sm-4">
+                  <select [attr.aria-label]="'select CPU theshold'" id="thresholdSeconds" [(ngModel)]="monitoringSession.ThresholdSeconds">
+                    <option value="30">30 seconds</option>
+                    <option value="45">45 seconds</option>
+                    <option value="60">60 seconds</option>
+                    <option value="75">75 seconds</option>
+                    <option value="90">90 seconds</option>
+                    <option value="120">120 seconds</option>
+                    <option value="180">180 seconds</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <label for="thresholdSeconds">Maximum Number of Actions</label>
+                </div>
+                <div class="col-sm-4">
+                  <select [attr.aria-label]="'select maximum actions to take'" id="maxActions" [(ngModel)]="monitoringSession.MaxAction">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <label for="thresholdSeconds">Kill Process ?</label>
+                </div>
+                <div class="col-sm-4">
+                  <select [attr.aria-label]="'Kill Process'" id="killProcess" [(ngModel)]="monitoringSession.KillProcess">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                  </select>
+                </div>
               </div>
             </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <label for="monitorDuration">Check Every</label>
-              </div>
-              <div class="col-sm-4">
-                <select [attr.aria-label]="'select CPU percent'" id="monitorDuration" [(ngModel)]="monitoringSession.MonitorDuration">
-                  <option value="15">15 seconds</option>
-                  <option value="30">30 seconds</option>
-                  <option value="45">45 seconds</option>
-                  <option value="60">60 seconds</option>
-                </select>
-              </div>
+
+            <div *ngIf="!editMode  && monitoringEnabled">
+              <table>
+                <tr>
+                  <td>CPU Percentage</td>
+                  <td>{{ monitoringSession.CpuThreshold }}</td>
+                </tr>
+                <tr>
+                  <td>Monitor Duration</td>
+                  <td>{{ monitoringSession.MonitorDuration }}</td>
+                </tr>
+                <tr>
+                  <td>Seconds Above Threshold</td>
+                  <td>{{ monitoringSession.ThresholdSeconds }}</td>
+                </tr>
+                <tr>
+                  <td>Maximum Number of Actions</td>
+                  <td>{{ monitoringSession.MaxAction }}</td>
+                </tr>
+                <tr>
+                  <td>Kill Process</td>
+                  <td>{{ monitoringSession.KillProcess }}</td>
+                </tr>
+              </table>
             </div>
 
-            <div class="row">
-              <div class="col-sm-6">
-                <label for="thresholdSeconds">Seconds above threshold</label>
-              </div>
-              <div class="col-sm-4">
-                <select [attr.aria-label]="'select CPU theshold'" id="thresholdSeconds" [(ngModel)]="monitoringSession.ThresholdSeconds">
-                  <option value="30">30 seconds</option>
-                  <option value="45">45 seconds</option>
-                  <option value="60">60 seconds</option>
-                  <option value="75">75 seconds</option>
-                  <option value="90">90 seconds</option>
-                  <option value="120">120 seconds</option>
-                  <option value="180">180 seconds</option>
-                </select>
-              </div>
+            <div style="margin-top:10px">
+              <button [disabled]="savingSettings || !editMode " class="btn btn-primary btn-sm" (click)="saveCpuMonitoring()">Save</button>
+              <button [disabled]="savingSettings" *ngIf="!editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
+                (click)="editMode=true">Edit</button>
+              <button [disabled]="savingSettings" *ngIf="!editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
+                (click)="refreshMonitoringLogs()">Refresh Logs</button>
+              <button [disabled]="savingSettings" *ngIf="editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
+                (click)="cancelChanges()">Cancel</button>
             </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <label for="thresholdSeconds">Maximum Number of Actions</label>
-              </div>
-              <div class="col-sm-4">
-                <select [attr.aria-label]="'select maximum actions to take'" id="maxActions" [(ngModel)]="monitoringSession.MaxAction">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <label for="thresholdSeconds">Kill Process ?</label>
-              </div>
-              <div class="col-sm-4">
-                <select [attr.aria-label]="'Kill Process'" id="killProcess" [(ngModel)]="monitoringSession.KillProcess">
-                  <option value="true">Yes</option>
-                  <option value="false">No</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="!editMode  && monitoringEnabled">
-            <table>
-              <tr>
-                <td>CPU Percentage</td>
-                <td>{{ monitoringSession.CpuThreshold }}</td>
-              </tr>
-              <tr>
-                <td>Monitor Duration</td>
-                <td>{{ monitoringSession.MonitorDuration }}</td>
-              </tr>
-              <tr>
-                <td>Seconds Above Threshold</td>
-                <td>{{ monitoringSession.ThresholdSeconds }}</td>
-              </tr>
-              <tr>
-                <td>Maximum Number of Actions</td>
-                <td>{{ monitoringSession.MaxAction }}</td>
-              </tr>
-              <tr>
-                <td>Kill Process</td>
-                <td>{{ monitoringSession.KillProcess }}</td>
-              </tr>
-            </table>
-          </div>
-
-          <div style="margin-top:10px">
-            <button [disabled]="savingSettings || !editMode " class="btn btn-primary btn-sm" (click)="saveCpuMonitoring()">Save</button>
-            <button [disabled]="savingSettings" *ngIf="!editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
-              (click)="editMode=true">Edit</button>
-            <button [disabled]="savingSettings" *ngIf="!editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
-              (click)="refreshMonitoringLogs()">Refresh Logs</button>
-            <button [disabled]="savingSettings" *ngIf="editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
-              (click)="cancelChanges()">Cancel</button>
           </div>
         </div>
-      </div>
 
-      <div style="margin-top:10px" class="col" *ngIf="savingSettings">
-        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-        Saving monitoring settings...
-      </div>
+        <div style="margin-top:10px" class="col" *ngIf="savingSettings">
+          <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+          Saving monitoring settings...
+        </div>
 
-      <div style="margin-top:10px" class="col" *ngIf="operationInProgress">
-        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-        {{ operationStatus }}
+        <div style="margin-top:10px" class="col" *ngIf="operationInProgress">
+          <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+          {{ operationStatus }}
+        </div>
+
+      </div>
+      <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="error">
+        <strong>Error</strong> - {{ error.message }}
       </div>
 
     </div>
-    <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="error">
-      <strong>Error</strong> - {{ error.message }}
-    </div>
-
   </div>
-</div>
 
-<div *ngIf="monitoringLogs.length > 0">
-  <ul>
-    <li *ngFor="let instance of monitoringLogs">
-      <strong>
-        {{ instance.Instance }}
-      </strong>
-      <div>
-        <pre>{{ instance.Logs}}</pre>
-      </div>
-    </li>
-  </ul>
-</div>
-
-<div class="header2">What you should know before enabling CPU Monitoring</div>
-<ul>
-  <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
-</ul>
-
-<div *ngIf="monitoringSessions.length > 0">
-  <table class="table table-hover table-bordered report-table">
-    <tr *ngFor="let monitoringSession of monitoringSessions">
-      <td>
-        {{ monitoringSession.SessionId}}
-      </td>
-      <td>
-        <ul>
-          <li *ngFor="let file of monitoringSession.FilesCollected">
-            {{ file.RelativePath}}
-          </li>
-        </ul>
-      </td>
-      <td>
-        <div *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted'">
-          {{ monitoringSession.AnalysisStatus }}
+  <div *ngIf="monitoringLogs.length > 0">
+    <ul>
+      <li *ngFor="let instance of monitoringLogs">
+        <strong>
+          {{ instance.Instance }}
+        </strong>
+        <div>
+          <pre>{{ instance.Logs}}</pre>
         </div>
-        <button *ngIf="monitoringSession.AnalysisStatus === 'NotStarted'" (click)="analyzeSession(monitoringSession.SessionId)">Analyze</button>
-      </td>
-    </tr>
-  </table>
+      </li>
+    </ul>
+  </div>
+  <div class="header2">What you should know before enabling CPU Monitoring</div>
+  <ul>
+    <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
+  </ul>
+
+  <div *ngIf="monitoringSessions.length > 0">
+    <table class="table table-hover table-bordered report-table">
+      <tr *ngFor="let monitoringSession of monitoringSessions">
+        <td>
+          {{ monitoringSession.SessionId}}
+        </td>
+        <td>
+            <ul>
+                <li *ngFor="let file of monitoringSession.FilesCollected">
+                    {{ file.RelativePath}}
+                </li>
+              </ul>
+          </td>
+          <td>
+            <div *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted'" >
+                {{ monitoringSession.AnalysisStatus }}
+            </div>
+            <button *ngIf="monitoringSession.AnalysisStatus === 'NotStarted'" (click)="analyzeSession(monitoringSession.SessionId)">Analyze</button>
+          </td>
+      </tr>
+    </table>
+  </div>
+
 </div>
