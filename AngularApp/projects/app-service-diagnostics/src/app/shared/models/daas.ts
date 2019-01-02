@@ -113,7 +113,16 @@ export enum AnalysisStatus {
     Completed
 }
 
+export enum SessionMode
+{
+    Kill,
+    Collect,
+    CollectAndKill,
+    CollectKillAndAnalyze
+}
+
 export class MonitoringSession {
+    Mode:SessionMode;
     SessionId: string;
     StartDate: string;
     EndDate: string;
@@ -124,8 +133,8 @@ export class MonitoringSession {
     MonitorDuration: number;
     ActionToExecute: string;
     ArgumentsToAction: string;
-    MaxAction: number;
-    KillProcess: boolean;
+    MaxActions: number;
+    MaximumNumberOfHours: number;
     FilesCollected: MonitoringFile[];
     AnalysisStatus:AnalysisStatus;
 }
@@ -135,6 +144,7 @@ export interface MonitoringFile {
     RelativePath: string
     ReportFile: string;
     ReportFileRelativePath:string;
+    AnalysisErrors:string[];
 }
 
 export interface MonitoringLogsPerInstance {

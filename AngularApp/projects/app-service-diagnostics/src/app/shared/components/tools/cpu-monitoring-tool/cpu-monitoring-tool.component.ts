@@ -5,7 +5,7 @@ import { DaasService } from '../../../services/daas.service';
 import { WindowService } from 'projects/app-service-diagnostics/src/app/startup/services/window.service';
 import { AvailabilityLoggingService } from '../../../services/logging/availability.logging.service';
 import { retry } from 'rxjs/operators';
-import { MonitoringSession, MonitoringLogsPerInstance } from '../../../models/daas';
+import { MonitoringSession, MonitoringLogsPerInstance, SessionMode } from '../../../models/daas';
 import { Subscription, interval } from 'rxjs';
 
 @Component({
@@ -42,7 +42,8 @@ export class CpuMonitoringToolComponent implements OnInit {
   savingSettings: boolean = false;
   monitoringLogs: MonitoringLogsPerInstance[] = [];
   subscription: Subscription;
-  monitoringSessions: MonitoringSession[] =[];
+  monitoringSessions: MonitoringSession[] = [];
+  sessionModeType: any = SessionMode;
 
   constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
 
@@ -59,12 +60,12 @@ export class CpuMonitoringToolComponent implements OnInit {
   getDefaultMonitoringSettings(): MonitoringSession {
 
     let monitoringSession = new MonitoringSession();
-    monitoringSession.CpuThreshold = 85;
+    monitoringSession.CpuThreshold = 65;
     monitoringSession.MonitorDuration = 15;
-    monitoringSession.KillProcess = true;
-    monitoringSession.MaxAction = 3;
-    monitoringSession.ThresholdSeconds = 45;
-
+    monitoringSession.Mode = SessionMode.CollectAndKill;
+    monitoringSession.MaxActions = 2;
+    monitoringSession.ThresholdSeconds = 30;
+    monitoringSession.MaximumNumberOfHours = 24 * 7;
     return monitoringSession;
   }
 
@@ -125,11 +126,12 @@ export class CpuMonitoringToolComponent implements OnInit {
         if (this.monitoringEnabled) {
 
           let newSession: MonitoringSession = new MonitoringSession();
-          newSession.MaxAction = this.monitoringSession.MaxAction;
-          newSession.KillProcess = this.monitoringSession.KillProcess;
+          newSession.MaxActions = this.monitoringSession.MaxActions;
+          newSession.Mode = this.monitoringSession.Mode;
           newSession.MonitorDuration = this.monitoringSession.MonitorDuration;
           newSession.ThresholdSeconds = this.monitoringSession.ThresholdSeconds;
           newSession.CpuThreshold = this.monitoringSession.CpuThreshold;
+          newSession.MaximumNumberOfHours = this.monitoringSession.MaximumNumberOfHours;
 
           this._daasService.submitMonitoringSession(this.siteToBeDiagnosed, newSession).subscribe(
             result => {
@@ -176,6 +178,10 @@ export class CpuMonitoringToolComponent implements OnInit {
       }
     });
 
+  }
+
+  openReport(url: string) {
+    this._windowService.open(`https://${this.scmPath}/api/vfs/${url}`);
   }
 
 

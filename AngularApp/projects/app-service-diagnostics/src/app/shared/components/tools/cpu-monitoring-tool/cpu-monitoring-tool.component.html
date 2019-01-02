@@ -74,7 +74,7 @@
                   <label for="thresholdSeconds">Maximum Number of Actions</label>
                 </div>
                 <div class="col-sm-4">
-                  <select [attr.aria-label]="'select maximum actions to take'" id="maxActions" [(ngModel)]="monitoringSession.MaxAction">
+                  <select [attr.aria-label]="'select maximum actions to take'" id="maxActions" [(ngModel)]="monitoringSession.MaxActions">
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -85,12 +85,14 @@
               </div>
               <div class="row">
                 <div class="col-sm-6">
-                  <label for="thresholdSeconds">Kill Process ?</label>
+                  <label for="thresholdSeconds">Session Mode</label>
                 </div>
                 <div class="col-sm-4">
-                  <select [attr.aria-label]="'Kill Process'" id="killProcess" [(ngModel)]="monitoringSession.KillProcess">
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
+                  <select [attr.aria-label]="'session mode'" id="sessionMode" [(ngModel)]="monitoringSession.Mode">
+                    <option value="0" [selected]="monitoringSession.Mode == 0">Kill</option>
+                    <option value="1" [selected]="monitoringSession.Mode == 1">Collect</option>
+                    <option value="2" [selected]="monitoringSession.Mode == 2">CollectAndKill</option>
+                    <option value="3" [selected]="monitoringSession.Mode == 3">CollectKillAndAnalyze</option>
                   </select>
                 </div>
               </div>
@@ -112,11 +114,11 @@
                 </tr>
                 <tr>
                   <td>Maximum Number of Actions</td>
-                  <td>{{ monitoringSession.MaxAction }}</td>
+                  <td>{{ monitoringSession.MaxActions }}</td>
                 </tr>
                 <tr>
                   <td>Kill Process</td>
-                  <td>{{ monitoringSession.KillProcess }}</td>
+                  <td>{{ monitoringSession.Mode }}</td>
                 </tr>
               </table>
             </div>
@@ -178,6 +180,10 @@
             <ul>
                 <li *ngFor="let file of monitoringSession.FilesCollected">
                     {{ file.RelativePath}}
+                    <div *ngIf="file.ReportFileRelativePath != null">
+                      <a (click)="openReport(file.ReportFileRelativePath)" class="btn btn-primary btn-sm">Open Report</a>
+                    </div>
+                    
                 </li>
               </ul>
           </td>
@@ -186,6 +192,7 @@
                 {{ monitoringSession.AnalysisStatus }}
             </div>
             <button *ngIf="monitoringSession.AnalysisStatus === 'NotStarted'" (click)="analyzeSession(monitoringSession.SessionId)">Analyze</button>
+            
           </td>
       </tr>
     </table>
