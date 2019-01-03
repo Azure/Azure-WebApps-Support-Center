@@ -177,22 +177,26 @@
           {{ monitoringSession.SessionId}}
         </td>
         <td>
-            <ul>
+            <ul style="list-style-type:none">
                 <li *ngFor="let file of monitoringSession.FilesCollected">
-                    {{ file.RelativePath}}
-                    <div *ngIf="file.ReportFileRelativePath != null">
-                      <a (click)="openReport(file.ReportFileRelativePath)" class="btn btn-primary btn-sm">Open Report</a>
-                    </div>
-                    
+                  <a (click)="openReport(file.RelativePath)">{{ getfileNameFromPath(file.RelativePath)}}</a>
                 </li>
               </ul>
           </td>
           <td>
-            <div *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted'" >
+            <div *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted' && monitoringSession.AnalysisStatus !== 'Completed'" >
                 {{ monitoringSession.AnalysisStatus }}
             </div>
             <button *ngIf="monitoringSession.AnalysisStatus === 'NotStarted'" (click)="analyzeSession(monitoringSession.SessionId)">Analyze</button>
-            
+            <div *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted'" >
+              <ul style="list-style-type:none">
+                <li *ngFor="let file of monitoringSession.FilesCollected">
+                    <div *ngIf="file.ReportFileRelativePath != null">
+                      <a (click)="openReport(file.ReportFileRelativePath)">{{ getfileNameFromPath(file.ReportFileRelativePath) }}</a>
+                    </div>
+                </li>
+              </ul>
+            </div>
           </td>
       </tr>
     </table>

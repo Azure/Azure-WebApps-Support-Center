@@ -184,6 +184,16 @@ export class CpuMonitoringToolComponent implements OnInit {
     this._windowService.open(`https://${this.scmPath}/api/vfs/${url}`);
   }
 
+  getfileNameFromPath(path: string): string {
+
+    let reportNameArray = path.split('/');
+    if (reportNameArray.length > 0) {
+        return reportNameArray[reportNameArray.length -1];
+    } else {
+        return path;
+    }
+}
+
 
 
 }
