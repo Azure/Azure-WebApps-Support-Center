@@ -46,7 +46,7 @@ export class UriElementsService {
     private _diagnosticsDatabaseTestPath = this._diagnosticsPath + 'databasetest';
     private _diagnosticsMonitoringPath = this._diagnosticsPath + "CpuMonitoring";
     private _diagnosticsMonitoringSessionActive = this._diagnosticsMonitoringPath + "/active"
-    private _diagnosticsMonitoringSessionLogs = this._diagnosticsMonitoringPath + "/monitoringlogs"
+    private _diagnosticsMonitoringSessionActiveDetails = this._diagnosticsMonitoringPath + "/activesessiondetails"
     private _diagnosticsMonitoringSessionStop = this._diagnosticsMonitoringPath + "/stop"
     private _diagnosticsMonitoringAllSessions = this._diagnosticsMonitoringPath;
     private _diagnosticsMonitoringSingleSession = this._diagnosticsMonitoringPath + "/{sessionId}";
@@ -106,8 +106,8 @@ export class UriElementsService {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsMonitoringSessionActive;
     }
 
-    getActiveMonitoringSessionLogsUrl(site: SiteDaasInfo) {
-        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsMonitoringSessionLogs;
+    getActiveMonitoringSessionDetailsUrl(site: SiteDaasInfo) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsMonitoringSessionActiveDetails;
     }
     stopMonitoringSessionUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsMonitoringSessionStop;

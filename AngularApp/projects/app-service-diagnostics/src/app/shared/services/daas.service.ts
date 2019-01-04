@@ -7,7 +7,7 @@ import { SiteDaasInfo } from '../models/solution-metadata';
 import { ArmService } from './arm.service';
 import { AuthService } from '../../startup/services/auth.service';
 import { UriElementsService } from './urielements.service';
-import { Session, DiagnoserDefinition, DatabaseTestConnectionResult, MonitoringSession, MonitoringLogsPerInstance } from '../models/daas';
+import { Session, DiagnoserDefinition, DatabaseTestConnectionResult, MonitoringSession, MonitoringLogsPerInstance, ActiveMonitoringSession } from '../models/daas';
 import { SiteInfoMetaData } from '../models/site';
 
 @Injectable()
@@ -110,9 +110,9 @@ export class DaasService {
         const resourceUri: string = this._uriElementsService.getActiveMonitoringSessionUrl(site);
         return <Observable<MonitoringSession>>(this._armClient.getResourceWithoutEnvelope<MonitoringSession>(resourceUri, null, true));
     }
-    getActiveMonitoringSessionLogs(site: SiteDaasInfo): Observable<MonitoringLogsPerInstance[]> {
-        const resourceUri: string = this._uriElementsService.getActiveMonitoringSessionLogsUrl(site);
-        return <Observable<MonitoringLogsPerInstance[]>>(this._armClient.getResourceWithoutEnvelope<MonitoringLogsPerInstance[]>(resourceUri, null, true));
+    getActiveMonitoringSessionDetails(site: SiteDaasInfo): Observable<ActiveMonitoringSession> {
+        const resourceUri: string = this._uriElementsService.getActiveMonitoringSessionDetailsUrl(site);
+        return <Observable<ActiveMonitoringSession>>(this._armClient.getResourceWithoutEnvelope<ActiveMonitoringSession>(resourceUri, null, true));
     }
     stopMonitoringSession(site: SiteDaasInfo): Observable<string> {
         const resourceUri: string = this._uriElementsService.stopMonitoringSessionUrl(site);

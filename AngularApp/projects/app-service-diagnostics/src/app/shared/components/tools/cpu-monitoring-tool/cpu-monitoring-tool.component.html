@@ -88,11 +88,13 @@
                   <label for="thresholdSeconds">Session Mode</label>
                 </div>
                 <div class="col-sm-4">
+
+
                   <select [attr.aria-label]="'session mode'" id="sessionMode" [(ngModel)]="monitoringSession.Mode">
-                    <option value="0" [selected]="monitoringSession.Mode == 0">Kill</option>
-                    <option value="1" [selected]="monitoringSession.Mode == 1">Collect</option>
-                    <option value="2" [selected]="monitoringSession.Mode == 2">CollectAndKill</option>
-                    <option value="3" [selected]="monitoringSession.Mode == 3">CollectKillAndAnalyze</option>
+                    <option value="Kill" [selected]="monitoringSession.Mode === 'Kill'">Kill</option>
+                    <option value="Collect" [selected]="monitoringSession.Mode === 'Collect'">Collect</option>
+                    <option value="CollectAndKill" [selected]="monitoringSession.Mode === 'CollectAndKill'">CollectAndKill</option>
+                    <option value="CollectKillAndAnalyze" [selected]="monitoringSession.Mode === 'CollectKillAndAnalyze'">CollectKillAndAnalyze</option>
                   </select>
                 </div>
               </div>
@@ -117,18 +119,18 @@
                   <td>{{ monitoringSession.MaxActions }}</td>
                 </tr>
                 <tr>
-                  <td>Kill Process</td>
+                  <td>Monitoring Mode</td>
                   <td>{{ monitoringSession.Mode }}</td>
                 </tr>
               </table>
+
+
             </div>
 
             <div style="margin-top:10px">
               <button [disabled]="savingSettings || !editMode " class="btn btn-primary btn-sm" (click)="saveCpuMonitoring()">Save</button>
               <button [disabled]="savingSettings" *ngIf="!editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
                 (click)="editMode=true">Edit</button>
-              <button [disabled]="savingSettings" *ngIf="!editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
-                (click)="refreshMonitoringLogs()">Refresh Logs</button>
               <button [disabled]="savingSettings" *ngIf="editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
                 (click)="cancelChanges()">Cancel</button>
             </div>
@@ -153,18 +155,52 @@
     </div>
   </div>
 
-  <div *ngIf="monitoringLogs.length > 0">
-    <ul>
-      <li *ngFor="let instance of monitoringLogs">
-        <strong>
-          {{ instance.Instance }}
-        </strong>
-        <div>
-          <pre>{{ instance.Logs}}</pre>
-        </div>
-      </li>
-    </ul>
+  <div style="margin-top: 15px" *ngIf="!editMode  && monitoringEnabled">
+
+
+    <table class="table table-hover table-bordered report-table">
+      <tr>
+        <td>
+          {{ monitoringSession.SessionId}}
+        </td>
+        <td>
+          <ul style="list-style-type:none">
+            <li *ngFor="let file of monitoringSession.FilesCollected">
+              <a (click)="openReport(file.RelativePath)">{{ getfileNameFromPath(file.RelativePath)}}</a>
+            </li>
+          </ul>
+        </td>
+        <td *ngIf="monitoringSession.Mode === 'CollectKillAndAnalyze'">
+          <div *ngIf="monitoringSession.AnalysisStatus === 'NotStarted'">
+            <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+            Analysis will start when session is complete...
+          </div>
+
+          <div *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted' && monitoringSession.AnalysisStatus !== 'Completed'">
+            {{ monitoringSession.AnalysisStatus }}
+          </div>
+
+        </td>
+      </tr>
+      <tr *ngIf="monitoringLogs.length > 0">
+        <td colspan="3">
+          <div>
+            <ul>
+              <li *ngFor="let instance of monitoringLogs">
+                <strong>
+                  {{ instance.Instance }}
+                </strong>
+                <div>
+                  <pre>{{ instance.Logs}}</pre>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </td>
+      </tr>
+    </table>
   </div>
+
   <div class="header2">What you should know before enabling CPU Monitoring</div>
   <ul>
     <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
@@ -177,27 +213,28 @@
           {{ monitoringSession.SessionId}}
         </td>
         <td>
+          <ul style="list-style-type:none">
+            <li *ngFor="let file of monitoringSession.FilesCollected">
+              <a (click)="openReport(file.RelativePath)">{{ getfileNameFromPath(file.RelativePath)}}</a>
+            </li>
+          </ul>
+        </td>
+        <td>
+          <div *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted' && monitoringSession.AnalysisStatus !== 'Completed'">
+            {{ monitoringSession.AnalysisStatus }}
+          </div>
+          <button *ngIf="monitoringSession.AnalysisStatus === 'NotStarted'" (click)="analyzeSession(monitoringSession.SessionId)">Analyze</button>
+          <div *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted'">
             <ul style="list-style-type:none">
-                <li *ngFor="let file of monitoringSession.FilesCollected">
-                  <a (click)="openReport(file.RelativePath)">{{ getfileNameFromPath(file.RelativePath)}}</a>
-                </li>
-              </ul>
-          </td>
-          <td>
-            <div *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted' && monitoringSession.AnalysisStatus !== 'Completed'" >
-                {{ monitoringSession.AnalysisStatus }}
-            </div>
-            <button *ngIf="monitoringSession.AnalysisStatus === 'NotStarted'" (click)="analyzeSession(monitoringSession.SessionId)">Analyze</button>
-            <div *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted'" >
-              <ul style="list-style-type:none">
-                <li *ngFor="let file of monitoringSession.FilesCollected">
-                    <div *ngIf="file.ReportFileRelativePath != null">
-                      <a (click)="openReport(file.ReportFileRelativePath)">{{ getfileNameFromPath(file.ReportFileRelativePath) }}</a>
-                    </div>
-                </li>
-              </ul>
-            </div>
-          </td>
+              <li *ngFor="let file of monitoringSession.FilesCollected">
+                <div *ngIf="file.ReportFileRelativePath != null">
+                  <a (click)="openReport(file.ReportFileRelativePath)">{{
+                    getfileNameFromPath(file.ReportFileRelativePath) }}</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </td>
       </tr>
     </table>
   </div>

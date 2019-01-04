@@ -43,7 +43,7 @@ export class CpuMonitoringToolComponent implements OnInit {
   monitoringLogs: MonitoringLogsPerInstance[] = [];
   subscription: Subscription;
   monitoringSessions: MonitoringSession[] = [];
-  sessionModeType: any = SessionMode;
+  sessionModeType = SessionMode;
 
   constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
 
@@ -78,18 +78,19 @@ export class CpuMonitoringToolComponent implements OnInit {
     this.operationInProgress = true;
     this.operationStatus = 'Checking active monitoring session...';
 
-    this._daasService.getActiveMonitoringSession(this.siteToBeDiagnosed).pipe(retry(2))
+    this._daasService.getActiveMonitoringSessionDetails(this.siteToBeDiagnosed).pipe(retry(2))
       .subscribe(runningSession => {
         this.operationInProgress = false;
         this.operationStatus = '';
-        if (runningSession) {
+        if (runningSession && runningSession.Session) {
           this.monitoringEnabled = true;
-          this.sessionId = runningSession.SessionId;
-          this.monitoringSession = runningSession;
-          this.originalMonitoringSession = runningSession;
+          this.sessionId = runningSession.Session.SessionId;
+          this.monitoringSession = runningSession.Session;
+          this.originalMonitoringSession = runningSession.Session;
+          this.monitoringLogs = runningSession.MonitoringLogs;
 
           this.subscription = interval(15000).subscribe(res => {
-            this.refreshMonitoringLogs();
+            this.getActiveSessionDetails();
           });
 
         }
@@ -103,21 +104,22 @@ export class CpuMonitoringToolComponent implements OnInit {
       this.monitoringSessions = resp;
     });
   }
-  refreshMonitoringLogs() {
-    this._daasService.getActiveMonitoringSessionLogs(this.siteToBeDiagnosed)
+  getActiveSessionDetails() {
+    this._daasService.getActiveMonitoringSessionDetails(this.siteToBeDiagnosed)
       .subscribe(resp => {
-        this.monitoringLogs = resp;
-      });
-
-    this._daasService.getActiveMonitoringSession(this.siteToBeDiagnosed).subscribe(activeSession => {
-      if (!activeSession) {
-        if (this.subscription) {
-          this.subscription.unsubscribe();
-          this.monitoringEnabled = false;
+        if (resp && resp.Session) {
+          this.monitoringLogs = resp.MonitoringLogs;
+          this.monitoringSession = resp.Session;
         }
-      }
-    });
+        else {
+          if (this.subscription) {
+            this.subscription.unsubscribe();
+            this.monitoringEnabled = false;
+          }
+        }
+      });
   }
+
   saveCpuMonitoring() {
     this.savingSettings = true;
     this._daasService.stopMonitoringSession(this.siteToBeDiagnosed).subscribe(
@@ -141,7 +143,7 @@ export class CpuMonitoringToolComponent implements OnInit {
               this.originalMonitoringSession = newSession;
 
               this.subscription = interval(15000).subscribe(res => {
-                this.refreshMonitoringLogs();
+                this.getActiveSessionDetails();
               });
             });
 
@@ -188,11 +190,11 @@ export class CpuMonitoringToolComponent implements OnInit {
 
     let reportNameArray = path.split('/');
     if (reportNameArray.length > 0) {
-        return reportNameArray[reportNameArray.length -1];
+      return reportNameArray[reportNameArray.length - 1];
     } else {
-        return path;
+      return path;
     }
-}
+  }
 
 
 
