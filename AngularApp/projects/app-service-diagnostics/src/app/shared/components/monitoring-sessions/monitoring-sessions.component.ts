@@ -52,4 +52,16 @@ export class MonitoringSessionsComponent implements OnInit {
       return path;
     }
   }
+
+  analyzeSession(sessionId: string) {
+    this._daasService.analyzeMonitoringSession(this.siteToBeDiagnosed, sessionId).subscribe(resp => {
+      if (resp) {
+        this.getSession(sessionId);
+      }
+    });
+
+  }
+
+  getSession(sessionId: string) {
+  }
 }

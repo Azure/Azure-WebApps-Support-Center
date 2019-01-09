@@ -52,8 +52,11 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
     this.monitoringSession = this.getDefaultMonitoringSettings();
   }
 
-  ngOnDestroy():void{
-    this.subscription.unsubscribe();
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
   }
 
   getDefaultMonitoringSettings(): MonitoringSession {
@@ -161,19 +164,6 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
       this.monitoringEnabled = false;
     }
     this.checkForChanges();
-  }
-
-  analyzeSession(sessionId: string) {
-    this._daasService.analyzeMonitoringSession(this.siteToBeDiagnosed, sessionId).subscribe(resp => {
-      if (resp) {
-        this.getSession(sessionId);
-      }
-    });
-
-  }
-
-  getSession(sessionId: string) {
-
   }
 
   openReport(url: string) {

@@ -9,8 +9,6 @@ import { SiteService } from '../../../services/site.service';
 })
 export class CpuMonitoringToolComponent implements OnInit {
 
-
-
   siteToBeDiagnosed: SiteDaasInfo;
   scmPath: string;
 
