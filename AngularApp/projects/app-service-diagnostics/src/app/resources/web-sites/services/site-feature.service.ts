@@ -347,7 +347,7 @@ export class SiteFeatureService extends FeatureService {
           description: '',
           featureType: FeatureTypes.Tool,
           clickAction: this._createFeatureAction(SupportBladeDefinitions.AppServicePlanMetrics.Identifier, 'Support Tools', () => {
-            this._portalActionService.openMdmMetricsV3Blade(this._portalActionService.currentSite.properties.serverFarmId);
+            this._portalActionService.openMdmMetricsV3Blade(this._resourceService.resource.properties.serverFarmId);
           })
         }
       },

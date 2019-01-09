@@ -7,8 +7,7 @@ import { WindowService } from '../../startup/services/window.service';
 import { PortalService } from '../../startup/services/portal.service';
 import { ArmService } from './arm.service';
 import { AuthService } from '../../startup/services/auth.service';
-import { map } from 'rxjs/operators';
-import { filter } from 'rxjs/operators';
+import { mergeMap, filter } from 'rxjs/operators';
 
 @Injectable()
 export class PortalActionService {
@@ -19,7 +18,7 @@ export class PortalActionService {
     constructor(private _windowService: WindowService, private _portalService: PortalService, private _armService: ArmService,
         private _authService: AuthService) {
         this._authService.getStartupInfo().pipe(
-            map((startUpInfo: StartupInfo) => {
+            mergeMap((startUpInfo: StartupInfo) => {
                 return this._armService.getResource<Site>(startUpInfo.resourceId);
             }),
             filter((response: {}): response is ResponseMessageEnvelope<Site> => true)
