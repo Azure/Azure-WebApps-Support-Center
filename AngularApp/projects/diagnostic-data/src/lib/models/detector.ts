@@ -33,7 +33,7 @@ export interface DiagnosticData {
 export interface DataTableResponseObject {
     // tableName: string;
     columns: DataTableResponseColumn[];
-    rows: string[][];
+    rows: any[][];
 }
 
 export interface DataTableResponseColumn {

@@ -17,10 +17,16 @@ export class Insight extends InsightBase {
 
     isExpanded: boolean = false;
 
+    isRated: boolean = false;
+
+    isHelpful: boolean = false;
+
     constructor(status: string, title: string, isExpanded: boolean) {
         super(status, title);
         this.data = {};
         this.isExpanded = isExpanded;
+        this.isRated = this.isRated;
+        this.isHelpful = this.isHelpful;
     }
 
     getKeys(): string[] {

@@ -1,0 +1,13 @@
+$body-bg-color: #fff;
+$body-bg-color-dark: #252525;
+
+
+$primary-color: #3c8dbc;
+$primary-color-faded: rgba($primary-color, 0.18);
+$primary-color-hover: lighten($primary-color, 10%);
+
+$primary-color-dark: #4894fe;
+$primary-color-hover-dark: lighten($primary-color-dark, 10%);
+
+$disabled-color: rgba(#7f7f7f, 0.7);
+$disabled-color-dark: lighten($body-bg-color-dark, 10%);

@@ -37,7 +37,7 @@ export class DropdownComponent extends DataRenderBaseComponent {
       const row = table.rows[i];
       this.label = row[labelColumn];
       const key: string = row[keyColumn];
-      const selected: boolean = row[selectedColumn].toLowerCase() === 'true';
+      const selected: boolean = row[selectedColumn];
       const data: string = row[valueColumn];
       const rawJson: any = JSON.parse(data);
       const diagnosticDataList: DiagnosticData[] = <DiagnosticData[]>rawJson;

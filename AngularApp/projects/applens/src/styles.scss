@@ -1,17 +1,5 @@
-/* External Libraries */
-//@import "~bootstrap/dist/css/bootstrap.min.css";
-// @import "~ng-pick-datetime/assets/style/picker.min.css";
-// @import "~ngx-smart-modal/ngx-smart-modal.css";
-
-// /* @import "~startbootstrap-sb-admin/css/sb-admin.min.scss"; */
-
-//@import "~admin-lte/dist/css/AdminLTE.min.css";
-// @import "~admin-lte/dist/css/skins/skin-blue-light.css";
-// @import "~admin-lte/dist/css/skins/skin-purple-light.css";
-// @import "~admin-lte/dist/css/skins/skin-blue.css";
-
-/* Must import diagnostic-data css */
-// @import 'app/diagnostic-data/diagnostic-data.scss';n
+@import 'styles/common/variables';
+@import 'styles/controls/buttons';
 
 .ngx-datatable.bootstrap {
     border: 1px solid #dddddd;

@@ -81,7 +81,19 @@ export class InsightsComponent extends DataRenderBaseComponent {
       'Status': status
     };
 
-    this.logEvent(TelemetryEventNames.InsightsTitleClicked, eventProps);
+    this.logEvent(TelemetryEventNames.InsightTitleClicked, eventProps);
+  }
+
+  setInsightComment(insight: any, isHelpful: boolean) {
+    if (!insight.isRated) {
+      const eventProps: { [name: string]: string } = {
+        'Title': insight.title,
+        'IsHelpful': String(isHelpful)
+      }
+      insight.isRated = true;
+      insight.isHelpful = isHelpful;
+      this.logEvent(TelemetryEventNames.InsightRated, eventProps);
+    }
   }
 }
 

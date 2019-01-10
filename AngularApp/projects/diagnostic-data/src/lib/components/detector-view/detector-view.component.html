@@ -1,13 +1,12 @@
 <div *ngIf="detectorDataLocalCopy">
-  <div style="margin-bottom: 15px; padding-bottom: 15px">
+  <div>
     <section class="content-header">
       <h1 *ngIf="!isSystemInvoker">
         <span *ngIf="!insideDetectorList">{{detectorDataLocalCopy.metadata.name}}</span>
-        
       </h1>
       <div class="description">{{detectorDataLocalCopy.metadata.description}}</div>
       <section *ngIf="!isPublic">
-        <div class="description col-md-3" style="padding-left:0">By
+        <div class="description">By
           <span style="padding:2px; color: #0066c0;">
             <a *ngIf="authorInfo !== ''; else unknownAuthor" href="mailto:{{authorEmails}}?cc=applensdisc@microsoft.com&subject=Detector%20Feedback%20for%20{{feedbackDetector}}&body=Please%20provide%20your%20feedback%20here:%0D%0A%0D%0A%0D%0A%0D%0A{{currentSiteString}}">
               {{authorInfo}}
@@ -17,27 +16,30 @@
             </ng-template>
           </span>
         </div>
-        <div class="col-md-2 col-md-offset-7">
-          <span>
-            <a *ngIf="authorInfo !== ''; else onlyToApplensTeam" href="mailto:{{authorEmails}}?cc=applensdisc@microsoft.com&subject=Detector%20Feedback%20for%20{{feedbackDetector}}&body=Please%20provide%20your%20feedback%20here:%0D%0A%0D%0A%0D%0A%0D%0A{{currentSiteString}}">
-              <span style="color:green; font-weight: bold">📧 Send Feedback </span>
-            </a>
-            <ng-template #onlyToApplensTeam>
-              <a href="mailto:applensdisc@microsoft.com?subject=Detector%20Feedback%20for%20{{feedbackDetector}}&body=Please%20provide%20your%20feedback%20here:%0D%0A%0D%0A%0D%0A%0D%0A{{currentSiteString}}">
-                <span style="color:green;font-weight: bold">📧 Send Feedback </span>
-              </a>
-            </ng-template>
-          </span>
-        </div>
       </section>
-      <!-- <star-rating-feedback *ngIf="!insideDetectorList"[ratingEventProperties] = "ratingEventProperties"></star-rating-feedback> -->
+      <div>
+        <div style="margin-top:10px">
+          <button (click)="expandFeedbackForm()" class="custom-button custom-button-align-left detector-button-list">
+            <span> {{feedbackButtonLabel}}</span>
+          </button>
+          <a *ngIf="!isPublic && authorInfo !== ''; else onlyToApplensTeam" class="custom-button-green detector-button-list"
+            href="mailto:{{authorEmails}}?cc=applensdisc@microsoft.com&subject=Detector%20Feedback%20for%20{{feedbackDetector}}&body=Please%20provide%20your%20feedback%20here:%0D%0A%0D%0A%0D%0A%0D%0A{{currentSiteString}}">
+            <span> Email Author</span>
+          </a>
+          <ng-template #onlyToApplensTeam>
+            <a *ngIf="!isPublic" class="custom-button-green detector-button-list" href="mailto:applensdisc@microsoft.com?subject=Detector%20Feedback%20for%20{{feedbackDetector}}&body=Please%20provide%20your%20feedback%20here:%0D%0A%0D%0A%0D%0A%0D%0A{{currentSiteString}}">
+              <span> Email Author</span>
+            </a>
+          </ng-template>
+        </div>
+        <feedback [source]="'appanalysis'" [ratingEventProperties]="ratingEventProperties" [(showFeedbackForm)]="showFeedbackForm"></feedback>
+      </div>
     </section>
   </div>
   <hr>
   <div *ngFor="let data of detectorDataLocalCopy.dataset" class="dynamic-data-container">
     <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime" [detectorEventProperties]="detectorEventProperties"></dynamic-data>
   </div>
-  <!-- <star-rating *ngIf="!insideDetectorList"></star-rating> -->
 </div>
 
 <loader-view style="margin-top:300px" *ngIf="!detectorDataLocalCopy && !errorState" message="Loading Detector..."></loader-view>

@@ -39,6 +39,7 @@ import { DetectorContainerComponent } from './components/detector-container/dete
 import { CommAlertComponent } from './components/comm-alert/comm-alert.component';
 import { CommsService } from './services/comms.service';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
+import { FeedbackComponent } from './components/feedback/feedback.component';
 
 @NgModule({
   imports: [
@@ -55,7 +56,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
     LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent,
-    DropdownComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent],
+    DropdownComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent, FeedbackComponent],
   exports: [FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
     LoaderViewComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent],
 })
