@@ -211,7 +211,10 @@
               "projects/app-service-diagnostics/src/styles.scss",
               "projects/app-service-diagnostics/src/styles/main.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
           },
           "configurations": {
             "production": {
