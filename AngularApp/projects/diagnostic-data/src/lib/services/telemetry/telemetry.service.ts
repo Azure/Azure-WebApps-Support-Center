@@ -22,9 +22,6 @@ export class TelemetryService {
             this.telemetryProviders.push(this._appInsightsService);
         }
 
-
-        console.log(this.telemetryProviders);
-
         this.eventPropertiesSubject.subscribe((data: any) => {
             if (data) {
                 for (const id of Object.keys(data)) {

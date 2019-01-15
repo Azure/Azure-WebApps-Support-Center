@@ -10,7 +10,6 @@ export class PortalKustoTelemetryService implements ITelemetryProvider {
 
   logEvent(eventMessage: string, properties: { [name: string]: string }, measurements?: any) {
     // measurements is ignored
-    console.log(properties);
     this._portalService.logAction('diagnostic-data', eventMessage, properties);
   }
 

@@ -70,7 +70,6 @@ export class DiagnosticDataModule {
       providers: [
         DiagnosticService,
         { provide: DIAGNOSTIC_DATA_CONFIG, useValue: config },
-        //{ provide: KustoTelemetryService, useExisting: kustoLogger },
         KustoTelemetryService,
         AppInsightsTelemetryService,
         TelemetryService,
