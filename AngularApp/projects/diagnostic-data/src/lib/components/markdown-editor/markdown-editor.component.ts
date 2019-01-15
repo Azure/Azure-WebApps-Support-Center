@@ -24,13 +24,12 @@ export class MarkdownEditorComponent implements OnInit {
   edited: boolean = false;
 
   @Input() copy: boolean = false;
-
   @Input() rawMarkdown: string;
   @Output() rawMarkdownChange: EventEmitter<string> = new EventEmitter<string>();
 
   ngOnInit() {
     if (this.copy) {
-      this.copyText();
+      this.copyText('external');
     }
   }
 
@@ -41,8 +40,8 @@ export class MarkdownEditorComponent implements OnInit {
     this.edited = true;
   }
 
-  copyText() {
-    this._logger.logEvent('report-copy', { buttonSource: 'main', edited: String(this.edited) });
+  copyText(source: string = 'internal') {
+    this._logger.logEvent('markdown-copy', { edited: String(this.edited), copySource: source });
     const markdownHtml = this._markdownService.compile(this.rawMarkdown);
     this._clipboard.copyAsHtml(markdownHtml);
 

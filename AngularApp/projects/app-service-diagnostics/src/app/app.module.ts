@@ -1,3 +1,4 @@
+import { KustoTelemetryService } from './../../../diagnostic-data/src/lib/services/telemetry/kusto-telemetry.service';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -21,7 +22,7 @@ import { PortalKustoTelemetryService } from './shared/services/portal-kusto-tele
     HttpClientModule,
     SharedModule.forRoot(),
     StartupModule.forRoot(),
-    DiagnosticDataModule.forRoot(environment.production ? PUBLIC_PROD_CONFIGURATION : PUBLIC_DEV_CONFIGURATION, PortalKustoTelemetryService),
+    DiagnosticDataModule.forRoot(environment.production ? PUBLIC_PROD_CONFIGURATION : PUBLIC_DEV_CONFIGURATION),
     BrowserAnimationsModule,
     RouterModule.forRoot([
       {
@@ -43,6 +44,7 @@ import { PortalKustoTelemetryService } from './shared/services/portal-kusto-tele
   ],
   providers: [
     CustomReuseStrategy,
+    { provide: KustoTelemetryService, useExisting: PortalKustoTelemetryService },
     { provide: RouteReuseStrategy, useExisting: CustomReuseStrategy },
     { provide: DiagnosticService, useExisting: GenericApiService },
     { provide: CommsService, useExisting: GenericCommsService }

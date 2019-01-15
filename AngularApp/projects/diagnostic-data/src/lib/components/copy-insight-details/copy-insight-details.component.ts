@@ -19,7 +19,7 @@ export class CopyInsightDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.createMarkdownText(InsightUtils.parseAllInsightsFromResponse(this.detectorResponse));
-    this._logger.logEvent('report-copy', { buttonSource: 'main', edited: 'false' });
+    this._logger.logEvent('report-expanded', {});
   }
 
   createMarkdownText(insights: Insight[]) {

@@ -64,13 +64,14 @@ import { MarkdownEditorComponent } from './components/markdown-editor/markdown-e
     LoaderViewComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent],
 })
 export class DiagnosticDataModule {
-  static forRoot(config: DiagnosticDataConfig = INTERNAL_PROD_CONFIGURATION, kustoLogger: any = KustoTelemetryService): ModuleWithProviders {
+  static forRoot(config: DiagnosticDataConfig = INTERNAL_PROD_CONFIGURATION): ModuleWithProviders {
     return {
       ngModule: DiagnosticDataModule,
       providers: [
         DiagnosticService,
         { provide: DIAGNOSTIC_DATA_CONFIG, useValue: config },
-        { provide: KustoTelemetryService, useExisting: kustoLogger },
+        //{ provide: KustoTelemetryService, useExisting: kustoLogger },
+        KustoTelemetryService,
         AppInsightsTelemetryService,
         TelemetryService,
         DetectorControlService,
