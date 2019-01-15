@@ -20,11 +20,11 @@
     align-items: center;
     height: 100%;
     min-height: 64px;
-    box-shadow: 0px 2px 4px #0000001a;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.102);
 }
 
 .category:hover {
-    box-shadow: 0px 4px 8px #00000024;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.141);
 }
 
 .category > div {

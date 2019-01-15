@@ -67,6 +67,11 @@
     display: block;
 }
 
+.btn-small-text {
+    font-size:11px;
+    margin-top: 2px;
+}
+
 #app-root[theme=dark]{
     .custom-button{
         background-color: $primary-color-dark;

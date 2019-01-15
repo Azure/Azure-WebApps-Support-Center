@@ -88,4 +88,8 @@ export class LoggingV2Service extends LoggingService {
       selectionType: selectionType
     });
   }
+
+  LogAction(subcomponent: string, action: string, data?: any) {
+    this._log(subcomponent, action, data);
+  }
 }

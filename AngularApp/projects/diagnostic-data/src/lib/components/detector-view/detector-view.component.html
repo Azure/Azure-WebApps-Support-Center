@@ -19,10 +19,10 @@
       </section>
       <div>
         <div style="margin-top:10px">
-          <button (click)="expandFeedbackForm()" class="custom-button custom-button-align-left detector-button-list">
+          <button (click)="toggleButtonView(Feedback)" class="custom-button custom-button-align-left detector-button-list">
             <span> {{feedbackButtonLabel}}</span>
           </button>
-          <a *ngIf="!isPublic && authorInfo !== ''; else onlyToApplensTeam" class="custom-button-green detector-button-list"
+          <a *ngIf="!isPublic && authorInfo !== ''; else onlyToApplensTeam" class="custom-button detector-button-list"
             href="mailto:{{authorEmails}}?cc=applensdisc@microsoft.com&subject=Detector%20Feedback%20for%20{{feedbackDetector}}&body=Please%20provide%20your%20feedback%20here:%0D%0A%0D%0A%0D%0A%0D%0A{{currentSiteString}}">
             <span> Email Author</span>
           </a>
@@ -31,8 +31,15 @@
               <span> Email Author</span>
             </a>
           </ng-template>
+          <button (click)="toggleButtonView(Report)" class="custom-button detector-button-list">
+            <span *ngIf="buttonViewActiveComponent !== Report">Copy Report</span>
+            <span *ngIf="buttonViewActiveComponent === Report">Hide Report</span>
+          </button>
         </div>
-        <feedback [source]="'appanalysis'" [ratingEventProperties]="ratingEventProperties" [(showFeedbackForm)]="showFeedbackForm"></feedback>
+        <div style="height:0px;overflow-y: hidden" [@expand]="buttonViewVisible ? 'shown' : 'hidden'">
+            <feedback *ngIf="buttonViewActiveComponent === Feedback" [showFeedbackForm]="buttonViewVisible" (showFeedbackFormChange)="toggleButtonView(Feedback)" [source]="'appanalysis'" [ratingEventProperties]="ratingEventProperties"></feedback>
+            <copy-insight-details *ngIf="detectorDataLocalCopy && buttonViewActiveComponent === Report" [detectorResponse]="detectorDataLocalCopy"></copy-insight-details>
+        </div>
       </div>
     </section>
   </div>

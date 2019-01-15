@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
@@ -12,7 +11,7 @@ export class FeedbackComponent implements OnInit {
 
   @Input() ratingEventProperties: any;
   @Input() showThanksMessage: boolean = false;
-  @Input() showFeedbackForm: boolean = false;
+  @Input() showFeedbackForm: boolean = true;
   @Output() showFeedbackFormChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   @Output() submit: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -32,7 +31,6 @@ export class FeedbackComponent implements OnInit {
 
   ngOnInit() {
   }
-
 
   @Input() source: string;
 

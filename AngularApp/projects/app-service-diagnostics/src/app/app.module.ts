@@ -13,6 +13,7 @@ import { PUBLIC_PROD_CONFIGURATION, DiagnosticDataModule, DiagnosticService, Com
 import { GenericApiService } from './shared/services/generic-api.service';
 import { GenericCommsService } from './shared/services/generic-comms.service';
 import { environment } from '../environments/environment';
+import { PortalKustoTelemetryService } from './shared/services/portal-kusto-telemetry.service';
 
 @NgModule({
   imports: [
@@ -20,7 +21,7 @@ import { environment } from '../environments/environment';
     HttpClientModule,
     SharedModule.forRoot(),
     StartupModule.forRoot(),
-    DiagnosticDataModule.forRoot(environment.production ? PUBLIC_PROD_CONFIGURATION : PUBLIC_DEV_CONFIGURATION),
+    DiagnosticDataModule.forRoot(environment.production ? PUBLIC_PROD_CONFIGURATION : PUBLIC_DEV_CONFIGURATION, PortalKustoTelemetryService),
     BrowserAnimationsModule,
     RouterModule.forRoot([
       {

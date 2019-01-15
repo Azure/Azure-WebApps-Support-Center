@@ -1,0 +1,9 @@
+.copy-insight-container {
+    margin-top: 10px;
+    width: 100%;
+    overflow-y: hidden;
+
+    & > textarea {
+        width: 100%;
+    }
+}
