@@ -44,6 +44,7 @@ export class UriElementsService {
     private _diagnosticsSingleSessionDetailsPath = this._diagnosticsSingleSessionPath + '{details}';
     private _diagnosticsSingleSessionDeletePath = this._diagnosticsSingleSessionPath + 'delete';
     private _diagnosticsDatabaseTestPath = this._diagnosticsPath + 'databasetest';
+    private _diagnosticsAppInfo = this._diagnosticsPath + 'appinfo';
     private _diagnosticsMonitoringPath = this._diagnosticsPath + "CpuMonitoring";
     private _diagnosticsMonitoringSessionActive = this._diagnosticsMonitoringPath + "/active"
     private _diagnosticsMonitoringSessionActiveDetails = this._diagnosticsMonitoringPath + "/activesessiondetails"
@@ -96,6 +97,10 @@ export class UriElementsService {
 
     getDatabaseTestUrl(site: SiteInfoMetaData) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDatabaseTestPath;
+    }
+
+    getAppInfoUrl(site:SiteInfoMetaData){
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsAppInfo;
     }
 
     getMonitoringSessionsUrl(site: SiteDaasInfo) {

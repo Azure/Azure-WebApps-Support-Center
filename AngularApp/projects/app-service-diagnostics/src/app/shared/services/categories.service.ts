@@ -220,17 +220,6 @@ export class CategoriesService {
         });
 
         tools.Subcategories.push({
-            Name: ToolNames.CpuMonitoring,
-            BgColor: 'rgb(0, 102, 153)',
-            TextColor: 'White',
-            Href: 'tools/cpumonitoring',
-            OperatingSystem: OperatingSystem.windows,
-            AppType: AppType.WebApp | AppType.FunctionApp,
-            Sku: Sku.NotDynamic,
-            AppStack : ''
-        });
-
-        tools.Subcategories.push({
             Name: ToolNames.NetworkTrace,
             BgColor: 'rgb(153, 51, 127)',
             TextColor: 'White',

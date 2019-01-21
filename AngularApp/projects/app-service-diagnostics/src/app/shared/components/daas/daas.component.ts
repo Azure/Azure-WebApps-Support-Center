@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { SiteDaasInfo } from '../../models/solution-metadata';
-import { Session, Diagnoser, Report, DiagnoserDefinition } from '../../models/daas';
+import { Session, Diagnoser, Report, DiagnoserDefinition, Log } from '../../models/daas';
 import { Subscription ,  Observable, interval } from 'rxjs';
 import { StepWizardSingleStep } from '../../models/step-wizard-single-step';
 import { SiteService } from '../../services/site.service';
@@ -44,6 +44,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     operationInProgress: boolean;
     operationStatus: string;
     Reports: Report[];
+    Logs: Log[] = [];
     sessionCompleted: boolean;
     WizardSteps: StepWizardSingleStep[] = [];
 
@@ -55,6 +56,7 @@ export class DaasComponent implements OnInit, OnDestroy {
 
     daasValidated: boolean = false;
     cancellingSession: boolean = false;
+    collectionMode: number = 0;
 
     constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
     }
@@ -113,6 +115,9 @@ export class DaasComponent implements OnInit, OnDestroy {
 
     }
 
+    selectMode(mode: number) {
+        this.collectionMode = mode;
+    }
 
     checkRunningSessions() {
         this.operationInProgress = true;
@@ -163,6 +168,7 @@ export class DaasComponent implements OnInit, OnDestroy {
                     const daasDiagnoser = runningSession.DiagnoserSessions.find(x => x.Name.startsWith(this.diagnoserNameLookup));
                     if (daasDiagnoser) {
                         this.Reports = daasDiagnoser.Reports;
+                        this.Logs = daasDiagnoser.Logs;
                         this.sessionCompleted = true;
                     }
 
@@ -179,7 +185,7 @@ export class DaasComponent implements OnInit, OnDestroy {
             this.diagnoserSession = daasDiagnoser;
             if (daasDiagnoser.CollectorStatus === 2) {
                 this.sessionStatus = 2;
-
+                this.Logs = daasDiagnoser.Logs;
                 if (daasDiagnoser.CollectorStatusMessages.length > 0) {
                     const thisInstanceMessages = daasDiagnoser.CollectorStatusMessages.filter(x => x.EntityType === this.selectedInstance);
                     const messagesLength = thisInstanceMessages.length;
@@ -188,6 +194,7 @@ export class DaasComponent implements OnInit, OnDestroy {
                     }
                 }
             } else if (daasDiagnoser.AnalyzerStatus === 2) {
+                this.Logs = daasDiagnoser.Logs;
                 this.WizardStepStatus = '';
                 if (daasDiagnoser.AnalyzerStatusMessages.length > 0) {
                     const thisInstanceMessages = daasDiagnoser.AnalyzerStatusMessages.filter(x => x.EntityType.startsWith(this.selectedInstance));
@@ -278,11 +285,12 @@ export class DaasComponent implements OnInit, OnDestroy {
                 }
 
                 this.Reports = [];
+                this.Logs = [];
                 this.sessionInProgress = true;
                 this.sessionStatus = 1;
                 this.updateInstanceInformation();
 
-                const submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.diagnoserName, this.instancesToDiagnose)
+                const submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.diagnoserName, this.instancesToDiagnose, this.collectionMode === 1)
                     .subscribe(result => {
                         this.sessionId = result;
                         this.subscription = interval(10000).subscribe(res => {
@@ -307,7 +315,7 @@ export class DaasComponent implements OnInit, OnDestroy {
         this.selectedInstance = instanceSelected;
     }
 
-    openReport(url: string) {
+    openFile(url: string) {
         this._windowService.open(`https://${this.scmPath}/api/vfs/data/DaaS/${url}`);
     }
 
@@ -316,6 +324,7 @@ export class DaasComponent implements OnInit, OnDestroy {
             this.subscription.unsubscribe();
         }
         this.Reports = [];
+        this.Logs = [];
 
     }
 

@@ -7,7 +7,7 @@ import { SiteDaasInfo } from '../models/solution-metadata';
 import { ArmService } from './arm.service';
 import { AuthService } from '../../startup/services/auth.service';
 import { UriElementsService } from './urielements.service';
-import { Session, DiagnoserDefinition, DatabaseTestConnectionResult, MonitoringSession, MonitoringLogsPerInstance, ActiveMonitoringSession } from '../models/daas';
+import { Session, DiagnoserDefinition, DatabaseTestConnectionResult, MonitoringSession, MonitoringLogsPerInstance, ActiveMonitoringSession, DaasAppInfo } from '../models/daas';
 import { SiteInfoMetaData } from '../models/site';
 
 @Injectable()
@@ -23,10 +23,10 @@ export class DaasService {
         return <Observable<Session[]>>(this._armClient.getResourceWithoutEnvelope<Session[]>(resourceUri, null, true));
     }
 
-    submitDaasSession(site: SiteDaasInfo, diagnoser: string, Instances: string[]): Observable<string> {
+    submitDaasSession(site: SiteDaasInfo, diagnoser: string, Instances: string[], collectLogsOnly:boolean ): Observable<string> {
 
         const session = new Session();
-        session.CollectLogsOnly = false;
+        session.CollectLogsOnly = collectLogsOnly;
         session.StartTime = '';
         session.RunLive = true;
         session.Instances = Instances;
@@ -91,6 +91,11 @@ export class DaasService {
     deleteDaasSession(site: SiteDaasInfo, sessionId: string): Observable<any> {
         const resourceUri: string = this._uriElementsService.getDiagnosticsSingleSessionDeleteUrl(site, sessionId);
         return <Observable<any>>(this._armClient.deleteResource(resourceUri, null, true));
+    }
+
+    getAppInfo(site: SiteDaasInfo): Observable<DaasAppInfo> {
+        const resourceUri: string = this._uriElementsService.getAppInfoUrl(site);
+        return <Observable<DaasAppInfo>>(this._armClient.getResourceWithoutEnvelope<DaasAppInfo>(resourceUri, null, true));
     }
 
     getAllMonitoringSessions(site: SiteDaasInfo): Observable<MonitoringSession[]> {

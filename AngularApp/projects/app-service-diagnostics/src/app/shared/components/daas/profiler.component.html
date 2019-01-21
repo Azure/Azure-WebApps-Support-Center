@@ -1,13 +1,32 @@
 <daas-validator [siteToBeDiagnosed]="siteToBeDiagnosed" diagnoserName="CLR Profiler" (DaasValidated)="onDaasValidated($event)"></daas-validator>
 
 <div *ngIf="daasValidated">
-    <div class="action-box" *ngIf="siteToBeDiagnosed">
+    <div class="col" *ngIf="siteToBeDiagnosed && checkingAppInfo">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Checking ASP.NET version
+    </div>
+    <div class="action-box" *ngIf="siteToBeDiagnosed && !checkingAppInfo">
         <div>
-            <table style="border:none">
+            <table style="border:none;">
                 <tr>
                     <td>App: </td>
                     <td class="highlight-blue">
                         <b>{{siteToBeDiagnosed.siteName}}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Mode: </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':collectionMode === 0}"
+                                (click)="selectMode(0);">
+                                Collect and Analyze Data
+                            </button>
+                            <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':collectionMode === 1}"
+                                (click)="selectMode(1);">
+                                Collect Data Only
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 <tr *ngIf="!error">
@@ -32,6 +51,51 @@
                 </tr>
             </table>
 
+            <div *ngIf="isAspnetCoreLowerVersion" style="margin-top:25px">
+                <div class="panel panel-default">
+                    <div class="panel-heading" (click)="toggleExpanded()">
+                        <span style="padding: 0px 10px 0px 0px">
+                            <i class="fa health-icon fa-info-circle warning-icon-color" aria-hidden="true"></i>
+                        </span>
+                        <b>ASP.NET Core Requirements</b>
+                        <span class="pull-right">
+                            <i class="fa fa-plus" *ngIf="!aspnetCoreWarningExpanded" aria-hidden="true"></i>
+                            <i class="fa fa-minus" *ngIf="aspnetCoreWarningExpanded" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="panel-body" *ngIf="aspnetCoreWarningExpanded">
+                        We detected that the app is using <strong>ASP.NET Core {{ appInfo.AspNetCoreVersion }}</strong>
+                        and to use this profiler effectively with ASP.NET Core apps, you need to do two things :-
+                        <ol style="margin-top:10px">
+                            <li>
+                                Ensure that you have the below code in your app's <strong>Program.cs</strong> as
+                                mentioned
+                                in
+                                <a target="_blank" href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-2.2">Logging
+                                    in ASP.NET Core article</a>.
+
+                                <pre style="margin-top:10px;border-radius: 0px">logging.AddEventSourceLogger();</pre>
+                            </li>
+                            <li>
+                                Update the default <strong>LogLevel</strong> in appsettings.json to <strong>Information</strong>,
+                                like below
+                                <pre style="margin-top:10px;border-radius: 0px">
+"Logging": {{ '{' }}
+    LogLevel": {{ '{' }}
+        Default": "Information"
+        {{ '}' }}
+    {{ '}' }}</pre>
+                            </li>
+                        </ol>
+
+                        <div class="focus-box focus-box-warning" style="margin-top:20px;margin-bottom:10px;padding-right: 5px;">Without
+                            these
+                            changes, the profiler cannot identify slow or failed requests from the trace. Please ensure
+                            these changes are in place before collecting the Profiler trace.</div>
+                    </div>
+                </div>
+
+            </div>
             <div style="text-align:right">
                 <div class="col" *ngIf="operationInProgress">
                     <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
@@ -39,9 +103,10 @@
                 </div>
 
                 <button [disabled]="sessionInProgress || operationInProgress || retrievingInstancesFailed" [hidden]="sessionCompleted"
-                    class="btn btn-primary" (click)="collectProfilerTrace()">Collect Profiler Trace</button>
+                    class="btn btn-primary" (click)="collectProfilerTrace()">Collect
+                    Profiler Trace</button>
 
-                <div style="margin-top:5px">
+                <div *ngIf="!isAspnetCore" style="margin-top:5px">
                     <input type="checkbox" [attr.aria-label]="'Add thread report'" [(ngModel)]="collectStackTraces"
                         [disabled]="sessionInProgress" /> Add
                     thread report
@@ -100,15 +165,20 @@
         </div>
     </div>
 
-    <div class="status-box" *ngIf="Reports?.length > 0">
-        <table class="table table-hover">
+    <div style="margin-top:10px;" *ngIf="Logs?.length > 0">
+        <div class="output-heading">Output</div>
+        <table style="margin-left:1px" class="table table-bordered table-responsive">
             <tbody>
-                <tr *ngFor="let report of Reports">
-                    <td>
-                        {{ report.FileName }}
+                <tr *ngFor="let log of Logs; let i = index">
+                    <td style="text-align: center">
+                        <a (click)="openFile(log.RelativePath)"> {{ log.FileName }}</a>
                     </td>
-                    <td>
-                        <a (click)="openReport(report.RelativePath)" class="btn btn-primary">Open Report</a>
+                    <td style="text-align: center" *ngIf="Reports?.length > i;">
+                        <a (click)="openFile(Reports[i].RelativePath)" class="btn btn-primary btn-sm">Open Report</a>
+                    </td>
+                    <td style="text-align: center" *ngIf="Reports == null || Reports?.length <= i;">
+                        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                        Analyzing...
                     </td>
                 </tr>
             </tbody>

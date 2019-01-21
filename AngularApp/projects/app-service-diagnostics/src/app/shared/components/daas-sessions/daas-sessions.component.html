@@ -1,10 +1,10 @@
-<div *ngIf="supportedTier && !showDetailedView" class="header2">Last 5 {{DiagnoserHeading}}
-    <div *ngIf="showDetailsLink" style="display:inline">(Click
+<div *ngIf="supportedTier && !showDetailedView" class="header2">
+    <div *ngIf="showDetailsLink" style="display:inline">Click
         <div style="display:inline" [routerLink]="allSessions">
-            <a>here</a> to see all sessions)</div>
+            <a>here</a> to see all sessions</div>
     </div>
 </div>
-<div>
+<div *ngIf="showDetailedView">
     <div class="col" *ngIf="checkingExistingSessions" style="height:30px">
         <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
         Populating diagnostic sessions...
@@ -35,6 +35,9 @@
                                         </a>
                                     </li>
                                 </ul>
+                                <div *ngIf="session.Status === 1">
+                                    Analysis Not Requested
+                                </div>
                                 <div *ngIf="diagnoser.CollectorErrors.length > 0" class="tool-tip">
                                     <i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
                                     <span class="tool-tip-text">{{diagnoser.CollectorErrors[0]}}</span>
@@ -59,18 +62,21 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span *ngIf="!isSessionInProgress(session)">
-                        <i class="fa health-icon fa-exclamation-triangle warning-icon-color" *ngIf="hasErrors(session)" aria-hidden="true"></i>
-                        <i class="fa health-icon fa-check-circle healthy-icon-color" *ngIf="!hasErrors(session)" aria-hidden="true"></i>
+                        <i class="fa health-icon fa-exclamation-triangle warning-icon-color" *ngIf="hasErrors(session)"
+                            aria-hidden="true"></i>
+                        <i class="fa health-icon fa-check-circle healthy-icon-color" *ngIf="!hasErrors(session)"
+                            aria-hidden="true"></i>
                     </span>
                     <span *ngIf="isSessionInProgress(session)">
                         <i class="fa health-icon fa-hourglass-half warning-icon-color" aria-hidden="true"></i>
                     </span>
                     <b>{{ session.StartTime }} UTC</b>
                     <span>- {{ session.StartTime | datetimediff }} ago</span>
-
+                    <span>{{ getSessionSize(session) }}</span>
                     <div class="inline" style="margin-left:30px" *ngIf="!isSessionInProgress(session)">
-                        <div class="inline tool-tip hotspot-clickable" style="font-size:medium" >
-                            <span style="margin-left:30px;width:250px;margin-top:30px" class="tool-tip-text">Click here to delete this session and any collected logs and reports generated for this session</span>
+                        <div class="inline tool-tip hotspot-clickable" style="font-size:medium">
+                            <span style="margin-left:30px;width:250px;margin-top:30px" class="tool-tip-text">Click here
+                                to delete this session and any collected logs and reports generated for this session</span>
                             <i class="fa fa-trash" aria-hidden="true" (click)="deleteSession(i)"></i>
                         </div>
                         <span *ngIf="session.Deleting">
@@ -112,7 +118,8 @@
                                                 <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
                                                 Collecting data...
                                             </div>
-                                            <div style="width: 100%;text-align: center;" *ngIf="diagnoser.CollectorErrors.length > 0" class="tool-tip">
+                                            <div style="width: 100%;text-align: center;" *ngIf="diagnoser.CollectorErrors.length > 0"
+                                                class="tool-tip">
                                                 <i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
                                                 <span class="tool-tip-text">{{diagnoser.CollectorErrors[0]}}</span>
                                             </div>
@@ -125,7 +132,11 @@
                                                     </a>
                                                 </li>
                                             </ul>
-                                            <div style="width: 100%;text-align: center;" *ngIf="diagnoser.AnalyzerErrors.length > 0" class="tool-tip">
+                                            <div *ngIf="session.Status === 1">
+                                                Analysis Not Requested
+                                            </div>
+                                            <div style="width: 100%;text-align: center;" *ngIf="diagnoser.AnalyzerErrors.length > 0"
+                                                class="tool-tip">
                                                 <i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
                                                 <span class="tool-tip-text">{{diagnoser.AnalyzerErrors[0]}}</span>
                                             </div>
