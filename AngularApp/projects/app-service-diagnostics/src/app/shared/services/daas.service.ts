@@ -1,5 +1,5 @@
 
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Http, RequestOptions, Headers, Response } from '@angular/http';
 import { Observable } from 'rxjs';
@@ -7,7 +7,7 @@ import { SiteDaasInfo } from '../models/solution-metadata';
 import { ArmService } from './arm.service';
 import { AuthService } from '../../startup/services/auth.service';
 import { UriElementsService } from './urielements.service';
-import { Session, DiagnoserDefinition, DatabaseTestConnectionResult } from '../models/daas';
+import { Session, DiagnoserDefinition, DatabaseTestConnectionResult, MonitoringSession, MonitoringLogsPerInstance, ActiveMonitoringSession } from '../models/daas';
 import { SiteInfoMetaData } from '../models/site';
 
 @Injectable()
@@ -91,6 +91,42 @@ export class DaasService {
     deleteDaasSession(site: SiteDaasInfo, sessionId: string): Observable<any> {
         const resourceUri: string = this._uriElementsService.getDiagnosticsSingleSessionDeleteUrl(site, sessionId);
         return <Observable<any>>(this._armClient.deleteResource(resourceUri, null, true));
+    }
+
+    getAllMonitoringSessions(site: SiteDaasInfo): Observable<MonitoringSession[]> {
+        const resourceUri: string = this._uriElementsService.getMonitoringSessionsUrl(site);
+        return <Observable<MonitoringSession[]>>(this._armClient.getResourceWithoutEnvelope<MonitoringSession[]>(resourceUri, null, true));
+    }
+
+    getMonitoringSession(site: SiteDaasInfo, sessionId: string): Observable<MonitoringSession> {
+        const resourceUri: string = this._uriElementsService.getMonitoringSessionUrl(site, sessionId);
+        return <Observable<MonitoringSession>>(this._armClient.getResourceWithoutEnvelope<MonitoringSession>(resourceUri, null, true));
+    }
+    analyzeMonitoringSession(site: SiteDaasInfo, sessionId: string): Observable<any> {
+        const resourceUri: string = this._uriElementsService.getAnalyzeMonitoringSessionUrl(site, sessionId);
+        return <Observable<any>>(this._armClient.postResource(resourceUri, null, null, true));
+    }
+    getActiveMonitoringSession(site: SiteDaasInfo): Observable<MonitoringSession> {
+        const resourceUri: string = this._uriElementsService.getActiveMonitoringSessionUrl(site);
+        return <Observable<MonitoringSession>>(this._armClient.getResourceWithoutEnvelope<MonitoringSession>(resourceUri, null, true));
+    }
+    getActiveMonitoringSessionDetails(site: SiteDaasInfo): Observable<ActiveMonitoringSession> {
+        const resourceUri: string = this._uriElementsService.getActiveMonitoringSessionDetailsUrl(site);
+        return <Observable<ActiveMonitoringSession>>(this._armClient.getResourceWithoutEnvelope<ActiveMonitoringSession>(resourceUri, null, true));
+    }
+    stopMonitoringSession(site: SiteDaasInfo): Observable<string> {
+        const resourceUri: string = this._uriElementsService.stopMonitoringSessionUrl(site);
+        return <Observable<string>>(this._armClient.postResource(resourceUri, null, null, true));
+    }
+
+    submitMonitoringSession(site: SiteDaasInfo, session: MonitoringSession): Observable<string> {
+        const resourceUri: string = this._uriElementsService.getMonitoringSessionsUrl(site);
+        return <Observable<string>>(this._armClient.postResource(resourceUri, session, null, true));
+    }
+
+    deleteMonitoringSession(site: SiteDaasInfo, sessionId: string): Observable<string> {
+        const resourceUri: string = this._uriElementsService.getMonitoringSessionUrl(site, sessionId);
+        return <Observable<string>>(this._armClient.deleteResource(resourceUri, null, true));
     }
 
     private _getHeaders(): Headers {

@@ -55,7 +55,6 @@ export class DaasComponent implements OnInit, OnDestroy {
 
     daasValidated: boolean = false;
     cancellingSession: boolean = false;
-    cancellationRequested: boolean = false;
 
     constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
     }
@@ -325,6 +324,8 @@ export class DaasComponent implements OnInit, OnDestroy {
         this._daasService.cancelDaasSession(this.siteToBeDiagnosed, this.sessionId).subscribe(resp => {
             this.cancellingSession = false;
             this.sessionInProgress = false;
+            this.SessionsEvent.emit(true);
         });
+
     }
 }

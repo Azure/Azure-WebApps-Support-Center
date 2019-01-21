@@ -107,3 +107,51 @@ export interface ExceptionDetails {
     HResult: number;
 
 }
+export enum AnalysisStatus {
+    NotStarted,
+    InProgress,
+    Completed
+}
+
+export enum SessionMode {
+    Kill = "Kill",
+    Collect = "Collect",
+    CollectAndKill = "CollectAndKill",
+    CollectKillAndAnalyze = "CollectKillAndAnalyze"
+}
+
+export class MonitoringSession {
+    Mode: SessionMode;
+    SessionId: string;
+    StartDate: string;
+    EndDate: string;
+    ProcessesToMonitor: string;
+    MonitorScmProcess: boolean;
+    CpuThreshold: number;
+    ThresholdSeconds: number;
+    MonitorDuration: number;
+    ActionToExecute: string;
+    ArgumentsToAction: string;
+    MaxActions: number;
+    MaximumNumberOfHours: number;
+    FilesCollected: MonitoringFile[];
+    AnalysisStatus: AnalysisStatus;
+}
+
+export interface MonitoringFile {
+    FileName: string;
+    RelativePath: string
+    ReportFile: string;
+    ReportFileRelativePath: string;
+    AnalysisErrors: string[];
+}
+
+export interface ActiveMonitoringSession {
+    Session: MonitoringSession;
+    MonitoringLogs: MonitoringLogsPerInstance[];
+}
+
+export interface MonitoringLogsPerInstance {
+    Instance: string;
+    Logs: string
+}
