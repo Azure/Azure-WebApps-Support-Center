@@ -43,7 +43,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     selectedInstance: string;
     operationInProgress: boolean;
     operationStatus: string;
-    Reports: Report[];
+    Reports: Report[] =[];
     Logs: Log[] = [];
     sessionCompleted: boolean;
     WizardSteps: StepWizardSingleStep[] = [];
@@ -183,9 +183,9 @@ export class DaasComponent implements OnInit, OnDestroy {
         const daasDiagnoser = session.DiagnoserSessions.find(x => x.Name.startsWith(this.diagnoserNameLookup));
         if (daasDiagnoser) {
             this.diagnoserSession = daasDiagnoser;
+            this.Logs = daasDiagnoser.Logs;
             if (daasDiagnoser.CollectorStatus === 2) {
                 this.sessionStatus = 2;
-                this.Logs = daasDiagnoser.Logs;
                 if (daasDiagnoser.CollectorStatusMessages.length > 0) {
                     const thisInstanceMessages = daasDiagnoser.CollectorStatusMessages.filter(x => x.EntityType === this.selectedInstance);
                     const messagesLength = thisInstanceMessages.length;
@@ -194,7 +194,6 @@ export class DaasComponent implements OnInit, OnDestroy {
                     }
                 }
             } else if (daasDiagnoser.AnalyzerStatus === 2) {
-                this.Logs = daasDiagnoser.Logs;
                 this.WizardStepStatus = '';
                 if (daasDiagnoser.AnalyzerStatusMessages.length > 0) {
                     const thisInstanceMessages = daasDiagnoser.AnalyzerStatusMessages.filter(x => x.EntityType.startsWith(this.selectedInstance));
@@ -336,5 +335,19 @@ export class DaasComponent implements OnInit, OnDestroy {
             this.SessionsEvent.emit(true);
         });
 
+    }
+
+    getInstanceNameFromReport(reportName: string): string {
+
+        if (!this.diagnoserNameLookup.startsWith('CLR Profiler')) {
+            return reportName;
+        }
+
+        const reportNameArray = reportName.split('_');
+        if (reportNameArray.length > 0) {
+            return reportNameArray[0];
+        } else {
+            return reportName;
+        }
     }
 }

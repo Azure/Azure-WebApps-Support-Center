@@ -17,7 +17,6 @@ import { SiteService } from '../../services/site.service';
 
 export class ProfilerComponent extends DaasComponent implements OnInit, OnDestroy {
 
-
     instancesStatus: Map<string, number>;
     selectedInstance: string;
     WizardSteps: StepWizardSingleStep[] = [];
@@ -53,7 +52,6 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
         });
     }
 
-   
     collectProfilerTrace() {
         this.aspnetCoreWarningExpanded = false;
         if (this.collectStackTraces) {
@@ -97,6 +95,7 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
         const clrDiagnoser = session.DiagnoserSessions.find(x => x.Name.startsWith('CLR Profiler'));
         if (clrDiagnoser) {
             this.diagnoserSession = clrDiagnoser;
+            this.Logs = clrDiagnoser.Logs;
             if (clrDiagnoser.CollectorStatus === 2) {
                 if (clrDiagnoser.CollectorStatusMessages.length > 0) {
                     clrDiagnoser.CollectorStatusMessages.forEach(msg => {

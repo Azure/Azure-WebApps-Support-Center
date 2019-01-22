@@ -1,10 +1,10 @@
-<div *ngIf="supportedTier && !showDetailedView" class="header2">
-    <div *ngIf="showDetailsLink" style="display:inline">Click
+<div *ngIf="supportedTier && !showDetailedView" class="header2">Last 5 {{DiagnoserHeading}}
+    <div *ngIf="showDetailsLink" style="display:inline">(Click
         <div style="display:inline" [routerLink]="allSessions">
-            <a>here</a> to see all sessions</div>
+            <a>here</a> to see all sessions)</div>
     </div>
 </div>
-<div *ngIf="showDetailedView">
+<div>
     <div class="col" *ngIf="checkingExistingSessions" style="height:30px">
         <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
         Populating diagnostic sessions...
@@ -36,7 +36,7 @@
                                     </li>
                                 </ul>
                                 <div *ngIf="session.Status === 1">
-                                    Analysis Not Requested
+                                    Analysis not requested
                                 </div>
                                 <div *ngIf="diagnoser.CollectorErrors.length > 0" class="tool-tip">
                                     <i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
@@ -133,7 +133,7 @@
                                                 </li>
                                             </ul>
                                             <div *ngIf="session.Status === 1">
-                                                Analysis Not Requested
+                                                Analysis not requested
                                             </div>
                                             <div style="width: 100%;text-align: center;" *ngIf="diagnoser.AnalyzerErrors.length > 0"
                                                 class="tool-tip">

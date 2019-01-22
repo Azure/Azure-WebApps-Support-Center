@@ -18,11 +18,11 @@
                     <td>Mode: </td>
                     <td>
                         <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':collectionMode === 0}"
+                            <button [disabled]="sessionInProgress" type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':collectionMode === 0}"
                                 (click)="selectMode(0);">
                                 Collect and Analyze Data
                             </button>
-                            <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':collectionMode === 1}"
+                            <button [disabled]="sessionInProgress" type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':collectionMode === 1}"
                                 (click)="selectMode(1);">
                                 Collect Data Only
                             </button>
@@ -165,20 +165,38 @@
         </div>
     </div>
 
-    <div style="margin-top:10px;" *ngIf="Logs?.length > 0">
-        <div class="output-heading">Output</div>
-        <table style="margin-left:1px" class="table table-bordered table-responsive">
+    <div style="margin-top:10px;" *ngIf="Logs.length > 0">
+        <table class="table table-bordered table-responsive">
+            <thead class="thead-light">
+                <tr>
+                    <th>Data</th>
+                    <th *ngIf="collectionMode === 0">Reports</th>
+                </tr>
+            </thead>
             <tbody>
-                <tr *ngFor="let log of Logs; let i = index">
-                    <td style="text-align: center">
-                        <a (click)="openFile(log.RelativePath)"> {{ log.FileName }}</a>
+                <tr>
+                    <td>
+                        <ul *ngIf="Logs.length > 0" style="list-style: none;padding:0">
+                            <li *ngFor="let log of Logs">
+                                <a (click)="opeFile(log.RelativePath)" style="cursor: pointer">
+                                    {{ log.FileName }}
+                                </a>
+                            </li>
+                        </ul>
                     </td>
-                    <td style="text-align: center" *ngIf="Reports?.length > i;">
-                        <a (click)="openFile(Reports[i].RelativePath)" class="btn btn-primary btn-sm">Open Report</a>
-                    </td>
-                    <td style="text-align: center" *ngIf="Reports == null || Reports?.length <= i;">
-                        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                        Analyzing...
+                    <td *ngIf="collectionMode === 0">
+                        <ul *ngIf="Reports.length > 0" style="list-style: none;padding:0">
+                            <li *ngFor="let report of Reports">
+                                {{ getInstanceNameFromReport(report.FileName) }}
+                                <a (click)="openFile(report.RelativePath)" style="cursor: pointer">
+                                    <i class="fa fa-external-link" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <div *ngIf="sessionStatus >= 3 && sessionInProgress">
+                                <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                                {{ sessionStatus === 3 ? 'Waiting...' : 'Analzying...' }}
+                        </div>
                     </td>
                 </tr>
             </tbody>
