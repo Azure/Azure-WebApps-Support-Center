@@ -17,7 +17,7 @@
     </div>
     <div class="col col-sm-5">
       <div style="float: right;" class="btn-group" role="group" aria-label="...">
-        <button *ngFor="let st of possibleStacks" type="button" class="btn btn-default" (click)="selectStack(st)" [class.btn-primary]="stack?.toLowerCase().indexOf(st.toLowerCase()) >= 0">{{st}}</button>
+        <button *ngFor="let st of possibleStacks" type="button" class="btn btn-default" (click)="selectStack(st)" [class.btn-primary]="stack?.toLowerCase().indexOf(st.toLowerCase()) >= 0 && stack?.length > 1">{{st}}</button>
       </div>
     </div>
   </div>
