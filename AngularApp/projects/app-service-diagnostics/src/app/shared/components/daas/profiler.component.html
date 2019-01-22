@@ -18,12 +18,12 @@
                     <td>Mode: </td>
                     <td>
                         <div class="btn-group" role="group">
-                            <button [disabled]="sessionInProgress" type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':collectionMode === 0}"
-                                (click)="selectMode(0);">
+                            <button [disabled]="sessionInProgress" type="button" class="btn btn-default btn-xs"
+                                [ngClass]="{'btn-primary':collectionMode === 0}" (click)="selectMode(0);">
                                 Collect and Analyze Data
                             </button>
-                            <button [disabled]="sessionInProgress" type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':collectionMode === 1}"
-                                (click)="selectMode(1);">
+                            <button [disabled]="sessionInProgress" type="button" class="btn btn-default btn-xs"
+                                [ngClass]="{'btn-primary':collectionMode === 1}" (click)="selectMode(1);">
                                 Collect Data Only
                             </button>
                         </div>
@@ -136,15 +136,14 @@
                             {{instancestatus.key}}
                         </option>
                     </select>
-
                     <step-wizard [CurrentStep]="sessionStatus" [WizardSteps]="WizardSteps" [WizardStepStatus]="WizardStepStatus"></step-wizard>
-                </div>
-                <div *ngIf="sessionStatus >= 4" style="margin-top:10px">
-                    <button class="btn btn-primary btn-sm" (click)="cancelSession()" *ngIf="!cancellingSession">Cancel</button>
-                    <div *ngIf="cancellingSession">
-                        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                        Cancelling...
+                    <div *ngIf="sessionStatus >= 4 " style="text-align:right">
+                        <button class="btn btn-primary btn-sm" (click)="cancelSession()" *ngIf="!cancellingSession">Cancel</button>
                     </div>
+                </div>
+                <div *ngIf="cancellingSession">
+                    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                    Cancelling...
                 </div>
             </div>
         </div>
@@ -194,8 +193,8 @@
                             </li>
                         </ul>
                         <div *ngIf="sessionStatus >= 3 && sessionInProgress">
-                                <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                                {{ sessionStatus === 3 ? 'Waiting...' : 'Analzying...' }}
+                            <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                            {{ sessionStatus === 3 ? 'Waiting...' : 'Analzying...' }}
                         </div>
                     </td>
                 </tr>

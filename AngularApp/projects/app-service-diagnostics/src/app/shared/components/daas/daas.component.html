@@ -64,16 +64,14 @@
                             {{instancestatus.key}}
                         </option>
                     </select>
-
                     <step-wizard [CurrentStep]="sessionStatus" [WizardSteps]="WizardSteps" [WizardStepStatus]="WizardStepStatus"></step-wizard>
-                </div>
-
-                <div *ngIf="sessionStatus >= 3 " style="margin-top:10px">
-                    <button class="btn btn-primary btn-sm" (click)="cancelSession()" *ngIf="!cancellingSession">Cancel</button>
-                    <div *ngIf="cancellingSession">
-                        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                        Cancelling...
+                    <div *ngIf="sessionStatus >= 3 " style="text-align:right">
+                        <button class="btn btn-primary btn-sm" (click)="cancelSession()" *ngIf="!cancellingSession">Cancel</button>
                     </div>
+                </div>
+                <div *ngIf="cancellingSession">
+                    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                    Cancelling...
                 </div>
             </div>
         </div>
@@ -115,15 +113,15 @@
                     <td *ngIf="collectionMode === 0">
                         <ul *ngIf="Reports.length > 0" style="list-style: none;padding:0">
                             <li *ngFor="let report of Reports">
-                                    {{ getInstanceNameFromReport(report.FileName) }}
-                                    <a (click)="openFile(report.RelativePath)" style="cursor: pointer">
-                                        <i class="fa fa-external-link" aria-hidden="true"></i>
-                                    </a>
+                                {{ getInstanceNameFromReport(report.FileName) }}
+                                <a (click)="openFile(report.RelativePath)" style="cursor: pointer">
+                                    <i class="fa fa-external-link" aria-hidden="true"></i>
+                                </a>
                             </li>
                         </ul>
                         <div *ngIf="sessionStatus >= 2 && sessionInProgress">
-                                <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                                {{ sessionStatus === 2 ? 'Waiting...' : 'Analzying...' }}
+                            <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                            {{ sessionStatus === 2 ? 'Waiting...' : 'Analzying...' }}
                         </div>
                     </td>
                 </tr>
