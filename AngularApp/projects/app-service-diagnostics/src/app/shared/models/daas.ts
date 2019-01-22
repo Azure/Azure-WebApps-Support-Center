@@ -96,7 +96,9 @@ export enum ConnectionDatabaseType {
     MySql,
     Custom,
     Dynamic,
-    NotSupported
+    NotSupported,
+    PostgreSql,
+    RedisCache
 }
 
 export interface ExceptionDetails {
