@@ -49,6 +49,8 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
                     this.isAspnetCoreLowerVersion = true;
                 }
             }
+        }, error=>{
+            this.checkingAppInfo = false;
         });
     }
 
