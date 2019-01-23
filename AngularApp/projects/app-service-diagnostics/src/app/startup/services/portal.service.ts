@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { StartupInfo, Event, Data, Verbs, Action, LogEntryLevel, Message, OpenBladeInfo } from '../../shared/models/portal';
 import { ErrorEvent } from '../../shared/models/error-event';
@@ -67,6 +67,10 @@ export class PortalService {
             action: action,
             data: data
         });
+
+        if (isDevMode()) {
+            console.log({ id: subcomponent, category: action, data: data });
+        }
 
         this.postMessage(Verbs.logAction, actionStr);
     }

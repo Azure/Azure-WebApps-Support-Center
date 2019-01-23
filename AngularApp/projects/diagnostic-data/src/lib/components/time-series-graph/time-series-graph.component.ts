@@ -40,6 +40,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
     if (data) {
       this.renderingProperties = <TimeSeriesRendering>data.renderingProperties;
+      this.defaultValue = this.renderingProperties.defaultValue !== null ? this.renderingProperties.defaultValue : this.defaultValue;
       this.graphOptions = this.renderingProperties.graphOptions;
       this.customizeXAxis = this.graphOptions && this.graphOptions.customizeX &&  this.graphOptions.customizeX === 'true';
       this.timeGrain = this._getInitialTimegrain();

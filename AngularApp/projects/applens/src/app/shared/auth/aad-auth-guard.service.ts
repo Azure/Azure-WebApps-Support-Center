@@ -13,6 +13,7 @@ export class AadAuthGuard implements CanActivate {
     constructor(private _router: Router, private _adalService: AdalService) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> {
+        this._adalService.handleWindowCallback();
 
         if (!this._adalService.userInfo.authenticated) {
             if (state.url.indexOf('#') === -1) {
@@ -28,8 +29,6 @@ export class AadAuthGuard implements CanActivate {
                 localStorage.removeItem(loginRedirectKey);
             }
             return true;
-
-
         }
     }
 

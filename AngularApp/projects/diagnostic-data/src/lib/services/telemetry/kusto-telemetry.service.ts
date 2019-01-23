@@ -8,25 +8,15 @@ export class KustoTelemetryService implements ITelemetryProvider {
     constructor() {
     }
 
-    logEvent() {
-    }
+    logEvent(message?: string, properties?: any, measurements?: any) {}
 
-    logException() {
-    }
+    logException(exception: Error, handledAt?: string, properties?: any, measurements?: any, severityLevel?: any) {}
 
-    logMetric() {
-    }
+    logPageView(name: string, url: string, properties?: any, measurements?: any, duration?: number) {}
 
+    logTrace(message: string, customProperties?: any, customMetrics?: any) {}
 
-    logTrace() {
-    }
+    logMetric(name: string, average: number, sampleCount: number, min: number, max: number, properties?: any) {}
 
-    logPageView() {
-    }
-
-    logUserInteraction() {
-    }
-
-    flush() {
-    }
+    flush() {}
 }

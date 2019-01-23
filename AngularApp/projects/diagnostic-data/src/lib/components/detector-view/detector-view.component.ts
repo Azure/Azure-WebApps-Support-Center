@@ -1,3 +1,4 @@
+import { ResourceService } from './../../../../../applens/src/app/shared/services/resource.service';
 import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { DetectorResponse, RenderingType } from '../../models/detector';
@@ -6,20 +7,34 @@ import * as momentNs from 'moment';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { DetectorControlService } from '../../services/detector-control.service';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 const moment = momentNs;
 
 @Component({
   selector: 'detector-view',
   templateUrl: './detector-view.component.html',
-  styleUrls: ['./detector-view.component.scss']
+  styleUrls: ['./detector-view.component.scss'],
+  animations: [
+    trigger('expand', [
+      state('hidden', style({ height: '0px' })),
+      state('shown', style({ height: '*' })),
+      transition('* => *', animate('.25s')),
+      transition('void => *', animate(0))
+    ])
+  ]
 })
 export class DetectorViewComponent implements OnInit {
 
   detectorDataLocalCopy: DetectorResponse;
   errorState: any;
   isPublic: boolean;
-  showFeedbackForm: boolean;
+
+  buttonViewVisible: boolean = false;
+  buttonViewActiveComponent: string;
+
+  readonly Feedback: string = 'Feedback'
+  readonly Report: string = 'Report'
 
   private detectorResponseSubject: BehaviorSubject<DetectorResponse> = new BehaviorSubject<DetectorResponse>(null);
   private errorSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
@@ -112,10 +127,34 @@ export class DetectorViewComponent implements OnInit {
           this.authorEmails = authorsArray.join(';');
         }
 
+        this.buttonViewActiveComponent = null;
+        this.buttonViewVisible = false;
+
         this.logInsights(data);
 
       }
     });
+  }
+
+  toggleButtonView(feature: string) {
+    if (this.buttonViewVisible) {
+      this.buttonViewVisible = false;
+      if (this.buttonViewActiveComponent !== feature) {
+        setTimeout(() => {
+          this.buttonViewActiveComponent = feature;
+          this.buttonViewVisible = true;
+        }, 250)
+      }
+      else {
+        setTimeout(() => {
+          this.buttonViewActiveComponent = null;
+        }, 250)
+      }
+    }
+    else {
+      this.buttonViewActiveComponent = feature;
+      this.buttonViewVisible = true;
+    }
   }
 
   protected logInsights(data: DetectorResponse) {
@@ -197,9 +236,5 @@ export class DetectorViewComponent implements OnInit {
       }
     }
     this.telemetryService.logEvent(eventMessage, eventProperties, measurements);
-  }
-
-  expandFeedbackForm() {
-    this.showFeedbackForm = true;
   }
 }

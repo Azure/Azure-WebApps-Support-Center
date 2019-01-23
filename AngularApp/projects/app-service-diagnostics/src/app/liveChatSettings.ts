@@ -19,8 +19,10 @@ export class LiveChatSettings {
     // List of Support Topics for which Live chat is Enabled
     public static enabledSupportTopics: string[] = [
         '32542218',     //Availability and Performance/Web App Down
+        '32457411',     //Availability and Performance/Web App Slow
         '32570954',     //Availability and Performance/Web App Restarted
         '32583701',     //Availability and Performance/Web App experiencing High CPU
+        '32581616',     //Availability and Performance/Web App experiencing High Memory Usage
         '32440123',     //Configuration and Management/Configuring SSL
         '32440122',     //Configuration and Management/Configuring custom domain names
         '32542210',     //Configuration and Management/IP Configuration
@@ -43,41 +45,71 @@ export class LiveChatSettings {
 
     public static PublicHolidays: any = [
         {
+            // Martin Luther King Day
+            "Day": 21,
+            "Month": 1,
+            "Year": 2019
+          },
+          {
+            // Presidents Day
+            "Day": 18,
+            "Month": 2,
+            "Year": 2019
+          },
+          {
+            // 	Memorial Day
+            "Day": 27,
+            "Month": 5,
+            "Year": 2019
+          },
+          {
+            // 	Independence Day
+            "Day": 4,
+            "Month": 7,
+            "Year": 2019
+          },
+          {
+            //  Labor Day
+            "Day": 2,
+            "Month": 9,
+            "Year": 2019
+          },
+          {
             // Thanksgiving Day - 1
-            date: 22,
-            month: 11,
-            year: 2018
-        },
-        {
+            "Day": 28,
+            "Month": 11,
+            "Year": 2019
+          },
+          {
             // Thanksgiving Day - 2
-            date: 23,
-            month: 11,
-            year: 2018
-        },
-        {
+            "Day": 29,
+            "Month": 11,
+            "Year": 2019
+          },
+          {
             // Xmas eve
-            date: 24,
-            month: 12,
-            year: 2018
-        },
-        {
+            "Day": 24,
+            "Month": 12,
+            "Year": 2019
+          },
+          {
             // Xmas
-            date: 25,
-            month: 12,
-            year: 2018
-        },
-        {
+            "Day": 25,
+            "Month": 12,
+            "year": 2019
+          },
+          {
             // New Yr Eve
-            date: 31,
-            month: 12,
-            year: 2018
-        },
-        {
+            "Day": 31,
+            "Month": 12,
+            "Year": 2019
+          },
+          {
             // New Yr
-            date: 1,
-            month: 1,
-            year: 2019
-        }
+            "Day": 1,
+            "Month": 1,
+            "Year": 2020
+          }
     ];
 
     public static WeeklyChatOffHours = {

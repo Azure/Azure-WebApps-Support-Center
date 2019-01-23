@@ -22,7 +22,7 @@ export class ProfilerToolComponent implements OnInit {
         'If thread report option is enabled, then raw stack traces of threads inside the process will be collected as well.',
         'With thread report option, your App may be paused for a few seconds till all the threads are dumped.',
         'Your web app will not be restarted as a result of running the profiler.',
-        'A profiler trace will help to identify issues in an ASP.NET application only and ASP.NET core is not yet supported.',
+        'A profiler trace will help to identify issues in an ASP.NET or ASP.NET Core application.',
     ];
 
     siteToBeDiagnosed: SiteDaasInfo;

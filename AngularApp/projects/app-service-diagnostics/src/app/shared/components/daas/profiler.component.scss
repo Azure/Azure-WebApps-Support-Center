@@ -1,5 +1,6 @@
 td {
     padding-right:10px;
+    padding-top: 10px;
 }
 
 .status-box {
@@ -17,3 +18,11 @@ td {
 .highlight-blue {
     color: #286090;
 }
+
+.panel-heading {
+    cursor: pointer;
+  }
+  
+  .panel-body {
+    background-color: #f9f9f9
+  }

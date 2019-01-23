@@ -1,3 +1,4 @@
+import { KustoTelemetryService } from './../../../diagnostic-data/src/lib/services/telemetry/kusto-telemetry.service';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -13,6 +14,7 @@ import { PUBLIC_PROD_CONFIGURATION, DiagnosticDataModule, DiagnosticService, Com
 import { GenericApiService } from './shared/services/generic-api.service';
 import { GenericCommsService } from './shared/services/generic-comms.service';
 import { environment } from '../environments/environment';
+import { PortalKustoTelemetryService } from './shared/services/portal-kusto-telemetry.service';
 
 @NgModule({
   imports: [
@@ -42,6 +44,7 @@ import { environment } from '../environments/environment';
   ],
   providers: [
     CustomReuseStrategy,
+    { provide: KustoTelemetryService, useExisting: PortalKustoTelemetryService },
     { provide: RouteReuseStrategy, useExisting: CustomReuseStrategy },
     { provide: DiagnosticService, useExisting: GenericApiService },
     { provide: CommsService, useExisting: GenericCommsService }

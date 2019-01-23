@@ -12,7 +12,7 @@ export class AppComponent {
   constructor(private _adalService: AdalService) {
     this._adalService.init({
       clientId: environment.adal.clientId,
-      popUp: true,
+      popUp: window.parent !== window,
       redirectUri: `${window.location.origin}`,
       postLogoutRedirectUri: `${window.location.origin}/login`,
       cacheLocation: 'localStorage'

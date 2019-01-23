@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Session } from '../../models/daas';
+import { Session, DaasAppInfo } from '../../models/daas';
 import { StepWizardSingleStep } from '../../models/step-wizard-single-step';
 import { DaasService } from '../../services/daas.service';
 import { WindowService } from '../../../startup/services/window.service';
@@ -17,12 +17,16 @@ import { SiteService } from '../../services/site.service';
 
 export class ProfilerComponent extends DaasComponent implements OnInit, OnDestroy {
 
-
     instancesStatus: Map<string, number>;
     selectedInstance: string;
     WizardSteps: StepWizardSingleStep[] = [];
     error: any;
     collectStackTraces: boolean = false;
+    appInfo: DaasAppInfo;
+    checkingAppInfo: boolean = false;
+    isAspnetCoreLowerVersion: boolean = false;
+    isAspnetCore: boolean = false;
+    aspnetCoreWarningExpanded: boolean = true;
 
     constructor(private _serverFarmServiceLocal: ServerFarmDataService, private _siteServiceLocal: SiteService, private _daasServiceLocal: DaasService, private _windowServiceLocal: WindowService, private _loggerLocal: AvailabilityLoggingService) {
 
@@ -32,10 +36,26 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
     }
 
     ngOnInit(): void {
-
+        this.checkingAppInfo = true;
+        this._daasServiceLocal.getAppInfo(this.siteToBeDiagnosed).subscribe(resp => {
+            this.appInfo = resp;
+            this.checkingAppInfo = false;
+            if (this.appInfo.AspNetCoreVersion != null) {
+                this.isAspnetCore = true;
+                if (this.cmpVersions(this.appInfo.AspNetCoreVersion, "2.2.3") >= 0) {
+                    this.isAspnetCoreLowerVersion = false;
+                }
+                else {
+                    this.isAspnetCoreLowerVersion = true;
+                }
+            }
+        }, error=>{
+            this.checkingAppInfo = false;
+        });
     }
 
     collectProfilerTrace() {
+        this.aspnetCoreWarningExpanded = false;
         if (this.collectStackTraces) {
             this.diagnoserName = 'CLR Profiler with Thread Stacks';
         } else {
@@ -77,6 +97,7 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
         const clrDiagnoser = session.DiagnoserSessions.find(x => x.Name.startsWith('CLR Profiler'));
         if (clrDiagnoser) {
             this.diagnoserSession = clrDiagnoser;
+            this.Logs = clrDiagnoser.Logs;
             if (clrDiagnoser.CollectorStatus === 2) {
                 if (clrDiagnoser.CollectorStatusMessages.length > 0) {
                     clrDiagnoser.CollectorStatusMessages.forEach(msg => {
@@ -110,4 +131,26 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
             }
         }
     }
+
+    // https://stackoverflow.com/questions/6832596/how-to-compare-software-version-number-using-js-only-number
+    cmpVersions(a: string, b: string) {
+        var i = 0, diff = 0;
+        var regExStrip0 = /(\.0+)+$/;
+        var segmentsA = a.replace(regExStrip0, '').split('.');
+        var segmentsB = b.replace(regExStrip0, '').split('.');
+        var l = Math.min(segmentsA.length, segmentsB.length);
+
+        for (i = 0; i < l; i++) {
+            diff = parseInt(segmentsA[i], 10) - parseInt(segmentsB[i], 10);
+            if (diff) {
+                return diff;
+            }
+        }
+        return segmentsA.length - segmentsB.length;
+    }
+
+    toggleExpanded(): void {
+        this.aspnetCoreWarningExpanded = !this.aspnetCoreWarningExpanded;
+    }
+
 }

@@ -17,16 +17,17 @@
     margin: 0 0 2em 0;
     list-style-type: none;
     padding: 0;
-    width: 15em;
+    width: 160px;
   }
   .commits-table li {
     cursor: pointer;
     position: relative;
     left: 0;
     background-color: #EEE;
-    margin: .7em .5em;
+    margin: .7em .1em;
     padding: .3em 0;
     height: 30px;
+    width: 150px;
     border-radius: 4px;
   }
   .commits-table li.selected:hover {
@@ -53,6 +54,21 @@
     left: -1px;
     top: -4px;
     height: 30px;
-    margin-right: .8em;
+    margin-right: .3em;
     border-radius: 4px 0 0 4px;
   } 
+
+.commit-info {
+  margin-left: 0px;
+  margin-right:0px;
+  display: inline-block;
+  width: 11%;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.commit-editor {
+  margin-left: 0px;
+  padding-left: 0; 
+  width: 89%;
+}

@@ -1,11 +1,11 @@
-<div *ngIf="showFeedbackForm" class="feedback-form">
+<div class="feedback-form">
     <div class="review-header">
         <h1>
             From 1 to 5 stars, how helpful was this?</h1>
     </div>
     <div class="review-container">
         <div class="row rating-div">
-            <div>
+            <div *ngIf="showFeedbackForm">
                 <fieldset class="rating rating-row">
                     <input type="radio" id="star5" name="rating" />
                     <label class="full" [ngStyle]="{'color':rating<5 ? '#ddd': '#FFD700'}" for="star5" (click)="setStar(5, 'It was very helpful!')"></label>

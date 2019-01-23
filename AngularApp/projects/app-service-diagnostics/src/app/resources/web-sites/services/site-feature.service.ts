@@ -176,6 +176,22 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        stack: 'ASP.NET Core',
+        item: {
+          id: ToolNames.Profiler,
+          name: ToolNames.Profiler,
+          category: 'Diagnostic Tools',
+          description: '',
+          featureType: FeatureTypes.Tool,
+          clickAction: this._createFeatureAction(ToolNames.Profiler, 'Diagnostic Tools', () => {
+            this._router.navigateByUrl(`resource${resourceId}/tools/profiler`);
+          })
+        }
+      },
+      {
+        appType: AppType.WebApp | AppType.FunctionApp,
+        platform: OperatingSystem.windows,
+        sku: Sku.NotDynamic,
         stack: '',
         item: {
           id: ToolNames.MemoryDump,

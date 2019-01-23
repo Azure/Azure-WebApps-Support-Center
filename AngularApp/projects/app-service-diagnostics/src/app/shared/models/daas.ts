@@ -64,6 +64,7 @@ export class Session {
     Expanded: boolean;
     Deleting: boolean = false;
     DeletingFailure: string = '';
+    LogFilesSize: number;
 }
 
 export interface DiagnoserDefinition {
@@ -95,7 +96,9 @@ export enum ConnectionDatabaseType {
     MySql,
     Custom,
     Dynamic,
-    NotSupported
+    NotSupported,
+    PostgreSql,
+    RedisCache
 }
 
 export interface ExceptionDetails {
@@ -154,4 +157,12 @@ export interface ActiveMonitoringSession {
 export interface MonitoringLogsPerInstance {
     Instance: string;
     Logs: string
+}
+
+export interface DaasAppInfo{
+    Framework:string;
+    FrameworkVersion: string;
+    AspNetCoreVersion: string;
+    CoreProcessName:string;
+    LoggingLevel:string;
 }

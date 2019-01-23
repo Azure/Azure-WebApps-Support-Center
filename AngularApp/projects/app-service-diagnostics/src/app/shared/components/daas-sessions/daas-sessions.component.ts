@@ -4,8 +4,9 @@ import { WindowService } from '../../../startup/services/window.service';
 import { ServerFarmDataService } from '../../services/server-farm-data.service';
 import { DaasService } from '../../services/daas.service';
 import { SiteDaasInfo } from '../../models/solution-metadata';
-import { Subscription ,  Observable, interval } from 'rxjs';
+import { Subscription, Observable, interval } from 'rxjs';
 import { retry } from 'rxjs/operators';
+import { FormatHelper } from '../../utilities/formattingHelper';
 
 @Component({
     selector: 'daas-sessions',
@@ -57,11 +58,13 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
             this.showDetailedView = true;
         }
 
-        this.populateSessions();
         if (this.showDetailedView) {
-            this.subscription = interval(15000).subscribe(res => {
-                this.checkSessions();
-            });
+            this.populateSessions();
+            if (this.showDetailedView) {
+                this.subscription = interval(15000).subscribe(res => {
+                    this.checkSessions();
+                });
+            }
         }
     }
 
@@ -172,13 +175,19 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
                 }, err => {
                     sessionToDelete.Deleting = false;
                     sessionToDelete.DeletingFailure = 'Failed while deleting the session with an error : ' + err;
-                    });
+                });
         }
     }
 
     ngOnDestroy(): void {
         if (this.subscription) {
             this.subscription.unsubscribe();
+        }
+    }
+
+    getSessionSize(session:Session){
+        if (session.LogFilesSize && session.LogFilesSize > 0){
+            return " (" + FormatHelper.formatBytes(session.LogFilesSize, 2) + ")";
         }
     }
 

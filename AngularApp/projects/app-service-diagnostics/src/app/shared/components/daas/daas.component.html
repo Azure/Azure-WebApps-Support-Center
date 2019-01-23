@@ -10,6 +10,21 @@
                         <b>{{siteToBeDiagnosed.siteName}}</b>
                     </td>
                 </tr>
+                <tr>
+                    <td>Mode: </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button [disabled]="sessionInProgress" type="button" class="btn btn-default btn-xs"
+                                [ngClass]="{'btn-primary':collectionMode === 0}" (click)="selectMode(0);">
+                                Collect and Analyze Data
+                            </button>
+                            <button [disabled]="sessionInProgress" type="button" class="btn btn-default btn-xs"
+                                [ngClass]="{'btn-primary':collectionMode === 1}" (click)="selectMode(1);">
+                                Collect Data Only
+                            </button>
+                        </div>
+                    </td>
+                </tr>
                 <tr *ngIf="!error">
                     <td valign="top">
                         Instance(s):
@@ -49,16 +64,14 @@
                             {{instancestatus.key}}
                         </option>
                     </select>
-
                     <step-wizard [CurrentStep]="sessionStatus" [WizardSteps]="WizardSteps" [WizardStepStatus]="WizardStepStatus"></step-wizard>
-                </div>
-
-                <div *ngIf="sessionStatus >= 3 " style="margin-top:10px">
-                    <button class="btn btn-primary btn-sm" (click)="cancelSession()" *ngIf="!cancellingSession">Cancel</button>
-                    <div *ngIf="cancellingSession">
-                        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-                        Cancelling...
+                    <div *ngIf="sessionStatus >= 3 " style="text-align:right">
+                        <button class="btn btn-primary btn-sm" (click)="cancelSession()" *ngIf="!cancellingSession">Cancel</button>
                     </div>
+                </div>
+                <div *ngIf="cancellingSession">
+                    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                    Cancelling...
                 </div>
             </div>
         </div>
@@ -74,20 +87,42 @@
         </div>
         <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="instancesChanged">
             <strong>Error</strong> - We detected that instances serving the Web App has changed so please re-select the
-            instances
-            and run diagnostics again.
+            instances and run diagnostics again.
         </div>
     </div>
 
-    <div class="status-box" *ngIf="Reports?.length > 0">
-        <table class="table table-hover">
+    <div style="margin-top:10px;" *ngIf="Logs.length > 0">
+        <table class="table table-bordered table-responsive">
+            <thead class="thead-light">
+                <tr>
+                    <th>Data</th>
+                    <th *ngIf="collectionMode === 0">Reports</th>
+                </tr>
+            </thead>
             <tbody>
-                <tr *ngFor="let report of Reports">
+                <tr>
                     <td>
-                        {{ report.FileName }}
+                        <ul *ngIf="Logs.length > 0" style="list-style: none;padding:0">
+                            <li *ngFor="let log of Logs">
+                                <a (click)="opeFile(log.RelativePath)" style="cursor: pointer">
+                                    {{ log.FileName }}
+                                </a>
+                            </li>
+                        </ul>
                     </td>
-                    <td>
-                        <a (click)="openReport(report.RelativePath)" class="btn btn-primary">Open Report</a>
+                    <td *ngIf="collectionMode === 0">
+                        <ul *ngIf="Reports.length > 0" style="list-style: none;padding:0">
+                            <li *ngFor="let report of Reports">
+                                {{ getInstanceNameFromReport(report.FileName) }}
+                                <a (click)="openFile(report.RelativePath)" style="cursor: pointer">
+                                    <i class="fa fa-external-link" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <div *ngIf="sessionStatus >= 2 && sessionInProgress">
+                            <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                            {{ sessionStatus === 2 ? 'Waiting...' : 'Analzying...' }}
+                        </div>
                     </td>
                 </tr>
             </tbody>

@@ -1,11 +1,12 @@
 <div class="container-fluid">
-  <div class=" col-md-2">
+  <div class="col-md-1 commit-info">
       <div class="row-fluid">
           <div class="sidebar-nav">
               <ul class="commits-table">
                   <li *ngFor="let commit of commitsList.slice().reverse()" [class.selected]="commit === selectedCommit"
                       (click)="setCodeDiffView(commit)">
-                      <span class="badge"> {{commit.author}} </span> {{commit.dateTime}}
+                      <span class="badge"> {{commit.author}} </span> 
+                      <span> {{commit.dateTime}} </span> 
                   </li>
               </ul>
           </div>
@@ -19,7 +20,7 @@
       <loader-view *ngIf="!noCommitsHistory && loadingChange<1" message="Loading Changes...">
       </loader-view>
   </div>
-  <div *ngIf="!noCommitsHistory && loadingChange>1" class="col-md-10" style="padding-left: 0">
+  <div *ngIf="!noCommitsHistory && loadingChange>1" class="col-md-11 commit-editor">
       <ngx-monaco-diff-editor class="diff-view" [options]="options" [(originalModel)]="originalModel"
           [(modifiedModel)]="modifiedModel"></ngx-monaco-diff-editor>
   </div>

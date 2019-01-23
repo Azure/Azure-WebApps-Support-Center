@@ -103,10 +103,6 @@ export class LoggingService {
             Object.keys(args).forEach((key: string) => combinedArgs[key] = args[key]);
         }
 
-        if (isDevMode()) {
-            console.log({ id: id, category: category, args: combinedArgs });
-        }
-
         this._portalServiceInstance.logAction(id, category, combinedArgs);
     }
 
