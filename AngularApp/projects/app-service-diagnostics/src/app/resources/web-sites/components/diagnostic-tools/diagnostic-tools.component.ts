@@ -27,6 +27,7 @@ export class DiagnosticToolsComponent {
 
   possibleStacks: string[] = [
     'ASP.NET',
+    'ASP.NET Core',
     'Java',
     'PHP',
     'All'
@@ -111,7 +112,7 @@ export class DiagnosticToolsComponent {
   }
 
   selectStack(stack: string) {
-    this.stack = this.possibleStacks.find(st => stack.toLowerCase().indexOf(st.toLowerCase()) >= 0);
+    this.stack = this.possibleStacks.find(st => st.toLowerCase() === stack.toLowerCase());
 
     if (!stack) {
       this.stackFound = false;
