@@ -98,6 +98,7 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
         if (clrDiagnoser) {
             this.diagnoserSession = clrDiagnoser;
             this.Logs = clrDiagnoser.Logs;
+            this.Reports = clrDiagnoser.Reports;
             if (clrDiagnoser.CollectorStatus === 2) {
                 if (clrDiagnoser.CollectorStatusMessages.length > 0) {
                     clrDiagnoser.CollectorStatusMessages.forEach(msg => {

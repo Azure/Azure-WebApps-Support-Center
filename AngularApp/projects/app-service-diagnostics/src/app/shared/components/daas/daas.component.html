@@ -104,7 +104,7 @@
                     <td>
                         <ul *ngIf="Logs.length > 0" style="list-style: none;padding:0">
                             <li *ngFor="let log of Logs">
-                                <a (click)="opeFile(log.RelativePath)" style="cursor: pointer">
+                                <a (click)="openFile(log.RelativePath)" style="cursor: pointer">
                                     {{ log.FileName }}
                                 </a>
                             </li>

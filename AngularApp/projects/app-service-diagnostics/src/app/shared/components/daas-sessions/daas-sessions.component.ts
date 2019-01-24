@@ -58,13 +58,12 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
             this.showDetailedView = true;
         }
 
+        this.populateSessions();
         if (this.showDetailedView) {
-            this.populateSessions();
-            if (this.showDetailedView) {
-                this.subscription = interval(15000).subscribe(res => {
-                    this.checkSessions();
-                });
-            }
+            this.subscription = interval(30000).subscribe(res => {
+                this.checkSessions();
+            });
+
         }
     }
 
@@ -77,8 +76,8 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
             .subscribe(sessions => {
                 const newSessions = sessions.map(this.reducedSession);
                 const existingSessions = this.sessions.map(this.reducedSession);
-
-                if (newSessions.length === existingSessions.length && newSessions.filter(newSession => existingSessions.findIndex(session => session === newSession) === -1).length > 0) {
+                let anySessionUpdated = newSessions.filter(newSession => existingSessions.findIndex(session => JSON.stringify(session) === JSON.stringify(newSession)) === -1).length > 0;
+                if (newSessions.length !== existingSessions.length || anySessionUpdated) {
                     this.sessions = this.setExpanded(sessions);
                 }
             });
@@ -185,8 +184,8 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
         }
     }
 
-    getSessionSize(session:Session){
-        if (session.LogFilesSize && session.LogFilesSize > 0){
+    getSessionSize(session: Session) {
+        if (session.LogFilesSize && session.LogFilesSize > 0) {
             return " (" + FormatHelper.formatBytes(session.LogFilesSize, 2) + ")";
         }
     }

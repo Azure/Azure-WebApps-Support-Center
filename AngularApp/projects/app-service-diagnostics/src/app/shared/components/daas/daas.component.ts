@@ -184,6 +184,7 @@ export class DaasComponent implements OnInit, OnDestroy {
         if (daasDiagnoser) {
             this.diagnoserSession = daasDiagnoser;
             this.Logs = daasDiagnoser.Logs;
+            this.Reports = daasDiagnoser.Reports;
             if (daasDiagnoser.CollectorStatus === 2) {
                 this.sessionStatus = 2;
                 if (daasDiagnoser.CollectorStatusMessages.length > 0) {
