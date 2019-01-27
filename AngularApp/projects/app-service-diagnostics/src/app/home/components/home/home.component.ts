@@ -36,8 +36,9 @@ export class HomeComponent implements OnInit {
       if (startupInfo.additionalParameters && Object.keys(startupInfo.additionalParameters).length > 0) {
         let path = 'resource' + startupInfo.resourceId.toLowerCase();
         path = this._updateRouteBasedOnAdditionalParameters(path, startupInfo.additionalParameters);
-
-        this._router.navigateByUrl(path);
+        if (path) {
+          this._router.navigateByUrl(path);
+        }
       }
     });
   }
@@ -78,6 +79,8 @@ export class HomeComponent implements OnInit {
 
       return `${route}/${featurePath}`;
     }
+
+    return null;
   }
 
 
