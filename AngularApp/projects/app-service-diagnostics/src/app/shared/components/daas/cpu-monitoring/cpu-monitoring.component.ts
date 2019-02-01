@@ -33,7 +33,19 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
   monitoringSessions: MonitoringSession[] = [];
   sessionModeType = SessionMode;
   mode: SessionMode;
+  ruleSummary: string = "";
+
+  descStart: string = "In this mode if site's process or child processes of the site's process consume CPU greater than CPU threshold configured for the configured duration";
+  descMemoryDump: string = "Memory dump is collected via procdump tool and we check CPU usage every <b>Monitor Duration</b> seconds. The maximum number of memory dumps collected is controlled by the <b>Maximum number of memory dumps to collect</b> setting.";
+  descKillMessage: string = "Kindly note this is <b>kill</b> of the process vs. a graceful termination of the process.";
+
   sessionModeTypes: string[] = ["Kill", "Collect", "CollectAndKill", "CollectKillAndAnalyze"];
+  modeDescriptions = [{ Mode: SessionMode.Collect, Description: `${this.descStart}, a memory dump is collected. ${this.descMemoryDump}` },
+  { Mode: SessionMode.CollectAndKill, Description: `${this.descStart}, a memory dump is collected and the process consuming high CPU is killed. ${this.descMemoryDump} ${this.descKillMessage}` },
+  { Mode: SessionMode.CollectKillAndAnalyze, Description: `${this.descStart}, a memory dump is collected and the process consuming high CPU is killed.   ${this.descMemoryDump} ${this.descKillMessage} Once all the dumps are collected, the tool also analyzes the memory dumps using the Debug Diagnostic tool and presents a dump analysis report.` },
+  { Mode: SessionMode.Kill, Description: `${this.descStart}, the process is killed. ${this.descKillMessage} In this mode, the 'Maximum Number of Memory Dumps collected' setting is not honored and the monitoring stops automatically after 'Maximum number of Days' is reached.` }];
+
+  modeDescription: string = "";
 
   constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService) {
 
@@ -50,6 +62,7 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.scmPath = this._siteService.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
     this.monitoringSession = this.getDefaultMonitoringSettings();
+    this.updateRuleSummary();
   }
 
   ngOnDestroy(): void {
@@ -62,13 +75,14 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
   getDefaultMonitoringSettings(): MonitoringSession {
 
     let monitoringSession = new MonitoringSession();
-    monitoringSession.CpuThreshold = 65;
+    monitoringSession.CpuThreshold = 75;
     monitoringSession.MonitorDuration = 15;
     monitoringSession.Mode = SessionMode.CollectAndKill;
     monitoringSession.MaxActions = 2;
     monitoringSession.ThresholdSeconds = 30;
     monitoringSession.MaximumNumberOfHours = 24 * 7;
     this.mode = monitoringSession.Mode;
+    this.selectMode(this.mode);
     return monitoringSession;
   }
 
@@ -182,6 +196,35 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
 
   selectMode(md: string) {
     this.mode = SessionMode[md];
+    this.modeDescription = this.modeDescriptions.find(x => x.Mode === this.mode).Description;
+    if (this.monitoringSession != null) {
+      this.monitoringSession.Mode = this.mode;
+      this.updateRuleSummary();
+    }
   }
+
+  updateRuleSummary() {
+    let actionToTake = "";
+    switch (this.monitoringSession.Mode) {
+      case SessionMode.Collect:
+        actionToTake = "collect a memory dump";
+        break;
+      case SessionMode.CollectAndKill:
+        actionToTake = "collect a memory dump and kill the process";
+        break;
+      case SessionMode.CollectKillAndAnalyze:
+        actionToTake = "collect a memory dump and analyze when all the dumps have been collected";
+        break;
+      case SessionMode.Kill:
+        actionToTake = "kill the process";
+        break;
+
+    }
+    this.ruleSummary = `When the site's process or any child processes of the site's process take ${this.monitoringSession.CpuThreshold} % of CPU for more than ${this.monitoringSession.MonitorDuration} seconds, ${actionToTake}. Peform the check for CPU usage every ${this.monitoringSession.MonitorDuration} seconds`;
+    if (this.monitoringSession.Mode != SessionMode.Kill){
+      this.ruleSummary = this.ruleSummary + `. Collect a maximum of ${this.monitoringSession.MaxActions} memory dumps.`;
+    }
+  }
+
 }
 

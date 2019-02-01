@@ -20,13 +20,21 @@
 
             <div class="form-group" *ngIf="editMode && monitoringEnabled" style="margin-top:15px">
               <div class="row">
-                <div class="col-sm-6">
-                  <label id="cpuThresholdhelp" for="cpuThreshold">CPU percentage</label>
+                <div class="col-sm-10">
+
+                  <div style="float: left;" class="btn-group" role="group" aria-label="...">
+                    <button *ngFor="let md of sessionModeTypes" type="button" class="btn btn-default mode-tab" (click)="selectMode(md)" [class.btn-primary]="md === mode">{{md}}</button>
+                  </div>
+                  <div class="mode-explanation" [innerHTML]="modeDescription"></div>
+                </div>
+              </div>
+
+              <div class="row" style="margin-top:10px;">
+                <div class="col-sm-5">
+                  <label id="cpuThresholdhelp" for="cpuThreshold">CPU Threshold</label>
                 </div>
                 <div class="col-sm-4">
-                  <select [attr.aria-label]="'select CPU percent'" id="cpuThreshold" [(ngModel)]="monitoringSession.CpuThreshold">
-                    <option value="65">65%</option>
-                    <option value="70">70%</option>
+                  <select (change)="updateRuleSummary()" [attr.aria-label]="'select CPU percent'" id="cpuThreshold" [(ngModel)]="monitoringSession.CpuThreshold">
                     <option value="75">75%</option>
                     <option value="80">80%</option>
                     <option value="85">85%</option>
@@ -36,11 +44,11 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-sm-6">
-                  <label for="monitorDuration">Check Every</label>
+                <div class="col-sm-5">
+                  <label for="monitorDuration">Monitor Duration</label>
                 </div>
                 <div class="col-sm-4">
-                  <select [attr.aria-label]="'select CPU percent'" id="monitorDuration" [(ngModel)]="monitoringSession.MonitorDuration">
+                  <select (change)="updateRuleSummary()" [attr.aria-label]="'select CPU percent'" id="monitorDuration" [(ngModel)]="monitoringSession.MonitorDuration">
                     <option value="15">15 seconds</option>
                     <option value="30">30 seconds</option>
                     <option value="45">45 seconds</option>
@@ -50,11 +58,11 @@
               </div>
 
               <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                   <label for="thresholdSeconds">Seconds above threshold</label>
                 </div>
                 <div class="col-sm-4">
-                  <select [attr.aria-label]="'select CPU theshold'" id="thresholdSeconds" [(ngModel)]="monitoringSession.ThresholdSeconds">
+                  <select (change)="updateRuleSummary()" [attr.aria-label]="'select CPU theshold'" id="thresholdSeconds" [(ngModel)]="monitoringSession.ThresholdSeconds">
                     <option value="30">30 seconds</option>
                     <option value="45">45 seconds</option>
                     <option value="60">60 seconds</option>
@@ -66,11 +74,11 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-sm-6">
-                  <label for="thresholdSeconds">Maximum Number of Actions</label>
+                <div class="col-sm-5">
+                  <label for="thresholdSeconds">Maximum number of memory dumps to collect</label>
                 </div>
                 <div class="col-sm-4">
-                  <select [attr.aria-label]="'select maximum actions to take'" id="maxActions" [(ngModel)]="monitoringSession.MaxActions">
+                  <select (change)="updateRuleSummary()" [attr.aria-label]="'select maximum actions to take'" id="maxActions" [(ngModel)]="monitoringSession.MaxActions">
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -79,21 +87,13 @@
                   </select>
                 </div>
               </div>
+
               <div class="row">
-                <div class="col-sm-10">
-
-                  <div style="float: left;" class="btn-group" role="group" aria-label="...">
-                    <button *ngFor="let md of sessionModeTypes" type="button" class="btn btn-default" (click)="selectMode(md)" [class.btn-primary]="md === mode">{{md}}</button>
-                  </div>
-
-                  <!-- <select [attr.aria-label]="'session mode'" id="sessionMode" [(ngModel)]="monitoringSession.Mode">
-                    <option value="Kill" [selected]="monitoringSession.Mode === 'Kill'">Kill</option>
-                    <option value="Collect" [selected]="monitoringSession.Mode === 'Collect'">Collect</option>
-                    <option value="CollectAndKill" [selected]="monitoringSession.Mode === 'CollectAndKill'">CollectAndKill</option>
-                    <option value="CollectKillAndAnalyze" [selected]="monitoringSession.Mode === 'CollectKillAndAnalyze'">CollectKillAndAnalyze</option>
-                  </select> -->
+                <div class="col-sm-6 summary-box">
+                    {{ ruleSummary }}
                 </div>
               </div>
+            
             </div>
 
             <div *ngIf="!editMode  && monitoringEnabled">

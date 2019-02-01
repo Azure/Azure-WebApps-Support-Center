@@ -220,10 +220,10 @@ export class CategoriesService {
         });
 
         tools.Subcategories.push({
-            Name: ToolNames.CpuMonitoring,
+            Name: ToolNames.AutoCollect,
             BgColor: 'rgb(0, 102, 153)',
             TextColor: 'White',
-            Href: 'tools/cpumonitoring',
+            Href: 'tools/autocollect',
             OperatingSystem: OperatingSystem.windows,
             AppType: AppType.WebApp | AppType.FunctionApp,
             Sku: Sku.NotDynamic,

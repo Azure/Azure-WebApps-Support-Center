@@ -19,6 +19,7 @@ import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service
 export class SiteFeatureService extends FeatureService {
 
   public diagnosticTools: SiteFilteredItem<Feature>[];
+  public proactiveTools: SiteFilteredItem<Feature>[];
   public supportTools: SiteFilteredItem<Feature>[];
   public premiumTools: SiteFilteredItem<Feature>[];
 
@@ -31,6 +32,7 @@ export class SiteFeatureService extends FeatureService {
         this.getLegacyAvailabilityAndPerformanceFeatures(startupInfo.resourceId).forEach(feature => this._features.push(feature));
       }
       this.addDiagnosticTools(startupInfo.resourceId);
+      this.addProactiveTools(startupInfo.resourceId);
       this.addPremiumTools();
     });
   }
@@ -138,8 +140,8 @@ export class SiteFeatureService extends FeatureService {
     ];
   }
 
-  addDiagnosticTools(resourceId: string) {
-    this.diagnosticTools = [
+  addProactiveTools(resourceId: string) {
+    this.proactiveTools = [
       {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
@@ -148,14 +150,33 @@ export class SiteFeatureService extends FeatureService {
         item: {
           id: ToolNames.AutoHealing,
           name: ToolNames.AutoHealing,
-          category: 'Diagnostic Tools',
+          category: 'Proactive Tools',
           description: '',
           featureType: FeatureTypes.Tool,
           clickAction: this._createFeatureAction(ToolNames.AutoHealing, 'Diagnostic Tools', () => {
             this._router.navigateByUrl(`resource${resourceId}/tools/mitigate`);
           })
         }
-      },
+      }, {
+        appType: AppType.WebApp | AppType.FunctionApp,
+        platform: OperatingSystem.windows,
+        sku: Sku.NotDynamic,
+        stack: '',
+        item: {
+          id: ToolNames.AutoCollect,
+          name: ToolNames.AutoCollect,
+          category: 'Proactive Tools',
+          description: '',
+          featureType: FeatureTypes.Tool,
+          clickAction: this._createFeatureAction(ToolNames.AutoHealing, 'Diagnostic Tools', () => {
+            this._router.navigateByUrl(`resource${resourceId}/tools/autocollect`);
+          })
+        }
+      }
+    ];
+  }
+  addDiagnosticTools(resourceId: string) {
+    this.diagnosticTools = [
       {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
@@ -233,22 +254,6 @@ export class SiteFeatureService extends FeatureService {
           featureType: FeatureTypes.Tool,
           clickAction: this._createFeatureAction(ToolNames.NetworkTrace, 'Diagnostic Tools', () => {
             this._router.navigateByUrl(`resource${resourceId}/tools/networktrace`);
-          })
-        }
-      },
-      {
-        appType: AppType.WebApp | AppType.FunctionApp,
-        platform: OperatingSystem.windows,
-        sku: Sku.NotDynamic,
-        stack: '',
-        item: {
-          id: ToolNames.CpuMonitoring,
-          name: ToolNames.CpuMonitoring,
-          category: 'Diagnostic Tools',
-          description: '',
-          featureType: FeatureTypes.Tool,
-          clickAction: this._createFeatureAction(ToolNames.CpuMonitoring, 'Diagnostic Tools', () => {
-            this._router.navigateByUrl(`resource${resourceId}/tools/cpumonitoring`);
           })
         }
       },
