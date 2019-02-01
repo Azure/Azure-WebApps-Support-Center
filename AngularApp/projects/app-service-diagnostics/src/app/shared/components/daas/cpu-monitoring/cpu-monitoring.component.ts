@@ -107,9 +107,7 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
 
         }
       });
-
   }
-
 
   getActiveSessionDetails() {
     this._daasService.getActiveMonitoringSessionDetails(this.siteToBeDiagnosed)
