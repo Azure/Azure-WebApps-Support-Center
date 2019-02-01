@@ -85,6 +85,9 @@ import { BackendCtrlService } from './services/backend-ctrl.service';
 import { GenericCommsService } from './services/generic-comms.service';
 import { GenericCommsComponent } from './components/generic-comms/generic-comms.component';
 import { LocalBackendService } from './services/local-backend.service';
+import { CpuMonitoringToolComponent } from './components/tools/cpu-monitoring-tool/cpu-monitoring-tool.component';
+import { MonitoringSessionsComponent } from './components/monitoring-sessions/monitoring-sessions.component';
+import { CpuMonitoringComponent } from './components/daas/cpu-monitoring/cpu-monitoring.component';
 
 @NgModule({
     declarations: [
@@ -142,7 +145,10 @@ import { LocalBackendService } from './services/local-backend.service';
         TestInputComponent,
         ResourceRedirectComponent,
         TileListComponent,
-        GenericCommsComponent
+        GenericCommsComponent,
+        CpuMonitoringToolComponent,
+        MonitoringSessionsComponent,
+        CpuMonitoringComponent
     ],
     imports: [
         HttpModule,

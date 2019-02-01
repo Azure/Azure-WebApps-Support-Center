@@ -90,6 +90,28 @@ export class DiagnosticToolsComponent {
       sku: Sku.NotDynamic,
       stack: '',
       item: {
+        title: 'Proactive Tools',
+        tools: this._sitesFeatureService.proactiveTools.map(tool => {
+          return <SiteFilteredItem<Tile>>{
+            appType: tool.appType,
+            platform: tool.platform,
+            sku: tool.sku,
+            stack: tool.stack,
+            item: {
+              title: tool.item.name,
+              action: tool.item.clickAction
+            }
+          };
+        })
+      }
+    });
+
+    this.toolCategories.push(<SiteFilteredItem<any>>{
+      appType: AppType.WebApp,
+      platform: OperatingSystem.windows,
+      sku: Sku.NotDynamic,
+      stack: '',
+      item: {
         title: 'Premium Tools',
         tools: this._sitesFeatureService.premiumTools.map(tool => {
           return <SiteFilteredItem<Tile>>{

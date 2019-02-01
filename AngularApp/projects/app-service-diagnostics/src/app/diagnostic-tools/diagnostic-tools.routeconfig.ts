@@ -12,6 +12,8 @@ import { NetworkTraceToolComponent } from '../shared/components/tools/network-tr
 import { DaasMainComponent } from '../shared/components/daas-main/daas-main.component';
 import { Route } from '@angular/router';
 import { AutohealingDetectorComponent } from '../availability/detector-view/detectors/autohealing-detector/autohealing-detector.component';
+import { CpuMonitoringToolComponent } from '../shared/components/tools/cpu-monitoring-tool/cpu-monitoring-tool.component';
+import { MonitoringSessionsComponent } from '../shared/components/monitoring-sessions/monitoring-sessions.component';
 
 export const DiagnosticToolsRoutes: Route[] = [
     // CLR Profiling Tool
@@ -83,6 +85,23 @@ export const DiagnosticToolsRoutes: Route[] = [
         component: ConnectionDiagnoserToolComponent,
         data: {
             navigationTitle: ToolNames.DatabaseTester,
+            cacheComponent: true
+        }
+    },
+    // AutoCollect Tool
+    {
+        path: 'autocollect',
+        component: CpuMonitoringToolComponent,
+        data: {
+            navigationTitle: ToolNames.AutoCollect,
+            cacheComponent: true
+        }
+    },
+    {
+        path: 'cpumonitoringsessions',
+        component:MonitoringSessionsComponent,
+        data:{
+            navigationTitle:ToolNames.CpuMonitoringSessions,
             cacheComponent: true
         }
     },

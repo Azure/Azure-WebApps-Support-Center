@@ -10,4 +10,6 @@ export class ToolNames {
     public static NetworkTrace: string = 'Collect Network Trace';
     public static AutoHealing: string = 'Auto Healing';
     public static Diagnostics: string = 'Diagnostics';
+    public static AutoCollect: string = "Auto Collect on High CPU";
+    public static CpuMonitoringSessions:string = "CPU Monitoring Sessions";
 }

@@ -1,0 +1,40 @@
+.status-box {
+    border: 1px solid #ebebeb;
+    padding:15px;
+    margin-top:20px;
+}
+
+.action-box {
+    border: 1px solid #ebebeb;
+    padding:15px;
+    background-color: #f9f9f9
+}
+
+.highlight-blue {
+    color: #286090;
+}
+
+.mode-explanation{
+    border: 0.5px solid #adb0b7;
+    clear: both;
+    float: left;
+    display: block;
+    position: relative;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: white;
+}
+
+.mode-tab{
+    border-bottom-right-radius:unset;
+    border-bottom-left-radius: unset;
+}
+
+.summary-box {
+    background-color: #e4e4e4;
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
