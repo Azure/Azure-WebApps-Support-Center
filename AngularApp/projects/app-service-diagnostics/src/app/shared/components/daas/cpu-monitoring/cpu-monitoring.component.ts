@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Pipe, PipeTransform } from '@angular/core';
 import { MonitoringSession, SessionMode, MonitoringLogsPerInstance } from '../../../models/daas';
 import { SiteDaasInfo } from '../../../models/solution-metadata';
 import { Subscription, interval } from 'rxjs';
@@ -146,7 +146,7 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
               this.sessionId = result;
               this.editMode = false;
               this.originalMonitoringSession = newSession;
-
+              this.monitoringEnabled = true;
               this.subscription = interval(15000).subscribe(res => {
                 this.getActiveSessionDetails();
               });
@@ -218,11 +218,18 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
         break;
 
     }
-    this.ruleSummary = `When the site's process or any child processes of the site's process take ${this.monitoringSession.CpuThreshold} % of CPU for more than ${this.monitoringSession.MonitorDuration} seconds, ${actionToTake}. Peform the check for CPU usage every ${this.monitoringSession.MonitorDuration} seconds`;
-    if (this.monitoringSession.Mode != SessionMode.Kill){
-      this.ruleSummary = this.ruleSummary + `. Collect a maximum of ${this.monitoringSession.MaxActions} memory dumps.`;
+    this.ruleSummary = `When the site's process or any child processes of the site's process take <b>${this.monitoringSession.CpuThreshold}%</b> of CPU for more than <b>${this.monitoringSession.ThresholdSeconds}</b> seconds, <b>${actionToTake}</b>. Peform the check for CPU usage every <b>${this.monitoringSession.MonitorDuration} seconds</b>.`;
+    if (this.monitoringSession.Mode != SessionMode.Kill) {
+      this.ruleSummary = this.ruleSummary + ` Collect a maximum of <b>${this.monitoringSession.MaxActions} memory dumps</b>.`;
     }
+
+    this.ruleSummary += ` Monitoring will stop automatically after <b>${this.monitoringSession.MaximumNumberOfHours > 24 ? ((this.monitoringSession.MaximumNumberOfHours) / 24) + " days" : this.monitoringSession.MaximumNumberOfHours + " hours"}</b>.`;
+  }
+
+  formatDate(dateString: string): string {
+    var date = new Date(dateString);
+    return date.getUTCMonth().toString().padStart(2, '0') + '/' + date.getUTCDate().toString().padStart(2, '0') + ' ' + (date.getUTCHours() < 10 ? '0' : '') + date.getUTCHours()
+      + ':' + (date.getUTCMinutes() < 10 ? '0' : '') + date.getUTCMinutes() + ' UTC';
   }
 
 }
-

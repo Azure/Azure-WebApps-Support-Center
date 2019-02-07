@@ -20,7 +20,7 @@
 
           <div class="form-group" *ngIf="editMode && monitoringEnabled" style="margin-top:15px">
             <div class="row">
-              <div class="col-sm-10">
+              <div class="col-sm-6">
 
                 <div style="float: left;" class="btn-group" role="group" aria-label="...">
                   <button *ngFor="let md of sessionModeTypes" type="button" class="btn btn-default mode-tab" (click)="selectMode(md)"
@@ -79,7 +79,7 @@
             </div>
             <div class="row">
               <div class="col-sm-5">
-                <label for="thresholdSeconds">Maximum number of memory dumps to collect</label>
+                <label for="maxActions">Maximum number of memory dumps to collect</label>
               </div>
               <div class="col-sm-4">
                 <select (change)="updateRuleSummary()" [attr.aria-label]="'select maximum actions to take'" id="maxActions"
@@ -116,37 +116,13 @@
             </div>
 
             <div class="row">
-              <div class="col-sm-6 summary-box">
-                {{ ruleSummary }}
-              </div>
+              <div class="col-sm-6 summary-box" [innerHTML]="ruleSummary"></div>
             </div>
           </div>
 
-          <div *ngIf="!editMode  && monitoringEnabled">
-            <table>
-              <tr>
-                <td>CPU Percentage</td>
-                <td>{{ monitoringSession.CpuThreshold }}</td>
-              </tr>
-              <tr>
-                <td>Monitor Duration</td>
-                <td>{{ monitoringSession.MonitorDuration }}</td>
-              </tr>
-              <tr>
-                <td>Seconds Above Threshold</td>
-                <td>{{ monitoringSession.ThresholdSeconds }}</td>
-              </tr>
-              <tr>
-                <td>Maximum Number of Actions</td>
-                <td>{{ monitoringSession.MaxActions }}</td>
-              </tr>
-              <tr>
-                <td>Monitoring Mode</td>
-                <td>{{ monitoringSession.Mode }}</td>
-              </tr>
-            </table>
-
-
+          <div class="row" *ngIf="!editMode  && monitoringEnabled">
+            <div class="col-sm-10 summary-box" [innerHTML]="ruleSummary">
+            </div>
           </div>
 
           <div style="margin-top:10px">
@@ -179,40 +155,48 @@
 
 <div style="margin-top: 15px" *ngIf="!editMode  && monitoringEnabled">
 
-
-  <table class="table table-hover table-bordered report-table">
+  <div *ngIf="monitoringSession == null || monitoringSession.FilesCollected ==null || monitoringSession.FilesCollected === 0">
+    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+    Monitong session submitted, logs from all instances will populate shortly...
+  </div>
+  <table *ngIf="monitoringSession != null" class="table table-bordered report-table">
     <tr>
       <td>
-        {{ monitoringSession.SessionId}}
+        Monitoring session started at: {{ formatDate(monitoringSession.StartDate)}}
       </td>
+    </tr>
+    <tr *ngIf="monitoringSession.Mode !== 'Kill'">
       <td>
-        <ul style="list-style-type:none">
+        <div *ngIf="monitoringSession.FilesCollected.length === 0">
+            No logs collected so far.
+        </div>
+        <ul *ngIf="monitoringSession.FilesCollected.length > 0" style="list-style-type:none">
           <li *ngFor="let file of monitoringSession.FilesCollected">
             <a (click)="openReport(file.RelativePath)">{{ getfileNameFromPath(file.RelativePath)}}</a>
           </li>
         </ul>
       </td>
-      <td *ngIf="monitoringSession.Mode === 'CollectKillAndAnalyze'">
+    </tr>
+    <tr *ngIf="monitoringSession.Mode === 'CollectKillAndAnalyze'">
+      <td>
         <div *ngIf="monitoringSession.AnalysisStatus === 'NotStarted'">
           <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
           Analysis will start when session is complete...
         </div>
-
         <div *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted' && monitoringSession.AnalysisStatus !== 'Completed'">
           {{ monitoringSession.AnalysisStatus }}
         </div>
-
       </td>
     </tr>
     <tr *ngIf="monitoringLogs.length > 0">
-      <td colspan="3">
-        <div>
-          <ul>
+      <td>
+        <div class="monitoring-logs">
+          <ul style="list-style-type: none;">
             <li *ngFor="let instance of monitoringLogs">
-              <strong>
+              <strong class="highlight-blue">
                 {{ instance.Instance }}
               </strong>
-              <div>
+              <div style="margin-top: 5px;">
                 <pre>{{ instance.Logs}}</pre>
               </div>
             </li>
