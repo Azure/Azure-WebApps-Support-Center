@@ -309,22 +309,6 @@ export class SiteFeatureService extends FeatureService {
         sku: Sku.NotDynamic,
         stack: '',
         item: {
-          id: 'metrics',
-          name: 'Metrics / Performance Counters',
-          category: 'Support Tools',
-          description: '',
-          featureType: FeatureTypes.Tool,
-          clickAction: this._createFeatureAction('metrics', 'Support Tools', () => {
-            this._portalActionService.openMdmMetricsBlade();
-          })
-        }
-      },
-      {
-        appType: AppType.WebApp,
-        platform: OperatingSystem.windows,
-        sku: Sku.NotDynamic,
-        stack: '',
-        item: {
           id: SupportBladeDefinitions.MetricPerInstance.Identifier,
           name: 'Metrics per Instance (Apps)',
           category: 'Support Tools',
