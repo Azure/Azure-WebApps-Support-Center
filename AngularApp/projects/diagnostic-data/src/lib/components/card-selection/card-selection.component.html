@@ -2,10 +2,10 @@
   <h2>Select the statement that best describes your problem:</h2>
 
   <div class="card-flex">
-    <div *ngFor="let card of cardSelections"
+    <div *ngFor="let card of cardSelections; let i = index"
       class="card-container"  (click)="selectCard(card)">
-      <div class="card-header">
-        <span class="fa fa-bar-chart"></span> {{card.title}}
+      <div class="card-header" [style.background]="getColor(i)">
+        {{card.title}}
       </div>
       <div class="card-description">
         <ul>
