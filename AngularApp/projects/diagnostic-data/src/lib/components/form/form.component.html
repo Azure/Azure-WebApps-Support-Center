@@ -1,0 +1,22 @@
+<ng-template ngFor let-element [ngForOf]="detectorForms">
+  <div class="container">
+    <h3>{{element.formTitle}}</h3>
+    <!-- Display form inputs-->
+    <ng-template ngFor let-formInput [ngForOf]="element.formInputs">
+      <div class="form-group row" *ngIf="isText(formInput.inputType)">
+        <label class="col-sm-2 col-form-label"> {{formInput.inputLabel}} </label>
+        <div class="col-sm-4">
+          <input type="text" class="form-control" [id]=formInput.inputId>
+        </div>
+      </div>
+    </ng-template>
+    <!-- Display form buttons -->
+    <div class="btn-toolbar">
+      <ng-template ngFor let-formButton [ngForOf]="element.formButtons">
+        <button class="btn btn-primary" type="button" [id]=formButton.inputId>
+          {{formButton.inputLabel}}
+        </button>
+      </ng-template>
+    </div>
+  </div>
+</ng-template>

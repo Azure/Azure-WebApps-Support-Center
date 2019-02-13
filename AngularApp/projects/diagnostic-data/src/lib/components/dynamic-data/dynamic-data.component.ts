@@ -18,6 +18,7 @@ import { TimeSeriesGraphComponent } from '../time-series-graph/time-series-graph
 import {
     TimeSeriesInstanceGraphComponent
 } from '../time-series-instance-graph/time-series-instance-graph.component';
+import { FormComponent } from '../form/form.component';
 import { Moment } from 'moment';
 
 @Component({
@@ -26,7 +27,7 @@ import { Moment } from 'moment';
   styleUrls: ['./dynamic-data.component.scss'],
   entryComponents: [TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent,
     InsightsComponent, TimeSeriesInstanceGraphComponent, DynamicInsightComponent, MarkdownComponent,
-    DetectorListComponent, DropdownComponent, CardSelectionComponent, GuageControlComponent]
+    DetectorListComponent, DropdownComponent, CardSelectionComponent, GuageControlComponent, FormComponent]
 })
 export class DynamicDataComponent implements OnInit {
 
@@ -87,6 +88,8 @@ export class DynamicDataComponent implements OnInit {
         return CardSelectionComponent;
       case RenderingType.Guage:
         return GuageControlComponent;
+      case RenderingType.Form:
+        return FormComponent;
       default:
         return null;
     }
