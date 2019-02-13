@@ -55,10 +55,6 @@ export class CardSelectionComponent extends DataRenderBaseComponent {
   }
 
   public getColor(index: number): string {
-    let color = "";
-    if (index < this.colors.length) {
-      color = this.colors[index];
-    }
-    return color;
+    return this.colors[index % this.colors.length];
   }
 }
