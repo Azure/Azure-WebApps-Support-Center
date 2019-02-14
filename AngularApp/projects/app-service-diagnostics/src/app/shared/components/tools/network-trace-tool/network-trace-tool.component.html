@@ -10,8 +10,6 @@
 
     <div class="header2">What you should know before collecting a Network Trace</div>
     <ul>
-        <li>This tool
-            <strong>cannot</strong> capture Network Traffic between Azure Virtual Networks.</li>
         <li>Network traces are helpful to troubleshoot TCP packet loss and to check HTTP communication that your App is
             making
             with the remote endpoints.</li>
@@ -30,19 +28,12 @@
         <div class="focus-box focus-box-warning" style="margin-top:20px">
             <div *ngIf="traceDisabledReason === NetworkTraceDisabledReasonType.AppNotOnDedicatedTier">
                 <strong>Error</strong> - This tool is supported only on App running on Dedicated SKU's (Basic,
-                Standard, Premium and PremiumV2)
-            </div>
-            <div *ngIf="traceDisabledReason === NetworkTraceDisabledReasonType.AppConnectedToVNet">
-                <strong>Error</strong> - This tool is not supported only on App connected to Azure Virtual Networks
+                Standard, Isolated, Premium and PremiumV2)
             </div>
             <div *ngIf="traceDisabledReason === NetworkTraceDisabledReasonType.NoPermsOnAppServicePlan">
                 <strong>Error</strong> - It appears that you do not have permissions on the App Service Plan. This
                 happens typically if you have Website Contributor access only and no permissions on the App Service
                 Plan
-            </div>
-            <div *ngIf="traceDisabledReason === NetworkTraceDisabledReasonType.AppOnAppServiceEnvironment">
-                <strong>Error</strong> - This tool is not supported only on Web App that are part of App Service
-                Environments
             </div>
             <div *ngIf="errorMessage !=''">
                 <strong>Error</strong> - {{ errorMessage }}

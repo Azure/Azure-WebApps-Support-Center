@@ -47,14 +47,6 @@ export class NetworkTraceToolComponent implements OnInit {
     ngOnInit(): void {
         this.scmPath = this._siteService.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
-        // Network Trace tool doesn't work on ASE's yet
-        if (this._siteService.currentSiteStatic.hostingEnvironmentId != null && this._siteService.currentSiteStatic.hostingEnvironmentId !== '') {
-            this.checkingValidity = false;
-            this.networkTraceDisabled = true;
-            this.traceDisabledReason = NetworkTraceDisabledReason.AppOnAppServiceEnvironment;
-            return;
-        }
-
         this._serverFarmService.hasServerFarmAccess.subscribe(hasAccess => {
             if (hasAccess != null) {
                 if (!hasAccess) {
@@ -65,8 +57,9 @@ export class NetworkTraceToolComponent implements OnInit {
                 } else {
                     this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
                         if (serverFarm) {
+                            this.checkingValidity = false;
                             // Specifically not checking for Isolated as Network Trace tool is not working on ASE currently
-                            if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier === 'Basic' || serverFarm.sku.tier.indexOf('Premium') > -1) {
+                            if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier === 'Basic' || serverFarm.sku.tier === 'Isolated' || serverFarm.sku.tier.indexOf('Premium') > -1) {
                                 this._siteService.getSiteAppSettings(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.siteToBeDiagnosed.siteName, this.siteToBeDiagnosed.slot).subscribe(settingsResponse => {
                                     if (settingsResponse && settingsResponse.properties) {
                                         if (settingsResponse.properties['WEBSITE_LOCAL_CACHE_OPTION']) {
@@ -76,17 +69,8 @@ export class NetworkTraceToolComponent implements OnInit {
                                             }
                                         }
                                     }
-
-                                    this._siteService.getVirtualNetworkConnectionsInformation(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.siteToBeDiagnosed.siteName, this.siteToBeDiagnosed.slot).subscribe(virtualNetworkConnectionsResponse => {
-                                        this.checkingValidity = false;
-                                        if (virtualNetworkConnectionsResponse && virtualNetworkConnectionsResponse.length > 0) {
-                                            this.networkTraceDisabled = true;
-                                            this.traceDisabledReason = NetworkTraceDisabledReason.AppConnectedToVNet;
-                                        }
-                                    });
                                 });
                             } else {
-                                this.checkingValidity = false;
                                 this.networkTraceDisabled = true;
                                 this.traceDisabledReason = NetworkTraceDisabledReason.AppNotOnDedicatedTier;
                                 return;
@@ -214,8 +198,6 @@ enum NetworkTraceStatus {
 }
 
 enum NetworkTraceDisabledReason {
-    AppOnAppServiceEnvironment,
-    AppConnectedToVNet,
     AppNotOnDedicatedTier,
     NoPermsOnAppServicePlan
 }
