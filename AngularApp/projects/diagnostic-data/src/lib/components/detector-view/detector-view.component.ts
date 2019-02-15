@@ -62,7 +62,8 @@ export class DetectorViewComponent implements OnInit {
   @Input() isSystemInvoker: boolean = false;
   @Input() authorInfo: string = '';
   @Input() feedbackDetector: string = '';
-
+  @Input() developmentMode: boolean = false;
+  @Input() script: string = '';
   feedbackButtonLabel: string = 'Send Feedback';
 
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private telemetryService: TelemetryService,

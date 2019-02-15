@@ -40,7 +40,8 @@ export class DynamicDataComponent implements OnInit {
   @Input() startTime: Moment;
   @Input() endTime: Moment;
   @Input() detectorEventProperties: any;
-
+  @Input() developmentMode: boolean = false;
+  @Input() executionScript: string;
   @ViewChild('dynamicDataContainer', { read: ViewContainerRef }) dynamicDataContainer: ViewContainerRef;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
@@ -59,6 +60,8 @@ export class DynamicDataComponent implements OnInit {
       instance.startTime = this.startTime;
       instance.endTime = this.endTime;
       instance.detectorEventProperties = this.detectorEventProperties;
+      instance.developmentMode = this.developmentMode;
+      instance.executionScript = this.executionScript;
     });
   }
 

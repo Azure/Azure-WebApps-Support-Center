@@ -1,22 +1,42 @@
 <ng-template ngFor let-element [ngForOf]="detectorForms">
-  <div class="container">
-    <h3>{{element.formTitle}}</h3>
-    <!-- Display form inputs-->
-    <ng-template ngFor let-formInput [ngForOf]="element.formInputs">
-      <div class="form-group row" *ngIf="isText(formInput.inputType)">
-        <label class="col-sm-2 col-form-label"> {{formInput.inputLabel}} </label>
-        <div class="col-sm-4">
-          <input type="text" class="form-control" [id]=formInput.inputId>
-        </div>
-      </div>
-    </ng-template>
-    <!-- Display form buttons -->
-    <div class="btn-toolbar">
-      <ng-template ngFor let-formButton [ngForOf]="element.formButtons">
-        <button class="btn btn-primary" type="button" [id]=formButton.inputId>
-          {{formButton.inputLabel}}
-        </button>
-      </ng-template>
+ <div class="form-container">
+
+  <h3>{{element.formTitle}}</h3>
+  <!-- Display form inputs-->
+  <ng-template ngFor let-formInput [ngForOf]="element.formInputs">
+    <div class="form-group row" *ngIf="isText(formInput.inputType)">
+      <div class="col-sm-8">
+      <label class="col-sm-4 col-form-label"> {{formInput.inputLabel}} </label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" [id]=formInput.combinedId [(ngModel)]="formInput.inputValue">
+      </div>             
     </div>
+    </div>
+  </ng-template>
+  <!-- Display form buttons -->
+  <div class="btn-toolbar">
+    <ng-template ngFor let-formButton [ngForOf]="element.formButtons">
+      <button class="btn btn-primary" type="button" [id]=formButton.combinedId (click)="executeForm(element.formId, formButton.inputId)">
+        {{formButton.inputLabel}}
+      </button>
+    </ng-template>
   </div>
+<div class="form-response-margin">
+  <!-- show loader when loading form response-->
+    <loader-view *ngIf="element.loadingFormResponse" message="Loading Form Output...">
+      </loader-view>
+      <!-- show error message if request failed-->
+  <div class="text-danger" *ngIf="element.errorMessage != ''">
+      {{element.errorMessage}}
+    </div>
+    <!-- Display form response -->
+    <div *ngIf="element.formResponse != undefined" >
+        <div *ngFor="let data of element.formResponse.dataset">
+           <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime" [detectorEventProperties]="detectorEventProperties"></dynamic-data>
+         </div> 
+       </div>
+</div>
+
+
+</div>
 </ng-template>

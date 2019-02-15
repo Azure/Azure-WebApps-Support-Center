@@ -23,7 +23,8 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
   @Input() startTime: momentNs.Moment;
   @Input() endTime: momentNs.Moment;
   @Input() detectorEventProperties: any;
-
+  @Input() developmentMode: boolean = false;
+  @Input() executionScript: string;
   constructor(protected telemetryService: TelemetryService) {}
 
   ngOnInit() {

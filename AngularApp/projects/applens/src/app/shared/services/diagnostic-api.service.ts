@@ -24,9 +24,12 @@ export class DiagnosticApiService {
     return environment.production ? '' : this.localDiagnosticApi;
   }
 
-  public getDetector(version: string, resourceId: string, detector: string, startTime?: string, endTime?: string, body?: any, refresh: boolean = false, internalView: boolean = false): Observable<DetectorResponse> {
+  public getDetector(version: string, resourceId: string, detector: string, startTime?: string, endTime?: string, body?: any, refresh: boolean = false, internalView: boolean = false, formQueryParams? : string): Observable<DetectorResponse> {
     let timeParameters = this._getTimeQueryParameters(startTime, endTime);
     let path = `${version}${resourceId}/detectors/${detector}?${timeParameters}`;
+    if(formQueryParams != undefined) {     
+      path += formQueryParams;
+    }
     return this.invoke<DetectorResponse>(path, HttpMethod.POST, body, true, refresh, internalView);
   }
 
@@ -41,9 +44,13 @@ export class DiagnosticApiService {
     return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body).pipe(retry(1),map(response => response.map(detector => detector.metadata)),);
   }
 
-  public getCompilerResponse(version: string, resourceId: string, body: any, startTime?: string, endTime?: string): Observable<QueryResponse<DetectorResponse>> {
+  public getCompilerResponse(version: string, resourceId: string, body: any, startTime?: string, endTime?: string, formQueryParams?: string): Observable<QueryResponse<DetectorResponse>> {
     let timeParameters = this._getTimeQueryParameters(startTime, endTime);
+
     let path = `${version}${resourceId}/diagnostics/query?${timeParameters}`;
+    if(formQueryParams != undefined) {
+      path += formQueryParams;
+    }
     return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false);
   }
 
