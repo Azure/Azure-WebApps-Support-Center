@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { SiteDaasInfo } from '../../models/solution-metadata';
 import { Session, Diagnoser, Report, DiagnoserDefinition, Log } from '../../models/daas';
-import { Subscription ,  Observable, interval } from 'rxjs';
+import { Subscription, Observable, interval } from 'rxjs';
 import { StepWizardSingleStep } from '../../models/step-wizard-single-step';
 import { SiteService } from '../../services/site.service';
 import { DaasService } from '../../services/daas.service';
@@ -32,7 +32,7 @@ export class DaasComponent implements OnInit, OnDestroy {
 
     instances: string[];
     instancesToDiagnose: string[];
-    instancesSelected: InstanceSelection[];
+    instancesSelected: InstanceSelection[] = [];
     sessionId: string;
     sessionInProgress: boolean;
     diagnoserSession: Diagnoser;
@@ -43,7 +43,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     selectedInstance: string;
     operationInProgress: boolean;
     operationStatus: string;
-    Reports: Report[] =[];
+    Reports: Report[] = [];
     Logs: Log[] = [];
     sessionCompleted: boolean;
     WizardSteps: StepWizardSingleStep[] = [];
@@ -57,6 +57,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     daasValidated: boolean = false;
     cancellingSession: boolean = false;
     collectionMode: number = 0;
+    showInstanceWarning: boolean = false;
 
     constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
     }
@@ -240,7 +241,7 @@ export class DaasComponent implements OnInit, OnDestroy {
             this.instances.forEach(x => {
                 const s = new InstanceSelection();
                 s.InstanceName = x;
-                s.Selected = true;
+                s.Selected = false;
                 this.instancesSelected.push(s);
             });
         }
@@ -250,8 +251,37 @@ export class DaasComponent implements OnInit, OnDestroy {
         return oldInstances.length == newInstances.length && oldInstances.every(function (v, i) { return v === newInstances[i]; });
     }
 
-    collectDiagnoserData() {
+    getSelectedInstanceCount(): number {
+        let instancesSelected = 0;
+        this.instancesSelected.forEach(x => {
+            if (x.Selected) {
+                instancesSelected++;
+            }
+        });
+        return instancesSelected;
+    }
 
+    validateInstancesToCollect(): boolean {
+        let consentRequired = false;
+        if (this.instances.length > 1) {
+            let instancesSelected = this.getSelectedInstanceCount();
+            let percentInstanceSelected: number = (instancesSelected / this.instances.length);
+            if (percentInstanceSelected > 0.5) {
+                consentRequired = true;
+            }
+        }
+        return consentRequired;
+    }
+
+    collectDiagnoserData(consentRequired: boolean) {
+        consentRequired = consentRequired && !this.diagnoserName.startsWith("CLR Profiler");
+        if (consentRequired && this.validateInstancesToCollect()) {
+            this.showInstanceWarning = true;
+            return;
+        }
+        else {
+            this.showInstanceWarning = false;
+        }
         this.instancesChanged = false;
         this.operationInProgress = true;
         this.operationStatus = 'Validating instances...';
