@@ -15,11 +15,14 @@ export class FormInput {
     inputType: InputType;
     inputLabel: string;
     inputValue: any;
-    constructor(combinedid: number, id: number, inputType: InputType, label: string) {
+    isRequired: boolean = false;
+    displayValidation: boolean = false;
+    constructor(combinedid: number, id: number, inputType: InputType, label: string, isRequired: boolean) {
         this.combinedId = combinedid;
         this.inputId = id;
         this.inputType = inputType;
         this.inputLabel = label;
+        this.isRequired = isRequired;
     }
 }
 

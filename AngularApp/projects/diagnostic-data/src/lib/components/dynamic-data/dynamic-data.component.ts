@@ -42,6 +42,7 @@ export class DynamicDataComponent implements OnInit {
   @Input() detectorEventProperties: any;
   @Input() developmentMode: boolean = false;
   @Input() executionScript: string;
+  @Input() detector: string = '';
   @ViewChild('dynamicDataContainer', { read: ViewContainerRef }) dynamicDataContainer: ViewContainerRef;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
@@ -62,6 +63,7 @@ export class DynamicDataComponent implements OnInit {
       instance.detectorEventProperties = this.detectorEventProperties;
       instance.developmentMode = this.developmentMode;
       instance.executionScript = this.executionScript;
+      instance.detector = this.detector;
     });
   }
 

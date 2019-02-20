@@ -50,14 +50,16 @@ export class FormComponent extends DataRenderBaseComponent {
                formInputs[ip]["combinedId"],
                formInputs[ip]["inputId"],
                formInputs[ip]["inputType"],
-               formInputs[ip]["label"]
+               formInputs[ip]["label"],
+               formInputs[ip]["isRequired"]
               ));
            } else {
              this.detectorForms[i].formInputs.push(new FormInput
               (formInputs[ip]["combinedId"],
                formInputs[ip]["inputId"],
                formInputs[ip]["inputType"],
-               formInputs[ip]["label"]));
+               formInputs[ip]["label"],
+               formInputs[ip]["isRequired"]));
            }       
          }
        }
@@ -67,10 +69,14 @@ export class FormComponent extends DataRenderBaseComponent {
     executeForm(formId: any, buttonId: any) {
       
       let formToExecute = this.detectorForms.find(form => form.formId == formId);
+      if(formToExecute != undefined) {
+      // validate inputs. If there are validation errors displayed, do not proceed to execution
+      if(!this.validateInputs(formToExecute.formInputs)) {
+        return;
+      }
       // Setting loading indicator and removing the existing form response from the ui
       formToExecute.loadingFormResponse = true;
       formToExecute.formResponse = undefined;
-      if(formToExecute != undefined) {
         let queryParams = `&fId=${formId}&btnId=${buttonId}`;
         formToExecute.formInputs.forEach(ip => {
           queryParams += `&inpId=${ip.inputId}&val=${ip.inputValue}`;
@@ -94,7 +100,7 @@ export class FormComponent extends DataRenderBaseComponent {
           }));
         } else {
           // get detector
-          this._diagnosticService.getDetector("id", this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
+          this._diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
           this.detectorControlService.shouldRefresh,  this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) => {
             formToExecute.formResponse = response;
             formToExecute.errorMessage = '';
@@ -104,6 +110,21 @@ export class FormComponent extends DataRenderBaseComponent {
            formToExecute.errorMessage = 'Something went wrong during form execution';
           });
         }
+      
+    }
+    }
+
+    validateInputs(formInputs: FormInput[]): boolean {
+      for (let input of formInputs) {
+        if(input.isRequired && (input.inputValue == undefined || input.inputValue == "")) {
+          input.displayValidation = true;
+          return false;
+        } 
       }
+      return true;
+    }
+
+    inputChanged(formInput: FormInput) {
+      formInput.displayValidation = false;
     }
 }
