@@ -10,8 +10,6 @@
 
     <div class="header2">What you should know before collecting a Network Trace</div>
     <ul>
-        <li>This tool
-            <strong>cannot</strong> capture Network Traffic between Azure Virtual Networks.</li>
         <li>Network traces are helpful to troubleshoot TCP packet loss and to check HTTP communication that your App is
             making
             with the remote endpoints.</li>
@@ -22,27 +20,20 @@
             encrypted.</li>
         <li>Network traces are collected on all the instance(s) serving your App.</li>
         <li>To analyze the Network Trace, you need tools like
-            <a href='https://www.microsoft.com/en-in/download/details.aspx?id=4865'>Network Monitor </a> or
-            <a href='https://www.wireshark.org/'>Wireshark</a> that can open the network captures. </li>
+            <a href='https://www.microsoft.com/en-in/download/details.aspx?id=4865' target="_blank">Network Monitor </a> or
+            <a href='https://www.wireshark.org/' target="_blank">Wireshark</a> that can open the network captures. </li>
     </ul>
 
     <div *ngIf="!checkingValidity && networkTraceDisabled">
         <div class="focus-box focus-box-warning" style="margin-top:20px">
             <div *ngIf="traceDisabledReason === NetworkTraceDisabledReasonType.AppNotOnDedicatedTier">
                 <strong>Error</strong> - This tool is supported only on App running on Dedicated SKU's (Basic,
-                Standard, Premium and PremiumV2)
-            </div>
-            <div *ngIf="traceDisabledReason === NetworkTraceDisabledReasonType.AppConnectedToVNet">
-                <strong>Error</strong> - This tool is not supported only on App connected to Azure Virtual Networks
+                Standard, Isolated, Premium and PremiumV2)
             </div>
             <div *ngIf="traceDisabledReason === NetworkTraceDisabledReasonType.NoPermsOnAppServicePlan">
                 <strong>Error</strong> - It appears that you do not have permissions on the App Service Plan. This
                 happens typically if you have Website Contributor access only and no permissions on the App Service
                 Plan
-            </div>
-            <div *ngIf="traceDisabledReason === NetworkTraceDisabledReasonType.AppOnAppServiceEnvironment">
-                <strong>Error</strong> - This tool is not supported only on Web App that are part of App Service
-                Environments
             </div>
             <div *ngIf="errorMessage !=''">
                 <strong>Error</strong> - {{ errorMessage }}
@@ -58,7 +49,7 @@
     <div *ngIf="!checkingValidity && !networkTraceDisabled && status < NetworkTraceStatus.Started">
         
         <div class="pastNetworkTracesMessage">
-            View past collected Network traces in <strong>{{traceLocation}}</strong> folder in <a href='https://{{scmPath}}'>Kudu
+            View past collected Network traces in <strong>{{traceLocation}}</strong> folder in <a href='https://{{scmPath}}' target="_blank">Kudu
                 Console</a> for the App.
         </div>
 
@@ -88,7 +79,7 @@
                 <div *ngIf="durationRemaining > 0" style="display: table-cell;">
                     Network trace started and will automatically stop after
                     <strong>{{ durationRemaining }}</strong> seconds. Network traces collected will be available in
-                    <strong>{{traceLocation}}</strong> folder in <a href='https://${this.scmPath}'>Kudu Console</a> for
+                    <strong>{{traceLocation}}</strong> folder in <a href='https://${this.scmPath}' target="_blank">Kudu Console</a> for
                     the App.
                 </div>
                 <div *ngIf="durationRemaining <= 0" style="display: table-cell;">
@@ -105,7 +96,7 @@
                 Network trace collection completed.
                 <ul>
                     <li *ngFor="let file of files">
-                        <a href="{{ file.url}}"> {{ file.name }}</a>
+                        <a href="{{ file.url}}" target="_blank"> {{ file.name }}</a>
                     </li>
                 </ul>
             </div>

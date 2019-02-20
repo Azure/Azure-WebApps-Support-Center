@@ -102,10 +102,10 @@
                     {{ operationStatus }}
                 </div>
 
-                <button [disabled]="sessionInProgress || operationInProgress || retrievingInstancesFailed" [hidden]="sessionCompleted"
+                <button [disabled]="getSelectedInstanceCount() === 0 || sessionInProgress || operationInProgress || retrievingInstancesFailed" [hidden]="sessionCompleted"
                     class="btn btn-primary" (click)="collectProfilerTrace()">Collect
                     Profiler Trace</button>
-
+                    <div *ngIf="getSelectedInstanceCount() === 0" style="font-size: smaller;color: red;margin-top: 5px;margin-right: 10px;">* Choose at least one instance</div>
                 <div *ngIf="!isAspnetCore" style="margin-top:5px">
                     <input type="checkbox" [attr.aria-label]="'Add thread report'" [(ngModel)]="collectStackTraces"
                         [disabled]="sessionInProgress" /> Add

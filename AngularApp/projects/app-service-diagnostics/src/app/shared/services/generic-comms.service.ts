@@ -18,7 +18,7 @@ export class GenericCommsService {
 
     return this._authService.getStartupInfo().pipe(
       mergeMap((startupInfo: StartupInfo) => {
-        const additionalHeaders = new HttpHeaders({ 'x-ms-resource': startupInfo.resourceId });
+        const additionalHeaders = new HttpHeaders({ 'resource-uri': startupInfo.resourceId });
 
         return this._backendCtrlService.get<Communication[]>(`api/comms`, additionalHeaders).pipe(tap((commList: Communication[]) => {
           const commAlert = commList.find((comm: Communication) => comm.isAlert === true);
