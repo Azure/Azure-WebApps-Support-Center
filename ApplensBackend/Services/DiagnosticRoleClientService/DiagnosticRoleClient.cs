@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using System.Security.Authentication;
 using System.Text;
 using System.Text.RegularExpressions;
-
+using AppLensV3.Models;
 namespace AppLensV3
 {
     public class DiagnosticRoleClient : IDiagnosticClientService
@@ -83,7 +83,7 @@ namespace AppLensV3
             return client;
         }
 
-        public async Task<HttpResponseMessage> Execute(string method, string path, string body = null, bool internalView = true)
+        public async Task<HttpResponseMessage> Execute(string method, string path, string body = null, bool internalView = true, CompilationParameters compilationParameters = null)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace AppLensV3
                         {
                             requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
                         }
-
+                        if (compilationParameters != null) AddCompilationParamsToRequest(compilationParameters, ref requestMessage);
                         response = await _client.SendAsync(requestMessage);
                     }
                     else
@@ -110,18 +110,19 @@ namespace AppLensV3
                         requestMessage.Headers.Add("x-ms-verb", method);
                         requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
 
+                        if (compilationParameters != null) AddCompilationParamsToRequest(compilationParameters, ref requestMessage);
                         response = await _client.SendAsync(requestMessage);
                     }
                 }
                 else
                 {
                     path = path.Replace("/v4", string.Empty).Replace("v4", string.Empty);
-
+                    
                     var requestMessage = new HttpRequestMessage(method.Trim().ToUpper() == "POST" ? HttpMethod.Post : HttpMethod.Get, path)
                     {
                         Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json")
                     };
-
+                    if (compilationParameters != null) AddCompilationParamsToRequest(compilationParameters, ref requestMessage);
                     response = await _client.SendAsync(requestMessage);
                 }
 
@@ -175,6 +176,19 @@ namespace AppLensV3
             }
 
             return cert;
+        }
+
+        private void AddCompilationParamsToRequest(CompilationParameters compilationParameters, ref HttpRequestMessage requestMessage)
+        {
+            if(!string.IsNullOrEmpty(compilationParameters.AssemblyName))
+            {
+                requestMessage.Headers.Add("assembly-name", compilationParameters.AssemblyName);
+            }
+
+            if(!string.IsNullOrEmpty(compilationParameters.ScriptETag))
+            {
+                requestMessage.Headers.Add("script-etag", compilationParameters.ScriptETag);
+            }
         }
     }
 }

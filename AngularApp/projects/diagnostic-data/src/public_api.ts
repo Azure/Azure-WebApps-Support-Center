@@ -16,3 +16,4 @@ export * from './lib/models/insight';
 export * from './lib/models/loading';
 export * from './lib/models/communication';
 export * from './lib/models/compiler-response';
+export * from './lib/models/compiler-properties';

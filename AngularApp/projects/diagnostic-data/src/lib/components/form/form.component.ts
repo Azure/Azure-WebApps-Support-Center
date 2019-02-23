@@ -77,6 +77,7 @@ export class FormComponent extends DataRenderBaseComponent {
       // Setting loading indicator and removing the existing form response from the ui
       formToExecute.loadingFormResponse = true;
       formToExecute.formResponse = undefined;
+      formToExecute.errorMessage = '';
         let queryParams = `&fId=${formId}&btnId=${buttonId}`;
         formToExecute.formInputs.forEach(ip => {
           queryParams += `&inpId=${ip.inputId}&val=${ip.inputValue}`;
@@ -87,10 +88,19 @@ export class FormComponent extends DataRenderBaseComponent {
             script: this.executionScript
           };
           this._diagnosticService.getCompilerResponse(body, false, '', this.detectorControlService.startTimeString, 
-            this.detectorControlService.endTimeString, '', '', queryParams)
+            this.detectorControlService.endTimeString, '', '', {
+              formQueryParams: queryParams,
+              scriptETag: this.compilationPackage.scriptETag,
+              assemblyName: this.compilationPackage.assemblyName
+            })
           .subscribe((response: QueryResponse<DetectorResponse>) => {
             formToExecute.loadingFormResponse = false;
             if(response != undefined) {
+               // If the script has been compiled at the server, store those values in memory.
+              if(response.compilationOutput.isCompiled) {
+                this.compilationPackage.scriptETag = response.compilationOutput.scriptETag;
+                this.compilationPackage.assemblyName = response.compilationOutput.assemblyName;
+              }
               formToExecute.formResponse = response.invocationOutput;
               formToExecute.errorMessage = '';
             }

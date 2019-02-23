@@ -20,7 +20,7 @@ import {
 } from '../time-series-instance-graph/time-series-instance-graph.component';
 import { FormComponent } from '../form/form.component';
 import { Moment } from 'moment';
-
+import { CompilationProperties}  from '../../models/compiler-properties';
 @Component({
   selector: 'dynamic-data',
   templateUrl: './dynamic-data.component.html',
@@ -43,6 +43,7 @@ export class DynamicDataComponent implements OnInit {
   @Input() developmentMode: boolean = false;
   @Input() executionScript: string;
   @Input() detector: string = '';
+  @Input() compilationPackage: CompilationProperties;
   @ViewChild('dynamicDataContainer', { read: ViewContainerRef }) dynamicDataContainer: ViewContainerRef;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
@@ -64,6 +65,7 @@ export class DynamicDataComponent implements OnInit {
       instance.developmentMode = this.developmentMode;
       instance.executionScript = this.executionScript;
       instance.detector = this.detector;
+      instance.compilationPackage = this.compilationPackage;
     });
   }
 

@@ -44,14 +44,14 @@ export class DiagnosticApiService {
     return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body).pipe(retry(1),map(response => response.map(detector => detector.metadata)),);
   }
 
-  public getCompilerResponse(version: string, resourceId: string, body: any, startTime?: string, endTime?: string, formQueryParams?: string): Observable<QueryResponse<DetectorResponse>> {
+  public getCompilerResponse(version: string, resourceId: string, body: any, startTime?: string, endTime?: string, additionalParams?: any): Observable<QueryResponse<DetectorResponse>> {
     let timeParameters = this._getTimeQueryParameters(startTime, endTime);
 
     let path = `${version}${resourceId}/diagnostics/query?${timeParameters}`;
-    if(formQueryParams != undefined) {
-      path += formQueryParams;
+    if(additionalParams.formQueryParams != undefined) {
+      path += additionalParams.formQueryParams;
     }
-    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false);
+    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false, undefined, undefined, additionalParams);
   }
 
   public getSystemCompilerResponse(resourceId: string, body: any, detectorId: string = '', dataSource: string = '', timeRange: string = ''): Observable<QueryResponse<DetectorResponse>> {
@@ -90,11 +90,11 @@ export class DiagnosticApiService {
     });
   }
 
-  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true): Observable<T> {
+  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true, additionalParams?: any): Observable<T> {
     let url: string = `${this.diagnosticApi}api/invoke`
 
     let request = this._httpClient.post<T>(url, body, {
-      headers: this._getHeaders(path, method, internalView)
+      headers: this._getHeaders(path, method, internalView, additionalParams),
     });
 
     return useCache ? this._cacheService.get(this.getCacheKey(method, path), request, invalidateCache) : request;
@@ -115,7 +115,7 @@ export class DiagnosticApiService {
     return this._cacheService.get(path, request, invalidateCache);
   }
 
-  private _getHeaders(path?: string, method?: HttpMethod, internalView: boolean = true): HttpHeaders {
+  private _getHeaders(path?: string, method?: HttpMethod, internalView: boolean = true, additionalParams?: any): HttpHeaders {
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', 'application/json');
@@ -128,6 +128,13 @@ export class DiagnosticApiService {
 
     if (method) {
       headers = headers.set('x-ms-method', HttpMethod[method]);
+    }
+
+    if(additionalParams && additionalParams.scriptETag) {     
+      headers = headers.set('script-etag',additionalParams.scriptETag);
+    }
+    if(additionalParams && additionalParams.assemblyName) {     
+      headers = headers.set('assembly-name', encodeURI(additionalParams.assemblyName));
     }
 
     return headers;

@@ -22,7 +22,7 @@ export class DiagnosticService {
         return null;
     }
 
-    getCompilerResponse(body: any, isSystemInvoker: boolean, detectorId: string = '', startTime: string = '', endTime: string = '', dataSource: string = '', timeRange: string = '', formQueryParams?: string): Observable<QueryResponse<DetectorResponse>> {
+    getCompilerResponse(body: any, isSystemInvoker: boolean, detectorId: string = '', startTime: string = '', endTime: string = '', dataSource: string = '', timeRange: string = '', additionalParams?: any): Observable<QueryResponse<DetectorResponse>> {
         return null;
     }
 }

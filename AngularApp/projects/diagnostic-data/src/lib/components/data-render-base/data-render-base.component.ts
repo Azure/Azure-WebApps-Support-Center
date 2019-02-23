@@ -3,7 +3,7 @@ import { ReplaySubject } from 'rxjs';
 import { Component, Input, OnInit } from '@angular/core';
 import { DiagnosticData, RenderingType } from '../../models/detector';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
-
+import {CompilationProperties} from '../../models/compiler-properties';
 export interface DataRenderer {
   diagnosticDataInput: DiagnosticData;
 }
@@ -26,6 +26,7 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
   @Input() developmentMode: boolean = false;
   @Input() executionScript: string;
   @Input() detector: string = '';
+  @Input() compilationPackage: CompilationProperties;
   constructor(protected telemetryService: TelemetryService) {}
 
   ngOnInit() {

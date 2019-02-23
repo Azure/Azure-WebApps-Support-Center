@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
-
+using AppLensV3.Models;
 namespace AppLensV3.Controllers
 {
     [Route("api")]
@@ -42,7 +42,24 @@ namespace AppLensV3.Controllers
                 bool.TryParse(Request.Headers["x-ms-internal-view"], out internalView);
             }
 
-            var response = await this._diagnosticClient.Execute(method, path, body?.ToString(), internalView);
+            string scriptETag = "";
+
+            if (Request.Headers.ContainsKey("script-etag"))
+            {
+                scriptETag = Request.Headers["script-etag"];
+            }
+
+            string assemblyName = "";
+
+            if(Request.Headers.ContainsKey("assembly-name"))
+            {
+                assemblyName = Request.Headers["assembly-name"];
+            }
+            var response = await this._diagnosticClient.Execute(method, path, body?.ToString(), internalView, new CompilationParameters
+            {
+                ScriptETag = scriptETag,
+                AssemblyName = assemblyName
+            });
 
             if (response != null)
             {
