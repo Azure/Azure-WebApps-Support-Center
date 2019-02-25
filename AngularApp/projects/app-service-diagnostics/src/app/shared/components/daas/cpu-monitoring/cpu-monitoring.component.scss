@@ -5,9 +5,9 @@
 }
 
 .action-box {
-    border: 1px solid #ebebeb;
+    // border: 1px solid #ebebeb;
     padding:15px;
-    background-color: #f9f9f9
+    //background-color: #f9f9f9
 }
 
 .highlight-blue {
@@ -37,4 +37,18 @@
     margin-left: 15px;
     margin-top: 15px;
     margin-bottom: 15px;
+}
+
+.label-header {
+    font-size: initial;
+}
+
+.label-description {
+    font-size: small;
+    margin-top: 3px;
+}
+
+.input-row{
+    padding-top:8px;
+    padding-bottom: 8px;
 }

@@ -2,16 +2,10 @@
   <div class="header1">{{ title }}</div>
   <p>{{ description }}</p>
 
+  <!-- <div>
+      <a [routerLink]="allSessions"><button class="btn btn-primary btn-sm">View exisiting sessions</button></a> 
+  </div> -->
+
   <cpu-monitoring [siteToBeDiagnosed]="siteToBeDiagnosed" [scmPath]="scmPath"></cpu-monitoring>
-
-  <div class="header2">What you should know before enabling this feature</div>
-  <ul>
-    <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
-  </ul>
-
-  <div style="display:inline">Click
-    <div style="display:inline" [routerLink]="allSessions">
-      <a>here</a> to see all sessions</div>
-  </div>
-
+  
 </div>

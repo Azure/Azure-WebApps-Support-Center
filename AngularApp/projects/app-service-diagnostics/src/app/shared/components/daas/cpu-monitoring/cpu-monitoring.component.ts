@@ -6,6 +6,7 @@ import { SiteService } from '../../../services/site.service';
 import { DaasService } from '../../../services/daas.service';
 import { WindowService } from 'projects/app-service-diagnostics/src/app/startup/services/window.service';
 import { retry } from 'rxjs/operators';
+import { Options, CustomStepDefinition, LabelType } from 'ng5-slider';
 
 @Component({
   selector: 'cpu-monitoring',
@@ -18,7 +19,6 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
   @Input() public scmPath: string;
 
   daasValidated: boolean = false;
-  operationStatus: string;
   editMode: boolean = false;
   couldNotFindSite: boolean = false;
   operationInProgress: boolean = false;
@@ -46,6 +46,26 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
   { Mode: SessionMode.Kill, Description: `${this.descStart}, the process is killed. ${this.descKillMessage} In this mode, the 'Maximum Number of Memory Dumps collected' setting is not honored and the monitoring stops automatically after 'Maximum number of Days' is reached.` }];
 
   modeDescription: string = "";
+  sliderOptions: Options = {
+    floor: 1,
+    ceil: 168
+  };
+
+  sliderOptionsMode: Options = {
+    showTicksValues: true,
+    stepsArray: Object.keys(SessionMode).map((letter: SessionMode): CustomStepDefinition => {
+      return { value: Object.values(SessionMode).indexOf(letter) };
+    }),
+    translate: (value: number): string => {
+      return SessionMode[value];
+    }
+    // stepsArray: [
+    //   {value: 'Collect'},
+    //   {value: 'CollectAndKill'},
+    //   {value: 'CollectKillAndAnalyze'},
+    //   {value: 'Kill'}
+    // ]
+  };
 
   constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService) {
 
@@ -88,12 +108,10 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
 
   checkRunningSessions() {
     this.operationInProgress = true;
-    this.operationStatus = 'Checking active monitoring session...';
 
     this._daasService.getActiveMonitoringSessionDetails(this.siteToBeDiagnosed).pipe(retry(2))
       .subscribe(runningSession => {
         this.operationInProgress = false;
-        this.operationStatus = '';
         if (runningSession && runningSession.Session) {
           this.monitoringEnabled = true;
           this.sessionId = runningSession.Session.SessionId;
@@ -218,8 +236,8 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
         break;
 
     }
-    this.ruleSummary = `When the site's process or any child processes of the site's process take ${this.monitoringSession.CpuThreshold} % of CPU for more than ${this.monitoringSession.MonitorDuration} seconds, ${actionToTake}. Peform the check for CPU usage every ${this.monitoringSession.MonitorDuration} seconds`;
-    if (this.monitoringSession.Mode != SessionMode.Kill){
+    this.ruleSummary = `When the site's process or any child processes of the site's process take ${this.monitoringSession.CpuThreshold} % of CPU for more than ${this.monitoringSession.ThresholdSeconds} seconds, ${actionToTake}. Peform the check for CPU usage every ${this.monitoringSession.MonitorDuration} seconds`;
+    if (this.monitoringSession.Mode != SessionMode.Kill) {
       this.ruleSummary = this.ruleSummary + `. Collect a maximum of ${this.monitoringSession.MaxActions} memory dumps.`;
     }
   }

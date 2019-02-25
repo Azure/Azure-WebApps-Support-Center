@@ -1,0 +1,39 @@
+.input-stepper {
+    background: white;
+    border: 2px solid #dedede;
+    display: inline-block;
+    font-size: 13px;
+    margin-bottom: 3px;
+  }
+  
+  .input-stepper button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  
+  .input-stepper button[disabled] {
+    cursor: not-allowed;
+    opacity: .4;
+  }
+  
+  .input-stepper button i {
+     color: #07c;
+  }
+  .input-label {
+    font-size: 13px;
+    padding: 3px;
+ }
+  .input-stepper input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    font-size: 13px;
+    text-align: center;
+    width: 25px;
+  }

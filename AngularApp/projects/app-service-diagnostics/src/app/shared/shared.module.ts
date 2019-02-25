@@ -88,6 +88,8 @@ import { LocalBackendService } from './services/local-backend.service';
 import { CpuMonitoringToolComponent } from './components/tools/cpu-monitoring-tool/cpu-monitoring-tool.component';
 import { MonitoringSessionsComponent } from './components/monitoring-sessions/monitoring-sessions.component';
 import { CpuMonitoringComponent } from './components/daas/cpu-monitoring/cpu-monitoring.component';
+import { NumberPickerComponent } from './components/number-picker/number-picker.component';
+import { Ng5SliderModule } from 'ng5-slider';
 
 @NgModule({
     declarations: [
@@ -148,7 +150,8 @@ import { CpuMonitoringComponent } from './components/daas/cpu-monitoring/cpu-mon
         GenericCommsComponent,
         CpuMonitoringToolComponent,
         MonitoringSessionsComponent,
-        CpuMonitoringComponent
+        CpuMonitoringComponent,
+        NumberPickerComponent
     ],
     imports: [
         HttpModule,
@@ -156,7 +159,8 @@ import { CpuMonitoringComponent } from './components/daas/cpu-monitoring/cpu-mon
         StartupModule,
         FormsModule,
         RouterModule,
-        DiagnosticDataModule
+        DiagnosticDataModule,
+        Ng5SliderModule
     ],
     exports: [
         CommonModule,
