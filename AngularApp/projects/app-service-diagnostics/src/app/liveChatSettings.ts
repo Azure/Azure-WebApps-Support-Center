@@ -17,7 +17,9 @@ export class LiveChatSettings {
     public static HideForInternalSubscriptions: boolean = false;
 
     // List of Support Topics for which Live chat is Enabled
-    public static enabledSupportTopics: string[] = [
+    public static enabledSupportTopicsPerAzureService: any = {
+
+      "Azure Web App(Windows)": [
         '32542218',     //Availability and Performance/Web App Down
         '32457411',     //Availability and Performance/Web App Slow
         '32570954',     //Availability and Performance/Web App Restarted
@@ -32,7 +34,11 @@ export class LiveChatSettings {
         '32589276',     //How Do I/Backup and Restore
         '32589277',     //How Do I/Configure domains and certificates,
         '32589281'      //How Do I/IP Configuration
-    ];
+      ],
+      "Azure Web App(Linux)": [
+        '32542218',     //Availability and Performance/Web App Down
+      ]
+    };
 
     // This indicates the time after which Live Chat will pop up.
     public static InactivityTimeoutInMs: number = 5000;
@@ -40,8 +46,8 @@ export class LiveChatSettings {
     // Live Chat Business Hours
     public static BuisnessStartDay: number = 1; // Monday
     public static BuisnessEndDay: number = 5;   // Friday
-    public static BusinessStartHourPST: number = 8;   // 8 AM PST
-    public static BusinessEndHourPST: number = 18;     // 6 PM PST
+    public static BusinessStartHourPST: number = 7;   // 7 AM PST
+    public static BusinessEndHourPST: number = 17;     // 5 PM PST
 
     public static PublicHolidays: any = [
         {

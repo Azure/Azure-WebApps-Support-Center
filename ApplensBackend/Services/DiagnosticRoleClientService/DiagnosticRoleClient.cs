@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace AppLensV3
 {
-    public class DiagnosticRoleClient: IDiagnosticClientService
+    public class DiagnosticRoleClient : IDiagnosticClientService
     {
         private IConfiguration _configuration;
 
@@ -35,6 +35,19 @@ namespace AppLensV3
             }
         }
 
+        public bool IsLocalDevelopment
+        {
+            get
+            {
+                if (bool.TryParse(_configuration["DiagnosticRole:isLocalDevelopment"], out bool retVal))
+                {
+                    return retVal;
+                }
+
+                return false;
+            }
+        }
+
         public DiagnosticRoleClient(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -45,14 +58,17 @@ namespace AppLensV3
         private HttpClient InitializeClient()
         {
             var handler = new HttpClientHandler();
-            X509Certificate2 certificate = GetMyX509Certificate();
-            handler.ClientCertificates.Add(certificate);
-            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-            handler.SslProtocols = SslProtocols.Tls12;
-            handler.ServerCertificateCustomValidationCallback = (request, cert, chain, errors) =>
+            if (!this.IsLocalDevelopment)
             {
-                return true;
-            };
+                X509Certificate2 certificate = GetMyX509Certificate();
+                handler.ClientCertificates.Add(certificate);
+                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                handler.SslProtocols = SslProtocols.Tls12;
+                handler.ServerCertificateCustomValidationCallback = (request, cert, chain, errors) =>
+                {
+                    return true;
+                };
+            }
 
             var client = new HttpClient(handler)
             {
@@ -72,40 +88,54 @@ namespace AppLensV3
             try
             {
                 HttpResponseMessage response;
-                if (!HitPassThroughAPI(path))
+
+                if (!this.IsLocalDevelopment)
                 {
-                    HttpRequestMessage requestMessage = new HttpRequestMessage(method == "POST" ? HttpMethod.Post: HttpMethod.Get, path);
-                    requestMessage.Headers.Add("x-ms-internal-view", internalView.ToString());
-
-                    if (method.ToUpper() == "POST")
+                    if (!HitPassThroughApi(path))
                     {
-                        requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
-                    }
+                        var requestMessage = new HttpRequestMessage(method == "POST" ? HttpMethod.Post : HttpMethod.Get, path);
+                        requestMessage.Headers.Add("x-ms-internal-view", internalView.ToString());
 
-                    response = await _client.SendAsync(requestMessage);
+                        if (method.ToUpper() == "POST")
+                        {
+                            requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
+                        }
+
+                        response = await _client.SendAsync(requestMessage);
+                    }
+                    else
+                    {
+                        var requestMessage = new HttpRequestMessage(HttpMethod.Post, "api/invoke");
+                        requestMessage.Headers.Add("x-ms-path-query", path);
+                        requestMessage.Headers.Add("x-ms-verb", method);
+                        requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
+
+                        response = await _client.SendAsync(requestMessage);
+                    }
                 }
                 else
                 {
-                    HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, "api/invoke");
-                    requestMessage.Headers.Add("x-ms-path-query", path);
-                    requestMessage.Headers.Add("x-ms-verb", method);
-                    requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
+                    path = path.Replace("/v4", string.Empty).Replace("v4", string.Empty).Replace("v2", string.Empty);
+
+                    var requestMessage = new HttpRequestMessage(method.Trim().ToUpper() == "POST" ? HttpMethod.Post : HttpMethod.Get, path)
+                    {
+                        Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json")
+                    };
 
                     response = await _client.SendAsync(requestMessage);
                 }
-                
 
                 return response;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
 
-        private bool HitPassThroughAPI(string path)
+        private bool HitPassThroughApi(string path)
         {
-            return !_nonPassThroughResourceProviderList.Exists(p => path.ToLower().Contains(p))
+            return !this._nonPassThroughResourceProviderList.Exists(p => path.ToLower().Contains(p))
                 || (new Regex("/detectors/[^/]*/statistics").IsMatch(path.ToLower()))
                 || path.ToLower().Contains("/diagnostics/publish");
         }
@@ -123,6 +153,7 @@ namespace AppLensV3
                     X509FindType.FindByThumbprint,
                     AuthCertThumbprint,
                     false);
+
                 // Get the first cert with the thumbprint
                 if (certCollection.Count > 0)
                 {
@@ -138,7 +169,7 @@ namespace AppLensV3
                 certStore.Close();
             }
 
-            if(cert == null)
+            if (cert == null)
             {
                 throw new Exception(string.Format("Certificate with thumbprint {0} could not be found", AuthCertThumbprint));
             }

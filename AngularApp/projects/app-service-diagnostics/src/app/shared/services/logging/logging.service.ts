@@ -21,6 +21,7 @@ export class LoggingService {
     private _ticketBladeWorkflowId: string = '';
     private _supportTopicId: string = '';
     private _appType: string = '';
+    private _source: string = '';
 
     public platform: string = '';
     public appStackInfo: string = '';
@@ -53,6 +54,10 @@ export class LoggingService {
 
                 if (this._startUpInfo.supportTopicId) {
                     this._supportTopicId = this._startUpInfo.supportTopicId;
+                }
+
+                if (this._startUpInfo.source) {
+                    this._source = this._startUpInfo.source;
                 }
 
                 if (siteIndex !== -1) {
@@ -94,7 +99,8 @@ export class LoggingService {
             appStack: this.appStackInfo,
             platform: this.platform,
             appType: this._appType,
-            supportTopicId: this._supportTopicId
+            supportTopicId: this._supportTopicId,
+            bladeSource: this._source
         };
 
         const combinedArgs = {};

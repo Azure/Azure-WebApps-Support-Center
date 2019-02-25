@@ -62,7 +62,7 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
             this.diagnoserName = 'CLR Profiler';
         }
 
-        this.collectDiagnoserData();
+        this.collectDiagnoserData(false);
     }
 
     initWizard(): void {

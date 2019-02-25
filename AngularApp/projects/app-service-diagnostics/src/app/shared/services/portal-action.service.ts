@@ -49,18 +49,6 @@ export class PortalActionService {
         this._portalService.openBlade(bladeInfo, 'troubleshoot');
     }
 
-    public openMdmMetricsBlade() {
-        const bladeInfo = {
-            detailBlade: 'MetricsBladeV2',
-            extension: 'Microsoft_Azure_Monitoring',
-            detailBladeInputs: {
-                id: this.currentSite.id
-            }
-        };
-
-        this._portalService.openBlade(bladeInfo, 'troubleshoot');
-    }
-
     public openMdmMetricsV3Blade(resourceUri?: string) {
         const bladeInfo = {
             detailBlade: 'MetricsBladeV3',

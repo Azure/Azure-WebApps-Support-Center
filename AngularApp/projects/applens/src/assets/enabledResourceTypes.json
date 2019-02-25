@@ -26,6 +26,14 @@
         },
         {
             "service": "ResourceService",
+            "resourceType": "Microsoft.ContainerService/managedClusters",
+            "templateFileName": "Detector_KubernetesService",
+            "imgSrc": "assets/img/Azure-KubernetesService-Logo.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "kubernetesservice"
+        },
+        {
+            "service": "ResourceService",
             "resourceType": "Microsoft.ApiManagement/service",
             "templateFileName": "Detector_ApiManagementService",
             "imgSrc": "assets/img/Azure-ApiManagement-Logo.png",

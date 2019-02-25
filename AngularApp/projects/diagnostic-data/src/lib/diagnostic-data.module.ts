@@ -53,9 +53,12 @@ import {
 } from './config/diagnostic-data-config';
 import { ClipboardService } from './services/clipboard.service';
 import { CommsService } from './services/comms.service';
+import { GuageGraphicComponent } from './components/guage-graphic/guage-graphic.component';
+import { GuageControlComponent } from './components/guage-control/guage-control.component';
 import { FeatureNavigationService } from './services/feature-navigation.service';
 import { AppInsightsTelemetryService } from './services/telemetry/appinsights-telemetry.service';
 import { KustoTelemetryService } from './services/telemetry/kusto-telemetry.service';
+
 
 @NgModule({
   imports: [
@@ -72,10 +75,11 @@ import { KustoTelemetryService } from './services/telemetry/kusto-telemetry.serv
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
     LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent,
-    DropdownComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent, FeedbackComponent,
-    CopyInsightDetailsComponent, MarkdownEditorComponent, CardSelectionComponent],
+    DropdownComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent, FeedbackComponent, 
+    CopyInsightDetailsComponent, MarkdownEditorComponent, CardSelectionComponent, GuageGraphicComponent, GuageControlComponent],
+
   exports: [FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
-    LoaderViewComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent],
+    LoaderViewComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent, GuageControlComponent],
 })
 export class DiagnosticDataModule {
   static forRoot(config: DiagnosticDataConfig = INTERNAL_PROD_CONFIGURATION): ModuleWithProviders {
