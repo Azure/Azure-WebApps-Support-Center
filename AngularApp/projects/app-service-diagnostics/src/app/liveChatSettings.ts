@@ -17,7 +17,9 @@ export class LiveChatSettings {
     public static HideForInternalSubscriptions: boolean = false;
 
     // List of Support Topics for which Live chat is Enabled
-    public static enabledSupportTopics: string[] = [
+    public static enabledSupportTopicsPerAzureService: any = {
+
+      "Azure Web App(Windows)": [
         '32542218',     //Availability and Performance/Web App Down
         '32457411',     //Availability and Performance/Web App Slow
         '32570954',     //Availability and Performance/Web App Restarted
@@ -32,7 +34,11 @@ export class LiveChatSettings {
         '32589276',     //How Do I/Backup and Restore
         '32589277',     //How Do I/Configure domains and certificates,
         '32589281'      //How Do I/IP Configuration
-    ];
+      ],
+      "Azure Web App(Linux)": [
+        '32542218',     //Availability and Performance/Web App Down
+      ]
+    };
 
     // This indicates the time after which Live Chat will pop up.
     public static InactivityTimeoutInMs: number = 5000;

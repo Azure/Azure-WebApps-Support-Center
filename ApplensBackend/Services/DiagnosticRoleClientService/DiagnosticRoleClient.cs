@@ -116,7 +116,7 @@ namespace AppLensV3
                 }
                 else
                 {
-                    path = path.Replace("/v4", string.Empty).Replace("v4", string.Empty);
+                    path = path.Replace("/v4", string.Empty).Replace("v4", string.Empty).Replace("v2", string.Empty);
                     
                     var requestMessage = new HttpRequestMessage(method.Trim().ToUpper() == "POST" ? HttpMethod.Post : HttpMethod.Get, path)
                     {

@@ -81,7 +81,7 @@ namespace AppLensV3
             {
                 return NotFound(details);
             }
-            
+
             return Ok(details);
         }
     }

@@ -1,5 +1,7 @@
 export const environment = {
   production: true,
   backendHost: '',
-  useApplensBackend: false
+  useApplensBackend: false,
+  authServiceToken: "",
+  authServiceResourceId: ""
 };

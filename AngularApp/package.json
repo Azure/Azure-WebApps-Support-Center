@@ -7,6 +7,7 @@
     "start": "ng serve",
     "applens": "ng serve applens --aot --optimization=false",
     "ssl": "ng serve app-service-diagnostics --aot --optimization=false --ssl --sslCert ./ssl/server.crt --sslKey ./ssl/server.key",
+    "ssl-local": "npm run ssl -- -c local",
     "asd": "concurrently -k \"npm run ssl\" \"npm run lib\"",
     "build-lib": "ng build diagnostic-data",
     "build-applens": "ng build applens --prod",

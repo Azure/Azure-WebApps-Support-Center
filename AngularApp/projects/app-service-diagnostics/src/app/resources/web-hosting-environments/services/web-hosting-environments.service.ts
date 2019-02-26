@@ -6,4 +6,8 @@ export class WebHostingEnvironmentsService extends ResourceService {
     public get searchSuffix(): string  {
         return 'App Service Environment';
     }
+
+    public get azureServiceName(): string {
+        return "App Service Environment";
+    }
 }

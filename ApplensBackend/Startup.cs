@@ -6,6 +6,10 @@ using System.IO;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using AppLensV3.Services;
+using System;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace AppLensV3
 {
@@ -29,7 +33,7 @@ namespace AppLensV3
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices (IServiceCollection services) {            
+        public void ConfigureServices (IServiceCollection services) {
 
             services.AddApplicationInsightsTelemetry(Configuration);
 
@@ -43,7 +47,7 @@ namespace AppLensV3
             services.AddSingleton<IOutageCommunicationService, OutageCommunicationService>();
             services.AddSingleton<ILocalDevelopmentClientService, LocalDevelopmentClientService>();
 
-            services.AddMvc ();
+            services.AddMvc();
 
             services.AddAuthentication(auth =>
             {
@@ -52,12 +56,17 @@ namespace AppLensV3
             .AddAzureADBearer(options => {
                 Configuration.Bind("AzureAd", options);
             });
+
+            if (Configuration["ServerMode"] == "internal")
+            {
+                services.AddTransient<IFilterProvider, LocalFilterProvider>();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure (IApplicationBuilder app, IHostingEnvironment env) {
-            
-            if (env.IsDevelopment ()) {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
+
+            if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
 
@@ -72,7 +81,7 @@ namespace AppLensV3
 
             app.UseAuthentication();
 
-            app.UseMvc ();
+            app.UseMvc();
 
             app.Use(async (context, next) =>
             {
@@ -88,6 +97,32 @@ namespace AppLensV3
 
             app.UseDefaultFiles ();
             app.UseStaticFiles ();
+        }
+    }
+
+    // Use this to skip Auth on local server
+    public class LocalFilterProvider: IFilterProvider
+    {
+        public int Order
+        {
+            get
+            {
+                return -1500;
+            }
+        }
+
+        public void OnProvidersExecuted(FilterProviderContext context)
+        {
+        }
+
+        public void OnProvidersExecuting(FilterProviderContext context)
+        {
+            // remove authorize filters
+            var authFilters = context.Results.Where(x =>  x.Descriptor.Filter.GetType() == typeof(AuthorizeFilter)).ToList();
+            foreach (var filter in authFilters)
+            {
+                context.Results.Remove(filter);
+            }
         }
     }
 }
