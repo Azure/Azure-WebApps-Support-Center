@@ -13,6 +13,7 @@ import { DynamicInsightComponent } from '../dynamic-insight/dynamic-insight.comp
 import { EmailComponent } from '../email/email.component';
 import { InsightsComponent } from '../insights/insights.component';
 import { MarkdownComponent } from '../markdown/markdown.component';
+import { GuageControlComponent } from '../guage-control/guage-control.component';
 import { TimeSeriesGraphComponent } from '../time-series-graph/time-series-graph.component';
 import {
     TimeSeriesInstanceGraphComponent
@@ -25,7 +26,7 @@ import { Moment } from 'moment';
   styleUrls: ['./dynamic-data.component.scss'],
   entryComponents: [TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent,
     InsightsComponent, TimeSeriesInstanceGraphComponent, DynamicInsightComponent, MarkdownComponent,
-    DetectorListComponent, DropdownComponent, CardSelectionComponent]
+    DetectorListComponent, DropdownComponent, CardSelectionComponent, GuageControlComponent]
 })
 export class DynamicDataComponent implements OnInit {
 
@@ -84,6 +85,8 @@ export class DynamicDataComponent implements OnInit {
         return DropdownComponent;
       case RenderingType.Cards:
         return CardSelectionComponent;
+      case RenderingType.Guage:
+        return GuageControlComponent;
       default:
         return null;
     }

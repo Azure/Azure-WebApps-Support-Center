@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Backend.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Backend
 {
@@ -33,7 +34,15 @@ namespace Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                options.CacheProfiles.Add("Default",
+                    new CacheProfile()
+                    {
+                        Location = ResponseCacheLocation.None,
+                        NoStore = true
+                    });
+            });
 
             //var config = new ChatConfiguration();
             var config = Configuration.GetSection("Chat").Get<ChatConfiguration>();

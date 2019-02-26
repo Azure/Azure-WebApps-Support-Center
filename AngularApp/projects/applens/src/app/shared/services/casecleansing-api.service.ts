@@ -22,10 +22,10 @@ export class CaseCleansingApiService {
 
 export class CaseSimple{
   incidentId :string;
-  time : Date;
+  time : String;
   status : String;
   assignedTo : String;
-  closedTime : Date;
+  closedTime : String;
   id : number;
   recommendationCount : number;
   title : string;

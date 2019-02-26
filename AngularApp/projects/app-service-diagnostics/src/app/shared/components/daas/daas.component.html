@@ -53,8 +53,21 @@
                     {{ operationStatus }}
                 </div>
 
-                <button [disabled]="sessionInProgress || operationInProgress || retrievingInstancesFailed" [hidden]="sessionCompleted"
-                    class="btn btn-primary" (click)="collectDiagnoserData()">Collect {{ diagnoserName }}</button>
+                <button [disabled]="getSelectedInstanceCount() === 0 || sessionInProgress || operationInProgress || retrievingInstancesFailed || showInstanceWarning" [hidden]="sessionCompleted"
+                    class="btn btn-primary" (click)="collectDiagnoserData(true)">Collect {{ diagnoserName }}</button>
+                    <div *ngIf="getSelectedInstanceCount() === 0" style="font-size: smaller;color: red;margin-top: 5px;margin-right: 20px;">* Choose at least one instance</div>
+            </div>
+            <div *ngIf="showInstanceWarning"  style="margin-top: 10px;padding: 15px;">
+                <div style="margin-bottom:10px"><strong>CAUTION:</strong> You are choosing to run diagnostics on more than 50% of the instances
+                    serving your app. If you already know a particular instance is misbehaving, you can choose to run
+                    Diagnostic only on that instance. Running diagnostic tools on all instances simultaneously can cause
+                    significant downtime for your web app. Are you sure you want to continue ?</div>
+                <button type="button" class="btn btn-default btn-xs" (click)="collectDiagnoserData(false)">
+                    Yes
+                </button>
+                <button type="button" class="btn btn-default btn-xs" (click)="showInstanceWarning = false">
+                    No
+                </button>
             </div>
 
             <div class="status-box" *ngIf="sessionInProgress">

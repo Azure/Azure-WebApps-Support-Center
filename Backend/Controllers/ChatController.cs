@@ -11,6 +11,7 @@ namespace Backend.Controllers
 {
     [Produces("application/json")]
     [Route("api/chat")]
+    [ResponseCache(CacheProfileName = "Default")]
     public class ChatController : Controller
     {
         IChatService ChatService;

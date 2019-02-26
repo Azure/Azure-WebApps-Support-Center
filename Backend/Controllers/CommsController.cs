@@ -13,6 +13,7 @@ namespace Backend.Controllers
 {
     [Produces("application/json")]
     [Route("api/comms")]
+    [ResponseCache(CacheProfileName = "Default")]
     public class CommsController : Controller
     {
         private readonly IOutageCommunicationService _outageService;
@@ -28,17 +29,19 @@ namespace Backend.Controllers
         [HttpOptions]
         public async Task<IActionResult> Invoke(string startTime = null, string endTime = null)
         {
-            if (!Request.Headers.ContainsKey("x-ms-resource") || !Request.Headers.TryGetValue("x-ms-resource", out StringValues val))
+            string resourceHeaderName = Request.Headers.Keys.FirstOrDefault(p => p.Equals("resource-uri", StringComparison.OrdinalIgnoreCase));
+            if (string.IsNullOrWhiteSpace(resourceHeaderName) || !Request.Headers.TryGetValue(resourceHeaderName, out StringValues val))
             {
-                return BadRequest("Missing x-ms-resource");
+                return BadRequest("Missing resource-uri");
             }
 
-            if(!Request.Headers.ContainsKey("Authorization") || !Request.Headers.TryGetValue("Authorization", out StringValues authHeader))
+            string authHeaderName = Request.Headers.Keys.FirstOrDefault(p => p.Equals("authorization", StringComparison.OrdinalIgnoreCase));
+            if(string.IsNullOrWhiteSpace(authHeaderName) || !Request.Headers.TryGetValue(authHeaderName, out StringValues authHeader))
             {
                 return BadRequest("Missing Authorization Header");
             }
 
-            string resource = val.First();
+            string resource = val.First().ToLower();
             Regex resourceRegEx = new Regex("/subscriptions/(.*)/resourcegroups/(.*)/providers/(.*)/(.*)/(.*)");
             Match match = resourceRegEx.Match(resource);
             if (!match.Success)

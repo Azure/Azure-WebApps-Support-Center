@@ -5,6 +5,7 @@ import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { RouterModule } from '@angular/router';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CasecleansingmodalComponent } from './casecleansingmodal/casecleansingmodal.component';
 
 export const CaseCleansingModuleRoutes : ModuleWithProviders = RouterModule.forChild([
   {
@@ -20,6 +21,6 @@ export const CaseCleansingModuleRoutes : ModuleWithProviders = RouterModule.forC
     ReactiveFormsModule,
     NgxSmartModalModule.forRoot()
   ],
-  declarations: [CaseCleansingComponent]
+  declarations: [CaseCleansingComponent, CasecleansingmodalComponent]
 })
 export class CasecleansingModule { }

@@ -28,6 +28,10 @@ export class ResourceService {
     return 'Azure';
   }
 
+  public get azureServiceName(): string {
+    return '';
+  }
+
   public get subscriptionId(): string {
     return this._subscription;
   }

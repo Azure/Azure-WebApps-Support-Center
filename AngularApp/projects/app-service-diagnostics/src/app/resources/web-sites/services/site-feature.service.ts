@@ -89,16 +89,6 @@ export class SiteFeatureService extends FeatureService {
         clickAction: this._createFeatureAction('restartanalysis', 'Availability and Performance', () => {
           this._router.navigateByUrl(`resource/${resourceId}/legacy/diagnostics/availability/apprestartanalysis`);
         })
-      },
-      {
-        id: 'tcpconnectionsanalysis',
-        name: 'TCP Connections',
-        category: 'Availability and Performance',
-        description: 'See TCP connection usage and analyze any socket related issues with your Web App',
-        featureType: FeatureTypes.Detector,
-        clickAction: this._createFeatureAction('tcpconnectionsanalysis', 'Availability and Performance', () => {
-          this._router.navigateByUrl(`resource/${resourceId}/legacy/diagnostics/availability/tcpconnectionsanalysis`);
-        })
       }
     ];
   }
@@ -324,22 +314,6 @@ export class SiteFeatureService extends FeatureService {
     ];
 
     this.supportTools = [
-      {
-        appType: AppType.WebApp,
-        platform: OperatingSystem.windows,
-        sku: Sku.NotDynamic,
-        stack: '',
-        item: {
-          id: 'metrics',
-          name: 'Metrics / Performance Counters',
-          category: 'Support Tools',
-          description: '',
-          featureType: FeatureTypes.Tool,
-          clickAction: this._createFeatureAction('metrics', 'Support Tools', () => {
-            this._portalActionService.openMdmMetricsBlade();
-          })
-        }
-      },
       {
         appType: AppType.WebApp,
         platform: OperatingSystem.windows,

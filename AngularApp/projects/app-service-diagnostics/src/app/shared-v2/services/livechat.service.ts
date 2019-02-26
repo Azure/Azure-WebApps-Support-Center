@@ -29,7 +29,7 @@ export class LiveChatService {
         this.authService.getStartupInfo().subscribe((startupInfo: StartupInfo) => {
             this._backendApi.get<ChatStatus>('api/chat/status').subscribe((status: ChatStatus) => {
                 this.chatStatus = status;
-                if (this.isChatApplicableForSupportTopic(startupInfo)) {
+                if (this.isChatApplicableForSupportTopic(startupInfo, this._resourceService.azureServiceName)) {
 
                     setTimeout(() => {
 
@@ -44,7 +44,8 @@ export class LiveChatService {
                             setTimeout(() => {
                                 // Raise an event for trigger message campaign
                                 window.fcWidget.track('supportCaseSubmission', {
-                                    supportTopicId: startupInfo.supportTopicId
+                                    supportTopicId: startupInfo.supportTopicId,
+                                    product: this._resourceService.azureServiceName
                                 });
 
                             }, 1000);
@@ -186,39 +187,20 @@ export class LiveChatService {
     }
 
     // This method indicate whether chat is applicable for support toic or not
-    private isChatApplicableForSupportTopic(startupInfo: StartupInfo): boolean {
+    private isChatApplicableForSupportTopic(startupInfo: StartupInfo, azureServiceName: string): boolean {
+
+        let enabledSupportTopicList = LiveChatSettings.enabledSupportTopicsPerAzureService[azureServiceName];
+        if(enabledSupportTopicList == null)
+        {
+            return false;
+        }
 
         let isApplicable: boolean = startupInfo
             && startupInfo.workflowId && startupInfo.workflowId !== ''
-            && startupInfo.supportTopicId && startupInfo.supportTopicId !== '' && (LiveChatSettings.enabledSupportTopics.indexOf(startupInfo.supportTopicId) >= 0);
+            && startupInfo.supportTopicId && startupInfo.supportTopicId !== '' && (enabledSupportTopicList.indexOf(startupInfo.supportTopicId) >= 0);
 
         isApplicable = isApplicable && this.chatStatus.isEnabled && this.chatStatus.isValidTime;
 
         return LiveChatSettings.GLOBAL_ON_SWITCH && isApplicable;
     }
-
-    // private isPublicHoliday(currentDate): boolean {
-
-    //     for (var iter = 0; iter < LiveChatSettings.PublicHolidays.length; iter++) {
-
-    //         var element = LiveChatSettings.PublicHolidays[iter];
-
-    //         if (element.date == currentDate.date() && ((element.month - 1) == currentDate.month()) && element.year == currentDate.year()) {
-    //             return true;
-    //         }
-    //     }
-
-    //     return false;
-    // }
-
-    // private isChatHoursOn(currentDateTime): boolean {
-    //     var isBusinessHour = (currentDateTime.day() >= LiveChatSettings.BuisnessStartDay && currentDateTime.day() <= LiveChatSettings.BuisnessEndDay)
-    //     && (currentDateTime.hour() >= LiveChatSettings.BusinessStartHourPST && currentDateTime.hour() < LiveChatSettings.BusinessEndHourPST);
-
-    //     var isWeeklyChatOffHour = (currentDateTime.day() === LiveChatSettings.WeeklyChatOffHours.Day) &&
-    //                             (currentDateTime.hour() > LiveChatSettings.WeeklyChatOffHours.StartHourPST || (currentDateTime.hour() === LiveChatSettings.WeeklyChatOffHours.StartHourPST && currentDateTime.minutes() >= LiveChatSettings.WeeklyChatOffHours.StartMinutesPST)) &&
-    //                             (currentDateTime.hour() < LiveChatSettings.WeeklyChatOffHours.EndHourPST || (currentDateTime.hour() === LiveChatSettings.WeeklyChatOffHours.EndHourPST && currentDateTime.minutes() <= LiveChatSettings.WeeklyChatOffHours.EndMinutePST));
-
-    //     return isBusinessHour && !isWeeklyChatOffHour;
-    // }
 }

@@ -27,11 +27,15 @@ export class WebSitesService extends ResourceService {
         return this.appType === AppType.WebApp ? this.platform === OperatingSystem.windows ? 'Azure Web App' : 'Azure Web App(Linux)' : 'Azure Function';
     }
 
+    public get azureServiceName(): string {
+        return this.appType === AppType.WebApp ? this.platform === OperatingSystem.windows ? 'Azure Web App(Windows)' : 'Azure Web App(Linux)' : 'Azure Function App';
+    }
+
     public get isApplicableForLiveChat(): boolean {
         return this.resource
         && (this.sku & Sku.Paid) > 0
         && (this.appType & AppType.WebApp) > 0
-        && (this.platform & OperatingSystem.windows) > 0;
+        && (this.platform & (OperatingSystem.windows | OperatingSystem.linux)) > 0;
     }
 
     protected makeWarmUpCalls() {

@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   backendHost: 'http://localhost:62302/',
-  useApplensBackend: true
+  useApplensBackend: false
 };
 
 
