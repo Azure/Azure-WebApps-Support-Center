@@ -88,12 +88,12 @@ export const DiagnosticToolsRoutes: Route[] = [
             cacheComponent: true
         }
     },
-    // AutoCollect Tool
+    // CPU Monitoring tool
     {
-        path: 'autocollect',
+        path: 'cpumonitoring',
         component: CpuMonitoringToolComponent,
         data: {
-            navigationTitle: ToolNames.AutoCollect,
+            navigationTitle: ToolNames.CpuMonitoring,
             cacheComponent: true
         }
     },

@@ -153,13 +153,13 @@ export class SiteFeatureService extends FeatureService {
         sku: Sku.NotDynamic,
         stack: '',
         item: {
-          id: ToolNames.AutoCollect,
-          name: ToolNames.AutoCollect,
+          id: ToolNames.CpuMonitoring,
+          name: ToolNames.CpuMonitoring,
           category: 'Proactive Tools',
           description: '',
           featureType: FeatureTypes.Tool,
           clickAction: this._createFeatureAction(ToolNames.AutoHealing, 'Diagnostic Tools', () => {
-            this._router.navigateByUrl(`resource${resourceId}/tools/autocollect`);
+            this._router.navigateByUrl(`resource${resourceId}/tools/cpumonitoring`);
           })
         }
       }

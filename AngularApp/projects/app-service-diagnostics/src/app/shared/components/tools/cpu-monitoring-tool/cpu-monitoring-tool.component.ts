@@ -12,7 +12,7 @@ export class CpuMonitoringToolComponent implements OnInit {
   siteToBeDiagnosed: SiteDaasInfo;
   scmPath: string;
 
-  title: string = 'Auto-Collect on High CPU';
+  title: string = 'Proactive CPU Monitoring';
   description: string = 'If your app is consuming high CPU, you can enable this feature to collect memory dumps when the app takes high CPU resources and decide whether to kill the process or not';
   allSessions: string = '../cpumonitoringsessions';
 
