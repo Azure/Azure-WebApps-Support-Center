@@ -92,10 +92,19 @@ export class DiagnosticApiService {
 
   public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true, additionalParams?: any): Observable<T> {
     let url: string = `${this.diagnosticApi}api/invoke`
-
-    let request = this._httpClient.post<T>(url, body, {
-      headers: this._getHeaders(path, method, internalView, additionalParams),
+    let request;
+    // Using observe: 'response' to return the entire HTTPResponse object rather than just JSON data.
+    if(additionalParams && additionalParams.getFullResponse) {      
+      request = this._httpClient.post<T>(url, body, {
+        headers: this._getHeaders(path, method, internalView, additionalParams),
+        observe: 'response',
+      });
+    } 
+    else {      
+      request = this._httpClient.post<T>(url, body, {
+      headers: this._getHeaders(path, method, internalView, additionalParams)
     });
+    }
 
     return useCache ? this._cacheService.get(this.getCacheKey(method, path), request, invalidateCache) : request;
   }

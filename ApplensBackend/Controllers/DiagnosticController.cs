@@ -6,6 +6,8 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using AppLensV3.Models;
+using System.Linq;
+
 namespace AppLensV3.Controllers
 {
     [Route("api")]
@@ -67,6 +69,10 @@ namespace AppLensV3.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var responseObject = JsonConvert.DeserializeObject(responseString);
+                    if(response.Headers.Contains("script-etag"))
+                    {
+                        Request.HttpContext.Response.Headers.Add("script-etag", response.Headers.GetValues("script-etag").First());
+                    }
                     return Ok(responseObject);
                 }
                 else if(response.StatusCode == HttpStatusCode.BadRequest)

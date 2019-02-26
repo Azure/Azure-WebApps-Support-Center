@@ -3,7 +3,7 @@ import { ReplaySubject } from 'rxjs';
 import { Component, Input, OnInit } from '@angular/core';
 import { DiagnosticData, RenderingType } from '../../models/detector';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
-import {CompilationProperties} from '../../models/compiler-properties';
+import {CompilationProperties} from '../../models/compilation-properties';
 export interface DataRenderer {
   diagnosticDataInput: DiagnosticData;
 }

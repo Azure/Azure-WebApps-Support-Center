@@ -18,7 +18,7 @@
   <!-- Display form buttons -->
       <div class="btn-toolbar">
         <ng-template ngFor let-formButton [ngForOf]="element.formButtons">
-          <button class="btn btn-primary" type="button" [id]=formButton.combinedId (click)="executeForm(element.formId, formButton.inputId)">
+          <button [ngClass]="getButtonClass(formButton.buttonStyle)" type="button" [id]=formButton.combinedId (click)="executeForm(element.formId, formButton.inputId)">
             {{formButton.inputLabel}}
           </button>
         </ng-template>

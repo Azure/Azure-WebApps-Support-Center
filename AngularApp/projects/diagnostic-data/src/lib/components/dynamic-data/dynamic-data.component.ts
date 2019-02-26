@@ -20,7 +20,7 @@ import {
 } from '../time-series-instance-graph/time-series-instance-graph.component';
 import { FormComponent } from '../form/form.component';
 import { Moment } from 'moment';
-import { CompilationProperties}  from '../../models/compiler-properties';
+import { CompilationProperties}  from '../../models/compilation-properties';
 @Component({
   selector: 'dynamic-data',
   templateUrl: './dynamic-data.component.html',

@@ -7,7 +7,7 @@ import { DetectorResponse, Rendering, RenderingType } from '../../models/detecto
 import { DetectorControlService } from '../../services/detector-control.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
-import { CompilationProperties} from '../../models/compiler-properties';
+import { CompilationProperties} from '../../models/compilation-properties';
 @Component({
   selector: 'detector-view',
   templateUrl: './detector-view.component.html',

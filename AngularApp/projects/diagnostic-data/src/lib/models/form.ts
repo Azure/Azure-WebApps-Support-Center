@@ -3,7 +3,7 @@ export class Form {
     formId: number;
     formTitle:string;
     formInputs: FormInput[] = [];
-    formButtons: FormInput[] = [];
+    formButtons: FormButton[] = [];
     errorMessage:string = '';
     formResponse: DetectorResponse;
     loadingFormResponse: boolean = false;
@@ -17,6 +17,7 @@ export class FormInput {
     inputValue: any;
     isRequired: boolean = false;
     displayValidation: boolean = false;
+
     constructor(combinedid: number, id: number, inputType: InputType, label: string, isRequired: boolean) {
         this.combinedId = combinedid;
         this.inputId = id;
@@ -26,10 +27,29 @@ export class FormInput {
     }
 }
 
+export class FormButton extends FormInput {
+    buttonStyle: ButtonStyles;
+    constructor(combinedid: number, id: number, inputType: InputType, label: string, isRequired: boolean, buttonStyle?: ButtonStyles) {
+        super(combinedid, id, inputType, label, isRequired);
+        this.buttonStyle = buttonStyle != undefined ? buttonStyle : ButtonStyles.Primary;       
+    }
+}
 export enum InputType {
     TextBox,
     Checkbox,
     RadioButton,
     DropDown,
     Button
+}
+
+export enum ButtonStyles {
+    Primary = 0,
+    Secondary,
+    Success,
+    Danger,
+    Warning,
+    Info,
+    Light,
+    Dark,
+    Link
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import {DiagnosticData, Rendering, DataTableResponseObject, DetectorResponse} from '../../models/detector';
-import {Form, FormInput, InputType} from '../../models/form';
+import {Form, FormInput, InputType, FormButton, ButtonStyles} from '../../models/form';
 import { DiagnosticService } from '../../services/diagnostic.service';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import {QueryResponse} from '../../models/compiler-response';
@@ -46,12 +46,13 @@ export class FormComponent extends DataRenderBaseComponent {
          let formInputs = data.rows[i][2];
          for(let ip =0; ip<formInputs.length; ip++) {
            if(formInputs[ip]["inputType"] === InputType.Button) {
-              this.detectorForms[i].formButtons.push(new FormInput(
+              this.detectorForms[i].formButtons.push(new FormButton(
                formInputs[ip]["combinedId"],
                formInputs[ip]["inputId"],
                formInputs[ip]["inputType"],
                formInputs[ip]["label"],
-               formInputs[ip]["isRequired"]
+               formInputs[ip]["isRequired"],
+               formInputs[ip]["buttonStyle"]
               ));
            } else {
              this.detectorForms[i].formInputs.push(new FormInput
@@ -91,17 +92,20 @@ export class FormComponent extends DataRenderBaseComponent {
             this.detectorControlService.endTimeString, '', '', {
               formQueryParams: queryParams,
               scriptETag: this.compilationPackage.scriptETag,
-              assemblyName: this.compilationPackage.assemblyName
+              assemblyName: this.compilationPackage.assemblyName,
+              getFullResponse: true
             })
-          .subscribe((response: QueryResponse<DetectorResponse>) => {
+          .subscribe((response:any) => {
             formToExecute.loadingFormResponse = false;
-            if(response != undefined) {
+            if(response.body != undefined) {
                // If the script has been compiled at the server, store those values in memory.
-              if(response.compilationOutput.isCompiled) {
-                this.compilationPackage.scriptETag = response.compilationOutput.scriptETag;
-                this.compilationPackage.assemblyName = response.compilationOutput.assemblyName;
+              if(response.body.compilationOutput.isCompiled) {
+                this.compilationPackage.assemblyName = response.body.compilationOutput.assemblyName;
               }
-              formToExecute.formResponse = response.invocationOutput;
+              if(response.headers.get('script-etag') != undefined) {                
+                this.compilationPackage.scriptETag = response.headers.get('script-etag');
+              }
+              formToExecute.formResponse = response.body.invocationOutput;
               formToExecute.errorMessage = '';
             }
           }, ((error: any) => {
@@ -136,5 +140,30 @@ export class FormComponent extends DataRenderBaseComponent {
 
     inputChanged(formInput: FormInput) {
       formInput.displayValidation = false;
+    }
+
+    getButtonClass(buttonStyle: ButtonStyles): string {
+      switch(buttonStyle) {
+          case ButtonStyles.Primary:
+          return "btn btn-primary";
+          case ButtonStyles.Secondary:
+          return "btn btn-secondary";
+          case ButtonStyles.Success:
+          return "btn btn-success";
+          case ButtonStyles.Danger:
+          return "btn btn-danger";
+          case ButtonStyles.Warning:
+          return "btn btn-warning";
+          case ButtonStyles.Info:
+          return "btn btn-info";
+          case ButtonStyles.Light:
+          return "btn btn-light";
+          case ButtonStyles.Dark:
+          return "btn btn-dark";
+          case ButtonStyles.Link:
+          return "btn btn-link";
+          default:
+          return "btn btn-primary";
+      }
     }
 }

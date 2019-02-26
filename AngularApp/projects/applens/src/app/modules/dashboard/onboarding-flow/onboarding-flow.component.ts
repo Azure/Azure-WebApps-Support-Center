@@ -235,11 +235,11 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.diagnosticApiService.getCompilerResponse(body, isSystemInvoker, this.detectorId, this._detectorControlService.startTimeString, 
         this._detectorControlService.endTimeString, this.dataSource, this.timeRange, {
           scriptETag: this.compilationPackage.scriptETag,
-          assemblyName: this.compilationPackage.assemblyName
+          assemblyName: this.compilationPackage.assemblyName,
+          getFullResponse: true
         })
-      .subscribe((response: QueryResponse<DetectorResponse>) => {
-
-        this.queryResponse = response;
+      .subscribe((response: any) => {
+        this.queryResponse = response.body;
         this.runButtonDisabled = false;
         this.runButtonText = "Run";
         this.runButtonIcon = "fa fa-play";
@@ -250,8 +250,10 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
         if(this.queryResponse.compilationOutput.isCompiled) {
           this.compilationPackage.assemblyBytes = this.queryResponse.compilationOutput.assemblyBytes;
           this.compilationPackage.pdbBytes = this.queryResponse.compilationOutput.pdbBytes;
-          this.compilationPackage.scriptETag = this.queryResponse.compilationOutput.scriptETag;
           this.compilationPackage.assemblyName = this.queryResponse.compilationOutput.assemblyName;
+        }
+        if(response.headers.get('script-etag') != undefined)  {         
+          this.compilationPackage.scriptETag = response.headers.get('script-etag');
         }
         if (this.queryResponse.compilationOutput.compilationSucceeded === true) {
           this.publishButtonDisabled = false;
