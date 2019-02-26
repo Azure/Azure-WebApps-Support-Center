@@ -16,7 +16,7 @@ export class DetectorContainerComponent implements OnInit {
   error: any;
   hideDetectorControl: boolean = false;
 
-  private _detector: string;
+   _detector: string;
 
   @Input() _detectorSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 

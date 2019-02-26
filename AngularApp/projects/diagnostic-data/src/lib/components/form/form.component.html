@@ -1,7 +1,7 @@
 <ng-template ngFor let-element [ngForOf]="detectorForms">
  <div class="form-container">
 
-  <h3>{{element.formTitle}}</h3>
+  <h3 class="form-title">{{element.formTitle}}</h3>
   <!-- Display form inputs-->
   <ng-template ngFor let-formInput [ngForOf]="element.formInputs">
     <div class="form-group row" *ngIf="isText(formInput.inputType)">
