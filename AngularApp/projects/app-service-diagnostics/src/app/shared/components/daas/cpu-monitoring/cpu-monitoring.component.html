@@ -1,232 +1,27 @@
-<div class="wizardcontainer">
-  <daas-validator [siteToBeDiagnosed]="siteToBeDiagnosed" diagnoserName="CPU Monitoring"
-    (DaasValidated)="onDaasValidated($event)"></daas-validator>
+<daas-validator [siteToBeDiagnosed]="siteToBeDiagnosed" diagnoserName="CPU Monitoring"
+  (DaasValidated)="onDaasValidated($event)"></daas-validator>
 
-  <div *ngIf="daasValidated">
-    <div class="col" *ngIf="operationInProgress">
-      <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-      Checking active monitoring session...
-    </div>
-    <div class="action-box" *ngIf="siteToBeDiagnosed">
-      <div>
-        <div *ngIf="!operationInProgress">
-          <div class="row">
-            <div class="col-sm-12">
-              <toggle-button ToggleText="Monitoring Enabled" [selected]="monitoringEnabled"
-                (selectedChange)="monitoringEnabled = $event;checkForChanges()">
-              </toggle-button>
-            </div>
-          </div>
-          <div *ngIf="editMode && monitoringEnabled" style="margin-top:15px">
+<div *ngIf="daasValidated">
+  <collapsible-list [title]="titles[0]" [collapsed]="false">
+    <collapsible-list-item>
+      <cpu-monitoring-configuration (monitoringInProgress)="updateMonitoringStatus($event)"></cpu-monitoring-configuration>
+    </collapsible-list-item>
+  </collapsible-list>
+  <collapsible-list [title]="titles[1]" [collapsed]="true">
+    <collapsible-list-item>
+      <cpu-monitoring-activity [siteToBeDiagnosed]="siteToBeDiagnosed" 
+      [monitoringInProgress]="monitoringInProgress" 
+      [scmPath]="scmPath"
+      (activeSessionChanged) = "updateActiveSession($event)"
+      ></cpu-monitoring-activity>
+    </collapsible-list-item>
+  </collapsible-list>
+  <collapsible-list [title]="titles[2]" [collapsed]="true">
+    <collapsible-list-item>
+     <cpu-monitoring-sessions [activeSession]="activeSession"></cpu-monitoring-sessions>
+    </collapsible-list-item>
+  </collapsible-list>
 
-            <div class="row input-row">
-              <div class="col-sm-6">
-                <div class="row">
-                  <div class="col-sm-1">
-                    <i style="font-size: xx-large;" class="fa fa-bar-chart" aria-hidden="true"></i>
-                  </div>
-                  <div class="col-sm-11">
-                    <div class="label-header">CPU threshold</div>
-                    <div class="label-description">CPU consumption by site's process or any child process of the site's
-                      process</div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <number-picker [min]="75" [max]="100" [step]="5" [(value)]="monitoringSession.CpuThreshold"
-                  additionalText="&#37;" (valueChange)="updateRuleSummary()"></number-picker>
-              </div>
-            </div>
-            <div class="row input-row">
-              <div class="col-sm-6">
-                <div class="row">
-                  <div class="col-sm-1">
-                    <i style="font-size: x-large;" class="fa fa-tachometer" aria-hidden="true"></i>
-                  </div>
-                  <div class="col-sm-11">
-                    <div class="label-header">Monitor frequency</div>
-                    <div class="label-description">The frequency with which CPU usage is calculated</div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <number-picker [min]="15" [max]="60" [step]="15" [(value)]="monitoringSession.MonitorDuration"
-                  additionalText="seconds" (valueChange)="updateRuleSummary()"></number-picker>
-              </div>
-            </div>
-
-            <div class="row input-row">
-              <div class="col-sm-6">
-                <div class="row">
-                  <div class="col-sm-1">
-                    <i style="font-size: x-large;" class="fa fa-clock-o" aria-hidden="true"></i>
-                  </div>
-                  <div class="col-sm-11">
-                    <div class="label-header">Threshold seconds</div>
-                    <div class="label-description">CPU consumption should be above threshold for this much duration
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <number-picker [min]="30" [max]="180" [step]="30" [(value)]="monitoringSession.ThresholdSeconds"
-                  additionalText="seconds" (valueChange)="updateRuleSummary()"></number-picker>
-              </div>
-            </div>
-            <div class="row input-row">
-              <div class="col-sm-6">
-                <div class="row">
-                  <div class="col-sm-1">
-                    <i style="font-size: x-large;" class="fa fa-files-o" aria-hidden="true"></i>
-                  </div>
-                  <div class="col-sm-11">
-                    <div class="label-header">Maximum actions</div>
-                    <div class="label-description">The maximum number of memory dumps to be collected by this rule
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <number-picker [min]="1" [max]="5" [step]="1" [(value)]="monitoringSession.MaxActions"
-                  (valueChange)="updateRuleSummary()"></number-picker>
-              </div>
-            </div>
-            <div class="row input-row">
-              <div class="col-sm-6">
-                <div class="row">
-                  <div class="col-sm-1">
-                    <i style="font-size: x-large;" class="fa fa-hourglass-half" aria-hidden="true"></i>
-                  </div>
-                  <div class="col-sm-11">
-                    <div class="label-header">Maximum duration</div>
-                    <div class="label-description">After how long the rule should be deactivated even if the condition
-                      is
-                      not met
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <!-- <ng5-slider [(value)]="monitoringSession.MaximumNumberOfHours" [options]="sliderOptions"></ng5-slider> -->
-                <number-picker [min]="1" [max]="168" [step]="1" [(value)]="monitoringSession.MaximumNumberOfHours"
-                  additionalText="hours" (valueChange)="updateRuleSummary()"></number-picker>
-              </div>
-            </div>
-            <div class="row input-row">
-              <div class="col-sm-6">
-                <div class="row">
-                  <div class="col-sm-1">
-                    <i style="font-size: x-large;" class="fa fa-bolt" aria-hidden="true"></i>
-                  </div>
-                  <div class="col-sm-11">
-                    <div class="label-header">Configure Action</div>
-                    <div class="label-description">Choose an action that you want to take when the above condition is
-                      met
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <ul style="list-style-type: none;padding:0">
-                  <li *ngFor="let md of sessionModeTypes">
-                    <input type="radio" (click)="selectMode(md)" name="optradio" [checked]="md === mode"
-                      [value]="md">{{ md }}
-                  </li>
-                </ul>
-              </div>
-              <!-- <div class="col-sm-6">
-                  <div class="mode-explanation" [innerHTML]="modeDescription"></div>
-                </div> -->
-            </div>
-
-            <div class="row">
-              <div class="col-sm-9 summary-box" [innerHTML]="ruleSummary">
-              </div>
-            </div>
-          </div>
-
-          <div class="row" *ngIf="!editMode  && monitoringEnabled">
-            <div class="col-sm-10 summary-box" [innerHTML]="ruleSummary">
-            </div>
-          </div>
-
-          <div style="margin-top:10px">
-            <button [disabled]="savingSettings || !editMode " class="btn btn-primary btn-sm"
-              (click)="saveCpuMonitoring()">Save</button>
-            <button [disabled]="savingSettings" *ngIf="!editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
-              (click)="editMode=true">Edit</button>
-            <button [disabled]="savingSettings" *ngIf="editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
-              (click)="cancelChanges()">Cancel</button>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top:10px" class="col" *ngIf="savingSettings">
-        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-        Saving monitoring settings...
-      </div>
-
-    </div>
-    <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="error">
-      <strong>Error</strong> - {{ error.message }}
-    </div>
-
-  </div>
 </div>
 
-<div style="margin-top: 15px" *ngIf="!editMode  && monitoringEnabled">
-
-  <div
-    *ngIf="monitoringSession == null || monitoringSession.FilesCollected ==null || monitoringSession.FilesCollected === 0">
-    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-    Monitong session submitted, logs from all instances will populate shortly...
-  </div>
-  <table *ngIf="monitoringSession != null" class="table table-bordered report-table">
-    <tr>
-      <td>
-        Monitoring session started at: {{ formatDate(monitoringSession.StartDate)}}
-      </td>
-    </tr>
-    <tr *ngIf="monitoringSession.Mode !== 'Kill'">
-      <td>
-        <div *ngIf="monitoringSession.FilesCollected.length === 0">
-          No logs collected so far.
-        </div>
-        <ul *ngIf="monitoringSession.FilesCollected.length > 0" style="list-style-type:none">
-          <li *ngFor="let file of monitoringSession.FilesCollected">
-            <a (click)="openReport(file.RelativePath)">{{ getfileNameFromPath(file.RelativePath)}}</a>
-          </li>
-        </ul>
-      </td>
-    </tr>
-    <tr *ngIf="monitoringSession.Mode === 'CollectKillAndAnalyze'">
-      <td>
-        <div *ngIf="monitoringSession.AnalysisStatus === 'NotStarted'">
-          <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-          Analysis will start when session is complete...
-        </div>
-
-        <div
-          *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted' && monitoringSession.AnalysisStatus !== 'Completed'">
-          {{ monitoringSession.AnalysisStatus }}
-        </div>
-      </td>
-    </tr>
-    <tr *ngIf="monitoringLogs.length > 0">
-      <td>
-        <div class="monitoring-logs">
-          <ul style="list-style-type: none;">
-            <li *ngFor="let instance of monitoringLogs">
-              <strong class="highlight-blue">
-                {{ instance.Instance }}
-              </strong>
-              <div style="margin-top: 5px;">
-                <pre>{{ instance.Logs}}</pre>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </td>
-    </tr>
-  </table>
-</div>
+ 

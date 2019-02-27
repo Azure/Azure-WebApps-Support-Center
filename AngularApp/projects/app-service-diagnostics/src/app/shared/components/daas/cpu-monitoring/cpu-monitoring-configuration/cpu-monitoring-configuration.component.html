@@ -1,0 +1,191 @@
+<div class="container">
+
+  <div class="col" *ngIf="operationInProgress">
+    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+    Checking active monitoring session...
+  </div>
+
+  <div *ngIf="!operationInProgress && siteToBeDiagnosed">
+    <div class="row">
+      <div class="col-sm-12">
+        <toggle-button ToggleText="Monitoring Enabled" [selected]="monitoringEnabled"
+          (selectedChange)="monitoringEnabled = $event;checkForChanges()">
+        </toggle-button>
+      </div>
+    </div>
+    <div *ngIf="editMode && monitoringEnabled" style="margin-top: 30px">
+      <div class="row input-row">
+        <div class="col-sm-6">
+          <div class="media">
+            <div class="media-left media-middle">
+              <i class="media-object fa fa-line-chart tile-icon"></i>
+            </div>
+            <div class="media-body">
+              <div class="media-heading label-header">CPU Threshold</div>
+              This is the CPU threshold at which the rule will be triggered
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="custom-slider">
+            <ng5-slider [(value)]="monitoringSession.CpuThreshold" [options]="sliderOptionsCpuThreshold"
+              (userChange)="updateRuleSummary()">
+            </ng5-slider>
+          </div>
+          <!-- <number-picker [min]="75" [max]="95" [step]="5" [(value)]="monitoringSession.CpuThreshold"
+                  additionalText="&#37; (75&#37; to 95&#37;)" (valueChange)="updateRuleSummary()"></number-picker> -->
+        </div>
+      </div>
+      <div class="row input-row">
+        <div class="col-sm-6">
+          <div class="media">
+            <div class="media-left media-middle">
+              <i class="media-object fa fa-clock-o tile-icon"></i>
+            </div>
+            <div class="media-body">
+              <div class="media-heading label-header">Threshold Seconds</div>
+              For the rule to trigger, CPU should exceed {{monitoringSession.CpuThreshold}}% for these many seconds
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="custom-slider">
+            <ng5-slider [(value)]="monitoringSession.ThresholdSeconds" [options]="sliderOptionsThresholdSeconds"
+              (userChange)="updateRuleSummary()">
+            </ng5-slider>
+          </div>
+          <!-- <number-picker [min]="30" [max]="180" [step]="30" [(value)]="monitoringSession.ThresholdSeconds"
+                    additionalText="seconds (30 - 180)" (valueChange)="updateRuleSummary()"></number-picker> -->
+
+        </div>
+      </div>
+
+      <div class="row input-row">
+        <div class="col-sm-6">
+          <div class="media">
+            <div class="media-left media-middle">
+              <i class="media-object fa fa-tachometer tile-icon"></i>
+            </div>
+            <div class="media-body">
+              <div class="media-heading label-header">Monitor Frequency</div>
+              This is how frequently the rule will be evaluated
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="custom-slider">
+            <ng5-slider [(value)]="monitoringSession.MonitorDuration" [options]="sliderOptionsMonitorDuration"
+              (userChange)="updateRuleSummary()">
+            </ng5-slider>
+          </div>
+          <!-- <number-picker [min]="15" [max]="60" [step]="15" [(value)]="monitoringSession.MonitorDuration"
+                  additionalText="seconds (15 - 60)" (valueChange)="updateRuleSummary()"></number-picker> -->
+        </div>
+      </div>
+
+      <div class="row input-row">
+        <div class="col-sm-6">
+          <div class="media">
+            <div class="media-left media-middle">
+              <i class="media-object fa fa-files-o tile-icon"></i>
+            </div>
+            <div class="media-body">
+              <div class="media-heading label-header">Maximum Actions</div>
+              The maximum number of memory dumps to be collected by this rule
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="custom-slider">
+            <ng5-slider [(value)]="monitoringSession.MaxActions" [options]="sliderOptionsMaxActions"
+              (userChange)="updateRuleSummary()">
+            </ng5-slider>
+          </div>
+          <!-- <number-picker [min]="1" [max]="5" [step]="1" [(value)]="monitoringSession.MaxActions"
+                  additionalText="(1 - 5)" (valueChange)="updateRuleSummary()"></number-picker> -->
+        </div>
+      </div>
+
+      <div class="row input-row">
+        <div class="col-sm-6">
+          <div class="media">
+            <div class="media-left media-middle">
+              <i class="media-object fa fa-hourglass-half tile-icon"></i>
+            </div>
+            <div class="media-body">
+              <div class="media-heading label-header">Maximum Duration</div>
+              The rule will be deactivated after this duration even if no data is collected
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="custom-slider">
+            <ng5-slider [(value)]="monitoringSession.MaximumNumberOfHours" [options]="sliderOptionsMaxDuration"
+              (userChange)="updateRuleSummary()">
+            </ng5-slider>
+          </div>
+          <!-- <number-picker [min]="1" [max]="168" [step]="1" [(value)]="monitoringSession.MaximumNumberOfHours"
+                  additionalText="hours" (valueChange)="updateRuleSummary()"></number-picker> -->
+        </div>
+      </div>
+
+      <div class="row input-row">
+        <div class="col-sm-6">
+          <div class="media">
+            <div class="media-left media-middle">
+              <i class="media-object fa fa-bolt tile-icon"></i>
+            </div>
+            <div class="media-body">
+              <div class="media-heading label-header">Configure Action</div>
+              Choose an action that you want to take when the above condition is met
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <ul style="list-style-type: none;padding:0">
+            <li *ngFor="let md of sessionModeTypes">
+              <div class="radio">
+                <input [id]="md" type="radio" (click)="selectMode(md)" name="radio" [checked]="md === mode"
+                  [value]="md">
+                <label [for]="md" class="radio-label">{{ md }}</label>
+              </div>
+
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="summary-title">Rule Configuration Summary</div>
+        <div class="col-sm-9 summary-box" [innerHTML]="ruleSummary">
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="!editMode  && monitoringEnabled">
+      <div class="col-sm-10 summary-box" [innerHTML]="ruleSummary">
+      </div>
+    </div>
+
+    <div class="row" style="margin-top: 10px">
+      <div class="col-sm-6">
+        <button [disabled]="savingSettings || !editMode " class="btn btn-primary btn-sm"
+          (click)="saveCpuMonitoring()">Save</button>
+        <button [disabled]="savingSettings" *ngIf="!editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
+          (click)="editMode=true">Edit</button>
+        <button [disabled]="savingSettings" *ngIf="editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
+          (click)="cancelChanges()">Cancel</button>
+      </div>
+    </div>
+
+    <div style="margin-top:10px" class="col" *ngIf="savingSettings">
+      <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+      Saving monitoring settings...
+    </div>
+
+    <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="error">
+      <strong>Error</strong> - {{ error.message }}
+    </div>
+
+  </div>
+</div>

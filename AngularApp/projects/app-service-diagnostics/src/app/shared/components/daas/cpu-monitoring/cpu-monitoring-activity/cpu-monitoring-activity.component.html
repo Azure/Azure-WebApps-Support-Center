@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="row" style="margin-top: 15px" *ngIf="monitoringEnabled">
+    <div class="col-sm-10">
+      <div *ngIf="monitoringLogs.length === 0 && !sessionCompleted">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Monitoring session in progress, logs from all instances will populate shortly...
+      </div>
+
+      <div *ngIf="monitoringLogs.length > 0 && !sessionCompleted" class="monitoring-logs">
+        <ul style="list-style-type: none;padding:0">
+          <li *ngFor="let instance of monitoringLogs">
+            <strong class="highlight-blue">
+              {{ instance.Instance }}
+            </strong>
+            <div style="margin-top: 5px;">
+              <pre>{{ instance.Logs}}</pre>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!monitoringEnabled" class="row">
+    <div class="col-sm-10">
+      No monitoring session in progress. When CPU monitoring is enabled, detailed monitoring activity will
+      be displayed here!
+    </div>
+  </div>
+</div>

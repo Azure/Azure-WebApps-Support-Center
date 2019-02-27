@@ -1,11 +1,8 @@
 <div class="container">
   <div class="header1">{{ title }}</div>
-  <p>{{ description }}</p>
-
-  <!-- <div>
-      <a [routerLink]="allSessions"><button class="btn btn-primary btn-sm">View exisiting sessions</button></a> 
-  </div> -->
-
-  <cpu-monitoring [siteToBeDiagnosed]="siteToBeDiagnosed" [scmPath]="scmPath"></cpu-monitoring>
-  
+  <span>{{ description }}</span>
+  <div style="margin-top:10px">
+      <cpu-monitoring [siteToBeDiagnosed]="siteToBeDiagnosed" [scmPath]="scmPath"></cpu-monitoring>
+  </div>  
 </div>
+

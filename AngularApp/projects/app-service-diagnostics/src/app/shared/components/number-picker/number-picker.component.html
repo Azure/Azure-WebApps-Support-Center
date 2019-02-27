@@ -3,7 +3,7 @@
     <div style="display: table-row">
       <div style="display: table-cell;" class="input-stepper">
         <button (click)="decrement()" class="minus" [disabled]="value === min"><i class="fa fa-minus"></i></button>
-        <input type="text" [value]="value" />
+        <input type="text" [value]="value" disabled="true" />
         <button (click)="increment()" class="plus" [disabled]="value === max"><i class="fa fa-plus"></i></button>
       </div>
       <div style="display: table-cell;">
