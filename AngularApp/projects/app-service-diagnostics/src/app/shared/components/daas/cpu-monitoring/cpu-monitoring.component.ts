@@ -17,7 +17,7 @@ export class CpuMonitoringComponent implements OnInit {
   monitoringInProgress:boolean  = false;
   activeSession:MonitoringSession;
 
-  titles:string[] = ['1. Configure CPU Monitoring Rule','2. View CPU Monitoring Rule Activity', '3. Check CPU Monitoring Session Data'];
+  titles:string[] = ['1. Configure CPU Monitoring rule','2. Check CPU Monitoring rule activity', '3. View and download monitoring data and analysis reports'];
   constructor(private _siteService: SiteService) {
 
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {

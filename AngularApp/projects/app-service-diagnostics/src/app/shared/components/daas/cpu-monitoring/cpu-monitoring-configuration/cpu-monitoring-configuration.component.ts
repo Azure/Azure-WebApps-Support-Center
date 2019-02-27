@@ -22,17 +22,9 @@ export class CpuMonitoringConfigurationComponent implements OnInit {
   operationInProgress: boolean = false;
   mode: SessionMode;
   ruleSummary: string = "";
-  modeDescription: string = "";
+  error: any;
 
-  descStart: string = "In this mode if site's process or child processes of the site's process consume CPU greater than CPU threshold configured for the configured duration";
-  descMemoryDump: string = "Memory dump is collected via procdump tool and we check CPU usage every <b>Monitor Duration</b> seconds. The maximum number of memory dumps collected is controlled by the <b>Maximum number of memory dumps to collect</b> setting.";
-  descKillMessage: string = "Kindly note this is <b>kill</b> of the process vs. a graceful termination of the process.";
-
-  sessionModeTypes: string[] = ["Kill", "Collect", "CollectAndKill", "CollectKillAndAnalyze"];
-  modeDescriptions = [{ Mode: SessionMode.Collect, Description: `${this.descStart}, a memory dump is collected. ${this.descMemoryDump}` },
-  { Mode: SessionMode.CollectAndKill, Description: `${this.descStart}, a memory dump is collected and the process consuming high CPU is killed. ${this.descMemoryDump} ${this.descKillMessage}` },
-  { Mode: SessionMode.CollectKillAndAnalyze, Description: `${this.descStart}, a memory dump is collected and the process consuming high CPU is killed.   ${this.descMemoryDump} ${this.descKillMessage} Once all the dumps are collected, the tool also analyzes the memory dumps using the Debug Diagnostic tool and presents a dump analysis report.` },
-  { Mode: SessionMode.Kill, Description: `${this.descStart}, the process is killed. ${this.descKillMessage} In this mode, the 'Maximum Number of Memory Dumps collected' setting is not honored and the monitoring stops automatically after 'Maximum number of Days' is reached.` }];
+  sessionModeTypes: string[] = ["Kill","Collect", "CollectAndKill", "CollectKillAndAnalyze"];
 
   sliderOptionsCpuThreshold: Options = {
     floor: 75, ceil: 95, step: 5, showTicks: true,
@@ -113,12 +105,6 @@ export class CpuMonitoringConfigurationComponent implements OnInit {
           this.monitoringSession = runningSession.Session;
           this.originalMonitoringSession = runningSession.Session;
           this.monitoringInProgress.emit(true);
-          // this.monitoringLogs = runningSession.MonitoringLogs;
-
-          // this.subscription = interval(15000).subscribe(res => {
-          //   this.getActiveSessionDetails();
-          // });
-
         }
         else {
           this.monitoringInProgress.emit(false);
@@ -128,7 +114,6 @@ export class CpuMonitoringConfigurationComponent implements OnInit {
 
   selectMode(md: string) {
     this.mode = SessionMode[md];
-    this.modeDescription = this.modeDescriptions.find(x => x.Mode === this.mode).Description;
     if (this.monitoringSession != null) {
       this.monitoringSession.Mode = this.mode;
       this.updateRuleSummary();
@@ -164,9 +149,7 @@ export class CpuMonitoringConfigurationComponent implements OnInit {
     this.savingSettings = true;
     this._daasService.stopMonitoringSession(this.siteToBeDiagnosed).subscribe(
       resp => {
-
         if (this.monitoringEnabled) {
-
           let newSession: MonitoringSession = new MonitoringSession();
           newSession.MaxActions = this.monitoringSession.MaxActions;
           newSession.Mode = this.monitoringSession.Mode;
@@ -183,6 +166,11 @@ export class CpuMonitoringConfigurationComponent implements OnInit {
               this.originalMonitoringSession = newSession;
               this.monitoringEnabled = true;
               this.monitoringInProgress.emit(true);
+            }, error => {
+              this.savingSettings = false;
+              this.error = error;
+              this.monitoringEnabled = false;
+              this.monitoringInProgress.emit(false);
             });
 
         }
@@ -191,6 +179,9 @@ export class CpuMonitoringConfigurationComponent implements OnInit {
           this.editMode = false;
           this.originalMonitoringSession = null;
         }
+      }, error => {
+        this.savingSettings = false;
+        this.error = error;
       });
   }
 

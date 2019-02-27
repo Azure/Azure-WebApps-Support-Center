@@ -1,11 +1,11 @@
-<div class="container">
+<div class="container" style="margin-bottom: 20px">
 
   <div class="col" *ngIf="operationInProgress">
     <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
     Checking active monitoring session...
   </div>
 
-  <div *ngIf="!operationInProgress && siteToBeDiagnosed">
+  <div *ngIf="!operationInProgress && siteToBeDiagnosed" style="margin-top: 10px">
     <div class="row">
       <div class="col-sm-12">
         <toggle-button ToggleText="Monitoring Enabled" [selected]="monitoringEnabled"
@@ -13,7 +13,7 @@
         </toggle-button>
       </div>
     </div>
-    <div *ngIf="editMode && monitoringEnabled" style="margin-top: 30px">
+    <div *ngIf="monitoringEnabled" style="margin-top: 30px">
       <div class="row input-row">
         <div class="col-sm-6">
           <div class="media">
@@ -26,14 +26,13 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-3">
-          <div class="custom-slider">
+        <div class="col-sm-4">
+          <div *ngIf="editMode" class="custom-slider">
             <ng5-slider [(value)]="monitoringSession.CpuThreshold" [options]="sliderOptionsCpuThreshold"
               (userChange)="updateRuleSummary()">
             </ng5-slider>
           </div>
-          <!-- <number-picker [min]="75" [max]="95" [step]="5" [(value)]="monitoringSession.CpuThreshold"
-                  additionalText="&#37; (75&#37; to 95&#37;)" (valueChange)="updateRuleSummary()"></number-picker> -->
+          <div *ngIf="!editMode" class="edit-mode">{{ monitoringSession.CpuThreshold }}%</div>
         </div>
       </div>
       <div class="row input-row">
@@ -48,15 +47,13 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-3">
-          <div class="custom-slider">
+        <div class="col-sm-4">
+          <div *ngIf="editMode" class="custom-slider">
             <ng5-slider [(value)]="monitoringSession.ThresholdSeconds" [options]="sliderOptionsThresholdSeconds"
               (userChange)="updateRuleSummary()">
             </ng5-slider>
           </div>
-          <!-- <number-picker [min]="30" [max]="180" [step]="30" [(value)]="monitoringSession.ThresholdSeconds"
-                    additionalText="seconds (30 - 180)" (valueChange)="updateRuleSummary()"></number-picker> -->
-
+          <div *ngIf="!editMode" class="edit-mode">{{ monitoringSession.ThresholdSeconds }} seconds</div>
         </div>
       </div>
 
@@ -72,60 +69,13 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-3">
-          <div class="custom-slider">
+        <div class="col-sm-4">
+          <div *ngIf="editMode" class="custom-slider">
             <ng5-slider [(value)]="monitoringSession.MonitorDuration" [options]="sliderOptionsMonitorDuration"
               (userChange)="updateRuleSummary()">
             </ng5-slider>
           </div>
-          <!-- <number-picker [min]="15" [max]="60" [step]="15" [(value)]="monitoringSession.MonitorDuration"
-                  additionalText="seconds (15 - 60)" (valueChange)="updateRuleSummary()"></number-picker> -->
-        </div>
-      </div>
-
-      <div class="row input-row">
-        <div class="col-sm-6">
-          <div class="media">
-            <div class="media-left media-middle">
-              <i class="media-object fa fa-files-o tile-icon"></i>
-            </div>
-            <div class="media-body">
-              <div class="media-heading label-header">Maximum Actions</div>
-              The maximum number of memory dumps to be collected by this rule
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="custom-slider">
-            <ng5-slider [(value)]="monitoringSession.MaxActions" [options]="sliderOptionsMaxActions"
-              (userChange)="updateRuleSummary()">
-            </ng5-slider>
-          </div>
-          <!-- <number-picker [min]="1" [max]="5" [step]="1" [(value)]="monitoringSession.MaxActions"
-                  additionalText="(1 - 5)" (valueChange)="updateRuleSummary()"></number-picker> -->
-        </div>
-      </div>
-
-      <div class="row input-row">
-        <div class="col-sm-6">
-          <div class="media">
-            <div class="media-left media-middle">
-              <i class="media-object fa fa-hourglass-half tile-icon"></i>
-            </div>
-            <div class="media-body">
-              <div class="media-heading label-header">Maximum Duration</div>
-              The rule will be deactivated after this duration even if no data is collected
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="custom-slider">
-            <ng5-slider [(value)]="monitoringSession.MaximumNumberOfHours" [options]="sliderOptionsMaxDuration"
-              (userChange)="updateRuleSummary()">
-            </ng5-slider>
-          </div>
-          <!-- <number-picker [min]="1" [max]="168" [step]="1" [(value)]="monitoringSession.MaximumNumberOfHours"
-                  additionalText="hours" (valueChange)="updateRuleSummary()"></number-picker> -->
+          <div *ngIf="!editMode" class="edit-mode">{{ monitoringSession.MonitorDuration }} seconds</div>
         </div>
       </div>
 
@@ -137,33 +87,75 @@
             </div>
             <div class="media-body">
               <div class="media-heading label-header">Configure Action</div>
-              Choose an action that you want to take when the above condition is met
+              An action that you want to take when the above condition is met
             </div>
           </div>
         </div>
-        <div class="col-sm-3">
-          <ul style="list-style-type: none;padding:0">
-            <li *ngFor="let md of sessionModeTypes">
+        <div class="col-sm-4">
+          <div *ngIf="editMode" style="margin-top:10px;">
+              <div style="float: left;" class="btn-group" role="group" aria-label="...">
+                  <button *ngFor="let md of sessionModeTypes" type="button" class="btn btn-default btn-xs mode-tab" (click)="selectMode(md)" [class.btn-primary]="md === mode">{{md}}</button>
+                </div>
+            <!-- <ng-container *ngFor="let md of sessionModeTypes">
               <div class="radio">
                 <input [id]="md" type="radio" (click)="selectMode(md)" name="radio" [checked]="md === mode"
                   [value]="md">
                 <label [for]="md" class="radio-label">{{ md }}</label>
               </div>
+            </ng-container> -->
+          </div>
+          <div *ngIf="!editMode" class="edit-mode">{{mode}}</div>
+        </div>
+      </div>
 
-            </li>
-          </ul>
+      <div class="row input-row">
+        <div class="col-sm-6">
+          <div class="media">
+            <div class="media-left media-middle">
+              <i class="media-object fa fa-files-o tile-icon"></i>
+            </div>
+            <div class="media-body">
+              <div class="media-heading label-header">Maximum Actions</div>
+              Maximum number of memory dumps to be collected by this rule
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div *ngIf="editMode" class="custom-slider">
+            <ng5-slider [(value)]="monitoringSession.MaxActions" [options]="sliderOptionsMaxActions"
+              (userChange)="updateRuleSummary()">
+            </ng5-slider>
+          </div>
+          <div *ngIf="!editMode" class="edit-mode">{{ monitoringSession.MaxActions }} dumps</div>
+        </div>
+      </div>
+
+      <div class="row input-row">
+        <div class="col-sm-6">
+          <div class="media">
+            <div class="media-left media-middle">
+              <i class="media-object fa fa-hourglass-half tile-icon"></i>
+            </div>
+            <div class="media-body">
+              <div class="media-heading label-header">Maximum Duration</div>
+              Rule will be deactivated after this duration even if no data is collected
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div *ngIf="editMode" class="custom-slider">
+            <ng5-slider [(value)]="monitoringSession.MaximumNumberOfHours" [options]="sliderOptionsMaxDuration"
+              (userChange)="updateRuleSummary()">
+            </ng5-slider>
+          </div>
+          <div *ngIf="!editMode" class="edit-mode">{{ monitoringSession.MaximumNumberOfHours }} hours</div>
         </div>
       </div>
 
       <div class="row">
-        <div class="summary-title">Rule Configuration Summary</div>
+        <div class="summary-title">Rule Configuration</div>
         <div class="col-sm-9 summary-box" [innerHTML]="ruleSummary">
         </div>
-      </div>
-    </div>
-
-    <div class="row" *ngIf="!editMode  && monitoringEnabled">
-      <div class="col-sm-10 summary-box" [innerHTML]="ruleSummary">
       </div>
     </div>
 

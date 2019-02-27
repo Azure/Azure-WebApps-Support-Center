@@ -21,9 +21,11 @@
     </div>
   </div>
   <div *ngIf="!monitoringEnabled" class="row">
-    <div class="col-sm-10">
-      No monitoring session in progress. When CPU monitoring is enabled, detailed monitoring activity will
-      be displayed here!
+    <div class="col-sm-12">
+      <div class="message">
+          No CPU Monitoring session active currently! When CPU monitoring is enabled, detailed monitoring activity will
+          be displayed here.
+      </div>
     </div>
   </div>
 </div>

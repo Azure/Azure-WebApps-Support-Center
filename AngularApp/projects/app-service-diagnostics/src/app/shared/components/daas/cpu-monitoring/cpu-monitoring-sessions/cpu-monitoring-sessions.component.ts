@@ -18,8 +18,10 @@ export class CpuMonitoringSessionsComponent implements OnInit {
   scmPath: string;
   subscription: Subscription;
   description: string = "The below table shows you all the CPU monitoring sessions submitted in the past for this app";
+  selectedTab: string = "activeSession";
 
   @Input() activeSession: MonitoringSession;
+  @Input() monitoringInProgress: boolean = false;
 
   constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService) {
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
