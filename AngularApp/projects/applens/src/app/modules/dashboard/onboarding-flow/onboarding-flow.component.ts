@@ -67,6 +67,8 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   private publishingPackage: Package;
   private userName: string;
 
+  private emailRecipients: string ='';
+
   constructor(private cdRef: ChangeDetectorRef, private githubService: GithubApiService, private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService,
     private _detectorControlService: DetectorControlService, private _adalService: AdalService, public ngxSmartModalService: NgxSmartModalService) {
 
@@ -98,6 +100,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.showAlert = false;
 
     this.userName = this._adalService.userInfo.profile ? this._adalService.userInfo.profile.upn : '';
+    this.emailRecipients = this.userName.replace('@microsoft.com','');
   }
 
   ngOnInit() {
@@ -297,7 +300,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.modalPublishingButtonDisabled = true;
     this.modalPublishingButtonText = "Publishing";
 
-    this.diagnosticApiService.publishDetector(this.publishingPackage).subscribe(data => {
+    this.diagnosticApiService.publishDetector(this.emailRecipients, this.publishingPackage).subscribe(data => {
       this.deleteProgress();
       this.runButtonDisabled = false;
       this.localDevButtonDisabled = false;
@@ -319,6 +322,11 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
 
   private preparePublishingPackage(queryResponse: QueryResponse<DetectorResponse>, code: string) {
 
+    if (queryResponse.invocationOutput.metadata.author !== null && queryResponse.invocationOutput.metadata.author !== "" && this.emailRecipients.indexOf(queryResponse.invocationOutput.metadata.author) < 0)
+    {
+        this.emailRecipients +=  ';' + queryResponse.invocationOutput.metadata.author;
+    }
+    
     this.publishingPackage = {
       codeString: code,
       id: queryResponse.invocationOutput.metadata.id,

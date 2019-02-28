@@ -51,7 +51,7 @@ export class DiagnosticApiService {
     if(additionalParams.formQueryParams != undefined) {
       path += additionalParams.formQueryParams;
     }
-    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false, undefined, undefined, additionalParams);
+    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false, undefined, undefined, undefined, additionalParams);
   }
 
   public getSystemCompilerResponse(resourceId: string, body: any, detectorId: string = '', dataSource: string = '', timeRange: string = ''): Observable<QueryResponse<DetectorResponse>> {
@@ -72,9 +72,9 @@ export class DiagnosticApiService {
     return this._cacheService.get(this.getCacheKey(method, path), request, true);
   }
 
-  public publishDetector(resourceId: string, packageToPublish: Package): Observable<any> {
+  public publishDetector(resourceId: string, emailRecipients: string, packageToPublish: Package): Observable<any> {
     let path = `${resourceId}/diagnostics/publish`;
-    return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true);
+    return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true, true, emailRecipients);
   }
 
   public getDetectorChangelist(detectorId: string): Observable<any> {
@@ -90,20 +90,18 @@ export class DiagnosticApiService {
     });
   }
 
-  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true, additionalParams?: any): Observable<T> {
+  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true, emailRecipients: string="", additionalParams?: any): Observable<T> {
     let url: string = `${this.diagnosticApi}api/invoke`
     let request;
-    // Using observe: 'response' to return the entire HTTPResponse object rather than just JSON data.
-    if(additionalParams && additionalParams.getFullResponse) {      
+    if(additionalParams && additionalParams.getFullResponse) {
       request = this._httpClient.post<T>(url, body, {
-        headers: this._getHeaders(path, method, internalView, additionalParams),
-        observe: 'response',
+        headers: this._getHeaders(path, method, internalView, emailRecipients, additionalParams),
+        observe: 'response'
       });
-    } 
-    else {      
+    } else {
       request = this._httpClient.post<T>(url, body, {
-      headers: this._getHeaders(path, method, internalView, additionalParams)
-    });
+        headers: this._getHeaders(path, method, internalView, emailRecipients, additionalParams)
+      });
     }
 
     return useCache ? this._cacheService.get(this.getCacheKey(method, path), request, invalidateCache) : request;
@@ -124,13 +122,19 @@ export class DiagnosticApiService {
     return this._cacheService.get(path, request, invalidateCache);
   }
 
-  private _getHeaders(path?: string, method?: HttpMethod, internalView: boolean = true, additionalParams?: any): HttpHeaders {
+  private _getHeaders(path?: string, method?: HttpMethod, internalView: boolean = true, emailRecipients: string = "", additionalParams?: any): HttpHeaders {
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', 'application/json');
     headers = headers.set('x-ms-internal-client', String(true));
     headers = headers.set('x-ms-internal-view', String(internalView));
     headers = headers.set('Authorization', `Bearer ${this._adalService.userInfo.token}`)
+
+    if (emailRecipients !== "")
+    {
+      headers = headers.set('x-ms-emailRecipients', emailRecipients);
+    }
+
     if (path) {
       headers = headers.set('x-ms-path-query', path);
     }
