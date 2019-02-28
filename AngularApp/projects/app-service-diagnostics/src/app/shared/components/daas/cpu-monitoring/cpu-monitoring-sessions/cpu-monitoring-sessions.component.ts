@@ -17,11 +17,7 @@ export class CpuMonitoringSessionsComponent implements OnInit {
   siteToBeDiagnosed: SiteDaasInfo;
   scmPath: string;
   subscription: Subscription;
-  description: string = "The below table shows you all the CPU monitoring sessions submitted in the past for this app";
-  selectedTab: string = "activeSession";
-
-  @Input() activeSession: MonitoringSession;
-  @Input() monitoringInProgress: boolean = false;
+  description: string = "The below table shows you all the CPU monitoring rules for this app. To save disk space, older sessions are automatically deleted.";
 
   constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService) {
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
@@ -42,7 +38,13 @@ export class CpuMonitoringSessionsComponent implements OnInit {
       resp = resp.sort(function (a, b) {
         return Number(new Date(b.StartDate)) - Number(new Date(a.StartDate));
       });
-      this.monitoringSessions = resp;
+
+      this._daasService.getActiveMonitoringSessionDetails(this.siteToBeDiagnosed).subscribe(activeSession => {
+        this.monitoringSessions = resp;
+        if (activeSession && activeSession.Session) {
+          this.monitoringSessions.unshift(activeSession.Session);
+        }
+      });
     });
   }
 
@@ -96,6 +98,10 @@ export class CpuMonitoringSessionsComponent implements OnInit {
     const inMinutes = Math.round(duration * 24 * 60 / oneDay);
     let durationString = (inDays > 0 ? inDays.toString() + ' day(s)' : (inHours > 0 ? inHours.toString() + ' hour(s)' : inMinutes.toString() + ' minute(s)'));
     return durationString;
+  }
+
+  isSessionActive(session: MonitoringSession): boolean {
+    return session.StartDate > session.EndDate;;
   }
 
   getSession(sessionId: string) {

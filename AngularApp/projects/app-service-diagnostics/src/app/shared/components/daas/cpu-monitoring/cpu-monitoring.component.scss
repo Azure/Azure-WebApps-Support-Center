@@ -20,3 +20,10 @@
     background-color: white;
 }
 
+::ng-deep{
+    .custom-height .list-header {
+        font-size: 18px;
+    }
+}
+
+

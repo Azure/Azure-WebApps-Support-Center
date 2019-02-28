@@ -2,92 +2,32 @@
   <div class="row">
 
     <div class="col-sm-12">
-
-      <div style="margin-top:15px">
-        <button type="button" class="btn btn-sm topmenu-button"
-          [ngClass]="{'btn-primary':selectedTab === 'activeSession'}" (click)="selectedTab = 'activeSession'">
-          Active Session
-        </button>
-        <button type="button" class="btn btn-sm topmenu-button"
-          [ngClass]="{'btn-primary':selectedTab === 'completeSessions'}" (click)="selectedTab = 'completeSessions'">
-          Completed Sessions
-        </button>
-      </div>
-
-      <div *ngIf="selectedTab === 'activeSession'" style="border: 1px solid #adb0b7;padding:15px">
-        <table class="table table-bordered" *ngIf="activeSession">
-          <tr>
-            <th>Start Date</th>
-            <th *ngIf="activeSession.Mode !== 'Kill'">Dumps</th>
-            <th *ngIf="activeSession.Mode === 'CollectKillAndAnalyze'">Analysis Reports</th>
-          </tr>
-          <tr>
-            <td [innerHTML]="formatDate(activeSession.StartDate)"></td>
-            <td *ngIf="activeSession.Mode !== 'Kill'">
-              <div *ngIf="activeSession.FilesCollected == null || activeSession.FilesCollected.length === 0">
-                No logs collected so far.
-              </div>
-              <ul *ngIf="activeSession.FilesCollected.length > 0" style="list-style-type:none;padding:0">
-                <li *ngFor="let file of activeSession.FilesCollected">
-                  {{ getfileNameFromPath(file.RelativePath) }}
-                  <a (click)="openReport(file.RelativePath)">
-                    <i class="fa fa-external-link"></i>
-                  </a>
-                </li>
-              </ul>
-            </td>
-            <td *ngIf="activeSession.Mode === 'CollectKillAndAnalyze'">
-              <div *ngIf="activeSession.AnalysisStatus === 'NotStarted'">
-                Analysis will start after logs have been collected...
-              </div>
-              <div
-                *ngIf="activeSession.AnalysisStatus !== 'NotStarted' && activeSession.AnalysisStatus !== 'Completed'">
-                {{ activeSession.AnalysisStatus }}
-              </div>
-              <ul *ngIf="activeSession.FilesCollected != null" style="list-style-type:none;padding:0">
-                <li *ngFor="let file of activeSession.FilesCollected">
-                  <div *ngIf="file.ReportFileRelativePath != null">
-                    {{ getfileNameFromPath(file.ReportFileRelativePath) }}
-                    <a (click)="openReport(file.ReportFileRelativePath)">
-                      <i class="fa fa-external-link"></i>
-                    </a>
-                  </div>
-                </li>
-              </ul>
-            </td>
-          </tr>
-        </table>
-        <div *ngIf="!activeSession && !monitoringInProgress" class="message">
-          No CPU Monitoring session active currently! When CPU monitoring is enabled, detailed monitoring activity will
-          be displayed here!
-        </div>
-
-        <div *ngIf="!activeSession && monitoringInProgress">
-          <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-          Monitoring session in progress, details will populate shortly...
-        </div>
-      </div>
-
-      <div *ngIf="selectedTab === 'completeSessions'" style="border: 1px solid #adb0b7;padding:15px">
+      <div>
         <p>{{ description }}</p>
         <div *ngIf="monitoringSessions.length > 0">
           <table class="table table-hover table-bordered">
             <tr>
-              <th>Start Date</th>
-              <th>Session Duration</th>
+              <th>Action</th>
+              <th>Started</th>
+              <th>Status</th>
               <th>Dumps</th>
-              <th>Analysis Reports</th>
+              <th>Reports</th>
+
             </tr>
             <tr *ngFor="let monitoringSession of monitoringSessions">
               <td>
+                <div> {{ monitoringSession.Mode }} </div>
+                
+              </td>
+              <td >
                 <div [innerHTML]="formatDate(monitoringSession.StartDate)"></div>
               </td>
               <td>
-                <div [innerHTML]="getDuration(monitoringSession.StartDate, monitoringSession.EndDate)"></div>
+                <div [ngClass]="{'active-rule':isSessionActive(monitoringSession)}">{{ isSessionActive(monitoringSession) ? 'Active' : 'Completed' }}</div>
               </td>
               <td>
                 <div *ngIf="monitoringSession.FilesCollected == null || monitoringSession.FilesCollected.length === 0">
-                  No logs collected.
+                  <span>{{ isSessionActive(monitoringSession) ? 'Waiting for dumps...' : 'No dumps collected' }}</span>
                 </div>
                 <ul *ngIf="monitoringSession.FilesCollected.length > 0" style="list-style-type:none;padding:0">
                   <li *ngFor="let file of monitoringSession.FilesCollected">
@@ -119,6 +59,7 @@
                   </ul>
                 </div>
               </td>
+
             </tr>
           </table>
         </div>

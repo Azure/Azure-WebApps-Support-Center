@@ -2,26 +2,29 @@
   (DaasValidated)="onDaasValidated($event)"></daas-validator>
 
 <div *ngIf="daasValidated" style="margin-top:30px">
-  <collapsible-list [title]="titles[0]" [collapsed]="false">
-    <collapsible-list-item>
-      <cpu-monitoring-configuration (monitoringInProgress)="updateMonitoringStatus($event)"></cpu-monitoring-configuration>
-    </collapsible-list-item>
-  </collapsible-list>
-  <collapsible-list [title]="titles[1]" [collapsed]="true">
-    <collapsible-list-item>
-      <cpu-monitoring-activity [siteToBeDiagnosed]="siteToBeDiagnosed" 
-      [monitoringInProgress]="monitoringInProgress" 
-      [scmPath]="scmPath"
-      (activeSessionChanged) = "updateActiveSession($event)"
-      ></cpu-monitoring-activity>
-    </collapsible-list-item>
-  </collapsible-list>
-  <collapsible-list [title]="titles[2]" [collapsed]="true">
-    <collapsible-list-item>
-     <cpu-monitoring-sessions [activeSession]="activeSession"  [monitoringInProgress]="monitoringInProgress"></cpu-monitoring-sessions>
-    </collapsible-list-item>
-  </collapsible-list>
+  <div class="custom-height">
+    <collapsible-list [title]="titles[0]" [collapsed]="false">
+      <collapsible-list-item>
+        <cpu-monitoring-configuration (monitoringInProgress)="updateMonitoringStatus($event)">
+        </cpu-monitoring-configuration>
+      </collapsible-list-item>
+    </collapsible-list>
+  </div>
+  <div class="custom-height">
+    <collapsible-list [title]="titles[1]" [collapsed]="true">
+      <collapsible-list-item>
+        <cpu-monitoring-activity [siteToBeDiagnosed]="siteToBeDiagnosed" [monitoringInProgress]="monitoringInProgress"
+          [scmPath]="scmPath" (activeSessionChanged)="updateActiveSession($event)"></cpu-monitoring-activity>
+      </collapsible-list-item>
+    </collapsible-list>
+  </div>
+
+  <div class="custom-height">
+    <collapsible-list [title]="titles[2]" [collapsed]="true">
+      <collapsible-list-item>
+        <cpu-monitoring-sessions></cpu-monitoring-sessions>
+      </collapsible-list-item>
+    </collapsible-list>
+  </div>
 
 </div>
-
- 
