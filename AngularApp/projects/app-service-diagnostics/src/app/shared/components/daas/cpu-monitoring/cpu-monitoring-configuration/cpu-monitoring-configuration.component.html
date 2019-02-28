@@ -1,11 +1,5 @@
 <div class="container" style="margin-bottom: 20px">
-
-  <div class="col" *ngIf="operationInProgress">
-    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-    Checking active monitoring session...
-  </div>
-
-  <div *ngIf="!operationInProgress && siteToBeDiagnosed" style="margin-top: 10px">
+  <div style="margin-top: 10px">
     <div class="row">
       <div class="col-sm-12">
         <toggle-button ToggleText="Monitoring Enabled" [selected]="monitoringEnabled"
@@ -93,9 +87,10 @@
         </div>
         <div class="col-sm-4">
           <div *ngIf="editMode" style="margin-top:10px;">
-              <div style="float: left;" class="btn-group" role="group" aria-label="...">
-                  <button *ngFor="let md of sessionModeTypes" type="button" class="btn btn-default btn-xs mode-tab" (click)="selectMode(md)" [class.btn-primary]="md === mode">{{md}}</button>
-                </div>
+            <div style="float: left;" class="btn-group" role="group" aria-label="...">
+              <button *ngFor="let md of sessionModeTypes" type="button" class="btn btn-default btn-xs mode-tab"
+                (click)="selectMode(md)" [class.btn-primary]="md === mode">{{md}}</button>
+            </div>
           </div>
           <div *ngIf="!editMode" class="edit-mode">{{mode}}</div>
         </div>
@@ -156,20 +151,24 @@
       <div class="col-sm-6">
         <button [disabled]="savingSettings || !editMode " class="btn btn-primary btn-sm"
           (click)="saveCpuMonitoring()">Save</button>
-        <button [disabled]="savingSettings" *ngIf="!editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
-          (click)="editMode=true">Edit</button>
         <button [disabled]="savingSettings" *ngIf="editMode  && monitoringEnabled" class="btn btn-primary btn-sm"
           (click)="cancelChanges()">Cancel</button>
       </div>
     </div>
 
-    <div style="margin-top:10px" class="col" *ngIf="savingSettings">
-      <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-      Saving monitoring settings...
+    <div class="row" style="margin-top: 10px" *ngIf="savingSettings">
+      <div class="col-sm-6">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Saving monitoring settings...
+      </div>
     </div>
 
-    <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="error">
-      <strong>Error</strong> - {{ error.message }}
+    <div class="row" style="margin-top: 10px" *ngIf="error">
+      <div class="col-sm-6">
+        <div class="focus-box focus-box-warning" *ngIf="error">
+          <strong>Error</strong> - {{ error }}
+        </div>
+      </div>
     </div>
 
   </div>

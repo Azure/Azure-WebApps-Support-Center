@@ -1,14 +1,26 @@
 <div class="container">
-  <div class="row" style="margin-top: 15px" *ngIf="monitoringEnabled">
+  <div class="row" style="margin-top: 15px" *ngIf="activeMonitoringSession != null">
     <div class="col-sm-10">
-      <div *ngIf="monitoringLogs.length === 0">
+      <div
+        *ngIf="activeMonitoringSession.MonitoringLogs == null || activeMonitoringSession.MonitoringLogs.length === 0">
         <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
         Monitoring session in progress, logs from all instances will populate shortly...
       </div>
 
-      <div *ngIf="monitoringLogs.length > 0" class="monitoring-logs">
+      <div *ngIf="activeMonitoringSession.MonitoringLogs !=null && activeMonitoringSession.MonitoringLogs.length > 0"
+        class="monitoring-logs">
+        <div style="margin-bottom: 15px;">
+          When monitoring rule is enabled, detailed monitoring logs for all the instances serving the app are generated.
+          The below snippet shows you the last few lines of these logs and this information is refreshed every 30
+          seconds. These logs contain information about each process that is being monitored and the CPU
+          consumption for
+          that process. If any action (like Kill, or a memory dump) is invoked then details about those are also
+          captured in these logs.
+          You can view the full logs by going to <a href='https://{{scmPath}}' target="_blank">Kudu Console</a>  for your app and then navigating to 
+          <strong>D:\home\data\DaaS\Monitoring\Logs</strong> folder.
+        </div>
         <ul style="list-style-type: none;padding:0">
-          <li *ngFor="let instance of monitoringLogs">
+          <li *ngFor="let instance of activeMonitoringSession.MonitoringLogs">
             <strong class="highlight-blue">
               {{ instance.Instance }}
             </strong>
@@ -20,11 +32,11 @@
       </div>
     </div>
   </div>
-  <div *ngIf="!monitoringEnabled" class="row">
-    <div class="col-sm-12">
+  <div *ngIf="activeMonitoringSession == null" class="row">
+    <div class="col-sm-9">
       <div class="message">
-          No CPU Monitoring session active currently! When CPU monitoring is enabled, detailed monitoring activity will
-          be displayed here.
+        No CPU Monitoring rule active currently! When CPU monitoring is enabled, detailed monitoring activity will
+        be displayed here.
       </div>
     </div>
   </div>

@@ -1,8 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, OnChanges } from '@angular/core';
 import { MonitoringSession } from '../../../../models/daas';
 import { SiteDaasInfo } from '../../../../models/solution-metadata';
-import { Subscription, interval } from 'rxjs';
-import { SiteService } from '../../../../services/site.service';
 import { DaasService } from '../../../../services/daas.service';
 import { WindowService } from 'projects/app-service-diagnostics/src/app/startup/services/window.service';
 
@@ -11,43 +9,23 @@ import { WindowService } from 'projects/app-service-diagnostics/src/app/startup/
   templateUrl: './cpu-monitoring-sessions.component.html',
   styleUrls: ['./cpu-monitoring-sessions.component.scss']
 })
-export class CpuMonitoringSessionsComponent implements OnInit {
+export class CpuMonitoringSessionsComponent implements OnInit, OnChanges {
 
-  monitoringSessions: MonitoringSession[] = [];
-  siteToBeDiagnosed: SiteDaasInfo;
-  scmPath: string;
-  subscription: Subscription;
-  description: string = "The below table shows you all the CPU monitoring rules for this app. To save disk space, older sessions are automatically deleted.";
-  gettingSessions:boolean = true;
+  @Input() public monitoringSessions: MonitoringSession[];
+  @Input() public siteToBeDiagnosed: SiteDaasInfo;
+  @Input() public scmPath: string;
+  @Input() public gettingSessions: boolean = true;
 
-  constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService) {
-    this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
-      this.siteToBeDiagnosed = site;
-    });
+  description: string = "The below table shows you all the CPU monitoring rules for this app. To save disk space, older rules and their associated data is automatically deleted.";
+  
+  constructor(private _daasService: DaasService, private _windowService: WindowService) {
   }
 
   ngOnInit() {
-    this.scmPath = this._siteService.currentSiteStatic.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
-    this.getMonitoringSessions();
-    this.subscription = interval(30000).subscribe(res => {
-      this.getMonitoringSessions();
-    });
   }
 
-  getMonitoringSessions() {
-    this._daasService.getAllMonitoringSessions(this.siteToBeDiagnosed).subscribe(resp => {
-      resp = resp.sort(function (a, b) {
-        return Number(new Date(b.StartDate)) - Number(new Date(a.StartDate));
-      });
+  ngOnChanges() {
 
-      this._daasService.getActiveMonitoringSessionDetails(this.siteToBeDiagnosed).subscribe(activeSession => {
-        this.monitoringSessions = resp;
-        this.gettingSessions = false;
-        if (activeSession && activeSession.Session) {
-          this.monitoringSessions.unshift(activeSession.Session);
-        }
-      });
-    });
   }
 
   openReport(url: string) {
@@ -81,16 +59,16 @@ export class CpuMonitoringSessionsComponent implements OnInit {
 
   }
 
-  formatStartDate(session:MonitoringSession): string {
+  formatStartDate(session: MonitoringSession): string {
     var date = new Date(session.StartDate);
     let formattedDate = (date.getUTCMonth() + 1).toString().padStart(2, '0') + '/' + date.getUTCDate().toString().padStart(2, '0') + '/' + date.getUTCFullYear().toString() + ' ' + (date.getUTCHours() < 10 ? '0' : '') + date.getUTCHours()
       + ':' + (date.getUTCMinutes() < 10 ? '0' : '') + date.getUTCMinutes() + ' UTC';
     const utc = new Date().toUTCString();
 
-    if (this.isSessionActive(session)){
+    if (this.isSessionActive(session)) {
       formattedDate += "<br/>" + this.getDuration(session.StartDate, utc) + ' ago';
     }
-    
+
     return formattedDate;
   }
 

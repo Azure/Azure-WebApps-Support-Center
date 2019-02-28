@@ -1,27 +1,26 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Options } from 'ng5-slider';
-import { SiteService } from '../../../../services/site.service';
 import { DaasService } from '../../../../services/daas.service';
 import { SiteDaasInfo } from '../../../../models/solution-metadata';
 import { MonitoringSession, SessionMode } from '../../../../models/daas';
-import { retry } from 'rxjs/operators';
 
 @Component({
   selector: 'cpu-monitoring-configuration',
   templateUrl: './cpu-monitoring-configuration.component.html',
   styleUrls: ['./cpu-monitoring-configuration.component.scss']
 })
-export class CpuMonitoringConfigurationComponent implements OnInit {
+export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
 
-  @Input() public siteToBeDiagnosed: SiteDaasInfo;
-  @Output() public monitoringInProgress: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Input() siteToBeDiagnosed: SiteDaasInfo;
+  @Input() activeSession: MonitoringSession;
+  @Output() monitoringConfigurationChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   editMode: boolean = false;
   savingSettings: boolean = false;
   monitoringEnabled: boolean = false;
   monitoringSession: MonitoringSession;
   originalMonitoringSession: MonitoringSession;
-  sessionId: string = "";
+
   operationInProgress: boolean = false;
   mode: SessionMode;
   ruleSummary: string = "";
@@ -67,15 +66,35 @@ export class CpuMonitoringConfigurationComponent implements OnInit {
     }
   };
 
-  constructor(private _siteService: SiteService, private _daasService: DaasService) { }
+  constructor(private _daasService: DaasService) {
+
+  }
 
   ngOnInit() {
-    this.monitoringSession = this.getDefaultMonitoringSettings();
+    if (this.activeSession == null) {
+      this.monitoringSession = this.getDefaultMonitoringSettings();
+    }
+    else {
+      this.monitoringSession = this.activeSession;
+      this.mode = this.monitoringSession.Mode;
+      this.originalMonitoringSession = this.activeSession;
+      this.monitoringEnabled = true;
+    }
+
     this.updateRuleSummary();
-    this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
-      this.siteToBeDiagnosed = site;
-      this.checkRunningSessions();
-    });
+  }
+
+  ngOnChanges() {
+    if (this.activeSession != null) {
+      this.monitoringSession = this.activeSession;
+      this.originalMonitoringSession = this.activeSession;
+      this.monitoringEnabled = true;
+    } else {
+      if (!this.editMode) {
+        this.monitoringEnabled = false;
+      }
+
+    }
   }
 
   getDefaultMonitoringSettings(): MonitoringSession {
@@ -90,25 +109,6 @@ export class CpuMonitoringConfigurationComponent implements OnInit {
     this.mode = monitoringSession.Mode;
     this.selectMode(this.mode);
     return monitoringSession;
-  }
-
-  checkRunningSessions() {
-    this.operationInProgress = true;
-
-    this._daasService.getActiveMonitoringSessionDetails(this.siteToBeDiagnosed).pipe(retry(2))
-      .subscribe(runningSession => {
-        this.operationInProgress = false;
-        if (runningSession && runningSession.Session) {
-          this.monitoringEnabled = true;
-          this.sessionId = runningSession.Session.SessionId;
-          this.monitoringSession = runningSession.Session;
-          this.originalMonitoringSession = runningSession.Session;
-          this.monitoringInProgress.emit(true);
-        }
-        else {
-          this.monitoringInProgress.emit(false);
-        }
-      });
   }
 
   selectMode(md: string) {
@@ -146,42 +146,44 @@ export class CpuMonitoringConfigurationComponent implements OnInit {
 
   saveCpuMonitoring() {
     this.savingSettings = true;
-    this._daasService.stopMonitoringSession(this.siteToBeDiagnosed).subscribe(
-      resp => {
-        if (this.monitoringEnabled) {
-          let newSession: MonitoringSession = new MonitoringSession();
-          newSession.MaxActions = this.monitoringSession.MaxActions;
-          newSession.Mode = this.monitoringSession.Mode;
-          newSession.MonitorDuration = this.monitoringSession.MonitorDuration;
-          newSession.ThresholdSeconds = this.monitoringSession.ThresholdSeconds;
-          newSession.CpuThreshold = this.monitoringSession.CpuThreshold;
-          newSession.MaximumNumberOfHours = this.monitoringSession.MaximumNumberOfHours;
+    if (this.monitoringEnabled) {
+      let newSession: MonitoringSession = new MonitoringSession();
+      newSession.MaxActions = this.monitoringSession.MaxActions;
+      newSession.Mode = this.monitoringSession.Mode;
+      newSession.MonitorDuration = this.monitoringSession.MonitorDuration;
+      newSession.ThresholdSeconds = this.monitoringSession.ThresholdSeconds;
+      newSession.CpuThreshold = this.monitoringSession.CpuThreshold;
+      newSession.MaximumNumberOfHours = this.monitoringSession.MaximumNumberOfHours;
 
-          this._daasService.submitMonitoringSession(this.siteToBeDiagnosed, newSession).subscribe(
-            result => {
-              this.savingSettings = false;
-              this.sessionId = result;
-              this.editMode = false;
-              this.originalMonitoringSession = newSession;
-              this.monitoringEnabled = true;
-              this.monitoringInProgress.emit(true);
-            }, error => {
-              this.savingSettings = false;
-              this.error = error;
-              this.monitoringEnabled = false;
-              this.monitoringInProgress.emit(false);
-            });
-
-        }
-        else {
+      this._daasService.submitMonitoringSession(this.siteToBeDiagnosed, newSession).subscribe(
+        result => {
           this.savingSettings = false;
           this.editMode = false;
-          this.originalMonitoringSession = null;
-        }
-      }, error => {
-        this.savingSettings = false;
-        this.error = error;
-      });
+          this.originalMonitoringSession = newSession;
+          this.monitoringConfigurationChange.emit(true);
+        }, error => {
+          this.monitoringEnabled = !this.monitoringEnabled;
+          this.savingSettings = false;
+          this.error = JSON.stringify(error);
+          this.monitoringConfigurationChange.emit(true);
+        });
+
+    }
+    else {
+      this._daasService.stopMonitoringSession(this.siteToBeDiagnosed).subscribe(
+        resp => {
+            this.savingSettings = false;
+            this.editMode = false;
+            this.originalMonitoringSession = null;
+            this.monitoringConfigurationChange.emit(true);
+        }, error => {
+          this.savingSettings = false;
+          this.monitoringEnabled = !this.monitoringEnabled;
+          this.error = JSON.stringify(error);
+          this.monitoringConfigurationChange.emit(true);
+        });
+     
+    }
   }
 
   checkForChanges() {
