@@ -180,12 +180,12 @@ namespace AppLensV3
 
         private void AddCompilationParamsToRequest(CompilationParameters compilationParameters, ref HttpRequestMessage requestMessage)
         {
-            if(!string.IsNullOrEmpty(compilationParameters.AssemblyName))
+            if(!string.IsNullOrWhiteSpace(compilationParameters.AssemblyName))
             {
                 requestMessage.Headers.Add("assembly-name", compilationParameters.AssemblyName);
             }
 
-            if(!string.IsNullOrEmpty(compilationParameters.ScriptETag))
+            if(!string.IsNullOrWhiteSpace(compilationParameters.ScriptETag))
             {
                 requestMessage.Headers.Add("script-etag", compilationParameters.ScriptETag);
             }

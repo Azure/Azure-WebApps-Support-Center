@@ -24,11 +24,11 @@ export class DiagnosticApiService {
     return environment.production ? '' : this.localDiagnosticApi;
   }
 
-  public getDetector(version: string, resourceId: string, detector: string, startTime?: string, endTime?: string, body?: any, refresh: boolean = false, internalView: boolean = false, formQueryParams? : string): Observable<DetectorResponse> {
+  public getDetector(version: string, resourceId: string, detector: string, startTime?: string, endTime?: string, body?: any, refresh: boolean = false, internalView: boolean = false, additionalQueryParams? : string): Observable<DetectorResponse> {
     let timeParameters = this._getTimeQueryParameters(startTime, endTime);
     let path = `${version}${resourceId}/detectors/${detector}?${timeParameters}`;
-    if(formQueryParams != undefined) {     
-      path += formQueryParams;
+    if(additionalQueryParams != undefined) {     
+      path += additionalQueryParams;
     }
     return this.invoke<DetectorResponse>(path, HttpMethod.POST, body, true, refresh, internalView);
   }

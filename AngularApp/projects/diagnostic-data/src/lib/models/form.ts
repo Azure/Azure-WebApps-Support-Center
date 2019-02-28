@@ -10,7 +10,7 @@ export class Form {
 }
 
 export class FormInput {
-    combinedId: number;
+    internalId: string;
     inputId: number;
     inputType: InputType;
     inputLabel: string;
@@ -18,8 +18,8 @@ export class FormInput {
     isRequired: boolean = false;
     displayValidation: boolean = false;
 
-    constructor(combinedid: number, id: number, inputType: InputType, label: string, isRequired: boolean) {
-        this.combinedId = combinedid;
+    constructor(internalId: string, id: number, inputType: InputType, label: string, isRequired: boolean) {
+        this.internalId = internalId;
         this.inputId = id;
         this.inputType = inputType;
         this.inputLabel = label;
@@ -29,8 +29,8 @@ export class FormInput {
 
 export class FormButton extends FormInput {
     buttonStyle: ButtonStyles;
-    constructor(combinedid: number, id: number, inputType: InputType, label: string, isRequired: boolean, buttonStyle?: ButtonStyles) {
-        super(combinedid, id, inputType, label, isRequired);
+    constructor(internalId: string, id: number, inputType: InputType, label: string, isRequired: boolean, buttonStyle?: ButtonStyles) {
+        super(internalId, id, inputType, label, isRequired);
         this.buttonStyle = buttonStyle != undefined ? buttonStyle : ButtonStyles.Primary;       
     }
 }

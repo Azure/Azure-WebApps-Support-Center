@@ -47,7 +47,7 @@ export class FormComponent extends DataRenderBaseComponent {
          for(let ip =0; ip<formInputs.length; ip++) {
            if(formInputs[ip]["inputType"] === InputType.Button) {
               this.detectorForms[i].formButtons.push(new FormButton(
-               formInputs[ip]["combinedId"],
+                this.detectorForms[i].formId+"."+formInputs[ip]["inputId"],
                formInputs[ip]["inputId"],
                formInputs[ip]["inputType"],
                formInputs[ip]["label"],
@@ -56,7 +56,7 @@ export class FormComponent extends DataRenderBaseComponent {
               ));
            } else {
              this.detectorForms[i].formInputs.push(new FormInput
-              (formInputs[ip]["combinedId"],
+              (this.detectorForms[i].formId+"."+formInputs[ip]["inputId"],
                formInputs[ip]["inputId"],
                formInputs[ip]["inputType"],
                formInputs[ip]["label"],
@@ -98,12 +98,10 @@ export class FormComponent extends DataRenderBaseComponent {
           .subscribe((response:any) => {
             formToExecute.loadingFormResponse = false;
             if(response.body != undefined) {
-               // If the script has been compiled at the server, store those values in memory.
-              if(response.body.compilationOutput.isCompiled) {
-                this.compilationPackage.assemblyName = response.body.compilationOutput.assemblyName;
-              }
-              if(response.headers.get('script-etag') != undefined) {                
+               // If the script etag returned by the server does not match the previous script-etag, update the values in memory
+              if(response.headers.get('script-etag') != undefined && this.compilationPackage.scriptETag !== response.headers.get('script-etag')) {                
                 this.compilationPackage.scriptETag = response.headers.get('script-etag');
+                this.compilationPackage.assemblyName = response.body.compilationOutput.assemblyName;
               }
               formToExecute.formResponse = response.body.invocationOutput;
               formToExecute.errorMessage = '';

@@ -42,15 +42,15 @@ export class GenericApiService {
         }
     }
 
-    public getDetector(detectorName: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean, formQueryParams?: string) {
+    public getDetector(detectorName: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean, additionalQueryParams?: string) {
 
         if (this.useLocal) {
             const path = `v4${this.resourceId}/detectors/${detectorName}?stampName=waws-prod-bay-085&hostnames=netpractice.azurewebsites.net`;
             return this.invoke<DetectorResponse>(path, 'POST');
         } else {
             let path = `${this.resourceId}/detectors/${detectorName}?startTime=${startTime}&endTime=${endTime}`;
-            if(formQueryParams != undefined) {
-                path += formQueryParams;
+            if(additionalQueryParams != undefined) {
+                path += additionalQueryParams;
             }
             return this._armService.getResource<DetectorResponse>(path, '2015-08-01', refresh).pipe(
                 map((response: ResponseMessageEnvelope<DetectorResponse>) => response.properties));
