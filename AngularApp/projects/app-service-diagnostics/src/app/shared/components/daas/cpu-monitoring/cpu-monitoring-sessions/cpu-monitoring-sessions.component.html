@@ -1,62 +1,75 @@
 <div class="container">
   <div class="row">
-    <div class="col-sm-12">
-      <div>
+    <div class="col-sm-9">
+      <div *ngIf="gettingSessions" style="margin-top:15px;">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Getting monitoring rules...
+      </div>
+      <div *ngIf="!gettingSessions" style="margin-top:15px;">
         <p>{{ description }}</p>
         <div *ngIf="monitoringSessions.length > 0">
           <table class="table table-hover table-bordered">
-            
             <tr>
+              <th>Rule</th>
               <th>Action</th>
               <th>Started</th>
               <th>Status</th>
-              <th>Dumps</th>
-              <th>Reports</th>
+              <th>Dumps and Reports</th>
             </tr>
 
             <tr *ngFor="let monitoringSession of monitoringSessions">
               <td>
+                <div> CPU &gt; {{ monitoringSession.CpuThreshold }}% for &gt; {{ monitoringSession.ThresholdSeconds }}s
+                </div>
+              </td>
+              <td>
                 <div> {{ monitoringSession.Mode }} </div>
-                
-              </td>
-              <td >
-                <div [innerHTML]="formatDate(monitoringSession.StartDate)"></div>
               </td>
               <td>
-                <div [ngClass]="{'active-rule':isSessionActive(monitoringSession)}">{{ isSessionActive(monitoringSession) ? 'Active' : 'Completed' }}</div>
+                <div [innerHTML]="formatStartDate(monitoringSession)"></div>
               </td>
               <td>
-                <div *ngIf="monitoringSession.FilesCollected == null || monitoringSession.FilesCollected.length === 0">
-                  <span>{{ isSessionActive(monitoringSession) ? 'Waiting for dumps...' : 'No dumps collected' }}</span>
-                </div>
-                <ul *ngIf="monitoringSession.FilesCollected.length > 0" style="list-style-type:none;padding:0">
-                  <li *ngFor="let file of monitoringSession.FilesCollected">
-                    {{ getfileNameFromPath(file.RelativePath) }}
-                    <a (click)="openReport(file.RelativePath)">
-                      <i class="fa fa-external-link"></i>
-                    </a>
-                  </li>
-                </ul>
+                <div [ngClass]="{'active-rule':isSessionActive(monitoringSession)}">
+                  {{ isSessionActive(monitoringSession) ? 'Active' : 'Completed' }}</div>
               </td>
               <td>
-                <div
-                  *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted' && monitoringSession.AnalysisStatus !== 'Completed'">
-                  {{ monitoringSession.AnalysisStatus }}
-                </div>
-                <button class="btn btn-sm btn-primary"
-                  *ngIf="monitoringSession.AnalysisStatus === 'NotStarted' && monitoringSession.FilesCollected != null && monitoringSession.FilesCollected.length > 0"
-                  (click)="analyzeSession(monitoringSession.SessionId)">Analyze</button>
-                <div *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted'">
-                  <ul style="list-style-type:none;padding:0">
-                    <li *ngFor="let file of monitoringSession.FilesCollected">
-                      <div *ngIf="file.ReportFileRelativePath != null">
-                        {{ getfileNameFromPath(file.ReportFileRelativePath) }}
-                        <a (click)="openReport(file.ReportFileRelativePath)">
+                <div class="row">
+                  <div class="col">
+                    <div
+                      *ngIf="monitoringSession.FilesCollected == null || monitoringSession.FilesCollected.length === 0">
+                      <span>{{ isSessionActive(monitoringSession) ? 'Waiting for dumps...' : 'No dumps collected' }}</span>
+                    </div>
+                    <ul *ngIf="monitoringSession.FilesCollected.length > 0" style="list-style-type:none;padding:0">
+                      <li *ngFor="let file of monitoringSession.FilesCollected">
+                        {{ getfileNameFromPath(file.RelativePath) }}.dmp
+                        <a (click)="openReport(file.RelativePath)">
                           <i class="fa fa-external-link"></i>
                         </a>
-                      </div>
-                    </li>
-                  </ul>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-sm btn-primary"
+                      *ngIf="!monitoringSession.AnalysisSubmitted && monitoringSession.AnalysisStatus === 'NotStarted' && monitoringSession.FilesCollected != null && monitoringSession.FilesCollected.length > 0 && !isSessionActive(monitoringSession)"
+                      (click)="analyzeSession(monitoringSession)">Analyze</button>
+                    <div
+                      *ngIf="monitoringSession.AnalysisStatus === 'InProgress' || monitoringSession.AnalysisSubmitted">
+                      <i class=" fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                      Analysis in progress...
+                    </div>
+                    <div style="float: left" *ngIf="monitoringSession.AnalysisStatus !== 'NotStarted'">
+                      <ul style="list-style-type:none;padding:0">
+                        <li *ngFor="let file of monitoringSession.FilesCollected">
+                          <div *ngIf="file.ReportFileRelativePath != null">
+                            {{ getfileNameFromPath(file.ReportFileRelativePath) }}.mht
+                            <a (click)="openReport(file.ReportFileRelativePath)">
+                              <i class="fa fa-external-link"></i>
+                            </a>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </td>
             </tr>

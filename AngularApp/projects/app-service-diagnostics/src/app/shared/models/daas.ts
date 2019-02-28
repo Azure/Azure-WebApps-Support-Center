@@ -139,6 +139,7 @@ export class MonitoringSession {
     MaximumNumberOfHours: number;
     FilesCollected: MonitoringFile[];
     AnalysisStatus: AnalysisStatus;
+    AnalysisSubmitted:boolean = false;
 }
 
 export interface MonitoringFile {

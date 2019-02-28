@@ -18,6 +18,7 @@ export class CpuMonitoringSessionsComponent implements OnInit {
   scmPath: string;
   subscription: Subscription;
   description: string = "The below table shows you all the CPU monitoring rules for this app. To save disk space, older sessions are automatically deleted.";
+  gettingSessions:boolean = true;
 
   constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService) {
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
@@ -41,6 +42,7 @@ export class CpuMonitoringSessionsComponent implements OnInit {
 
       this._daasService.getActiveMonitoringSessionDetails(this.siteToBeDiagnosed).subscribe(activeSession => {
         this.monitoringSessions = resp;
+        this.gettingSessions = false;
         if (activeSession && activeSession.Session) {
           this.monitoringSessions.unshift(activeSession.Session);
         }
@@ -69,22 +71,27 @@ export class CpuMonitoringSessionsComponent implements OnInit {
     }
   }
 
-  analyzeSession(sessionId: string) {
-    this._daasService.analyzeMonitoringSession(this.siteToBeDiagnosed, sessionId).subscribe(resp => {
+  analyzeSession(session: MonitoringSession) {
+    session.AnalysisSubmitted = true;
+    this._daasService.analyzeMonitoringSession(this.siteToBeDiagnosed, session.SessionId).subscribe(resp => {
       if (resp) {
-        this.getSession(sessionId);
+        this.getSession(session.SessionId);
       }
     });
 
   }
 
-  formatDate(dateString: string): string {
-    var date = new Date(dateString);
-    let dateStringReturn = (date.getUTCMonth() + 1).toString().padStart(2, '0') + '/' + date.getUTCDate().toString().padStart(2, '0') + '/' + date.getUTCFullYear().toString() + ' ' + (date.getUTCHours() < 10 ? '0' : '') + date.getUTCHours()
+  formatStartDate(session:MonitoringSession): string {
+    var date = new Date(session.StartDate);
+    let formattedDate = (date.getUTCMonth() + 1).toString().padStart(2, '0') + '/' + date.getUTCDate().toString().padStart(2, '0') + '/' + date.getUTCFullYear().toString() + ' ' + (date.getUTCHours() < 10 ? '0' : '') + date.getUTCHours()
       + ':' + (date.getUTCMinutes() < 10 ? '0' : '') + date.getUTCMinutes() + ' UTC';
     const utc = new Date().toUTCString();
-    dateStringReturn += "<br/>" + this.getDuration(dateString, utc) + ' ago';
-    return dateStringReturn;
+
+    if (this.isSessionActive(session)){
+      formattedDate += "<br/>" + this.getDuration(session.StartDate, utc) + ' ago';
+    }
+    
+    return formattedDate;
   }
 
   getDuration(start: string, end: string): string {
