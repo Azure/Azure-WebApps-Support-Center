@@ -96,13 +96,6 @@
               <div style="float: left;" class="btn-group" role="group" aria-label="...">
                   <button *ngFor="let md of sessionModeTypes" type="button" class="btn btn-default btn-xs mode-tab" (click)="selectMode(md)" [class.btn-primary]="md === mode">{{md}}</button>
                 </div>
-            <!-- <ng-container *ngFor="let md of sessionModeTypes">
-              <div class="radio">
-                <input [id]="md" type="radio" (click)="selectMode(md)" name="radio" [checked]="md === mode"
-                  [value]="md">
-                <label [for]="md" class="radio-label">{{ md }}</label>
-              </div>
-            </ng-container> -->
           </div>
           <div *ngIf="!editMode" class="edit-mode">{{mode}}</div>
         </div>

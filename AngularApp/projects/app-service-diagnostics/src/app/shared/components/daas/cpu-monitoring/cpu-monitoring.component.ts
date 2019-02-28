@@ -29,7 +29,6 @@ export class CpuMonitoringComponent implements OnInit {
     if (validated){
       this.daasValidated = true;
     }
-    
   }
 
   ngOnInit(): void {

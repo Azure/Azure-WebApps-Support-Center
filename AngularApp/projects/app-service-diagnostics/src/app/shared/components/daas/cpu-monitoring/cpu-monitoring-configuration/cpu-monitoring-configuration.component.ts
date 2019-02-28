@@ -13,6 +13,9 @@ import { retry } from 'rxjs/operators';
 })
 export class CpuMonitoringConfigurationComponent implements OnInit {
 
+  @Input() public siteToBeDiagnosed: SiteDaasInfo;
+  @Output() public monitoringInProgress: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   editMode: boolean = false;
   savingSettings: boolean = false;
   monitoringEnabled: boolean = false;
@@ -23,8 +26,7 @@ export class CpuMonitoringConfigurationComponent implements OnInit {
   mode: SessionMode;
   ruleSummary: string = "";
   error: any;
-
-  sessionModeTypes: string[] = ["Kill","Collect", "CollectAndKill", "CollectKillAndAnalyze"];
+  sessionModeTypes: string[] = ["Kill", "Collect", "CollectAndKill", "CollectKillAndAnalyze"];
 
   sliderOptionsCpuThreshold: Options = {
     floor: 75, ceil: 95, step: 5, showTicks: true,
@@ -64,9 +66,6 @@ export class CpuMonitoringConfigurationComponent implements OnInit {
       return displayValue + label;
     }
   };
-
-  @Input() public siteToBeDiagnosed: SiteDaasInfo;
-  @Output() public monitoringInProgress: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(private _siteService: SiteService, private _daasService: DaasService) { }
 

@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CpuMonitoringComponent } from './cpu-monitoring.component';
 
 describe('CpuMonitoringComponent', () => {

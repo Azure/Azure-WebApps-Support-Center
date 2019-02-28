@@ -1,19 +1,19 @@
 <div class="container">
   <div class="row">
-
     <div class="col-sm-12">
       <div>
         <p>{{ description }}</p>
         <div *ngIf="monitoringSessions.length > 0">
           <table class="table table-hover table-bordered">
+            
             <tr>
               <th>Action</th>
               <th>Started</th>
               <th>Status</th>
               <th>Dumps</th>
               <th>Reports</th>
-
             </tr>
+
             <tr *ngFor="let monitoringSession of monitoringSessions">
               <td>
                 <div> {{ monitoringSession.Mode }} </div>
@@ -59,13 +59,10 @@
                   </ul>
                 </div>
               </td>
-
             </tr>
           </table>
         </div>
       </div>
-
     </div>
   </div>
-
 </div>
