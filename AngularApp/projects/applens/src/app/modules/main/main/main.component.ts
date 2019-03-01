@@ -7,6 +7,7 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import {
     ResourceServiceInputs, ResourceType, ResourceTypeState
 } from '../../../shared/models/resources';
+import { trimTrailingNulls } from '@angular/compiler/src/render3/view/util';
 const moment = momentNs;
 
 @Component({
@@ -60,6 +61,8 @@ export class MainComponent implements OnInit {
 
   inIFrame: boolean = false;
 
+  errorMessage:string = "";
+
   constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http, private _adalService: AdalService,) {
     this.endTime = moment.utc();
     this.startTime = this.endTime.clone().add(-1, 'days');
@@ -93,7 +96,32 @@ export class MainComponent implements OnInit {
     }
   }
 
+  private normalizeArmUriForRoute( resourceURI: string) : string {
+    resourceURI = resourceURI.trim();    
+    var resourceUriPattern = /subscriptions\/(.*)\/resourceGroups\/(.*)\/providers\/(.*)/i;
+    var result = resourceURI.match(resourceUriPattern);
+    if(result && result.length === 4){
+      this.errorMessage = "";
+      return `subscriptions/${result[1]}/resourceGroups/${result[2]}/providers/${result[3]}`;
+    }
+    else{
+      this.errorMessage = `Invalid ARM resource id. Resource id must be of the following format.
+e.g..
+  /subscriptions/SUBSCRIPTION_ID/resourceGroups/MY_RG/providers/Microsoft.ContainerService/managedClusters/RESOURCE_NAME`;
+      return resourceURI;
+    }    
+  }
+
   onSubmit(form: any) {
+    
+    form.resourceName = form.resourceName.trim();
+    
+    if(this.selectedResourceType.displayName === "ARM Resource ID"){
+      form.resourceName = this.normalizeArmUriForRoute(form.resourceName);
+    }
+    else{
+      this.errorMessage = "";
+    }
 
     let route = this.selectedResourceType.routeName(form.resourceName);
 
@@ -112,8 +140,9 @@ export class MainComponent implements OnInit {
     let navigationExtras: NavigationExtras = {
       queryParams: timeParams
     }
-
-    this._router.navigate([route], navigationExtras);
+    
+    if(this.errorMessage === "")
+      this._router.navigate([route], navigationExtras);
   }
 
   caseCleansingNavigate(){

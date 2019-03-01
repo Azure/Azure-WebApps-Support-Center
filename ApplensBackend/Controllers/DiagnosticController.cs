@@ -11,6 +11,7 @@ using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Hosting;
 
 namespace AppLensV3.Controllers
 {
@@ -20,10 +21,12 @@ namespace AppLensV3.Controllers
     {
         IDiagnosticClientService _diagnosticClient;
         IEmailNotificationService _emailNotificationService;
+        IHostingEnvironment _env;
 
 
-        public DiagnosticController(IDiagnosticClientService diagnosticClient, IEmailNotificationService emailNotificationService)
+        public DiagnosticController(IHostingEnvironment env, IDiagnosticClientService diagnosticClient, IEmailNotificationService emailNotificationService)
         {
+            this._env = env;
             this._diagnosticClient = diagnosticClient;
             this._emailNotificationService = emailNotificationService;
         }
@@ -122,11 +125,11 @@ namespace AppLensV3.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var responseObject = JsonConvert.DeserializeObject(responseString);
-                    if(response.Headers.Contains("script-etag"))
+                    if (response.Headers.Contains("script-etag"))
                     {
                         Request.HttpContext.Response.Headers.Add("script-etag", response.Headers.GetValues("script-etag").First());
                     }
-                    if (path.ToLower().EndsWith("/diagnostics/publish") && tos.Count > 0)
+                    if (path.ToLower().EndsWith("/diagnostics/publish") && tos.Count > 0 && _env.IsProduction())
                     {
                         await this._emailNotificationService.SendPublishingAlert(alias, detectorId, applensLink, tos);
                     }
