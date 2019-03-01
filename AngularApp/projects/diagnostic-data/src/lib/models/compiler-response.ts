@@ -5,7 +5,6 @@ export interface CompilerResponse {
     pdbBytes: string;
     assemblyName: string;
     scriptETag: string;
-    isCompiled: boolean;
 }
 
 export interface QueryResponse<T> {

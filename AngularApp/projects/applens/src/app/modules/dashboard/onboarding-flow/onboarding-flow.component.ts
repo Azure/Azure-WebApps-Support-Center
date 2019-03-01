@@ -330,9 +330,8 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.publishingPackage = {
       codeString: code,
       id: queryResponse.invocationOutput.metadata.id,
-      // If the script has been recompiled, update dllBytes and pdbBytes with latest values. Otherwise use previous values.
-      dllBytes: queryResponse.compilationOutput.isCompiled ? queryResponse.compilationOutput.assemblyBytes : this.compilationPackage.assemblyBytes,
-      pdbBytes: queryResponse.compilationOutput.isCompiled ? queryResponse.compilationOutput.pdbBytes : this.compilationPackage.pdbBytes,
+      dllBytes: this.compilationPackage.assemblyBytes,
+      pdbBytes: this.compilationPackage.pdbBytes,
       committedByAlias: this.userName
     };
   }
