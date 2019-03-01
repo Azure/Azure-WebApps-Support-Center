@@ -78,7 +78,7 @@ namespace AppLensV3
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowAnyOrigin()
-                .WithExposedHeaders(new string[] {"script-etag"})
+                .WithExposedHeaders(new string[] {"diag-script-etag"})
             );
 
             app.UseAuthentication();

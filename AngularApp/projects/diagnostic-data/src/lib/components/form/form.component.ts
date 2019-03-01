@@ -99,8 +99,8 @@ export class FormComponent extends DataRenderBaseComponent {
             formToExecute.loadingFormResponse = false;
             if(response.body != undefined) {
                // If the script etag returned by the server does not match the previous script-etag, update the values in memory
-              if(response.headers.get('script-etag') != undefined && this.compilationPackage.scriptETag !== response.headers.get('script-etag')) {                
-                this.compilationPackage.scriptETag = response.headers.get('script-etag');
+              if(response.headers.get('diag-script-etag') != undefined && this.compilationPackage.scriptETag !== response.headers.get('diag-script-etag')) {                
+                this.compilationPackage.scriptETag = response.headers.get('diag-script-etag');
                 this.compilationPackage.assemblyName = response.body.compilationOutput.assemblyName;
               }
               formToExecute.formResponse = response.body.invocationOutput;

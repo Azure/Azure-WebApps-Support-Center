@@ -250,8 +250,8 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
           this.buildOutput.push(element);
         });
         // If the script etag returned by the server does not match the previous script-etag, update the values in memory
-        if(response.headers.get('script-etag') != undefined && this.compilationPackage.scriptETag !== response.headers.get('script-etag')) {                
-          this.compilationPackage.scriptETag = response.headers.get('script-etag');
+        if(response.headers.get('diag-script-etag') != undefined && this.compilationPackage.scriptETag !== response.headers.get('diag-script-etag')) {                
+          this.compilationPackage.scriptETag = response.headers.get('diag-script-etag');
           this.compilationPackage.assemblyName = this.queryResponse.compilationOutput.assemblyName;          
           this.compilationPackage.assemblyBytes = this.queryResponse.compilationOutput.assemblyBytes;
           this.compilationPackage.pdbBytes = this.queryResponse.compilationOutput.pdbBytes;

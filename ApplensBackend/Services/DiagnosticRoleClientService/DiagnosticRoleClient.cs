@@ -183,12 +183,12 @@ namespace AppLensV3
         {
             if(!string.IsNullOrWhiteSpace(compilationParameters.AssemblyName))
             {
-                requestMessage.Headers.Add("assembly-name", compilationParameters.AssemblyName);
+                requestMessage.Headers.Add("diag-assembly-name", compilationParameters.AssemblyName);
             }
 
             if(!string.IsNullOrWhiteSpace(compilationParameters.ScriptETag))
             {
-                requestMessage.Headers.Add("script-etag", compilationParameters.ScriptETag);
+                requestMessage.Headers.Add("diag-script-etag", compilationParameters.ScriptETag);
             }
         }
     }

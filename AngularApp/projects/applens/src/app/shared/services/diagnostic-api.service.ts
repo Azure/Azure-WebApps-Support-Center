@@ -144,10 +144,10 @@ export class DiagnosticApiService {
     }
 
     if(additionalParams && additionalParams.scriptETag) {     
-      headers = headers.set('script-etag',additionalParams.scriptETag);
+      headers = headers.set('diag-script-etag',additionalParams.scriptETag);
     }
     if(additionalParams && additionalParams.assemblyName) {     
-      headers = headers.set('assembly-name', encodeURI(additionalParams.assemblyName));
+      headers = headers.set('diag-assembly-name', encodeURI(additionalParams.assemblyName));
     }
 
     return headers;

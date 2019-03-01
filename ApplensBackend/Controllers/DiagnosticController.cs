@@ -100,16 +100,16 @@ namespace AppLensV3.Controllers
             }
             string scriptETag = "";
 
-            if (Request.Headers.ContainsKey("script-etag"))
+            if (Request.Headers.ContainsKey("diag-script-etag"))
             {
-                scriptETag = Request.Headers["script-etag"];
+                scriptETag = Request.Headers["diag-script-etag"];
             }
 
             string assemblyName = "";
 
-            if (Request.Headers.ContainsKey("assembly-name"))
+            if (Request.Headers.ContainsKey("diag-assembly-name"))
             {
-                assemblyName = Request.Headers["assembly-name"];
+                assemblyName = Request.Headers["diag-assembly-name"];
             }
             var response = await this._diagnosticClient.Execute(method, path, body?.ToString(), internalView, new CompilationParameters
             {
@@ -125,9 +125,9 @@ namespace AppLensV3.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var responseObject = JsonConvert.DeserializeObject(responseString);
-                    if (response.Headers.Contains("script-etag"))
+                    if (response.Headers.Contains("diag-script-etag"))
                     {
-                        Request.HttpContext.Response.Headers.Add("script-etag", response.Headers.GetValues("script-etag").First());
+                        Request.HttpContext.Response.Headers.Add("diag-script-etag", response.Headers.GetValues("diag-script-etag").First());
                     }
                     if (path.ToLower().EndsWith("/diagnostics/publish") && tos.Count > 0 && _env.IsProduction())
                     {

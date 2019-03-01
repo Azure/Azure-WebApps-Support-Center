@@ -16,12 +16,12 @@ export class DetectorContainerComponent implements OnInit {
   error: any;
   hideDetectorControl: boolean = false;
 
-   _detector: string;
+   detectorName: string;
 
-  @Input() _detectorSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  @Input() detectorSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
   @Input() set detector(detector: string) {
-    this._detectorSubject.next(detector);
+    this.detectorSubject.next(detector);
   }
 
   constructor(private _route: ActivatedRoute, private _diagnosticService: DiagnosticService,
@@ -29,14 +29,14 @@ export class DetectorContainerComponent implements OnInit {
 
   ngOnInit() {
     this.detectorControlService.update.subscribe(isValidUpdate => {
-      if (isValidUpdate && this._detector) {
+      if (isValidUpdate && this.detectorName) {
         this.refresh();
       }
     });
 
-    this._detectorSubject.subscribe(detector => {
+    this.detectorSubject.subscribe(detector => {
       if (detector) {
-        this._detector = detector;
+        this.detectorName = detector;
         this.refresh();
       }
     });
@@ -49,7 +49,7 @@ export class DetectorContainerComponent implements OnInit {
   }
 
   getDetectorResponse() {
-    this._diagnosticService.getDetector(this._detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
+    this._diagnosticService.getDetector(this.detectorName, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
       this.detectorControlService.shouldRefresh,  this.detectorControlService.isInternalView)
       .subscribe((response: DetectorResponse) => {
         this.shouldHideTimePicker(response);
