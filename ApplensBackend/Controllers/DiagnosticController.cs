@@ -1,8 +1,13 @@
-﻿using System.Net;
+﻿// <copyright file="DiagnosticController.cs" company="Microsoft Corporation">
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// </copyright>
+
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using AppLensV3.Models;
@@ -16,6 +21,9 @@ using System.Net.Http.Headers;
 
 namespace AppLensV3.Controllers
 {
+    /// <summary>
+    /// Diagnostic controller.
+    /// </summary>
     [Route("api")]
     [Authorize]
     public class DiagnosticController : Controller
@@ -32,6 +40,13 @@ namespace AppLensV3.Controllers
             this._emailNotificationService = emailNotificationService;
         }
 
+        private IDiagnosticClientService DiagnosticClient { get; }
+
+        /// <summary>
+        /// Action for invoke request.
+        /// </summary>
+        /// <param name="body">Request body.</param>
+        /// <returns>Task for invoking request.</returns>
         [HttpPost("invoke")]
         [HttpOptions("invoke")]
         public async Task<IActionResult> Invoke([FromBody]JToken body)
@@ -136,7 +151,7 @@ namespace AppLensV3.Controllers
                     }
                     return Ok(responseObject);
                 }
-                else if(response.StatusCode == HttpStatusCode.BadRequest)
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
                     return BadRequest(responseString);
                 }

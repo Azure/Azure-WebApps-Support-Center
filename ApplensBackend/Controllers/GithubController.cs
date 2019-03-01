@@ -1,61 +1,104 @@
-﻿using System.Threading.Tasks;
+﻿// <copyright file="GithubController.cs" company="Microsoft Corporation">
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// </copyright>
+
+using System;
+using System.Threading.Tasks;
 using AppLensV3.Helpers;
-using AppLensV3.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AppLensV3.Controllers
 {
+    /// <summary>
+    /// Github controller.
+    /// </summary>
     [Produces("application/json")]
     [Route("api/github")]
     [Authorize]
     public class GithubController : Controller
     {
-        private IGithubClientService _githubService;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GithubController"/> class.
+        /// </summary>
+        /// <param name="githubService">Github service.</param>
         public GithubController(IGithubClientService githubService)
         {
-            _githubService = githubService;
+            GithubService = githubService;
         }
 
-        [HttpGet("detectortemplate/{name}")]
+        /// <summary>
+        /// Gets github service.
+        /// </summary>
+        private IGithubClientService GithubService { get; }
+
+        /// <summary>
+        /// Get template.
+        /// </summary>
+        /// <param name="name">File name.</param>
+        /// <returns>Task for getting template.</returns>
+        [HttpGet("template/{name}")]
         public async Task<IActionResult> GetTemplate(string name)
         {
-            string content = await _githubService.GetRawFile(GithubConstants.DetectorTemplatePath.Replace("{filename}", name));
+            string content = await GithubService.GetRawFile(GithubConstants.TemplatePath.Replace("{filename}", name));
             return Ok(content);
         }
 
-        [HttpGet("detectors/{id}")]
-        public async Task<IActionResult> GetDetectorFile(string id)
+        /// <summary>
+        /// Get package configuration.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <returns>Task for getting configuration.</returns>
+        [HttpGet("package/{id}/configuration")]
+        public async Task<IActionResult> GetConfiguration(string id)
         {
-            string content = await _githubService.GetDetectorFile(id);
-            return Ok(content);
-        }
-
-        [HttpPost("publishdetector")]
-        public async Task<IActionResult> PublishPackage([FromBody]Package pkg)
-        {
-            if (pkg == null || string.IsNullOrWhiteSpace(pkg.Id) || string.IsNullOrWhiteSpace(pkg.DllBytes))
+            try
             {
-                return BadRequest();
+                var conf = await GithubService.GetConfiguration(id);
+                return Ok(conf);
             }
-
-            await _githubService.Publish(pkg);
-            return Accepted();
+            catch (Exception)
+            {
+                // To be compatible with current package.
+                return Ok(string.Empty);
+            }
         }
 
-        [HttpGet("detectors/{id}/changelist")]
-        public async Task<IActionResult> GetDetectorChangelist(string id)
+        /// <summary>
+        /// Get source file.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <returns>Task for getting source file.</returns>
+        [HttpGet("package/{id}")]
+        public async Task<IActionResult> GetSourceFile(string id)
         {
+            string content = await GithubService.GetSourceFile(id);
+            return Ok(content);
+        }
 
-            var changelist = await _githubService.GetAllCommits(id);
+        /// <summary>
+        /// Get change list.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <returns>Task for getting change list.</returns>
+        [HttpGet("package/{id}/changelist")]
+        public async Task<IActionResult> GetChangelist(string id)
+        {
+            var changelist = await GithubService.GetAllCommits(id);
             return Ok(changelist);
         }
 
-        [HttpGet("detectors/{id}/commit/{sha}")]
-        public async Task<IActionResult> GetDetectorChangelist(string id, string sha)
+        /// <summary>
+        /// Get commit content.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <param name="sha">The commit sha.</param>
+        /// <returns>Task for getting commit content.</returns>
+        [HttpGet("package/{id}/commit/{sha}")]
+        public async Task<IActionResult> GetCommitContent(string id, string sha)
         {
-            var changelist = await _githubService.GetCommitContent(id, sha);
+            var changelist = await GithubService.GetCommitContent(id, sha);
             return Ok(changelist);
         }
     }
