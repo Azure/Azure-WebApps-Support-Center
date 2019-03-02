@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
-import { OnboardingFlowComponent, DevelopMode } from '../../onboarding-flow/onboarding-flow.component';
+import { ActivatedRoute } from '@angular/router';
+import { DevelopMode } from '../../onboarding-flow/onboarding-flow.component';
 
 @Component({
   selector: 'tab-develop',
@@ -10,13 +10,12 @@ import { OnboardingFlowComponent, DevelopMode } from '../../onboarding-flow/onbo
 export class TabDevelopComponent implements OnInit {
 
   DevelopMode = DevelopMode;
-  detectorId: string;
+  id: string;
 
   constructor(private _route: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.detectorId = this._route.parent.snapshot.params['detector'].toLowerCase();
+    this.id = this._route.parent.snapshot.params['detector'].toLowerCase();
   }
-
 }

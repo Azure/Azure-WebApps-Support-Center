@@ -44,10 +44,12 @@ export class DiagnosticApiService {
 
   public getDetectors(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {
     let path = `${version}${resourceId}/detectors`;
+    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body).pipe(retry(1), map(response => response.map(detector => detector.metadata)));
+  }
 
-    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body).pipe(retry(1),map(
-      response => response.map(detector => detector.metadata))
-    );
+  public getGists(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {
+    let path = `${version}${resourceId}/gists`;
+    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body).pipe(retry(1), map(response => response.map(gist => gist.metadata)));
   }
 
   public getCompilerResponse(version: string, resourceId: string, body: any, startTime?: string, endTime?: string,
@@ -74,8 +76,8 @@ export class DiagnosticApiService {
   public getLocalDevelopmentResponse(detectorId: string, version: string, resourceId: string, body: any,
       startTime?: string, endTime?: string): Observable<string> {
     let path = resourceId;
-    let url = `${this.diagnosticApi}api/localdev?detectorId=${detectorId}`;
-    let method = HttpMethod.POST;
+    var url: string = `${this.diagnosticApi}api/localdev?detectorId=${detectorId}`;
+    let method: HttpMethod = HttpMethod.POST;
     let request = this._httpClient.post<string>(url, body, {
       headers: this._getHeaders(path, method)
     });
@@ -83,23 +85,21 @@ export class DiagnosticApiService {
     return this._cacheService.get(this.getCacheKey(method, path), request, true);
   }
 
-  public publishDetector(resourceId: string, emailRecipients: string, packageToPublish: Package): Observable<any> {
+  public publishPackage(resourceId: string, emailRecipients: string, packageToPublish: Package): Observable<any> {
     let path = `${resourceId}/diagnostics/publish`;
 
     return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true, true, emailRecipients);
   }
 
-  public getDetectorChangelist(detectorId: string): Observable<any> {
-    let url = `${this.diagnosticApi}api/github/detectors/${detectorId}/changelist`;
-
+  public getChangelist(id: string): Observable<any> {
+    let url: string = `${this.diagnosticApi}api/github/package/${id}/changelist`;
     return this._httpClient.get(url, {
       headers: this._getHeaders()
     });
   }
 
-  public getCommitContent(detectorId: string, sha: string): Observable<any> {
-    let url = `${this.diagnosticApi}api/github/detectors/${detectorId}/commit/${sha}`;
-
+  public getCommitContent(id: string, sha: string): Observable<any> {
+    let url: string = `${this.diagnosticApi}api/github/package/${id}/commit/${sha}`;
     return this._httpClient.get(url, {
       headers: this._getHeaders()
     });

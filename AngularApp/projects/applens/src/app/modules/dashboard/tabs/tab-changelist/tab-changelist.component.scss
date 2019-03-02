@@ -1,0 +1,74 @@
+.diff-view {
+  height: calc(100vh - 100px);
+}
+
+a:active {
+  color: blue;
+}
+.selected {
+  background-color: #cfd8dc !important;
+  color: white;
+}
+.selected {
+  background-color: #cfd8dc !important;
+  color: white;
+}
+.commits-table {
+  margin: 0 0 2em 0;
+  list-style-type: none;
+  padding: 0;
+  width: 160px;
+}
+.commits-table li {
+  cursor: pointer;
+  position: relative;
+  left: 0;
+  background-color: #eee;
+  margin: 0.7em 0.1em;
+  padding: 0.3em 0;
+  height: 30px;
+  width: 150px;
+  border-radius: 4px;
+}
+.commits-table li.selected:hover {
+  background-color: #bbd8dc !important;
+  color: white;
+}
+.commits-table li:hover {
+  color: #607d8b;
+  background-color: #ddd;
+  left: 0.1em;
+}
+.commits-table .text {
+  position: relative;
+  top: -3px;
+}
+.commits-table .badge {
+  display: inline-block;
+  font-size: small;
+  color: white;
+  padding: 0.8em 0.7em 0 0.7em;
+  background-color: #607d8b;
+  line-height: 1em;
+  position: relative;
+  left: -1px;
+  top: -4px;
+  height: 30px;
+  margin-right: 0.3em;
+  border-radius: 4px 0 0 4px;
+}
+
+.commit-info {
+  margin-left: 0px;
+  margin-right: 0px;
+  display: inline-block;
+  width: 11%;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.commit-editor {
+  margin-left: 0px;
+  padding-left: 0;
+  width: 89%;
+}

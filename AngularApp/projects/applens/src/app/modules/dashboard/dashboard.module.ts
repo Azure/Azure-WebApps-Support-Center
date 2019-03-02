@@ -29,8 +29,13 @@ import { TabMonitoringComponent } from './tabs/tab-monitoring/tab-monitoring.com
 import { TabMonitoringDevelopComponent } from './tabs/tab-monitoring-develop/tab-monitoring-develop.component';
 import { TabAnalyticsDevelopComponent } from './tabs/tab-analytics-develop/tab-analytics-develop.component';
 import { TabAnalyticsDashboardComponent } from './tabs/tab-analytics-dashboard/tab-analytics-dashboard.component';
-import { TabDetectorChangelistComponent } from './tabs/tab-detector-changelist/tab-detector-changelist.component';
 import { DiagnosticSiteService } from 'diagnostic-data';
+import { GistComponent } from './gist/gist.component';
+import { TabGistCommonComponent } from './tabs/tab-gist-common/tab-gist-common.component';
+import { TabGistDevelopComponent } from './tabs/tab-gist-develop/tab-gist-develop.component';
+import { TabChangelistComponent } from './tabs/tab-changelist/tab-changelist.component';
+import { GistChangelistComponent } from './gist-changelist/gist-changelist.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -62,6 +67,26 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
         component: OnboardingFlowComponent
       },
       {
+        path: 'createGist',
+        component: GistComponent
+      },
+      {
+        path: 'gists/:gist',
+        component: TabGistCommonComponent,
+        children: [
+          {
+            path: '',
+            component: TabGistDevelopComponent,
+          }, {
+            path: 'edit',
+            redirectTo: ''
+          },{
+            path: 'changelist',
+            component: TabChangelistComponent
+          }
+        ]
+      },
+      {
         path: 'detectors/:detector',
         component: TabCommonComponent,
         children: [
@@ -78,7 +103,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
             component: TabDevelopComponent
           },{
             path: 'changelist',
-            component: TabDetectorChangelistComponent
+            component: TabChangelistComponent
           },
           {
             path: 'datasource',
@@ -117,7 +142,8 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     MonacoEditorModule.forRoot(),
     AngularSplitModule,
     CollapsibleMenuModule,
-    NgxSmartModalModule.forRoot()
+    NgxSmartModalModule.forRoot(),
+    NgSelectModule
   ],
   providers: [
     ApplensDiagnosticService,
@@ -132,8 +158,8 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     { provide: CommsService, useExisting: ApplensCommsService },
     { provide: DiagnosticSiteService, useExisting: ResourceService }
   ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent,
-    SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent,
-    TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, TabDetectorChangelistComponent]
+  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent, 
+    SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent, 
+    TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, GistComponent, TabGistCommonComponent, TabGistDevelopComponent, TabChangelistComponent, GistChangelistComponent]
 })
 export class DashboardModule { }

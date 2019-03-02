@@ -1,7 +1,7 @@
 
 import {filter} from 'rxjs/operators';
 import { Component, OnInit, PipeTransform, Pipe } from '@angular/core';
-import { Router, ActivatedRoute, NavigationExtras, NavigationEnd } from '@angular/router';
+import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from '@angular/router';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { CollapsibleMenuItem } from '../../../collapsible-menu/components/collapsible-menu-item/collapsible-menu-item.component';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
@@ -18,6 +18,8 @@ export class SideNavComponent implements OnInit {
   currentRoutePath: string[];
 
   categories: CollapsibleMenuItem[] = [];
+
+  gists: CollapsibleMenuItem[] = [];
 
   searchValue: string;
 
@@ -40,16 +42,27 @@ export class SideNavComponent implements OnInit {
     }
   ];
 
-  createNew: CollapsibleMenuItem = {
-    label: 'New Detector',
-    onClick: () => {
-      this.navigateTo('create');
+  createNew: CollapsibleMenuItem[] = [{
+      label: 'New Detector',
+      onClick: () => {
+        this.navigateTo('create');
+      },
+      expanded: false,
+      subItems: null,
+      isSelected: null,
+      icon: null
     },
-    expanded: false,
-    subItems: null,
-    isSelected: null,
-    icon: null
-  };
+    {
+      label: 'New Gist',
+      onClick: () => {
+        this.navigateTo('createGist');
+      },
+      expanded: false,
+      subItems: null,
+      isSelected: null,
+      icon: null
+    }
+  ];
 
   ngOnInit() {
     this.initializeDetectors();
@@ -109,6 +122,38 @@ export class SideNavComponent implements OnInit {
       // TODO: handle detector route not found
       if (error && error.status === 404) {
         this.getDetectorsRouteNotFound = true;
+      }
+    });
+
+    this._diagnosticApiService.getGists().subscribe(gistList => {
+      if (gistList) {
+        gistList.forEach(element => {
+          let onClick = () => {
+            this.navigateTo(`gists/${element.id}`);
+          };
+
+          let isSelected = () => {
+            return this.currentRoutePath && this.currentRoutePath.join('/') === `gists/${element.id}`;
+          };
+
+          let category = element.category ? element.category.split(",") : ["Uncategorized"];
+          let menuItem = new CollapsibleMenuItem(element.name, onClick, isSelected);
+
+          category.forEach(c => {
+            let categoryMenuItem = this.gists.find((cat: CollapsibleMenuItem) => cat.label === c);
+            if (!categoryMenuItem) {
+              categoryMenuItem = new CollapsibleMenuItem(c, null, null, null, true);
+              this.gists.push(categoryMenuItem);
+            }
+  
+            categoryMenuItem.subItems.push(menuItem);
+          });
+        });
+      }
+    },
+    error => {
+      // TODO: handle detector route not found
+      if (error && error.status === 404) {
       }
     });
   }

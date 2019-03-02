@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TabDetectorChangelistComponent } from './tab-detector-changelist.component';
+import { TabChangelistComponent } from './tab-changelist.component';
 
 describe('TabDetectorChangelistComponent', () => {
-  let component: TabDetectorChangelistComponent;
-  let fixture: ComponentFixture<TabDetectorChangelistComponent>;
+  let component: TabChangelistComponent;
+  let fixture: ComponentFixture<TabChangelistComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TabDetectorChangelistComponent ]
+      declarations: [ TabChangelistComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TabDetectorChangelistComponent);
+    fixture = TestBed.createComponent(TabChangelistComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

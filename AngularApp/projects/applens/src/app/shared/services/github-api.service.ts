@@ -1,34 +1,44 @@
 import { Injectable } from '@angular/core';
 import { DiagnosticApiService } from './diagnostic-api.service';
 import { Observable } from 'rxjs';
-import { DetectorCommit } from '../models/detector-commit';
+import { Commit } from '../models/commit';
+import { Dependency } from '../models/package';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class GithubApiService {
 
   constructor(private _diagnosticApiService: DiagnosticApiService) { }
 
-  public getDetectorTemplate(name): Observable<string> {
-    return this._diagnosticApiService.get<string>(`api/github/detectortemplate/${name}`, true);
+  public getTemplate(name: string): Observable<string> {
+    return this._diagnosticApiService.get<string>(`api/github/template/${name}`, true);
   }
 
-  public getDetectorFile(id: string): Observable<string> {
-    return this._diagnosticApiService.get<string>(`api/github/detectors/${id}`, true);
+  public getSourceFile(id: string): Observable<string> {
+    return this._diagnosticApiService.get<string>(`api/github/package/${id}`, true);
   }
 
   public getSystemInvokerFile(id: string): Observable<string> {
-    return this._diagnosticApiService.get<string>(`api/github/detectors/${id}`, true);
+    return this._diagnosticApiService.get<string>(`api/github/package/${id}`, true);
   }
 
   public getSystemMonitoringFile(detectorId: string, invokerId: string): Observable<string> {
-    return this._diagnosticApiService.get<string>(`api/github/detectors/${detectorId}/statistics/${invokerId}`, true);
+    return this._diagnosticApiService.get<string>(`api/github/package/${detectorId}/statistics/${invokerId}`, true);
   }
 
-  public getDetectorChangelist(detectorId: string): Observable<DetectorCommit[]> {
-    return this._diagnosticApiService.getDetectorChangelist(detectorId);
+  public getSourceReference(id: string, version: string): Observable<string>{
+    return this.getCommitContent(id, version);
   }
-  
-   public getCommitContent(detectorId: string, sha: string): Observable<string> {
-    return this._diagnosticApiService.getCommitContent(detectorId, sha);
+
+  public getChangelist(id: string): Observable<Commit[]>{
+    return this._diagnosticApiService.getChangelist(id);
+  }
+
+  public getCommitContent(id: string, sha: string): Observable<string>{
+    return this._diagnosticApiService.getCommitContent(id, sha);
+  }
+
+  public  getConfiguration(id: string): Observable<object> {
+    return this._diagnosticApiService.get<string>(`api/github/package/${id}/configuration`, true).pipe(map(conf => JSON.parse(conf)));
   }
 }

@@ -1,156 +1,162 @@
-@import 'styles/common/variables';
-@import 'styles/controls/buttons';
+@import "styles/common/variables";
+@import "styles/controls/buttons";
+@import "~@ng-select/ng-select/themes/default.theme.css";
 
 .ngx-datatable.bootstrap {
-    border: 1px solid #dddddd;
+  border: 1px solid #dddddd;
 }
 
 .ngx-datatable.bootstrap .datatable-body .datatable-body-row .datatable-body-cell {
-    padding-right: 15px;
+  padding-right: 15px;
 }
 
 .ngx-datatable.bootstrap .datatable-body .datatable-body-row.datatable-row-even {
-    background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .ngx-datatable.bootstrap .datatable-body .datatable-body-row:hover {
-    background-color: rgba(182, 235, 255, 0.22);
+  background-color: rgba(182, 235, 255, 0.22);
 }
 
 .ngx-datatable.bootstrap .datatable-footer {
-    border-top: 1px solid #d0d0d0;
+  border-top: 1px solid #d0d0d0;
 }
 
 .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled).active a {
-    background-color: #aeaeae;
+  background-color: #aeaeae;
 }
 
 .ngx-datatable.bootstrap .datatable-header .datatable-header-cell {
-    padding: 0.15rem 0.75rem;
-    border-bottom: none;
+  padding: 0.15rem 0.75rem;
+  border-bottom: none;
 }
 
 .ngx-datatable.bootstrap .datatable-header,
 .ngx-datatable.bootstrap .datatable-footer {
-    background-color: #eaeaea;
-    font-weight: 600;
+  background-color: #eaeaea;
+  font-weight: 600;
 }
 
 .ngx-datatable.bootstrap .datatable-footer,
 .ngx-datatable.bootstrap .datatable-footer .datatable-pager a,
 .ngx-datatable.bootstrap .datatable-header .datatable-header-cell .datatable-header-cell-label {
-    color: #3a3a3a;
+  color: #3a3a3a;
 }
-
 
 /* You can add global styles to this file, and also import other style files */
 body {
-    margin: 0px;
+  margin: 0px;
 }
 
-.skin-purple-light .sidebar-menu > li:hover > a, .skin-purple-light .sidebar-menu > li.active > a {
-    background: #ececec;
+.skin-purple-light .sidebar-menu > li:hover > a,
+.skin-purple-light .sidebar-menu > li.active > a {
+  background: #ececec;
 }
 
 .critical-color {
-    color: #ff0000;
+  color: #ff0000;
 }
 
 .warning-color {
-    color: #ff9104;
+  color: #ff9104;
 }
 
 .success-color {
-    color: #3da907;
+  color: #3da907;
 }
 
 .info-color {
-    color: #3a9bc7;
+  color: #3a9bc7;
 }
 
 .color-ghostwhite {
-    color: #e0e0e0;
+  color: #e0e0e0;
 }
 
 .wide-modal {
-    max-width: 100%;
-    width: 600px;
-  }
+  max-width: 100%;
+  width: 600px;
+}
+
+.package-modal {
+  max-width: 100% !important;
+  max-height: 100%;
+}
 
 .nsm-dialog.nsm-dialog-open {
   padding: 0px;
   max-width: 560px;
- }
+}
 
-  .wide-modal .nsm-content {
-      width: 560px;
-      padding: 0px;
-  }
+.wide-modal .nsm-content {
+  width: 560px;
+  padding: 0px;
+}
 
 .panel.with-nav-tabs .panel-heading.app-nav-bar {
-    padding: 5px 5px 0 5px;
+  padding: 5px 5px 0 5px;
 }
-.panel.with-nav-tabs .nav-tabs{
-	border-bottom: none;
+.panel.with-nav-tabs .nav-tabs {
+  border-bottom: none;
 }
-.panel.with-nav-tabs .nav-justified{
-	margin-bottom: -1px;
+.panel.with-nav-tabs .nav-justified {
+  margin-bottom: -1px;
 }
 
 .nav > li > a {
-    padding: 5px 15px;
+  padding: 5px 15px;
 }
 
 .nav-tabs > li {
-    outline: none;
+  outline: none;
 }
 
 /********************************************************************/
 /*** PANEL DEFAULT ***/
 .with-nav-tabs.panel-default .nav-tabs > li > a {
-    background-color: #eeeeee;
+  background-color: #eeeeee;
 }
 
 .with-nav-tabs.panel-default .nav-tabs > li > a,
 .with-nav-tabs.panel-default .nav-tabs > li > a:hover,
 .with-nav-tabs.panel-default .nav-tabs > li > a:focus {
-    color: rgb(49, 49, 49);
+  color: rgb(49, 49, 49);
 }
 .with-nav-tabs.panel-default .nav-tabs > .open > a,
 .with-nav-tabs.panel-default .nav-tabs > .open > a:hover,
 .with-nav-tabs.panel-default .nav-tabs > .open > a:focus,
 .with-nav-tabs.panel-default .nav-tabs > li > a:hover,
 .with-nav-tabs.panel-default .nav-tabs > li > a:focus {
-    color: rgb(37, 37, 37);
-	background-color: rgb(233, 233, 233);
-	border-color: transparent;
+  color: rgb(37, 37, 37);
+  background-color: rgb(233, 233, 233);
+  border-color: transparent;
 }
 .with-nav-tabs.panel-default .nav-tabs > li.active > a,
 .with-nav-tabs.panel-default .nav-tabs > li.active > a:hover,
 .with-nav-tabs.panel-default .nav-tabs > li.active > a:focus {
-	color: rgb(26, 26, 26);
-	background-color: #fff;
-	border-color: #ddd;
-	border-bottom-color: transparent;
+  color: rgb(26, 26, 26);
+  background-color: #fff;
+  border-color: #ddd;
+  border-bottom-color: transparent;
 }
 .with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu {
-    background-color: #f5f5f5;
-    border-color: #ddd;
+  background-color: #f5f5f5;
+  border-color: #ddd;
 }
 .with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > li > a {
-    color: #777;   
+  color: #777;
 }
 .with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
 .with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
-    background-color: #ddd;
+  background-color: #ddd;
 }
 .with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > .active > a,
 .with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
 .with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
-    color: #fff;
-    background-color: #555;
+  color: #fff;
+  background-color: #555;
 }
 
 .cc-modal {
-    max-width: 800px;
-  }
+  max-width: 800px;
+}

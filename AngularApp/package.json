@@ -32,6 +32,7 @@
     "@angular/platform-browser-dynamic": "6.1.10",
     "@angular/router": "6.1.10",
     "@angular/upgrade": "6.1.10",
+    "@ng-select/ng-select": "^2.16.0",
     "@swimlane/ngx-datatable": "^13.1.0",
     "@types/applicationinsights-js": "^1.0.9",
     "adal-angular4": "^3.0.16",

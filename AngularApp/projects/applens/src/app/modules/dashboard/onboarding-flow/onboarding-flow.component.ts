@@ -9,8 +9,9 @@ import { ApplensDiagnosticService } from '../services/applens-diagnostic.service
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import * as momentNs from 'moment';
 import { DetectorControlService } from 'diagnostic-data';
-import { Observable } from 'rxjs';
+import { Observable, of, forkJoin, BehaviorSubject } from 'rxjs';
 import { AdalService } from 'adal-angular4';
+import { flatMap, map } from 'rxjs/operators';
 
 const moment = momentNs;
 
@@ -27,13 +28,13 @@ export enum DevelopMode {
   styleUrls: ['./onboarding-flow.component.scss']
 })
 export class OnboardingFlowComponent implements OnInit, OnDestroy {
-
   @Input() mode: DevelopMode = DevelopMode.Create;
-  @Input() detectorId: string = '';
+  @Input() id: string = '';
   @Input() dataSource: string = '';
   @Input() timeRange: string = '';
   @Input() startTime: momentNs.Moment = moment.utc().subtract(1, 'days');
-  @Input() endTime: momentNs.Moment =  moment.utc();
+  @Input() endTime: momentNs.Moment = moment.utc();
+  @Input() gistMode: boolean = false;
 
   DevelopMode = DevelopMode;
 
@@ -41,6 +42,8 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   fileName: string;
   editorOptions: any;
   code: string;
+  reference: object = {};
+  configuration: object = {};
   resourceId: string;
   queryResponse: QueryResponse<DetectorResponse>;
   errorState: any;
@@ -55,6 +58,9 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   runButtonText: string;
   runButtonIcon: string;
   publishButtonText: string;
+  gists: string[] = [];
+  selectedGist: string = '';
+  temporarySelection: object = {};
 
   modalPublishingButtonText: string;
   modalPublishingButtonDisabled: boolean;
@@ -62,12 +68,15 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   alertClass: string;
   alertMessage: string;
   showAlert: boolean;
- 
+
   compilationPackage: CompilationProperties;
+
+  initialized = false;
+
   private publishingPackage: Package;
   private userName: string;
 
-  private emailRecipients: string ='';
+  private emailRecipients: string = '';
 
   constructor(private cdRef: ChangeDetectorRef, private githubService: GithubApiService, private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService,
     private _detectorControlService: DetectorControlService, private _adalService: AdalService, public ngxSmartModalService: NgxSmartModalService) {
@@ -89,7 +98,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.runButtonDisabled = false;
     this.publishButtonDisabled = true;
     this.localDevText = "Download Local Detector Package";
-    this.localDevUrl ="";
+    this.localDevUrl = "";
     this.localDevIcon = "fa fa-download";
     this.devOptionsIcon = "fa fa-download";
     this.runButtonText = "Run";
@@ -100,46 +109,20 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.showAlert = false;
 
     this.userName = this._adalService.userInfo.profile ? this._adalService.userInfo.profile.upn : '';
-    this.emailRecipients = this.userName.replace('@microsoft.com','');
+    this.emailRecipients = this.userName.replace('@microsoft.com', '');
   }
 
   ngOnInit() {
-    this.resourceId = this.resourceService.getCurrentResourceId();
-    this.hideModal = localStorage.getItem("localdevmodal.hidden") === "true";
-    let detectorFile: Observable<string>;
-    this.compilationPackage = new CompilationProperties();
-    if (this.mode === DevelopMode.Create) {
-      // CREATE FLOW
-      detectorFile = this.githubService.getDetectorTemplate(this.resourceService.templateFileName);
-      this.fileName = "new.csx";
-      this.startTime = this._detectorControlService.startTime;
-      this.endTime = this._detectorControlService.endTime;
+    if (!this.initialized) {
+      this.initialize();
+      this.initialized = true;
     }
-    else if (this.mode === DevelopMode.Edit) {
-      // EDIT FLOW
-      this.fileName = `${this.detectorId}.csx`;
-      detectorFile = this.githubService.getDetectorFile(this.detectorId);
-      this.startTime = this._detectorControlService.startTime;
-      this.endTime = this._detectorControlService.endTime;
-    }
-    else if (this.mode === DevelopMode.EditMonitoring) {
-      // SYSTEM MONITORING FLOW
-      this.fileName = '__monitoring.csx';
-      detectorFile = this.githubService.getDetectorFile("__monitoring");
-    }
-    else if (this.mode === DevelopMode.EditAnalytics) {
-      // SYSTEM ANALYTICS FLOW
-      this.fileName = '__analytics.csx';
-      detectorFile = this.githubService.getDetectorFile("__analytics");
-    }
+  }
 
-    detectorFile.subscribe(code => {
-      this.code = code;
-      if (!this.hideModal)
-      {
-        this.ngxSmartModalService.getModal('devModeModal').open();
-      }
-    })
+  ngOnChanges() {
+    if (this.initialized) {
+      this.initialize();
+    }
   }
 
   ngOnDestroy() {
@@ -147,19 +130,50 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     //this.saveProgress();
   }
 
+  gistVersionChange(event: string) {
+    this.temporarySelection[this.selectedGist] = event;
+  }
+
+  confirm() {
+    Object.keys(this.temporarySelection).forEach(id => {
+      if (this.temporarySelection[id]['version'] !== this.configuration['dependencies'][id]) {
+        this.configuration['dependencies'][id] = this.temporarySelection[id]['version'];
+        this.reference[id] = this.temporarySelection[id]['code'];
+      }
+    });
+
+    this.ngxSmartModalService.getModal('packageModal').close();
+  }
+
+  cancel() {
+    this.selectedGist = '';
+    this.temporarySelection = {};
+    this.ngxSmartModalService.getModal('packageModal').close();
+  }
+
+  managePackage() {
+    this.gists = Object.keys(this.configuration['dependencies']);
+    this.selectedGist = '';
+    this.temporarySelection = {};
+
+    this.gists.forEach(g => this.temporarySelection[g] = { version: this.configuration['dependencies'][g], code: '' });
+
+    this.ngxSmartModalService.getModal('packageModal').open();
+  }
+
   saveProgress() {
-    localStorage.setItem(`${this.detectorId}_code`, this.code);
+    localStorage.setItem(`${this.id}_code`, this.code);
   }
 
   retrieveProgress() {
-    let savedCode: string = localStorage.getItem(`${this.detectorId}_code`)
+    let savedCode: string = localStorage.getItem(`${this.id}_code`)
     if (savedCode) {
       this.code = savedCode;
     }
   }
 
   deleteProgress() {
-    localStorage.removeItem(`${this.detectorId}_code`);
+    localStorage.removeItem(`${this.id}_code`);
   }
 
   ngAfterViewInit() {
@@ -190,32 +204,32 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
 
     localStorage.setItem("localdevmodal.hidden", this.hideModal === true ? "true" : "false");
 
-    this.diagnosticApiService.prepareLocalDevelopment(body, this.detectorId, this._detectorControlService.startTimeString,
+    this.diagnosticApiService.prepareLocalDevelopment(body, this.id, this._detectorControlService.startTimeString,
       this._detectorControlService.endTimeString, this.dataSource, this.timeRange)
-    .subscribe((response: string) => {
-      this.localDevButtonDisabled = false;
-      this.localDevUrl = response;
-      this.localDevText = "Download Local Development Package";
-      this.localDevIcon = "fa fa-download";
-     // window.open(response);
+      .subscribe((response: string) => {
+        this.localDevButtonDisabled = false;
+        this.localDevUrl = response;
+        this.localDevText = "Download Local Development Package";
+        this.localDevIcon = "fa fa-download";
+        // window.open(response);
 
-      var element = document.createElement('a');
-      element.setAttribute('href', response);
-      element.setAttribute('download', "Local Development Package");
+        var element = document.createElement('a');
+        element.setAttribute('href', response);
+        element.setAttribute('download', "Local Development Package");
 
-      element.style.display = 'none';
-      document.body.appendChild(element);
+        element.style.display = 'none';
+        document.body.appendChild(element);
 
-      element.click();
+        element.click();
 
-      document.body.removeChild(element);
-    }
-    , ((error: any) => {
-      this.localDevButtonDisabled = false;
-      this.publishingPackage = null;
-      this.localDevText = "Something went wrong";
-      this.localDevIcon = "fa fa-download";
-    }));
+        document.body.removeChild(element);
+      }
+        , ((error: any) => {
+          this.localDevButtonDisabled = false;
+          this.publishingPackage = null;
+          this.localDevText = "Something went wrong";
+          this.localDevIcon = "fa fa-download";
+        }));
   }
 
   runCompilation() {
@@ -224,7 +238,9 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     let currentCode = this.code;
 
     var body = {
-      script: this.code
+      script: this.code,
+      references: this.reference,
+      entityType: this.gistMode ? 'gist' : 'signal'
     };
 
     this.runButtonDisabled = true;
@@ -235,12 +251,12 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
 
     let isSystemInvoker: boolean = this.mode === DevelopMode.EditMonitoring || this.mode === DevelopMode.EditAnalytics;
 
-    this.diagnosticApiService.getCompilerResponse(body, isSystemInvoker, this.detectorId, this._detectorControlService.startTimeString, 
-        this._detectorControlService.endTimeString, this.dataSource, this.timeRange, {
-          scriptETag: this.compilationPackage.scriptETag,
-          assemblyName: this.compilationPackage.assemblyName,
-          getFullResponse: true
-        })
+    this.diagnosticApiService.getCompilerResponse(body, isSystemInvoker, this.id, this._detectorControlService.startTimeString,
+      this._detectorControlService.endTimeString, this.dataSource, this.timeRange, {
+        scriptETag: this.compilationPackage.scriptETag,
+        assemblyName: this.compilationPackage.assemblyName,
+        getFullResponse: true
+      })
       .subscribe((response: any) => {
         this.queryResponse = response.body;
         this.runButtonDisabled = false;
@@ -250,7 +266,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
           this.buildOutput.push(element);
         });
         // If the script etag returned by the server does not match the previous script-etag, update the values in memory
-        if(response.headers.get('diag-script-etag') != undefined && this.compilationPackage.scriptETag !== response.headers.get('diag-script-etag')) {                
+        if(response.headers.get('diag-script-etag') != undefined && this.compilationPackage.scriptETag !== response.headers.get('diag-script-etag')) {
           this.compilationPackage.scriptETag = response.headers.get('diag-script-etag');
           this.compilationPackage.assemblyName = this.queryResponse.compilationOutput.assemblyName;          
           this.compilationPackage.assemblyBytes = this.queryResponse.compilationOutput.assemblyBytes;
@@ -267,7 +283,8 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
           this.buildOutput.push("========== Build: 0 succeeded, 1 failed ==========");
         }
 
-        if (this.queryResponse.runtimeSucceeded != null && this.queryResponse.runtimeSucceeded === false) {
+        if ((!this.gistMode && this.queryResponse.runtimeSucceeded != null && this.queryResponse.runtimeSucceeded === false) ||
+          (this.gistMode && this.queryResponse.compilationOutput != null && this.queryResponse.compilationOutput.compilationSucceeded === false)) {
           this.publishButtonDisabled = true;
         }
         this.localDevButtonDisabled = false;
@@ -290,8 +307,10 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   }
 
   publish() {
-
-    if (!this.publishingPackage || this.publishingPackage.codeString === '' || this.publishingPackage.id === '' || this.publishingPackage.dllBytes === '') {
+    if (!this.publishingPackage ||
+      this.publishingPackage.codeString === '' ||
+      this.publishingPackage.id === '' ||
+      this.publishingPackage.dllBytes === '') {
       return;
     }
 
@@ -320,20 +339,52 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     });
   }
 
-  private preparePublishingPackage(queryResponse: QueryResponse<DetectorResponse>, code: string) {
+  private UpdateConfiguration(queryResponse: QueryResponse<DetectorResponse>) {
+    let temp = {};
+    let newPackage = [];
+    let ids = new Set(Object.keys(this.configuration['dependencies']));
+    queryResponse.compilationOutput.references.forEach(r => {
+      if (ids.has(r)) {
+        temp[r] = this.configuration['dependencies'][r];
+      } else {
+        newPackage.push(r);
+      }
+    });
 
-    if (queryResponse.invocationOutput.metadata.author !== null && queryResponse.invocationOutput.metadata.author !== "" && this.emailRecipients.indexOf(queryResponse.invocationOutput.metadata.author) < 0)
-    {
-        this.emailRecipients +=  ';' + queryResponse.invocationOutput.metadata.author;
+    this.configuration['dependencies'] = temp;
+    this.configuration['id'] = queryResponse.invocationOutput.metadata.id;
+    this.configuration['name'] = queryResponse.invocationOutput.metadata.name;
+    this.configuration['author'] = queryResponse.invocationOutput.metadata.author;
+    this.configuration['description'] = queryResponse.invocationOutput.metadata.description;
+    this.configuration['category'] = queryResponse.invocationOutput.metadata.category;
+    this.configuration['type'] = this.gistMode ? 'Gist' : 'Detector';
+    return newPackage;
+  }
+
+  private preparePublishingPackage(queryResponse: QueryResponse<DetectorResponse>, code: string) {
+    if (queryResponse.invocationOutput.metadata.author !== null && queryResponse.invocationOutput.metadata.author !== "" && this.emailRecipients.indexOf(queryResponse.invocationOutput.metadata.author) < 0) {
+      this.emailRecipients += ';' + queryResponse.invocationOutput.metadata.author;
     }
 
-    this.publishingPackage = {
-      codeString: code,
-      id: queryResponse.invocationOutput.metadata.id,
-      dllBytes: this.compilationPackage.assemblyBytes,
-      pdbBytes: this.compilationPackage.pdbBytes,
-      committedByAlias: this.userName
-    };
+    let newPackage = this.UpdateConfiguration(queryResponse);
+
+    let update = of(null);
+    if (newPackage.length > 0) {
+      update = forkJoin(newPackage.map(r => this.githubService.getChangelist(r).pipe(
+        map(c => this.configuration['dependencies'][r] = c[c.length - 1].sha),
+        flatMap(v => this.githubService.getCommitContent(r, v).pipe(map(s => this.reference[r] = s))))))
+    }
+
+    update.subscribe(_ => {
+      this.publishingPackage = {
+        id: queryResponse.invocationOutput.metadata.id,
+        codeString: code,
+        committedByAlias: this.userName,
+        dllBytes: queryResponse.compilationOutput.assemblyBytes,
+        pdbBytes: queryResponse.compilationOutput.pdbBytes,
+        packageConfig: JSON.stringify(this.configuration)
+      };
+    });
   }
 
   private showAlertBox(alertClass: string, message: string) {
@@ -346,5 +397,67 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.showAlert = false;
     this.alertClass = '';
     this.alertMessage = '';
+  }
+
+  private initialize() {
+    this.resourceId = this.resourceService.getCurrentResourceId();
+    this.hideModal = localStorage.getItem("localdevmodal.hidden") === "true";
+    let detectorFile: Observable<string>;
+    if (this.mode === DevelopMode.Create) {
+      // CREATE FLOW
+      let templateFileName = (this.gistMode ? "Gist_" : "Detector_") + this.resourceService.templateFileName;
+      detectorFile = this.githubService.getTemplate(templateFileName);
+      this.fileName = "new.csx";
+      this.startTime = this._detectorControlService.startTime;
+      this.endTime = this._detectorControlService.endTime;
+    }
+    else if (this.mode === DevelopMode.Edit) {
+      // EDIT FLOW
+      this.fileName = `${this.id}.csx`;
+      detectorFile = this.githubService.getSourceFile(this.id);
+      this.startTime = this._detectorControlService.startTime;
+      this.endTime = this._detectorControlService.endTime;
+    }
+    else if (this.mode === DevelopMode.EditMonitoring) {
+      // SYSTEM MONITORING FLOW
+      this.fileName = '__monitoring.csx';
+      detectorFile = this.githubService.getSourceFile("__monitoring");
+    }
+    else if (this.mode === DevelopMode.EditAnalytics) {
+      // SYSTEM ANALYTICS FLOW
+      this.fileName = '__analytics.csx';
+      detectorFile = this.githubService.getSourceFile("__analytics");
+    }
+
+    let configuration = of(null);
+    if (this.id !== '') {
+      configuration = this.githubService.getConfiguration(this.id).pipe(
+        map(config => {
+          if (!('dependencies' in config)) {
+            config['dependencies'] = {};
+          }
+
+          this.configuration = config;
+          return this.configuration['dependencies'];
+        }),
+        flatMap(dep => {
+          let keys = Object.keys(dep);
+          if (keys.length === 0) return of([]);
+          return forkJoin(Object.keys(dep).map(key => this.githubService.getSourceReference(key, dep[key])));
+        }));
+    }
+
+    forkJoin(detectorFile, configuration).subscribe(res => {
+      this.code = res[0];
+      if (res[1] !== null) {
+        Object.keys(this.configuration['dependencies']).forEach((name, index) => {
+          this.reference[name] = res[1][index];
+        });
+      }
+
+      if (!this.hideModal && !this.gistMode) {
+        this.ngxSmartModalService.getModal('devModeModal').open();
+      }
+    });
   }
 }

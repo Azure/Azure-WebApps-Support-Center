@@ -1,6 +1,7 @@
 export interface CompilerResponse {
     compilationSucceeded: boolean;
     compilationTraces: string[];
+    references: string[];
     assemblyBytes: string;
     pdbBytes: string;
     assemblyName: string;

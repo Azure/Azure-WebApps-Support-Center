@@ -42,6 +42,13 @@ export class ApplensDiagnosticService {
       this._resourceService.getRequestBody());
   }
 
+  getGists(): Observable<DetectorMetaData[]> {
+    return this._diagnosticApi.getGists(
+      this._resourceService.versionPrefix,
+      this._resourceService.getCurrentResourceId(true),
+      this._resourceService.getRequestBody());
+  }
+
   getCompilerResponse(body: any, isSystemInvoker: boolean, detectorId: string = '', startTime: string = '', endTime: string = '', dataSource: string = '', timeRange: string = '', additionalParams: any): Observable<QueryResponse<DetectorResponse>> {
     body.resource = this._resourceService.getRequestBody();
     if (isSystemInvoker === false)
@@ -78,7 +85,7 @@ export class ApplensDiagnosticService {
   }
 
   publishDetector(emailRecipients: string, pkg: Package) : Observable<any> {
-    return this._diagnosticApi.publishDetector(
+    return this._diagnosticApi.publishPackage(
       this._resourceService.getCurrentResourceId(true),
       emailRecipients,
       pkg
