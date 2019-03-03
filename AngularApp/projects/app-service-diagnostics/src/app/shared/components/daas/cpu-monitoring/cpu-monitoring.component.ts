@@ -68,6 +68,9 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
           this.monitoringSessions = resp;
           this.gettingSessions = false;
           if (activeMonitoringSession && activeMonitoringSession.Session) {
+            if (initialLoad) {
+              this.showLogsAndSessions(true);
+            }
             this.monitoringSessions.unshift(activeMonitoringSession.Session);
             this.activeMonitoringSession = activeMonitoringSession;
           }
