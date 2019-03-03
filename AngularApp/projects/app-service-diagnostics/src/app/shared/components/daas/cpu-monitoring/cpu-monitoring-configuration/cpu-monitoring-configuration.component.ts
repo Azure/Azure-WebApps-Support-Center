@@ -27,6 +27,18 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
   error: any;
   sessionModeTypes: string[] = ["Kill", "Collect", "CollectAndKill", "CollectKillAndAnalyze"];
 
+  descStart: string = "If site's process (or child process) consume CPU greater than <b>CPU threshold</b> for more than <b>Threshold Seconds</b>";
+  descMemoryDump: string = "a memory dump is collected";
+  descKillMessage: string = "<b>Kill</b> is not graceful termination of the process.";
+
+  modeDescriptions = [{ Mode: SessionMode.Collect, Description: `${this.descStart}, ${this.descMemoryDump}.` },
+  { Mode: SessionMode.CollectAndKill, Description: `${this.descStart}, ${this.descMemoryDump} and the process consuming high CPU is killed. ${this.descKillMessage}` },
+  { Mode: SessionMode.CollectKillAndAnalyze, Description: `${this.descStart}, , ${this.descMemoryDump} and the process consuming high CPU is killed. ${this.descKillMessage} Post data collection, dumps are also analyzed and an analysis report is generated.` },
+  { Mode: SessionMode.Kill, Description: `${this.descStart}, the process is killed. ${this.descKillMessage} In this mode, the <b>Maximum Actions</b> setting is ignored and the monitoring stops after <b>Maximum Duration</b>.` }];
+
+  modeDescription: string = "";
+
+
   sliderOptionsCpuThreshold: Options = {
     floor: 75, ceil: 95, step: 5, showTicks: true,
     translate: (value: number): string => {
@@ -107,6 +119,7 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
     monitoringSession.ThresholdSeconds = 30;
     monitoringSession.MaximumNumberOfHours = 24 * 7;
     this.mode = monitoringSession.Mode;
+    this.modeDescription = this.modeDescriptions.find(x=>x.Mode == this.mode).Description;
     this.selectMode(this.mode);
     return monitoringSession;
   }
@@ -115,6 +128,7 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
     this.mode = SessionMode[md];
     if (this.monitoringSession != null) {
       this.monitoringSession.Mode = this.mode;
+      this.modeDescription = this.modeDescriptions.find(x=>x.Mode == this.mode).Description;
       this.updateRuleSummary();
     }
   }

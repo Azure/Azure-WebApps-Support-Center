@@ -20,7 +20,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
           <div *ngIf="editMode" class="custom-slider">
             <ng5-slider [(value)]="monitoringSession.CpuThreshold" [options]="sliderOptionsCpuThreshold"
               (userChange)="updateRuleSummary()">
@@ -41,7 +41,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
           <div *ngIf="editMode" class="custom-slider">
             <ng5-slider [(value)]="monitoringSession.ThresholdSeconds" [options]="sliderOptionsThresholdSeconds"
               (userChange)="updateRuleSummary()">
@@ -63,7 +63,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
           <div *ngIf="editMode" class="custom-slider">
             <ng5-slider [(value)]="monitoringSession.MonitorDuration" [options]="sliderOptionsMonitorDuration"
               (userChange)="updateRuleSummary()">
@@ -85,16 +85,48 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
           <div *ngIf="editMode" style="margin-top:10px;">
-            <div style="float: left;" class="btn-group" role="group" aria-label="...">
-              <button *ngFor="let md of sessionModeTypes" type="button" class="btn btn-default btn-xs mode-tab"
-                (click)="selectMode(md)" [class.btn-primary]="md === mode">{{md}}</button>
+            <div class="form-group">
+              <select class="form-control" id="mode" (change)="selectMode($event.target.value)">
+                <option *ngFor="let md of sessionModeTypes" [selected]="md === mode">{{md}}</option>
+              </select>
+              <div style="font-size: smaller;padding:5px" [innerHTML]="modeDescription">
+              </div>
+              <!-- 
+              <div class="tool-tip" style="z-index: 2">
+                <i class="fa fa-info-circle" style="color:rgb(84, 143, 255)"></i>
+                <div class="tool-tip-text">
+                  <table style="border:1px solid;padding: 0px" border="1">
+                    <tr>
+                      <td><strong>Kill</strong></td>
+                      <td>some long textsome long textsome long textsome long textsome long textsome long textsome
+                        long text</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Collect</strong></td>
+                      <td>some long textsome long textsome long textsome long textsome long textsome long textsome
+                        long text</td>
+                    </tr>
+                    <tr>
+                      <td><strong>CollectAndKill</strong></td>
+                      <td>some long textsome long textsome long textsome long textsome long textsome long textsome
+                        long text</td>
+                    </tr>
+                    <tr>
+                      <td><strong>CollectKillAndAnalyze</strong></td>
+                      <td>some long textsome long textsome long textsome long textsome long textsome long textsome
+                        long text</td>
+                    </tr>
+                  </table>
+                </div> -->
             </div>
           </div>
+
           <div *ngIf="!editMode" class="edit-mode">{{mode}}</div>
         </div>
       </div>
+
 
       <div class="row input-row">
         <div class="col-sm-6">
@@ -108,7 +140,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
           <div *ngIf="editMode" class="custom-slider">
             <ng5-slider [(value)]="monitoringSession.MaxActions" [options]="sliderOptionsMaxActions"
               (userChange)="updateRuleSummary()">
@@ -130,7 +162,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
           <div *ngIf="editMode" class="custom-slider">
             <ng5-slider [(value)]="monitoringSession.MaximumNumberOfHours" [options]="sliderOptionsMaxDuration"
               (userChange)="updateRuleSummary()">

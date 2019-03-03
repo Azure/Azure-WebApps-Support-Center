@@ -4,7 +4,7 @@
 }
 
 .input-row {
-    min-height: 75px;
+    min-height: 120px;
 }
 
 .tile-icon{
@@ -63,3 +63,19 @@
   border-bottom-right-radius:unset;
   border-bottom-left-radius: unset;
 }
+
+::ng-deep {
+    .tool-tip .tool-tip-text {
+        text-align: left;
+        background-color: #cfe1f3;
+        color: black;
+        border-radius: 0px;
+      
+        }
+    
+        .tool-tip:hover .tool-tip-text {
+            visibility: visible;
+    
+        }
+    }
+    
