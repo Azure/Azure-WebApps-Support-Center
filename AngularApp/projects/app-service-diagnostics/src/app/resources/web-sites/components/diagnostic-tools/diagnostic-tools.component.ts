@@ -41,6 +41,28 @@ export class DiagnosticToolsComponent {
     this.scmPath = this.webSiteService.resource.properties.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
     this.toolCategories.push(<SiteFilteredItem<any>>{
+      appType: AppType.WebApp,
+      platform: OperatingSystem.windows,
+      sku: Sku.NotDynamic,
+      stack: '',
+      item: {
+        title: 'Proactive Tools',
+        tools: this._sitesFeatureService.proactiveTools.map(tool => {
+          return <SiteFilteredItem<Tile>>{
+            appType: tool.appType,
+            platform: tool.platform,
+            sku: tool.sku,
+            stack: tool.stack,
+            item: {
+              title: tool.item.name,
+              action: tool.item.clickAction
+            }
+          };
+        })
+      }
+    });
+    
+    this.toolCategories.push(<SiteFilteredItem<any>>{
       appType: AppType.WebApp | AppType.FunctionApp,
       platform: OperatingSystem.windows,
       sku: Sku.NotDynamic,
@@ -70,28 +92,6 @@ export class DiagnosticToolsComponent {
       item: {
         title: 'Support Tools',
         tools: this._sitesFeatureService.supportTools.map(tool => {
-          return <SiteFilteredItem<Tile>>{
-            appType: tool.appType,
-            platform: tool.platform,
-            sku: tool.sku,
-            stack: tool.stack,
-            item: {
-              title: tool.item.name,
-              action: tool.item.clickAction
-            }
-          };
-        })
-      }
-    });
-
-    this.toolCategories.push(<SiteFilteredItem<any>>{
-      appType: AppType.WebApp,
-      platform: OperatingSystem.windows,
-      sku: Sku.NotDynamic,
-      stack: '',
-      item: {
-        title: 'Proactive Tools',
-        tools: this._sitesFeatureService.proactiveTools.map(tool => {
           return <SiteFilteredItem<Tile>>{
             appType: tool.appType,
             platform: tool.platform,
