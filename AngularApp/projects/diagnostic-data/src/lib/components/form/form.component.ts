@@ -47,7 +47,7 @@ export class FormComponent extends DataRenderBaseComponent {
          for(let ip =0; ip<formInputs.length; ip++) {
            if(formInputs[ip]["inputType"] === InputType.Button) {
               this.detectorForms[i].formButtons.push(new FormButton(
-                this.detectorForms[i].formId+"."+formInputs[ip]["inputId"],
+               `${this.detectorForms[i].formId}.${formInputs[ip]["inputId"]}`,
                formInputs[ip]["inputId"],
                formInputs[ip]["inputType"],
                formInputs[ip]["label"],
@@ -55,8 +55,8 @@ export class FormComponent extends DataRenderBaseComponent {
                formInputs[ip]["buttonStyle"]
               ));
            } else {
-             this.detectorForms[i].formInputs.push(new FormInput
-              (this.detectorForms[i].formId+"."+formInputs[ip]["inputId"],
+             this.detectorForms[i].formInputs.push(new FormInput(
+              `${this.detectorForms[i].formId}.${formInputs[ip]["inputId"]}`,
                formInputs[ip]["inputId"],
                formInputs[ip]["inputType"],
                formInputs[ip]["label"],
@@ -67,7 +67,7 @@ export class FormComponent extends DataRenderBaseComponent {
       }
     }
 
-    executeForm(formId: any, buttonId: any) {
+    OnSubmitFormAction(formId: any, buttonId: any) {
       
       let formToExecute = this.detectorForms.find(form => form.formId == formId);
       if(formToExecute != undefined) {
