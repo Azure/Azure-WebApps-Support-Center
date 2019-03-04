@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { GithubApiService } from '../../../shared/services/github-api.service';
 import { DetectorResponse } from 'diagnostic-data';
-import { QueryResponse} from 'diagnostic-data';
+import { QueryResponse } from 'diagnostic-data';
 import { CompilationProperties } from 'diagnostic-data';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { Package } from '../../../shared/models/package';
@@ -266,9 +266,9 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
           this.buildOutput.push(element);
         });
         // If the script etag returned by the server does not match the previous script-etag, update the values in memory
-        if(response.headers.get('diag-script-etag') != undefined && this.compilationPackage.scriptETag !== response.headers.get('diag-script-etag')) {
+        if (response.headers.get('diag-script-etag') != undefined && this.compilationPackage.scriptETag !== response.headers.get('diag-script-etag')) {
           this.compilationPackage.scriptETag = response.headers.get('diag-script-etag');
-          this.compilationPackage.assemblyName = this.queryResponse.compilationOutput.assemblyName;          
+          this.compilationPackage.assemblyName = this.queryResponse.compilationOutput.assemblyName;
           this.compilationPackage.assemblyBytes = this.queryResponse.compilationOutput.assemblyBytes;
           this.compilationPackage.pdbBytes = this.queryResponse.compilationOutput.pdbBytes;
         }
@@ -403,6 +403,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.resourceId = this.resourceService.getCurrentResourceId();
     this.hideModal = localStorage.getItem("localdevmodal.hidden") === "true";
     let detectorFile: Observable<string>;
+    this.compilationPackage = new CompilationProperties();
     if (this.mode === DevelopMode.Create) {
       // CREATE FLOW
       let templateFileName = (this.gistMode ? "Gist_" : "Detector_") + this.resourceService.templateFileName;
@@ -445,6 +446,10 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
           if (keys.length === 0) return of([]);
           return forkJoin(Object.keys(dep).map(key => this.githubService.getSourceReference(key, dep[key])));
         }));
+    } else {
+      if (!('dependencies' in this.configuration)) {
+        this.configuration['dependencies'] = {};
+      }
     }
 
     forkJoin(detectorFile, configuration).subscribe(res => {

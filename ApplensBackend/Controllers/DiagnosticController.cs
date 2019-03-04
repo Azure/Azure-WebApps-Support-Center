@@ -3,21 +3,20 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // </copyright>
 
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authorization;
-using AppLensV3.Models;
-using AppLensV3.Services.EmailNotificationService;
-using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Hosting;
+using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using AppLensV3.Services.EmailNotificationService;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SendGrid.Helpers.Mail;
 
 namespace AppLensV3.Controllers
 {
@@ -28,19 +27,24 @@ namespace AppLensV3.Controllers
     [Authorize]
     public class DiagnosticController : Controller
     {
-        IDiagnosticClientService _diagnosticClient;
-        IEmailNotificationService _emailNotificationService;
-        IHostingEnvironment _env;
-
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DiagnosticController"/> class.
+        /// </summary>
+        /// <param name="env">The environment.</param>
+        /// <param name="diagnosticClient">Diagnostic client.</param>
+        /// <param name="emailNotificationService">Email notification service.</param>
         public DiagnosticController(IHostingEnvironment env, IDiagnosticClientService diagnosticClient, IEmailNotificationService emailNotificationService)
         {
-            this._env = env;
-            this._diagnosticClient = diagnosticClient;
-            this._emailNotificationService = emailNotificationService;
+            Env = env;
+            DiagnosticClient = diagnosticClient;
+            EmailNotificationService = emailNotificationService;
         }
 
         private IDiagnosticClientService DiagnosticClient { get; }
+
+        private IEmailNotificationService EmailNotificationService { get; }
+
+        private IHostingEnvironment Env { get; }
 
         /// <summary>
         /// Action for invoke request.
@@ -69,13 +73,13 @@ namespace AppLensV3.Controllers
             {
                 bool.TryParse(Request.Headers["x-ms-internal-view"], out internalView);
             }
-                 
-            string alias = "";
-            string detectorId = "";
-            string detectorAuthor = "";
+
+            string alias = string.Empty;
+            string detectorId = string.Empty;
+            string detectorAuthor = string.Empty;
 
             List<EmailAddress> tos = new List<EmailAddress>();
-            List<String> distinctEmailRecipientsList = new List<string>();
+            List<string> distinctEmailRecipientsList = new List<string>();
 
             if (body != null && body["id"] != null)
             {
@@ -84,7 +88,7 @@ namespace AppLensV3.Controllers
 
             string applensLink = "https://applens.azurewebsites.net/" + path.Replace("resourcegroup", "resourceGroup").Replace("diagnostics/publish", "") + "detectors/" + detectorId;
 
-            if (!String.IsNullOrWhiteSpace(Request.Headers["x-ms-emailRecipients"]))
+            if (!string.IsNullOrWhiteSpace(Request.Headers["x-ms-emailRecipients"]))
             {
                 detectorAuthor = Request.Headers["x-ms-emailRecipients"];
                 char[] separators = { ' ', ',', ';', ':' };
@@ -94,12 +98,12 @@ namespace AppLensV3.Controllers
                 string[] authors = detectorAuthor.Split(separators, StringSplitOptions.RemoveEmptyEntries).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
                 foreach (var author in authors)
                 {
-                    if (String.IsNullOrWhiteSpace(alias))
+                    if (string.IsNullOrWhiteSpace(alias))
                     {
                         alias = author;
                     }
 
-                    string baseEmailAddressString = author.ToLower().EndsWith("@microsoft.com") ? author : author + "@microsoft.com" ;
+                    string baseEmailAddressString = author.EndsWith("@microsoft.com", StringComparison.OrdinalIgnoreCase) ? author : author + "@microsoft.com" ;
 
                     if (!distinctEmailRecipientsList.Contains(baseEmailAddressString))
                     {
@@ -109,14 +113,15 @@ namespace AppLensV3.Controllers
                     }
                 }
             }
-            string scriptETag = "";
+
+            var scriptETag = string.Empty;
 
             if (Request.Headers.ContainsKey("diag-script-etag"))
             {
                 scriptETag = Request.Headers["diag-script-etag"];
             }
 
-            string assemblyName = "";
+            var assemblyName = string.Empty;
 
             if (Request.Headers.ContainsKey("diag-assembly-name"))
             {
@@ -128,12 +133,13 @@ namespace AppLensV3.Controllers
             {
                 headers.Add("diag-script-etag", scriptETag);
             }
-            if(!string.IsNullOrWhiteSpace(assemblyName))
+
+            if (!string.IsNullOrWhiteSpace(assemblyName))
             {
                 headers.Add("diag-assembly-name", assemblyName);
             }
 
-            var response = await this._diagnosticClient.Execute(method, path, body?.ToString(), internalView, headers);
+            var response = await DiagnosticClient.Execute(method, path, body?.ToString(), internalView, headers);
 
             if (response != null)
             {
@@ -145,10 +151,12 @@ namespace AppLensV3.Controllers
                     {
                         Request.HttpContext.Response.Headers.Add("diag-script-etag", response.Headers.GetValues("diag-script-etag").First());
                     }
-                    if (path.ToLower().EndsWith("/diagnostics/publish") && tos.Count > 0 && _env.IsProduction())
+
+                    if (path.EndsWith("/diagnostics/publish", StringComparison.OrdinalIgnoreCase) && tos.Count > 0 && Env.IsProduction())
                     {
-                        await this._emailNotificationService.SendPublishingAlert(alias, detectorId, applensLink, tos);
+                        await EmailNotificationService.SendPublishingAlert(alias, detectorId, applensLink, tos);
                     }
+
                     return Ok(responseObject);
                 }
                 else if (response.StatusCode == HttpStatusCode.BadRequest)
