@@ -159,7 +159,7 @@ namespace AppLensV3.Services.EmailNotificationService
 
         public async Task SendPublishingAlert(string alias, string detectorId, string link, List<EmailAddress> tos)
         {
-            var fromAddress = new EmailAddress("xipeng@microsoft.com", "Detector Notification");
+            var fromAddress = new EmailAddress("xipeng@microsoft.com", "Cindy Peng");
             var dynamicTemplateData = new PublishingTemplateData
             {
                 DetectorId = detectorId,

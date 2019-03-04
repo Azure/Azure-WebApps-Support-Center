@@ -55,11 +55,6 @@ namespace AppLensV3.Controllers
                 bool.TryParse(Request.Headers["x-ms-internal-view"], out internalView);
             }
                  
-            if (body == null)
-            {
-                return BadRequest();
-            }
-
             string alias = "";
             string detectorId = "";
             string detectorAuthor = "";

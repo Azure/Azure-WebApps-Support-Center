@@ -1,13 +1,14 @@
 import { AdalService } from 'adal-angular4';
 import * as momentNs from 'moment';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import {
-    ResourceServiceInputs, ResourceType, ResourceTypeState
+    ResourceServiceInputs, ResourceType, ResourceTypeState, ResourceServiceInputsJsonResponse
 } from '../../../shared/models/resources';
 import { trimTrailingNulls } from '@angular/compiler/src/render3/view/util';
+import { HttpClient } from '@angular/common/http';
 const moment = momentNs;
 
 @Component({
@@ -63,7 +64,7 @@ export class MainComponent implements OnInit {
 
   errorMessage:string = "";
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http, private _adalService: AdalService,) {
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: HttpClient, private _adalService: AdalService,) {
     this.endTime = moment.utc();
     this.startTime = this.endTime.clone().add(-1, 'days');
 
@@ -76,9 +77,9 @@ export class MainComponent implements OnInit {
     }
 
     // TODO: Use this to restrict access to routes that don't match a supported resource type
-    this._http.get('assets/enabledResourceTypes.json').pipe(map(response => {
-      this.enabledResourceTypes = <ResourceServiceInputs[]>response.json().enabledResourceTypes;
-    }));
+    this._http.get<ResourceServiceInputsJsonResponse>('assets/enabledResourceTypes.json').subscribe(jsonResponse =>{
+      this.enabledResourceTypes = <ResourceServiceInputs[]>jsonResponse.enabledResourceTypes;
+    });    
 
     if (_adalService.userInfo.userName === 'cmaher@microsoft.com' || _adalService.userInfo.userName === "shgup@microsoft.com"){
       this.showCaseCleansingOption = true;
@@ -96,13 +97,33 @@ export class MainComponent implements OnInit {
     }
   }
 
-  private normalizeArmUriForRoute( resourceURI: string) : string {
+  private normalizeArmUriForRoute( resourceURI: string, enabledResourceTypes : ResourceServiceInputs[]) : string {
+    
     resourceURI = resourceURI.trim();    
     var resourceUriPattern = /subscriptions\/(.*)\/resourceGroups\/(.*)\/providers\/(.*)/i;
     var result = resourceURI.match(resourceUriPattern);
     if(result && result.length === 4){
-      this.errorMessage = "";
-      return `subscriptions/${result[1]}/resourceGroups/${result[2]}/providers/${result[3]}`;
+      var allowedResources : string = "";
+      var routeString : string = '';
+      if(enabledResourceTypes){
+        enabledResourceTypes.forEach(enabledResource => {
+          allowedResources+= `${enabledResource.resourceType}\n`;
+          var resourcePattern = new RegExp(`(?<=${enabledResource.resourceType.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\/).*`, 'i');
+          var enabledResourceResult = result[3].match(resourcePattern);
+          if(enabledResourceResult){
+            routeString = `subscriptions/${result[1]}/resourceGroups/${result[2]}/providers/${enabledResource.resourceType}/${enabledResourceResult[0]}`;
+          }
+        });
+      }
+      if(routeString === ''){
+        this.errorMessage = `The supplied ARM resource is not enabled in AppLens. Allowed resource types are as follows
+
+${allowedResources}`;
+      }
+      else{
+        this.errorMessage = "";
+      }      
+      return routeString;
     }
     else{
       this.errorMessage = `Invalid ARM resource id. Resource id must be of the following format.
@@ -117,7 +138,7 @@ e.g..
     form.resourceName = form.resourceName.trim();
     
     if(this.selectedResourceType.displayName === "ARM Resource ID"){
-      form.resourceName = this.normalizeArmUriForRoute(form.resourceName);
+      form.resourceName = this.normalizeArmUriForRoute(form.resourceName, this.enabledResourceTypes);
     }
     else{
       this.errorMessage = "";
