@@ -84,7 +84,7 @@ namespace AppLensV3
             return client;
         }
 
-        public async Task<HttpResponseMessage> Execute(string method, string path, string body = null, bool internalView = true, CompilationParameters compilationParameters = null)
+        public async Task<HttpResponseMessage> Execute(string method, string path, string body = null, bool internalView = true, HttpRequestHeaders additionalHeaders = null)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace AppLensV3
                         {
                             requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
                         }
-                        if (compilationParameters != null) AddCompilationParamsToRequest(compilationParameters, ref requestMessage);
+                        if (additionalHeaders != null) AddAdditionalHeaders(additionalHeaders, ref requestMessage);
                         response = await _client.SendAsync(requestMessage);
                     }
                     else
@@ -110,8 +110,7 @@ namespace AppLensV3
                         requestMessage.Headers.Add("x-ms-path-query", path);
                         requestMessage.Headers.Add("x-ms-verb", method);
                         requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
-
-                        if (compilationParameters != null) AddCompilationParamsToRequest(compilationParameters, ref requestMessage);
+                        if (additionalHeaders != null) AddAdditionalHeaders(additionalHeaders, ref requestMessage);
                         response = await _client.SendAsync(requestMessage);
                     }
                 }
@@ -123,7 +122,7 @@ namespace AppLensV3
                     {
                         Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json")
                     };
-                    if (compilationParameters != null) AddCompilationParamsToRequest(compilationParameters, ref requestMessage);
+                    if (additionalHeaders != null) AddAdditionalHeaders(additionalHeaders, ref requestMessage);
                     response = await _client.SendAsync(requestMessage);
                 }
 
@@ -179,17 +178,12 @@ namespace AppLensV3
             return cert;
         }
 
-        private void AddCompilationParamsToRequest(CompilationParameters compilationParameters, ref HttpRequestMessage requestMessage)
+        private void AddAdditionalHeaders(HttpRequestHeaders additionalHeaders, ref HttpRequestMessage request)
         {
-            if(!string.IsNullOrWhiteSpace(compilationParameters.AssemblyName))
+            foreach(var header in additionalHeaders)
             {
-                requestMessage.Headers.Add("diag-assembly-name", compilationParameters.AssemblyName);
-            }
-
-            if(!string.IsNullOrWhiteSpace(compilationParameters.ScriptETag))
-            {
-                requestMessage.Headers.Add("diag-script-etag", compilationParameters.ScriptETag);
+               request.Headers.Add(header.Key, header.Value);
             }
         }
-    }
+   }
 }

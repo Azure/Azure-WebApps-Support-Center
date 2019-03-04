@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
+using System.Net.Http.Headers;
 
 namespace AppLensV3.Controllers
 {
@@ -111,13 +112,18 @@ namespace AppLensV3.Controllers
             {
                 assemblyName = Request.Headers["diag-assembly-name"];
             }
-            var response = await this._diagnosticClient.Execute(method, path, body?.ToString(), internalView, new CompilationParameters
+
+            HttpRequestHeaders headers = new HttpRequestMessage().Headers;
+            if (!string.IsNullOrWhiteSpace(scriptETag))
             {
-                ScriptETag = scriptETag,
-                AssemblyName = assemblyName
-            });
+                headers.Add("diag-script-etag", scriptETag);
+            }
+            if(!string.IsNullOrWhiteSpace(assemblyName))
+            {
+                headers.Add("diag-assembly-name", assemblyName);
+            }
 
-
+            var response = await this._diagnosticClient.Execute(method, path, body?.ToString(), internalView, headers);
 
             if (response != null)
             {
