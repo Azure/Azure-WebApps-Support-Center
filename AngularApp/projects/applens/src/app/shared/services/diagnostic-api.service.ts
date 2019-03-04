@@ -65,9 +65,9 @@ export class DiagnosticApiService {
     return this._cacheService.get(this.getCacheKey(method, path), request, true);
   }
 
-  public publishDetector(resourceId: string, packageToPublish: Package): Observable<any> {
+  public publishDetector(resourceId: string, emailRecipients: string, packageToPublish: Package): Observable<any> {
     let path = `${resourceId}/diagnostics/publish`;
-    return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true);
+    return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true, true, emailRecipients);
   }
 
   public getDetectorChangelist(detectorId: string): Observable<any> {
@@ -83,11 +83,11 @@ export class DiagnosticApiService {
     });
   }
 
-  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true): Observable<T> {
+  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true, emailRecipients: string=""): Observable<T> {
     let url: string = `${this.diagnosticApi}api/invoke`
 
     let request = this._httpClient.post<T>(url, body, {
-      headers: this._getHeaders(path, method, internalView)
+      headers: this._getHeaders(path, method, internalView, emailRecipients)
     });
 
     return useCache ? this._cacheService.get(this.getCacheKey(method, path), request, invalidateCache) : request;
@@ -108,13 +108,19 @@ export class DiagnosticApiService {
     return this._cacheService.get(path, request, invalidateCache);
   }
 
-  private _getHeaders(path?: string, method?: HttpMethod, internalView: boolean = true): HttpHeaders {
+  private _getHeaders(path?: string, method?: HttpMethod, internalView: boolean = true, emailRecipients: string = ""): HttpHeaders {
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', 'application/json');
     headers = headers.set('x-ms-internal-client', String(true));
     headers = headers.set('x-ms-internal-view', String(internalView));
     headers = headers.set('Authorization', `Bearer ${this._adalService.userInfo.token}`)
+
+    if (emailRecipients !== "")
+    {
+      headers = headers.set('x-ms-emailRecipients', emailRecipients);
+    }
+
     if (path) {
       headers = headers.set('x-ms-path-query', path);
     }

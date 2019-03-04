@@ -48,3 +48,8 @@ Thumbs.db
 /ssl/*.key
 
 .angulardoc.json
+
+# Environment settings (contains secrets)
+.env
+environment.local.ts
+

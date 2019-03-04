@@ -28,6 +28,10 @@ export interface ArmResource {
     resourceName: string;
 }
 
+export interface ResourceServiceInputsJsonResponse{
+    enabledResourceTypes : ResourceServiceInputs[];
+}
+
 export interface ResourceServiceInputs {
     resourceType: string;
     templateFileName: string;

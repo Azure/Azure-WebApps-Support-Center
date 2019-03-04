@@ -4,6 +4,7 @@ import { Observable ,  of } from 'rxjs';
 import { StartupInfo, ResourceType } from '../../shared/models/portal';
 import { PortalService } from './portal.service';
 import { map } from 'rxjs/operators';
+import { environment } from 'projects/app-service-diagnostics/src/environments/environment';
 
 @Injectable()
 export class AuthService {
@@ -14,9 +15,9 @@ export class AuthService {
 
     private localStartUpInfo: StartupInfo = <StartupInfo>{
         sessionId: '',
-        token: '',
+        token: environment.authServiceToken,
         subscriptions: null,
-        resourceId: '',
+        resourceId: environment.authServiceResourceId,
         workflowId: '',
         supportTopicId: ''
     };
