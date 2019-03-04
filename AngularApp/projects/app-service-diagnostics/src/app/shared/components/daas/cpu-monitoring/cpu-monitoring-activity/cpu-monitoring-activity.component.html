@@ -11,12 +11,14 @@
         class="monitoring-logs">
         <div style="margin-bottom: 15px;">
           When monitoring rule is enabled, detailed monitoring logs for all the instances serving the app are generated.
+          It may take up to 2 minutes for logs from all instances to show up.
           The below snippet shows you the last few lines of these logs and this information is refreshed every 30
           seconds. These logs contain information about each process that is being monitored and the CPU
           consumption for
           that process. If any action (like Kill, or a memory dump) is invoked then details about those are also
           captured in these logs.
-          You can view the full logs by going to <a href='https://{{scmPath}}' target="_blank">Kudu Console</a>  for your app and then navigating to 
+          You can view the full logs by going to <a href='https://{{scmPath}}' target="_blank">Kudu Console</a> for your
+          app and then navigating to
           <strong>D:\home\data\DaaS\Monitoring\Logs</strong> folder.
         </div>
         <ul style="list-style-type: none;padding:0">
@@ -25,7 +27,7 @@
               {{ instance.Instance }}
             </strong>
             <div style="margin-top: 5px;">
-              <pre>{{ instance.Logs}}</pre>
+              <pre [innerHTML]="formatInstanceLogs(instance.Logs)"></pre>
             </div>
           </li>
         </ul>
