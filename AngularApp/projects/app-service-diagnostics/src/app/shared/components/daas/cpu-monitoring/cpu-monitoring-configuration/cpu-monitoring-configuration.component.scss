@@ -30,14 +30,16 @@
     padding-left:5px;
     color:whitesmoke;
 }
+
 .media-body{
     padding-left:13px;
 }
 
-.edit-mode
+.readonly-mode
 {
     font-size: large;
     color: #0058ad;
+    margin-top: 10px;
 }
 
 ::ng-deep {
@@ -58,24 +60,3 @@
         background-color: #0058ad;
     }
 }
-
-.mode-tab{
-  border-bottom-right-radius:unset;
-  border-bottom-left-radius: unset;
-}
-
-::ng-deep {
-    .tool-tip .tool-tip-text {
-        text-align: left;
-        background-color: #cfe1f3;
-        color: black;
-        border-radius: 0px;
-      
-        }
-    
-        .tool-tip:hover .tool-tip-text {
-            visibility: visible;
-    
-        }
-    }
-    

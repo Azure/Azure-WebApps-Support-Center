@@ -33,8 +33,8 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
 
   modeDescriptions = [{ Mode: SessionMode.Collect, Description: `${this.descStart}, ${this.descMemoryDump}.` },
   { Mode: SessionMode.CollectAndKill, Description: `${this.descStart}, ${this.descMemoryDump} and the process consuming high CPU is killed. ${this.descKillMessage}` },
-  { Mode: SessionMode.CollectKillAndAnalyze, Description: `${this.descStart}, , ${this.descMemoryDump} and the process consuming high CPU is killed. ${this.descKillMessage} Post data collection, dumps are also analyzed and an analysis report is generated.` },
-  { Mode: SessionMode.Kill, Description: `${this.descStart}, the process is killed. ${this.descKillMessage} In this mode, the <b>Maximum Actions</b> setting is ignored and the monitoring stops after <b>Maximum Duration</b>.` }];
+  { Mode: SessionMode.CollectKillAndAnalyze, Description: `${this.descStart},  ${this.descMemoryDump} and the process consuming high CPU is killed. ${this.descKillMessage} Post collection, dumps are also analyzed and an analysis report is generated.` },
+  { Mode: SessionMode.Kill, Description: `${this.descStart}, the process is killed. ${this.descKillMessage}` }];
 
   modeDescription: string = "";
 
@@ -107,10 +107,12 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
       this.originalMonitoringSession = this.activeSession;
       this.monitoringEnabled = true;
     } else {
-      if (!this.editMode) {
-        this.monitoringEnabled = false;
-      }
 
+      // So this is the case, when the parent component changes the 
+      // state of the monitoring session
+      this.monitoringEnabled = false;
+      this.originalMonitoringSession = null;
+      this.monitoringSession = this.getDefaultMonitoringSettings();
     }
   }
 

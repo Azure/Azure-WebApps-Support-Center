@@ -26,7 +26,7 @@
               (userChange)="updateRuleSummary()">
             </ng5-slider>
           </div>
-          <div *ngIf="!editMode" class="edit-mode">{{ monitoringSession.CpuThreshold }}%</div>
+          <div *ngIf="!editMode" class="readonly-mode">{{ monitoringSession.CpuThreshold }}%</div>
         </div>
       </div>
       <div class="row input-row">
@@ -47,7 +47,7 @@
               (userChange)="updateRuleSummary()">
             </ng5-slider>
           </div>
-          <div *ngIf="!editMode" class="edit-mode">{{ monitoringSession.ThresholdSeconds }} seconds</div>
+          <div *ngIf="!editMode" class="readonly-mode">{{ monitoringSession.ThresholdSeconds }} seconds</div>
         </div>
       </div>
 
@@ -69,7 +69,7 @@
               (userChange)="updateRuleSummary()">
             </ng5-slider>
           </div>
-          <div *ngIf="!editMode" class="edit-mode">{{ monitoringSession.MonitorDuration }} seconds</div>
+          <div *ngIf="!editMode" class="readonly-mode">{{ monitoringSession.MonitorDuration }} seconds</div>
         </div>
       </div>
 
@@ -93,40 +93,12 @@
               </select>
               <div style="font-size: smaller;padding:5px" [innerHTML]="modeDescription">
               </div>
-              <!-- 
-              <div class="tool-tip" style="z-index: 2">
-                <i class="fa fa-info-circle" style="color:rgb(84, 143, 255)"></i>
-                <div class="tool-tip-text">
-                  <table style="border:1px solid;padding: 0px" border="1">
-                    <tr>
-                      <td><strong>Kill</strong></td>
-                      <td>some long textsome long textsome long textsome long textsome long textsome long textsome
-                        long text</td>
-                    </tr>
-                    <tr>
-                      <td><strong>Collect</strong></td>
-                      <td>some long textsome long textsome long textsome long textsome long textsome long textsome
-                        long text</td>
-                    </tr>
-                    <tr>
-                      <td><strong>CollectAndKill</strong></td>
-                      <td>some long textsome long textsome long textsome long textsome long textsome long textsome
-                        long text</td>
-                    </tr>
-                    <tr>
-                      <td><strong>CollectKillAndAnalyze</strong></td>
-                      <td>some long textsome long textsome long textsome long textsome long textsome long textsome
-                        long text</td>
-                    </tr>
-                  </table>
-                </div> -->
             </div>
           </div>
 
-          <div *ngIf="!editMode" class="edit-mode">{{mode}}</div>
+          <div *ngIf="!editMode" class="readonly-mode">{{mode}}</div>
         </div>
       </div>
-
 
       <div class="row input-row">
         <div class="col-sm-6">
@@ -142,11 +114,29 @@
         </div>
         <div class="col-sm-5">
           <div *ngIf="editMode" class="custom-slider">
-            <ng5-slider [(value)]="monitoringSession.MaxActions" [options]="sliderOptionsMaxActions"
-              (userChange)="updateRuleSummary()">
+            <ng5-slider *ngIf="mode !=='Kill'" [(value)]="monitoringSession.MaxActions"
+              [options]="sliderOptionsMaxActions" (userChange)="updateRuleSummary()">
             </ng5-slider>
+            <div *ngIf="mode ==='Kill'">
+              <div class="readonly-mode">
+                Not Applicable
+              </div>
+              <div style="font-size: smaller;margin-top:8px">
+                * When action is set to Kill, the <strong>Maximum Actions</strong> setting is not applicable and rule
+                will
+                stop after <strong>Maximum Duration</strong>.
+              </div>
+            </div>
+
           </div>
-          <div *ngIf="!editMode" class="edit-mode">{{ monitoringSession.MaxActions }} dumps</div>
+          <div *ngIf="!editMode" class="readonly-mode">
+            <div *ngIf="mode !=='Kill'">
+              {{ monitoringSession.MaxActions }} dumps
+            </div>
+            <div *ngIf="mode ==='Kill'">
+              Not Applicable
+            </div>
+          </div>
         </div>
       </div>
 
@@ -168,7 +158,7 @@
               (userChange)="updateRuleSummary()">
             </ng5-slider>
           </div>
-          <div *ngIf="!editMode" class="edit-mode">{{ monitoringSession.MaximumNumberOfHours }} hours</div>
+          <div *ngIf="!editMode" class="readonly-mode">{{ monitoringSession.MaximumNumberOfHours }} hours</div>
         </div>
       </div>
 
