@@ -87,7 +87,6 @@ import { GenericCommsComponent } from './components/generic-comms/generic-comms.
 import { LocalBackendService } from './services/local-backend.service';
 import { CpuMonitoringToolComponent } from './components/tools/cpu-monitoring-tool/cpu-monitoring-tool.component';
 import { CpuMonitoringComponent } from './components/daas/cpu-monitoring/cpu-monitoring.component';
-import { NumberPickerComponent } from './components/number-picker/number-picker.component';
 import { Ng5SliderModule } from 'ng5-slider';
 import { CpuMonitoringConfigurationComponent } from './components/daas/cpu-monitoring/cpu-monitoring-configuration/cpu-monitoring-configuration.component';
 import { CpuMonitoringActivityComponent } from './components/daas/cpu-monitoring/cpu-monitoring-activity/cpu-monitoring-activity.component';
@@ -152,7 +151,6 @@ import { CpuMonitoringSessionsComponent } from './components/daas/cpu-monitoring
         GenericCommsComponent,
         CpuMonitoringToolComponent,
         CpuMonitoringComponent,
-        NumberPickerComponent,
         CpuMonitoringConfigurationComponent,
         CpuMonitoringActivityComponent,
         CpuMonitoringSessionsComponent

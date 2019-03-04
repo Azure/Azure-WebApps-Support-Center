@@ -28,4 +28,18 @@ export class FormatHelper {
             i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
     }
+
+    static getDurationFromDate(start: string, end: string): string {
+        let startDate = new Date(start);
+        let endDate = new Date(end);
+        let endDateTime = new Date(endDate).getTime();
+        const oneDay = 1000 * 60 * 60 * 24;
+        const duration = endDateTime.valueOf() - startDate.valueOf();
+        const inDays = Math.round(duration / oneDay);
+        const inHours = Math.round(duration * 24 / oneDay);
+        const inMinutes = Math.round(duration * 24 * 60 / oneDay);
+        let durationString = (inDays > 0 ? inDays.toString() + ' day(s)' : (inHours > 0 ? inHours.toString() + ' hour(s)' : inMinutes.toString() + ' minute(s)'));
+        return durationString;
+      }
+    
 }

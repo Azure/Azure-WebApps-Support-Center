@@ -71,15 +71,20 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
       let displayValue = value.toString();
       if (value > 48) {
         label = ' days';
-        displayValue = (value / 24).toPrecision(2);
-        displayValue = (displayValue.endsWith(".0")) ? displayValue.substring(0, displayValue.length - 2) : displayValue;
+        displayValue = this.getValueRounded(value / 24);
       }
       return displayValue + label;
     }
   };
 
-  constructor(private _daasService: DaasService) {
 
+  getValueRounded(value: number): string {
+    let displayValue = value.toPrecision(2);
+    displayValue = (displayValue.endsWith(".0")) ? displayValue.substring(0, displayValue.length - 2) : displayValue;
+    return displayValue;
+  }
+
+  constructor(private _daasService: DaasService) {
   }
 
   ngOnInit() {
@@ -119,7 +124,7 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
     monitoringSession.ThresholdSeconds = 30;
     monitoringSession.MaximumNumberOfHours = 24 * 7;
     this.mode = monitoringSession.Mode;
-    this.modeDescription = this.modeDescriptions.find(x=>x.Mode == this.mode).Description;
+    this.modeDescription = this.modeDescriptions.find(x => x.Mode == this.mode).Description;
     this.selectMode(this.mode);
     return monitoringSession;
   }
@@ -128,7 +133,7 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
     this.mode = SessionMode[md];
     if (this.monitoringSession != null) {
       this.monitoringSession.Mode = this.mode;
-      this.modeDescription = this.modeDescriptions.find(x=>x.Mode == this.mode).Description;
+      this.modeDescription = this.modeDescriptions.find(x => x.Mode == this.mode).Description;
       this.updateRuleSummary();
     }
   }
@@ -155,7 +160,7 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
       this.ruleSummary = this.ruleSummary + ` Collect a maximum of <b>${this.monitoringSession.MaxActions} memory dumps</b>.`;
     }
 
-    this.ruleSummary += ` Monitoring will stop automatically after <b>${this.monitoringSession.MaximumNumberOfHours > 24 ? ((this.monitoringSession.MaximumNumberOfHours) / 24).toPrecision(2) + " days" : this.monitoringSession.MaximumNumberOfHours + " hours"}</b>.`;
+    this.ruleSummary += ` Monitoring will stop automatically after <b>${this.monitoringSession.MaximumNumberOfHours > 24 ? (this.getValueRounded(this.monitoringSession.MaximumNumberOfHours / 24)) + " days" : this.monitoringSession.MaximumNumberOfHours + " hours"}</b>.`;
   }
 
   saveCpuMonitoring() {
@@ -186,17 +191,17 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
     else {
       this._daasService.stopMonitoringSession(this.siteToBeDiagnosed).subscribe(
         resp => {
-            this.savingSettings = false;
-            this.editMode = false;
-            this.originalMonitoringSession = null;
-            this.monitoringConfigurationChange.emit(true);
+          this.savingSettings = false;
+          this.editMode = false;
+          this.originalMonitoringSession = null;
+          this.monitoringConfigurationChange.emit(true);
         }, error => {
           this.savingSettings = false;
           this.monitoringEnabled = !this.monitoringEnabled;
           this.error = JSON.stringify(error);
           this.monitoringConfigurationChange.emit(true);
         });
-     
+
     }
   }
 

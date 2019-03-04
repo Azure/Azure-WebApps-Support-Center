@@ -140,6 +140,7 @@ export class MonitoringSession {
     FilesCollected: MonitoringFile[];
     AnalysisStatus: AnalysisStatus;
     AnalysisSubmitted:boolean = false;
+    ErrorSubmittingAnalysis:string = "";
 }
 
 export interface MonitoringFile {

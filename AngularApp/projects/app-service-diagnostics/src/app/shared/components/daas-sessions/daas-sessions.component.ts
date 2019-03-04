@@ -195,14 +195,7 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
 @Pipe({ name: 'datetimediff' })
 export class DateTimeDiffPipe implements PipeTransform {
     transform(datetime: string): string {
-
-        const utc = new Date(new Date().toUTCString()).getTime();
-        const newDate = new Date(datetime + 'Z');
-        const oneDay = 1000 * 60 * 60 * 24;
-        const duration = utc.valueOf() - newDate.valueOf();
-        const inDays = Math.round(duration / oneDay);
-        const inHours = Math.round(duration * 24 / oneDay);
-        const inMinutes = Math.round(duration * 24 * 60 / oneDay);
-        return (inDays > 0 ? inDays.toString() + ' day(s)' : (inHours > 0 ? inHours.toString() + ' hour(s)' : inMinutes.toString() + ' minute(s)'));
+        let utc = new Date().toUTCString();
+        return FormatHelper.getDurationFromDate(datetime, utc);
     }
 }

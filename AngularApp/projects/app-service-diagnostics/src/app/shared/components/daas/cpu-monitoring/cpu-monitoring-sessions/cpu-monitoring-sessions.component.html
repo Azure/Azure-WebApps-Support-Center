@@ -55,6 +55,11 @@
                 <button class="btn btn-sm btn-primary"
                   *ngIf="!monitoringSession.AnalysisSubmitted && monitoringSession.AnalysisStatus === 'NotStarted' && monitoringSession.FilesCollected != null && monitoringSession.FilesCollected.length > 0 && !isSessionActive(monitoringSession)"
                   (click)="analyzeSession(monitoringSession)">Analyze</button>
+
+                <div class="focus-box focus-box-warning" *ngIf="monitoringSession.ErrorSubmittingAnalysis">
+                  <strong>Error</strong> - {{ error }}
+                </div>
+
                 <div *ngIf="monitoringSession.AnalysisStatus === 'InProgress' || monitoringSession.AnalysisSubmitted">
                   <i class=" fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
                   Analysis in progress...

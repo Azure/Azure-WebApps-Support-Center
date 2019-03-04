@@ -3,6 +3,7 @@ import { MonitoringSession } from '../../../../models/daas';
 import { SiteDaasInfo } from '../../../../models/solution-metadata';
 import { DaasService } from '../../../../services/daas.service';
 import { WindowService } from 'projects/app-service-diagnostics/src/app/startup/services/window.service';
+import { FormatHelper } from '../../../../utilities/formattingHelper';
 
 @Component({
   selector: 'cpu-monitoring-sessions',
@@ -17,7 +18,7 @@ export class CpuMonitoringSessionsComponent implements OnInit, OnChanges {
   @Input() public gettingSessions: boolean = true;
 
   description: string = "The below table shows you all the CPU monitoring rules for this app. To save disk space, older rules and their associated data is automatically deleted.";
-  
+
   constructor(private _daasService: DaasService, private _windowService: WindowService) {
   }
 
@@ -25,7 +26,6 @@ export class CpuMonitoringSessionsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-
   }
 
   openReport(url: string) {
@@ -52,9 +52,13 @@ export class CpuMonitoringSessionsComponent implements OnInit, OnChanges {
   analyzeSession(session: MonitoringSession) {
     session.AnalysisSubmitted = true;
     this._daasService.analyzeMonitoringSession(this.siteToBeDiagnosed, session.SessionId).subscribe(resp => {
-      if (resp) {
-        this.getSession(session.SessionId);
+      if (!resp) {
+        session.AnalysisSubmitted = false;
+        session.ErrorSubmittingAnalysis = "Failed to submit analysis for the rule. Please try again after some time";
       }
+    }, error => {
+      session.AnalysisSubmitted = false;
+      session.ErrorSubmittingAnalysis = JSON.stringify(error);
     });
 
   }
@@ -63,33 +67,16 @@ export class CpuMonitoringSessionsComponent implements OnInit, OnChanges {
     var date = new Date(session.StartDate);
     let formattedDate = (date.getUTCMonth() + 1).toString().padStart(2, '0') + '/' + date.getUTCDate().toString().padStart(2, '0') + '/' + date.getUTCFullYear().toString() + ' ' + (date.getUTCHours() < 10 ? '0' : '') + date.getUTCHours()
       + ':' + (date.getUTCMinutes() < 10 ? '0' : '') + date.getUTCMinutes() + ' UTC';
-    const utc = new Date().toUTCString();
-
+    
+      const utc = new Date().toUTCString();
     if (this.isSessionActive(session)) {
-      formattedDate += "<br/>" + this.getDuration(session.StartDate, utc) + ' ago';
+      formattedDate += "<br/>" + FormatHelper.getDurationFromDate(session.StartDate, utc) + ' ago';
     }
-
     return formattedDate;
-  }
-
-  getDuration(start: string, end: string): string {
-    let startDate = new Date(start);
-    let endDate = new Date(end);
-    let endDateTime = new Date(endDate).getTime();
-    const oneDay = 1000 * 60 * 60 * 24;
-    const duration = endDateTime.valueOf() - startDate.valueOf();
-    const inDays = Math.round(duration / oneDay);
-    const inHours = Math.round(duration * 24 / oneDay);
-    const inMinutes = Math.round(duration * 24 * 60 / oneDay);
-    let durationString = (inDays > 0 ? inDays.toString() + ' day(s)' : (inHours > 0 ? inHours.toString() + ' hour(s)' : inMinutes.toString() + ' minute(s)'));
-    return durationString;
   }
 
   isSessionActive(session: MonitoringSession): boolean {
     return session.StartDate > session.EndDate;;
-  }
-
-  getSession(sessionId: string) {
   }
 
 }
