@@ -1,8 +1,8 @@
 <div class="container">
-  <div class="header1">{{ title }}</div>
+  <div class="header1">{{ title }}<span class="preview">PREVIEW</span></div>
+
   <span>{{ description }}</span>
   <div style="margin-top:10px">
-      <cpu-monitoring [siteToBeDiagnosed]="siteToBeDiagnosed" [scmPath]="scmPath"></cpu-monitoring>
-  </div>  
+    <cpu-monitoring [siteToBeDiagnosed]="siteToBeDiagnosed" [scmPath]="scmPath"></cpu-monitoring>
+  </div>
 </div>
-
