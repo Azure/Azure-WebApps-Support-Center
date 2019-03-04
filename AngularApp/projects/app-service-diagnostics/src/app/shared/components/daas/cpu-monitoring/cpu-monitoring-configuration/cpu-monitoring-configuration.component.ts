@@ -14,6 +14,7 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
   @Input() siteToBeDiagnosed: SiteDaasInfo;
   @Input() activeSession: MonitoringSession;
   @Output() monitoringConfigurationChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() savingMonitoringConfiguration: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   editMode: boolean = false;
   savingSettings: boolean = false;
@@ -166,6 +167,7 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
   }
 
   saveCpuMonitoring() {
+    this.savingMonitoringConfiguration.emit(true);
     this.savingSettings = true;
     if (this.monitoringEnabled) {
       let newSession: MonitoringSession = new MonitoringSession();

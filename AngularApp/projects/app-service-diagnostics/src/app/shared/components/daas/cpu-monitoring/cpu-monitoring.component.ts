@@ -101,12 +101,15 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
 
   updateMonitoringConfiguration(updated: boolean) {
     this.refreshingConfiguration = true;
-    this.stopAllSubscriptions();
     this.showLogsAndSessions(true);
     this.getMonitoringSessions(false);
     this.subscription = interval(30000).subscribe(res => {
       this.getMonitoringSessions(false);
     });
+  }
+
+  savingMonitoringConfiguration(saving:boolean){
+    this.stopAllSubscriptions();
   }
 
   stopAllSubscriptions() {
