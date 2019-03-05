@@ -106,7 +106,10 @@ namespace AppLensV3
                         {
                             requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
                         }
-                        if (additionalHeaders != null) AddAdditionalHeaders(additionalHeaders, ref requestMessage);
+                        if (additionalHeaders != null)
+                        {
+                            AddAdditionalHeaders(additionalHeaders, ref requestMessage);
+                        }
                         response = await _client.SendAsync(requestMessage);
                     }
                     else
@@ -115,7 +118,10 @@ namespace AppLensV3
                         requestMessage.Headers.Add("x-ms-path-query", path);
                         requestMessage.Headers.Add("x-ms-verb", method);
                         requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
-                        if (additionalHeaders != null) AddAdditionalHeaders(additionalHeaders, ref requestMessage);
+                        if (additionalHeaders != null)
+                        {
+                            AddAdditionalHeaders(additionalHeaders, ref requestMessage);
+                        }
                         response = await _client.SendAsync(requestMessage);
                     }
                 }
@@ -127,7 +133,10 @@ namespace AppLensV3
                     {
                         Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json")
                     };
-                    if (additionalHeaders != null) AddAdditionalHeaders(additionalHeaders, ref requestMessage);
+                    if (additionalHeaders != null)
+                    {
+                       AddAdditionalHeaders(additionalHeaders, ref requestMessage);
+                    }
 
                     requestMessage.Headers.Add("x-ms-internal-view", internalView.ToString());
 
