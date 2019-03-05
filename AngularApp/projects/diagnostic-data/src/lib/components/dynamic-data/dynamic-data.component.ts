@@ -1,3 +1,4 @@
+import { Moment } from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import {
     Component, ComponentFactoryResolver, Input, OnInit, ViewChild, ViewContainerRef
@@ -13,21 +14,23 @@ import { DynamicInsightComponent } from '../dynamic-insight/dynamic-insight.comp
 import { EmailComponent } from '../email/email.component';
 import { InsightsComponent } from '../insights/insights.component';
 import { MarkdownComponent } from '../markdown/markdown.component';
+import { SolutionComponent } from '../solution/solution.component';
 import { GuageControlComponent } from '../guage-control/guage-control.component';
 import { TimeSeriesGraphComponent } from '../time-series-graph/time-series-graph.component';
 import {
     TimeSeriesInstanceGraphComponent
 } from '../time-series-instance-graph/time-series-instance-graph.component';
 import { FormComponent } from '../form/form.component';
-import { Moment } from 'moment';
 import { CompilationProperties}  from '../../models/compilation-properties';
 @Component({
   selector: 'dynamic-data',
   templateUrl: './dynamic-data.component.html',
   styleUrls: ['./dynamic-data.component.scss'],
-  entryComponents: [TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent,
+  entryComponents: [
+    TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent,
     InsightsComponent, TimeSeriesInstanceGraphComponent, DynamicInsightComponent, MarkdownComponent,
-    DetectorListComponent, DropdownComponent, CardSelectionComponent, GuageControlComponent, FormComponent]
+    DetectorListComponent, DropdownComponent, CardSelectionComponent, SolutionComponent, GuageControlComponent, FormComponent
+  ]
 })
 export class DynamicDataComponent implements OnInit {
 
@@ -93,6 +96,8 @@ export class DynamicDataComponent implements OnInit {
         return DropdownComponent;
       case RenderingType.Cards:
         return CardSelectionComponent;
+      case RenderingType.Solution:
+        return SolutionComponent;
       case RenderingType.Guage:
         return GuageControlComponent;
       case RenderingType.Form:

@@ -1,0 +1,50 @@
+<div class="solution-container">
+
+  <div *ngIf="solution.Description" class="solution-description">
+    <markdown [data]="solution.Description"></markdown>
+  </div>
+
+  <div *ngIf="!solution.IsInternal; else internal_solution" class="solution-action">
+    <div *ngIf="solution.RequiresConfirmation; else dont_confirm_buttons" class="confirm-buttons">
+      <span class="app-name-text">{{solution.ActionName}} for App <span class="app-name">{{appName}}</span>?</span>
+      <div class="action-buttons">
+        <button type="button" class="custom-button deny">No, Don't {{solution.ActionName}}</button>
+        <button type="button" (click)="performAction()" class="custom-button confirm">
+          Yes, {{solution.ActionName}}
+        </button>
+      </div>
+    </div>
+
+    <span class="action-status">
+      {{actionStatus}}
+      <span *ngIf="actionStatus === 'Running...'">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+      </span>
+      <span *ngIf="actionStatus === 'Complete!'">
+        <i class="fa fa-check-circle" aria-hidden="true"></i>
+      </span>
+    </span>
+  </div>
+
+</div>
+
+<ng-template #internal_solution>
+  <div class="solution-action">
+    <div (click)="copyInstructions(solution.InternalInstructions)" class="copy-instructions">
+      <i class="fa fa-files-o" aria-hidden="true"></i>
+      {{copyText}}
+    </div>
+    <div class="internal-instructions">
+      <div class="markdown">
+        <markdown [data]="solution.InternalInstructions"></markdown>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #dont_confirm_buttons>
+  <div class="action-buttons">
+      <span class="app-name-text">App: <span class="app-name">{{appName}}</span></span>
+      <button (click)="performAction()" type="button" class="custom-button">{{solution.Title}}</button>
+  </div>
+</ng-template>

@@ -1,0 +1,78 @@
+@import '../../../../../app-service-diagnostics/src/styles/main.scss';
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+.solution-container {
+  margin: 2em 5em;
+}
+
+.solution-description {
+  margin: 2em 0;
+}
+
+.solution-action {
+  display: inline-block;
+  border: 1px solid lightgray;
+  border-radius: 2px;
+  background-color: #f1f1f1;
+  padding: 1em;
+
+  h3 {
+    margin-right: 1em;
+    display: inline;
+  }
+
+  .app-name {
+    font-weight: bold;
+    color: #286090;
+  }
+
+  .custom-button {
+    border: 1px solid darkgray;
+    padding-left: 2em;
+    padding-right: 2em;
+    margin-left: 0;
+  }
+
+  .custom-button.confirm {
+    background-color: #b71c1c;
+    font-weight: bold;
+    color: #fafafa;
+  }
+
+  .custom-button.deny {
+    background-color: white;
+    color: gray;
+    margin-right: .25em;
+  }
+}
+
+.action-buttons {
+  display: inline-block;
+  margin: 0;
+}
+
+.confirm-buttons {
+  display: inline-block;
+  margin: 0;
+}
+
+.copy-instructions {
+  float: right;
+  cursor: pointer;
+}
+
+.internal-instructions {
+  margin-right: 5em;
+}
+
+.app-name-text {
+  margin-right: 1em;
+}
+
+.action-status {
+  margin-left: 1em;
+}

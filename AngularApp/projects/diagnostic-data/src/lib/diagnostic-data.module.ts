@@ -59,6 +59,8 @@ import { FeatureNavigationService } from './services/feature-navigation.service'
 import { AppInsightsTelemetryService } from './services/telemetry/appinsights-telemetry.service';
 import { KustoTelemetryService } from './services/telemetry/kusto-telemetry.service';
 import { FormComponent } from './components/form/form.component';
+import { SolutionComponent } from './components/solution/solution.component';
+import { SolutionsComponent } from './components/solutions/solutions.component';
 
 
 @NgModule({
@@ -76,11 +78,11 @@ import { FormComponent } from './components/form/form.component';
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
     LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent,
-    DropdownComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent, FeedbackComponent, 
-    CopyInsightDetailsComponent, MarkdownEditorComponent, CardSelectionComponent, GuageGraphicComponent, GuageControlComponent, FormComponent],
-
+    DropdownComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent, FeedbackComponent,
+    CopyInsightDetailsComponent, MarkdownEditorComponent, CardSelectionComponent, GuageGraphicComponent, GuageControlComponent, SolutionComponent, SolutionsComponent, FormComponent
+  ],
   exports: [FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
-    LoaderViewComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent, GuageControlComponent, FormComponent],
+    LoaderViewComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent, GuageControlComponent, SolutionComponent, FormComponent],
 })
 export class DiagnosticDataModule {
   static forRoot(config: DiagnosticDataConfig = INTERNAL_PROD_CONFIGURATION): ModuleWithProviders {

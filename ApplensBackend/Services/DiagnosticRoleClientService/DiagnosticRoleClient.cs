@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.Extensions.Configuration;
 using System.Security.Authentication;
+using Newtonsoft.Json;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Text.RegularExpressions;
 using AppLensV3.Services.EmailNotificationService;
 using AppLensV3.Models;
@@ -123,6 +128,9 @@ namespace AppLensV3
                         Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json")
                     };
                     if (additionalHeaders != null) AddAdditionalHeaders(additionalHeaders, ref requestMessage);
+
+                    requestMessage.Headers.Add("x-ms-internal-view", internalView.ToString());
+
                     response = await _client.SendAsync(requestMessage);
                 }
 

@@ -141,7 +141,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       }
     })
   }
-  
+
   ngOnDestroy() {
     // TODO: Figure out saving capabilities
     //this.saveProgress();
@@ -183,14 +183,14 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.localDevButtonDisabled = true;
     this.localDevText = "Preparing Local Tools";
     this.localDevIcon = "fa fa-circle-o-notch fa-spin";
-    
+
     var body = {
       script: this.code
     };
 
     localStorage.setItem("localdevmodal.hidden", this.hideModal === true ? "true" : "false");
 
-    this.diagnosticApiService.prepareLocalDevelopment(body, this.detectorId, this._detectorControlService.startTimeString, 
+    this.diagnosticApiService.prepareLocalDevelopment(body, this.detectorId, this._detectorControlService.startTimeString,
       this._detectorControlService.endTimeString, this.dataSource, this.timeRange)
     .subscribe((response: string) => {
       this.localDevButtonDisabled = false;
@@ -202,12 +202,12 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       var element = document.createElement('a');
       element.setAttribute('href', response);
       element.setAttribute('download', "Local Development Package");
-  
+
       element.style.display = 'none';
       document.body.appendChild(element);
-  
+
       element.click();
-  
+
       document.body.removeChild(element);
     }
     , ((error: any) => {
@@ -217,7 +217,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       this.localDevIcon = "fa fa-download";
     }));
   }
-  
+
   runCompilation() {
     this.buildOutput = [];
     this.buildOutput.push("------ Build started ------");
@@ -326,7 +326,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     {
         this.emailRecipients +=  ';' + queryResponse.invocationOutput.metadata.author;
     }
-    
+
     this.publishingPackage = {
       codeString: code,
       id: queryResponse.invocationOutput.metadata.id,

@@ -107,7 +107,6 @@ export class ArmService {
         return this._cache.get(url, request, invalidateCache);
     }
 
-
     putResource<T, S>(resourceUri: string, body?: S, apiVersion?: string, invalidateCache: boolean = false): Observable<boolean | {} | ResponseMessageEnvelope<T>> {
         const url: string = `${this.armUrl}${resourceUri}${resourceUri.indexOf('?') >= 0 ? '&' : '?'}api-version=${!!apiVersion ? apiVersion : this.websiteApiVersion}`;
         let bodyString: string = '';

@@ -4,6 +4,7 @@ import { Inject, Injectable } from '@angular/core';
 import { RESOURCE_SERVICE_INPUTS, ResourceServiceInputs } from '../models/resources';
 import { ObserverService } from './observer.service';
 import { ResourceService } from './resource.service';
+import { HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class SiteService extends ResourceService {
@@ -36,6 +37,14 @@ export class SiteService extends ResourceService {
 
   public getCurrentResource(): Observable<any> {
     return this._currentResource;
+  }
+
+  public restartSiteFromUri(resourceUri: string): Observable<HttpResponse<any>> {
+    return null;
+  }
+
+  public updateSettingsFromUri(resourceUri: string, body: any): Observable<any> {
+    return null;
   }
 
   private getSiteFromObserverResponse(observerResponse: Observer.ObserverSiteResponse): Observer.ObserverSiteInfo {

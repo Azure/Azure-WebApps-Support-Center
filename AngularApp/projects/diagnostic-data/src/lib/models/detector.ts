@@ -87,7 +87,8 @@ export enum RenderingType {
     DropDown,
     Cards,
     Guage,
-    Form
+    Form,
+    Solution
 }
 
 export enum TimeSeriesType {
