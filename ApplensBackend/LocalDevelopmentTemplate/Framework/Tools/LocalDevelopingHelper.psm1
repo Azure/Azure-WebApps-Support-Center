@@ -353,6 +353,10 @@ function Publish-Detector
         Write-Error "Build Failed. Please make sure compilation succeed before publishing"
         exit
     }
+    if($compilationResponse.runtimeSucceeded -eq $false) {
+        Write-Error "Runtime exception occurred. Please make sure there are no runtime exceptions before publishing"
+        exit
+    }
     else
     {
         $publishingPackage = @{

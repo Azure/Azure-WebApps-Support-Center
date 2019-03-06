@@ -1,10 +1,10 @@
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { TelemetryService } from './../../services/telemetry/telemetry.service';
 import { Component } from '@angular/core';
-import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { DiagnosticService } from '../../services/diagnostic.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DiagnosticData } from '../../models/detector';
+import { DiagnosticService } from '../../services/diagnostic.service';
 import { FeatureNavigationService } from '../../services/feature-navigation.service';
+import { TelemetryService } from '../../services/telemetry/telemetry.service';
+import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 
 export class CardSelection {
   title: string;

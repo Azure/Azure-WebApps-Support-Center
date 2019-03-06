@@ -16,6 +16,8 @@ import { GenericApiService } from './shared/services/generic-api.service';
 import { GenericCommsService } from './shared/services/generic-comms.service';
 import { environment } from '../environments/environment';
 import { PortalKustoTelemetryService } from './shared/services/portal-kusto-telemetry.service';
+import { DiagnosticSiteService } from 'projects/diagnostic-data/src/lib/services/diagnostic-site.service';
+import { SiteService } from 'projects/app-service-diagnostics/src/app/shared/services/site.service';
 
 @NgModule({
   imports: [
@@ -47,10 +49,11 @@ import { PortalKustoTelemetryService } from './shared/services/portal-kusto-tele
     CustomReuseStrategy,
     { provide: KustoTelemetryService, useExisting: PortalKustoTelemetryService },
     { provide: RouteReuseStrategy, useExisting: CustomReuseStrategy },
-    { provide: DiagnosticService, 
+    { provide: DiagnosticService,
       useFactory: (_localBackendService: LocalBackendService, _genericApiService: GenericApiService) => environment.useApplensBackend ? _localBackendService : _genericApiService,
       deps: [LocalBackendService, GenericApiService] },
-    { provide: CommsService, useExisting: GenericCommsService }
+    { provide: CommsService, useExisting: GenericCommsService },
+    { provide: DiagnosticSiteService, useExisting: SiteService }
   ],
   bootstrap: [AppComponent]
 })

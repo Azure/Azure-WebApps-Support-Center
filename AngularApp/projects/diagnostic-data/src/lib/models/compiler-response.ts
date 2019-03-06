@@ -1,8 +1,10 @@
 export interface CompilerResponse {
     compilationSucceeded: boolean;
-    compilationOutput: string[];
+    compilationTraces: string[];
     assemblyBytes: string;
     pdbBytes: string;
+    assemblyName: string;
+    scriptETag: string;
 }
 
 export interface QueryResponse<T> {

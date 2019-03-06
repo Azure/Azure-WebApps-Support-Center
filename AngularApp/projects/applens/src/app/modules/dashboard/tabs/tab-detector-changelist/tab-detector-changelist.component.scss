@@ -1,25 +1,29 @@
-.diff-view{
+.diff-view {
     height: calc(100vh - 100px);
-  }
-   
-  a:active {
+}
+
+a:active {
     color: blue;
-  }
-   .selected {
+}
+
+.selected {
     background-color: #CFD8DC !important;
     color: white;
-  }
-  .selected {
+}
+
+.selected {
     background-color: #CFD8DC !important;
     color: white;
-  }
-  .commits-table {
+}
+
+.commits-table {
     margin: 0 0 2em 0;
     list-style-type: none;
     padding: 0;
     width: 160px;
-  }
-  .commits-table li {
+}
+
+.commits-table li {
     cursor: pointer;
     position: relative;
     left: 0;
@@ -29,21 +33,25 @@
     height: 30px;
     width: 150px;
     border-radius: 4px;
-  }
-  .commits-table li.selected:hover {
+}
+
+.commits-table li.selected:hover {
     background-color: #BBD8DC !important;
     color: white;
-  }
-  .commits-table li:hover {
+}
+
+.commits-table li:hover {
     color: #607D8B;
     background-color: #DDD;
     left: .1em;
-  }
-  .commits-table .text {
+}
+
+.commits-table .text {
     position: relative;
     top: -3px;
-  }
-  .commits-table .badge {
+}
+
+.commits-table .badge {
     display: inline-block;
     font-size: small;
     color: white;
@@ -56,19 +64,23 @@
     height: 30px;
     margin-right: .3em;
     border-radius: 4px 0 0 4px;
-  } 
+}
 
 .commit-info {
-  margin-left: 0px;
-  margin-right:0px;
-  display: inline-block;
-  width: 11%;
-  padding-left: 0px;
-  padding-right: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    display: inline-block;
+    width: 11%;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 .commit-editor {
-  margin-left: 0px;
-  padding-left: 0; 
-  width: 89%;
+    margin-left: 0px;
+    padding-left: 0;
+    width: 89%;
+}
+
+::ng-deep .monaco-editor .margin {
+    margin-top: 0;
 }

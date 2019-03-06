@@ -30,6 +30,7 @@ import { TabMonitoringDevelopComponent } from './tabs/tab-monitoring-develop/tab
 import { TabAnalyticsDevelopComponent } from './tabs/tab-analytics-develop/tab-analytics-develop.component';
 import { TabAnalyticsDashboardComponent } from './tabs/tab-analytics-dashboard/tab-analytics-dashboard.component';
 import { TabDetectorChangelistComponent } from './tabs/tab-detector-changelist/tab-detector-changelist.component';
+import { DiagnosticSiteService } from 'diagnostic-data';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -128,10 +129,11 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
       deps: [StartupService, ObserverService]
     },
     { provide: DiagnosticService, useExisting: ApplensDiagnosticService },
-    { provide: CommsService, useExisting: ApplensCommsService }
+    { provide: CommsService, useExisting: ApplensCommsService },
+    { provide: DiagnosticSiteService, useExisting: ResourceService }
   ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent, 
-    SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent, 
+  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent,
+    SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent,
     TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, TabDetectorChangelistComponent]
 })
 export class DashboardModule { }

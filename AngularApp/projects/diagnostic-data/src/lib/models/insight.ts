@@ -1,4 +1,5 @@
 import { Rendering, DiagnosticData, HealthStatus, RenderingType, DetectorResponse } from './detector';
+import { Solution } from '../components/solution/solution.component';
 
 export class InsightBase {
     status: HealthStatus;
@@ -13,19 +14,18 @@ export class InsightBase {
 export class Insight extends InsightBase {
 
     data: Map<string, string>;
-
     isExpanded: boolean = false;
-
     isRated: boolean = false;
-
     isHelpful: boolean = false;
+    solutions: Solution[] = null;
 
-    constructor(status: string, title: string, isExpanded: boolean) {
+    constructor(status: string, title: string, isExpanded: boolean, solutions?: Solution[]) {
         super(status, title);
         this.data = new Map<string, string>();
         this.isExpanded = isExpanded;
-        this.isRated = this.isRated;
-        this.isHelpful = this.isHelpful;
+        if (solutions) {
+            this.solutions = solutions;
+        }
     }
 
     getKeys(): string[] {
@@ -54,31 +54,34 @@ export class InsightUtils {
     static parseInsightRendering(diagnosticData: DiagnosticData): Insight[] {
         const insights: Insight[] = [];
         const data = diagnosticData.table;
-    
+
         const statusColumnIndex = 0;
         const insightColumnIndex = 1;
         const nameColumnIndex = 2;
         const valueColumnIndex = 3;
         const isExpandedIndex = 4;
-    
+        const solutionsIndex = 5;
+
         for (let i: number = 0; i < data.rows.length; i++) {
-          const row = data.rows[i];
-          let insight: Insight;
-          const insightName = row[insightColumnIndex];
-          if ((insight = insights.find(ins => ins.title === insightName)) == null) {
-            const isExpanded: boolean = row.length > isExpandedIndex ? row[isExpandedIndex].toLowerCase() === 'true' : false;
-            insight = new Insight(row[statusColumnIndex], insightName, isExpanded);
-            insights.push(insight);
-          }
-    
-          const nameColumnValue = row[nameColumnIndex];
-          if (nameColumnValue && nameColumnValue.length > 0) {
-            insight.data[nameColumnValue] = row[valueColumnIndex];
-          }
+            let insight: Insight;
+            const row = data.rows[i];
+            const insightName = row[insightColumnIndex];
+            const nameColumnValue = row[nameColumnIndex];
+            const solutionsValue = <Solution[]>JSON.parse(row[solutionsIndex]);
+
+            if ((insight = insights.find(ins => ins.title === insightName)) == null) {
+                const isExpanded: boolean = row.length > isExpandedIndex ? row[isExpandedIndex].toLowerCase() === 'true' : false;
+                insight = new Insight(row[statusColumnIndex], insightName, isExpanded, solutionsValue);
+                insights.push(insight);
+            }
+
+            if (nameColumnValue && nameColumnValue.length > 0) {
+                insight.data[nameColumnValue] = row[valueColumnIndex];
+            }
         }
-    
+
         return insights;
-      }
+    }
 }
 
 export class DynamicInsight extends InsightBase {

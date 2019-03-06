@@ -7,7 +7,7 @@ import { DetectorResponse, Rendering, RenderingType } from '../../models/detecto
 import { DetectorControlService } from '../../services/detector-control.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
-
+import { CompilationProperties} from '../../models/compilation-properties';
 @Component({
   selector: 'detector-view',
   templateUrl: './detector-view.component.html',
@@ -62,7 +62,10 @@ export class DetectorViewComponent implements OnInit {
   @Input() isSystemInvoker: boolean = false;
   @Input() authorInfo: string = '';
   @Input() feedbackDetector: string = '';
-
+  @Input() developmentMode: boolean = false;
+  @Input() script: string = '';
+  @Input() detector: string = '';
+  @Input() compilationPackage: CompilationProperties;
   feedbackButtonLabel: string = 'Send Feedback';
 
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private telemetryService: TelemetryService,

@@ -25,6 +25,7 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+launch.json
 
 # misc
 /.sass-cache
@@ -46,5 +47,3 @@ Thumbs.db
 # localhost self signed cert
 /ssl/*.crt
 /ssl/*.key
-
-package-lock.json

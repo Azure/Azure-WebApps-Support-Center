@@ -136,6 +136,10 @@ export class UriElementsService {
         return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._siteRestartUrlFormat;
     }
 
+    getRestartUri(resourceUri: string): string {
+        return resourceUri + this._siteRestartUrlFormat;
+    }
+
     getKillSiteProcessUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
 
         let resource = siteName;
@@ -193,6 +197,10 @@ export class UriElementsService {
 
     getUpdateAppSettingsUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): string {
         return this._getSiteResourceUrl(subscriptionId, resourceGroup, siteName, slot) + this._updateAppSettingsUrlFormat;
+    }
+
+    getUpdateSettingsUri(resourceUri: string): string {
+        return resourceUri + this._updateAppSettingsUrlFormat;
     }
 
     getConfigWebUrl(site: SiteInfoMetaData): string {

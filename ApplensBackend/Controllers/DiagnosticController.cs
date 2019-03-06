@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
+using AppLensV3.Models;
 using AppLensV3.Services.EmailNotificationService;
 using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
+using System.Net.Http.Headers;
 
 namespace AppLensV3.Controllers
 {
@@ -52,7 +54,7 @@ namespace AppLensV3.Controllers
             {
                 bool.TryParse(Request.Headers["x-ms-internal-view"], out internalView);
             }
-
+                 
             string alias = "";
             string detectorId = "";
             string detectorAuthor = "";
@@ -92,8 +94,31 @@ namespace AppLensV3.Controllers
                     }
                 }
             }
+            string scriptETag = "";
 
-            var response = await this._diagnosticClient.Execute(method, path, body?.ToString(), internalView);
+            if (Request.Headers.ContainsKey("diag-script-etag"))
+            {
+                scriptETag = Request.Headers["diag-script-etag"];
+            }
+
+            string assemblyName = "";
+
+            if (Request.Headers.ContainsKey("diag-assembly-name"))
+            {
+                assemblyName = Request.Headers["diag-assembly-name"];
+            }
+
+            HttpRequestHeaders headers = new HttpRequestMessage().Headers;
+            if (!string.IsNullOrWhiteSpace(scriptETag))
+            {
+                headers.Add("diag-script-etag", scriptETag);
+            }
+            if(!string.IsNullOrWhiteSpace(assemblyName))
+            {
+                headers.Add("diag-assembly-name", assemblyName);
+            }
+
+            var response = await this._diagnosticClient.Execute(method, path, body?.ToString(), internalView, headers);
 
             if (response != null)
             {
@@ -101,11 +126,14 @@ namespace AppLensV3.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var responseObject = JsonConvert.DeserializeObject(responseString);
+                    if (response.Headers.Contains("diag-script-etag"))
+                    {
+                        Request.HttpContext.Response.Headers.Add("diag-script-etag", response.Headers.GetValues("diag-script-etag").First());
+                    }
                     if (path.ToLower().EndsWith("/diagnostics/publish") && tos.Count > 0 && _env.IsProduction())
                     {
                         await this._emailNotificationService.SendPublishingAlert(alias, detectorId, applensLink, tos);
                     }
-
                     return Ok(responseObject);
                 }
                 else if(response.StatusCode == HttpStatusCode.BadRequest)

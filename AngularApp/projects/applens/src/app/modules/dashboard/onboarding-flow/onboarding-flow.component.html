@@ -4,8 +4,10 @@
         <div>
             <h4>Confirm?</h4>
             <hr style="margin-top: 10px;margin-bottom: 10px;">
-            <span>Published changes will be live in Applens and App Services "Diagnose and Solve" blade for external customers
-                if the detector is marked public.</span>
+            <span>
+                Published changes will be live in Applens and App Services "Diagnose and Solve" blade for
+                external customers if the detector is marked public.
+            </span>
 
             <div style="margin-top:10px;margin-bottom: 10px">
                 <button type="button" class="btn btn-primary" (click)="publish()" [class.disabled]="modalPublishingButtonDisabled">{{modalPublishingButtonText}}</button>
@@ -20,12 +22,12 @@
         </div>
         <div class="modal-content">
             <div id="dev-box">
-                <div>       
+                <div>
                     <h4 style="font-weight: bold; color:#373277">Local Development Prerequisites</h4>
                     <p>1. Make sure you have installed
                         <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a> and <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp" target="_blank">C# extension </a> locally.</p>
                     <p>2. Install
-                        <a href="https://nodejs.org/en/" target="_blank">Node.js 
+                        <a href="https://nodejs.org/en/" target="_blank">Node.js
                         </a>  with version 8.x or later.</p>
                     <p>2. Install
                             <a href="https://git-scm.com/download/win" target="_blank">Git
@@ -115,7 +117,7 @@
 
                 <div style="padding:10px">
                     <detector-view *ngIf="queryResponse && !showDataSources" [detectorResponse]="queryResponse.invocationOutput" [startTime]="startTime"
-                        [endTime]="endTime" [error]="errorState" [showEdit]="false"></detector-view>
+                        [endTime]="endTime" [error]="errorState" [showEdit]="false" [developmentMode]="true" [script]="code" [compilationPackage]="compilationPackage"></detector-view>
 
                     <tab-data-sources *ngIf="queryResponse && showDataSources" [onboardingMode]="true" [detectorResponse]="queryResponse.invocationOutput">
                     </tab-data-sources>

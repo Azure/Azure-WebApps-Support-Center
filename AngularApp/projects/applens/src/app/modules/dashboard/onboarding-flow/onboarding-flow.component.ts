@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { GithubApiService } from '../../../shared/services/github-api.service';
 import { DetectorResponse } from 'diagnostic-data';
-import { QueryResponse } from 'diagnostic-data';
+import { QueryResponse} from 'diagnostic-data';
+import { CompilationProperties } from 'diagnostic-data';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { Package } from '../../../shared/models/package';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
@@ -61,7 +62,8 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   alertClass: string;
   alertMessage: string;
   showAlert: boolean;
-
+ 
+  compilationPackage: CompilationProperties;
   private publishingPackage: Package;
   private userName: string;
 
@@ -105,6 +107,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.resourceId = this.resourceService.getCurrentResourceId();
     this.hideModal = localStorage.getItem("localdevmodal.hidden") === "true";
     let detectorFile: Observable<string>;
+    this.compilationPackage = new CompilationProperties();
     if (this.mode === DevelopMode.Create) {
       // CREATE FLOW
       detectorFile = this.githubService.getDetectorTemplate(this.resourceService.templateFileName);
@@ -138,7 +141,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       }
     })
   }
-  
+
   ngOnDestroy() {
     // TODO: Figure out saving capabilities
     //this.saveProgress();
@@ -180,14 +183,14 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.localDevButtonDisabled = true;
     this.localDevText = "Preparing Local Tools";
     this.localDevIcon = "fa fa-circle-o-notch fa-spin";
-    
+
     var body = {
       script: this.code
     };
 
     localStorage.setItem("localdevmodal.hidden", this.hideModal === true ? "true" : "false");
 
-    this.diagnosticApiService.prepareLocalDevelopment(body, this.detectorId, this._detectorControlService.startTimeString, 
+    this.diagnosticApiService.prepareLocalDevelopment(body, this.detectorId, this._detectorControlService.startTimeString,
       this._detectorControlService.endTimeString, this.dataSource, this.timeRange)
     .subscribe((response: string) => {
       this.localDevButtonDisabled = false;
@@ -199,12 +202,12 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       var element = document.createElement('a');
       element.setAttribute('href', response);
       element.setAttribute('download', "Local Development Package");
-  
+
       element.style.display = 'none';
       document.body.appendChild(element);
-  
+
       element.click();
-  
+
       document.body.removeChild(element);
     }
     , ((error: any) => {
@@ -214,7 +217,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       this.localDevIcon = "fa fa-download";
     }));
   }
-  
+
   runCompilation() {
     this.buildOutput = [];
     this.buildOutput.push("------ Build started ------");
@@ -233,17 +236,26 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     let isSystemInvoker: boolean = this.mode === DevelopMode.EditMonitoring || this.mode === DevelopMode.EditAnalytics;
 
     this.diagnosticApiService.getCompilerResponse(body, isSystemInvoker, this.detectorId, this._detectorControlService.startTimeString, 
-        this._detectorControlService.endTimeString, this.dataSource, this.timeRange)
-      .subscribe((response: QueryResponse<DetectorResponse>) => {
-
-        this.queryResponse = response;
+        this._detectorControlService.endTimeString, this.dataSource, this.timeRange, {
+          scriptETag: this.compilationPackage.scriptETag,
+          assemblyName: this.compilationPackage.assemblyName,
+          getFullResponse: true
+        })
+      .subscribe((response: any) => {
+        this.queryResponse = response.body;
         this.runButtonDisabled = false;
         this.runButtonText = "Run";
         this.runButtonIcon = "fa fa-play";
-        this.queryResponse.compilationOutput.compilationOutput.forEach(element => {
+        this.queryResponse.compilationOutput.compilationTraces.forEach(element => {
           this.buildOutput.push(element);
         });
-
+        // If the script etag returned by the server does not match the previous script-etag, update the values in memory
+        if(response.headers.get('diag-script-etag') != undefined && this.compilationPackage.scriptETag !== response.headers.get('diag-script-etag')) {                
+          this.compilationPackage.scriptETag = response.headers.get('diag-script-etag');
+          this.compilationPackage.assemblyName = this.queryResponse.compilationOutput.assemblyName;          
+          this.compilationPackage.assemblyBytes = this.queryResponse.compilationOutput.assemblyBytes;
+          this.compilationPackage.pdbBytes = this.queryResponse.compilationOutput.pdbBytes;
+        }
         if (this.queryResponse.compilationOutput.compilationSucceeded === true) {
           this.publishButtonDisabled = false;
           this.preparePublishingPackage(this.queryResponse, currentCode);
@@ -314,12 +326,12 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     {
         this.emailRecipients +=  ';' + queryResponse.invocationOutput.metadata.author;
     }
-    
+
     this.publishingPackage = {
       codeString: code,
       id: queryResponse.invocationOutput.metadata.id,
-      dllBytes: queryResponse.compilationOutput.assemblyBytes,
-      pdbBytes: queryResponse.compilationOutput.pdbBytes,
+      dllBytes: this.compilationPackage.assemblyBytes,
+      pdbBytes: this.compilationPackage.pdbBytes,
       committedByAlias: this.userName
     };
   }

@@ -39,8 +39,11 @@ export class LocalBackendService {
     }));
   }
 
-  public getDetector(detectorName: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean) {
-    const path = `v4${this.resourceId}/detectors/${detectorName}?startTime=${startTime}&endTime=${endTime}`;
+  public getDetector(detectorName: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean, formQueryParams?: string) {
+    let path = `v4${this.resourceId}/detectors/${detectorName}?startTime=${startTime}&endTime=${endTime}`;
+    if(formQueryParams != null) {
+      path += formQueryParams;
+    }
     return this.invoke<DetectorResponse>(path, 'POST');
   }
 
