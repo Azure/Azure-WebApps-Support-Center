@@ -16,12 +16,7 @@
     <h1></h1>
     <p>No commits history so far..</p>
   </div>
-  <div>
-    <loader-view *ngIf="!noCommitsHistory && loadingChange<1" message="Loading Changes...">
-    </loader-view>
-  </div>
-  <div *ngIf="!noCommitsHistory && loadingChange>1" class="col-md-11 commit-editor">
-    <ngx-monaco-diff-editor class="diff-view" [options]="options" [(originalModel)]="originalModel"
-      [(modifiedModel)]="modifiedModel"></ngx-monaco-diff-editor>
+  <div *ngIf="!noCommitsHistory" class="col-md-11 commit-editor">
+    <ngx-monaco-editor class="diff-view" [options]="options" [(ngModel)]="currentCode"></ngx-monaco-editor>
   </div>
 </div>
