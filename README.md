@@ -2,6 +2,8 @@
 
 This is the repository for Azure App Service diagnostics experience.
 
+[![Build Status](https://dev.azure.com/app-service-diagnostics-portal/app-service-diagnostics-portal/_apis/build/status/Angular%20PR%20Build?branchName=master)](https://dev.azure.com/app-service-diagnostics-portal/app-service-diagnostics-portal/_build/latest?definitionId=1&branchName=master)
+
 ## Prerequisites
 - [Node 6.*](https://nodejs.org/en/download/)
 - Node Package Manager (npm)
