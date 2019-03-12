@@ -23,7 +23,7 @@ export class LoggingService {
     private _supportTopicId: string = '';
     private _appType: string = '';
     private _source: string = '';
-    private _ticketSubmissionFlowVersion: string = '';
+    private _diagnosticsVersion: string = '';
 
     public platform: string = '';
     public appStackInfo: string = '';
@@ -52,7 +52,7 @@ export class LoggingService {
 
                 if (this._startUpInfo.workflowId) {
                     this._ticketBladeWorkflowId = this._startUpInfo.workflowId;
-                    this._ticketSubmissionFlowVersion =  VersioningHelper.isV2Subscription(this._subscriptionId) ? "v2" : "v1" ;
+                    this._diagnosticsVersion =  VersioningHelper.isV2Subscription(this._subscriptionId) ? "v2" : "v1" ;
                 }
 
                 if (this._startUpInfo.supportTopicId) {
@@ -104,7 +104,7 @@ export class LoggingService {
             appType: this._appType,
             supportTopicId: this._supportTopicId,
             bladeSource: this._source,
-            ticketSubmissionFlowVersion: this._ticketSubmissionFlowVersion
+            diagnosticsVersion: this._diagnosticsVersion
         };
 
         const combinedArgs = {};

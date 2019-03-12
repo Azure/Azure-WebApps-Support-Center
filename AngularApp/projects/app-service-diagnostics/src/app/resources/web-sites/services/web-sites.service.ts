@@ -29,7 +29,7 @@ export class WebSitesService extends ResourceService {
     }
 
     public get azureServiceName(): string {
-        return this.appType === AppType.WebApp ? this.platform === OperatingSystem.windows ? 'Azure Web App(Windows)' : 'Azure Web App(Linux)' : 'Azure Function App';
+        return this.appType === AppType.WebApp ? this.platform === OperatingSystem.windows ? 'Web App (Windows)' : 'Web App (Linux)' : 'Azure Function App';
     }
 
     public get isApplicableForLiveChat(): boolean {

@@ -19,7 +19,7 @@ export class LiveChatSettings {
     // List of Support Topics for which Live chat is Enabled
     public static enabledSupportTopicsPerAzureService: any = {
 
-      "Azure Web App(Windows)": [
+      "Web App (Windows)": [
         '32542218',     //Availability and Performance/Web App Down
         '32457411',     //Availability and Performance/Web App Slow
         '32570954',     //Availability and Performance/Web App Restarted
@@ -35,7 +35,7 @@ export class LiveChatSettings {
         '32589277',     //How Do I/Configure domains and certificates,
         '32589281'      //How Do I/IP Configuration
       ],
-      "Azure Web App(Linux)": [
+      "Web App (Linux)": [
         '32542218',     //Availability and Performance/Web App Down
         '32570954',     //Availability and Performance/Web App Restarted
         '32440123',     //Configuration and Management/Configuring SSL
