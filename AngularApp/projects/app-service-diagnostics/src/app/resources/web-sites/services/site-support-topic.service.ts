@@ -5,6 +5,7 @@ import { DiagnosticService } from 'diagnostic-data';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
 import { Observable, of } from 'rxjs';
 import { OperatingSystem } from '../../../shared/models/site';
+import { VersioningHelper } from '../../../shared/utilities/versioningHelper';
 
 @Injectable()
 export class SiteSupportTopicService extends SupportTopicService {
@@ -14,11 +15,6 @@ export class SiteSupportTopicService extends SupportTopicService {
       pesId: '14748',
       supportTopicId: '32583701',
       path: '/diagnostics/availability/detectors/sitecpuanalysis/focus',
-    },
-    {
-      pesId: '14748',
-      supportTopicId: '32457411',
-      path: '/diagnostics/performance/analysis',
     },
     {
       pesId: '14748',
@@ -39,6 +35,14 @@ export class SiteSupportTopicService extends SupportTopicService {
 
   constructor(protected _diagnosticService: DiagnosticService, protected _webSiteService: WebSitesService) {
     super(_diagnosticService, _webSiteService);
+
+    if (!VersioningHelper.isV2Subscription(_webSiteService.subscriptionId)) {
+      this._hardCodedSupportTopicIdMapping.push({
+        pesId: '14748',
+        supportTopicId: '32457411',
+        path: '/diagnostics/performance/analysis',
+      });
+    }
   }
 
   getPathForSupportTopic(supportTopicId: string, pesId: string): Observable<string> {

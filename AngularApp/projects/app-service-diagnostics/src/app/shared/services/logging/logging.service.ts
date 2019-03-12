@@ -9,6 +9,7 @@ import { ArmService } from '../arm.service';
 import { IncidentNotification, IncidentType, IncidentStatus } from '../../models/icm-incident';
 import { PortalService } from '../../../startup/services/portal.service';
 import { Observable, forkJoin } from 'rxjs';
+import { VersioningHelper } from '../../utilities/versioningHelper';
 
 @Injectable()
 export class LoggingService {
@@ -22,6 +23,7 @@ export class LoggingService {
     private _supportTopicId: string = '';
     private _appType: string = '';
     private _source: string = '';
+    private _ticketSubmissionFlowVersion: string = '';
 
     public platform: string = '';
     public appStackInfo: string = '';
@@ -50,6 +52,7 @@ export class LoggingService {
 
                 if (this._startUpInfo.workflowId) {
                     this._ticketBladeWorkflowId = this._startUpInfo.workflowId;
+                    this._ticketSubmissionFlowVersion =  VersioningHelper.isV2Subscription(this._subscriptionId) ? "v2" : "v1" ;
                 }
 
                 if (this._startUpInfo.supportTopicId) {
@@ -100,7 +103,8 @@ export class LoggingService {
             platform: this.platform,
             appType: this._appType,
             supportTopicId: this._supportTopicId,
-            bladeSource: this._source
+            bladeSource: this._source,
+            ticketSubmissionFlowVersion: this._ticketSubmissionFlowVersion
         };
 
         const combinedArgs = {};
