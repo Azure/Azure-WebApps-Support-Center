@@ -8,6 +8,6 @@ export class WebHostingEnvironmentsService extends ResourceService {
     }
 
     public get azureServiceName(): string {
-        return "App Service Environment";
+        return "ASE";
     }
 }
