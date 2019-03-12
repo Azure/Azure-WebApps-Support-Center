@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TelemetryService, FeatureNavigationService } from 'diagnostic-data';
 import { AuthService } from '../../../startup/services/auth.service';
 import { Subscription } from 'rxjs';
+import { ResourceService } from '../../../shared-v2/services/resource.service';
 
 @Component({
   selector: 'generic-detector',
@@ -17,7 +18,7 @@ export class GenericDetectorComponent implements OnDestroy {
   detector: string;
   navigateSub: Subscription;
 
-  constructor(private _activatedRoute: ActivatedRoute, private _authServiceInstance: AuthService, private _telemetryService: TelemetryService,
+  constructor(private _activatedRoute: ActivatedRoute, private _resourceService:ResourceService, private _authServiceInstance: AuthService, private _telemetryService: TelemetryService,
     private _navigator: FeatureNavigationService, private _router: Router) {
     this.detector = this._activatedRoute.snapshot.params['detectorName'];
 
@@ -38,7 +39,8 @@ export class GenericDetectorComponent implements OnDestroy {
           'ResourceId': resourceId,
           'TicketBladeWorkflowId': ticketBladeWorkflowId,
           'SupportTopicId': supportTopicId,
-          'PortalSessionId': sessionId
+          'PortalSessionId': sessionId,
+          'AzureServiceName':this._resourceService.azureServiceName
         };
        this._telemetryService.eventPropertiesSubject.next(eventProperties);
       }
