@@ -88,7 +88,7 @@ if ($listGist -ne "") {
 }
 
 if ($install -ne "") {
-    Install-Gist -Name $install -Version $version -IsLocalHost
+    Install-Gist -Name $install -Version $version
 }
 
 if ($systemCheck) {
@@ -112,7 +112,7 @@ if ($systemCheck) {
 }
 
 if ($run) {
-    $compilationResponse = Start-Compilation  -ResourceId $ResourceId -DetectorCsxPath $DetectorFile -IsInternalClient $IsInternalClient -IsInternalView $InternalView -IsLocalHost
+    $compilationResponse = Start-Compilation  -ResourceId $ResourceId -DetectorCsxPath $DetectorFile -IsInternalClient $IsInternalClient -IsInternalView $InternalView
 
     if ($compilationResponse.invocationOutput) {
         Write-Verbose "path: $PSScriptRoot\..\FrameWork\UI\Detector-UI-Rendering\dist\assets\invocationOutput.json" -Verbose
