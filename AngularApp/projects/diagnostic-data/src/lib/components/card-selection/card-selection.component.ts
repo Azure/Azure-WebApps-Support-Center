@@ -5,6 +5,7 @@ import { DiagnosticService } from '../../services/diagnostic.service';
 import { FeatureNavigationService } from '../../services/feature-navigation.service';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
+import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 
 export class CardSelection {
   title: string;
@@ -50,11 +51,20 @@ export class CardSelectionComponent extends DataRenderBaseComponent {
 
   public selectCard(card: CardSelection) {
     if (card && card.linkType === CardActionType.Detector) {
+      this.logCardClick(card.title);
       this._navigator.NavigateToDetector(this._activatedRoute.snapshot.params['detector'], card.linkValue);
     }
   }
 
   public getColor(index: number): string {
     return this.colors[index % this.colors.length];
+  }
+
+  // Send telemetry event for clicking Card
+  logCardClick(title: string) {
+    const eventProps = {
+      'Title': title
+    };
+    this.logEvent(TelemetryEventNames.CardClicked, eventProps);
   }
 }
