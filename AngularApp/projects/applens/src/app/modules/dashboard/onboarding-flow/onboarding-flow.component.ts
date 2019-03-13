@@ -59,6 +59,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   runButtonIcon: string;
   publishButtonText: string;
   gists: string[] = [];
+  allGists: string[] = [];
   selectedGist: string = '';
   temporarySelection: object = {};
 
@@ -199,7 +200,10 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.localDevIcon = "fa fa-circle-o-notch fa-spin";
 
     var body = {
-      script: this.code
+      script: this.code,
+      configuration: this.configuration,
+      gists: this.allGists,
+      baseUrl: window.location.origin
     };
 
     localStorage.setItem("localdevmodal.hidden", this.hideModal === true ? "true" : "false");
@@ -452,11 +456,18 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       }
     }
 
-    forkJoin(detectorFile, configuration).subscribe(res => {
+    forkJoin(detectorFile, configuration, this.diagnosticApiService.getGists()).subscribe(res => {
       this.code = res[0];
       if (res[1] !== null) {
-        Object.keys(this.configuration['dependencies']).forEach((name, index) => {
+        this.gists = Object.keys(this.configuration['dependencies']);
+        this.gists.forEach((name, index) => {
           this.reference[name] = res[1][index];
+        });
+      }
+
+      if(res[2] !== null) {
+        res[2].forEach(m => {
+          this.allGists.push(m.id);
         });
       }
 

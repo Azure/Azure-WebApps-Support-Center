@@ -2,8 +2,7 @@
 Add-Type -Path "$($PSScriptRoot)\References\Microsoft.IdentityModel.Clients.ActiveDirectory\Microsoft.IdentityModel.Clients.ActiveDirectory.dll"
 Add-type -Path "$($PSScriptRoot)\References\Newtonsoft.Json\Newtonsoft.Json.dll"
 
-function Get-AuthenticationResult
-{
+function Get-AuthenticationResult {
     $ErrorActionPreference = 'Stop'
     $VerbosePreference = 'Continue'
 
@@ -19,40 +18,39 @@ function Get-AuthenticationResult
     $promptBehavior = [Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior]::Auto
     $platformParams = [Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters]::New($promptBehavior)
 
-    $authContext = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext ("{0}/{1}" -f $login,$tenantId)
+    $authContext = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext ("{0}/{1}" -f $login, $tenantId)
     $authenticationResult = $authContext.AcquireTokenAsync($resourceId, $clientID, $redirectUri, $platformParams).Result 
 
     return $authenticationResult
 }
 
-function Get-RequestHeader
-{
+function Get-RequestHeader {
     [CmdletBinding()]
     param
     (
-    [Parameter(Mandatory=$true)]
-    [string]
-    $Path,
+        [Parameter(Mandatory = $true)]
+        [string]
+        $Path,
 
-    [parameter(Mandatory = $false)]
-    [boolean]
-    $IsInternalClient = $true, 
+        [parameter(Mandatory = $false)]
+        [boolean]
+        $IsInternalClient = $true, 
 
-    [parameter(Mandatory = $false)]
-    [boolean]
-    $IsInternalView = $true
+        [parameter(Mandatory = $false)]
+        [boolean]
+        $IsInternalView = $true
     )
 
     $authenticationResult = Get-AuthenticationResult
 
     $header = @{
-    "Authorization" = "Bearer $($authenticationResult.AccessToken)"
-    "Content-Type" = "application/json; charset=utf-8"
-    "Accept" = "application/json"
-    "x-ms-method" = "POST"
-    "X-ms-path-query" = "$Path"
-    "x-ms-internal-client" = $IsInternalClient
-    "x-ms-internal-view" = $IsInternalView
+        "Authorization"        = "Bearer $($authenticationResult.AccessToken)"
+        "Content-Type"         = "application/json; charset=utf-8"
+        "Accept"               = "application/json"
+        "x-ms-method"          = "POST"
+        "X-ms-path-query"      = "$Path"
+        "x-ms-internal-client" = $IsInternalClient
+        "x-ms-internal-view"   = $IsInternalView
     }
 
     return $header
@@ -60,32 +58,28 @@ function Get-RequestHeader
 
 ############################### Rest API Call to run detector #################################
 
-function Get-ResourceIdFromSettings
-{
+function Get-ResourceIdFromSettings {
     $ErrorActionPreference = 'Stop'
     $VerbosePreference = 'Continue'
 
-    $json = [System.IO.File]::ReadAllText("$($PSScriptRoot)\..\..\Detector\detectorSettings.json")
-   # $json = [System.IO.File]::ReadAllText("F:\AppService\LocalDevTemplate\appcrashes41\Detector\detectorSettings.json")
+    $json = [System.IO.File]::ReadAllText("$($PSScriptRoot)\..\..\Detector\package.json")
 
     $jsonObject = ConvertFrom-Json $json
-    $resourceId =  $jsonObject.ResourceId
+    $jsonObject = $jsonObject.detectorSettings
+    $resourceId = $jsonObject.ResourceId
 
-    if ([String]::IsNullOrEmpty($resourceId))
-    {
+    if ([String]::IsNullOrEmpty($resourceId)) {
         Write-Error "No resource Id provided in detector settings file:("
     }
-    else
-    {
-        Write-Verbose "Get resource Id from detectorSettings.json:"
+    else {
+        Write-Verbose "Get resource Id from package.json:"
         Write-host $resourceId -ForegroundColor Cyan
     }
 
     return $resourceId
 }
 
-function Set-ResourceInfo
-{
+function Set-ResourceInfo {
     [CmdletBinding()]
     Param
     (
@@ -113,31 +107,39 @@ function Set-ResourceInfo
 
     
     $versionPrefix = ""
-    if ($ResourceId -match "Microsoft.Web/sites")
-    {
+    if ($ResourceId -match "Microsoft.Web/sites") {
         $versionPrefix = "v4"
     }
-    elseif ($ResourceId -match "Microsoft.Web/hostingEnvironments")
-    {
+    elseif ($ResourceId -match "Microsoft.Web/hostingEnvironments") {
         $versionPrefix = "v2"
     }
 
     $path = $versionPrefix + $ResourceId
     
-     $detectorSettings = @{
+    $detectorSettings = @{
         "ResourceId" = $ResourceId;
-        "Version" = $versionPrefix;
+        "Version"    = $versionPrefix;
         "DetectorId" = $DetectorId;
-        "Token" = $AccessToken;
-        "StartTime" = $StartTime;
-        "EndTime" = $EndTime
+        "Token"      = $AccessToken;
+        "StartTime"  = $StartTime;
+        "EndTime"    = $EndTime
     } | ConvertTo-Json 
 
     [System.IO.File]::WriteAllText("$PSScriptRoot\..\UI\Detector-UI-Rendering\dist\assets\detectorSettings.json", $detectorSettings) 
 }
 
-function Start-Compilation
-{
+function Get-References {
+    $json = New-Object PSObject
+    Get-ChildItem "$PSScriptRoot\..\..\Detector\gists" -Filter *.csx | 
+        ForEach-Object {
+        $file = Get-Content $_.FullName
+        $json | Add-Member -Type NoteProperty -Name $_.BaseName -Value "$($file)"
+    }
+
+    return $json
+}
+
+function Start-Compilation {
     [CmdletBinding()]
     Param
     (
@@ -169,39 +171,32 @@ function Start-Compilation
     $ErrorActionPreference = 'Stop'
     $VerbosePreference = 'Continue'
 
-    if ([string]::IsNullOrEmpty($DetectorCsxPath))
-    {
-        if (Test-Path "$($PSScriptRoot)\..\..\Detector\detector.csx")
-        {
+    if ([string]::IsNullOrEmpty($DetectorCsxPath)) {
+        if (Test-Path "$($PSScriptRoot)\..\..\Detector\detector.csx") {
             $DetectorCsxPath = "$($PSScriptRoot)\..\..\Detector\detector.csx"
             Write-Host "Start compiling detector from: $DetectorCsxPath" -ForegroundColor Green
         }
-        else
-        {
+        else {
             Write-Error "Please make sure LocalDevHelper module or detector.csx is under the right folder"
         }
     }
 
     # Get Path Prefix
-    if ([string]::IsNullOrEmpty($ResourceId))
-    {
-        $detectorSettingsPath = "$($PSScriptRoot)\..\..\Detector\detectorSettings.json"
+    if ([string]::IsNullOrEmpty($ResourceId)) {
+        $detectorSettingsPath = "$($PSScriptRoot)\..\..\Detector\package.json"
         Write-Verbose "No ResourceId parameter provided by the command line."
         Write-Verbose "Reading ResourceId from detector settings $detectorSettingsPath"
         $ResourceId = Get-ResourceIdFromSettings
     }
-    else
-    {
+    else {
         Write-Verbose "Compile detector with ResourceId: $ResourceId"
     }
 
     $versionPrefix = ""
-    if ($ResourceId -match "Microsoft.Web/sites")
-    {
+    if ($ResourceId -match "Microsoft.Web/sites") {
         $versionPrefix = "v4"
     }
-    elseif ($ResourceId -match "Microsoft.Web/hostingEnvironments")
-    {
+    elseif ($ResourceId -match "Microsoft.Web/hostingEnvironments") {
         $versionPrefix = "v2"
     }
 
@@ -215,23 +210,23 @@ function Start-Compilation
     $codeString = [System.IO.File]::ReadAllText($detectorCsxPath)
         
     $body = @{
-        "script" = $codeString
+        "script"     = $codeString
+        "references" = Get-References
+        "entityType" = "signal"
     } | ConvertTo-Json 
 
     $endpoint = "https://applens.azurewebsites.net/api/invoke"
 
     # This is for testing purpose
-    if ($IsLocalhost)
-    {
+    if ($IsLocalhost) {
         $endpoint = "http://localhost:5000/api/invoke"
     }
 
-    if ($IsStaging)
-    {
+    if ($IsStaging) {
         $endpoint = "https://applens-staging.azurewebsites.net/api/invoke"
     }
 
-	Write-Host "============  Build started ============ " -ForegroundColor Green
+    Write-Host "============  Build started ============ " -ForegroundColor Green
 
     try {
         $response = Invoke-RestMethod -Method Post -Uri $endpoint -Headers $header -Body $body -ContentType "application/json; charset=utf-8"
@@ -247,24 +242,28 @@ function Start-Compilation
     }
 
     write-host "`n " -Verbose
-    if ($response.compilationOutput.compilationSucceeded -eq $true)
-    {
+    if ($response.compilationOutput.compilationSucceeded -eq $true) {
         Write-Host "========== Build: 1 succeeded, 0 failed ==========" -ForegroundColor Green
         Write-Host "Detector Compilation succeeded!" -ForegroundColor Magenta 
     }
-    else
-    {
+    else {
         Write-Host -ForegroundColor Red "========== Build: 0 succeeded, 1 failed =========="
     }
 
-
     $detectorId = ""
-    if ($response.invocationOutput.metadata.id)
-    {
+    if ($response.invocationOutput.metadata.id) {
         $detectorId = $response.invocationOutput.metadata.id
     }
 
     Set-ResourceInfo -ResourceId $ResourceId -AccessToken $header.Authorization -DetectorId $DetectorId
+
+    if ($response.compilationOutput -and $response.compilationOutput.references) {
+        $json = (Get-Content "$($PSScriptRoot)\..\..\Detector\package.json" -Raw) | ConvertFrom-Json
+        $ref = $response.compilationOutput.references
+        $installed = $json.packageDefinition.dependencies.psobject.properties.name
+        $installed | ? {$ref -notcontains $_} | ForEach-Object { Remove-Gist -Name $_ }
+        $ref | ? {$installed -notcontains $_} | ForEach-Object { Install-Gist -Name $_ $IsLocalhost }
+    }
 
     return $response
 }
@@ -272,56 +271,53 @@ function Start-Compilation
 
 ############################## Publish detector ##################################################################
 
-function Publish-Detector
-{
+function Publish-Detector {
     [CmdletBinding()]
     param
     (
-    [Parameter(Mandatory=$false)]
-    [string]
-    $DetectorCsxPath,
+        [Parameter(Mandatory = $false)]
+        [string]
+        $DetectorCsxPath,
 
-    [parameter(Mandatory = $false)]
-    [System.String]
-    $ResourceId = "",
+        [parameter(Mandatory = $false)]
+        [System.String]
+        $ResourceId = "",
 
-    [parameter(Mandatory = $false)]
-    [boolean]
-    $IsInternalClient = $true, 
+        [parameter(Mandatory = $false)]
+        [boolean]
+        $IsInternalClient = $true, 
 
-    [parameter(Mandatory = $false)]
-    [boolean]
-    $IsInternalView = $true,
+        [parameter(Mandatory = $false)]
+        [boolean]
+        $IsInternalView = $true,
 
-    [Parameter(Mandatory = $false)]
-    [Switch]
-    $IsLocalhost,
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $IsLocalhost,
 
-    [Parameter(Mandatory = $false)]
-    [Switch]
-    $IsStaging
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $IsStaging
     )
     
-	$ErrorActionPreference = 'Stop'
+    $ErrorActionPreference = 'Stop'
     $VerbosePreference = 'Continue'
 
     Write-host "Preparing publishing package " -ForegroundColor Green
 
     ## Preparing header
-    if ([string]::IsNullOrEmpty($ResourceId))
-    {
-        $detectorSettingsPath = "$($PSScriptRoot)\..\..\Detector\detectorSettings.json"
+    if ([string]::IsNullOrEmpty($ResourceId)) {
+        $detectorSettingsPath = "$($PSScriptRoot)\..\..\Detector\package.json"
         Write-Verbose "No ResourceId parameter provided by the command line."
         Write-Verbose "Reading resource app from detector settings $detectorSettingsPath"
         $ResourceId = Get-ResourceIdFromSettings
     }
-    else
-    {
+    else {
         Write-Verbose "Compile detector with ResourceId: $ResourceId"
     }
 
     $path = $ResourceId + "/diagnostics/publish"
-    $publishHeader= Get-RequestHeader -path $path
+    $publishHeader = Get-RequestHeader -path $path
 
     # Preparing body/ package:
 
@@ -331,15 +327,12 @@ function Publish-Detector
     
     # Compile the package first to get the response, making sure all the detector are compiled successfully before published
     
-    if ([string]::IsNullOrEmpty($DetectorCsxPath))
-    {
-        if (Test-Path "$($PSScriptRoot)\..\..\Detector\detector.csx")
-        {
+    if ([string]::IsNullOrEmpty($DetectorCsxPath)) {
+        if (Test-Path "$($PSScriptRoot)\..\..\Detector\detector.csx") {
             $DetectorCsxPath = "$($PSScriptRoot)\..\..\Detector\detector.csx"
             Write-Verbose "Start preparing package for detector from: $DetectorCsxPath"
         }
-        else
-        {
+        else {
             Write-Error "Please make sure LocalDevHelper module or detector.csx is under the right folder"
         }
     }
@@ -348,23 +341,23 @@ function Publish-Detector
 
     $codeString = [System.IO.File]::ReadAllText($DetectorCsxPath)
 
-    if (($compilationResponse -eq $null) -or ($compilationResponse.compilationOutput.compilationSucceeded -eq $false))
-    {
+    if (($compilationResponse -eq $null) -or ($compilationResponse.compilationOutput.compilationSucceeded -eq $false)) {
         Write-Error "Build Failed. Please make sure compilation succeed before publishing"
         exit
     }
-    if($compilationResponse.runtimeSucceeded -eq $false) {
+    if ($compilationResponse.runtimeSucceeded -eq $false) {
         Write-Error "Runtime exception occurred. Please make sure there are no runtime exceptions before publishing"
         exit
     }
-    else
-    {
+    else {
+        $json = (Get-Content "$($PSScriptRoot)\..\..\Detector\package.json" -Raw) | ConvertFrom-Json
         $publishingPackage = @{
-            codeString = $codeString
-            id = $compilationResponse.invocationOutput.metadata.id
-            dllBytes = $compilationResponse.compilationOutput.assemblyBytes
-            pdbBytes = $compilationResponse.compilationOutput.pdbBytes
+            codeString       = $codeString
+            id               = $compilationResponse.invocationOutput.metadata.id
+            dllBytes         = $compilationResponse.compilationOutput.assemblyBytes
+            pdbBytes         = $compilationResponse.compilationOutput.pdbBytes
             committedByAlias = $userAlias
+            packageConfig    = ($json.packageDefinition | ConvertTo-Json)
         }
 
         Write-Host "Preparing package succeeded!" -ForegroundColor Magenta
@@ -375,14 +368,12 @@ function Publish-Detector
     # Publish package
     $endpoint = "https://applens.azurewebsites.net/api/invoke"
 
-	# This is for testing purpose
-    if ($IsLocalhost)
-    {
+    # This is for testing purpose
+    if ($IsLocalhost) {
         $endpoint = "http://localhost:5000/api/invoke"
     }
 
-    if ($IsStaging)
-    {
+    if ($IsStaging) {
         $endpoint = "https://applens-staging.azurewebsites.net/api/invoke"
     }
 
@@ -395,20 +386,190 @@ function Publish-Detector
         Write-Host "Status Description:" $_.Exception.Response.StatusDescription -ForegroundColor Red
     }
   
-    if ($response -eq $null)
-    {
+    if ($response -eq $null) {
         Write-Error "Detector published failed!"
         exit
     }
-    else{
+    else {
         Write-Host "Detector is published successfully!" -ForegroundColor Magenta
         
-        if ($compilationResponse.invocationOutput.metadata.id)
-        {
+        if ($compilationResponse.invocationOutput.metadata.id) {
             $detectorId = $compilationResponse.invocationOutput.metadata.id
             $resourceUrl = $ResourceId -ireplace "resourcegroup", "resourceGroup"
             $publishedLink = "https://applens.azurewebsites.net" + $resourceUrl + "/detectors/" + $detectorId
             Write-Host "Changes will be live shortly at: $publishedLink" -ForegroundColor Cyan
         }
+    }
+}
+
+################################ Gists operation ######################################
+function Install-Gist {
+    [CmdletBinding()]
+    Param
+    (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
+
+        [parameter(Mandatory = $false)]
+        [System.String]
+        $Version = "",
+
+        [parameter(Mandatory = $false)]
+        [switch]
+        $IsLocalhost,
+
+        [parameter(Mandatory = $false)]
+        [switch]
+        $IsStaging
+    )
+
+    $json = (Get-Content "$PSScriptRoot\..\..\Detector\package.json" -Raw) | ConvertFrom-Json
+
+    $names = $json.gistDefinitions.psobject.properties.name 
+    if (!$names.Contains($Name)) {
+        Write-Error "Cannot find gist $($Name)"
+        exit
+    }
+
+    $versions = $json.gistDefinitions.$Name.psobject.properties.name
+
+    if ($Version -eq "") {
+        if ($versions.Count -eq 1) {
+            $Version = $versions
+        }
+        else {
+            $Version = $versions[-1]
+        }
+    }
+
+    if (!$versions.Contains($Version)) {
+        Write-Error "$($Version) is not a version of gist $($Name). Please run .\Diag.ps1 -listGist $($Name) to check all versions."
+        exit
+    }
+
+    $installed = $json.packageDefinition.dependencies.$Name
+    if ($installed -eq $Version) {
+        Write-Host "$($Version) has already been installed." -ForegroundColor Green
+        exit
+    }
+
+    # Get request header
+    $header = Get-RequestHeader -Path  "xxx" -IsInternalClient $true -IsInternalView $true
+
+    $endpoint = "https://applens.azurewebsites.net/api/github/package/$($Name)/commit/$($Version)"
+
+    # This is for testing purpose
+    if ($IsLocalhost) {
+        $endpoint = "http://localhost:5000/api/github/package/$($Name)/commit/$($Version)"
+    }
+
+    if ($IsStaging) {
+        $endpoint = "https://applens-staging.azurewebsites.net/api/github/package/$($Name)/commit/$($Version)"
+    }
+
+    Write-Host "============  Install started ============ " -ForegroundColor Green
+
+    try {
+        $response = Invoke-RestMethod -Method Get -Uri $endpoint -Headers $header -ContentType "application/json; charset=utf-8"
+    }
+    catch {
+        Write-Host "Reponse Status Code:" $_.Exception.Response.StatusCode.value__  -ForegroundColor Magenta
+        Write-Host "Status Description:" $_.Exception.Response.StatusDescription -ForegroundColor Magenta
+    }
+
+    $response | Set-Content "$($PSScriptRoot)\..\..\Detector\gists\$($Name).csx"
+
+    Write-Host "Download $($Name) to $($PSScriptRoot)\..\..\Detector\gists\$($Name).csx successfully!" -ForegroundColor Cyan
+
+    Write-Host "Start updating package.json." -ForegroundColor Magenta
+
+    if ($Name -in $json.packageDefinition.dependencies.psobject.properties.name) {
+        $json.packageDefinition.dependencies.$Name = $Version
+    }
+    else {
+        $json.packageDefinition.dependencies | Add-Member -Type NoteProperty -Name $Name -Value $Version
+    }
+
+    ($json | ConvertTo-Json -depth 100) | Set-Content "$PSScriptRoot\..\..\Detector\package.json"
+
+    Write-Host "Install $($Name) successfully!" -ForegroundColor Green
+}
+
+function Remove-Gist {
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name
+    )
+
+    Write-Host "Start updating package.json" -ForegroundColor Magenta
+
+    $json = (Get-Content "$PSScriptRoot\..\..\Detector\package.json" -Raw) | ConvertFrom-Json
+    $json.packageDefinition.dependencies.psobject.properties.remove($Name)
+
+    ($json | ConvertTo-Json -depth 100) | Set-Content "$PSScriptRoot\..\..\Detector\package.json"
+
+    Write-Host "Start deleting gist file" -ForegroundColor Red
+    $path = "$PSScriptRoot\..\..\Detector\gists\$($Name).csx"
+    if (Test-Path $path) {
+        Remove-Item $path
+    }
+
+    Write-Host "Remove $($Name) successfully." -ForegroundColor Green
+}
+
+function Add-FrameworkReferences {
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [string]
+        $filePath
+    )
+
+    $fileContent = "";
+    $regionToAdd = ""
+
+    foreach ($line in Get-Content $filePath) {
+        if ($line -match "(\#load\s*`")(\w+)(`")" -or $line -match "(\#load\s*`")gists/(\w+).csx(`")") {
+            $line = $line -replace "(\#load\s*`")(\w+)(`")", "`$1gists/`$2.csx`$3"
+            $regionToAdd += $line + "`r`n";
+        }
+        else {
+            $fileContent += $line + "`r`n";
+        }
+    }
+
+    [string[]] $referencesArray = 
+    @('#load "../Framework/References/_frameworkRef.csx"',
+        "using System;",
+        "using System.Linq;", 
+        "using System.Data;",
+        "using System.Collections;",
+        "using System.Collections.Generic;",
+        "using System.Threading.Tasks;",
+        "using System.Text.RegularExpressions;",
+        "using System.Xml.Linq;",
+        "using Diagnostics.DataProviders;",
+        "using Diagnostics.ModelsAndUtils;",
+        "using Diagnostics.ModelsAndUtils.Attributes;",
+        "using Diagnostics.ModelsAndUtils.Models;",
+        "using Diagnostics.ModelsAndUtils.Models.ResponseExtensions;",
+        "using Diagnostics.ModelsAndUtils.ScriptUtilities;"
+        "using Newtonsoft.Json;"
+    )
+
+
+    foreach ($ref in $referencesArray) {
+        if (!$fileContent.Contains($ref)) {
+            $regionToAdd += $ref + "`r`n"
+        }
+    }
+
+    if (![string]::IsNullOrEmpty($regionToAdd)) {
+        $fileContent = $regionToAdd + $fileContent
+        $fileContent | Set-Content $filePath
     }
 }

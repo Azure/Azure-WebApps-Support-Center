@@ -40,7 +40,7 @@ export class ResourceService {
   }
 
   public getCurrentResourceId(forDiagApi?: boolean): string {
-    return `subscriptions/${this._armResource.subscriptionId}/resourcegroups/${this._armResource.resourceGroup}/providers/${this._armResource.provider}/${this._armResource.resourceTypeName}/${this._armResource.resourceName}`;
+    return `subscriptions/${this._armResource.subscriptionId}/resourceGroups/${this._armResource.resourceGroup}/providers/${this._armResource.provider}/${this._armResource.resourceTypeName}/${this._armResource.resourceName}`;
   }
 
   public getCurrentResource(): Observable<any> {

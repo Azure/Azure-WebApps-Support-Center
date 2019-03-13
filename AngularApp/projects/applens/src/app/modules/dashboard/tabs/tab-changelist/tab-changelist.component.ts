@@ -65,10 +65,19 @@ export class TabChangelistComponent implements OnInit {
   }
   ngOnInit() {
     this.id = Object.values(this._route.parent.snapshot.params)[0];
+
     this.githubService.getChangelist(this.id).subscribe(commits => {
       if (commits && commits.length > 0) {
         this.commitsList = commits;
+
         let defaultCommit = commits[commits.length - 1];
+        if (this._route.snapshot.params['sha'] !== undefined) {
+          let cs = this.commitsList.filter(c => c.sha === this._route.snapshot.params['sha']);
+          if (cs.length > 0) {
+            defaultCommit = cs[0];
+          }
+        }
+
         this.setCodeDiffView(defaultCommit);
       }
       else {
