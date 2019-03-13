@@ -77,14 +77,25 @@ if ($listGist -ne "") {
 
     $config = $json.packageDefinition
 
+    $output = @()
     foreach ($name in $names) {
+
+        $obj = New-Object PSCustomObject
+
+        Add-Member -InputObject $obj -NotePropertyName ("Gist Version") -NotePropertyValue "$($name)"
+        
         if ($name -eq $config.dependencies.$listGist) {
-            Write-Host "$($name)`t$($json.gistDefinitions.$listGist.$name) (Currently installed)" -ForegroundColor Magenta
+            Add-Member -InputObject $obj -NotePropertyName ("Applens URL") -NotePropertyValue "$($json.gistDefinitions.$listGist.$name) (Currently installed)"
         }
         else {
-            Write-Host "$($name)`t$($json.gistDefinitions.$listGist.$name)"
+            Add-Member -InputObject $obj -NotePropertyName ("Applens URL") -NotePropertyValue "$($json.gistDefinitions.$listGist.$name)"
         }
+
+        $output += $obj
+
     }
+
+    $output | Format-Table | Out-String -Width 1000
 }
 
 if ($install -ne "") {

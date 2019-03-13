@@ -5,7 +5,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AppLensV3.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -68,24 +70,39 @@ namespace AppLensV3.Controllers
             }
 
             var gistDef = new Dictionary<string, IEnumerable<string>>();
+            var tasks = new List<Task>();
+
             foreach (var gist in gists)
             {
-                var commits = await GithubClient.GetAllCommits(gist);
-                var all = new List<string>();
-                commits.ForEach(c => all.Add(c.Sha));
-                gistDef.Add(gist, all);
+                tasks.Add(Task.Run(async () =>
+                {
+                    var commits = await GithubClient.GetAllCommits(gist);
+                    var sha = commits.Select(c => c.Sha);
+                    gistDef.Add(gist, sha);
+                }));
             }
+
+            await Task.WhenAll(tasks);
 
             var config = string.Empty;
             var sourceReference = new Dictionary<string, string>();
             if (body["configuration"] != null)
             {
                 config = body["configuration"].ToString();
+
+                tasks.Clear();
+
                 var dependencies = body["configuration"]["dependencies"].ToObject<Dictionary<string, string>>();
                 foreach (var p in dependencies)
                 {
-                    sourceReference.Add(p.Key.ToLower(), await GithubClient.GetCommitContent(p.Key.ToLower(), p.Value));
+                    tasks.Add(Task.Run(async () =>
+                    {
+                        var source = await GithubClient.GetCommitContent(p.Key.ToLower(), p.Value);
+                        sourceReference.Add(p.Key.ToLower(), source);
+                    }));
                 }
+
+                await Task.WhenAll(tasks);
             }
 
             var baseUrl = new Uri(body["baseUrl"].ToString());
