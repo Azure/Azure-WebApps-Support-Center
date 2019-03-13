@@ -63,7 +63,8 @@ export class CardSelectionComponent extends DataRenderBaseComponent {
   // Send telemetry event for clicking Card
   logCardClick(title: string) {
     const eventProps = {
-      'Title': title
+      'Title': title,
+      'Detector':this.detector
     };
     this.logEvent(TelemetryEventNames.CardClicked, eventProps);
   }
