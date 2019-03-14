@@ -160,7 +160,7 @@
 
         <div style="padding:10px">
           <detector-view *ngIf="queryResponse && !showDataSources" [detectorResponse]="queryResponse.invocationOutput"
-            [startTime]="startTime" [endTime]="endTime" [error]="errorState" [showEdit]="false"></detector-view>
+            [startTime]="startTime" [endTime]="endTime" [error]="errorState" [showEdit]="false" [developmentMode]="true" [script]="code" [compilationPackage]="compilationPackage"></detector-view>
 
           <tab-data-sources *ngIf="queryResponse && showDataSources" [onboardingMode]="true"
             [detectorResponse]="queryResponse.invocationOutput">
