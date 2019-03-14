@@ -145,7 +145,7 @@ function Start-Compilation {
     (
         [parameter(Mandatory = $false)]
         [System.String]
-        $DetectorCsxPath,
+        $FilePath,
 
         [parameter(Mandatory = $false)]
         [System.String]
@@ -165,16 +165,25 @@ function Start-Compilation {
 
         [parameter(Mandatory = $false)]
         [switch]
-        $IsStaging
+        $IsStaging,
+    
+        [parameter(Mandatory = $false)]
+        [boolean]
+        $IsGist = $false
     )
 
     $ErrorActionPreference = 'Stop'
     $VerbosePreference = 'Continue'
 
-    if ([string]::IsNullOrEmpty($DetectorCsxPath)) {
+    if ([string]::IsNullOrEmpty($FilePath)) {
+        if ($IsGist) {
+            Write-Error "Please specify gist name."
+            exit
+        }
+
         if (Test-Path "$($PSScriptRoot)\..\..\Detector\detector.csx") {
-            $DetectorCsxPath = "$($PSScriptRoot)\..\..\Detector\detector.csx"
-            Write-Host "Start compiling detector from: $DetectorCsxPath" -ForegroundColor Green
+            $FilePath = "$($PSScriptRoot)\..\..\Detector\detector.csx"
+            Write-Host "Start compiling detector from: $FilePath" -ForegroundColor Green
         }
         else {
             Write-Error "Please make sure LocalDevHelper module or detector.csx is under the right folder"
@@ -207,12 +216,16 @@ function Start-Compilation {
     $header = Get-RequestHeader -Path  $path -IsInternalClient $IsInternalClient -IsInternalView $IsInternalView
 
     # Passing request body with detector location, without specifying resourceId will be fine
-    $codeString = [System.IO.File]::ReadAllText($detectorCsxPath)
-        
+    $codeString = [System.IO.File]::ReadAllText($FilePath)
+
+    $codeString = $codeString -replace "(\#load\s*`")gists/\w+/(\w+).csx(`")", "`$1`$2`$3"
+
     $body = @{
         "script"     = $codeString
-        "references" = Get-References
-        "entityType" = "signal"
+        "references" = if ($IsGist) {@{}
+        }
+        else {Get-References}
+        "entityType" = if ($IsGist) {"gist"} else {"signal"}
     } | ConvertTo-Json 
 
     $endpoint = "https://applens.azurewebsites.net/api/invoke"
@@ -250,6 +263,10 @@ function Start-Compilation {
         Write-Host -ForegroundColor Red "========== Build: 0 succeeded, 1 failed =========="
     }
 
+    if ($IsGist) {
+        return $response
+    }
+    
     $detectorId = ""
     if ($response.invocationOutput.metadata.id) {
         $detectorId = $response.invocationOutput.metadata.id
@@ -262,7 +279,7 @@ function Start-Compilation {
         $ref = $response.compilationOutput.references
         $installed = $json.packageDefinition.dependencies.psobject.properties.name
         $installed | ? {$ref -notcontains $_} | ForEach-Object { Remove-Gist -Name $_ }
-        $ref | ? {$installed -notcontains $_} | ForEach-Object { Install-Gist -Name $_ $IsLocalhost }
+        $ref | ? {$installed -notcontains $_} | ForEach-Object { Install-Gist -Name $_ -IsLocalhost:$IsLocalhost }
     }
 
     return $response
@@ -271,13 +288,13 @@ function Start-Compilation {
 
 ############################## Publish detector ##################################################################
 
-function Publish-Detector {
+function Publish-Package {
     [CmdletBinding()]
     param
     (
         [Parameter(Mandatory = $false)]
         [string]
-        $DetectorCsxPath,
+        $FilePath,
 
         [parameter(Mandatory = $false)]
         [System.String]
@@ -297,9 +314,13 @@ function Publish-Detector {
 
         [Parameter(Mandatory = $false)]
         [Switch]
-        $IsStaging
+        $IsStaging,
+
+        [Parameter(Mandatory = $false)]
+        [boolean]
+        $IsGist = $false
     )
-    
+
     $ErrorActionPreference = 'Stop'
     $VerbosePreference = 'Continue'
 
@@ -326,38 +347,53 @@ function Publish-Detector {
     $userAlias = $authenticationResult.UserInfo.DisplayableId.Replace('@microsoft.com', '')
     
     # Compile the package first to get the response, making sure all the detector are compiled successfully before published
-    
-    if ([string]::IsNullOrEmpty($DetectorCsxPath)) {
+
+    if ([string]::IsNullOrEmpty($FilePath)) {
+        if ($IsGist) {
+            Write-Error "Please specify gist file path."
+            exit
+        }
+
         if (Test-Path "$($PSScriptRoot)\..\..\Detector\detector.csx") {
-            $DetectorCsxPath = "$($PSScriptRoot)\..\..\Detector\detector.csx"
-            Write-Verbose "Start preparing package for detector from: $DetectorCsxPath"
+            $FilePath = "$($PSScriptRoot)\..\..\Detector\detector.csx"
+            Write-Verbose "Start preparing package for detector from: $FilePath"
         }
         else {
             Write-Error "Please make sure LocalDevHelper module or detector.csx is under the right folder"
         }
     }
 
-    $compilationResponse = Start-Compilation -DetectorCsxPath $DetectorCsxPath -ResourceId $ResourceId -IsInternalClient $IsInternalClient -IsInternalView $IsInternalView -IsLocalhost:$IsLocalhost
+    $compilationResponse = Start-Compilation -FilePath $FilePath -ResourceId $ResourceId -IsInternalClient $IsInternalClient -IsInternalView $IsInternalView -IsLocalhost:$IsLocalhost -IsGist $IsGist
 
-    $codeString = [System.IO.File]::ReadAllText($DetectorCsxPath)
-
-    if (($compilationResponse -eq $null) -or ($compilationResponse.compilationOutput.compilationSucceeded -eq $false)) {
+    if (($null -eq $compilationResponse) -or ($compilationResponse.compilationOutput.compilationSucceeded -eq $false)) {
         Write-Error "Build Failed. Please make sure compilation succeed before publishing"
         exit
     }
-    if ($compilationResponse.runtimeSucceeded -eq $false) {
+
+    if (!$IsGist -and $compilationResponse.runtimeSucceeded -eq $false) {
         Write-Error "Runtime exception occurred. Please make sure there are no runtime exceptions before publishing"
         exit
     }
     else {
-        $json = (Get-Content "$($PSScriptRoot)\..\..\Detector\package.json" -Raw) | ConvertFrom-Json
+        if ($IsGist) {
+            $path = (Get-Item "$PSScriptRoot\..\..\Detector\$FilePath").Directory
+            $json = (Get-Content ((Get-ChildItem $path -Filter *.json).FullName)) | ConvertFrom-Json
+        }
+        else {
+            $tmp = (Get-Content "$($PSScriptRoot)\..\..\Detector\package.json" -Raw) | ConvertFrom-Json
+            $json = $tmp.packageDefinition
+        }
+
+        $codeString = [System.IO.File]::ReadAllText($FilePath)
+        $codeString = $codeString -replace "(\#load\s*`")gists/\w+/(\w+).csx(`")", "`$1`$2`$3"
+
         $publishingPackage = @{
             codeString       = $codeString
             id               = $compilationResponse.invocationOutput.metadata.id
             dllBytes         = $compilationResponse.compilationOutput.assemblyBytes
             pdbBytes         = $compilationResponse.compilationOutput.pdbBytes
             committedByAlias = $userAlias
-            packageConfig    = ($json.packageDefinition | ConvertTo-Json)
+            packageConfig    = ($json | ConvertTo-Json)
         }
 
         Write-Host "Preparing package succeeded!" -ForegroundColor Magenta
@@ -386,23 +422,83 @@ function Publish-Detector {
         Write-Host "Status Description:" $_.Exception.Response.StatusDescription -ForegroundColor Red
     }
   
-    if ($response -eq $null) {
-        Write-Error "Detector published failed!"
+    if ($null -eq $response) {
+        Write-Error "Package published failed!"
         exit
     }
     else {
-        Write-Host "Detector is published successfully!" -ForegroundColor Magenta
-        
-        if ($compilationResponse.invocationOutput.metadata.id) {
+        Write-Host "Package is published successfully!" -ForegroundColor Magenta
+
+        if (!$IsGist -and $compilationResponse.invocationOutput.metadata.id) {
             $detectorId = $compilationResponse.invocationOutput.metadata.id
             $resourceUrl = $ResourceId -ireplace "resourcegroup", "resourceGroup"
             $publishedLink = "https://applens.azurewebsites.net" + $resourceUrl + "/detectors/" + $detectorId
             Write-Host "Changes will be live shortly at: $publishedLink" -ForegroundColor Cyan
         }
+
+        if ($IsGist) {
+            $name = (Get-Item "$PSScriptRoot\..\..\Detector\$FilePath").BaseName
+            Update-GistDefinition -Name $name -IsLocalhost:$IsLocalhost -IsStaging:$IsStaging
+
+            Install-Gist -Name $name -IsLocalhost:$IsLocalhost -IsStaging:$IsStaging
+        }
     }
 }
 
 ################################ Gists operation ######################################
+function Update-GistDefinition {
+    [CmdletBinding()]
+    Param
+    (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
+
+        [parameter(Mandatory = $false)]
+        [switch]
+        $IsLocalhost,
+
+        [parameter(Mandatory = $false)]
+        [switch]
+        $IsStaging
+    )
+
+    # Get request header
+    $header = Get-RequestHeader -Path  "xxx" -IsInternalClient $true -IsInternalView $true
+
+    $endpoint = "https://applens.azurewebsites.net/api/github/package/$Name/changelist"
+    
+    # This is for testing purpose
+    if ($IsLocalhost) {
+        $endpoint = "http://localhost:5000/api/github/package/$Name/changelist"
+    }
+    
+    if ($IsStaging) {
+        $endpoint = "https://applens-staging.azurewebsites.net/api/github/package/$Name/changelist"
+    }
+    
+    Write-Host "============ Update gist definition started ============" -ForegroundColor Green
+    
+    try {
+        $response = Invoke-RestMethod -Method Get -Uri "$endpoint" -Headers $header -ContentType "application/json; charset=utf-8"
+    }
+    catch {
+        Write-Host "Reponse Status Code:" $_.Exception.Response.StatusCode.value__  -ForegroundColor Magenta
+        Write-Host "Status Description:" $_.Exception.Response.StatusDescription -ForegroundColor Magenta
+    }
+
+    $array = @()
+    $response |? {
+        $array += $_.sha
+    }
+
+    $json = (Get-Content "$($PSScriptRoot)\..\..\Detector\package.json" -Raw) | ConvertFrom-Json
+    $json.gistDefinitions.$Name = $array
+    $json | ConvertTo-Json | Set-Content "$($PSScriptRoot)\..\..\Detector\package.json"
+
+    Write-Host "============ Update gist definition successfully ============" -ForegroundColor Green
+}
+
 function Install-Gist {
     [CmdletBinding()]
     Param
@@ -432,7 +528,7 @@ function Install-Gist {
         exit
     }
 
-    $versions = $json.gistDefinitions.$Name.psobject.properties.name
+    $versions = $json.gistDefinitions.$Name
 
     if ($Version -eq "") {
         if ($versions.Count -eq 1) {
@@ -457,30 +553,44 @@ function Install-Gist {
     # Get request header
     $header = Get-RequestHeader -Path  "xxx" -IsInternalClient $true -IsInternalView $true
 
-    $endpoint = "https://applens.azurewebsites.net/api/github/package/$($Name)/commit/$($Version)"
+    $baseUrl = "https://applens.azurewebsites.net/api/github/"
 
     # This is for testing purpose
     if ($IsLocalhost) {
-        $endpoint = "http://localhost:5000/api/github/package/$($Name)/commit/$($Version)"
+        $baseUrl = "http://localhost:5000/api/github/"
     }
 
     if ($IsStaging) {
-        $endpoint = "https://applens-staging.azurewebsites.net/api/github/package/$($Name)/commit/$($Version)"
+        $baseUrl = "https://applens-staging.azurewebsites.net/api/github/"
     }
 
     Write-Host "============  Install started ============ " -ForegroundColor Green
 
     try {
-        $response = Invoke-RestMethod -Method Get -Uri $endpoint -Headers $header -ContentType "application/json; charset=utf-8"
+        $response = Invoke-RestMethod -Method Get -Uri "$baseUrl/package/$($Name)/commit/$($Version)" -Headers $header -ContentType "application/json; charset=utf-8"
     }
     catch {
         Write-Host "Reponse Status Code:" $_.Exception.Response.StatusCode.value__  -ForegroundColor Magenta
         Write-Host "Status Description:" $_.Exception.Response.StatusDescription -ForegroundColor Magenta
     }
 
-    $response | Set-Content "$($PSScriptRoot)\..\..\Detector\gists\$($Name).csx"
+    New-Item -ItemType Directory -Path "$PSScriptRoot\..\..\Detector\gists\$Name" -Force
 
-    Write-Host "Download $($Name) to $($PSScriptRoot)\..\..\Detector\gists\$($Name).csx successfully!" -ForegroundColor Cyan
+    $response | Set-Content "$($PSScriptRoot)\..\..\Detector\gists\$Name\$($Name).csx"
+
+    Write-Host "Download $Name.csx to $($PSScriptRoot)\..\..\Detector\gists\$Name\$($Name).csx successfully!" -ForegroundColor Cyan
+
+    try {
+        $response = Invoke-RestMethod -Method Get -Uri "$baseUrl/package/$($Name)/configuration/$($Version)" -Headers $header -ContentType "application/json; charset=utf-8"
+    }
+    catch {
+        Write-Host "Reponse Status Code:" $_.Exception.Response.StatusCode.value__  -ForegroundColor Magenta
+        Write-Host "Status Description:" $_.Exception.Response.StatusDescription -ForegroundColor Magenta
+    }
+
+    $response | Set-Content "$($PSScriptRoot)\..\..\Detector\gists\$Name\package.json"
+
+    Write-Host "Download package.json to $($PSScriptRoot)\..\..\Detector\gists\$Name\package.json successfully!" -ForegroundColor Cyan
 
     Write-Host "Start updating package.json." -ForegroundColor Magenta
 
@@ -512,12 +622,12 @@ function Remove-Gist {
     ($json | ConvertTo-Json -depth 100) | Set-Content "$PSScriptRoot\..\..\Detector\package.json"
 
     Write-Host "Start deleting gist file" -ForegroundColor Red
-    $path = "$PSScriptRoot\..\..\Detector\gists\$($Name).csx"
+    $path = "$PSScriptRoot\..\..\Detector\gists\$Name"
     if (Test-Path $path) {
-        Remove-Item $path
+        Remove-Item $path -Recurse
     }
 
-    Write-Host "Remove $($Name) successfully." -ForegroundColor Green
+    Write-Host "Remove $Name successfully." -ForegroundColor Green
 }
 
 function Add-FrameworkReferences {
@@ -534,7 +644,7 @@ function Add-FrameworkReferences {
 
     foreach ($line in Get-Content $filePath) {
         if ($line -match "(\#load\s*`")(\w+)(`")" -or $line -match "(\#load\s*`")gists/(\w+).csx(`")") {
-            $line = $line -replace "(\#load\s*`")(\w+)(`")", "`$1gists/`$2.csx`$3"
+            $line = $line -replace "(\#load\s*`")(\w+)(`")", "`$1gists/`$2/`$2.csx`$3"
             $regionToAdd += $line + "`r`n";
         }
         else {

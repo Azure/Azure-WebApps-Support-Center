@@ -56,7 +56,7 @@ namespace AppLensV3
         /// <param name="gists">Gist lists.</param>
         /// <param name="sourceReference">Source reference.</param>
         /// <returns>Task for preparing local development.</returns>
-        public async Task<string> PrepareLocalDevelopment(string detectorId, string scriptBody = null, string resourceId = null, string config = null, Uri baseUrl = null, IDictionary<string, IEnumerable<string>> gists = null, IDictionary<string, string> sourceReference = null)
+        public async Task<string> PrepareLocalDevelopment(string detectorId, string scriptBody = null, string resourceId = null, string config = null, Uri baseUrl = null, IDictionary<string, IEnumerable<string>> gists = null, IDictionary<string, Tuple<string, string>> sourceReference = null)
         {
             try
             {
@@ -81,15 +81,22 @@ namespace AppLensV3
 
                 foreach (var p in sourceReference)
                 {
-                    var path = Path.Combine(gistsPath, $"{p.Key}.csx");
-                    File.WriteAllText(path, p.Value);
+                    var tmpPath = Path.Combine(gistsPath, p.Key);
+                    if (!Directory.Exists(tmpPath))
+                    {
+                        Directory.CreateDirectory(tmpPath);
+                    }
+
+                    File.WriteAllText(Path.Combine(tmpPath, $"{p.Key}.csx"), p.Value.Item1);
+                    File.WriteAllText(Path.Combine(tmpPath, "package.json"), p.Value.Item2);
                 }
 
                 var configuration = new JObject
                 {
                     ["detectorSettings"] = settingsJsonObject,
                     ["packageDefinition"] = JObject.FromObject(JsonConvert.DeserializeObject(config)),
-                    ["gistDefinitions"] = JObject.FromObject(PrepareGistDefinition(new Uri(baseUrl, resourceId), gists))
+                    ["gistDefinitions"] = JObject.FromObject(gists),
+                    ["baseUrl"] = new Uri(baseUrl, resourceId)
                 };
 
                 File.WriteAllText(packageJson, JsonConvert.SerializeObject(configuration, Formatting.Indented));
@@ -181,30 +188,6 @@ namespace AppLensV3
             }
 
             return blobUri;
-        }
-
-        /// <summary>
-        /// Prepare gist definition file.
-        /// </summary>
-        /// <param name="host">Applens host name.</param>
-        /// <param name="gists">Gist list.</param>
-        /// <returns>Gist definition file.</returns>
-        private object PrepareGistDefinition(Uri host, IDictionary<string, IEnumerable<string>> gists)
-        {
-            var def = new Dictionary<string, Dictionary<string, string>>();
-
-            foreach (var p in gists)
-            {
-                var tmp = new Dictionary<string, string>();
-                foreach (var commit in p.Value)
-                {
-                    tmp.Add(commit, $"{host}/gists/{p.Key}/changelist/{commit}");
-                }
-
-                def.Add(p.Key, tmp);
-            }
-
-            return def;
         }
     }
 }

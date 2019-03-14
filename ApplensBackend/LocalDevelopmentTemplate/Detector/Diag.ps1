@@ -11,6 +11,7 @@ param (
     $run,
 
     [Parameter(Mandatory = $true, ParameterSetName = "PublishDetector")]
+    [Parameter(Mandatory = $true, ParameterSetName = "PublishGist")]
     [ValidateNotNullOrEmpty()]
     [switch]
     $publish,
@@ -25,6 +26,7 @@ param (
     [switch]
     $systemCheck,
 
+    [Parameter(Mandatory = $false, ParameterSetName = "PublishGist")]
     [Parameter(Mandatory = $false, ParameterSetName = "PublishDetector")]
     [Parameter(Mandatory = $false, ParameterSetName = "RunDetector")]
     [System.String]
@@ -35,11 +37,17 @@ param (
     [System.String]
     $DetectorFile,
 
+    [Parameter(Mandatory = $true, ParameterSetName = "PublishGist")]
+    [System.String]
+    $GistFile,
+
+    [Parameter(Mandatory = $false, ParameterSetName = "PublishGist")]
     [Parameter(Mandatory = $false, ParameterSetName = "PublishDetector")]
     [Parameter(Mandatory = $false, ParameterSetName = "RunDetector")]
     [boolean]
     $IsInternalClient = $true, 
 
+    [Parameter(Mandatory = $false, ParameterSetName = "PublishGist")]
     [Parameter(Mandatory = $false, ParameterSetName = "PublishDetector")]
     [Parameter(Mandatory = $false, ParameterSetName = "RunDetector")]
     [boolean]
@@ -68,31 +76,37 @@ $compilationResponse = $null
 
 if ($listGists) {
     $json = (Get-Content "package.json" -Raw) | ConvertFrom-Json
-    Write-Output $json.gistDefinitions.psobject.properties.name
+    $output = @()
+    $json.gistDefinitions.psobject.properties.name |? {
+        $obj = New-Object PSCustomObject
+
+        Add-Member -InputObject $obj -NotePropertyName ("Gists") -NotePropertyValue $_
+
+        $output += $obj
+    }
+
+    $output | Format-Table
 }
 
 if ($listGist -ne "") {
     $json = (Get-Content "package.json" -Raw) | ConvertFrom-Json
-    $names = $json.gistDefinitions.$listGist.psobject.properties.name 
-
     $config = $json.packageDefinition
 
     $output = @()
-    foreach ($name in $names) {
-
+    $json.gistDefinitions.$listGist |? {
         $obj = New-Object PSCustomObject
+        Add-Member -InputObject $obj -NotePropertyName ("Gist Version") -NotePropertyValue $_
 
-        Add-Member -InputObject $obj -NotePropertyName ("Gist Version") -NotePropertyValue "$($name)"
-        
-        if ($name -eq $config.dependencies.$listGist) {
-            Add-Member -InputObject $obj -NotePropertyName ("Applens URL") -NotePropertyValue "$($json.gistDefinitions.$listGist.$name) (Currently installed)"
+        $url = "$($json.baseUrl)/gists/$listGist/changelist/$_"
+
+        if ($_ -eq $config.dependencies.$listGist) {
+            Add-Member -InputObject $obj -NotePropertyName ("Applens URL") -NotePropertyValue "$url (Currently installed)"
         }
         else {
-            Add-Member -InputObject $obj -NotePropertyName ("Applens URL") -NotePropertyValue "$($json.gistDefinitions.$listGist.$name)"
+            Add-Member -InputObject $obj -NotePropertyName ("Applens URL") -NotePropertyValue $url
         }
 
         $output += $obj
-
     }
 
     $output | Format-Table | Out-String -Width 1000
@@ -123,7 +137,7 @@ if ($systemCheck) {
 }
 
 if ($run) {
-    $compilationResponse = Start-Compilation  -ResourceId $ResourceId -DetectorCsxPath $DetectorFile -IsInternalClient $IsInternalClient -IsInternalView $InternalView
+    $compilationResponse = Start-Compilation  -ResourceId $ResourceId -FilePath $DetectorFile -IsInternalClient $IsInternalClient -IsInternalView $InternalView
 
     if ($compilationResponse.invocationOutput) {
         Write-Verbose "path: $PSScriptRoot\..\FrameWork\UI\Detector-UI-Rendering\dist\assets\invocationOutput.json" -Verbose
@@ -137,7 +151,24 @@ if ($run) {
 }
 
 if ($publish) {
-    Publish-Detector -ResourceId $ResourceId -DetectorCsxPath $DetectorFile -IsInternalClient $IsInternalClient -IsInternalView $InternalView
+    $filePath = $DetectorFile
+    $isGist = $false
+    if ($GistFile) {
+        $gistid = (Get-Item $GistFile).BaseName
+        $json = (Get-Content "package.json" -Raw) | ConvertFrom-Json
+
+        $all = $json.gistDefinitions.$gistid
+        $installed = $json.packageDefinition.dependencies.$gistid
+        if ($installed -ne $all[-1]) {
+            Write-Error "Please update $gistid to the latest version before publishing"
+            exit
+        }
+
+        $filePath = $GistFile;
+        $isGist = $true
+    }
+
+    Publish-Package -ResourceId $ResourceId -FilePath $filePath -IsInternalClient $IsInternalClient -IsInternalView $InternalView -IsGist $isGist
 }
 
 if ($help) {
@@ -152,6 +183,7 @@ if ($help) {
     Write-Host "`t-listGists: List all gists" -ForegroundColor Magenta
     Write-Host "`t-listGist <gist id>: List all versions of the gist" -ForegroundColor Magenta
     Write-Host "`t-install <gist id> [-version <version>]: Install gist. If version is not specified, install the latest version" -ForegroundColor Magenta
+    Write-Host "`t-publish -GistFile <file path>: Publish gist file." -ForegroundColor Magenta
     Write-Host "`t-help: Help info for Diag command "-ForegroundColor Magenta
     Write-Host "`t-systemCheck: Check prerequisite for your compilation and publish environment" -ForegroundColor Magenta
 

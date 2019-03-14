@@ -101,5 +101,17 @@ namespace AppLensV3.Controllers
             var changelist = await GithubService.GetCommitContent(id, sha);
             return Ok(changelist);
         }
+
+        /// <summary>
+        /// Get commit configuration.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <param name="sha">The commit sha.</param>
+        /// <returns>Task for getting commit configuration.</returns>
+        [HttpGet("package/{id}/configuration/{sha}")]
+        public async Task<IActionResult> GetCommitConfiguration(string id, string sha)
+        {
+            return Ok(await GithubService.GetCommitConfiguration(id, sha));
+        }
     }
 }

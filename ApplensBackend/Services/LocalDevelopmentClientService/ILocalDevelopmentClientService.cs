@@ -25,6 +25,6 @@ namespace AppLensV3
         /// <param name="gists">Gist list.</param>
         /// <param name="sourceReference">Source reference.</param>
         /// <returns>Task for preparing local development.</returns>
-         Task<string> PrepareLocalDevelopment(string detectorId = null, string scriptBody = null, string resourceId = null, string config = null, Uri baseUrl = null, IDictionary<string, IEnumerable<string>> gists = null, IDictionary<string, string> sourceReference = null);
+         Task<string> PrepareLocalDevelopment(string detectorId = null, string scriptBody = null, string resourceId = null, string config = null, Uri baseUrl = null, IDictionary<string, IEnumerable<string>> gists = null, IDictionary<string, Tuple<string, string>> sourceReference = null);
     }
 }

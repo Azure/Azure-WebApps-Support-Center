@@ -149,6 +149,20 @@ namespace AppLensV3
         }
 
         /// <summary>
+        /// Get commit configuration.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <param name="sha">The commit sha.</param>
+        /// <returns>Task for getting commit configuration.</returns>
+        public async Task<string> GetCommitConfiguration(string id, string sha)
+        {
+            var filePath = $"{id.ToLower()}/package.json";
+
+            var commitContent = await OctokitClient.Repository.Content.GetAllContentsByRef(UserName, RepoName, filePath, sha);
+            return commitContent?[0].Content;
+        }
+
+        /// <summary>
         /// Task for getting all commits.
         /// </summary>
         /// <param name="id">The id.</param>

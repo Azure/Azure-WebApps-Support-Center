@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,7 +70,7 @@ namespace AppLensV3.Controllers
                 gists = body["gists"].ToObject<List<string>>();
             }
 
-            var gistDef = new Dictionary<string, IEnumerable<string>>();
+            var gistDef = new ConcurrentDictionary<string, IEnumerable<string>>();
             var tasks = new List<Task>();
 
             foreach (var gist in gists)
@@ -78,14 +79,15 @@ namespace AppLensV3.Controllers
                 {
                     var commits = await GithubClient.GetAllCommits(gist);
                     var sha = commits.Select(c => c.Sha);
-                    gistDef.Add(gist, sha);
+                    gistDef.AddOrUpdate(gist, sha, (k, v) => sha);
                 }));
             }
 
             await Task.WhenAll(tasks);
 
             var config = string.Empty;
-            var sourceReference = new Dictionary<string, string>();
+            var sourceReference = new ConcurrentDictionary<string, Tuple<string, string>>();
+
             if (body["configuration"] != null)
             {
                 config = body["configuration"].ToString();
@@ -98,7 +100,10 @@ namespace AppLensV3.Controllers
                     tasks.Add(Task.Run(async () =>
                     {
                         var source = await GithubClient.GetCommitContent(p.Key.ToLower(), p.Value);
-                        sourceReference.Add(p.Key.ToLower(), source);
+
+                        var configuration = await GithubClient.GetCommitConfiguration(p.Key.ToLower(), p.Value);
+                        var tuple = Tuple.Create(source, configuration);
+                        sourceReference.AddOrUpdate(p.Key.ToLower(), tuple, (k, v) => tuple);
                     }));
                 }
 
