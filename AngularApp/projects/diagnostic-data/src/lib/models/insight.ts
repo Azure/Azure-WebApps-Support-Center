@@ -67,7 +67,11 @@ export class InsightUtils {
             const row = data.rows[i];
             const insightName = row[insightColumnIndex];
             const nameColumnValue = row[nameColumnIndex];
-            const solutionsValue = <Solution[]>JSON.parse(row[solutionsIndex]);
+            
+            let solutionsValue = null;
+            if (solutionsIndex < row.length) {
+                solutionsValue = <Solution[]>JSON.parse(row[solutionsIndex]);
+            }
 
             if ((insight = insights.find(ins => ins.title === insightName)) == null) {
                 const isExpanded: boolean = row.length > isExpandedIndex ? row[isExpandedIndex].toLowerCase() === 'true' : false;
