@@ -494,7 +494,7 @@ function Update-GistDefinition {
 
     $json = (Get-Content "$($PSScriptRoot)\..\..\Detector\package.json" -Raw) | ConvertFrom-Json
     $json.gistDefinitions.$Name = $array
-    $json | ConvertTo-Json | Set-Content "$($PSScriptRoot)\..\..\Detector\package.json"
+    $json | ConvertTo-Json -Compress -Depth 100 | Set-Content "$($PSScriptRoot)\..\..\Detector\package.json"
 
     Write-Host "============ Update gist definition successfully ============" -ForegroundColor Green
 }
@@ -588,7 +588,7 @@ function Install-Gist {
         Write-Host "Status Description:" $_.Exception.Response.StatusDescription -ForegroundColor Magenta
     }
 
-    $response | Set-Content "$($PSScriptRoot)\..\..\Detector\gists\$Name\package.json"
+    $response | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 100 | Set-Content "$($PSScriptRoot)\..\..\Detector\gists\$Name\package.json"
 
     Write-Host "Download package.json to $($PSScriptRoot)\..\..\Detector\gists\$Name\package.json successfully!" -ForegroundColor Cyan
 
@@ -601,7 +601,7 @@ function Install-Gist {
         $json.packageDefinition.dependencies | Add-Member -Type NoteProperty -Name $Name -Value $Version
     }
 
-    ($json | ConvertTo-Json -depth 100) | Set-Content "$PSScriptRoot\..\..\Detector\package.json"
+    ($json | ConvertTo-Json -Compress -depth 100) | Set-Content "$PSScriptRoot\..\..\Detector\package.json"
 
     Write-Host "Install $($Name) successfully!" -ForegroundColor Green
 }
