@@ -107,10 +107,7 @@ namespace AppLensV3
                 // Overwrite the package.json.
                 File.WriteAllText(packageJson, settingsJson);
 
-                foreach (var f in Directory.EnumerateFiles(gistsPath))
-                {
-                    File.Delete(f);
-                }
+                Directory.Delete(gistsPath, true);
 
                 // Storage accounts: detectorlocaldev
                 return await UploadToBlobStorage(zipFile, StorageConnectionString, "detectordevelopment");
