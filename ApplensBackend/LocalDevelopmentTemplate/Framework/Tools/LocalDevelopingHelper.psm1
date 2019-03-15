@@ -241,7 +241,7 @@ function Start-Compilation
         Write-Host "Status Description:" $_.Exception.Response.StatusDescription -ForegroundColor Magenta
     }
 
-    foreach ($output in $response.compilationOutput.compilationOutput)
+    foreach ($output in $response.compilationOutput.compilationTraces)
     {
         Write-Host $output -ForegroundColor Magenta
     }
