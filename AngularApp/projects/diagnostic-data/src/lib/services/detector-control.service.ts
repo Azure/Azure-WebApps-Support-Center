@@ -48,6 +48,10 @@ export class DetectorControlService {
 
   private _refresh: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
+  private detectorQueryParams: BehaviorSubject<string> = new BehaviorSubject<string>("");
+ 
+  public DetectorQueryParams = this.detectorQueryParams.asObservable();
+
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig) {
     this.internalClient = !config.isPublic;
   }
@@ -111,6 +115,10 @@ export class DetectorControlService {
     this._refreshData();
   }
 
+  public setDetectorQueryParams(detectorQueryParams: string) {
+    this.detectorQueryParams.next(detectorQueryParams);
+  }
+
   private _refreshData() {
     this._shouldRefresh = true;
     this._refresh.next(true);
@@ -136,6 +144,10 @@ export class DetectorControlService {
     const temp = this._shouldRefresh;
     this._shouldRefresh = false;
     return temp;
+  }
+
+  public get detectorQueryParamsString(): string {
+    return this.detectorQueryParams.value;
   }
 
 }

@@ -2,7 +2,6 @@ import { Component, Inject, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import { DetectorControlService, DurationSelector } from '../../services/detector-control.service';
-
 @Component({
   selector: 'detector-control',
   templateUrl: './detector-control.component.html',
@@ -27,11 +26,14 @@ export class DetectorControlComponent implements OnInit {
         this.endTime = this.detectorControlService.endTimeString;
       }
 
-      const timeParams = {
+      const routeParams = {
         'startTime': this.detectorControlService.startTime.format('YYYY-MM-DDTHH:mm'),
         'endTime': this.detectorControlService.endTime.format('YYYY-MM-DDTHH:mm')
       };
-      this._router.navigate([], { queryParams: timeParams, relativeTo: this._activatedRoute });
+      if(this.detectorControlService.detectorQueryParamsString != "") {
+        routeParams['detectorQueryParams'] = this.detectorControlService.detectorQueryParamsString;
+      }
+      this._router.navigate([], { queryParams: routeParams, relativeTo: this._activatedRoute });
 
     });
   }

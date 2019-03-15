@@ -31,11 +31,15 @@ export class DashboardComponent implements OnDestroy {
 
     // Add time params to route if not already present
     if (!this._activatedRoute.queryParams['startTime'] || !this._activatedRoute.queryParams['endTime']) {
-      let timeParams = {
+      let routeParams = {
         'startTime': this._detectorControlService.startTime.format('YYYY-MM-DDTHH:mm'),
         'endTime': this._detectorControlService.endTime.format('YYYY-MM-DDTHH:mm')
       }
-      this._router.navigate([], { queryParams: timeParams, relativeTo: this._activatedRoute });
+      // If browser URL contains detectorQueryParams, adding it to route 
+      if(!this._activatedRoute.queryParams['detectorQueryParams']) {
+        routeParams['detectorQueryParams'] = this._activatedRoute.snapshot.queryParams['detectorQueryParams'];
+      }
+      this._router.navigate([], { queryParams: routeParams, relativeTo: this._activatedRoute });
     }
   }
 

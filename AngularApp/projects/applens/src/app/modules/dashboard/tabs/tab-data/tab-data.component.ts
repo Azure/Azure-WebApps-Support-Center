@@ -2,6 +2,7 @@ import { DetectorResponse } from 'diagnostic-data';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ApplensDiagnosticService } from '../../services/applens-diagnostic.service';
+import { DetectorControlService } from 'diagnostic-data';
 
 @Component({
   selector: 'tab-data',
@@ -10,7 +11,7 @@ import { ApplensDiagnosticService } from '../../services/applens-diagnostic.serv
 })
 export class TabDataComponent implements OnInit {
 
-  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService) { }
+  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, private detectorControlService: DetectorControlService) { }
 
   detectorResponse: DetectorResponse;
 
@@ -23,26 +24,18 @@ export class TabDataComponent implements OnInit {
     this._route.params.subscribe((params: Params) => {
       this.refresh();
     });
-
-    // this._route.queryParams.subscribe((queryParams: Params) => {
-    //   this.getDetectorResponse();
-    // });
-
-    
+    // If route query params contains detectorQueryParams, setting the values in shared service so it is accessible in all components
+    this._route.queryParams.subscribe((queryParams: Params) => {
+      if(queryParams.detectorQueryParams != undefined) {
+        this.detectorControlService.setDetectorQueryParams(queryParams.detectorQueryParams);
+      } else {
+        this.detectorControlService.setDetectorQueryParams("");
+      }
+    })
   }
 
   refresh() {
     this.detector = this._route.snapshot.params['detector'];
   }
 
-  // getDetectorResponse() {
-  //   this.detectorResponse = null;
-  //   this.detector = this._route.snapshot.params['detector'];
-  //   this._diagnosticApiService.getDetector(this.detector)
-  //     .subscribe((response: DetectorResponse) => {
-  //       this.detectorResponse = response;
-  //     }, (error: any) => {
-  //       this.error = error;
-  //     });
-  // }
 }
