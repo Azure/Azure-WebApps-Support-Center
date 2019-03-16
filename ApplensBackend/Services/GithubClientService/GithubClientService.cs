@@ -137,13 +137,11 @@ namespace AppLensV3
         /// <summary>
         /// Get commit content.
         /// </summary>
-        /// <param name="id">The id.</param>
+        /// <param name="filePath">The file path.</param>
         /// <param name="sha">The commit sha.</param>
         /// <returns>Task for getting commit content.</returns>
-        public async Task<string> GetCommitContent(string id, string sha)
+        public async Task<string> GetCommitContent(string filePath, string sha)
         {
-            var filePath = $"{id.ToLower()}/{id.ToLower()}.csx";
-
             var commitContent = await OctokitClient.Repository.Content.GetAllContentsByRef(UserName, RepoName, filePath, sha);
             return commitContent?[0].Content;
         }
@@ -165,11 +163,10 @@ namespace AppLensV3
         /// <summary>
         /// Task for getting all commits.
         /// </summary>
-        /// <param name="id">The id.</param>
+        /// <param name="filePath">The filePath.</param>
         /// <returns>Task for getting commits.</returns>
-        public async Task<List<Models.Commit>> GetAllCommits(string id)
+        public async Task<List<Models.Commit>> GetAllCommits(string filePath)
         {
-            string filePath = $"{id.ToLower()}/{id.ToLower()}.csx";
             CommitRequest request = new CommitRequest
             {
                 Path = filePath,

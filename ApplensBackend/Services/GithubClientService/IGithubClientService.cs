@@ -38,14 +38,14 @@ namespace AppLensV3
         /// <summary>
         /// Get all commits.
         /// </summary>
-        /// <param name="id">The id.</param>
+        /// <param name="filePath">The file path.</param>
         /// <returns>Task for getting all commits.</returns>
-        Task<List<Commit>> GetAllCommits(string id);
+        Task<List<Commit>> GetAllCommits(string filePath);
 
         /// <summary>
         /// Get commit content.
         /// </summary>
-        /// <param name="id">The id.</param>
+        /// <param name="filePath">The file path.</param>
         /// <param name="sha">The commit sha.</param>
         /// <returns>Task for getting commit content.</returns>
         Task<string> GetCommitContent(string id, string sha);
