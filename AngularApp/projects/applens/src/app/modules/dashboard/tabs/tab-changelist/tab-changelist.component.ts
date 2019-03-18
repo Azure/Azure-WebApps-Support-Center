@@ -91,6 +91,7 @@ export class TabChangelistComponent implements OnInit {
   private initialize() {
     let commits = this.files[this.selectedFile]['changelist'];
     this.commitsList = commits;
+    this.noCommitsHistory = false;
     if (commits && commits.length > 0) {
       let defaultCommit = commits[commits.length - 1];
 
