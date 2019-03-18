@@ -130,7 +130,7 @@ function Set-ResourceInfo {
 
 function Get-References {
     $json = New-Object PSObject
-    Get-ChildItem "$PSScriptRoot\..\..\Detector\gists" -Filter *.csx | 
+    Get-ChildItem "$PSScriptRoot\..\..\Detector\gists" -Filter *.csx -Recurse | 
         ForEach-Object {
         $file = Get-Content $_.FullName
         $json | Add-Member -Type NoteProperty -Name $_.BaseName -Value "$($file)"
@@ -572,6 +572,7 @@ function Install-Gist {
     catch {
         Write-Host "Reponse Status Code:" $_.Exception.Response.StatusCode.value__  -ForegroundColor Magenta
         Write-Host "Status Description:" $_.Exception.Response.StatusDescription -ForegroundColor Magenta
+        exit
     }
 
     New-Item -ItemType Directory -Path "$PSScriptRoot\..\..\Detector\gists\$Name" -Force
@@ -586,6 +587,7 @@ function Install-Gist {
     catch {
         Write-Host "Reponse Status Code:" $_.Exception.Response.StatusCode.value__  -ForegroundColor Magenta
         Write-Host "Status Description:" $_.Exception.Response.StatusDescription -ForegroundColor Magenta
+        exit
     }
 
     $response | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 100 | Set-Content "$($PSScriptRoot)\..\..\Detector\gists\$Name\package.json"
