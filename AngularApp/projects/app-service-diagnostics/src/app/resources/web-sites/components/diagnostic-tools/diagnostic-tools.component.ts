@@ -41,7 +41,7 @@ export class DiagnosticToolsComponent {
     this.scmPath = this.webSiteService.resource.properties.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
     this.toolCategories.push(<SiteFilteredItem<any>>{
-      appType: AppType.WebApp,
+      appType: AppType.WebApp | AppType.FunctionApp,
       platform: OperatingSystem.windows,
       sku: Sku.NotDynamic,
       stack: '',
