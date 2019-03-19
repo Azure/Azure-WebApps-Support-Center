@@ -48,14 +48,6 @@ namespace AppLensV3
         /// <param name="filePath">The file path.</param>
         /// <param name="sha">The commit sha.</param>
         /// <returns>Task for getting commit content.</returns>
-        Task<string> GetCommitContent(string id, string sha);
-
-        /// <summary>
-        /// Get commit configuration.
-        /// </summary>
-        /// <param name="id">The id.</param>
-        /// <param name="sha">The commit sha.</param>
-        /// <returns>Task for getting commit configuration.</returns>
-        Task<string> GetCommitConfiguration(string id, string sha);
+        Task<string> GetCommitContent(string filePath, string sha);
     }
 }

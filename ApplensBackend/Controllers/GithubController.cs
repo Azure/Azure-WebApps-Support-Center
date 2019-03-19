@@ -85,7 +85,7 @@ namespace AppLensV3.Controllers
         [HttpGet("package/{id}/changelist")]
         public async Task<IActionResult> GetChangelist(string id)
         {
-            return Ok(await GithubService.GetAllCommits($"{id.ToLower()}/{id.ToLower()}.csx"));
+            return Ok(await GithubService.GetAllCommits($"{id.ToLower()}"));
         }
 
         /// <summary>
@@ -121,18 +121,6 @@ namespace AppLensV3.Controllers
         public async Task<IActionResult> GetCommitConfiguration(string id, string sha)
         {
             return Ok(await GithubService.GetCommitContent($"{id.ToLower()}/package.json", sha));
-        }
-
-        /// <summary>
-        /// Get commit configuration.
-        /// </summary>
-        /// <param name="id">The id.</param>
-        /// <param name="sha">The commit sha.</param>
-        /// <returns>Task for getting commit configuration.</returns>
-        [HttpGet("package/{id}/configuration/{sha}")]
-        public async Task<IActionResult> GetCommitConfiguration(string id, string sha)
-        {
-            return Ok(await GithubService.GetCommitConfiguration(id, sha));
         }
     }
 }

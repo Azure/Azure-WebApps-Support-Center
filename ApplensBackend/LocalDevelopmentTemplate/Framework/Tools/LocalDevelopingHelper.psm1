@@ -582,7 +582,7 @@ function Install-Gist {
     Write-Host "Download $Name.csx to $($PSScriptRoot)\..\..\Detector\gists\$Name\$($Name).csx successfully!" -ForegroundColor Cyan
 
     try {
-        $response = Invoke-RestMethod -Method Get -Uri "$baseUrl/package/$($Name)/configuration/$($Version)" -Headers $header -ContentType "application/json; charset=utf-8"
+        $response = Invoke-RestMethod -Method Get -Uri "$baseUrl/package/$($Name)/configuration/commit/$($Version)" -Headers $header -ContentType "application/json; charset=utf-8"
     }
     catch {
         Write-Host "Reponse Status Code:" $_.Exception.Response.StatusCode.value__  -ForegroundColor Magenta

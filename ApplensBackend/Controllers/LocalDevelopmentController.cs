@@ -77,7 +77,7 @@ namespace AppLensV3.Controllers
             {
                 tasks.Add(Task.Run(async () =>
                 {
-                    var commits = await GithubClient.GetAllCommits(gist);
+                    var commits = await GithubClient.GetAllCommits($"{gist}/{gist}.csx");
                     var sha = commits.Select(c => c.Sha);
                     gistDef.AddOrUpdate(gist, sha, (k, v) => sha);
                 }));
@@ -99,9 +99,9 @@ namespace AppLensV3.Controllers
                 {
                     tasks.Add(Task.Run(async () =>
                     {
-                        var source = await GithubClient.GetCommitContent(p.Key.ToLower(), p.Value);
+                        var source = await GithubClient.GetCommitContent($"{p.Key.ToLower()}/{p.Key.ToLower()}.csx", p.Value);
 
-                        var configuration = await GithubClient.GetCommitConfiguration(p.Key.ToLower(), p.Value);
+                        var configuration = await GithubClient.GetCommitContent($"{p.Key.ToLower()}/package.json", p.Value);
                         var tuple = Tuple.Create(source, configuration);
                         sourceReference.AddOrUpdate(p.Key.ToLower(), tuple, (k, v) => tuple);
                     }));
