@@ -89,6 +89,17 @@ namespace AppLensV3.Controllers
         }
 
         /// <summary>
+        /// Get changed files.
+        /// </summary>
+        /// <param name="sha">The commit sha.</param>
+        /// <returns>Task for getting changes files.</returns>
+        [HttpGet("package/{sha}/changedfiles")]
+        public async Task<IActionResult> GetChangedFiles(string sha)
+        {
+            return Ok(await GithubService.GetChangedFiles(sha));
+        }
+
+        /// <summary>
         /// Get configuration change list.
         /// </summary>
         /// <param name="id">The id.</param>
@@ -121,6 +132,18 @@ namespace AppLensV3.Controllers
         public async Task<IActionResult> GetCommitConfiguration(string id, string sha)
         {
             return Ok(await GithubService.GetCommitContent($"{id.ToLower()}/package.json", sha));
+        }
+
+        /// <summary>
+        /// Get commit content by file path.
+        /// </summary>
+        /// <param name="sha">The sha.</param>
+        /// <param name="filePath">File path.</param>
+        /// <returns>Task for getting commit content.</returns>
+        [HttpGet("package/commit/{sha}/{*filePath}")]
+        public async Task<IActionResult> GetCommitContentByFilePath(string sha, string filePath)
+        {
+            return Ok(await GithubService.GetCommitContent(filePath, sha));
         }
     }
 }

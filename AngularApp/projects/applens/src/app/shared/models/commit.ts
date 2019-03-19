@@ -3,4 +3,5 @@ export interface Commit {
     author: string;
     date: string;
     previousSha: string;
+    changedFiles: string[];
 } 

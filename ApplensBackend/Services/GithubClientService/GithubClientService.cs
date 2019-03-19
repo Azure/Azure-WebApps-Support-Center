@@ -176,13 +176,28 @@ namespace AppLensV3
             var allCommits = await OctokitClient.Repository.Commit.GetAll(UserName, RepoName, request);
             var res = new List<Models.Commit>();
 
-            var commits = allCommits.Select(p => new Tuple<string, DateTimeOffset, string>(p.Sha, p.Commit.Committer.Date, p.Commit.Message)).OrderByDescending(o => o.Item2);
+            var commits = allCommits
+                .Select(p => new Tuple<string, DateTimeOffset, string>(p.Sha, p.Commit.Committer.Date, p.Commit.Message))
+                .OrderByDescending(o => o.Item2);
 
             var previousSha = string.Empty;
             var currentSha = string.Empty;
 
+            var tasks = new List<Task<IEnumerable<string>>>();
+            foreach (var c in commits)
+            {
+                tasks.Add(Task.Run(() => GetChangedFiles(c.Item1)));
+            }
+
+            var changedFiles = await Task.WhenAll(tasks);
+
             for (int i = commits.Count() - 1; i >= 0; i--)
             {
+                if (!changedFiles[i].Any())
+                {
+                    continue;
+                }
+
                 var commit = commits.ElementAt(i);
                 previousSha = currentSha;
                 currentSha = commit.Item1;
@@ -192,11 +207,27 @@ namespace AppLensV3
                     string author = commit.Item3.Split(new string[] { "CommittedBy :" }, StringSplitOptions.RemoveEmptyEntries).Last();
                     author = author.Replace("@microsoft.com", string.Empty, StringComparison.OrdinalIgnoreCase);
                     string date = commit.Item2.ToString().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).First();
-                    res.Add(new Models.Commit(currentSha, author, date, previousSha));
+
+                    res.Add(new Models.Commit(currentSha, author, date, previousSha, changedFiles[i]));
                 }
             }
 
             return res;
+        }
+
+        /// <summary>
+        /// Get changed files.
+        /// </summary>
+        /// <param name="sha">The commit sha.</param>
+        /// <returns>Task for getting changed files.</returns>
+        public async Task<IEnumerable<string>> GetChangedFiles(string sha)
+        {
+            var allCommits = await OctokitClient.Repository.Commit.Get(UserName, RepoName, sha);
+            return allCommits.Files
+                .Where(f =>
+                    f.Filename.EndsWith(".json", StringComparison.OrdinalIgnoreCase) ||
+                    f.Filename.EndsWith(".csx", StringComparison.OrdinalIgnoreCase))
+                .Select(f => f.Filename);
         }
 
         private async Task<HttpResponseMessage> GetInternal(string url, string etag, List<KeyValuePair<string, string>> additionalHeaders = null)

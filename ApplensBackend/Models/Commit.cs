@@ -3,6 +3,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // </copyright>
 
+using System.Collections.Generic;
+
 namespace AppLensV3.Models
 {
     /// <summary>
@@ -17,12 +19,14 @@ namespace AppLensV3.Models
         /// <param name="author">The author.</param>
         /// <param name="dateTime">Date time.</param>
         /// <param name="previousSha">Previous sha.</param>
-        public Commit(string sha, string author, string dateTime, string previousSha)
+        /// <param name="changedFiles">Changed files.</param>
+        public Commit(string sha, string author, string dateTime, string previousSha, IEnumerable<string> changedFiles)
         {
             Sha = sha;
             Author = author;
             DateTime = dateTime;
             PreviousSha = previousSha;
+            ChangedFiles = changedFiles;
         }
 
         /// <summary>
@@ -44,5 +48,10 @@ namespace AppLensV3.Models
         /// Gets previous commit sha.
         /// </summary>
         public string PreviousSha { get; }
+
+        /// <summary>
+        /// Gets the changed files.
+        /// </summary>
+        public IEnumerable<string> ChangedFiles { get; }
     }
 }

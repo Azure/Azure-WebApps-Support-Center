@@ -4,6 +4,7 @@ import { GithubApiService } from '../../../../shared/services/github-api.service
 import { Commit } from 'projects/applens/src/app/shared/models/commit';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin, of, Observable } from 'rxjs';
+import { flatMap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'tab-detector-changelist',
@@ -26,20 +27,19 @@ export class TabChangelistComponent implements OnInit {
   fileNames: string[];
 
   constructor(private _route: ActivatedRoute, private githubService: GithubApiService) { }
-  setCodeDiffView(commit: Commit) {
+  setCodeDiffView(commit: Commit, filePath: string) {
     // Because monaco editor instance is not able to show the code content change dynamically, we have to wait for the API calls of getting file content
     //  of the previous commit and current commit to complete, before we can load the view.
     // This flag is used to determine whether we have got the result of both the two commits from github api already.
     // We will only show the monaco editor view when loadingChange >= 2
     this.loadingChange = 0;
-    this.selectedCommit = commit;
 
     let last = of("");
     if (commit.previousSha !== "") {
-      last = this.files[this.selectedFile]['GetContent'].apply(this.githubService, [this.id, commit.previousSha]);
+      last = this.githubService.getCommitContentByFilePath(filePath, commit.previousSha);
     }
 
-    let cur: Observable<string> = this.files[this.selectedFile]['GetContent'].apply(this.githubService, [this.id, commit.sha]);
+    let cur: Observable<string> = this.githubService.getCommitContentByFilePath(filePath, commit.sha);
 
     forkJoin(last, cur).subscribe(codes => {
       this.loadingChange++;
@@ -48,7 +48,7 @@ export class TabChangelistComponent implements OnInit {
       this.originalModel =
         {
           code: codes[0],
-          language: this.files[this.selectedFile]['lang']
+          language: 'csharp'
         };
 
       this.loadingChange++;
@@ -58,55 +58,43 @@ export class TabChangelistComponent implements OnInit {
       this.modifiedModel =
         {
           code: codes[1],
-          language: this.files[this.selectedFile]['lang']
+          language: 'csharp'
         };
     });
   }
 
   onChange() {
-    this.initialize();
+     this.setCodeDiffView(this.selectedCommit, this.selectedFile);
   }
 
   ngOnInit() {
     this.id = Object.values(this._route.parent.snapshot.params)[0];
-    this.fileNames = [`${this.id}.csx`, 'package.json'];
 
-    forkJoin(this.githubService.getChangelist(this.id), this.githubService.getConfigurationChangelist(this.id)).subscribe((res) => {
-      this.files[`${this.id}.csx`] = {};
-      this.files[`${this.id}.csx`]['changelist'] = res[0];
-      this.files[`${this.id}.csx`]['lang'] = 'csharp';
-      this.files[`${this.id}.csx`]['GetContent'] = this.githubService.getCommitContent;
+    this.githubService.getChangelist(this.id).subscribe(res => {
+      this.commitsList = res;
+      if (res && res.length > 0) {
+        let defaultCommit = res[res.length - 1];
+  
+        if (this._route.snapshot.params['sha'] !== undefined) {
+          let cs = this.commitsList.filter(c => c.sha === this._route.snapshot.params['sha']);
+          if (cs.length > 0) {
+            defaultCommit = cs[0];
+          }
+        }
 
-      this.files['package.json'] = {};
-      this.files['package.json']['changelist'] = res[1];
-      this.files['package.json']['lang'] = 'json';
-      this.files['package.json']['GetContent'] = this.githubService.getCommitConfiguration;
-
-      this.selectedFile = `${this.id}.csx`;
-
-      this.initialize();
-    });
+        this.initialize(defaultCommit);
+      }
+      else {
+        this.noCommitsHistory = true;
+      }
+    })
   }
 
-  private initialize() {
-    let commits = this.files[this.selectedFile]['changelist'];
-    this.commitsList = commits;
-    this.noCommitsHistory = false;
-    if (commits && commits.length > 0) {
-      let defaultCommit = commits[commits.length - 1];
-
-      if (this._route.snapshot.params['sha'] !== undefined) {
-        let cs = this.commitsList.filter(c => c.sha === this._route.snapshot.params['sha']);
-        if (cs.length > 0) {
-          defaultCommit = cs[0];
-        }
-      }
-
-      this.setCodeDiffView(defaultCommit);
-    }
-    else {
-      this.noCommitsHistory = true;
-    }
+  private initialize(commit: Commit){
+    this.selectedCommit = commit;
+    this.fileNames = commit.changedFiles;
+    this.selectedFile = this.fileNames[0];
+    this.setCodeDiffView(commit, this.selectedFile);
   }
 
   options = {

@@ -49,5 +49,12 @@ namespace AppLensV3
         /// <param name="sha">The commit sha.</param>
         /// <returns>Task for getting commit content.</returns>
         Task<string> GetCommitContent(string filePath, string sha);
+
+        /// <summary>
+        /// Get changed files.
+        /// </summary>
+        /// <param name="sha">The commit sha.</param>
+        /// <returns>Task for getting changed files.</returns>
+        Task<IEnumerable<string>> GetChangedFiles(string sha);
     }
 }

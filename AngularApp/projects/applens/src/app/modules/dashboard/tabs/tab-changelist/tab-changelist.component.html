@@ -1,10 +1,10 @@
-<div class="container-fluid" *ngIf="selectedFile">
+<div class="container-fluid">
     <div class="col-md-1 commit-info">
         <div class="row-fluid">
             <div class="sidebar-nav">
                 <ul class="commits-table">
                     <li *ngFor="let commit of commitsList.slice().reverse()"
-                        [class.selected]="commit === selectedCommit" (click)="setCodeDiffView(commit)">
+                        [class.selected]="commit === selectedCommit" (click)="initialize(commit)">
                         <span class="badge"> {{commit.author}} </span>
                         <span> {{commit.dateTime}} </span>
                     </li>
@@ -16,13 +16,17 @@
         <h1></h1>
         <p>No commits history so far..</p>
     </div>
-    <div>
-        <loader-view *ngIf="!noCommitsHistory && loadingChange<1" message="Loading Changes...">
-        </loader-view>
-    </div>
-    <div *ngIf="!noCommitsHistory && loadingChange>1" class="col-md-11 commit-editor">
-        <ng-select [items]="fileNames" [(ngModel)]="selectedFile" (change)="onChange()" class="file-selector" placeholder="Select file"></ng-select>
-        <ngx-monaco-diff-editor class="diff-view" [options]="options" [(originalModel)]="originalModel"
-            [(modifiedModel)]="modifiedModel"></ngx-monaco-diff-editor>
+    <div class="col-md-11 commit-editor">
+        <ng-select [items]="fileNames" [(ngModel)]="selectedFile" (change)="onChange()" class="file-selector"
+            placeholder="Select file"></ng-select>
+
+        <div>
+            <loader-view *ngIf="!noCommitsHistory && loadingChange<1" message="Loading Changes...">
+            </loader-view>
+        </div>
+        <div *ngIf="!noCommitsHistory && loadingChange>1 && selectedFile">
+            <ngx-monaco-diff-editor class="diff-view" [options]="options" [(originalModel)]="originalModel"
+                [(modifiedModel)]="modifiedModel"></ngx-monaco-diff-editor>
+        </div>
     </div>
 </div>
