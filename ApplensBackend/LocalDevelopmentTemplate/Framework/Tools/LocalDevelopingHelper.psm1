@@ -553,15 +553,15 @@ function Install-Gist {
     # Get request header
     $header = Get-RequestHeader -Path  "xxx" -IsInternalClient $true -IsInternalView $true
 
-    $baseUrl = "https://applens.azurewebsites.net/api/github/"
+    $baseUrl = "https://applens.azurewebsites.net/api/github"
 
     # This is for testing purpose
     if ($IsLocalhost) {
-        $baseUrl = "http://localhost:5000/api/github/"
+        $baseUrl = "http://localhost:5000/api/github"
     }
 
     if ($IsStaging) {
-        $baseUrl = "https://applens-staging.azurewebsites.net/api/github/"
+        $baseUrl = "https://applens-staging.azurewebsites.net/api/github"
     }
 
     Write-Host "============  Install started ============ " -ForegroundColor Green
