@@ -154,7 +154,7 @@ namespace AppLensV3.Controllers
 
                     if (path.EndsWith("/diagnostics/publish", StringComparison.OrdinalIgnoreCase) && tos.Count > 0 && Env.IsProduction())
                     {
-                        await EmailNotificationService.SendPublishingAlert(alias, detectorId, applensLink, tos);
+                        EmailNotificationService.SendPublishingAlert(alias, detectorId, applensLink, tos);
                     }
 
                     return Ok(responseObject);
