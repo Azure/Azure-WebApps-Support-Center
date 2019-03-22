@@ -38,7 +38,7 @@ export class DynamicInsightComponent extends DataRenderBaseComponent {
       title: this.renderingProperties.title,
       description: this._markdownService.compile(this.renderingProperties.description),
       status: this.renderingProperties.status,
-      expanded: this.renderingProperties.expanded !== undefined? this.renderingProperties.expanded : true,
+      expanded: this.renderingProperties.expanded !== undefined && this.renderingProperties.expanded !== null? this.renderingProperties.expanded : true,
       innerDiagnosticData: <DiagnosticData>{
         renderingProperties: this.renderingProperties.innerRendering,
         table: this.diagnosticData.table
