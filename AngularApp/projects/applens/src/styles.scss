@@ -74,23 +74,13 @@ body {
 }
 
 .wide-modal {
-  max-width: 100%;
-  width: 600px;
+  max-width: 560px!important;
+  padding: 0px!important;
 }
 
 .package-modal {
   max-width: 100% !important;
   max-height: 90%;
-}
-
-.nsm-dialog.nsm-dialog-open {
-  padding: 0px;
-  max-width: 560px;
-}
-
-.wide-modal .nsm-content {
-  width: 560px;
-  padding: 0px;
 }
 
 .panel.with-nav-tabs .panel-heading.app-nav-bar {
