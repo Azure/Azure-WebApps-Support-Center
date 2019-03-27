@@ -13,8 +13,8 @@ export class SiteSupportTopicService extends SupportTopicService {
   private _hardCodedSupportTopicIdMapping = [
     {
       pesId: '14748',
-      supportTopicId: '32583701',
-      path: '/diagnostics/availability/detectors/sitecpuanalysis/focus',
+      supportTopicId: '32457411',
+      path: '/diagnostics/performance/analysis',
     },
     {
       pesId: '14748',
@@ -39,8 +39,8 @@ export class SiteSupportTopicService extends SupportTopicService {
     if (!VersioningHelper.isV2Subscription(_webSiteService.subscriptionId)) {
       this._hardCodedSupportTopicIdMapping.push({
         pesId: '14748',
-        supportTopicId: '32457411',
-        path: '/diagnostics/performance/analysis',
+        supportTopicId: '32583701',
+        path: '/diagnostics/availability/detectors/sitecpuanalysis/focus',
       });
     }
   }
