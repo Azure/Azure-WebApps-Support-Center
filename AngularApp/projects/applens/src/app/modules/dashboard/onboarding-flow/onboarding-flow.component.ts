@@ -347,13 +347,16 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     let temp = {};
     let newPackage = [];
     let ids = new Set(Object.keys(this.configuration['dependencies']));
-    queryResponse.compilationOutput.references.forEach(r => {
-      if (ids.has(r)) {
-        temp[r] = this.configuration['dependencies'][r];
-      } else {
-        newPackage.push(r);
-      }
-    });
+    if(queryResponse.compilationOutput.references != null) {
+      queryResponse.compilationOutput.references.forEach(r => {
+        if (ids.has(r)) {
+          temp[r] = this.configuration['dependencies'][r];
+        } else {
+          newPackage.push(r);
+        }
+      });
+    }
+
 
     this.configuration['dependencies'] = temp;
     this.configuration['id'] = queryResponse.invocationOutput.metadata.id;

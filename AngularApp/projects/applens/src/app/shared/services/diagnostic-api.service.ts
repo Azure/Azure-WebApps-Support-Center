@@ -66,11 +66,12 @@ export class DiagnosticApiService {
   }
 
   public getSystemCompilerResponse(resourceId: string, body: any, detectorId: string = '', dataSource: string = '',
-      timeRange: string = ''): Observable<QueryResponse<DetectorResponse>> {
+      timeRange: string = '',  additionalParams?: any): Observable<QueryResponse<DetectorResponse>> {
     let invokerParameters = this._getSystemInvokerParameters(dataSource, timeRange);
     let path = `/${resourceId}/detectors/${detectorId}/statisticsQuery?${invokerParameters}`;
 
-    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false);
+    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false, undefined, undefined,
+      undefined, additionalParams);
   }
 
   public getLocalDevelopmentResponse(detectorId: string, version: string, resourceId: string, body: any,

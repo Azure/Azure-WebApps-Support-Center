@@ -68,7 +68,8 @@ export class ApplensDiagnosticService {
         body,
         detectorId,
         dataSource,
-        timeRange);
+        timeRange,
+        additionalParams);
     }
   }
 

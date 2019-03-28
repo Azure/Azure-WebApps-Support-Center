@@ -124,7 +124,7 @@ export class FormComponent extends DataRenderBaseComponent {
             }
           }, ((error: any) => {
             formToExecute.loadingFormResponse = false;
-            formToExecute.errorMessage = 'Something went wrong during form execution';
+            formToExecute.errorMessage = 'Something went wrong while loading data';
           }));
       } else {
         let detectorParams = {
@@ -182,7 +182,7 @@ export class FormComponent extends DataRenderBaseComponent {
           formToExecute.loadingFormResponse = false;
         }, (error: any) => {
           formToExecute.loadingFormResponse = false;
-          formToExecute.errorMessage = 'Something went wrong during form execution';
+          formToExecute.errorMessage = 'Something went wrong while loading data';
         });
     }
   }
