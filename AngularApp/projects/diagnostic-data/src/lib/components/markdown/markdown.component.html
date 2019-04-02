@@ -11,6 +11,14 @@
 
 </ng-template>
 
-<data-container [headerTemplate]="header" [title]="renderingProperties.title">
+<data-container *ngIf="title else noContainerMarkdown" [headerTemplate]="header" [title]="renderingProperties.title">
     <markdown [data]="markdown"></markdown>
 </data-container>
+
+<!-- If there is no title, do not use container. Note this is called from the else statement in the *ngIf above -->
+<ng-template #noContainerMarkdown>
+    <data-container>
+        <markdown [data]="markdown"></markdown>
+    </data-container>
+</ng-template>
+  
