@@ -1,7 +1,8 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { DetectorResponse, DetectorMetaData } from '../models/detector';
-import { QueryResponse } from 'diagnostic-data';
+import { QueryResponse } from '../models/compiler-response';
+
 @Injectable()
 export class DiagnosticService {
     // TODO: Figure out if this can be done with an abstract class
@@ -14,7 +15,8 @@ export class DiagnosticService {
         return null;
     }
 
-    public getDetector(detector: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean, formQueryParams?: string): Observable<DetectorResponse> {
+    public getDetector(detector: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean,
+            formQueryParams?: string): Observable<DetectorResponse> {
         return null;
     }
 
@@ -22,7 +24,9 @@ export class DiagnosticService {
         return null;
     }
 
-    getCompilerResponse(body: any, isSystemInvoker: boolean, detectorId: string = '', startTime: string = '', endTime: string = '', dataSource: string = '', timeRange: string = '', additionalParams?: any): Observable<QueryResponse<DetectorResponse>> {
+    getCompilerResponse(body: any, isSystemInvoker: boolean, detectorId: string = '', startTime: string = '',
+            endTime: string = '', dataSource: string = '', timeRange: string = '', additionalParams?: any):
+            Observable<QueryResponse<DetectorResponse>> {
         return null;
     }
 }

@@ -12,7 +12,7 @@
     "build-lib": "ng build diagnostic-data",
     "build-applens": "ng build applens --prod",
     "build-asd": "ng build app-service-diagnostics --prod",
-    "build": "npm run build-lib & npm run build-applens && npm run build-asd",
+    "build": "npm run build-lib && npm run build-applens && npm run build-asd",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

@@ -1,6 +1,5 @@
 import { Observable } from 'rxjs';
 import { Component, Input } from '@angular/core';
-import { Dictionary } from '../../../../../applens/src/app/shared/models/extensions';
 import { Rendering } from '../../models/detector';
 import { DiagnosticSiteService } from '../../services/diagnostic-site.service';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
@@ -23,7 +22,7 @@ export class Solution {
   InternalInstructions: string;
   DetectorLink: string;
   Action: ActionType;
-  ActionArgs: Dictionary<any>;
+  ActionArgs: {};
   PremadeDescription: SolutionText;
   PremadeInstructions: SolutionText;
 }
@@ -65,7 +64,7 @@ export class SolutionComponent extends DataRenderBaseComponent {
     });
   }
 
-  chooseAction(actionType: ActionType, resourceUri: string, args?: Dictionary<string>): Observable<any> {
+  chooseAction(actionType: ActionType, resourceUri: string, args?: {}): Observable<any> {
     switch (actionType) {
       case ActionType.RestartSite:
         return this._siteService.restartSiteFromUri(resourceUri);

@@ -3,5 +3,12 @@
   "dest": "../../dist/diagnostic-data",
   "lib": {
     "entryFile": "src/public_api.ts"
-  }
+  },
+  "whitelistedNonPeerDependencies": [
+    "angular",
+    "swimlane",
+    "copy-html-to-clipboard",
+    "applicationinsights-js",
+    "ngx-monaco-editor"
+  ]
 }

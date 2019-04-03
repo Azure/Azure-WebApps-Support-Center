@@ -1,6 +1,8 @@
 import 'd3';
 import 'nvd3';
-import { DetectorControlService, DiagnosticService, TelemetryService } from 'diagnostic-data';
+import { DetectorControlService } from './services/detector-control.service';
+import { DiagnosticService } from './services/diagnostic.service';
+import { TelemetryService } from './services/telemetry/telemetry.service';
 import { NvD3Module } from 'ng2-nvd3';
 import { MarkdownModule } from 'ngx-markdown';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
