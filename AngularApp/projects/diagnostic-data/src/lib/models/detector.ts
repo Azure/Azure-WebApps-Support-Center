@@ -161,3 +161,7 @@ export interface DynamicInsightRendering extends Rendering {
 export interface DetectorListRendering extends Rendering {
     detectorIds: string[];
 }
+
+export interface MarkdownRendering extends Rendering {
+    isContainerNeeded: boolean;
+}

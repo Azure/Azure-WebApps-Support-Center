@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { Rendering, DiagnosticData } from '../../models/detector';
+import { MarkdownRendering, DiagnosticData } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { MarkdownService } from 'ngx-markdown';
 import { ClipboardService } from '../../services/clipboard.service';
@@ -27,7 +27,7 @@ Content-Type: text/html
 })
 export class MarkdownComponent extends DataRenderBaseComponent {
 
-  renderingProperties: Rendering;
+  renderingProperties: MarkdownRendering;
 
   markdown: string;
   isPublic: boolean;
@@ -40,7 +40,7 @@ export class MarkdownComponent extends DataRenderBaseComponent {
 
   protected processData(data: DiagnosticData) {
     super.processData(data);
-    this.renderingProperties = <Rendering>data.renderingProperties;
+    this.renderingProperties = <MarkdownRendering>data.renderingProperties;
 
     this.createViewModel();
   }
