@@ -50,3 +50,11 @@ export enum OperatingSystem {
     linux = 1 << 1,
     any = 11 << 0
 }
+
+export enum HostingEnvironmentKind {
+    None = 1 << 0,
+    Public = 1 << 1,
+    ILB = 1 << 2,
+    NotILB = 251, // 11111011
+    All = 255 // 11111111
+}

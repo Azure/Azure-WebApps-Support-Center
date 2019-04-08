@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../startup/services/auth.service';
 import { Feature, FeatureTypes } from '../../../shared-v2/models/features';
 import { AppType, SupportBladeDefinitions } from '../../../shared/models/portal';
-import { OperatingSystem, Site } from '../../../shared/models/site';
+import { OperatingSystem, Site, HostingEnvironmentKind } from '../../../shared/models/site';
 import { SiteFilteredItem } from '../models/site-filter';
 import { Sku } from '../../../shared/models/server-farm';
 import { ToolNames } from '../../../shared/models/tools-constants';
@@ -123,6 +123,7 @@ export class SiteFeatureService extends FeatureService {
             appType: AppType.WebApp,
             platform: OperatingSystem.windows,
             sku: Sku.NotDynamic,
+            hostingEnvironmentKind: HostingEnvironmentKind.All,
             stack: '',
             item: {
               id: 'zray',
@@ -150,6 +151,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
         item: {
           id: ToolNames.AutoHealing,
@@ -165,6 +167,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
         item: {
           id: ToolNames.CpuMonitoring,
@@ -185,6 +188,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: 'ASP.NET',
         item: {
           id: ToolNames.Profiler,
@@ -201,6 +205,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: 'ASP.NET Core',
         item: {
           id: ToolNames.Profiler,
@@ -217,6 +222,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
         item: {
           id: ToolNames.MemoryDump,
@@ -233,6 +239,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
         item: {
           id: ToolNames.DatabaseTester,
@@ -249,6 +256,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
         item: {
           id: ToolNames.NetworkTrace,
@@ -265,6 +273,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: 'PHP',
         item: {
           id: ToolNames.PHPLogAnalyzer,
@@ -281,6 +290,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: 'PHP',
         item: {
           id: ToolNames.PHPProcessAnalyzer,
@@ -297,6 +307,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: 'Java',
         item: {
           id: ToolNames.JavaMemoryDump,
@@ -313,6 +324,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: 'Java',
         item: {
           id: ToolNames.JavaThreadDump,
@@ -332,6 +344,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
         item: {
           id: SupportBladeDefinitions.MetricPerInstance.Identifier,
@@ -348,6 +361,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp,
         platform: OperatingSystem.windows,
         sku: Sku.Paid,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
         item: {
           id: SupportBladeDefinitions.AppServicePlanMetrics.Identifier,
@@ -364,6 +378,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.NotILB,
         stack: '',
         item: {
           id: SupportBladeDefinitions.EventViewer.Identifier,
@@ -380,6 +395,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.NotILB,
         stack: '',
         item: {
           id: SupportBladeDefinitions.FREBLogs.Identifier,
@@ -396,6 +412,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp,
         platform: OperatingSystem.windows,
         sku: Sku.Paid,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
         item: {
           id: 'AdvancedAppRestart',

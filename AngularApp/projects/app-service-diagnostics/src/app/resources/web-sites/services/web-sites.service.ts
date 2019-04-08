@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
-import { OperatingSystem, Site } from '../../../shared/models/site';
+import { OperatingSystem, Site, HostingEnvironmentKind } from '../../../shared/models/site';
 import { AppType } from '../../../shared/models/portal';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 import { ArmService } from '../../../shared/services/arm.service';
 import { Sku } from '../../../shared/models/server-farm';
 import { IDiagnosticProperties } from '../../../shared/models/diagnosticproperties';
-import { Observable ,  BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class WebSitesService extends ResourceService {
@@ -19,6 +19,7 @@ export class WebSitesService extends ResourceService {
     public platform: OperatingSystem = OperatingSystem.any;
     public appType: AppType = AppType.WebApp;
     public sku: Sku = Sku.All;
+    public hostingEnvironmentKind: HostingEnvironmentKind = HostingEnvironmentKind.All;
 
     constructor(protected _armService: ArmService, private _appAnalysisService: AppAnalysisService) {
         super(_armService);
@@ -34,9 +35,9 @@ export class WebSitesService extends ResourceService {
 
     public get isApplicableForLiveChat(): boolean {
         return this.resource
-        && (this.sku & Sku.Paid) > 0
-        && (this.appType & AppType.WebApp) > 0
-        && (this.platform & (OperatingSystem.windows | OperatingSystem.linux)) > 0;
+            && (this.sku & Sku.Paid) > 0
+            && (this.appType & AppType.WebApp) > 0
+            && (this.platform & (OperatingSystem.windows | OperatingSystem.linux)) > 0;
     }
 
     public getSitePremierAddOns(resourceUri: string): Observable<any> {
@@ -65,5 +66,11 @@ export class WebSitesService extends ResourceService {
         this.appType = site.kind.toLowerCase().indexOf('functionapp') >= 0 ? AppType.FunctionApp : AppType.WebApp;
         this.platform = site.kind.toLowerCase().indexOf('linux') >= 0 ? OperatingSystem.linux : OperatingSystem.windows;
         this.sku = Sku[site.sku];
+        this.hostingEnvironmentKind = this.getHostingEnvirontmentKind(site);
+    }
+
+    private getHostingEnvirontmentKind(site: Site) {
+        let scmHostName = site.enabledHostNames.find(h => h.indexOf('.scm.') > 0);
+        return site.hostingEnvironmentId == null ? HostingEnvironmentKind.None : (scmHostName.toLowerCase().endsWith(".azurewebsites.net") ? HostingEnvironmentKind.Public : HostingEnvironmentKind.ILB);
     }
 }

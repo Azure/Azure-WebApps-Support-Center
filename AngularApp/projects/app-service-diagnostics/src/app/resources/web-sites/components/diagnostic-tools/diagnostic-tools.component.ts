@@ -6,7 +6,7 @@ import { WebSitesService } from '../../services/web-sites.service';
 import { SiteService } from '../../../../shared/services/site.service';
 import { SiteDaasInfo } from '../../../../shared/models/solution-metadata';
 import { AppType } from '../../../../shared/models/portal';
-import { OperatingSystem } from '../../../../shared/models/site';
+import { OperatingSystem, HostingEnvironmentKind } from '../../../../shared/models/site';
 import { Sku } from '../../../../shared/models/server-farm';
 
 
@@ -44,6 +44,7 @@ export class DiagnosticToolsComponent {
       appType: AppType.WebApp | AppType.FunctionApp,
       platform: OperatingSystem.windows,
       sku: Sku.NotDynamic,
+      hostingEnvironmentKind:HostingEnvironmentKind.All,
       stack: '',
       item: {
         title: 'Proactive Tools',
@@ -52,6 +53,7 @@ export class DiagnosticToolsComponent {
             appType: tool.appType,
             platform: tool.platform,
             sku: tool.sku,
+            hostingEnvironmentKind: tool.hostingEnvironmentKind,
             stack: tool.stack,
             item: {
               title: tool.item.name,
@@ -66,6 +68,7 @@ export class DiagnosticToolsComponent {
       appType: AppType.WebApp | AppType.FunctionApp,
       platform: OperatingSystem.windows,
       sku: Sku.NotDynamic,
+      hostingEnvironmentKind:HostingEnvironmentKind.All,
       stack: '',
       item: {
         title: 'Diagnostic Tools',
@@ -74,6 +77,7 @@ export class DiagnosticToolsComponent {
             appType: tool.appType,
             platform: tool.platform,
             sku: tool.sku,
+            hostingEnvironmentKind: tool.hostingEnvironmentKind,
             stack: tool.stack,
             item: {
               title: tool.item.name,
@@ -88,6 +92,7 @@ export class DiagnosticToolsComponent {
       appType: AppType.WebApp,
       platform: OperatingSystem.windows,
       sku: Sku.NotDynamic,
+      hostingEnvironmentKind:HostingEnvironmentKind.All,
       stack: '',
       item: {
         title: 'Support Tools',
@@ -96,6 +101,7 @@ export class DiagnosticToolsComponent {
             appType: tool.appType,
             platform: tool.platform,
             sku: tool.sku,
+            hostingEnvironmentKind: tool.hostingEnvironmentKind,
             stack: tool.stack,
             item: {
               title: tool.item.name,
@@ -110,6 +116,7 @@ export class DiagnosticToolsComponent {
       appType: AppType.WebApp,
       platform: OperatingSystem.windows,
       sku: Sku.NotDynamic,
+      hostingEnvironmentKind:HostingEnvironmentKind.All,
       stack: '',
       item: {
         title: 'Premium Tools',
@@ -118,6 +125,7 @@ export class DiagnosticToolsComponent {
             appType: tool.appType,
             platform: tool.platform,
             sku: tool.sku,
+            hostingEnvironmentKind: tool.hostingEnvironmentKind,
             stack: tool.stack,
             item: {
               title: tool.item.name,

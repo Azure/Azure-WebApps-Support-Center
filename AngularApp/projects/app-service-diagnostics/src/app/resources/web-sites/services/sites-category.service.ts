@@ -2,7 +2,7 @@ import { WebSiteFilter } from './../pipes/site-filter.pipe';
 import { Injectable } from '@angular/core';
 import { CategoryService } from '../../../shared-v2/services/category.service';
 import { Category } from '../../../shared-v2/models/category';
-import { OperatingSystem } from '../../../shared/models/site';
+import { OperatingSystem, HostingEnvironmentKind } from '../../../shared/models/site';
 import { AppType } from '../../../shared/models/portal';
 import { SiteFilteredItem } from '../models/site-filter';
 import { Sku } from '../../../shared/models/server-farm';
@@ -17,6 +17,7 @@ export class SitesCategoryService extends CategoryService {
       platform: OperatingSystem.windows,
       stack: '',
       sku: Sku.All,
+      hostingEnvironmentKind: HostingEnvironmentKind.All,
       item: {
         id: 'WindowsAvailabilityAndPerformance',
         name: 'Availability and Performance',
@@ -33,6 +34,7 @@ export class SitesCategoryService extends CategoryService {
       platform: OperatingSystem.linux,
       stack: '',
       sku: Sku.All,
+      hostingEnvironmentKind: HostingEnvironmentKind.All,
       item: {
         id: 'LinuxAvailabilityAndPerformance',
         name: 'Availability and Performance',
@@ -48,6 +50,7 @@ export class SitesCategoryService extends CategoryService {
       platform: OperatingSystem.windows | OperatingSystem.linux,
       stack: '',
       sku: Sku.All,
+      hostingEnvironmentKind: HostingEnvironmentKind.All,
       item: {
         id: 'ConfigurationAndManagement',
         name: 'Configuration and Management',
@@ -63,6 +66,7 @@ export class SitesCategoryService extends CategoryService {
       platform: OperatingSystem.windows,
       stack: '',
       sku: Sku.All,
+      hostingEnvironmentKind: HostingEnvironmentKind.All,
       item: {
         id: 'SSLandDomains',
         name: 'SSL and Domains',
@@ -79,6 +83,7 @@ export class SitesCategoryService extends CategoryService {
       platform: OperatingSystem.windows | OperatingSystem.linux,
       stack: '',
       sku: Sku.All,
+      hostingEnvironmentKind: HostingEnvironmentKind.All,
       item: {
         id: 'BestPractices',
         name: 'Best Practices',
@@ -96,6 +101,7 @@ export class SitesCategoryService extends CategoryService {
       platform: OperatingSystem.windows | OperatingSystem.linux,
       stack: '',
       sku: Sku.All,
+      hostingEnvironmentKind: HostingEnvironmentKind.All,
       item: {
         id: 'FunctionsAvailabilityAndPerformance',
         name: 'Availability and Performance',
@@ -122,6 +128,7 @@ export class SitesCategoryService extends CategoryService {
       platform: OperatingSystem.windows,
       stack: '',
       sku: Sku.NotDynamic,
+      hostingEnvironmentKind: HostingEnvironmentKind.All,
       item: {
         id: 'DiagnosticTools',
         name: 'Diagnostic Tools',
