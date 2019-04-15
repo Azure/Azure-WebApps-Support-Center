@@ -30,7 +30,7 @@ export class SiteSupportTopicService extends SupportTopicService {
 
   constructor(protected _diagnosticService: DiagnosticService, protected _webSiteService: WebSitesService) {
     super(_diagnosticService, _webSiteService);
-  
+
     if (!VersioningHelper.isV2Subscription(_webSiteService.subscriptionId)) {
 
       // To enable a/b testing, uncomment the below line with the right path and Support Topic Id
