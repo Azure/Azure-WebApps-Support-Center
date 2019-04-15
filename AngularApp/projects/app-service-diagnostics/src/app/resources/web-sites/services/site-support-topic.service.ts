@@ -18,11 +18,6 @@ export class SiteSupportTopicService extends SupportTopicService {
     },
     {
       pesId: '14748',
-      supportTopicId: '32570954',
-      path: '/diagnostics/availability/apprestartanalysis',
-    },
-    {
-      pesId: '14748',
       supportTopicId: '32542218',
       path: '/diagnostics/availability/analysis',
     },
@@ -35,13 +30,13 @@ export class SiteSupportTopicService extends SupportTopicService {
 
   constructor(protected _diagnosticService: DiagnosticService, protected _webSiteService: WebSitesService) {
     super(_diagnosticService, _webSiteService);
-
+  
     if (!VersioningHelper.isV2Subscription(_webSiteService.subscriptionId)) {
-      this._hardCodedSupportTopicIdMapping.push({
-        pesId: '14748',
-        supportTopicId: '32583701',
-        path: '/diagnostics/availability/detectors/sitecpuanalysis/focus',
-      });
+
+      // To enable a/b testing, uncomment the below line with the right path and Support Topic Id
+      // (the below is an example of how we did the testing for CPU detector)
+      
+      //this._hardCodedSupportTopicIdMapping.push({pesId: '14748',supportTopicId: '32583701',path: '/diagnostics/availability/detectors/sitecpuanalysis/focus' });
     }
   }
 
