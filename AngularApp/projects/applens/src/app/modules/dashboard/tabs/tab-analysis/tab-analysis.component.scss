@@ -1,0 +1,53 @@
+.main-content {
+    // height of fixed-position navbar = 42px
+    padding-top: 42px;
+  }
+  
+  .active-tab {
+    color: rgb(68, 68, 68);
+    background-color: #fff !important;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
+  }
+  
+  body {
+    padding: 0 10px;
+  }
+  
+  .nav-container {
+    max-height: 50px;
+    padding-top: 10px;
+    background-color: #ecf0f5;
+    position: fixed;
+    top: 50px;
+    width: 100%;
+    z-index: 10;
+  }
+
+  .nav.nav-tabs {
+    padding: 0 20px;
+  }
+  
+  .tab-container {
+    overflow-y: auto;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #c6c5ff;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(92, 97, 133);
+  }
+  

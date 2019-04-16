@@ -18,7 +18,6 @@ export class SideNavComponent implements OnInit {
   currentRoutePath: string[];
 
   categories: CollapsibleMenuItem[] = [];
-
   analysisTypes: CollapsibleMenuItem[] = [];
 
   gists: CollapsibleMenuItem[] = [];
@@ -117,19 +116,35 @@ export class SideNavComponent implements OnInit {
           if (element.analysisTypes.length > 0) {
             element.analysisTypes.forEach(analysis => {
               if (analysis !== "") {
+
                 if (this.analysisTypes.findIndex(x => x.label === analysis) < 0) {
-                  let analysisMenuItem = new CollapsibleMenuItem(analysis, null, null, null, true);
-                  this.analysisTypes.push(analysisMenuItem);
-                }
-                let analysismenuSubItem = new CollapsibleMenuItem(element.name, onClick, isSelected);
-                this.analysisTypes.forEach(analysisMenuItem => {
-                  if (analysisMenuItem.label == analysis) {
-                    analysisMenuItem.subItems.push(analysismenuSubItem);
+
+                  let onClickAnalysisParent = () => {
+                    this.navigateTo(`analysis/${analysis}`);
+                  };
+
+                  let analysisDetector = detectorList.find(x => x.id === analysis);
+                  if (analysisDetector != null) {
+                    if (this.analysisTypes.findIndex(x => x.label === analysisDetector.name) < 0) {
+                      let analysisMenuItem = new CollapsibleMenuItem(analysisDetector.name, onClickAnalysisParent, null, null, true);
+                      this.analysisTypes.push(analysisMenuItem);
+                    }
                   }
-                });
+                }
+
+                // let onClickAnalysis = () => {
+                //   this.navigateTo(`analysis/${analysis}/${element.id}`);
+                // };
+
+                // let analysismenuSubItem = new CollapsibleMenuItem(element.name, onClickAnalysis, isSelected);
+                // this.analysisTypes.forEach(analysisMenuItem => {
+                //   if (analysisMenuItem.label == analysis) {
+                //     analysisMenuItem.subItems.push(analysismenuSubItem);
+                //   }
+                // });
               }
             });
-          };
+          }
         });
 
         this.categories = this.categories.sort((a, b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));

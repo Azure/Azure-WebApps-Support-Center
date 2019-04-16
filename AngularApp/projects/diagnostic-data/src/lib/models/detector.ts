@@ -78,7 +78,6 @@ export enum DetectorType{
     Detector,
     Analysis
 }
-
 export enum RenderingType {
     NoGraph = 0,
     Table,
