@@ -10,7 +10,7 @@
     </ul> -->
     <div class="btn-group" role="group" aria-label="...">
       <ng-container *ngFor="let detector of detectors">
-        <button type="button" class="btn btn-default" [routerLink]="['/analysis/appAnalysis','coldstarts']" preserveFragment queryParamsHandling="preserve"
+        <button type="button" class="btn btn-default" [routerLink]="detector.routerLink" preserveFragment queryParamsHandling="preserve"
         [routerLinkActive]="['active', 'active-tab' ]" [routerLinkActiveOptions]="{exact: true}">{{ detector.name }}</button>
       </ng-container>
     </div>

@@ -30,11 +30,17 @@ export class TabAnalysisComponent implements OnInit, OnChanges {
             if (element.analysisTypes.length > 0) {
               element.analysisTypes.forEach(analysis => {
                 if (analysis === this.analysisId) {
-                  let link: any[] = ['/analysis', this.analysisId, element.id];
+                  let link: any[] = [];
+
+                  if (this.detectorId !== "") {
+                    link = ['../' + element.id];
+                  } else {
+                    link = ['./' + element.id];
+                  }
                   // routerLink.push('analysis');
                   // routerLink.push(this.analysisId);
                   // routerLink.push(element.id);
-                  this.detectors.push({ routerLink: '/appAnalysis/coldstarts', name: element.name });
+                  this.detectors.push({ routerLink: link, name: element.name });
                 }
               });
             }
