@@ -79,16 +79,6 @@ export class SiteFeatureService extends FeatureService {
         clickAction: this._createFeatureAction('memoryanalysis', 'Availability and Performance', () => {
           this._router.navigateByUrl(`resource/${resourceId}/legacy/diagnostics/availability/memoryanalysis`);
         })
-      },
-      {
-        id: 'restartanalysis',
-        name: 'Web App Restarted',
-        category: 'Availability and Performance',
-        description: 'See timeline of Web App restarts as well as the cause of the restart',
-        featureType: FeatureTypes.Detector,
-        clickAction: this._createFeatureAction('restartanalysis', 'Availability and Performance', () => {
-          this._router.navigateByUrl(`resource/${resourceId}/legacy/diagnostics/availability/apprestartanalysis`);
-        })
       }
     ];
   }
