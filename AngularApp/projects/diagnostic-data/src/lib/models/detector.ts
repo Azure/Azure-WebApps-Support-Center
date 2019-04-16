@@ -48,6 +48,8 @@ export interface DetectorMetaData {
     description: string;
     author: string;
     supportTopicList: SupportTopic[];
+    analysisTypes: string[];
+    type: DetectorType;
     category: string;
 }
 
@@ -70,6 +72,11 @@ export interface KustoPropertyBagValue {
 export interface SupportTopic {
     id: string;
     pesId: string;
+}
+
+export enum DetectorType{
+    Detector,
+    Analysis
 }
 
 export enum RenderingType {

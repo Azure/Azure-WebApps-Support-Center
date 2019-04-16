@@ -128,8 +128,8 @@ namespace AppLensV3
                 }
                 else
                 {
-                    path = path.Substring(path.IndexOf("/"));
-                    
+                    path = path.Replace("/v4", string.Empty).Replace("v4", string.Empty).Replace("v2", string.Empty);
+
                     var requestMessage = new HttpRequestMessage(method.Trim().ToUpper() == "POST" ? HttpMethod.Post : HttpMethod.Get, path)
                     {
                         Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json")
