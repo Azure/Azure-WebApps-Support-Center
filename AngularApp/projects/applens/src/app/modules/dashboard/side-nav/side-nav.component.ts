@@ -1,5 +1,5 @@
 
-import {filter} from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { Component, OnInit, PipeTransform, Pipe } from '@angular/core';
 import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from '@angular/router';
 import { ResourceService } from '../../../shared/services/resource.service';
@@ -18,6 +18,7 @@ export class SideNavComponent implements OnInit {
   currentRoutePath: string[];
 
   categories: CollapsibleMenuItem[] = [];
+  analysisTypes: CollapsibleMenuItem[] = [];
 
   gists: CollapsibleMenuItem[] = [];
 
@@ -43,25 +44,25 @@ export class SideNavComponent implements OnInit {
   ];
 
   createNew: CollapsibleMenuItem[] = [{
-      label: 'New Detector',
-      onClick: () => {
-        this.navigateTo('create');
-      },
-      expanded: false,
-      subItems: null,
-      isSelected: null,
-      icon: null
+    label: 'New Detector',
+    onClick: () => {
+      this.navigateTo('create');
     },
-    {
-      label: 'New Gist',
-      onClick: () => {
-        this.navigateTo('createGist');
-      },
-      expanded: false,
-      subItems: null,
-      isSelected: null,
-      icon: null
-    }
+    expanded: false,
+    subItems: null,
+    isSelected: null,
+    icon: null
+  },
+  {
+    label: 'New Gist',
+    onClick: () => {
+      this.navigateTo('createGist');
+    },
+    expanded: false,
+    subItems: null,
+    isSelected: null,
+    icon: null
+  }
   ];
 
   ngOnInit() {
@@ -111,19 +112,52 @@ export class SideNavComponent implements OnInit {
           }
 
           categoryMenuItem.subItems.push(menuItem);
+
+          if (element.analysisTypes.length > 0) {
+            element.analysisTypes.forEach(analysis => {
+              if (analysis !== "") {
+
+                if (this.analysisTypes.findIndex(x => x.label === analysis) < 0) {
+
+                  let onClickAnalysisParent = () => {
+                    this.navigateTo(`analysis/${analysis}`);
+                  };
+
+                  let analysisDetector = detectorList.find(x => x.id === analysis);
+                  if (analysisDetector != null) {
+                    if (this.analysisTypes.findIndex(x => x.label === analysisDetector.name) < 0) {
+                      let analysisMenuItem = new CollapsibleMenuItem(analysisDetector.name, onClickAnalysisParent, null, null, true);
+                      this.analysisTypes.push(analysisMenuItem);
+                    }
+                  }
+                }
+
+                // let onClickAnalysis = () => {
+                //   this.navigateTo(`analysis/${analysis}/${element.id}`);
+                // };
+
+                // let analysismenuSubItem = new CollapsibleMenuItem(element.name, onClickAnalysis, isSelected);
+                // this.analysisTypes.forEach(analysisMenuItem => {
+                //   if (analysisMenuItem.label == analysis) {
+                //     analysisMenuItem.subItems.push(analysismenuSubItem);
+                //   }
+                // });
+              }
+            });
+          }
         });
 
-        this.categories = this.categories.sort((a,b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));
+        this.categories = this.categories.sort((a, b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));
 
         this.detectorsLoading = false;
       }
     },
-    error => {
-      // TODO: handle detector route not found
-      if (error && error.status === 404) {
-        this.getDetectorsRouteNotFound = true;
-      }
-    });
+      error => {
+        // TODO: handle detector route not found
+        if (error && error.status === 404) {
+          this.getDetectorsRouteNotFound = true;
+        }
+      });
 
     this._diagnosticApiService.getGists().subscribe(gistList => {
       if (gistList) {
@@ -145,17 +179,17 @@ export class SideNavComponent implements OnInit {
               categoryMenuItem = new CollapsibleMenuItem(c, null, null, null, true);
               this.gists.push(categoryMenuItem);
             }
-  
+
             categoryMenuItem.subItems.push(menuItem);
           });
         });
       }
     },
-    error => {
-      // TODO: handle detector route not found
-      if (error && error.status === 404) {
-      }
-    });
+      error => {
+        // TODO: handle detector route not found
+        if (error && error.status === 404) {
+        }
+      });
   }
 
   doesMatchCurrentRoute(expectedRoute: string) {

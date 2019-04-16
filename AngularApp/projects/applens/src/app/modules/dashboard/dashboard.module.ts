@@ -38,6 +38,7 @@ import { TabGistDevelopComponent } from './tabs/tab-gist-develop/tab-gist-develo
 import { TabChangelistComponent } from './tabs/tab-changelist/tab-changelist.component';
 import { GistChangelistComponent } from './gist-changelist/gist-changelist.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { TabAnalysisComponent } from './tabs/tab-analysis/tab-analysis.component';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -131,6 +132,42 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
             component: TabAnalyticsDevelopComponent
           }
         ]
+      },
+      {
+        path: 'analysis/:analysis/:detector',
+        component: TabAnalysisComponent,
+        children: [
+          {
+            path: '',
+            component: TabDataComponent
+          },
+          {
+            path: 'data',
+            redirectTo: ''
+          },
+          {
+            path: 'datasource',
+            component: TabDataSourcesComponent
+          }
+        ]
+      },
+      {
+        path: 'analysis/:analysis',
+        component: TabAnalysisComponent,
+        children: [
+          {
+            path: '',
+            component: TabDataComponent
+          },
+          {
+            path: 'data',
+            redirectTo: ''
+          },
+          {
+            path: 'datasource',
+            component: TabDataSourcesComponent
+          }
+        ]
       }
     ]
   },
@@ -166,6 +203,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
   ],
   declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent,
     SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent,
-    TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, GistComponent, TabGistCommonComponent, TabGistDevelopComponent, TabChangelistComponent, GistChangelistComponent]
+    TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, GistComponent, TabGistCommonComponent, TabGistDevelopComponent, TabChangelistComponent, GistChangelistComponent, TabAnalysisComponent]
 })
 export class DashboardModule { }

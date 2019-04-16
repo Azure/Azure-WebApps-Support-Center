@@ -1,0 +1,48 @@
+<div class="main-content">
+  <div>
+    <comm-alert></comm-alert>
+    <detector-container [detector]="analysisId"></detector-container>
+
+    <!-- <ul class="nav nav-pills" role="tablist">
+      <li role="presentation" *ngFor="let detector of detectors">
+        <a href="#">{{ detector }}</a>
+      </li>
+    </ul> -->
+    <div class="btn-group" role="group" aria-label="...">
+      <ng-container *ngFor="let detector of detectors">
+        <button type="button" class="btn btn-default" [routerLink]="['/analysis/appAnalysis','coldstarts']" preserveFragment queryParamsHandling="preserve"
+        [routerLinkActive]="['active', 'active-tab' ]" [routerLinkActiveOptions]="{exact: true}">{{ detector.name }}</button>
+      </ng-container>
+    </div>
+  </div>
+  <div class="nav-container" [hidden]="detectorId === ''">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a [routerLink]="['./']" preserveFragment queryParamsHandling="preserve"
+          [routerLinkActive]="['active', 'active-tab' ]" [routerLinkActiveOptions]="{exact: true}">Data</a>
+      </li>
+      <li class="nav-item">
+        <a [routerLink]="['datasource']" queryParamsHandling="preserve" [routerLinkActive]="['active', 'active-tab']"
+          [routerLinkActiveOptions]="{exact:true}">Data Sources</a>
+      </li>
+    </ul>
+  </div>
+  <div class="tab-container" [hidden]="detectorId === ''">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+<!-- 
+<div fxLayout="row" fxLayout.xs="column">
+  <md-card fxFlex="40%;" fxFlex.xs="80%">
+    <md-card-content>
+      <h1>{{ analysisId }}</h1>
+      <detector-container [detector]="analysisId"></detector-container>
+    </md-card-content>
+  </md-card>
+
+  <md-card fxFlex="40%;" fxFlex.xs="80%">
+    <md-card-content>
+      <router-outlet></router-outlet>
+    </md-card-content>
+  </md-card>
+</div> -->
