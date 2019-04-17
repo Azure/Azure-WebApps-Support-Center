@@ -68,6 +68,7 @@ import { VerticalDisplayListItemComponent } from './components/vertical-display-
 import { SolutionTypeTagComponent } from './components/solution-type-tag/solution-type-tag.component';
 import { SolutionDisplayComponent } from './components/solution-display/solution-display.component';
 import { SolutionDisplayItemComponent } from './components/solution-display/solution-display-item/solution-display-item.component';
+import { AnalysisViewComponent } from './components/analysis-view/analysis-view.component';
 
 
 @NgModule({
@@ -91,7 +92,8 @@ import { SolutionDisplayItemComponent } from './components/solution-display/solu
     CommAlertComponent, FeedbackComponent, CopyInsightDetailsComponent, MarkdownEditorComponent, CardSelectionComponent,
     GuageGraphicComponent, GuageControlComponent, SolutionComponent, SolutionsComponent, FormComponent,
     VerticalDisplayListComponent, VerticalDisplayListItemComponent, SolutionTypeTagComponent, SolutionDisplayComponent,
-    SolutionDisplayItemComponent
+    SolutionDisplayItemComponent,
+    AnalysisViewComponent
   ],
   exports: [
     FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent,

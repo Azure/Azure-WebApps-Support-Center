@@ -39,6 +39,8 @@ import { TabChangelistComponent } from './tabs/tab-changelist/tab-changelist.com
 import { GistChangelistComponent } from './gist-changelist/gist-changelist.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TabAnalysisComponent } from './tabs/tab-analysis/tab-analysis.component';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatIconModule } from '@angular/material';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -83,10 +85,10 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
           }, {
             path: 'edit',
             redirectTo: ''
-          },{
+          }, {
             path: 'changelist',
             component: TabChangelistComponent
-          },{
+          }, {
             path: 'changelist/:sha',
             component: TabChangelistComponent
           }
@@ -107,7 +109,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
           {
             path: 'edit',
             component: TabDevelopComponent
-          },{
+          }, {
             path: 'changelist',
             component: TabChangelistComponent
           },
@@ -139,7 +141,10 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
         children: [
           {
             path: '',
-            component: TabDataComponent
+            component: TabDataComponent,
+            data: {
+              analysisMode: true
+            }
           },
           {
             path: 'data',
@@ -178,6 +183,8 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
   imports: [
     CommonModule,
     FormsModule,
+    MatStepperModule,
+    MatIconModule,
     DashboardModuleRoutes,
     DiagnosticDataModule,
     SharedModule,

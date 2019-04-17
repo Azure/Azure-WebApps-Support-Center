@@ -1,5 +1,5 @@
 <div *ngIf="detectorDataLocalCopy">
-  <div *ngIf="!hideDetectorHeader">
+  <div *ngIf="!hideDetectorHeader && !analysisMode">
     <section class="content-header">
       <h1 *ngIf="!isSystemInvoker">
         <span *ngIf="!insideDetectorList">{{detectorDataLocalCopy.metadata.name}}</span>

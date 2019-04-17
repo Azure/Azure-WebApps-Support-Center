@@ -24,6 +24,8 @@ export class DetectorContainerComponent implements OnInit {
     this.detectorSubject.next(detector);
   }
 
+  @Input() analysisMode:boolean = false;
+
   constructor(private _route: ActivatedRoute, private _diagnosticService: DiagnosticService,
     public detectorControlService: DetectorControlService) { }
 

@@ -5,6 +5,7 @@ import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from 
 import { ResourceService } from '../../../shared/services/resource.service';
 import { CollapsibleMenuItem } from '../../../collapsible-menu/components/collapsible-menu-item/collapsible-menu-item.component';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
+import { DetectorType } from 'diagnostic-data';
 
 @Component({
   selector: 'side-nav',
@@ -113,37 +114,43 @@ export class SideNavComponent implements OnInit {
 
           categoryMenuItem.subItems.push(menuItem);
 
-          if (element.analysisTypes.length > 0) {
-            element.analysisTypes.forEach(analysis => {
-              if (analysis !== "") {
+          console.log(element.type + " = " + element.id);
+          if (element.type === DetectorType.Analysis) {
 
-                if (this.analysisTypes.findIndex(x => x.label === analysis) < 0) {
+            let onClickAnalysisParent = () => {
+              this.navigateTo(`analysis/${element.id}`);
+            };
 
-                  let onClickAnalysisParent = () => {
-                    this.navigateTo(`analysis/${analysis}`);
-                  };
+            let analysisMenuItem = new CollapsibleMenuItem(element.name, onClickAnalysisParent, null, null, true);
+            this.analysisTypes.push(analysisMenuItem);
 
-                  let analysisDetector = detectorList.find(x => x.id === analysis);
-                  if (analysisDetector != null) {
-                    if (this.analysisTypes.findIndex(x => x.label === analysisDetector.name) < 0) {
-                      let analysisMenuItem = new CollapsibleMenuItem(analysisDetector.name, onClickAnalysisParent, null, null, true);
-                      this.analysisTypes.push(analysisMenuItem);
-                    }
-                  }
-                }
+            // element.analysisTypes.forEach(analysis => {
+            //   if (analysis !== "") {
 
-                // let onClickAnalysis = () => {
-                //   this.navigateTo(`analysis/${analysis}/${element.id}`);
-                // };
+            //     if (this.analysisTypes.findIndex(x => x.label === analysis) < 0) {
 
-                // let analysismenuSubItem = new CollapsibleMenuItem(element.name, onClickAnalysis, isSelected);
-                // this.analysisTypes.forEach(analysisMenuItem => {
-                //   if (analysisMenuItem.label == analysis) {
-                //     analysisMenuItem.subItems.push(analysismenuSubItem);
-                //   }
-                // });
-              }
-            });
+                  
+
+            //       let analysisDetector = detectorList.find(x => x.id === analysis);
+            //       if (analysisDetector != null) {
+            //         if (this.analysisTypes.findIndex(x => x.label === analysisDetector.name) < 0) {
+                     
+            //         }
+            //       }
+            //     }
+
+            //     // let onClickAnalysis = () => {
+            //     //   this.navigateTo(`analysis/${analysis}/${element.id}`);
+            //     // };
+
+            //     // let analysismenuSubItem = new CollapsibleMenuItem(element.name, onClickAnalysis, isSelected);
+            //     // this.analysisTypes.forEach(analysisMenuItem => {
+            //     //   if (analysisMenuItem.label == analysis) {
+            //     //     analysisMenuItem.subItems.push(analysismenuSubItem);
+            //     //   }
+            //     // });
+            //   }
+            // });
           }
         });
 

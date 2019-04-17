@@ -13,6 +13,21 @@
   body {
     padding: 0 10px;
   }
+
+  .status-icon {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    width: 70px;
+    height:100%;
+    
+}
+
+.fa-circle-o-notch {
+    color: #828282;
+    font-size: 16px;
+}
   
   .nav-container {
     max-height: 50px;

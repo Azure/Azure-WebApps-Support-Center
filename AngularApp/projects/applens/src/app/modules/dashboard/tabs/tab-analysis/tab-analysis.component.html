@@ -1,21 +1,65 @@
 <div class="main-content">
-  <div>
+  <div style="margin-left:20px">
     <comm-alert></comm-alert>
     <detector-container [detector]="analysisId"></detector-container>
 
-    <!-- <ul class="nav nav-pills" role="tablist">
-      <li role="presentation" *ngFor="let detector of detectors">
-        <a href="#">{{ detector }}</a>
-      </li>
-    </ul> -->
-    <div class="btn-group" role="group" aria-label="...">
+    <!-- <div class="btn-group" role="group" aria-label="...">
       <ng-container *ngFor="let detector of detectors">
-        <button type="button" class="btn btn-default" [routerLink]="detector.routerLink" preserveFragment queryParamsHandling="preserve"
-        [routerLinkActive]="['active', 'active-tab' ]" [routerLinkActiveOptions]="{exact: true}">{{ detector.name }}</button>
-      </ng-container>
-    </div>
+          <button type="button" class="btn btn-default" [routerLink]="detector.routerLink" preserveFragment queryParamsHandling="preserve"
+          [routerLinkActive]="['active', 'active-tab' ]" [routerLinkActiveOptions]="{exact: true}">{{ detector.name }}</button>
+        </ng-container> 
+
+    </div>-->
   </div>
-  <div class="nav-container" [hidden]="detectorId === ''">
+
+  <div [hidden]="detectorId !== ''">
+
+    <mat-vertical-stepper>
+      <mat-step label="Observations">
+        <table class="table table-hover table-fixed">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th colspan="2">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let viewModel of detectorViewModels">
+              <td class="col-md-1">
+                <div class="status-icon">
+                  <status-icon [loading]="viewModel.loadingStatus" [status]="viewModel.status" [size]="20">
+                  </status-icon>
+                </div>
+              </td>
+              <td> {{ viewModel.title }}
+              </td>
+              <td>
+                <div *ngIf="viewModel.loadingStatus === 1">
+                  <a [routerLink]="getRouterLink(viewModel.metadata.id)" preserveFragment queryParamsHandling="preserve"
+                    [routerLinkActive]="['active', 'active-tab' ]" [routerLinkActiveOptions]="{exact: true}">More
+                    Info</a>
+                  <i class="fa fa-arrow-circle-o-right" style="margin-left:5px; font-size: 15px"></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-step>
+      <mat-step label="Troubleshooting and Next Steps">
+
+      </mat-step>
+      <ng-template matStepperIcon="number">
+        <i aria-hidden="true" class="fa fa-search"></i>
+      </ng-template>
+      <ng-template matStepperIcon="edit">
+        <i aria-hidden="true" class="fa fa-search"></i>
+      </ng-template>
+    </mat-vertical-stepper>
+
+
+  </div>
+
+  <!-- <div class="nav-container" [hidden]="detectorId === ''">
     <ul class="nav nav-tabs">
       <li class="nav-item">
         <a [routerLink]="['./']" preserveFragment queryParamsHandling="preserve"
@@ -26,23 +70,13 @@
           [routerLinkActiveOptions]="{exact:true}">Data Sources</a>
       </li>
     </ul>
-  </div>
-  <div class="tab-container" [hidden]="detectorId === ''">
+  </div> -->
+  <div style="margin-left:20px" class="tab-container" [hidden]="detectorId === ''">
+    <div style="margin-left:20px">
+      <button *ngIf="detectorId !== ''" class="btn btn-primary" [routerLink]="['../']" preserveFragment
+        queryParamsHandling="preserve">Back to Analysis</button>
+      <h4>{{ detectorName }}</h4>
+    </div>
     <router-outlet></router-outlet>
   </div>
 </div>
-<!-- 
-<div fxLayout="row" fxLayout.xs="column">
-  <md-card fxFlex="40%;" fxFlex.xs="80%">
-    <md-card-content>
-      <h1>{{ analysisId }}</h1>
-      <detector-container [detector]="analysisId"></detector-container>
-    </md-card-content>
-  </md-card>
-
-  <md-card fxFlex="40%;" fxFlex.xs="80%">
-    <md-card-content>
-      <router-outlet></router-outlet>
-    </md-card-content>
-  </md-card>
-</div> -->

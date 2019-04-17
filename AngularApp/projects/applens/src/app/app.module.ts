@@ -17,6 +17,7 @@ import { AdalService, AdalGuard, AdalInterceptor } from 'adal-angular4';
 import { CustomUrlSerializerService } from './shared/services/custom-url-serializer.service';
 import { DiagnosticDataModule } from 'diagnostic-data';
 import { UnhandledExceptionHandlerService } from 'diagnostic-data';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @Injectable()
 export class ValidResourceResolver implements Resolve<void>{
@@ -99,6 +100,7 @@ export const Routes = RouterModule.forRoot([
     HttpClientModule,
     DiagnosticDataModule.forRoot(),
     Routes,
+    MatStepperModule,
     SharedModule.forRoot()
   ],
   providers: [
