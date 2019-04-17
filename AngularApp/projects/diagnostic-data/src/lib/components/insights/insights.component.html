@@ -8,7 +8,7 @@
     [class.info-insight-panel]="insight.status === InsightStatus.Info">
       <div class="panel-heading">
         <h5 class="panel-title" [class.clickable-header]="hasContent(insight)" (click)="toggleInsightStatus(insight)">
-          <span *ngIf="hasContent(insight)" class="fa expand-icon insight-expand-icon" [class.fa-angle-right]="!insight.isExpanded" [class.fa-angle-down]="insight.isExpanded"></span>
+          <span *ngIf="hasContent(insight)" class="fa insight-expand-icon" [class.fa-angle-right]="!insight.isExpanded" [class.fa-angle-down]="insight.isExpanded"></span>
           <span class="fa status-icon" [class.fa-exclamation-circle]="insight.status === InsightStatus.Critical"
             [class.fa-exclamation-triangle]="insight.status === InsightStatus.Warning" [class.fa-check-circle]="insight.status === InsightStatus.Success"
             [class.fa-info-circle]="insight.status === InsightStatus.Info"></span>
