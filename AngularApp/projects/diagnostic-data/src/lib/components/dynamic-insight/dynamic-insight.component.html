@@ -1,16 +1,23 @@
-<div class="panel panel-default insight-panel"  [class.critical-insight-panel]="insight.status === InsightStatus.Critical"
-[class.warning-insight-panel]="insight.status === InsightStatus.Warning" [class.success-insight-panel]="insight.status === InsightStatus.Success"
-[class.info-insight-panel]="insight.status === InsightStatus.Info">
+<div class="panel panel-default insight-panel"
+  [class.critical-insight-panel]="insight.status === InsightStatus.Critical"
+  [class.warning-insight-panel]="insight.status === InsightStatus.Warning"
+  [class.success-insight-panel]="insight.status === InsightStatus.Success"
+  [class.info-insight-panel]="insight.status === InsightStatus.Info">
   <div class="panel-heading">
-    <h5 class="panel-title" [class.clickable-header]="insight.innerDiagnosticData" (click)="insight.expanded = !insight.expanded">
-      <span class="fa status-icon" [class.fa-exclamation-circle]="insight.status === InsightStatus.Critical" [class.fa-exclamation-triangle]="insight.status === InsightStatus.Warning"
-        [class.fa-check-circle]="insight.status === InsightStatus.Success" [class.fa-info-circle]="insight.status === InsightStatus.Info"></span>
+    <h5 class="panel-title" [class.clickable-header]="insight.innerDiagnosticData"
+      (click)="insight.expanded = !insight.expanded">
+      <span class="fa status-icon" [class.fa-exclamation-circle]="insight.status === InsightStatus.Critical"
+        [class.fa-exclamation-triangle]="insight.status === InsightStatus.Warning"
+        [class.fa-check-circle]="insight.status === InsightStatus.Success"
+        [class.fa-info-circle]="insight.status === InsightStatus.Info"></span>
       {{insight.title}}
-      <span class="fa insight-expand-icon" [class.fa-angle-right]="insight.innerDiagnosticData && !insight.expanded" [class.fa-angle-down]="insight.innerDiagnosticData && insight.expanded"></span>
+      <span class="fa insight-expand-icon" [class.fa-angle-right]="insight.innerDiagnosticData && !insight.expanded"
+        [class.fa-angle-down]="insight.innerDiagnosticData && insight.expanded"></span>
     </h5>
   </div>
   <div class="panel-body" *ngIf="insight.expanded">
     <div *ngIf="insight.description" [innerHtml]="insight.description"></div>
-    <dynamic-data [diagnosticData]="insight.innerDiagnosticData" [startTime]="startTime" [endTime]="endTime"></dynamic-data>
+    <dynamic-data [diagnosticData]="insight.innerDiagnosticData" [startTime]="startTime" [endTime]="endTime">
+    </dynamic-data>
   </div>
 </div>
