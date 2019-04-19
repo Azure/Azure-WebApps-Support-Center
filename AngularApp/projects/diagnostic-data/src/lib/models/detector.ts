@@ -88,7 +88,9 @@ export enum RenderingType {
     Cards,
     Solution,
     Guage,
-    Form
+    Form,
+    ChangeSets,   
+    ChangeAnalysisOnboarding
 }
 
 export enum TimeSeriesType {

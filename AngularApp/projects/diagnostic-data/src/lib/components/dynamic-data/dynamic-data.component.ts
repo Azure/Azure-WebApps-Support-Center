@@ -22,6 +22,8 @@ import {
 } from '../time-series-instance-graph/time-series-instance-graph.component';
 import { FormComponent } from '../form/form.component';
 import { CompilationProperties}  from '../../models/compilation-properties';
+import { ChangeAnalysisOnboardingComponent } from '../changeanalysis-onboarding/changeanalysis-onboarding.component';
+import { ChangesetsViewComponent } from '../changesets-view/changesets-view.component';
 @Component({
   selector: 'dynamic-data',
   templateUrl: './dynamic-data.component.html',
@@ -29,7 +31,8 @@ import { CompilationProperties}  from '../../models/compilation-properties';
   entryComponents: [
     TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent,
     InsightsComponent, TimeSeriesInstanceGraphComponent, DynamicInsightComponent, MarkdownComponent,
-    DetectorListComponent, DropdownComponent, CardSelectionComponent, SolutionComponent, GuageControlComponent, FormComponent
+    DetectorListComponent, DropdownComponent, CardSelectionComponent, SolutionComponent, GuageControlComponent, FormComponent,
+    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent
   ]
 })
 export class DynamicDataComponent implements OnInit {
@@ -102,6 +105,10 @@ export class DynamicDataComponent implements OnInit {
         return GuageControlComponent;
       case RenderingType.Form:
         return FormComponent;
+      case RenderingType.ChangeSets:
+        return ChangesetsViewComponent;  
+      case RenderingType.ChangeAnalysisOnboarding:
+        return ChangeAnalysisOnboardingComponent;  
       default:
         return null;
     }

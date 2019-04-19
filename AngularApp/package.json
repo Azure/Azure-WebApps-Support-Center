@@ -58,11 +58,12 @@
     "rxjs": "6.2.2",
     "rxjs-compat": "6.2.2",
     "ua-parser-js": "^0.7.19",
+    "vis": "^4.21.0",
     "web-animations-js": "^2.3.1",
     "zone.js": "^0.8.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "0.8.0",
+    "@angular-devkit/build-angular": "^0.8.0",
     "@angular-devkit/build-ng-packagr": "0.8.0",
     "@angular-devkit/build-optimizer": "0.8.0",
     "@angular/cli": "^6.1.5",

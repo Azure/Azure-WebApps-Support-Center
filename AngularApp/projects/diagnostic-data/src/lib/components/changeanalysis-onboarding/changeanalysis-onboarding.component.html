@@ -1,0 +1,26 @@
+<data-container *ngIf="!isPublic; else publicView">
+    <div class="insight-container">
+        <div class="panel panel-default insight-panel">
+          <div class="panel-heading">   
+           
+          <h5 class="panel-title"> <span class="fa status-icon fa-exclamation-triangle"></span>{{onboardingText}}</h5>
+          </div>
+        </div>
+      </div> 
+</data-container>
+
+<ng-template #publicView>
+    <div class="insight-container">
+        <div class="panel panel-default insight-panel">
+          <div class="panel-heading">   
+           
+          <h5 class="panel-title"> <span class="fa status-icon gift fa-gift"></span> {{onboardingText}}</h5>
+            <div class="pull-right">
+              <h5 class="panel-title enable-now" (click)="navigateToSettings()"> <a>Enable now! </a></h5>
+            </div>
+        
+        </div>
+      </div>
+      </div>
+</ng-template>
+

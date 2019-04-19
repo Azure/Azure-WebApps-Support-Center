@@ -1,0 +1,24 @@
+<div class="insight-container">
+    <div class="panel panel-default insight-panel">
+      <div class="panel-heading">         
+        <h5 class="panel-title"> <span class="fa status-icon fa-info-circle"></span>{{changeSetText}}</h5>
+      </div>
+      <div class="panel-body">
+        <div class="row scan-container">
+          <div class="scan-row">           
+           The change were last scanned at {{scanDate}}
+           <div class="pull-right" *ngIf ="isPublic">
+             <a>Go to Change Analysis Settings</a>
+           </div>
+          </div>
+          <div class="scan-row"  *ngIf ="isPublic">
+            Click the below button to get the latest changes
+          </div>
+          <div class="scan-row"  *ngIf ="isPublic">
+            <button class="btn btn-primary">Scan changes now</button>
+          </div>
+        </div>
+        <div id="timeline"></div>
+      </div>
+    </div>
+  </div>

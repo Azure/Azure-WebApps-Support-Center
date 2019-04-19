@@ -68,6 +68,9 @@ import { VerticalDisplayListItemComponent } from './components/vertical-display-
 import { SolutionTypeTagComponent } from './components/solution-type-tag/solution-type-tag.component';
 import { SolutionDisplayComponent } from './components/solution-display/solution-display.component';
 import { SolutionDisplayItemComponent } from './components/solution-display/solution-display-item/solution-display-item.component';
+import { ChangeAnalysisOnboardingComponent } from './components/changeanalysis-onboarding/changeanalysis-onboarding.component';
+import { ChangesetsViewComponent } from './components/changesets-view/changesets-view.component';
+import { ChangesViewComponent } from './components/changes-view/changes-view.component';
 
 
 @NgModule({
@@ -91,13 +94,19 @@ import { SolutionDisplayItemComponent } from './components/solution-display/solu
     CommAlertComponent, FeedbackComponent, CopyInsightDetailsComponent, MarkdownEditorComponent, CardSelectionComponent,
     GuageGraphicComponent, GuageControlComponent, SolutionComponent, SolutionsComponent, FormComponent,
     VerticalDisplayListComponent, VerticalDisplayListItemComponent, SolutionTypeTagComponent, SolutionDisplayComponent,
-    SolutionDisplayItemComponent
+    SolutionDisplayItemComponent,
+    ChangeAnalysisOnboardingComponent,
+    ChangesetsViewComponent,
+    ChangesViewComponent
   ],
   exports: [
     FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent,
     DataSummaryComponent, LoaderViewComponent, StatusIconComponent, DetectorControlComponent,
     DetectorContainerComponent, InternalPipe, CommAlertComponent, GuageControlComponent, SolutionComponent,
-    FormComponent, VerticalDisplayListComponent, VerticalDisplayListItemComponent, SolutionTypeTagComponent
+    FormComponent, VerticalDisplayListComponent, VerticalDisplayListItemComponent, SolutionTypeTagComponent,
+    ChangeAnalysisOnboardingComponent,
+    ChangesetsViewComponent,
+    ChangesViewComponent
   ],
 })
 export class DiagnosticDataModule {
