@@ -19,6 +19,11 @@
           </div>
         </div>
         <div id="timeline"></div>
+        <input type="hidden" id="changeSetId" (change)="setChangeSetId()">
+        <div style="margin:10px">
+            <changes-view *ngIf="selectedChangeSetId != '' || selectedChangeSetId != undefined" [changeSetId]="selectedChangeSetId"></changes-view> 
+        </div>
+      
       </div>
     </div>
   </div>
