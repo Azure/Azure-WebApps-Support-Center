@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ResourceService } from '../../../shared/services/resource.service';
+import { CollapsibleMenuItem } from '../../../collapsible-menu/components/collapsible-menu-item/collapsible-menu-item.component';
+import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from '@angular/router';
 import { DiagnosticService } from 'diagnostic-data';
 import { DetectorMetaData, SupportTopic } from 'diagnostic-data';
 
@@ -10,6 +12,8 @@ import { DetectorMetaData, SupportTopic } from 'diagnostic-data';
 })
 export class ResourceHomeComponent implements OnInit {
 
+  currentRoutePath: string[];
+  categories: CollapsibleMenuItem[] = [];
   resource: any;
   keys: string[];
 
@@ -17,7 +21,7 @@ export class ResourceHomeComponent implements OnInit {
 
   supportTopicIdMapping: any[] = [];
 
-  constructor(private _resourceService: ResourceService,private _diagnosticService:  DiagnosticService) { }
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _resourceService: ResourceService,private _diagnosticService:  DiagnosticService) { }
 
   ngOnInit() {
     this._resourceService.getCurrentResource().subscribe(resource => {
@@ -35,10 +39,49 @@ export class ResourceHomeComponent implements OnInit {
           this.supportTopicIdMapping.push({ supportTopic : supportTopic, detectorName: detector.name });
         });
       });
-    });
-  }
 
-  getSupportTopicIdFormatted(supportTopicList: SupportTopic[]) {
-    return supportTopicList.map(supportTopic => `${supportTopic.pesId} - ${supportTopic.id}`).join('/r/n');
-  }
+      
+      if (detectors) {
+        detectors.forEach(element => {
+          let onClick = () => {
+            this.navigateTo(`detectors/${element.id}`);
+          };
+
+          let isSelected = () => {
+            return this.currentRoutePath && this.currentRoutePath.join('/') === `detectors/${element.id}`;
+          };
+
+          let category = element.category ? element.category : "Uncategorized";
+          let menuItem = new CollapsibleMenuItem(element.name, onClick, isSelected);
+
+          let categoryMenuItem = this.categories.find((cat: CollapsibleMenuItem) => cat.label === category);
+          if (!categoryMenuItem) {
+            categoryMenuItem = new CollapsibleMenuItem(category, null, null, null, true);
+            this.categories.push(categoryMenuItem);
+          }
+
+          categoryMenuItem.subItems.push(menuItem);
+        });
+
+        this.categories = this.categories.sort((a, b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));
+      }
+  });
+
+
+
+  // getSupportTopicIdFormatted(supportTopicList: SupportTopic[]) {
+  //   return supportTopicList.map(supportTopic => `${supportTopic.pesId} - ${supportTopic.id}`).join('/r/n');
+  // }
+}
+
+  
+navigateTo(path: string) {
+  let navigationExtras: NavigationExtras = {
+    queryParamsHandling: 'preserve',
+    preserveFragment: true,
+    relativeTo: this._activatedRoute
+  };
+
+  this._router.navigate(path.split('/'), navigationExtras);
+}
 }

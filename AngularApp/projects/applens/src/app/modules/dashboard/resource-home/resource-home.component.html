@@ -3,6 +3,39 @@
     <comm-alert></comm-alert>
   </div>
 
+  <div class="container">
+    <!-- <div class="flexbox"> -->
+
+      <!-- 
+        <collapsible-menu theme="dark">
+          <search-box [(searchValue)]="searchValue"></search-box>
+          <menu-scroll>
+            <section-divider label="Detectors">
+              <collapsible-menu-item *ngFor="let category of categories" [searchValue]="searchValue" [menuItem]="category"></collapsible-menu-item>
+            </section-divider>
+            <section-divider label="Gists">
+              <collapsible-menu-item *ngFor="let gist of gists" [searchValue]="searchValue" [menuItem]="gist"></collapsible-menu-item>
+            </section-divider>
+          </menu-scroll>
+        </collapsible-menu> -->
+
+        <div class="flexed card" *ngFor="let category of categories">
+            <div class="top"><img class="icon"
+                src="http://a2.mzstatic.com/us/r30/Purple6/v4/35/da/1a/35da1a3b-619b-8cf4-beb4-cb1346dfc91f/mzl.yooqqlia.png" />
+              <div class="management actions">
+                <h2>Show App Key</h2><input type="text" placeholder="Password" /><input type="button" value="show" /><input
+                  class="special block" type="button" value="+ Add platform" />
+              </div>
+            </div>
+            <div class="bottom">
+              <div class="name info">{{category.label}}</div>
+              <div class="actions"><input type="text" placeholder="Rename" value="Tinder" /><input type="button"
+                  value="rename" /></div>
+            </div>
+          </div>
+  </div>
+  <!-- 
+
   <div class="resource-info content-card">
     <h4>Resource Information</h4>
     <div *ngFor="let key of keys">
@@ -39,4 +72,4 @@
       </tbody>
     </table>
   </div>
-</div>
+</div> -->
