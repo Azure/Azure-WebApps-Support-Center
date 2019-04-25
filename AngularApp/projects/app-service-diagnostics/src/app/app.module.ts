@@ -28,7 +28,7 @@ import { LocalBackendService } from './shared/services/local-backend.service';
 import { PortalKustoTelemetryService } from './shared/services/portal-kusto-telemetry.service';
 import { SharedModule } from './shared/shared.module';
 import { StartupModule } from './startup/startup.module';
-
+import {CustomMaterialModule} from './material-module';
 @NgModule({
   imports: [
     BrowserModule,
@@ -50,7 +50,8 @@ import { StartupModule } from './startup/startup.module';
         path: 'resource',
         loadChildren: './resources/resources.module#ResourcesModule'
       }
-    ])
+    ]),
+    CustomMaterialModule
   ],
   declarations: [
     AppComponent

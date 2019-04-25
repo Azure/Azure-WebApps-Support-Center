@@ -1,11 +1,11 @@
 <div class="insight-container">
     <div class="panel panel-default insight-panel">
-      <div class="panel-heading">         
+      <div class="panel-heading">
         <h5 class="panel-title"> <span class="fa status-icon fa-info-circle"></span>{{changeSetText}}</h5>
       </div>
       <div class="panel-body">
         <div class="row scan-container">
-          <div class="scan-row">           
+          <div class="scan-row">
            The change were last scanned at {{scanDate}}
            <div class="pull-right" *ngIf ="isPublic">
              <a>Go to Change Analysis Settings</a>
@@ -18,12 +18,16 @@
             <button class="btn btn-primary">Scan changes now</button>
           </div>
         </div>
+
         <div id="timeline"></div>
-        <input type="hidden" id="changeSetId" (change)="setChangeSetId()">
-        <div style="margin:10px">
-            <changes-view *ngIf="selectedChangeSetId != '' || selectedChangeSetId != undefined" [changeSetId]="selectedChangeSetId"></changes-view> 
+        <input type="hidden" id="changeSetId" (change)="refreshChangesTable()">
+        <loader-view *ngIf="loadingChangesTable" message="Loading changes..."></loader-view>
+        <div class="text-danger" *ngIf="changesTableError != ''">
+          {{changesTableError}}
         </div>
-      
+        <div style="margin:10px" *ngIf="!loadingChangesTable && changesTableError == ''">
+            <changes-view  [changesDataSet]="changesDataSet"></changes-view>
+        </div>
       </div>
     </div>
   </div>

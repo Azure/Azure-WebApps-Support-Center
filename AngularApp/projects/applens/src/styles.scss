@@ -1,7 +1,7 @@
 @import "styles/common/variables";
 @import "styles/controls/buttons";
 @import "~@ng-select/ng-select/themes/default.theme.css";
-
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 .ngx-datatable.bootstrap {
   border: 1px solid #dddddd;
 }

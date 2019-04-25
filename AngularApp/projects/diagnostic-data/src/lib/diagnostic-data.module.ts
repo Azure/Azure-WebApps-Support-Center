@@ -71,7 +71,7 @@ import { SolutionDisplayItemComponent } from './components/solution-display/solu
 import { ChangeAnalysisOnboardingComponent } from './components/changeanalysis-onboarding/changeanalysis-onboarding.component';
 import { ChangesetsViewComponent } from './components/changesets-view/changesets-view.component';
 import { ChangesViewComponent } from './components/changes-view/changes-view.component';
-
+import {CustomMaterialModule} from './material-module';
 
 @NgModule({
   imports: [
@@ -80,7 +80,8 @@ import { ChangesViewComponent } from './components/changes-view/changes-view.com
     NgxDatatableModule,
     MarkdownModule.forRoot(),
     FormsModule,
-    MonacoEditorModule.forRoot()
+    MonacoEditorModule.forRoot(),
+    CustomMaterialModule
   ],
   providers: [
     ClipboardService

@@ -1,16 +1,125 @@
 import { Component, OnInit, Input } from '@angular/core';
-
-@Component({
-  selector: 'changes-view',
-  templateUrl: './changes-view.component.html',
-  styleUrls: ['./changes-view.component.scss']
-})
+import { DiagnosticService } from '../../services/diagnostic.service';
+import { DetectorControlService } from '../../services/detector-control.service';
+import { DetectorResponse, DiagnosticData } from '../../models/detector';
+import { MatTableDataSource} from '@angular/material';
+import {Changes} from '../../models/changesets';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import { DiffEditorModel } from 'ngx-monaco-editor';
+  @Component({
+    selector: 'changes-view',
+    templateUrl: './changes-view.component.html',
+    styleUrls: ['./changes-view.component.scss'],
+    animations: [
+        trigger('detailExpand', [
+          state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
+          state('expanded', style({height: '*'})),
+          transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+      ],
+  })
 export class ChangesViewComponent implements OnInit {
 
-  @Input() changeSetId: string;
-  constructor() { }
+    @Input() changesDataSet: DiagnosticData[];
+    changesResponse: DetectorResponse;
+    dataSource: MatTableDataSource<Changes>;
+    displayedColumns = ['level', 'time', 'displayName', 'description', 'initiatedBy'];
+    expandedElement: Changes | null;
+    tableItems: Changes[];
+    options = {
+        theme: 'vs',
+        automaticLayout: true,
+        scrollBeyondLastLine: false,
+        minimap: {
+          enabled: false
+        },
+        folding: true
+      };
+    changeLevelIcon = [{
+        "imgSrc": "../../../assets/img/normalicon.png",
+        "displayValue": "Normal"
+    }, {
+        "imgSrc": "../../../assets/img/importanticon.png",
+        "displayValue": "Important"
+    }, {
+        "imgSrc": "../../../assets/img/noiseicon.png",
+        "displayValue": "Noise"
+    }];
 
-  ngOnInit() {
-  }
+    constructor(private diagnosticService: DiagnosticService, private detectorControlService: DetectorControlService) { }
+
+    ngOnInit() {
+        let changesTable = this.changesDataSet[0].table;
+        if(changesTable) {
+            this.tableItems = [];
+            this.parseChangesData(changesTable.rows);
+        }
+    }
+
+    private parseChangesData(rows: any[][]) {
+        if(rows.length > 0) {
+            rows.forEach(row => {
+                this.tableItems.push({
+                    "time": row[0],
+                    "level": row[2],
+                    "levelIcon": this.getIconForLevel(row[2]),
+                    "displayName": row[3],
+                    "description": row[4] == null || row[4] == "" ? "N/A" : row[4],
+                    'oldValue': row[5],
+                    'newValue': row[6],
+                    'initiatedBy': row[7] == null || row[7] == "" ? "N/A" : row[7],
+                    'originalModel': this.prepareValuesForDiffView(row[5]),
+                    'modifiedModel': this.prepareValuesForDiffView(row[6])
+                });
+            });
+            this.dataSource = new MatTableDataSource(this.tableItems);
+        }
+    }
+
+    // Prepare the data for diff view.
+    private prepareValuesForDiffView(diffvalue: string): DiffEditorModel {
+        try {
+            let jsonObject = JSON.parse(diffvalue);
+            if(jsonObject.hasOwnProperty('content') && jsonObject['content'] != null) {
+                return {
+                    "code": jsonObject['content'],
+                    "language": 'text/plain'
+                };
+        } else {
+            diffvalue = diffvalue.replace("mtime", "Modified Time");
+            diffvalue = diffvalue.replace("crtime", "Created Time");
+           return {
+                // Needed for JSON Pretty
+                "code": JSON.stringify(JSON.parse(diffvalue), null, 2),
+                "language": 'json'
+                };
+        }
+        // Exception is thrown when we try to parse string which is not a json, so just return text/plain
+        } catch(ex) {
+            return {
+                "code": diffvalue,
+                "language": 'text/plain'
+            }
+        }
+    }
+
+    private getIconForLevel(level: string): string {
+        switch(level){
+            case "Normal":
+            return this.changeLevelIcon[0].imgSrc;
+            case "Important":
+            return this.changeLevelIcon[1].imgSrc;
+            case "Noisy":
+            return this.changeLevelIcon[2].imgSrc;
+            default:
+            return this.changeLevelIcon[0].imgSrc;
+        }
+
+    }
+
+    applyFilter(filterValue: string) {
+        this.dataSource.filter = filterValue.trim().toLowerCase();
+    }
 
 }
+
