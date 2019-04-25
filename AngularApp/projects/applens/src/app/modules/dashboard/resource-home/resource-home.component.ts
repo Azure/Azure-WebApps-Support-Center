@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, ElementRef, HostListener, EventEmitter } from '@angular/core';
 import { ResourceService } from '../../../shared/services/resource.service';
-import { CollapsibleMenuItem } from '../../../collapsible-menu/components/collapsible-menu-item/collapsible-menu-item.component';
 import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from '@angular/router';
 import { DiagnosticService } from 'diagnostic-data';
 import { DetectorMetaData, SupportTopic } from 'diagnostic-data';
@@ -11,17 +10,21 @@ import { DetectorMetaData, SupportTopic } from 'diagnostic-data';
   styleUrls: ['./resource-home.component.scss']
 })
 export class ResourceHomeComponent implements OnInit {
+  @Output()
+  public clickOutsideCategory = new EventEmitter();
 
   currentRoutePath: string[];
-  categories: CollapsibleMenuItem[] = [];
+  categories: ExpandableCardItem[] = [];
   resource: any;
   keys: string[];
+  activeCategoryName: string = undefined;
+  activeRow: number = undefined;
 
   detectorsWithSupportTopics: DetectorMetaData[];
 
   supportTopicIdMapping: any[] = [];
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _resourceService: ResourceService,private _diagnosticService:  DiagnosticService) { }
+  constructor(private _elementRef : ElementRef, private _router: Router, private _activatedRoute: ActivatedRoute, private _resourceService: ResourceService,private _diagnosticService:  DiagnosticService) { }
 
   ngOnInit() {
     this._resourceService.getCurrentResource().subscribe(resource => {
@@ -52,11 +55,11 @@ export class ResourceHomeComponent implements OnInit {
           };
 
           let category = element.category ? element.category : "Uncategorized";
-          let menuItem = new CollapsibleMenuItem(element.name, onClick, isSelected);
+          let menuItem = new ExpandableCardItem(element.name, element.description, element.author, onClick, isSelected);
 
-          let categoryMenuItem = this.categories.find((cat: CollapsibleMenuItem) => cat.label === category);
+          let categoryMenuItem = this.categories.find((cat: ExpandableCardItem) => cat.label === category);
           if (!categoryMenuItem) {
-            categoryMenuItem = new CollapsibleMenuItem(category, null, null, null, true);
+            categoryMenuItem = new ExpandableCardItem(category, null, null, null, null, null, true);
             this.categories.push(categoryMenuItem);
           }
 
@@ -74,7 +77,34 @@ export class ResourceHomeComponent implements OnInit {
   // }
 }
 
+setActiveCategory (name: string, index: number) {
+  this.activeCategoryName = name;
+  this.activeRow = Math.floor(index/4);
+  console.log(`index: ${index}, active row: ${this.activeRow}`);
+}
+
+inActiveRow (index: number) {
+  return this.activeRow === Math.floor(index/4);
+}
   
+@HostListener('document:click', ['$event.target'])
+public onClick(targetElement) {
+
+  console.log("This is the click target");
+  console.log(targetElement);
+   // const clickedInside = this._elementRef.nativeElement.contains(targetElement);
+    
+    const clickedOutside = targetElement.className === "category-container" || targetElement.className === "outer-container";
+    console.log(targetElement.className);
+    if (clickedOutside)
+    {
+      this.activeCategoryName = undefined;
+    }
+    // if (!clickedInside) {
+    //     this.clickOutsideCategory.emit(null);
+    // }
+}
+
 navigateTo(path: string) {
   let navigationExtras: NavigationExtras = {
     queryParamsHandling: 'preserve',
@@ -84,4 +114,26 @@ navigateTo(path: string) {
 
   this._router.navigate(path.split('/'), navigationExtras);
 }
+}
+
+export class ExpandableCardItem {
+  label: string;
+  description: string;
+  author: string;
+  onClick: Function;
+  expanded: boolean = false;
+  subItems: ExpandableCardItem[];
+  isSelected: Function;
+  icon: string;
+
+  constructor(label: string, description: string, author: string, onClick: Function, isSelected: Function, icon: string = null, expanded: boolean = false, subItems: ExpandableCardItem[] = []) {
+    this.label = label;
+    this.description = description;
+    this.author = author;
+    this.onClick = onClick;
+    this.expanded = expanded;
+    this.subItems = subItems;
+    this.isSelected = isSelected;
+    this.icon = icon;
+  }
 }

@@ -3,7 +3,7 @@
     <comm-alert></comm-alert>
   </div>
 
-  <div class="container">
+  <div class="category-container">
     <!-- <div class="flexbox"> -->
 
       <!-- 
@@ -19,20 +19,44 @@
           </menu-scroll>
         </collapsible-menu> -->
 
-        <div class="flexed card" *ngFor="let category of categories">
-            <div class="top"><img class="icon"
-                src="http://a2.mzstatic.com/us/r30/Purple6/v4/35/da/1a/35da1a3b-619b-8cf4-beb4-cb1346dfc91f/mzl.yooqqlia.png" />
+        <div class="flexed card "  *ngFor="let category of categories;let i = index" [ngClass]="{'active':activeCategoryName === category.label, 'inactive': activeCategoryName != undefined && activeCategoryName != category.label && inActiveRow(i)}" (click)= "setActiveCategory(category.label, i)" >
+          <div class="bottom">
+            <div class="name info">
+              <img class="category-icon"
+              src="http://a2.mzstatic.com/us/r30/Purple6/v4/35/da/1a/35da1a3b-619b-8cf4-beb4-cb1346dfc91f/mzl.yooqqlia.png" />
+              <span>{{category.label}}</span></div>
+            <!-- <div class="actions"><input type="text" placeholder="Rename" value="Tinder" /><input type="button"
+                value="rename" /></div> -->
+          </div>  
+          <div *ngIf= "activeCategoryName === undefined || activeCategoryName != category.label || !inActiveRow(i) else expanded_card">
+          <div class="category-content" >
+          <ul *ngFor="let subCategory of category.subItems; let i = index">
+              <li *ngIf="i<3">{{subCategory.label}}</li>
+            </ul>
+          </div>
+          <div><span style="padding-left: 40px; font-weight: bold;">Total Detectors: {{category.subItems.length}}</span></div>
+        </div>
+
+        <ng-template #expanded_card>
+          <div class="detector-card-container">
+            <div class="detector-card col-md-6" *ngFor="let subCategory of category.subItems;let k = index" >
+                <div class="name info">
+                    <img class="category-icon"
+                    src="http://a2.mzstatic.com/us/r30/Purple6/v4/35/da/1a/35da1a3b-619b-8cf4-beb4-cb1346dfc91f/mzl.yooqqlia.png" />      
+                <span class="detector-name">{{subCategory.label}}</span></div>
+                <div class="detector-author">{{subCategory.author}}</div>
+                <div class="detector-description">{{subCategory.description}}</div>
+                </div>
+              </div>
+        </ng-template>
+          <!-- <div class="top">
+    
               <div class="management actions">
                 <h2>Show App Key</h2><input type="text" placeholder="Password" /><input type="button" value="show" /><input
                   class="special block" type="button" value="+ Add platform" />
               </div>
             </div>
-            <div class="bottom">
-              <div class="name info">{{category.label}}</div>
-              <div class="actions"><input type="text" placeholder="Rename" value="Tinder" /><input type="button"
-                  value="rename" /></div>
-            </div>
-          </div>
+          </div> -->
   </div>
   <!-- 
 
