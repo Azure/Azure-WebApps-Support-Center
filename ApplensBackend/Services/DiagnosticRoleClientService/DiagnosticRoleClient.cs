@@ -1,20 +1,16 @@
-﻿using System;
+﻿using AppLensV3.Services.EmailNotificationService;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using System.Web;
-using Microsoft.Extensions.Configuration;
 using System.Security.Authentication;
-using Newtonsoft.Json;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using System.Text.RegularExpressions;
-using AppLensV3.Services.EmailNotificationService;
-using AppLensV3.Models;
+using System.Threading.Tasks;
+
 namespace AppLensV3
 {
     public class DiagnosticRoleClient : IDiagnosticClientService
@@ -80,7 +76,7 @@ namespace AppLensV3
             {
                 BaseAddress = new Uri(DiagnosticRoleEndpoint),
                 Timeout = TimeSpan.FromSeconds(5 * 60),
-                MaxResponseContentBufferSize = Int32.MaxValue
+                MaxResponseContentBufferSize = int.MaxValue
             };
 
             client.DefaultRequestHeaders.Add("x-ms-internal-client", "true");
@@ -95,7 +91,7 @@ namespace AppLensV3
             {
                 HttpResponseMessage response;
 
-                if (!this.IsLocalDevelopment)
+                if (!IsLocalDevelopment)
                 {
                     if (!HitPassThroughApi(path))
                     {
@@ -106,10 +102,12 @@ namespace AppLensV3
                         {
                             requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
                         }
+
                         if (additionalHeaders != null)
                         {
                             AddAdditionalHeaders(additionalHeaders, ref requestMessage);
                         }
+
                         response = await _client.SendAsync(requestMessage);
                     }
                     else
@@ -119,24 +117,31 @@ namespace AppLensV3
                         requestMessage.Headers.Add("x-ms-internal-view", internalView.ToString());
                         requestMessage.Headers.Add("x-ms-verb", method);
                         requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
+
                         if (additionalHeaders != null)
                         {
                             AddAdditionalHeaders(additionalHeaders, ref requestMessage);
                         }
+
                         response = await _client.SendAsync(requestMessage);
                     }
                 }
                 else
                 {
-                    path = path.Substring(path.IndexOf("/"));
-                    
+                    path = path.TrimStart('/');
+                    if (new Regex("^v[0-9]+/").Matches(path).Any())
+                    {
+                        path = path.Substring(path.IndexOf('/'));
+                    }
+
                     var requestMessage = new HttpRequestMessage(method.Trim().ToUpper() == "POST" ? HttpMethod.Post : HttpMethod.Get, path)
                     {
                         Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json")
                     };
+
                     if (additionalHeaders != null)
                     {
-                       AddAdditionalHeaders(additionalHeaders, ref requestMessage);
+                        AddAdditionalHeaders(additionalHeaders, ref requestMessage);
                     }
 
                     requestMessage.Headers.Add("x-ms-internal-view", internalView.ToString());
@@ -154,8 +159,8 @@ namespace AppLensV3
 
         private bool HitPassThroughApi(string path)
         {
-            return !this._nonPassThroughResourceProviderList.Exists(p => path.ToLower().Contains(p))
-                || (new Regex("/detectors/[^/]*/statistics").IsMatch(path.ToLower()))
+            return !_nonPassThroughResourceProviderList.Exists(p => path.ToLower().Contains(p))
+                || new Regex("/detectors/[^/]*/statistics").IsMatch(path.ToLower())
                 || path.ToLower().Contains("/diagnostics/publish");
         }
 
@@ -198,10 +203,10 @@ namespace AppLensV3
 
         private void AddAdditionalHeaders(HttpRequestHeaders additionalHeaders, ref HttpRequestMessage request)
         {
-            foreach(var header in additionalHeaders)
+            foreach (var header in additionalHeaders)
             {
-               request.Headers.Add(header.Key, header.Value);
+                request.Headers.Add(header.Key, header.Value);
             }
         }
-   }
+    }
 }

@@ -35,14 +35,13 @@ export class DashboardComponent implements OnDestroy {
         'startTime': this._detectorControlService.startTime.format('YYYY-MM-DDTHH:mm'),
         'endTime': this._detectorControlService.endTime.format('YYYY-MM-DDTHH:mm')
       }
-      // If browser URL contains detectorQueryParams, adding it to route 
+      // If browser URL contains detectorQueryParams, adding it to route
       if(!this._activatedRoute.queryParams['detectorQueryParams']) {
         routeParams['detectorQueryParams'] = this._activatedRoute.snapshot.queryParams['detectorQueryParams'];
       }
       this._router.navigate([], { queryParams: routeParams, relativeTo: this._activatedRoute });
     }
   }
-
 
   reloadHome() {
     window.location.href = '/';

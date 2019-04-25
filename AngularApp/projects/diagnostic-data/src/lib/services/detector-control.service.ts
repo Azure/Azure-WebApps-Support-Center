@@ -99,11 +99,11 @@ export class DetectorControlService {
         return returnValue;
       }
 
-      if (this.isInternalView) {
-        this.allowedDurationInDays = 1;
+      if (this.internalClient) {
+        this.allowedDurationInDays = 3;
       }
       else {
-        this.allowedDurationInDays = 3;
+        this.allowedDurationInDays = 1;
       }
       if (start && end) {
         let diff: momentNs.Duration = moment.duration(end.diff(start));
@@ -216,19 +216,19 @@ export class DetectorControlService {
     this._duration = duration;
     this._startTime = moment.utc().subtract(duration.duration);
     this._endTime = this._startTime.clone().add(duration.duration);
-    this._refreshData();
+    this.setCustomStartEnd(this._startTime.toString(), this.endTime.toString());
   }
 
   public moveForwardDuration(): void {
     this._startTime.add(this._duration.duration);
     this._endTime.add(this._duration.duration);
-    this._refreshData();
+    this.setCustomStartEnd(this._startTime.toString(), this.endTime.toString());
   }
 
   public moveBackwardDuration(): void {
     this._startTime.subtract(this._duration.duration);
     this._endTime.subtract(this._duration.duration);
-    this._refreshData();
+    this.setCustomStartEnd(this._startTime.toString(), this.endTime.toString());
   }
 
   public refresh() {
