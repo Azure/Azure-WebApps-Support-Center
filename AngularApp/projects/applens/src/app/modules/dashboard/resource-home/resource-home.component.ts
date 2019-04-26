@@ -3,6 +3,8 @@ import { ResourceService } from '../../../shared/services/resource.service';
 import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from '@angular/router';
 import { DiagnosticService } from 'diagnostic-data';
 import { DetectorMetaData, SupportTopic } from 'diagnostic-data';
+import { map, mergeMap } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'resource-home',
@@ -21,6 +23,7 @@ export class ResourceHomeComponent implements OnInit {
   activeRow: number = undefined;
 
   detectorsWithSupportTopics: DetectorMetaData[];
+  detectorsPublicOrWithSupportTopics: DetectorMetaData[] = [];
 
   supportTopicIdMapping: any[] = [];
 
@@ -34,19 +37,95 @@ export class ResourceHomeComponent implements OnInit {
       }
     });
 
-    this._diagnosticService.getDetectors().subscribe(detectors => {
-      this.detectorsWithSupportTopics = detectors.filter(detector => detector.supportTopicList && detector.supportTopicList.length > 0);
+    const detectorsWithSupportTopics = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
+        this.detectorsWithSupportTopics = detectors.filter(detector => detector.supportTopicList && detector.supportTopicList.length > 0);
 
-      this.detectorsWithSupportTopics.forEach(detector => {
-        detector.supportTopicList.forEach(supportTopic => {
-          this.supportTopicIdMapping.push({ supportTopic : supportTopic, detectorName: detector.name });
+        this.detectorsWithSupportTopics.forEach(detector => {
+          detector.supportTopicList.forEach(supportTopic => {
+            this.supportTopicIdMapping.push({ supportTopic : supportTopic, detectorName: detector.name });
+          });
+        });
+
+        return this.detectorsWithSupportTopics;
+    }));
+
+    // this._diagnosticService.getDetectors().subscribe(detectors => {
+    //   this.detectorsWithSupportTopics = detectors.filter(detector => detector.supportTopicList && detector.supportTopicList.length > 0);
+
+    //   this.detectorsWithSupportTopics.forEach(detector => {
+    //     detector.supportTopicList.forEach(supportTopic => {
+    //       this.supportTopicIdMapping.push({ supportTopic : supportTopic, detectorName: detector.name });
+    //     });
+
+
+    //   });
+
+      const publicDetectors = this._diagnosticService.getDetectors(false);
+
+      forkJoin(detectorsWithSupportTopics, publicDetectors).subscribe((detectorLists) => {
+          console.log("ForkJoin result");
+          console.log(detectorLists);
+        // if (!this.detectorsPublicOrWithSupportTopics.find((existingDetector) => existingDetector.id === detector.id))
+        // {
+        //     console.log("Find a internal detector with support topic");
+        //     this.detectorsPublicOrWithSupportTopics.push(detector);
+        // }
+        // else
+        // {
+        //     console.log("didn't find internal detector with support topic");
+        //     console.log(`internal: ${detector.id}, existing: `);
+        //     console.log(this.detectorsPublicOrWithSupportTopics);
+        // }
+        detectorLists.forEach((detectorList: DetectorMetaData[]) => {
+            detectorList.forEach(detector =>{
+                if (!this.detectorsPublicOrWithSupportTopics.find((existingDetector) => existingDetector.id === detector.id))
+                {
+                    console.log("Find a detector with support topic");
+                    this.detectorsPublicOrWithSupportTopics.push(detector);
+                }
+            });
+
+            this.detectorsPublicOrWithSupportTopics.forEach(element => {
+            let onClick = () => {
+              this.navigateTo(`detectors/${element.id}`);
+            };
+
+            let isSelected = () => {
+              return this.currentRoutePath && this.currentRoutePath.join('/') === `detectors/${element.id}`;
+            };
+
+            let category = element.category ? element.category : "Uncategorized";
+            let menuItem = new ExpandableCardItem(element.name, element.description, element.author, onClick, isSelected);
+
+            let categoryMenuItem = this.categories.find((cat: ExpandableCardItem) => cat.label === category);
+            if (!categoryMenuItem) {
+              categoryMenuItem = new ExpandableCardItem(category, null, null, null, null, null, true);
+              this.categories.push(categoryMenuItem);
+            }
+
+            categoryMenuItem.subItems.push(menuItem);
+          });
+
+          this.categories = this.categories.sort((a, b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));
         });
       });
 
-      
-      if (detectors) {
-        detectors.forEach(element => {
+    //   .subscribe(detectors => {
+    //     detectors.forEach(detector => {
+    //         if (!this.detectorsPublicOrWithSupportTopics.find((existingDetector) => existingDetector.id === detector.id))
+    //         {
+    //             console.log("Find a public detector");
+    //             this.detectorsPublicOrWithSupportTopics.push(detector);
+    //         }
+    //     });
+    //   });
+
+      if (this.detectorsPublicOrWithSupportTopics) {
+          console.log("Detectors List that will show");
+          console.log(this.detectorsPublicOrWithSupportTopics);
+        this.detectorsPublicOrWithSupportTopics.forEach(element => {
           let onClick = () => {
+              console.log("Click subcategory's navigation onclick");
             this.navigateTo(`detectors/${element.id}`);
           };
 
@@ -68,34 +147,36 @@ export class ResourceHomeComponent implements OnInit {
 
         this.categories = this.categories.sort((a, b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));
       }
-  });
+  };
 
 
 
   // getSupportTopicIdFormatted(supportTopicList: SupportTopic[]) {
   //   return supportTopicList.map(supportTopic => `${supportTopic.pesId} - ${supportTopic.id}`).join('/r/n');
   // }
-}
+
 
 setActiveCategory (name: string, index: number) {
   this.activeCategoryName = name;
   this.activeRow = Math.floor(index/4);
-  console.log(`index: ${index}, active row: ${this.activeRow}`);
+}
+
+clickAction(subcategory: ExpandableCardItem)
+{
+    subcategory.onClick();
+    console.log(subcategory);
+    console.log("Inner action");
 }
 
 inActiveRow (index: number) {
   return this.activeRow === Math.floor(index/4);
 }
-  
+
 @HostListener('document:click', ['$event.target'])
 public onClick(targetElement) {
-
-  console.log("This is the click target");
-  console.log(targetElement);
    // const clickedInside = this._elementRef.nativeElement.contains(targetElement);
-    
+
     const clickedOutside = targetElement.className === "category-container" || targetElement.className === "outer-container";
-    console.log(targetElement.className);
     if (clickedOutside)
     {
       this.activeCategoryName = undefined;
@@ -112,7 +193,10 @@ navigateTo(path: string) {
     relativeTo: this._activatedRoute
   };
 
-  this._router.navigate(path.split('/'), navigationExtras);
+  console.log("navigation params");
+  console.log(navigationExtras);
+  //this._router.navigate(path.split('/'), navigationExtras);
+  this._router.navigate([`../${path}`], navigationExtras);
 }
 }
 

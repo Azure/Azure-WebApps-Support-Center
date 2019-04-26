@@ -68,6 +68,12 @@ namespace AppLensV3.Controllers
                 method = Request.Headers["x-ms-method"];
             }
 
+            bool internalClient = true;
+            if (Request.Headers.ContainsKey("x-ms-internal-client"))
+            {
+                bool.TryParse(Request.Headers["x-ms-internal-client"], out internalClient);
+            }
+
             bool internalView = true;
             if (Request.Headers.ContainsKey("x-ms-internal-view"))
             {
@@ -139,7 +145,7 @@ namespace AppLensV3.Controllers
                 headers.Add("diag-assembly-name", assemblyName);
             }
 
-            var response = await DiagnosticClient.Execute(method, path, body?.ToString(), internalView, headers);
+            var response = await DiagnosticClient.Execute(method, path, body?.ToString(), internalClient, internalView, headers);
 
             if (response != null)
             {

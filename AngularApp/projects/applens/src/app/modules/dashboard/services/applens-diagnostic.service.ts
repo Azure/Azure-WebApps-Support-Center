@@ -14,8 +14,8 @@ export class ApplensDiagnosticService {
 
   getDetector(detector: string, startTime: string, endTime: string, refresh: boolean = false, internalView: boolean = true, formQueryParams?: string): Observable<DetectorResponse> {
     return this._diagnosticApi.getDetector(
-      this._resourceService.versionPrefix, 
-      this._resourceService.getCurrentResourceId(true), 
+      this._resourceService.versionPrefix,
+      this._resourceService.getCurrentResourceId(true),
       detector,
       startTime,
       endTime,
@@ -27,7 +27,7 @@ export class ApplensDiagnosticService {
 
   getSystemInvoker(detector: string, systemInvokerId: string = '', dataSource: string, timeRange: string): Observable<DetectorResponse> {
     return this._diagnosticApi.getSystemInvoker(
-      this._resourceService.getCurrentResourceId(true), 
+      this._resourceService.getCurrentResourceId(true),
       detector,
       systemInvokerId,
       dataSource,
@@ -35,11 +35,13 @@ export class ApplensDiagnosticService {
       this._resourceService.getRequestBody());
   }
 
-  getDetectors(): Observable<DetectorMetaData[]> {
+  getDetectors(internalClient: boolean = true): Observable<DetectorMetaData[]> {
+      console.log(`Inside Applens diagnostic service: ${internalClient}`);
     return this._diagnosticApi.getDetectors(
-      this._resourceService.versionPrefix, 
+      this._resourceService.versionPrefix,
       this._resourceService.getCurrentResourceId(true),
-      this._resourceService.getRequestBody());
+      this._resourceService.getRequestBody(),
+      internalClient);
   }
 
   getGists(): Observable<DetectorMetaData[]> {
@@ -75,7 +77,7 @@ export class ApplensDiagnosticService {
 
   prepareLocalDevelopment(body: any, detectorId: string = '', startTime: string = '', endTime: string = '', dataSource: string = '', timeRange: string = ''): Observable<string> {
     body.resource = this._resourceService.getRequestBody();
-    detectorId = detectorId === '' ? 'newdetector' : detectorId; 
+    detectorId = detectorId === '' ? 'newdetector' : detectorId;
     return this._diagnosticApi.getLocalDevelopmentResponse(
       detectorId.toLowerCase(),
       this._resourceService.versionPrefix,

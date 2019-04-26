@@ -22,7 +22,7 @@ export class DiagnosticApiService {
   }
 
   public getDetector(version: string, resourceId: string, detector: string, startTime?: string, endTime?: string,
-      body?: any, refresh: boolean = false, internalView: boolean = false, additionalQueryParams? : string):
+      body?: any, refresh: boolean = false, internalView: boolean = true, additionalQueryParams? : string):
       Observable<DetectorResponse> {
     let timeParameters = this._getTimeQueryParameters(startTime, endTime);
     let path = `${version}${resourceId}/detectors/${detector}?${timeParameters}`;
@@ -31,7 +31,7 @@ export class DiagnosticApiService {
       path += additionalQueryParams;
     }
 
-    return this.invoke<DetectorResponse>(path, HttpMethod.POST, body, true, refresh, internalView);
+    return this.invoke<DetectorResponse>(path, HttpMethod.POST, body, true, refresh, true, internalView);
   }
 
   public getSystemInvoker(resourceId: string, detector: string, systemInvokerId: string = '', dataSource: string,
@@ -42,9 +42,10 @@ export class DiagnosticApiService {
     return this.invoke<DetectorResponse>(path, HttpMethod.POST, body);
   }
 
-  public getDetectors(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {
+  public getDetectors(version: string, resourceId: string, body?: any, internalClient: boolean = true): Observable<DetectorMetaData[]> {
     let path = `${version}${resourceId}/detectors`;
-    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body).pipe(retry(1), map(response => response.map(detector => detector.metadata)));
+    console.log(`Diagnostic api (Applens): ${internalClient}`);
+    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body, false, true, internalClient).pipe(retry(1), map(response => response.map(detector => detector.metadata)));
   }
 
   public getGists(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {
@@ -61,7 +62,7 @@ export class DiagnosticApiService {
       path += additionalParams.formQueryParams;
     }
 
-    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false, undefined, undefined,
+    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false, undefined, undefined, undefined,
       undefined, additionalParams);
   }
 
@@ -70,7 +71,7 @@ export class DiagnosticApiService {
     let invokerParameters = this._getSystemInvokerParameters(dataSource, timeRange);
     let path = `/${resourceId}/detectors/${detectorId}/statisticsQuery?${invokerParameters}`;
 
-    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false, undefined, undefined,
+    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false, undefined, undefined, undefined,
       undefined, additionalParams);
   }
 
@@ -89,7 +90,7 @@ export class DiagnosticApiService {
   public publishPackage(resourceId: string, emailRecipients: string, packageToPublish: Package): Observable<any> {
     let path = `${resourceId}/diagnostics/publish`;
 
-    return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true, true, emailRecipients);
+    return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true, true, true, emailRecipients);
   }
 
   public getChangelist(id: string): Observable<any> {
@@ -135,19 +136,24 @@ export class DiagnosticApiService {
   }
 
   public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true,
-      invalidateCache: boolean = false, internalView: boolean = true, emailRecipients: string="",
+      invalidateCache: boolean = false, internalClient: boolean = true, internalView: boolean = true, emailRecipients: string="",
       additionalParams?: any): Observable<T> {
+          console.log(`Inside diagnostic api service : ${internalClient}, Cache: ${useCache}, Invalidate: ${invalidateCache}`);
     let url = `${this.diagnosticApi}api/invoke`
     let request: Observable<any>;
 
     if(additionalParams && additionalParams.getFullResponse) {
+        console.log("Header 1");
+        console.log(this._getHeaders(path, method, internalClient, internalView, emailRecipients, additionalParams));
       request = this._httpClient.post<T>(url, body, {
-        headers: this._getHeaders(path, method, internalView, emailRecipients, additionalParams),
+        headers: this._getHeaders(path, method, internalClient, internalView, emailRecipients, additionalParams),
         observe: 'response'
       });
     } else {
+        console.log("Header 2");
+        console.log(this._getHeaders(path, method, internalClient, internalView, emailRecipients, additionalParams));
       request = this._httpClient.post<T>(url, body, {
-        headers: this._getHeaders(path, method, internalView, emailRecipients, additionalParams)
+        headers: this._getHeaders(path, method, internalClient, internalView, emailRecipients, additionalParams)
       });
     }
 
@@ -167,12 +173,12 @@ export class DiagnosticApiService {
     return this._cacheService.get(path, request, invalidateCache);
   }
 
-  private _getHeaders(path?: string, method?: HttpMethod, internalView: boolean = true, emailRecipients: string = "",
+  private _getHeaders(path?: string, method?: HttpMethod, internalClient: boolean = true, internalView: boolean = true, emailRecipients: string = "",
       additionalParams?: any): HttpHeaders {
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', 'application/json');
-    headers = headers.set('x-ms-internal-client', String(true));
+    headers = headers.set('x-ms-internal-client', String(internalClient));
     headers = headers.set('x-ms-internal-view', String(internalView));
     headers = headers.set('Authorization', `Bearer ${this._adalService.userInfo.token}`)
 
