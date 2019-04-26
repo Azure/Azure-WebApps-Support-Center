@@ -95,11 +95,12 @@ export class ResourceHomeComponent implements OnInit {
             };
 
             let category = element.category ? element.category : "Uncategorized";
-            let menuItem = new ExpandableCardItem(element.name, element.description, element.author, onClick, isSelected);
+            let activeState = 0;
+            let menuItem = new ExpandableCardItem(activeState, element.name, element.description, element.author, onClick, isSelected);
 
             let categoryMenuItem = this.categories.find((cat: ExpandableCardItem) => cat.label === category);
             if (!categoryMenuItem) {
-              categoryMenuItem = new ExpandableCardItem(category, null, null, null, null, null, true);
+              categoryMenuItem = new ExpandableCardItem(activeState, category, null, null, null, null, null, true);
               this.categories.push(categoryMenuItem);
             }
 
@@ -134,11 +135,12 @@ export class ResourceHomeComponent implements OnInit {
           };
 
           let category = element.category ? element.category : "Uncategorized";
-          let menuItem = new ExpandableCardItem(element.name, element.description, element.author, onClick, isSelected);
+          let activeState = 0;
+          let menuItem = new ExpandableCardItem(activeState, element.name, element.description, element.author, onClick, isSelected);
 
           let categoryMenuItem = this.categories.find((cat: ExpandableCardItem) => cat.label === category);
           if (!categoryMenuItem) {
-            categoryMenuItem = new ExpandableCardItem(category, null, null, null, null, null, true);
+            categoryMenuItem = new ExpandableCardItem(activeState, category, null, null, null, null, null, true);
             this.categories.push(categoryMenuItem);
           }
 
@@ -156,9 +158,25 @@ export class ResourceHomeComponent implements OnInit {
   // }
 
 
-setActiveCategory (name: string, index: number) {
+setActiveCategory (category: ExpandableCardItem, selectedIndex: number) {
+  // set its state to be active;
+  category.activeState = 2;
+  this.activeRow = Math.floor(selectedIndex/4);
+  this.categories.forEach((currentCategory, index) => {
+    if(Math.floor(index/4) == this.activeRow)
+    {
+      if (selectedIndex !== index)
+      {
+        // set the activeState of the categories in the same row to be inactive;
+        currentCategory.activeState = 1;
+      }
+    }
+    else
+    {
+      currentCategory.activeState = 0;
+    }
+  });
   this.activeCategoryName = name;
-  this.activeRow = Math.floor(index/4);
 }
 
 clickAction(subcategory: ExpandableCardItem)
@@ -180,6 +198,9 @@ public onClick(targetElement) {
     if (clickedOutside)
     {
       this.activeCategoryName = undefined;
+      this.categories.forEach((category) => {
+        category.activeState = 0;
+      })
     }
     // if (!clickedInside) {
     //     this.clickOutsideCategory.emit(null);
@@ -201,6 +222,7 @@ navigateTo(path: string) {
 }
 
 export class ExpandableCardItem {
+  activeState: number = 0;
   label: string;
   description: string;
   author: string;
@@ -210,7 +232,8 @@ export class ExpandableCardItem {
   isSelected: Function;
   icon: string;
 
-  constructor(label: string, description: string, author: string, onClick: Function, isSelected: Function, icon: string = null, expanded: boolean = false, subItems: ExpandableCardItem[] = []) {
+  constructor(activeState: number, label: string, description: string, author: string, onClick: Function, isSelected: Function, icon: string = null, expanded: boolean = false, subItems: ExpandableCardItem[] = []) {
+    this.activeState = 0;
     this.label = label;
     this.description = description;
     this.author = author;

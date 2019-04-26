@@ -19,7 +19,7 @@
           </menu-scroll>
         </collapsible-menu> -->
 
-        <div class="flexed card "  *ngFor="let category of categories;let i = index" [ngClass]="{'active':activeCategoryName === category.label, 'inactive': activeCategoryName != undefined && activeCategoryName != category.label && inActiveRow(i)}" (click)= "setActiveCategory(category.label, i)" >
+        <div class="flexed card "  *ngFor="let category of categories;let i = index" [ngClass]="{'active':category.activeState === 2, 'inactive': category.activeState === 1}" (click)= "setActiveCategory(category, i)" >
           <div class="bottom">
             <div class="name info">
               <img class="category-icon"
@@ -28,7 +28,7 @@
             <!-- <div class="actions"><input type="text" placeholder="Rename" value="Tinder" /><input type="button"
                 value="rename" /></div> -->
           </div>
-          <div *ngIf= "activeCategoryName === undefined || activeCategoryName != category.label || !inActiveRow(i) else expanded_card">
+          <div *ngIf= "category.activeState !==2 else expanded_card">
           <div class="category-content" >
           <ul *ngFor="let subCategory of category.subItems; let i = index">
               <li *ngIf="i<3">{{subCategory.label}}</li>
@@ -38,7 +38,7 @@
         </div>
 
         <ng-template #expanded_card>
-          <div class="detector-card-container">
+          <div class="detector-card-container actions">
             <div class="detector-card col-md-6" *ngFor="let subCategory of category.subItems;let k = index" (click)="clickAction(subCategory)" >
                 <div class="name info">
                     <img class="category-icon"
