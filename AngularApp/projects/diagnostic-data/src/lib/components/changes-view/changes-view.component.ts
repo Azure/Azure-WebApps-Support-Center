@@ -11,7 +11,7 @@ import { DiffEditorModel } from 'ngx-monaco-editor';
     templateUrl: './changes-view.component.html',
     styleUrls: ['./changes-view.component.scss'],
     animations: [
-        trigger('detailExpand', [
+        trigger('changeRowExpand', [
           state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
           state('expanded', style({height: '*'})),
           transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
@@ -49,6 +49,7 @@ export class ChangesViewComponent implements OnInit {
     constructor(private diagnosticService: DiagnosticService, private detectorControlService: DetectorControlService) { }
 
     ngOnInit() {
+        console.log('changes view initialized');
         let changesTable = this.changesDataSet[0].table;
         if(changesTable) {
             this.tableItems = [];
@@ -59,21 +60,32 @@ export class ChangesViewComponent implements OnInit {
     private parseChangesData(rows: any[][]) {
         if(rows.length > 0) {
             rows.forEach(row => {
+                let level = row["level"] ? row["level"] : row[2];
+                let description = row["description"] ? row["descrption"] : row[4];
+                let oldValue = row["oldValue"] ? row["oldValue"] : row[5];
+                let newValue = row["newValue"] ? row["newValue"] : row[6];
+                let initiatedBy = row["initiatedBy"] ? row["initiatedBy"] : row[7];
+                let displayName = row["displayName"] ? row["displayName"] : row[3];
                 this.tableItems.push({
-                    "time": row[0],
-                    "level": row[2],
-                    "levelIcon": this.getIconForLevel(row[2]),
-                    "displayName": row[3],
-                    "description": row[4] == null || row[4] == "" ? "N/A" : row[4],
-                    'oldValue': row[5],
-                    'newValue': row[6],
-                    'initiatedBy': row[7] == null || row[7] == "" ? "N/A" : row[7],
-                    'originalModel': this.prepareValuesForDiffView(row[5]),
-                    'modifiedModel': this.prepareValuesForDiffView(row[6])
+                    "time": row["timeStamp"] ? row["timeStamp"] : row[0],
+                    "level": level,
+                    "levelIcon": this.getIconForLevel(level),
+                    "displayName": this.prepareDisplayValueForTable(displayName),
+                    "description": description == null || description == "" ? "N/A" : description,
+                    'oldValue': oldValue,
+                    'newValue': newValue,
+                    'initiatedBy': initiatedBy == null || initiatedBy == "" ? "N/A" : initiatedBy,
+                    'originalModel': this.prepareValuesForDiffView(oldValue),
+                    'modifiedModel': this.prepareValuesForDiffView(newValue)
                 });
             });
             this.dataSource = new MatTableDataSource(this.tableItems);
         }
+    }
+
+    private prepareDisplayValueForTable(displayName: string): string {
+        displayName = displayName.replace("D:\\home\\site\\wwwroot", "");
+        return displayName;
     }
 
     // Prepare the data for diff view.

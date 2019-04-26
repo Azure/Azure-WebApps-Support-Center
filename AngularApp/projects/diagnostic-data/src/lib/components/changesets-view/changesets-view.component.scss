@@ -1,7 +1,20 @@
 .scan-row {
-    margin-left: 25px; 
+    margin-top: 20px;
+    margin-left: 25px;
     margin-right: 25px;
 }
 .scan-container {
     margin-bottom: 20px;
 }
+
+.vis-item.vis.box.green {
+    background-color: lightseagreen !important;
+    border-color: green !important;
+}
+
+.vis-item.vis.box.red {
+    background-color: lightcoral !important;
+    border-color: red !important;
+}
+
+

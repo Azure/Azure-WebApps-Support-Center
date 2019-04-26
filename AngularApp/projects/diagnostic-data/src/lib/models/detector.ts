@@ -89,8 +89,9 @@ export enum RenderingType {
     Solution,
     Guage,
     Form,
-    ChangeSets,   
-    ChangeAnalysisOnboarding
+    ChangeSets,
+    ChangeAnalysisOnboarding,
+    ChangesView
 }
 
 export enum TimeSeriesType {

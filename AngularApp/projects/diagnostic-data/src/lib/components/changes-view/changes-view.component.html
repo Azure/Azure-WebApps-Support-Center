@@ -1,5 +1,5 @@
 <div *ngIf="tableItems.length <= 0" >
-    No changes found
+    No distinct changes were found in the selected change group.
   </div>
 
 <div class="row table-top" *ngIf="tableItems.length > 0">
@@ -28,6 +28,8 @@
       <ng-container matColumnDef="level">
         <th mat-header-cell *matHeaderCellDef> Level </th>
         <td mat-cell *matCellDef="let element">
+          <span class="level-icon-spacing" *ngIf="element != expandedElement"><i class="fa fa-chevron-right"></i></span>
+          <span class="level-icon-spacing" *ngIf="element == expandedElement"><i class="fa fa-chevron-down"></i></span>
            <img [src]="element.levelIcon" class="level-icon">
         </td>
       </ng-container>
@@ -72,7 +74,7 @@
     <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
     <ng-container matColumnDef="expandedDetail">
         <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
-          <div [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <div [@changeRowExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
               <ngx-monaco-diff-editor class="diff-view" [options]="options" [(originalModel)]="element.originalModel"
                 [(modifiedModel)]="element.modifiedModel"></ngx-monaco-diff-editor>
           </div>
@@ -88,3 +90,7 @@
       </tr>
       <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
     </table>
+
+    <div class="table-top text-center">
+      <em>To view other changes, select a change group in the timeline.</em>
+    </div>
