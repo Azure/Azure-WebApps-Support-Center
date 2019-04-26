@@ -21,7 +21,7 @@
 
     <div class="flexed card " *ngFor="let category of categories;let i = index"
       [ngClass]="{'active':category.activeState === 2, 'inactive': category.activeState === 1}"
-      (click)="setActiveCategory(category, i)">
+      (click)="navigateToCategory(category)">
       <div class="bottom">
         <div class="col-md-4"><img class="category-icon"
             src= {{category.icon}} />

@@ -39,6 +39,7 @@ import { TabChangelistComponent } from './tabs/tab-changelist/tab-changelist.com
 import { GistChangelistComponent } from './gist-changelist/gist-changelist.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TabAnalysisComponent } from './tabs/tab-analysis/tab-analysis.component';
+import { CategoryPageComponent } from './category-page/category-page.component';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -64,6 +65,10 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
         path: 'home',
         component: ResourceHomeComponent,
         pathMatch: 'full'
+      },
+      {
+        path: 'categories/:category',
+        component: CategoryPageComponent,
       },
       {
         path: 'create',
@@ -224,6 +229,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
   ],
   declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent,
     SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent,
-    TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, GistComponent, TabGistCommonComponent, TabGistDevelopComponent, TabChangelistComponent, GistChangelistComponent, TabAnalysisComponent]
+    TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, GistComponent, TabGistCommonComponent, TabGistDevelopComponent, TabChangelistComponent, GistChangelistComponent, TabAnalysisComponent, CategoryPageComponent]
 })
 export class DashboardModule { }
