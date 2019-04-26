@@ -100,7 +100,10 @@ export class ResourceHomeComponent implements OnInit {
 
             let categoryMenuItem = this.categories.find((cat: ExpandableCardItem) => cat.label === category);
             if (!categoryMenuItem) {
-              categoryMenuItem = new ExpandableCardItem(activeState, category, null, null, null, null, null, true);
+              let categoryIcon = `https://applensassets.blob.core.windows.net/applensassets/${category}.png`;
+              console.log(`CategoryIcon: ${categoryIcon}`);
+
+              categoryMenuItem = new ExpandableCardItem(activeState, category, null, null, null, null, categoryIcon, true);
               this.categories.push(categoryMenuItem);
             }
 

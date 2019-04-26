@@ -35,6 +35,33 @@ body {
   padding-top: 4em;
 }
 
+.keywords {
+    display: flex;
+    flex-wrap: wrap;
+    margin:15px;
+}
+
+.keyword-label {
+    color: #5a5a5a;
+    font-size: 12px;
+}
+
+.keyword {
+    font-size: 12px;
+    border-radius: 5px;
+    padding:3px;
+    padding: 2px 4px;
+    margin: 0px 5px 5px 0px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-color:#4b98c8;
+}
+
+.detectors-hint {
+    font-size: 12px;
+    color: #337ab7;
+    margin: 4px 0px 0px 0px;
+}
+
 .flexbox {
   display: flex;
   flex-flow: row wrap;
@@ -79,7 +106,7 @@ body {
   &.inactive {
     flex-grow: 0.5;
     opacity: .5;
-    height: 250px;
+    height: 220px;
 
     width:3%;
     &:hover {
@@ -115,13 +142,30 @@ body {
 }
 
 .category-icon {
-  width:28px;
-  height: 28px;
-  margin-right: 5px
+  width:100px;
+  height: 100px;
+  margin: 15px 5px 5px 5px;
+}
+
+.category-label {
+    margin: 30px 0px 0px 10px;
+    float: right;
+}
+
+
+.category-title {
+    font-size: medium;
+    font-weight: bold;
+    margin-bottom: 5px
+}
+
+
+.category-description {
+    font-size: small;
 }
 
 .category-content {
-  margin-top:25%;
+   margin-top:10px 0px;
 }
 
 .card {
@@ -145,15 +189,14 @@ body {
   }
 
   .bottom {
-    position: absolute;
-    left: 0;
-   // bottom: 0;
-   top: 0;
+//     position: absolute;
+//     left: 0;
+//    // bottom: 0;
+//    top: 0;
     width: 100%;
-    height: 19%;
+    height: 60%;
     border-bottom: 1px solid #E4E7EC;
-    text-align: center;
-    background-color: #d2dbef;
+    background-color: white;
 
     transition: width 350ms cubic-bezier(.55,0,.1,1);
    // transition: transform 350ms , opacity 300ms;
