@@ -73,18 +73,18 @@
     flex-grow: 1;
     flex-basis: 0;
     transition: flex-grow 450ms cubic-bezier(.55,0,.1,1), opacity 450ms ease, top 450ms ease 0s, width 350ms cubic-bezier(.55,0,.1,1);
-  
+
     &:hover {
       box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.2);
       border: #299fda solid 2px;
     }
-  
+
     * {
       transition: opacity 300ms;
       transition-delay: 100ms;
       opacity: 1;
     }
-  
+
     &.active {
       flex-grow: 8;
       height: 550px;
@@ -92,38 +92,38 @@
       width: 84%;
       cursor: default;
     }
-  
+
     &.inactive {
       flex-grow: 0.5;
       opacity: .5;
       height: 220px;
-  
+
       width:3%;
       &:hover {
         opacity: .9;
       }
-  
+
       * {
         transition: opacity 200ms;
         opacity: 0;
       }
     }
-  
+
     &.inactive-fullsize {
       flex-grow: 0.5;
       opacity: .5;
-  
+
       width:25%;
       &:hover {
         opacity: .9;
       }
-  
+
       * {
         transition: opacity 200ms;
         opacity: 0;
       }
     }
-  
+
     &.empty {
       background-color: transparent;
       box-shadow: none;
@@ -136,11 +136,11 @@
     position: relative;
     overflow: hidden;
     background-color: white;
-  
+
     .top {
       padding: 20px;
       text-align: center;
-  
+
       .icon {
         margin: 0 auto;
         width: 100px;
@@ -150,7 +150,7 @@
         box-shadow: 0 1px 5px 1px rgba(#ccc,.8);
       }
     }
-  
+
     .bottom {
   //     position: absolute;
   //     left: 0;
@@ -160,7 +160,7 @@
       height: 60%;
       border-bottom: 1px solid #E4E7EC;
       background-color: white;
-  
+
       transition: width 350ms cubic-bezier(.55,0,.1,1);
      // transition: transform 350ms , opacity 300ms;
       .actions {
@@ -171,12 +171,12 @@
         width: 100%;
       }
     }
-  
+
     .actions {
       opacity: 0;
       z-index: -1;
     }
-  
+
     &.active {
       .bottom .icon {
         opacity: 0;
@@ -184,35 +184,33 @@
         transform: scale(2,2);
         cursor: pointer;
       }
-  
+
     //   .detector-card-container {
     //     opacity: 0;
     //     transition: height 350ms cubic-bezier(.55,0,.1,1), width 350ms cubic-bezier(.55,0,.1,1);
     // //    transition: transform 350ms, opacity 100ms;
     //     cursor: pointer;
     //   }
-  
+
       .top .icon {
         opacity: 0;
         transition: transform 350ms, opacity 100ms;
         transform: scale(2,2);
         cursor: pointer;
       }
-  
+
       .actions {
         opacity: 1;
         z-index: 2;
       }
-  
- 
-  
     }
   }
-  
+
 
   .detector-top {
     border-bottom: 1px solid #E4E7EC;
     height: 35%;
+    margin: auto 0;
   }
 
   .detector-bottom {
@@ -224,8 +222,8 @@
 }
 
   .detector-name {
-    padding: 15px 15px 15px 0px;
-    font-size: 16px;
+    padding: 18px 0;
+    font-size: 20px;
     font-weight: bold;
 }
 
