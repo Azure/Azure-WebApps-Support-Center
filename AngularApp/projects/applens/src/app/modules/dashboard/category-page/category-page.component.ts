@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from '@angular/router';
 import { DiagnosticService } from 'diagnostic-data';
+import { AvatarModule } from 'ngx-avatar';
 
 @Component({
   selector: 'category-page',
@@ -15,30 +16,54 @@ export class CategoryPageComponent implements OnInit {
 
     categoryName: string;
     category: CategoryItem;
-    categories: CategoryItem[] = [];
+    categories: CategoryItem[] = []; 
+    detectors: DetectorItem[] = [];   
+    categoryIcon: string;
+    detectorsNumber: number = 0;
+
+    supportTopicIdMapping: any[] = [];
+    supportTopicsNumber: number = 0;
+
+    authors: any[] = [];
+    authorsNumber: number = 0;
 
     detectorsWithSupportTopics: DetectorMetaData[];
     detectorsPublicOrWithSupportTopics: DetectorMetaData[] = [];
 
+
   constructor(private _route: Router, private _activatedRoute: ActivatedRoute, private _diagnosticService: DiagnosticService) { }
 
   ngOnInit() {
-    this.categoryName = this._activatedRoute.snapshot.params['category'].toLowerCase();
+    this.categoryName = this._activatedRoute.snapshot.params['category'];
+    this.categoryIcon = `https://applensassets.blob.core.windows.net/applensassets/${this.categoryName}.png`;
+    console.log(`CategoryName: ${this.categoryName}`);
 
     const detectorsListWithSupportTopics = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
-        var detectorsWithSupportTopics = detectors.filter(detector => detector.category.toLowerCase() === this.categoryName.toLowerCase() && detector.supportTopicList && detector.supportTopicList.length > 0);
+        // detector.category.toLowerCase() === this.categoryName.toLowerCase() && 
 
-        // detectorsWithSupportTopics.forEach(detector => {
-        //     detector.supportTopicList.forEach(supportTopic => {
-        //         this.supportTopicIdMapping.push({ supportTopic: supportTopic, detectorName: detector.name });
-        //     });
-        // });
+        var detectorsWithSupportTopics = detectors.filter(detector => detector.category && detector.category.toLowerCase() === this.categoryName.toLowerCase() && detector.supportTopicList && detector.supportTopicList.length > 0);
+        
+        if (this.categoryName === "Uncategorized")
+        {
+            detectorsWithSupportTopics = detectors.filter(detector => !detector.category && detector.supportTopicList && detector.supportTopicList.length > 0);
+        }
+
+        detectorsWithSupportTopics.forEach(detector => {
+            detector.supportTopicList.forEach(supportTopic => {
+                this.supportTopicIdMapping.push({ supportTopic: supportTopic, detectorName: detector.name });
+            });
+        });
 
         return detectorsWithSupportTopics;
     }));
 
     const publicDetectors = this._diagnosticService.getDetectors(false).pipe(map((detectors: DetectorMetaData[]) => {
-        return detectors.filter(detector => detector.category.toLowerCase() === this.categoryName.toLowerCase());
+        var publicDetectorsList = detectors.filter(detector => detector.category && detector.category.toLowerCase() === this.categoryName.toLowerCase());
+        if (this.categoryName === "Uncategorized")
+        {
+            publicDetectorsList = detectors.filter(detector => !detector.category);
+        }
+        return publicDetectorsList;
     }));
 
     forkJoin(detectorsListWithSupportTopics, publicDetectors).subscribe((detectorLists) => {
@@ -51,36 +76,59 @@ export class CategoryPageComponent implements OnInit {
                     this.detectorsPublicOrWithSupportTopics.push(detector);
                 }
             });
-
+            
             this.detectorsPublicOrWithSupportTopics.forEach(element => {
                 let onClick = () => {
+                    console.log(`navigate to ../../detectors/${element.id}`);
                     this.navigateTo(`../../detectors/${element.id}`);
                 };
+            
+            let authorString = "Unknown";
+              let detectorAuthors = [];
+              let detectorSupportTopics = [];
 
-                // let isSelected = () => {
-                //     return this.currentRoutePath && this.currentRoutePath.join('/') === `detectors/${element.id}`;
-                // };
+              if (element.author !== '') {
+                authorString = element.author;
+                const separators = [' ', ',', ';', ':'];
+                detectorAuthors = element.author.split(new RegExp(separators.join('|'), 'g'));
+                console.log("**Author**");
+                console.log(element.author);
+                console.log(detectorAuthors);
+                detectorAuthors.forEach(author => {
+                  if (author && author.length > 0 && !this.authors.find(existingAuthor => existingAuthor === author)) {
+                    this.authors.push(author);
+                  }
+                });
+              }
 
-                let category = element.category ? element.category : "Uncategorized";
-                let activeState = 0;
-                let menuItem = new CategoryItem(activeState, element.name, element.description, element.author, onClick, undefined);
+              detectorAuthors.push("xipeng");
+              detectorAuthors.push("shgup");
 
-                let categoryMenuItem = this.categories.find((cat: CategoryItem) => cat.label === category);
-                if (!categoryMenuItem) {
-                    let categoryIcon = `https://applensassets.blob.core.windows.net/applensassets/${category}.png`;
-                    console.log(`CategoryIcon: ${categoryIcon}`);
+              if (element.supportTopicList && element.supportTopicList.length > 0)
+              {
+                  element.supportTopicList.forEach((supportTopic) => {
+                    detectorSupportTopics.push(supportTopic);
+                  });
 
-                    categoryMenuItem = new CategoryItem(activeState, category, null, null, null, null, categoryIcon, true);
-                    this.categories.push(categoryMenuItem);
-                }
+              }
 
-                categoryMenuItem.subItems.push(menuItem);
+              if (!this.detectors.find(item => item.name === element.name))
+              {
+                let detectorItem = new DetectorItem(element.name, element.description, authorString, detectorAuthors, detectorSupportTopics, onClick);
+                this.detectors.push(detectorItem);
+              }
+
             });
 
-            this.categories = this.categories.sort((a, b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));
         });
+
+        this.detectorsNumber = this.detectorsPublicOrWithSupportTopics.length;
+        this.supportTopicsNumber = this.supportTopicIdMapping.length;
+        this.authorsNumber = this.authors.length;
+
+        console.log(`detectors ${this.detectorsNumber}, spnum: ${this.supportTopicsNumber}, authorsNumber: ${this.authorsNumber}`);
     });
-  }
+  } 
 
   navigateTo(path: string) {
     let navigationExtras: NavigationExtras = {
@@ -94,4 +142,35 @@ export class CategoryPageComponent implements OnInit {
     //this._router.navigate(path.split('/'), navigationExtras);
     this._route.navigate([path], navigationExtras);
 }
+
+navigateToHomePage() {
+    this.navigateTo("../../home");
 }
+
+}
+
+export class DetectorItem {
+    name: string;
+    description: string;
+    authorString: string;
+    authors: any[] = [];
+    supportTopics: any[] = [];
+    onClick: Function;
+
+    constructor(name: string, description: string, authorString: string, authors: any[], supportTopics: any[], onClick: Function) {
+        this.name = name;
+
+        if (description == undefined || description === "")
+        {
+            description = "This detector doesn't have any description."
+        }
+        this.description = description;
+        this.authorString = authorString;
+        this.authors = authors;
+        this.supportTopics = supportTopics;
+        this.onClick = onClick;
+    }
+}
+
+
+

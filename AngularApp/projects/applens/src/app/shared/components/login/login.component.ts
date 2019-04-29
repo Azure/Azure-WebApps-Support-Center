@@ -31,6 +31,9 @@ export class LoginComponent implements OnInit {
     var parser = new UAParser();
     this.browser = parser.getBrowser();
 
+    console.log("User info");
+    console.log(this._adalService.userInfo);
+
     if (this._adalService.userInfo.authenticated) {
       this.grantAccess();
       return;

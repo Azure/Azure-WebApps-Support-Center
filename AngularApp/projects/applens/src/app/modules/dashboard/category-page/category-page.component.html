@@ -1,3 +1,69 @@
-<p>
-  {{categoryName}}
-</p>
+<div class="banner">
+  <div>
+    <button class="back-button" (click)="navigateToHomePage()" >&lt; Home</button>
+  </div>
+  <div class="category-info-container">
+    <img class="category-icon" src={{categoryIcon}} />
+  </div>
+  <div class="category-info-container">
+    <span class="catogory-name">
+      {{categoryName}}
+    </span>
+  </div>
+  <div class="category-summary-container">
+    <div class="category-info  col-md-4">
+      <div class="category-metrics">
+        {{detectorsNumber}}
+      </div>
+      <div class="category-metrics-name">
+        Detectors
+      </div>
+    </div>
+    <div class="category-info col-md-4">
+      <div class="category-metrics">
+        {{supportTopicsNumber}}
+      </div>
+      <div class="category-metrics-name">
+        Support Topics
+      </div>
+    </div>
+    <div class="category-info col-md-4">
+      <div class="category-metrics">
+        {{authorsNumber}}
+      </div>
+      <div class="category-metrics-name">
+        Contributors
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="detector-list">
+  <div class="flexed-detector card" *ngFor="let detector of detectors; let i=index" (click)="detector.onClick()">
+    <div class="detector-top">
+      <div class="col-md-3 detector-icon">
+        <ngx-avatar [name]="detector.name" initialsSize="2"></ngx-avatar>
+        <!-- <ngx-avatar facebookId="100006264431560"></ngx-avatar> -->
+      </div>
+      <div class="col-md-9 detector-name">
+        {{detector.name}}
+      </div>
+    </div>
+    <div class="detector-bottom">
+      <div class="detector-description">
+        {{detector.description}}
+      </div>
+      <div class="detector-authors">
+        <!-- <div class="col-xs-3">
+                <ngx-avatar *ngFor="let author of detector.authors" class="author-avatar col-xs-1" skypeId="unknown" size="40"></ngx-avatar>          
+                <i *ngFor="let author of detector.authors" class="fa fa-user-circle-o col-xs-1" aria-hidden="true"></i>
+              </div> -->
+        <div class="author-list">
+          <!-- <span *ngFor="let author of detector.authors">{{author}}</span>           -->
+          Created by:
+          <span class="author-String">{{detector.authorString}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

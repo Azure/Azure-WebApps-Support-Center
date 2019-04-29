@@ -17,5 +17,8 @@ export class AppComponent {
       postLogoutRedirectUri: `${window.location.origin}/login`,
       cacheLocation: 'localStorage'
     });
+
+    console.log("applens adal");
+    console.log(environment.adal);
   }
 }

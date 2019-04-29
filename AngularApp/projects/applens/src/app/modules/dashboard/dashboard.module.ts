@@ -40,6 +40,7 @@ import { GistChangelistComponent } from './gist-changelist/gist-changelist.compo
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TabAnalysisComponent } from './tabs/tab-analysis/tab-analysis.component';
 import { CategoryPageComponent } from './category-page/category-page.component';
+import { AvatarModule } from 'ngx-avatar';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -202,6 +203,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
 
 @NgModule({
   imports: [
+    AvatarModule,
     CommonModule,
     FormsModule,
     DashboardModuleRoutes,

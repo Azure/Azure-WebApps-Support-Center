@@ -52,13 +52,12 @@ export class ResourceHomeComponent implements OnInit {
         const publicDetectors = this._diagnosticService.getDetectors(false);
 
         forkJoin(detectorsWithSupportTopics, publicDetectors).subscribe((detectorLists) => {
-            console.log("ForkJoin result");
-            console.log(detectorLists);
+            // console.log("ForkJoin result");
+            // console.log(detectorLists);
 
             detectorLists.forEach((detectorList: DetectorMetaData[]) => {
                 detectorList.forEach(detector => {
                     if (!this.detectorsPublicOrWithSupportTopics.find((existingDetector) => existingDetector.id === detector.id)) {
-                        console.log("Find a detector with support topic");
                         this.detectorsPublicOrWithSupportTopics.push(detector);
                     }
                 });
@@ -79,7 +78,6 @@ export class ResourceHomeComponent implements OnInit {
                     let categoryMenuItem = this.categories.find((cat: CategoryItem) => cat.label === category);
                     if (!categoryMenuItem) {
                         let categoryIcon = `https://applensassets.blob.core.windows.net/applensassets/${category}.png`;
-                        console.log(`CategoryIcon: ${categoryIcon}`);
 
                         categoryMenuItem = new CategoryItem(activeState, category, null, null, null, null, categoryIcon, true);
                         this.categories.push(categoryMenuItem);
@@ -117,8 +115,6 @@ export class ResourceHomeComponent implements OnInit {
 
     clickAction(subcategory: CategoryItem) {
         subcategory.onClick();
-        console.log(subcategory);
-        console.log("Inner action");
     }
 
     inActiveRow(index: number) {
@@ -148,8 +144,6 @@ export class ResourceHomeComponent implements OnInit {
             relativeTo: this._activatedRoute
         };
 
-        console.log("navigation params");
-        console.log(navigationExtras);
         //this._router.navigate(path.split('/'), navigationExtras);
         this._router.navigate([path], navigationExtras);
     }

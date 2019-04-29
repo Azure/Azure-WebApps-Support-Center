@@ -45,7 +45,7 @@ export class DiagnosticApiService {
   public getDetectors(version: string, resourceId: string, body?: any, internalClient: boolean = true): Observable<DetectorMetaData[]> {
     let path = `${version}${resourceId}/detectors`;
     console.log(`Diagnostic api (Applens): ${internalClient}`);
-    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body, false, true, internalClient).pipe(retry(1), map(response => response.map(detector => detector.metadata)));
+    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body, true, false, internalClient).pipe(retry(1), map(response => response.map(detector => detector.metadata)));
   }
 
   public getGists(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {
@@ -143,24 +143,22 @@ export class DiagnosticApiService {
     let request: Observable<any>;
 
     if(additionalParams && additionalParams.getFullResponse) {
-        console.log("Header 1");
-        console.log(this._getHeaders(path, method, internalClient, internalView, emailRecipients, additionalParams));
       request = this._httpClient.post<T>(url, body, {
         headers: this._getHeaders(path, method, internalClient, internalView, emailRecipients, additionalParams),
         observe: 'response'
       });
     } else {
-        console.log("Header 2");
-        console.log(this._getHeaders(path, method, internalClient, internalView, emailRecipients, additionalParams));
       request = this._httpClient.post<T>(url, body, {
         headers: this._getHeaders(path, method, internalClient, internalView, emailRecipients, additionalParams)
       });
     }
 
-    return useCache ? this._cacheService.get(this.getCacheKey(method, path), request, invalidateCache) : request;
+    let keyPostfix = internalClient === true ? "-true" : "-false";
+    return useCache ? this._cacheService.get(this.getCacheKey(method, path+keyPostfix), request, invalidateCache) : request;
   }
 
   private getCacheKey(method: HttpMethod, path: string) {
+    console.log(`Cache key: ${HttpMethod[method]}-${path}`);
     return `${HttpMethod[method]}-${path}`;
   }
 

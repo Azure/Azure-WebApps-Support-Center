@@ -34,13 +34,13 @@
                 value="rename" /></div> -->
       </div>
       <!-- <div *ngIf= "category.activeState !==2 else expanded_card"> -->
-      <div class="category-content">
+      <!-- <div class="category-content"> -->
               <!-- <span class="keyword-label">Detectors</span> -->
               <div class="keywords">
                 <div *ngFor="let subCategory of category.subItems; let i = index">
-                  <div *ngIf="i<3" class="keyword"><span>{{subCategory.label}}</span></div>
+                  <div *ngIf="i<2" class="keyword"><span>{{subCategory.label}}</span></div>
                 </div>
-                <span *ngIf="category.subItems.length > 3" class="detectors-hint">+{{category.subItems.length-2}} detectors</span>
+                <span *ngIf="category.subItems.length > 2" class="detectors-hint">+{{category.subItems.length-2}} detectors</span>
               </div>
 
         <!-- <ul *ngFor="let subCategory of category.subItems; let i = index">
@@ -51,7 +51,7 @@
 
 <!--
         <div><span style="padding-left: 40px; font-weight: bold;">Total Detectors: {{category.subItems.length}}</span> -->
-        </div>
+        <!-- </div> -->
       </div>
 
       <!-- </div> -->

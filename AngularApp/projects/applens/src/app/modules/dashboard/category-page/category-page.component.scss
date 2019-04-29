@@ -1,0 +1,256 @@
+.banner {
+    width: 100%;
+    background-color: #222d32;
+    height: 270px;
+   background-image : url('https://applensassets.blob.core.windows.net/applensassets/banner.png');
+}
+
+.back-button {
+    background: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline: none;
+    width: 100px;
+    color: white;
+
+    &:hover {
+        color: #555;
+    }
+}
+
+.category-info-container {
+    text-align: center;
+    margin:0 20px 20px 20px;
+}
+
+.category-summary-container {
+    width: 40%;
+    margin:0 auto;
+}
+
+.category-icon {
+    width: 8%;
+    border-radius: 50%;
+    margin-top: 20px;
+}
+
+.catogory-name {
+    color: white;
+    font-size: medium;
+    font-weight: bold;
+}
+
+.category-info {
+    color: white;
+}
+
+.category-metrics {
+    text-align: center;
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.category-metrics-name {
+    text-align: center;
+}
+
+.detector-list {
+    margin:1%;
+}
+
+.flexed-detector {
+    display: inline-block;
+    will-change: transform, flex-grow;
+    background: #F5F7F9;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.24);
+    cursor: pointer;
+    width: 31%;
+    height: 200px;
+    margin: 1%;
+    flex-grow: 1;
+    flex-basis: 0;
+    transition: flex-grow 450ms cubic-bezier(.55,0,.1,1), opacity 450ms ease, top 450ms ease 0s, width 350ms cubic-bezier(.55,0,.1,1);
+  
+    &:hover {
+      box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.2);
+      border: #299fda solid 2px;
+    }
+  
+    * {
+      transition: opacity 300ms;
+      transition-delay: 100ms;
+      opacity: 1;
+    }
+  
+    &.active {
+      flex-grow: 8;
+      height: 550px;
+      //height: 90%;
+      width: 84%;
+      cursor: default;
+    }
+  
+    &.inactive {
+      flex-grow: 0.5;
+      opacity: .5;
+      height: 220px;
+  
+      width:3%;
+      &:hover {
+        opacity: .9;
+      }
+  
+      * {
+        transition: opacity 200ms;
+        opacity: 0;
+      }
+    }
+  
+    &.inactive-fullsize {
+      flex-grow: 0.5;
+      opacity: .5;
+  
+      width:25%;
+      &:hover {
+        opacity: .9;
+      }
+  
+      * {
+        transition: opacity 200ms;
+        opacity: 0;
+      }
+    }
+  
+    &.empty {
+      background-color: transparent;
+      box-shadow: none;
+      cursor: default;
+    }
+  }
+
+  .card {
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+    background-color: white;
+  
+    .top {
+      padding: 20px;
+      text-align: center;
+  
+      .icon {
+        margin: 0 auto;
+        width: 100px;
+        transition: transform 350ms, opacity 300ms;
+        transform: scale(1,1);
+        border-radius: 16px;
+        box-shadow: 0 1px 5px 1px rgba(#ccc,.8);
+      }
+    }
+  
+    .bottom {
+  //     position: absolute;
+  //     left: 0;
+  //    // bottom: 0;
+  //    top: 0;
+      width: 100%;
+      height: 60%;
+      border-bottom: 1px solid #E4E7EC;
+      background-color: white;
+  
+      transition: width 350ms cubic-bezier(.55,0,.1,1);
+     // transition: transform 350ms , opacity 300ms;
+      .actions {
+        position: absolute;
+        height: 100%;
+        top: 0;
+        left: 0;
+        width: 100%;
+      }
+    }
+  
+    .actions {
+      opacity: 0;
+      z-index: -1;
+    }
+  
+    &.active {
+      .bottom .icon {
+        opacity: 0;
+        transition: transform 350ms, opacity 100ms;
+        transform: scale(2,2);
+        cursor: pointer;
+      }
+  
+    //   .detector-card-container {
+    //     opacity: 0;
+    //     transition: height 350ms cubic-bezier(.55,0,.1,1), width 350ms cubic-bezier(.55,0,.1,1);
+    // //    transition: transform 350ms, opacity 100ms;
+    //     cursor: pointer;
+    //   }
+  
+      .top .icon {
+        opacity: 0;
+        transition: transform 350ms, opacity 100ms;
+        transform: scale(2,2);
+        cursor: pointer;
+      }
+  
+      .actions {
+        opacity: 1;
+        z-index: 2;
+      }
+  
+ 
+  
+    }
+  }
+  
+
+  .detector-top {
+    border-bottom: 1px solid #E4E7EC;
+    height: 35%;
+  }
+
+  .detector-bottom {
+    height: 65%;
+  }
+
+  .detector-icon {
+    margin-top: 8px;
+}
+
+  .detector-name {
+    padding: 15px 15px 15px 0px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.detector-description{
+    padding:15px;
+    color:gray;
+    height: 60%;
+    overflow: auto;
+    text-overflow: ellipsis;
+}
+
+.detector-authors {
+    height: 40%;
+}
+
+.author-list {
+    padding: 8px 15px;
+}
+
+.author-String {
+    font-weight: bold;
+}
+.author-avatar .avatar-container {
+}
+
+.author-avatar .avartar-content {
+}
+
