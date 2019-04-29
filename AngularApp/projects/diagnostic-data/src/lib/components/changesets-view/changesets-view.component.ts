@@ -8,7 +8,7 @@ import { DataSet, Timeline} from 'vis';
 import { DetectorControlService } from '../../services/detector-control.service';
 import moment = require('moment');
 import { Subscription, Observable, interval } from 'rxjs';
-import { P } from '@angular/core/src/render3';
+
 
 @Component({
   selector: 'changesets-view',
@@ -29,11 +29,11 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
         {id: 2, content: 'Code'}
     ]);
     scanStatusMessage: string = '';
-    scanAction: string = '';
-    scanButtonDisabled: boolean = false;
+    allowScanAction: boolean = false;
     changeSetsCache = {};
     subscription: Subscription;
     scanState: string = '';
+    showViewChanges: boolean = false;
     constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, protected telemetryService: TelemetryService,
     protected changeDetectorRef: ChangeDetectorRef, protected diagnosticService: DiagnosticService,  private detectorControlService: DetectorControlService) {
         super(telemetryService);
@@ -59,7 +59,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                 this.initializeChangesView(data);
             }
             // Convert UTC timestamp to user readable date
-            this.scanDate = moment(rows[0][6]).format("dddd, MMMM Do YYYY, h:mm:ss a");
+            this.scanDate = moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
         } else {
              this.changeSetText = `No change groups have been detected`;
         }
@@ -170,19 +170,21 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     private scanNow() {
         this.scanState = "Submitting";
         this.scanStatusMessage = "Submitting scan request...";
-        this.scanAction = "Submitting...";
-        this.scanButtonDisabled = true;
+        this.allowScanAction = false;
         let queryParams = `&scanAction=submitscan`;
+        console.log("Submitting scan request");
         this.diagnosticService.getDetector(this.detector,  this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
             this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) => {
                 let dataset = response.dataset;
                 let table = dataset[0].table;
                 let rows = table.rows;
                 let submissionState = rows[0][1];
-                this.scanState = submissionState;
+                this.scanState = submissionState;               
                 // Request has been submitted, update the UI with the state.
+                console.log("Request has been submitted, update the UI with the state : " + submissionState);
                 this.setScanState(submissionState);
                 // Start polling every 5 secs to see the progress.
+                console.log("Starting polling to see scan progress");
                 this.subscription = interval(5000).subscribe(res => {
                     this.pollForScanStatus();
                 });
@@ -194,8 +196,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     private pollForScanStatus() {
         this.scanStatusMessage = "Checking last scan status...";
         this.scanState = "Polling";
-        this.scanAction = "Scan changes now";
-        this.scanButtonDisabled = true;
+        this.allowScanAction = false;
         let queryParams = `&scanAction=checkscan`;
         this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
             this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) => {
@@ -224,55 +225,64 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     }
 
     private setScanState(submissionState: string, completedTime?: string) {
+        console.log("Setting scan state : "+ submissionState);
         switch(submissionState) {
             case "Submitted":
-                this.scanStatusMessage = "Scan request has been submitted.";
-                this.scanAction = "Scan changes now";
-                this.scanButtonDisabled = true;
+                this.scanStatusMessage = "Scan request has been submitted...";
+                this.allowScanAction = false;
                 break;
             case "Inscan":
                 this.scanStatusMessage = "Scanning is in progress. This may take few minutes";
-                this.scanAction = "Scanning...";
-                this.scanButtonDisabled = true;
+                this.allowScanAction = false;
                 break;
             case "Completed":
+                console.log("Checking difference between completed time and current time");
                 let currentMoment = moment();
                 let completedMoment = moment(completedTime);
-                let diff = currentMoment.diff(completedMoment, 'minutes');
-                // If scan has been completed more than 5 minutes ago, display default message
-                if (diff >= 5) {
-                    this.scanStatusMessage = "Click the below button to get the latest changes";
-                    this.scanAction = "Scan changes now";
-                    this.scanButtonDisabled = false;
+                let diff = currentMoment.diff(completedMoment, 'seconds');
+                console.log("Current moment is " + currentMoment.format("ddd, MMM D YYYY, h:mm:ss a"));
+                console.log("Completed moment is" + completedMoment.format("ddd, MMM D YYYY, h:mm:ss a"));
+                console.log("Difference in seconds is :" + diff);
+                // If scan has been completed more than a minute ago, display default message
+                if (diff >= 60) {
+                    console.log("Scan completed more than a minute ago, display default message");
+                    this.scanStatusMessage = "Click the below button to scan your webapp and get the latest changes";
+                    this.allowScanAction = true;
+                    this.showViewChanges = false;
                 } else {
                     this.scanStatusMessage = "Scanning is complete. Click the below button to view the latest changes now.";
-                    this.scanAction = "View changes now";
-                    this.scanButtonDisabled = false;
+                    this.allowScanAction = true;
+                    this.showViewChanges = true;
                 }
                 break;
             case "Failed":
-                this.scanStatusMessage = "Last scan request failed. Click the below button to submit new scan request";
-                this.scanAction = "Scan changes now";
-                this.scanButtonDisabled = false;
+                this.scanStatusMessage = "The last scan request failed. Click the below button to submit new scan request";
+                this.allowScanAction = true;
+                this.showViewChanges = false;
                 break;
             default:
-                this.scanStatusMessage = "Click the below button to get the latest changes";
-                this.scanAction = "Scan changes now";
-                this.scanButtonDisabled = false;
+                this.scanStatusMessage = "Click the below button to to scan your webapp and get the latest changes";
+                this.allowScanAction = true;
+                this.showViewChanges = false;
                 break;
         }
     }
 
+    // Gets icon class for scan message based on scan state.
     getScanStatusClass() {
         let currentScanState = this.scanState;
         switch(currentScanState) {
             case "Polling":
             return {
-                'fa-search': true
+                'fa-circle-o-notch' : true,
+                'fa-spin': true,
+                'spin-icon': true
             };
             case "Submitting":
             return {
-                'fa-spinner': true
+                'fa-circle-o-notch' : true,
+                'fa-spin': true,
+                'spin-icon': true
             };
             case "Submitted":
             return {
@@ -280,7 +290,9 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
             }
             case "InScan":
             return {
-                'fa-spinner': true
+                'fa-circle-o-notch' : true,
+                'fa-spin': true,
+                'spin-icon': true
             };
             case "Completed":
             return {
@@ -292,37 +304,11 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
             }
         }
     }
+   
+    refreshTimeline(): void {
 
-    getButtonClass() {
-        let currentScanState = this.scanState;
-        switch(currentScanState) {
-            case "Polling":
-            return {
-                'btn-secondary': true
-            };
-            case "Submitting":
-            return {
-                'btn-secondary': true
-            };
-            case "Submitted":
-            return {
-                'btn-secondary': true
-            }
-            case "InScan":
-            return {
-                'btn-secondary': true
-            };
-            case "Completed":
-            return {
-                'btn-info': true
-            }
-            case "Failed":
-            return {
-                'btn-primary': true
-            }
-        }
     }
-
+    
     ngOnDestroy(): void {
         if (this.subscription) {
             this.subscription.unsubscribe();

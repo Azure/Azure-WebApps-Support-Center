@@ -16,8 +16,9 @@
             <span class="fa" [ngClass]="getScanStatusClass()"></span>
             {{scanStatusMessage}}
           </div>
-          <div class="scan-row"  *ngIf ="isPublic && scanAction != ''">
-            <button class="btn" [ngClass]="getButtonClass()" (click)="scanNow()"  [ngClass]="{'disabled': scanButtonDisabled }">{{scanAction}}</button>
+          <div class="scan-row"  *ngIf ="isPublic && allowScanAction">
+            <button class="btn btn-primary" *ngIf="!showViewChanges"  (click)="scanNow()"> Scan Changes now </button>
+            <button class="btn btn-info" *ngIf="showViewChanges" (click)="refreshTimeline()"> View Changes now</button>
           </div>
         </div>
 
