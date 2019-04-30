@@ -1,8 +1,9 @@
 .banner {
     width: 100%;
-    background-color: #222d32;
-    height: 270px;
-   background-image : url('https://applensassets.blob.core.windows.net/applensassets/banner.png');
+    background-color: white;
+    height: 160px;
+  // background-image : url('https://applensassets.blob.core.windows.net/applensassets/banner.png');
+  border-bottom: solid #ccc7c7 1px;
 }
 
 .back-button {
@@ -21,7 +22,6 @@
 }
 
 .category-info-container {
-    text-align: center;
     margin:0 20px 20px 20px;
 }
 
@@ -32,13 +32,22 @@
 
 .category-icon {
     width: 8%;
-    border-radius: 50%;
     margin-top: 20px;
 }
 
+.category-title {
+   display: inline-block;
+   margin-left: 20px;
+   vertical-align: middle;
+}
+
+.category-description {
+    color: gray;
+ }
+
 .catogory-name {
-    color: white;
-    font-size: medium;
+    color: black;
+    font-size: xx-large;
     font-weight: bold;
 }
 
@@ -222,7 +231,7 @@
 }
 
   .detector-name {
-    padding: 18px 0;
+    padding: 16px 0;
     font-size: 20px;
     font-weight: bold;
 }

@@ -22,11 +22,11 @@
     <div class="flexed card " *ngFor="let category of categories;let i = index"
       [ngClass]="{'active':category.activeState === 2, 'inactive': category.activeState === 1}"
       (click)="navigateToCategory(category)">
-      <div class="bottom">
-        <div class="col-md-4"><img class="category-icon"
+      <div class="bottom row">
+        <div class="col-md-3"><img class="category-icon"
             src= {{category.icon}} />
         </div>
-        <div class="col-md-7 category-label">
+        <div class="col-md-8 category-label">
           <div class="category-title">{{category.label}}</div>
           <div class="category-description"><span>Total Detectors: {{category.subItems.length}}</span></div>
         </div>

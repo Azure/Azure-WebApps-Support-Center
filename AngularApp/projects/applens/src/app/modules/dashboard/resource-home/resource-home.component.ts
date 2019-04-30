@@ -61,33 +61,37 @@ export class ResourceHomeComponent implements OnInit {
                         this.detectorsPublicOrWithSupportTopics.push(detector);
                     }
                 });
+            });
 
-                this.detectorsPublicOrWithSupportTopics.forEach(element => {
-                    let onClick = () => {
-                        this.navigateTo(`detectors/${element.id}`);
-                    };
+            this.detectorsPublicOrWithSupportTopics.forEach(element => {
+                let onClick = () => {
+                    this.navigateTo(`detectors/${element.id}`);
+                };
 
-                    let isSelected = () => {
-                        return this.currentRoutePath && this.currentRoutePath.join('/') === `detectors/${element.id}`;
-                    };
+                let isSelected = () => {
+                    return this.currentRoutePath && this.currentRoutePath.join('/') === `detectors/${element.id}`;
+                };
 
-                    let category = element.category ? element.category : "Uncategorized";
+                // let category = element.category ? element.category : "Uncategorized";
+
+                if (element.category)
+                {
                     let activeState = 0;
                     let menuItem = new CategoryItem(activeState, element.name, element.description, element.author, onClick, isSelected);
 
-                    let categoryMenuItem = this.categories.find((cat: CategoryItem) => cat.label === category);
+                    let categoryMenuItem = this.categories.find((cat: CategoryItem) => cat.label === element.category);
                     if (!categoryMenuItem) {
-                        let categoryIcon = `https://applensassets.blob.core.windows.net/applensassets/${category}.png`;
+                        let categoryIcon = `https://applensassets.blob.core.windows.net/applensassets/${element.category}.png`;
 
-                        categoryMenuItem = new CategoryItem(activeState, category, null, null, null, null, categoryIcon, true);
+                        categoryMenuItem = new CategoryItem(activeState, element.category, null, null, null, null, categoryIcon, true);
                         this.categories.push(categoryMenuItem);
                     }
 
                     categoryMenuItem.subItems.push(menuItem);
-                });
-
-                this.categories = this.categories.sort((a, b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));
+                }
             });
+
+            this.categories = this.categories.sort((a, b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));
         });
     };
 

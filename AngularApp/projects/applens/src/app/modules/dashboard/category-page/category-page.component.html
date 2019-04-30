@@ -1,16 +1,23 @@
 <div class="banner">
-  <div>
+  <!-- <div>
     <button class="back-button" (click)="navigateToHomePage()" >&lt; Home</button>
-  </div>
+  </div> -->
   <div class="category-info-container">
     <img class="category-icon" src={{categoryIcon}} />
+    <div class="category-title">
+      <span class="catogory-name">
+        {{categoryName}}
+      </span>
+      <div class="category-description">
+        <span >
+          {{detectorsNumber}} detectors, {{authorsNumber}} contributors
+        </span>
+      </div>
+    </div>
   </div>
-  <div class="category-info-container">
-    <span class="catogory-name">
-      {{categoryName}}
-    </span>
-  </div>
-  <div class="category-summary-container">
+  <!-- <div class="category-info-container">
+  </div> -->
+  <!-- <div class="category-summary-container">
     <div class="category-info  col-md-4">
       <div class="category-metrics">
         {{detectorsNumber}}
@@ -35,7 +42,7 @@
         Contributors
       </div>
     </div>
-  </div>
+  </div> -->
 </div>
 
 <div class="detector-list">
