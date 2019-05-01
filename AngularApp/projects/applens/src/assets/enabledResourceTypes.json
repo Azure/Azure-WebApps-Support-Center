@@ -6,7 +6,8 @@
             "templateFileName": "WebApp",
             "imgSrc": "assets/img/Azure-WebApps-Logo.png",
             "versionPrefix": "v4/",
-            "azureCommImpactedServicesList": "appservice"
+            "azureCommImpactedServicesList": "appservice",
+            "pesId": "14748"
         },
         {
             "service": "AseService",
@@ -14,7 +15,8 @@
             "templateFileName": "HostingEnvironment",
             "imgSrc": "assets/img/Azure-WebApps-Logo.png",
             "versionPrefix": "v2/",
-            "azureCommImpactedServicesList": "appservice"
+            "azureCommImpactedServicesList": "appservice",
+            "pesId": "16533"
         },
         {
             "service": "ResourceService",
@@ -22,7 +24,8 @@
             "templateFileName": "LogicApp",
             "imgSrc": "assets/img/Azure-LogicApps-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": "logicapp"
+            "azureCommImpactedServicesList": "logicapp",
+            "pesId": "15791"
         },
         {
             "service": "ResourceService",
@@ -30,7 +33,8 @@
             "templateFileName": "KubernetesService",
             "imgSrc": "assets/img/Azure-KubernetesService-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": "kubernetesservice"
+            "azureCommImpactedServicesList": "kubernetesservice",
+            "pesId": "16450"
         },
         {
             "service": "ResourceService",
@@ -38,7 +42,8 @@
             "templateFileName": "OpenShiftManagedClusters",
             "imgSrc": "assets/img/Azure-KubernetesService-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": "openShiftManagedClusters"
+            "azureCommImpactedServicesList": "openShiftManagedClusters",
+            "pesId": ""
         },
         {
             "service": "ResourceService",
@@ -54,7 +59,8 @@
             "templateFileName": "ApiManagementService",
             "imgSrc": "assets/img/Azure-ApiManagement-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": ""
+            "azureCommImpactedServicesList": "",
+            "pesId": "15551"
         },
         {
             "service": "ResourceService",
@@ -62,7 +68,8 @@
             "templateFileName": "AppServiceCertificate",
             "imgSrc": "",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": ""
+            "azureCommImpactedServicesList": "",
+            "pesId": "16512"
         },
         {
             "service": "ResourceService",
@@ -70,7 +77,8 @@
             "templateFileName": "AppServiceDomain",
             "imgSrc": "",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": ""
+            "azureCommImpactedServicesList": "",
+            "pesId": "16513"
         }
     ]
 }
