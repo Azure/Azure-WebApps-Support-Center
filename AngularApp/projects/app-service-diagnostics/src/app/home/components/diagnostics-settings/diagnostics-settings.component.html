@@ -1,3 +1,56 @@
-<p>
-  diagnostics-settings works!
-</p>
+<div class="col-6 col-md-4 top-space">
+        <div class="row form-group" *ngIf="!isFeatureRegistered">
+          <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
+            Change Analysis feature registration is in progress. Once registration is completed, please use the below setting to enable Change Analysis.
+        </div>
+        <loader-view *ngIf="updatingTag || updatingProvider " message="Saving settings..."></loader-view>
+        <div *ngIf="!updatingProvider && !updatingTag">
+        <div class="row form-group">
+            <div class="form-group">
+                <label class="control-label col-md-5">Change Analysis</label>
+                <div class="col-md-7">
+                  <fieldset [disabled]="!isFeatureRegistered">
+                      <label class="radio-inline control-label">
+                          <input type="radio" name="changeAnalysis" value="1" [checked]="isProviderRegistered" (change)="setChangeAnalysisEnabled($event.target.value)"> On
+                      </label>
+                      <label class="radio-inline control-label">
+                          <input  type="radio" name="changeAnalysis" value="0"  [checked]="!isProviderRegistered" (change)="setChangeAnalysisEnabled($event.target.value)"> Off
+                      </label>
+                  </fieldset>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group" *ngIf="changeAnalyisisEnabled">
+            <label class="control-label col-md-5">Enable scan of webapp code</label>
+            <div class="col-md-7">
+                  <label class="radio-inline control-label">
+                      <input type="radio" name="codeScan" value="1" [checked]="codeScanState" (change)="setCodeScanEnabled($event.target.value)"> On
+                  </label>
+                  <label class="radio-inline control-label">
+                      <input  type="radio" name="codeScan" value="0"   [checked]="!codeScanState" (change)="setCodeScanEnabled($event.target.value)"> Off
+                  </label>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="alert alert-info" role="alert">
+               <p>Enabling Change Analysis will wake up KUDU every 4 hours to update change information. Please configure your webapp to Always-on to avoid performance impact.
+                 <br> To enable Always on, use the below setting or go to Configuration -> General settings -> Always on -> On.</p>
+              </div>
+        </div>
+        <div class="row form-group">
+            <label class="control-label col-md-5">Always on</label>
+            <div class="col-md-7">
+                  <label class="radio-inline control-label">
+                      <input type="radio" name="alwaysOn" value="1" [checked]="alwaysOnState" (change)="setAlwaysOnEnabled($event.target.value)"> On
+                  </label>
+                  <label class="radio-inline control-label">
+                      <input  type="radio" name="alwaysOn" value="0" [checked]="!alwaysOnState" (change)="setAlwaysOnEnabled($event.target.value)"> Off
+                  </label>
+            </div>
+        </div>
+        <div class="row form-group">
+          <button class="btn btn-primary" [disabled]="!isFeatureRegistered" (click)="saveSettings()">Save</button>
+        </div>
+      </div>
+</div>
+

@@ -7,8 +7,11 @@ export const TelemetryEventNames = {
     ChildDetectorsSummary: 'ChildDetectorsSummary',
     MarkdownClicked: 'MarkdownClicked',
     StarRatingSubmitted: 'StarRatingSubmitted',
-    CardClicked: 'CardClicked', 
+    CardClicked: 'CardClicked',
     FormButtonClicked: 'FormButtonClicked',
+    ChangeAnalysisTimelineClicked: 'ChangeAnalysisTimelineClicked',
+    OndemandScanClicked: 'OndemandScanClicked',
+    ChangeAnalysisEnableClicked: 'ChangeAnalysisEnableClicked'
 };
 
 export interface ITelemetryProvider {

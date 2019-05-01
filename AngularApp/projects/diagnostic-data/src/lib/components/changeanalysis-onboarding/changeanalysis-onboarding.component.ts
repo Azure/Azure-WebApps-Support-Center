@@ -7,25 +7,27 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
+import { SettingsService} from '../../services/settings.service';
 @Component({
   selector: 'changeanalysis-onboarding',
   templateUrl: './changeanalysis-onboarding.component.html',
   styleUrls: ['./changeanalysis-onboarding.component.scss',
-'../insights/insights.component.scss']
+'../insights/insights.component.scss'],
 })
+
 export class ChangeAnalysisOnboardingComponent extends DataRenderBaseComponent {
   onboardingText: string = "";
   isPublic: boolean;
   renderingProperties: Rendering;
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, protected telemetryService: TelemetryService,
-  private activatedRoute: ActivatedRoute, private router: Router) {
+  private activatedRoute: ActivatedRoute, private router: Router, private settingsService: SettingsService) {
     super(telemetryService);
     this.isPublic = config && config.isPublic;
    }
 
    protected processData(data: DiagnosticData) {
      super.processData(data);
-     this.renderingProperties = <Rendering>data.renderingProperties; 
+     this.renderingProperties = <Rendering>data.renderingProperties;
      this.parseData(data.table);
    }
 
@@ -40,14 +42,14 @@ export class ChangeAnalysisOnboardingComponent extends DataRenderBaseComponent {
    }
 
    navigateToSettings(): void {
-    const path = ['settings'];
-
-    const navigationExtras: NavigationExtras = {
-      queryParamsHandling: 'preserve',
-      preserveFragment: true,
-      relativeTo: this.activatedRoute
-    };
-    this.router.navigate(path, navigationExtras);
+        let path = this.settingsService.getUrlToNavigate();
+        this.router.navigateByUrl(path);
    }
 
+   logEnablementClick(): void {
+       let eventProps = {
+           'detector': this.detector
+       };
+       this.telemetryService.logEvent(TelemetryEventNames.ChangeAnalysisEnableClicked, eventProps);
+   }
 }

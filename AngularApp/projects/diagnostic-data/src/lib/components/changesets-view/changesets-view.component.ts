@@ -1,14 +1,16 @@
-import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Inject, ChangeDetectorRef } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { DiagnosticData, Rendering, DataTableResponseObject, DetectorResponse, RenderingType } from '../../models/detector';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import { DiagnosticService } from '../../services/diagnostic.service';
+import { Router} from '@angular/router';
 import { DataSet, Timeline} from 'vis';
 import { DetectorControlService } from '../../services/detector-control.service';
 import moment = require('moment');
-import { Subscription, Observable, interval } from 'rxjs';
-
+import { Subscription, interval } from 'rxjs';
+import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
+import { SettingsService} from '../../services/settings.service';
 
 @Component({
   selector: 'changesets-view',
@@ -23,6 +25,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     selectedChangeSetId: string = '';
     changesDataSet: DiagnosticData[];
     loadingChangesTable: boolean = true;
+    loadingChangesTimeline: boolean = false;
     changesTableError: string = '';
     sourceGroups = new DataSet([
         {id: 1, content: 'Properties'},
@@ -34,8 +37,11 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     subscription: Subscription;
     scanState: string = '';
     showViewChanges: boolean = false;
+    timeLineDataSet: DataSet;
+    changesTimeline: Timeline;
     constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, protected telemetryService: TelemetryService,
-    protected changeDetectorRef: ChangeDetectorRef, protected diagnosticService: DiagnosticService,  private detectorControlService: DetectorControlService) {
+    protected changeDetectorRef: ChangeDetectorRef, protected diagnosticService: DiagnosticService,
+    private detectorControlService: DetectorControlService, private settingsService: SettingsService, private router:Router) {
         super(telemetryService);
         this.isPublic = config && config.isPublic;
     }
@@ -44,10 +50,9 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
         super.processData(data);
         this.parseData(data.table);
         if(this.isPublic) {
-            this.subscription = interval(5000).subscribe(res => {
-                this.pollForScanStatus();
-            });
+           this.checkInitialScanState();
         }
+
     }
 
     private parseData(data: DataTableResponseObject) {
@@ -66,6 +71,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     }
 
     private constructTimeline(data: DataTableResponseObject) {
+        this.loadingChangesTimeline = true;
         let changeSets = data.rows;
         let timelineItems = [];
         changeSets.forEach(changeset => {
@@ -77,18 +83,22 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
             className: this.findGroupBySource(changeset[2]) == 1 ? 'red' : 'green'
         })
         });
-
+        this.loadingChangesTimeline = false;
         // DOM element where the Timeline will be attached
         let container = document.getElementById('timeline');
-        let items = new DataSet(timelineItems);
+
+        this.timeLineDataSet = new DataSet(timelineItems);
+
         // Configuration for the Timeline
         let options = {
-            height: "250px",
+            maxHeight: 400,
+            horizontalScroll: true,
+            verticalScroll: true
             };
-        // Create a Timeline
-        let timeline = new Timeline(container, items, this.sourceGroups, options);
-            timeline.on('select', this.triggerChangeEvent);
 
+        // Create a Timeline
+        this.changesTimeline = new Timeline(container, this.timeLineDataSet, this.sourceGroups, options);
+        this.changesTimeline.on('select', this.triggerChangeEvent);
     }
 
     private initializeChangesView(data: DataTableResponseObject) {
@@ -168,6 +178,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     }
 
     private scanNow() {
+        this.logOndemandScanClick();
         this.scanState = "Submitting";
         this.scanStatusMessage = "Submitting scan request...";
         this.allowScanAction = false;
@@ -179,7 +190,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                 let table = dataset[0].table;
                 let rows = table.rows;
                 let submissionState = rows[0][1];
-                this.scanState = submissionState;               
+                this.scanState = submissionState;
                 // Request has been submitted, update the UI with the state.
                 console.log("Request has been submitted, update the UI with the state : " + submissionState);
                 this.setScanState(submissionState);
@@ -193,8 +204,60 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
         });
     }
 
+    private checkInitialScanState() {
+        this.settingsService.getScanEnabled().subscribe(isEnabled => {
+        if(isEnabled) {
+            this.scanStatusMessage = "Checking recent scan status...";
+            this.scanState = "Polling";
+            this.allowScanAction = false;
+            let queryParams = `&scanAction=checkscan`;
+            this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
+                this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) => {
+                    let dataset = response.dataset;
+                    let table = dataset[0].table;
+                    let rows = table.rows;
+                    let submissionState = rows[0][1];
+                    this.scanState = submissionState;
+                    if (submissionState == "Completed") {
+                        this.setScanState(submissionState);
+                        let completedTime = rows[0][3];
+                        let currentMoment = moment();
+                        let completedMoment = moment(completedTime);
+                        let diff = currentMoment.diff(completedMoment, 'seconds');
+                        // If scan has been completed more than a minute ago, display default message
+                        if (diff >= 60) {
+                            this.setDefaultScanStatus();
+                        } else {
+                            this.scanStatusMessage = "Scanning is complete. Click the below button to view the latest changes now.";
+                            this.allowScanAction = true;
+                            this.showViewChanges = true;
+                        }
+                     } else if (submissionState == "No active requests") {
+                        this.setScanState("");
+                        this.setDefaultScanStatus();
+                     } else {
+                        console.log("Starting polling to see scan progress");
+                        this.subscription = interval(5000).subscribe(res => {
+                            this.pollForScanStatus();
+                        });
+                     }
+                }, (error: any) => {
+                    // Stop timer in case of any error
+                    if(this.subscription) {
+                        this.subscription.unsubscribe();
+                    }
+                    this.scanState = "";
+                    this.setScanState("");
+                });
+            } else {
+                this.scanStatusMessage = '';
+                this.allowScanAction = false;
+            }
+        });
+    }
+
     private pollForScanStatus() {
-        this.scanStatusMessage = "Checking last scan status...";
+        this.scanStatusMessage = "Monitoring scan status...";
         this.scanState = "Polling";
         this.allowScanAction = false;
         let queryParams = `&scanAction=checkscan`;
@@ -206,7 +269,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                 let submissionState = rows[0][1];
                 this.scanState = submissionState;
                 // Inscan & Submitted is not a final state, so continue polling.
-                if (submissionState == "Inscan" || submissionState == "Submitted") {
+                if (submissionState == "InScan" || submissionState == "Submitted") {
                     this.setScanState(submissionState);
                 } else {
                     // Completed or Failed is a final state, stop polling
@@ -220,7 +283,8 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                 if(this.subscription) {
                     this.subscription.unsubscribe();
                 }
-                this.setScanState("")
+                this.scanState = "";
+                this.setScanState("");
             });
     }
 
@@ -228,32 +292,14 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
         console.log("Setting scan state : "+ submissionState);
         switch(submissionState) {
             case "Submitted":
-                this.scanStatusMessage = "Scan request has been submitted...";
-                this.allowScanAction = false;
-                break;
-            case "Inscan":
+            case "InScan":
                 this.scanStatusMessage = "Scanning is in progress. This may take few minutes";
                 this.allowScanAction = false;
                 break;
             case "Completed":
-                console.log("Checking difference between completed time and current time");
-                let currentMoment = moment();
-                let completedMoment = moment(completedTime);
-                let diff = currentMoment.diff(completedMoment, 'seconds');
-                console.log("Current moment is " + currentMoment.format("ddd, MMM D YYYY, h:mm:ss a"));
-                console.log("Completed moment is" + completedMoment.format("ddd, MMM D YYYY, h:mm:ss a"));
-                console.log("Difference in seconds is :" + diff);
-                // If scan has been completed more than a minute ago, display default message
-                if (diff >= 60) {
-                    console.log("Scan completed more than a minute ago, display default message");
-                    this.scanStatusMessage = "Click the below button to scan your webapp and get the latest changes";
-                    this.allowScanAction = true;
-                    this.showViewChanges = false;
-                } else {
-                    this.scanStatusMessage = "Scanning is complete. Click the below button to view the latest changes now.";
-                    this.allowScanAction = true;
-                    this.showViewChanges = true;
-                }
+                this.scanStatusMessage = "Scanning is complete. Click the below button to view the latest changes now.";
+                this.allowScanAction = true;
+                this.showViewChanges = true;
                 break;
             case "Failed":
                 this.scanStatusMessage = "The last scan request failed. Click the below button to submit new scan request";
@@ -261,9 +307,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                 this.showViewChanges = false;
                 break;
             default:
-                this.scanStatusMessage = "Click the below button to to scan your webapp and get the latest changes";
-                this.allowScanAction = true;
-                this.showViewChanges = false;
+                this.setDefaultScanStatus();
                 break;
         }
     }
@@ -286,8 +330,10 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
             };
             case "Submitted":
             return {
-                'fa-share-square': true
-            }
+                'fa-circle-o-notch' : true,
+                'fa-spin': true,
+                'spin-icon': true
+            };
             case "InScan":
             return {
                 'fa-circle-o-notch' : true,
@@ -302,16 +348,74 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
             return {
                 'fa-times-circle': true
             }
+            default:
+            return {
+                'fa-check': true
+            }
         }
     }
-   
-    refreshTimeline(): void {
 
+    refreshTimeline(): void {
+        this.loadingChangesTimeline = true;
+        let queryParams = `&changeSetId=*`;
+        this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
+        this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
+            // Reload timeline with latest changes
+            let newChangeRows = response.dataset[0]['table'];
+            let newTimelineItems = [];
+            newChangeRows.rows.forEach(row => {
+                let existingItem = this.timeLineDataSet.get(row[0]);
+                // Add to timeline if it doesnt exist.
+                if(!existingItem) {
+                    newTimelineItems.push({
+                    id: row[0],
+                    content: ' ',
+                    start: row[3],
+                    group: this.findGroupBySource(row[2]),
+                    className: this.findGroupBySource(row[2]) == 1 ? 'red' : 'green'
+                });
+                }
+            });
+
+            this.timeLineDataSet.add(newTimelineItems);
+            this.loadingChangesTimeline = false;
+            this.initializeChangesView(newChangeRows);
+            // Convert UTC timestamp to user readable date
+            this.scanDate = moment(newChangeRows.rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
+            this.setDefaultScanStatus();
+        }, (error: any) => {
+
+        });
     }
-    
+
     ngOnDestroy(): void {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
     }
+
+    setDefaultScanStatus(): void {
+        this.scanStatusMessage = "Click the below button to to scan your webapp and get the latest changes";
+        this.allowScanAction = true;
+        this.showViewChanges = false;
+    }
+
+    logTimelineEventClick(): void {
+        let eventProps = {
+            'Detector': this.detector
+        };
+        this.logEvent(TelemetryEventNames.ChangeAnalysisTimelineClicked, eventProps);
+    }
+
+    logOndemandScanClick(): void {
+        let eventProps = {
+            'Detector': this.detector,
+        }
+        this.logEvent(TelemetryEventNames.OndemandScanClicked, eventProps);
+    }
+
+    navigateToSettings(): void {
+        let path = this.settingsService.getUrlToNavigate();
+        this.router.navigateByUrl(path);
+   }
 }

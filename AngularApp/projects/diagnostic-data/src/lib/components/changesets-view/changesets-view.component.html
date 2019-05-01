@@ -9,7 +9,7 @@
           <div class="scan-row" *ngIf="scanDate != ''">
            The change were last scanned at {{scanDate}}
            <div class="pull-right" *ngIf ="isPublic">
-             <a>Go to Change Analysis Settings</a>
+             <a (click)="navigateToSettings()">Go to Change Analysis Settings</a>
            </div>
           </div>
           <div class="scan-row"  *ngIf ="isPublic && scanStatusMessage != ''">
@@ -21,7 +21,6 @@
             <button class="btn btn-info" *ngIf="showViewChanges" (click)="refreshTimeline()"> View Changes now</button>
           </div>
         </div>
-
         <div id="timeline"></div>
         <div *ngIf="!developmentMode">
             <input type="hidden" id="changeSetId" (change)="refreshChangesTable()">

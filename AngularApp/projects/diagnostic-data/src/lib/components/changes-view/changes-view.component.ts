@@ -91,8 +91,15 @@ export class ChangesViewComponent implements OnInit {
     }
 
     // Prepare the data for diff view.
-    private prepareValuesForDiffView(diffvalue: string): DiffEditorModel {
+    private prepareValuesForDiffView(diffvalue: any): DiffEditorModel {
         try {
+            if(diffvalue instanceof Object || diffvalue instanceof Array ) {
+                return {
+                    // Needed for JSON Pretty
+                    "code": JSON.stringify(diffvalue, null, 2),
+                    "language": 'json'
+                    };
+            }
             let jsonObject = JSON.parse(diffvalue);
             if(jsonObject.hasOwnProperty('content') && jsonObject['content'] != null) {
                 return {
