@@ -6,7 +6,8 @@ import { MatTableDataSource} from '@angular/material';
 import {Changes} from '../../models/changesets';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { DiffEditorModel } from 'ngx-monaco-editor';
-import moment = require('moment');
+import * as moment from 'moment';
+
   @Component({
     selector: 'changes-view',
     templateUrl: './changes-view.component.html',
