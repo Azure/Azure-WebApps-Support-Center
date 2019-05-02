@@ -11,7 +11,7 @@ import * as momentNs from 'moment';
 import { Subscription, interval } from 'rxjs';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { SettingsService} from '../../services/settings.service';
-
+const moment = momentNs;
 @Component({
   selector: 'changesets-view',
   templateUrl: './changesets-view.component.html',

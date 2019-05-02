@@ -7,7 +7,7 @@ import {Changes} from '../../models/changesets';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { DiffEditorModel } from 'ngx-monaco-editor';
 import * as momentNs from 'moment';
-
+const moment = momentNs;
   @Component({
     selector: 'changes-view',
     templateUrl: './changes-view.component.html',
