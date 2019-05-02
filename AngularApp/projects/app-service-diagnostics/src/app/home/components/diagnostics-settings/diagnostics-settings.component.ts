@@ -52,7 +52,7 @@ export class DiagnosticsSettingsComponent implements OnInit {
             // show in progres text and disable enabling
             this.isFeatureRegistered = false;
             // start polling until registered
-            this.subscription = interval(5000).subscribe(res => {
+            this.subscription = interval(20000).subscribe(res => {
                 this.pollForFeatureRegStatus();
             });
         } else {

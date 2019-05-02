@@ -51,9 +51,9 @@ export class ChangesViewComponent implements OnInit {
 
     ngOnInit() {
         console.log('changes view initialized');
+        this.tableItems = [];
         let changesTable = this.changesDataSet[0].table;
         if(changesTable) {
-            this.tableItems = [];
             this.parseChangesData(changesTable.rows);
         }
     }
@@ -61,15 +61,15 @@ export class ChangesViewComponent implements OnInit {
     private parseChangesData(rows: any[][]) {
         if(rows.length > 0) {
             rows.forEach(row => {
-                let level = row["level"] ? row["level"] : row[2];
-                let description = row["description"] ? row["descrption"] : row[4];
-                let oldValue = row["oldValue"] ? row["oldValue"] : row[5];
-                let newValue = row["newValue"] ? row["newValue"] : row[6];
-                let initiatedBy = row["initiatedBy"] ? row["initiatedBy"] : row[7];
-                let displayName = row["displayName"] ? row["displayName"] : row[3];
-                let timestamp = row["timeStamp"] ? row["timeStamp"] : row[0];
+                let level = row.hasOwnProperty("level") ? row["level"] : row[2];
+                let description = row.hasOwnProperty("descrption") ? row["descrption"] : row[4];
+                let oldValue = row.hasOwnProperty("oldValue") ? row["oldValue"] : row[5];
+                let newValue = row.hasOwnProperty("newValue") ? row["newValue"] : row[6];
+                let initiatedBy = row.hasOwnProperty("initiatedBy") ? row["initiatedBy"] : row[7];
+                let displayName = row.hasOwnProperty("displayName") ? row["displayName"] : row[3];
+                let timestamp = row.hasOwnProperty("timeStamp") ? row["timeStamp"] : row[0];
                 this.tableItems.push({
-                    "time":  moment(timestamp).format("ddd, MMM D YYYY, h:mm:ss a"),
+                    "time":  moment(timestamp).format("MMM D YYYY, h:mm:ss a"),
                     "level": level,
                     "levelIcon": this.getIconForLevel(level),
                     "displayName": this.prepareDisplayValueForTable(displayName),

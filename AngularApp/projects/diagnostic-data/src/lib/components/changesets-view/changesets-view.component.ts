@@ -183,7 +183,6 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
         this.scanStatusMessage = "Submitting scan request...";
         this.allowScanAction = false;
         let queryParams = `&scanAction=submitscan`;
-        console.log("Submitting scan request");
         this.diagnosticService.getDetector(this.detector,  this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
             this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) => {
                 let dataset = response.dataset;
@@ -192,10 +191,8 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                 let submissionState = rows[0][1];
                 this.scanState = submissionState;
                 // Request has been submitted, update the UI with the state.
-                console.log("Request has been submitted, update the UI with the state : " + submissionState);
                 this.setScanState(submissionState);
                 // Start polling every 5 secs to see the progress.
-                console.log("Starting polling to see scan progress");
                 this.subscription = interval(5000).subscribe(res => {
                     this.pollForScanStatus();
                 });
@@ -289,7 +286,6 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     }
 
     private setScanState(submissionState: string, completedTime?: string) {
-        console.log("Setting scan state : "+ submissionState);
         switch(submissionState) {
             case "Submitted":
             case "InScan":
@@ -395,7 +391,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     }
 
     setDefaultScanStatus(): void {
-        this.scanStatusMessage = "Click the below button to to scan your webapp and get the latest changes";
+        this.scanStatusMessage = "Click the below button to to scan your web app and get the latest changes";
         this.allowScanAction = true;
         this.showViewChanges = false;
     }

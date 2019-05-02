@@ -84,13 +84,13 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let element; columns: displayedColumns;"
-            class="example-element-row"
-            [class.example-expanded-row]="expandedElement === element"
+            class="element-row"
+            [class.expanded-row]="expandedElement === element"
             (click)="expandedElement = expandedElement === element ? null : element">
       </tr>
-      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
     </table>
 
     <div class="table-top text-center">
-      <em>To view other changes, select a change group in the timeline.</em>
+      <em>To view other changes, select a change group in the timeline. To zoom in and out, scroll the timeline up and down</em>
     </div>

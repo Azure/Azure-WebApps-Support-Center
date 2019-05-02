@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="row form-group" *ngIf="changeAnalyisisEnabled">
-            <label class="control-label col-md-5">Enable scan of webapp code</label>
+            <label class="control-label col-md-5">Scan for code changes</label>
             <div class="col-md-7">
                   <label class="radio-inline control-label">
                       <input type="radio" name="codeScan" value="1" [checked]="codeScanState" (change)="setCodeScanEnabled($event.target.value)"> On
