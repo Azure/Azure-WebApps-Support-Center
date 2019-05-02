@@ -6,7 +6,7 @@ import { MatTableDataSource} from '@angular/material';
 import {Changes} from '../../models/changesets';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { DiffEditorModel } from 'ngx-monaco-editor';
-import * as moment from 'moment';
+import * as momentNs from 'moment';
 
   @Component({
     selector: 'changes-view',
@@ -70,7 +70,7 @@ export class ChangesViewComponent implements OnInit {
                 let displayName = row.hasOwnProperty("displayName") ? row["displayName"] : row[3];
                 let timestamp = row.hasOwnProperty("timeStamp") ? row["timeStamp"] : row[0];
                 this.tableItems.push({
-                    "time":  moment(timestamp).format("MMM D YYYY, h:mm:ss a"),
+                    "time":  momentNs(timestamp).format("MMM D YYYY, h:mm:ss a"),
                     "level": level,
                     "levelIcon": this.getIconForLevel(level),
                     "displayName": this.prepareDisplayValueForTable(displayName),

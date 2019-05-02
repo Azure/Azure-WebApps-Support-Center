@@ -7,7 +7,7 @@ import { DiagnosticService } from '../../services/diagnostic.service';
 import { Router} from '@angular/router';
 import { DataSet, Timeline} from 'vis';
 import { DetectorControlService } from '../../services/detector-control.service';
-import * as moment from 'moment';
+import * as momentNs from 'moment';
 import { Subscription, interval } from 'rxjs';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { SettingsService} from '../../services/settings.service';
@@ -64,7 +64,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                 this.initializeChangesView(data);
             }
             // Convert UTC timestamp to user readable date
-            this.scanDate = moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
+            this.scanDate = momentNs(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
         } else {
              this.changeSetText = `No change groups have been detected`;
         }
@@ -218,8 +218,8 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                     if (submissionState == "Completed") {
                         this.setScanState(submissionState);
                         let completedTime = rows[0][3];
-                        let currentMoment = moment();
-                        let completedMoment = moment(completedTime);
+                        let currentMoment = momentNs();
+                        let completedMoment = momentNs(completedTime);
                         let diff = currentMoment.diff(completedMoment, 'seconds');
                         // If scan has been completed more than a minute ago, display default message
                         if (diff >= 60) {
@@ -377,7 +377,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
             this.loadingChangesTimeline = false;
             this.initializeChangesView(newChangeRows);
             // Convert UTC timestamp to user readable date
-            this.scanDate = moment(newChangeRows.rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
+            this.scanDate = momentNs(newChangeRows.rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
             this.setDefaultScanStatus();
         }, (error: any) => {
 
