@@ -7,7 +7,7 @@ import { DiagnosticService } from '../../services/diagnostic.service';
 import { Router} from '@angular/router';
 import { DataSet, Timeline} from 'vis';
 import { DetectorControlService } from '../../services/detector-control.service';
-import moment = require('moment');
+import * as moment from 'moment';
 import { Subscription, interval } from 'rxjs';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { SettingsService} from '../../services/settings.service';
@@ -130,7 +130,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
         domelement.dispatchEvent(event);
     }
 
-    private refreshChangesTable(): void {
+     refreshChangesTable(): void {
         let changeSetIdDom = <HTMLInputElement>document.getElementById("changeSetId");
         if(changeSetIdDom.value != undefined) {
             this.selectedChangeSetId =  changeSetIdDom.value;
@@ -177,7 +177,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
         }
     }
 
-    private scanNow() {
+     scanNow():void {
         this.logOndemandScanClick();
         this.scanState = "Submitting";
         this.scanStatusMessage = "Submitting scan request...";
