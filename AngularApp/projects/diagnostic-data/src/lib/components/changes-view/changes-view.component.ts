@@ -70,7 +70,7 @@ export class ChangesViewComponent implements OnInit {
                 let displayName = row.hasOwnProperty("displayName") ? row["displayName"] : row[3];
                 let timestamp = row.hasOwnProperty("timeStamp") ? row["timeStamp"] : row[0];
                 this.tableItems.push({
-                    "time":  momentNs(timestamp).format("MMM D YYYY, h:mm:ss a"),
+                    "time":  moment(timestamp).format("MMM D YYYY, h:mm:ss a"),
                     "level": level,
                     "levelIcon": this.getIconForLevel(level),
                     "displayName": this.prepareDisplayValueForTable(displayName),

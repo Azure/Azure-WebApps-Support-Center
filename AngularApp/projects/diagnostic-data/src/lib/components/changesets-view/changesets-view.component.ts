@@ -64,7 +64,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                 this.initializeChangesView(data);
             }
             // Convert UTC timestamp to user readable date
-            this.scanDate = momentNs(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
+            this.scanDate = moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
         } else {
              this.changeSetText = `No change groups have been detected`;
         }
@@ -131,6 +131,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     }
 
      refreshChangesTable(): void {
+         this.logTimelineEventClick();
         let changeSetIdDom = <HTMLInputElement>document.getElementById("changeSetId");
         if(changeSetIdDom.value != undefined) {
             this.selectedChangeSetId =  changeSetIdDom.value;
@@ -218,8 +219,8 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                     if (submissionState == "Completed") {
                         this.setScanState(submissionState);
                         let completedTime = rows[0][3];
-                        let currentMoment = momentNs();
-                        let completedMoment = momentNs(completedTime);
+                        let currentMoment = moment();
+                        let completedMoment = moment(completedTime);
                         let diff = currentMoment.diff(completedMoment, 'seconds');
                         // If scan has been completed more than a minute ago, display default message
                         if (diff >= 60) {
@@ -377,7 +378,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
             this.loadingChangesTimeline = false;
             this.initializeChangesView(newChangeRows);
             // Convert UTC timestamp to user readable date
-            this.scanDate = momentNs(newChangeRows.rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
+            this.scanDate = moment(newChangeRows.rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
             this.setDefaultScanStatus();
         }, (error: any) => {
 
