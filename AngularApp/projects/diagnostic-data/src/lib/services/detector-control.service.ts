@@ -119,7 +119,7 @@ export class DetectorControlService {
             }
             else {
               if (diff.asMinutes() === 0) {
-                returnValue = 'Start and End date time cannot be equal.';
+                returnValue = 'Start and End date time cannot be the same.';
               }
               else {
                 if (diff.asMinutes() < 15) {
@@ -185,7 +185,7 @@ export class DetectorControlService {
     else {
       this.timeRangeDefaulted = true;
       if (this.timeRangeErrorString === 'Selected time duration must be at least 15 minutes.') {
-        this.timeRangeErrorString = 'Defaulting to a 15 minutes duration. Selected time duration was less than 15 minutes.';
+        this.timeRangeErrorString = 'Time range set to a 15 minutes duration. Selected time duration was less than 15 minutes.';
         this._endTime = endTime;
         this._startTime = this._endTime.clone().subtract(15, 'minutes');
       }
@@ -203,7 +203,7 @@ export class DetectorControlService {
           }
         }
         else {
-          this.timeRangeErrorString = `Defaulting to last 24 hrs. Start and End date time must not be more than ${(this.allowedDurationInDays * 24).toString()} hrs apart and Start date must be within the past 30 days.`;
+          this.timeRangeErrorString = `Time range set to last 24 hrs. Start and End date time must not be more than ${(this.allowedDurationInDays * 24).toString()} hrs apart and Start date must be within the past 30 days.`;
           this._endTime = moment.utc();
           this._startTime = this._endTime.clone().subtract(1, 'days');
         }
