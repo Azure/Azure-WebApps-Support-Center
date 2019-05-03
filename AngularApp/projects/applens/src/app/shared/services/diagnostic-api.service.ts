@@ -44,13 +44,21 @@ export class DiagnosticApiService {
 
   public getDetectors(version: string, resourceId: string, body?: any, internalClient: boolean = true): Observable<DetectorMetaData[]> {
     let path = `${version}${resourceId}/detectors`;
-    console.log(`Diagnostic api (Applens): ${internalClient}`);
+    console.log(`Get Detectors: Diagnostic api (Applens) body`);
+    console.log(body);
     return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body, true, false, internalClient).pipe(retry(1), map(response => response.map(detector => detector.metadata)));
   }
 
   public getGists(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {
     let path = `${version}${resourceId}/gists`;
     return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body).pipe(retry(1), map(response => response.map(gist => gist.metadata)));
+  }
+
+  public getUserPhoto(userId: string): Observable<any> {
+    let url: string = `${this.diagnosticApi}api/graph/users/${userId}`;
+    return this._httpClient.get(url, {
+      headers: this._getHeaders()
+    });
   }
 
   public getCompilerResponse(version: string, resourceId: string, body: any, startTime?: string, endTime?: string,
@@ -138,7 +146,6 @@ export class DiagnosticApiService {
   public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true,
       invalidateCache: boolean = false, internalClient: boolean = true, internalView: boolean = true, emailRecipients: string="",
       additionalParams?: any): Observable<T> {
-          console.log(`Inside diagnostic api service : ${internalClient}, Cache: ${useCache}, Invalidate: ${invalidateCache}`);
     let url = `${this.diagnosticApi}api/invoke`
     let request: Observable<any>;
 

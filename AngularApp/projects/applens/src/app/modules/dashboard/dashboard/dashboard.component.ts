@@ -3,7 +3,11 @@ import { Component, OnDestroy } from '@angular/core';
 import { ResourceService } from '../../../shared/services/resource.service';
 import * as momentNs from 'moment';
 import { Router, ActivatedRoute } from '@angular/router';
+<<<<<<< HEAD
 import { DetectorControlService, FeatureNavigationService, DetectorMetaData, DetectorType } from 'diagnostic-data';
+=======
+import { DetectorControlService, FeatureNavigationService } from 'diagnostic-data';
+>>>>>>> add graph client
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 
 @Component({
@@ -18,7 +22,8 @@ export class DashboardComponent implements OnDestroy {
 
   contentHeight: string;
 
-  navigateSub: Subscription
+  navigateSub: Subscription;
+  userPhotoSource: string;
 
   constructor(public resourceService: ResourceService, private _detectorControlService: DetectorControlService,
     private _router: Router, private _diagnosticService: ApplensDiagnosticService, private _activatedRoute: ActivatedRoute, private _navigator: FeatureNavigationService) {
@@ -53,6 +58,11 @@ export class DashboardComponent implements OnDestroy {
       }
       this._router.navigate([], { queryParams: routeParams, relativeTo: this._activatedRoute });
     }
+
+
+    this._diagnosticService.getUserPhoto("xipeng").subscribe(image => {
+        this.userPhotoSource =  'data:image/jpeg;base64,' + image;
+    });
   }
 
   reloadHome() {

@@ -27,6 +27,8 @@ export class ValidResourceResolver implements Resolve<void>{
     return this._http.get('assets/enabledResourceTypes.json').pipe(map(response => {
       let resource = <ArmResource>route.params;
       let type = `${resource.provider}/${resource.resourceTypeName}`
+      console.log("resource********");
+      console.log(resource);
 
       if (response && response.json().enabledResourceTypes) {
 

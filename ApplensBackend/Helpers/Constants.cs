@@ -29,4 +29,13 @@ namespace AppLensV3.Helpers
         internal const string DefaultKustoEndpoint = "https://wawswus.kusto.windows.net";
         internal const string KustoApiEndpointFormat = "https://{0}.kusto.windows.net:443/v1/rest/query";
     }
+
+    internal static class GraphConstants
+    {
+        internal static readonly TimeSpan DefaultTimeGrain = TimeSpan.FromMinutes(5);
+        internal const string MicrosoftTenantAuthorityUrl = "https://login.windows.net/microsoft.com";
+        internal const int TokenRefreshIntervalInMs = 10 * 60 * 1000;   // 10 minutes
+        internal const string DefaultGraphEndpoint = "https://graph.microsoft.com/";
+        internal const string GraphApiEndpointFormat = "https://graph.microsoft.com/v1.0/{0}";
+    }
 }

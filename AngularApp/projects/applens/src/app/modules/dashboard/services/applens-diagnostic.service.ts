@@ -36,7 +36,6 @@ export class ApplensDiagnosticService {
   }
 
   getDetectors(internalClient: boolean = true): Observable<DetectorMetaData[]> {
-      console.log(`Inside Applens diagnostic service: ${internalClient}`);
     return this._diagnosticApi.getDetectors(
       this._resourceService.versionPrefix,
       this._resourceService.getCurrentResourceId(true),
@@ -49,6 +48,11 @@ export class ApplensDiagnosticService {
       this._resourceService.versionPrefix,
       this._resourceService.getCurrentResourceId(true),
       this._resourceService.getRequestBody());
+  }
+
+
+  getUserPhoto(userId: string = "shgup"): Observable<any> {
+    return this._diagnosticApi.getUserPhoto(userId);
   }
 
   getCompilerResponse(body: any, isSystemInvoker: boolean, detectorId: string = '', startTime: string = '', endTime: string = '', dataSource: string = '', timeRange: string = '', additionalParams: any): Observable<QueryResponse<DetectorResponse>> {

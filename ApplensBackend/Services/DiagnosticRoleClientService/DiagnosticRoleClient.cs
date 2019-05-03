@@ -1,4 +1,4 @@
-﻿using AppLensV3.Services.EmailNotificationService;
+﻿using AppLensV3.Services;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
