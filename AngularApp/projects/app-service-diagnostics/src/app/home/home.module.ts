@@ -16,7 +16,7 @@ import { SupportTopicRedirectComponent } from './components/support-topic-redire
 import { TimeControlResolver } from './resolvers/time-control.resolver';
 import { ContentService } from '../shared-v2/services/content.service';
 import { DiagnosticDataModule } from 'diagnostic-data';
-import { DiagnosticsSettingsComponent } from './components/diagnostics-settings/diagnostics-settings.component';
+import {DiagnosticsSettingsComponent} from './components/diagnostics-settings/diagnostics-settings.component';
 
 export const HomeRoutes = RouterModule.forChild([
   {
@@ -55,7 +55,7 @@ export const HomeRoutes = RouterModule.forChild([
   },
   {
     path: 'settings',
-    component: DiagnosticsSettingsComponent, 
+    component: DiagnosticsSettingsComponent,
     data: {
       navigationTitle: 'App Service Diagnostics Settings'
     }

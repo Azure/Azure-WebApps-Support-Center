@@ -1,6 +1,4 @@
-<div *ngIf="tableItems.length <= 0" >
-    No distinct changes were found in the selected change group.
-  </div>
+
 
 <div class="row table-top" *ngIf="tableItems.length > 0">
   <div class="col-sm-4">
@@ -92,5 +90,8 @@
     </table>
 
     <div class="table-top text-center">
+        <em *ngIf="tableItems.length <= 0" >
+            No distinct changes were found in the selected change group.
+        </em>
       <em>To view other changes, select a change group in the timeline. To zoom in and out, scroll the timeline up and down</em>
     </div>

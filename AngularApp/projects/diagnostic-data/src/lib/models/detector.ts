@@ -22,7 +22,8 @@ export enum HealthStatus {
     Warning,
     Info,
     Success,
-    None
+    None,
+    Onboarding
 }
 
 export interface DiagnosticData {

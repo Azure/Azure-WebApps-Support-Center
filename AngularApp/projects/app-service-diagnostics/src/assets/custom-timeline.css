@@ -1,0 +1,9 @@
+.vis-item.green {
+    background-color: lightseagreen;
+    border-color: green;
+}
+
+.vis-item.red {
+    background-color: lightcoral;
+    border-color: red;
+}

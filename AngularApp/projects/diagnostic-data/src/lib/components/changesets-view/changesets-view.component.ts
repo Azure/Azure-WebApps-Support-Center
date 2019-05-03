@@ -28,8 +28,8 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     loadingChangesTimeline: boolean = false;
     changesTableError: string = '';
     sourceGroups = new DataSet([
-        {id: 1, content: 'Properties'},
-        {id: 2, content: 'Code'}
+        {id: 1, content: '<strong> Properties </strong>'},
+        {id: 2, content: '<strong> Code </strong>'}
     ]);
     scanStatusMessage: string = '';
     allowScanAction: boolean = false;

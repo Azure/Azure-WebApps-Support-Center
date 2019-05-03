@@ -7,6 +7,7 @@ import {Changes} from '../../models/changesets';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { DiffEditorModel } from 'ngx-monaco-editor';
 import * as momentNs from 'moment';
+import { isBoolean } from 'util';
 const moment = momentNs;
   @Component({
     selector: 'changes-view',
@@ -101,21 +102,27 @@ export class ChangesViewComponent implements OnInit {
                     "language": 'json'
                     };
             }
+            // edge case where we get true/false for old value vs new value
+             if(isBoolean(diffvalue)) {
+                return {
+                    "code": diffvalue.toString(),
+                    "language": 'text/plain'
+                };
+            }
             let jsonObject = JSON.parse(diffvalue);
             if(jsonObject.hasOwnProperty('content') && jsonObject['content'] != null) {
                 return {
                     "code": jsonObject['content'],
                     "language": 'text/plain'
                 };
-        } else {
+             }
             diffvalue = diffvalue.replace("mtime", "Modified Time");
             diffvalue = diffvalue.replace("crtime", "Created Time");
-           return {
+            return {
                 // Needed for JSON Pretty
                 "code": JSON.stringify(JSON.parse(diffvalue), null, 2),
                 "language": 'json'
                 };
-        }
         // Exception is thrown when we try to parse string which is not a json, so just return text/plain
         } catch(ex) {
             return {
