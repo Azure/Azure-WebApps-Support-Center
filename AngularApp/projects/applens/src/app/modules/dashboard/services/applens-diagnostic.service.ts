@@ -43,6 +43,10 @@ export class ApplensDiagnosticService {
       internalClient);
   }
 
+  getUsers(body: any): Observable<any> {
+    return this._diagnosticApi.getUsers(body);
+  }
+
   getGists(): Observable<DetectorMetaData[]> {
     return this._diagnosticApi.getGists(
       this._resourceService.versionPrefix,

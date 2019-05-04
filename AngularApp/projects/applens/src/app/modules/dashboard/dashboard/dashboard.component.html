@@ -1,12 +1,68 @@
-<header class="main-header">
+<!-- <header class="main-header">
+
   <a (click)="reloadHome()" class="logo">
     <span class="logo-lg">
       <span class="app-title">App</span>Lens
     </span>
-  </a>
+  </a> -->
 
-  <img *ngIf="userPhotoSource" id="userPhoto" [src]="userPhotoSource" class="profile-image"/>
-  <nav class="navbar navbar-fixed-top" role="navigation"></nav>
+   <!-- <nav class="navbar navbar-fixed-top" role="navigation"></nav> -->
+   <!-- <div><img *ngIf="userPhotoSource else loading" id="userPhoto" [src]="userPhotoSource" class="avatar" alt="User Profile Photo"/></div>
+
+</header>  -->
+
+
+
+
+<header class="main-header">
+<a (click)="reloadHome()" class="logo">
+    <span class="logo-lg">
+      <span class="app-title">App</span>Lens
+    </span>
+  </a>
+<!-- Header Navbar: style can be found in header.less -->
+<nav class="navbar navbar-fixed-top" role="navigation">
+    <!-- <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        <span class="sr-only">Toggle navigation</span>
+    </a> -->
+
+    <!-- <ul class="nav navbar-nav">
+
+        <li><a data-toggle="tab" href="#tab_home">Home <span class="sr-only">(current)</span></a></li>
+
+        <li><a data-toggle="tab" href="#tab_sysuse">??? ???</a></li>
+        <li><a data-toggle="tab" href="#tab_procuse">???? ???</a></li>
+        <li><a data-toggle="tab" href="#tab_prodet">???? ????</a></li>
+        <li><a data-toggle="tab" href="#tab_sdwt">SDWT ????</a></li>
+        <li><a data-toggle="tab" href="#tab_pcevents">??? ?? ??</a></li>
+        <li><a data-toggle="tab" href="#tab_winevents">??? ?? ID? ??</a></li>
+        <li><a data-toggle="tab" href="#tab_agentinfo">Agent ????</a></li>
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Email ?? ?? <span
+                    class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a data-toggle="tab" href="#tab_emailconfigs">??? ??</a></li>
+                <li><a data-toggle="tab" href="#tab_emailreceiver">??? ??</a></li>
+            </ul>
+        </li>
+        <li><img *ngIf="userPhotoSource else loading" id="userPhoto" [src]="userPhotoSource" class="avatar" alt="User Profile Photo"/></li>
+    </ul> -->
+
+    <ul class="nav navbar-nav navbar-right">
+        <!-- <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li role="separator" class="divider"></li>
+          </ul>
+        </li> -->
+        <li class="user-label"><span>Hello {{userName}}</span></li>
+        <li><img *ngIf="userPhotoSource else loading" id="userPhoto" [src]="userPhotoSource" class="avatar" alt="User Profile Photo"/></li>
+        <!-- <li><i class="fa fa-spinner" aria-hidden="true"></i></li> -->
+      </ul>
+</nav>
 </header>
 
 <div class="site-content">
@@ -16,3 +72,8 @@
     <router-outlet></router-outlet>
   </div>
 </div>
+
+<ng-template #loading>
+  <!-- <li class="user-label loading-element"><span>  <i class="fa fa-spinner-3x" aria-hidden="true"></i></span></li> -->
+  <div class="loading-element"><span>loading..</span></div>
+</ng-template>

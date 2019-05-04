@@ -14,11 +14,13 @@ using AppLensV3.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System.Threading;
+using System.Collections.Concurrent;
 
 namespace AppLensV3.Services
 {
     public interface IGraphClientService {
         Task<string> GetUserImage(string userId);
+        Task<IDictionary<string, string>> GetUsers(string[] users);
     }
 
 
@@ -58,12 +60,13 @@ namespace AppLensV3.Services
 
             try
             {
-
+                var tasks = new List<Task>();
                 string authorizationToken = await _graphTokenService.GetAuthorizationTokenAsync();
 
                 var getUserAvatarUri = $"https://graph.microsoft.com/v1.0/users/{userId}@microsoft.com/photo/$value";
 
                 string uri = $"users/{userId}@microsoft.com/photo/$value";
+                string userApiUri = $"users/{userId}@microsoft.com";
 
 
                 //HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"https://graph.microsoft.com/v1.0/users/{userId}@microsoft.com/photo/$value");
@@ -83,9 +86,11 @@ namespace AppLensV3.Services
 
                 CancellationTokenSource tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
                 HttpResponseMessage responseMsg = await _httpClient.SendAsync(request, tokenSource.Token);
+
                 if (responseMsg.IsSuccessStatusCode)
                 {
                     var content = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
+                    //var result = String.Concat("data:image / jpeg; base64,", content);
                     //Byte[] imageArray = File.ReadAllBytes(fs.FullName);
                     //string base64ImageRepresentation = Convert.ToBase64String(imageArray);
                     return content;
@@ -105,22 +110,56 @@ namespace AppLensV3.Services
             return null;
         }
 
-        //public async Task<Stream> GetEntityPropertyStreamAsync<T, S>(Expression<Func<T, bool>> keyPredicate, Expression<Func<T, S>> propertyName, string acceptMediaType)
-        //{
-        //    Uri entityByKeyUri = this.BuildRequestUri<T, string>(predicate: keyPredicate);
-        //    Uri streamUri = entityByKeyUri.Append($"/{(propertyName.Body as MemberExpression).Member.Name}");
+        public async Task<IDictionary<string, string>> GetUsers(string[] users)
+        {
 
-        //    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, streamUri);
-        //    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptMediaType));
+            try
+            {
+                var tasks = new List<Task>();
+                var authorsDictionary = new ConcurrentDictionary<string, string>();
+                string authorizationToken = await _graphTokenService.GetAuthorizationTokenAsync();
+                
+                CancellationTokenSource tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
 
-        //    HttpResponseMessage response = await this.SendAsync<object>(HttpMethod.Get, streamUri.ToString(), null, acceptMediaType);
-        //    return await response.Content.ReadAsStreamAsync();
-        //}
+                foreach(var user in users)
+                {
+                    string uri = $"users/{user}@microsoft.com/photo/$value";
+                    string userApiUri = $"users/{user}@microsoft.com";
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, string.Format(GraphConstants.GraphApiEndpointFormat, uri));
 
-        //public aysnc Task<UserImage> RetrieveUserTHumbnail()
-        //{
-        //    UserImage user
-        //}
+                    request.Headers.Add("Authorization", authorizationToken);
+
+                    tasks.Add(Task.Run(async () =>
+                    {
+                        HttpResponseMessage responseMsg = await _httpClient.SendAsync(request, tokenSource.Token);
+
+                        string content = String.Empty;
+
+                        // If the status code is 404 NotFound, it might because the user doesn't have a profile picture, or the user alias is invalid.
+                        // We set the image string to be empty if the response is not successful
+                        if (responseMsg.IsSuccessStatusCode)
+                        {
+                           content = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
+                            //content = String.Concat("data:image / jpeg; base64,", imageBase64String);
+                        }
+
+                        authorsDictionary.AddOrUpdate(user, content, (k, v) => content);
+                    }));
+
+                }
+
+                await Task.WhenAll(tasks);
+                return authorsDictionary;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+
+            return null;
+        }
+
     }
 
 

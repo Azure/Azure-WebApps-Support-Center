@@ -2,8 +2,11 @@
   <div class="alert-container">
     <comm-alert></comm-alert>
   </div>
+<!--
+  <div><img *ngIf="userPhotoSrc else loading" id="userPhoto" [src]="userPhotoSrc" class="category-icon" /></div> -->
 
-  <div><img *ngIf="userPhotoSrc" id="userPhoto" [src]="userPhotoSrc" class="category-icon" /></div>
+
+  <!-- <div ><img *ngIf="(userPhotoSrc1 | async); else loading" id="userPhoto" [src]="(userPhotoSrc1 | async)" class="category-icon" /></div> -->
 
   <div class="category-container">
     <!-- <div class="flexbox"> -->
@@ -79,6 +82,9 @@
             </div>
           </div> -->
     </div>
+    <ng-template #loading>
+      loading user profile..
+    </ng-template>
     <!--
 
   <div class="resource-info content-card">

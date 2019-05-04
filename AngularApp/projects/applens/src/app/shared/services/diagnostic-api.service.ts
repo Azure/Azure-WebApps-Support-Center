@@ -40,13 +40,20 @@ export class DiagnosticApiService {
     let path = `/${resourceId}/detectors/${detector}/statistics/${systemInvokerId}?${invokerParameters}`;
 
     return this.invoke<DetectorResponse>(path, HttpMethod.POST, body);
-  }
+  }f
 
   public getDetectors(version: string, resourceId: string, body?: any, internalClient: boolean = true): Observable<DetectorMetaData[]> {
     let path = `${version}${resourceId}/detectors`;
     console.log(`Get Detectors: Diagnostic api (Applens) body`);
     console.log(body);
     return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body, true, false, internalClient).pipe(retry(1), map(response => response.map(detector => detector.metadata)));
+  }
+
+  public getUsers(body: any): Observable<any> {
+    let url: string = `${this.diagnosticApi}api/graph/users`;
+    return  this._httpClient.post(url, body, {
+        headers: this._getHeaders()
+      });
   }
 
   public getGists(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {

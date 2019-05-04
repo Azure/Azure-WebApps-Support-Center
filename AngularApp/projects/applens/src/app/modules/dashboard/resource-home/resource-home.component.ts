@@ -23,11 +23,14 @@ export class ResourceHomeComponent implements OnInit {
     activeCategoryName: string = undefined;
     activeRow: number = undefined;
 
+    authorsList: string[] = [];
     detectorsWithSupportTopics: DetectorMetaData[];
     detectorsPublicOrWithSupportTopics: DetectorMetaData[] = [];
 
     supportTopicIdMapping: any[] = [];
     userPhotoSrc: string;
+    userPhotoSrc1: Observable<string>;
+
 
     constructor(private _elementRef: ElementRef, private _router: Router, private _activatedRoute: ActivatedRoute, private _resourceService: ResourceService, private _diagnosticService: ApplensDiagnosticService) { }
 
@@ -48,12 +51,40 @@ export class ResourceHomeComponent implements OnInit {
          //   document.getElementById("userPhoto").setAttribute("src", blobUrl);
         });
 
+        this.userPhotoSrc1 = this._diagnosticService.getUserPhoto("shgup").pipe(map(image =>
+            // const url = window.URL;
+            // const blobUrl = url.createObjectURL(image.data);
+
+            'data:image/jpeg;base64,' + image
+        ));
+
 
         this.getPhoto().subscribe((image) => {
             console.log(image);
         })
 
         const detectorsWithSupportTopics = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
+            let authorString = "";
+            detectors.forEach(detector => {
+                if (detector.author != undefined && detector.author !== '' ) {
+                    authorString = authorString + "," + detector.author;
+                }
+            });
+
+            const separators = [' ', ',', ';', ':'];
+            let authors = authorString.toLowerCase().split(new RegExp(separators.join('|'), 'g'));
+            authors.forEach(author => {
+                if (author && author.length > 0 && !this.authorsList.find(existingAuthor => existingAuthor === author)) {
+                this.authorsList.push(author);
+                }
+            });
+
+            // this.authorsList.push("patbut");
+            // this.authorsList.push("shgup");
+
+            console.log("*** All the authors");
+            console.log(this.authorsList);
+
             this.detectorsWithSupportTopics = detectors.filter(detector => detector.supportTopicList && detector.supportTopicList.length > 0);
 
             this.detectorsWithSupportTopics.forEach(detector => {

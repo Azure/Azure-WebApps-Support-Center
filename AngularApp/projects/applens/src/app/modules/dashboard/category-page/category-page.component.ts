@@ -6,6 +6,8 @@ import { forkJoin } from 'rxjs';
 import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from '@angular/router';
 import { DiagnosticService } from 'diagnostic-data';
 import { AvatarModule } from 'ngx-avatar';
+import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
+
 
 @Component({
   selector: 'category-page',
@@ -16,8 +18,8 @@ export class CategoryPageComponent implements OnInit {
 
     categoryName: string;
     category: CategoryItem;
-    categories: CategoryItem[] = []; 
-    detectors: DetectorItem[] = [];   
+    categories: CategoryItem[] = [];
+    detectors: DetectorItem[] = [];
     categoryIcon: string;
     detectorsNumber: number = 0;
 
@@ -25,13 +27,14 @@ export class CategoryPageComponent implements OnInit {
     supportTopicsNumber: number = 0;
 
     authors: any[] = [];
+    authorsList: string[] = [];
     authorsNumber: number = 0;
 
     detectorsWithSupportTopics: DetectorMetaData[];
     detectorsPublicOrWithSupportTopics: DetectorMetaData[] = [];
 
 
-  constructor(private _route: Router, private _activatedRoute: ActivatedRoute, private _diagnosticService: DiagnosticService) { }
+  constructor(private _route: Router, private _activatedRoute: ActivatedRoute, private _diagnosticService: ApplensDiagnosticService) { }
 
   ngOnInit() {
     this.categoryName = this._activatedRoute.snapshot.params['category'];
@@ -39,10 +42,46 @@ export class CategoryPageComponent implements OnInit {
     console.log(`CategoryName: ${this.categoryName}`);
 
     const detectorsListWithSupportTopics = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
-        // detector.category.toLowerCase() === this.categoryName.toLowerCase() && 
+
+
+              let authorString = "";
+              detectors.forEach(detector => {
+                  if (detector.author != undefined && detector.author !== '' ) {
+                      authorString = authorString + "," + detector.author;
+                  }
+              });
+
+
+              const separators = [' ', ',', ';', ':'];
+              let authors = authorString.toLowerCase().split(new RegExp(separators.join('|'), 'g'));
+              authors.forEach(author => {
+                  if (author && author.length > 0 && !this.authorsList.find(existingAuthor => existingAuthor === author)) {
+                  this.authorsList.push(author);
+                  }
+              });
+
+
+              var body = {
+                  authors: this.authorsList
+                };
+
+              this._diagnosticService.getUsers(body).subscribe((usersMapping) => {
+                  let mapping = usersMapping;
+                  console.log(usersMapping);
+              });
+
+              // this.authorsList.push("patbut");
+              // this.authorsList.push("shgup");
+
+              console.log("*** All the authors");
+              console.log(this.authorsList);
+
+              console.log(`detectors ${this.detectorsNumber}, spnum: ${this.supportTopicsNumber}, authorsNumber: ${this.authorsNumber}`);
+
+        // detector.category.toLowerCase() === this.categoryName.toLowerCase() &&
 
         var detectorsWithSupportTopics = detectors.filter(detector => detector.category && detector.category.toLowerCase() === this.categoryName.toLowerCase() && detector.supportTopicList && detector.supportTopicList.length > 0);
-        
+
         if (this.categoryName === "Uncategorized")
         {
             detectorsWithSupportTopics = detectors.filter(detector => !detector.category && detector.supportTopicList && detector.supportTopicList.length > 0);
@@ -71,18 +110,19 @@ export class CategoryPageComponent implements OnInit {
         console.log(detectorLists);
 
         detectorLists.forEach((detectorList: DetectorMetaData[]) => {
+
             detectorList.forEach(detector => {
                 if (!this.detectorsPublicOrWithSupportTopics.find((existingDetector) => existingDetector.id === detector.id)) {
                     this.detectorsPublicOrWithSupportTopics.push(detector);
                 }
             });
-            
+
             this.detectorsPublicOrWithSupportTopics.forEach(element => {
                 let onClick = () => {
                     console.log(`navigate to ../../detectors/${element.id}`);
                     this.navigateTo(`../../detectors/${element.id}`);
                 };
-            
+
             let authorString = "Unknown";
               let detectorAuthors = [];
               let detectorSupportTopics = [];
@@ -101,8 +141,8 @@ export class CategoryPageComponent implements OnInit {
                 });
               }
 
-              detectorAuthors.push("xipeng");
-              detectorAuthors.push("shgup");
+              this.authors.push("xipeng");
+              this.authors.push("shgup");
 
               if (element.supportTopicList && element.supportTopicList.length > 0)
               {
@@ -126,9 +166,41 @@ export class CategoryPageComponent implements OnInit {
         this.supportTopicsNumber = this.supportTopicIdMapping.length;
         this.authorsNumber = this.authors.length;
 
-        console.log(`detectors ${this.detectorsNumber}, spnum: ${this.supportTopicsNumber}, authorsNumber: ${this.authorsNumber}`);
+        let authorString = "";
+        this.detectors.forEach(detector => {
+            if (detector.authorString != undefined && detector.authorString !== '' ) {
+                authorString = authorString + "," + detector.authorString;
+            }
+        });
+
+
+        const separators = [' ', ',', ';', ':'];
+        let authors = authorString.toLowerCase().split(new RegExp(separators.join('|'), 'g'));
+        authors.forEach(author => {
+            if (author && author.length > 0 && !this.authorsList.find(existingAuthor => existingAuthor === author)) {
+            this.authorsList.push(author);
+            }
+        });
+
+
+        var body = {
+            authors: this.authorsList
+          };
+
+        this._diagnosticService.getUsers(body).subscribe((usersMapping) => {
+            let mapping = usersMapping;
+            console.log(usersMapping);
+        });
+
+        // this.authorsList.push("patbut");
+        // this.authorsList.push("shgup");
+
+        // console.log("*** All the authors");
+        // console.log(this.authorsList);
+
+        // console.log(`detectors ${this.detectorsNumber}, spnum: ${this.supportTopicsNumber}, authorsNumber: ${this.authorsNumber}`);
     });
-  } 
+  }
 
   navigateTo(path: string) {
     let navigationExtras: NavigationExtras = {

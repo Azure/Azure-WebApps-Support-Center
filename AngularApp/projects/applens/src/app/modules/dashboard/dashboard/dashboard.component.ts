@@ -1,13 +1,10 @@
+import { AdalService } from 'adal-angular4';
 import { Subscription } from 'rxjs';
 import { Component, OnDestroy } from '@angular/core';
 import { ResourceService } from '../../../shared/services/resource.service';
 import * as momentNs from 'moment';
 import { Router, ActivatedRoute } from '@angular/router';
-<<<<<<< HEAD
 import { DetectorControlService, FeatureNavigationService, DetectorMetaData, DetectorType } from 'diagnostic-data';
-=======
-import { DetectorControlService, FeatureNavigationService } from 'diagnostic-data';
->>>>>>> add graph client
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 
 @Component({
@@ -23,10 +20,11 @@ export class DashboardComponent implements OnDestroy {
   contentHeight: string;
 
   navigateSub: Subscription;
+  userName: string = "";
   userPhotoSource: string;
 
   constructor(public resourceService: ResourceService, private _detectorControlService: DetectorControlService,
-    private _router: Router, private _diagnosticService: ApplensDiagnosticService, private _activatedRoute: ActivatedRoute, private _navigator: FeatureNavigationService) {
+    private _router: Router, private _activatedRoute: ActivatedRoute, private _navigator: FeatureNavigationService, private _diagnosticService: ApplensDiagnosticService, private _adalService: AdalService) {
     this.contentHeight = (window.innerHeight - 50) + 'px';
 
     this.navigateSub = this._navigator.OnDetectorNavigate.subscribe((detector: string) => {
@@ -60,8 +58,12 @@ export class DashboardComponent implements OnDestroy {
     }
 
 
-    this._diagnosticService.getUserPhoto("xipeng").subscribe(image => {
-        this.userPhotoSource =  'data:image/jpeg;base64,' + image;
+    let alias = this._adalService.userInfo.profile ? this._adalService.userInfo.profile.upn : '';
+    this.userName = alias.replace('@microsoft.com', '');
+    console.log("userName");
+    console.log(this.userName);
+    this._diagnosticService.getUserPhoto(this.userName).subscribe(image => {
+        this.userPhotoSource =  "data:image / jpeg; base64," + image;
     });
   }
 

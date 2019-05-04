@@ -13,6 +13,13 @@ side-nav {
     top: 0;
 }
 
+.logo1 {
+    cursor: pointer;
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+
 .white-background {
     background-color: white;
 }
@@ -38,4 +45,46 @@ side-nav {
     ::ng-deep>onboarding-flow {
         height: calc(100vh - 50px);
     }
+}
+
+.avatar {
+    width:50px;
+    height: 50px;
+    float: right;
+    margin-right:10px;
+
+
+    // background-color: #367fa9;
+    // color: #ffffff;
+    // border-bottom: 0 solid transparent;
+
+    // transition: width .3s ease-in-out;
+    // display: block;
+    // height: 50px;
+    // font-size: 20px;
+    // line-height: 50px;
+    // text-align: center;
+    // width: 230px;
+    // font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    // padding: 0 15px;
+    // font-weight: 300;
+    // overflow: hidden;
+}
+
+.user-label {
+    top: 15px;
+    color: white;
+    right: 15px;
+    font-weight: bold;
+}
+
+.loading-element {
+    top: 15px;
+    right: 15px;
+    width:50px;
+    height: 50px;
+    float: right;
+    margin-right:10px;
+    color: white;
+    margin-top: 15px;
 }
