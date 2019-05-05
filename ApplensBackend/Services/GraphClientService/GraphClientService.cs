@@ -68,21 +68,10 @@ namespace AppLensV3.Services
                 string uri = $"users/{userId}@microsoft.com/photo/$value";
                 string userApiUri = $"users/{userId}@microsoft.com";
 
-
-                //HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"https://graph.microsoft.com/v1.0/users/{userId}@microsoft.com/photo/$value");
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, string.Format(GraphConstants.GraphApiEndpointFormat, uri));
 
                 request.Headers.Add("Authorization", authorizationToken);
-                //request.Headers.Add("x-ms-client-request-id", requestId ?? Guid.NewGuid().ToString());
 
-
-                //object requestPayload = new
-                //{
-                //    db = database,
-                //    csl = query
-                //};
-
-                //request.Content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json");
 
                 CancellationTokenSource tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
                 HttpResponseMessage responseMsg = await _httpClient.SendAsync(request, tokenSource.Token);
@@ -90,10 +79,10 @@ namespace AppLensV3.Services
                 if (responseMsg.IsSuccessStatusCode)
                 {
                     var content = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
-                    //var result = String.Concat("data:image / jpeg; base64,", content);
+                    var result = String.Concat("data:image/jpeg;base64,", content);
                     //Byte[] imageArray = File.ReadAllBytes(fs.FullName);
                     //string base64ImageRepresentation = Convert.ToBase64String(imageArray);
-                    return content;
+                    return result;
                 }
                 else
                 {
@@ -139,8 +128,9 @@ namespace AppLensV3.Services
                         // We set the image string to be empty if the response is not successful
                         if (responseMsg.IsSuccessStatusCode)
                         {
-                           content = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
-                            //content = String.Concat("data:image / jpeg; base64,", imageBase64String);
+                            // content = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
+                            string imageBase64String = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
+                            content = String.Concat("data:image/jpeg; base64,", imageBase64String);
                         }
 
                         authorsDictionary.AddOrUpdate(user, content, (k, v) => content);
@@ -162,6 +152,14 @@ namespace AppLensV3.Services
 
     }
 
+    public class UserInfo
+    {
+        public string displayName { get; set; }
+        public string givenName { get; set; }
+        public string mail { get; set; }
+        public string officeLocation { get; set; }
+        public string photoBase64 { get; set; }
+    }
 
 
 

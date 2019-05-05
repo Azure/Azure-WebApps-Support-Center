@@ -55,7 +55,7 @@ export class ApplensDiagnosticService {
   }
 
 
-  getUserPhoto(userId: string = "shgup"): Observable<any> {
+  getUserPhoto(userId: string = ""): Observable<any> {
     return this._diagnosticApi.getUserPhoto(userId);
   }
 
