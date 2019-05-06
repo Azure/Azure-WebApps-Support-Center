@@ -1,21 +1,19 @@
-<div class="main-content">
-  <div style="margin-left:20px">
-    <comm-alert></comm-alert>
-    <detector-container [detector]="analysisId"></detector-container>
-  </div>
+<div style="margin-left:20px">
+  <comm-alert></comm-alert>
+  <detector-container [detector]="analysisId"></detector-container>
+</div>
 
-  <analysis-view detectorParmName="detector"></analysis-view>
+<analysis-view detectorParmName="detector"></analysis-view>
 
-  <div style="margin-left:20px" class="tab-container" [hidden]="detectorId === ''">
-    <div style="margin-left:20px;margin-bottom: 10px">
-      <div style="display: inline-block">
-        <h4>{{ detectorName }}</h4>
-      </div>
-      <div style="display: inline-block;margin-left: 10px">
-        <button *ngIf="detectorId !== ''" class="btn btn-sm btn-primary" [routerLink]="['../']" preserveFragment
-          queryParamsHandling="preserve">Back to Analysis</button>
-      </div>
+<div style="margin-left:20px" class="tab-container" [hidden]="detectorId === ''">
+  <div style="margin-left:20px;margin-bottom: 10px">
+    <div style="display: inline-block">
+      <h4>{{ detectorName }}</h4>
     </div>
-    <router-outlet></router-outlet>
+    <div style="display: inline-block;margin-left: 10px">
+      <button *ngIf="detectorId !== ''" class="btn btn-sm btn-primary" [routerLink]="['../']" preserveFragment
+        queryParamsHandling="preserve">Back to Analysis</button>
+    </div>
   </div>
+  <router-outlet></router-outlet>
 </div>
