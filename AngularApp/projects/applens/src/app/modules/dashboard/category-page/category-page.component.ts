@@ -29,6 +29,7 @@ export class CategoryPageComponent implements OnInit {
     authors: any[] = [];
     authorsList: string[] = [];
     authorsNumber: number = 0;
+    userImages:  { [name: string]: string };
 
     detectorsWithSupportTopics: DetectorMetaData[];
     detectorsPublicOrWithSupportTopics: DetectorMetaData[] = [];
@@ -39,7 +40,6 @@ export class CategoryPageComponent implements OnInit {
   ngOnInit() {
     this.categoryName = this._activatedRoute.snapshot.params['category'];
     this.categoryIcon = `https://applensassets.blob.core.windows.net/applensassets/${this.categoryName}.png`;
-    console.log(`CategoryName: ${this.categoryName}`);
 
     const detectorsListWithSupportTopics = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
 
@@ -65,18 +65,16 @@ export class CategoryPageComponent implements OnInit {
                   authors: this.authorsList
                 };
 
-              this._diagnosticService.getUsers(body).subscribe((usersMapping) => {
-                  let mapping = usersMapping;
-                  console.log(usersMapping);
-              });
+              this._diagnosticService.getUsers(body).subscribe((userImages) => {
+                  this.userImages = userImages;
+                  console.log("*** All the users Images");
+                  console.log(userImages);
 
-              // this.authorsList.push("patbut");
-              // this.authorsList.push("shgup");
-
-              console.log("*** All the authors");
-              console.log(this.authorsList);
-
-              console.log(`detectors ${this.detectorsNumber}, spnum: ${this.supportTopicsNumber}, authorsNumber: ${this.authorsNumber}`);
+                //   console.log("*** All the users json images");
+                //   let jsonusers = JSON.parse(userImages);
+                //   console.log(jsonusers);
+                //   console.log(jsonusers["jebrook"]);
+              });;
 
         // detector.category.toLowerCase() === this.categoryName.toLowerCase() &&
 
@@ -106,8 +104,6 @@ export class CategoryPageComponent implements OnInit {
     }));
 
     forkJoin(detectorsListWithSupportTopics, publicDetectors).subscribe((detectorLists) => {
-        console.log("Detectors of current category");
-        console.log(detectorLists);
 
         detectorLists.forEach((detectorList: DetectorMetaData[]) => {
 
@@ -125,24 +121,31 @@ export class CategoryPageComponent implements OnInit {
 
             let authorString = "Unknown";
               let detectorAuthors = [];
+              let detectorUsersImages:any = [];
               let detectorSupportTopics = [];
 
               if (element.author !== '') {
                 authorString = element.author;
                 const separators = [' ', ',', ';', ':'];
                 detectorAuthors = element.author.split(new RegExp(separators.join('|'), 'g'));
-                console.log("**Author**");
-                console.log(element.author);
-                console.log(detectorAuthors);
+
                 detectorAuthors.forEach(author => {
                   if (author && author.length > 0 && !this.authors.find(existingAuthor => existingAuthor === author)) {
                     this.authors.push(author);
                   }
+
+              //    detectorUsersImages[author] = this.userImages[author] ? this.userImages[author]: undefined;
+              detectorUsersImages.push(this.userImages["jebrook"]);
+              detectorUsersImages.push(this.userImages["v-jelu"]);
                 });
               }
 
-              this.authors.push("xipeng");
-              this.authors.push("shgup");
+              console.log("**Detector user images**");
+              console.log(detectorUsersImages);
+              console.log("test tet");
+              console.log(this.userImages["v-jelu"]);
+              console.log(this.userImages.Keys["v-jelu"]);
+
 
               if (element.supportTopicList && element.supportTopicList.length > 0)
               {
@@ -152,9 +155,10 @@ export class CategoryPageComponent implements OnInit {
 
               }
 
+
               if (!this.detectors.find(item => item.name === element.name))
               {
-                let detectorItem = new DetectorItem(element.name, element.description, authorString, detectorAuthors, detectorSupportTopics, onClick);
+                let detectorItem = new DetectorItem(element.name, element.description, authorString, detectorAuthors, detectorUsersImages, detectorSupportTopics, onClick);
                 this.detectors.push(detectorItem);
               }
 
@@ -173,24 +177,10 @@ export class CategoryPageComponent implements OnInit {
             }
         });
 
+        console.log("Detectors: and authors");
+        console.log(this.detectors);
+        console.log(this.authors);
 
-        const separators = [' ', ',', ';', ':'];
-        let authors = authorString.toLowerCase().split(new RegExp(separators.join('|'), 'g'));
-        authors.forEach(author => {
-            if (author && author.length > 0 && !this.authorsList.find(existingAuthor => existingAuthor === author)) {
-            this.authorsList.push(author);
-            }
-        });
-
-
-        var body = {
-            authors: this.authorsList
-          };
-
-        this._diagnosticService.getUsers(body).subscribe((usersMapping) => {
-            let mapping = usersMapping;
-            console.log(usersMapping);
-        });
 
         // this.authorsList.push("patbut");
         // this.authorsList.push("shgup");
@@ -226,10 +216,11 @@ export class DetectorItem {
     description: string;
     authorString: string;
     authors: any[] = [];
+    userImages: any;
     supportTopics: any[] = [];
     onClick: Function;
 
-    constructor(name: string, description: string, authorString: string, authors: any[], supportTopics: any[], onClick: Function) {
+    constructor(name: string, description: string, authorString: string, authors: any[], userImages: any, supportTopics: any[], onClick: Function) {
         this.name = name;
 
         if (description == undefined || description === "")
@@ -239,6 +230,7 @@ export class DetectorItem {
         this.description = description;
         this.authorString = authorString;
         this.authors = authors;
+        this.userImages = userImages;
         this.supportTopics = supportTopics;
         this.onClick = onClick;
     }

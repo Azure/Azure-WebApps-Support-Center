@@ -119,8 +119,8 @@ export class ResourceHomeComponent implements OnInit {
                     return this.currentRoutePath && this.currentRoutePath.join('/') === `detectors/${element.id}`;
                 };
 
-                // let category = element.category ? element.category : "Uncategorized";
 
+             
                 if (element.category)
                 {
                     let activeState = 0;
@@ -136,6 +136,24 @@ export class ResourceHomeComponent implements OnInit {
 
                     categoryMenuItem.subItems.push(menuItem);
                 }
+
+                    // This needs to be filtered in the prod env
+                    // let category = element.category ? element.category : "Uncategorized";
+
+              
+                    // let activeState = 0;
+                    // let menuItem = new CategoryItem(activeState, element.name, element.description, element.author, onClick, isSelected);
+
+                    // let categoryMenuItem = this.categories.find((cat: CategoryItem) => cat.label === category);
+                    // if (!categoryMenuItem) {
+                    //     let categoryIcon = `https://applensassets.blob.core.windows.net/applensassets/${category}.png`;
+
+                    //     categoryMenuItem = new CategoryItem(activeState,category, null, null, null, null, categoryIcon, true);
+                    //     this.categories.push(categoryMenuItem);
+                    // }
+
+                    // categoryMenuItem.subItems.push(menuItem);
+                
             });
 
             this.categories = this.categories.sort((a, b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));

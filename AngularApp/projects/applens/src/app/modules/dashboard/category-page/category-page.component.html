@@ -46,6 +46,9 @@
 </div>
 
 <div class="detector-list">
+    <div *ngIf="userImages">
+  <div *ngFor="let image of userImages"><img style="width:50px; height:50px" src="image.value"/></div>
+</div>
   <div class="flexed-detector card" *ngFor="let detector of detectors; let i=index" (click)="detector.onClick()">
     <div class="detector-top row">
       <div class="col-md-2 detector-icon">
@@ -61,12 +64,12 @@
         {{detector.description}}
       </div>
       <div class="detector-authors">
-        <!-- <div class="col-xs-3">
+        <div class="col-xs-3">
                 <ngx-avatar *ngFor="let author of detector.authors" class="author-avatar col-xs-1" skypeId="unknown" size="40"></ngx-avatar>
                 <i *ngFor="let author of detector.authors" class="fa fa-user-circle-o col-xs-1" aria-hidden="true"></i>
-              </div> -->
-        <div class="author-list">
-          <!-- <span *ngFor="let author of detector.authors">{{author}}</span>           -->
+              </div>
+        <div *ngFor="let image of detector.userImages" class="author-list">
+          <img style="width:50px; height:50px" src="image" />        
           Created by:
           <span class="author-String">{{detector.authorString}}</span>
         </div>

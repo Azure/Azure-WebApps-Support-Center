@@ -15,17 +15,22 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System.Threading;
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AppLensV3.Services
 {
     public interface IGraphClientService {
-        Task<string> GetUserImage(string userId);
+        Task<string> GetOrCreateUserImageAsync(string userId);
+        Task<string> GetUserImageAsync(string userId);
         Task<IDictionary<string, string>> GetUsers(string[] users);
     }
 
 
     public class GraphClientService : IGraphClientService
     {
+        private IMemoryCache _cache;
+
         private IGraphTokenService _graphTokenService;
 
         private readonly Lazy<HttpClient> _client = new Lazy<HttpClient>(() =>
@@ -33,7 +38,6 @@ namespace AppLensV3.Services
             var client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
             return client;
         }
         );
@@ -46,9 +50,88 @@ namespace AppLensV3.Services
             }
         }
 
-        public GraphClientService(IGraphTokenService graphTokenService)
+        public GraphClientService(IMemoryCache cache, IGraphTokenService graphTokenService)
         {
+            _cache = cache;
             _graphTokenService = graphTokenService;
+        }
+
+
+        #region snippet1
+        public async Task<string> GetOrCreateUserImageAsync(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new ArgumentException("userId");
+            }
+
+            var userImage = await
+                _cache.GetOrCreateAsync(userId, entry =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+                    return GetUserImageAsync(userId);
+                });
+         
+            return userImage;
+        }
+
+        public IActionResult CacheRemove(string userId)
+        {
+            _cache.Remove(userId);
+            return null;
+        }
+        #endregion
+
+        public async Task<string> GetUserImageAsync(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new ArgumentException("userId");
+            }
+
+            try
+            {
+                var tasks = new List<Task>();
+                string authorizationToken = await _graphTokenService.GetAuthorizationTokenAsync();
+
+                var getUserAvatarUri = $"https://graph.microsoft.com/v1.0/users/{userId}@microsoft.com/photo/$value";
+
+                string uri = $"users/{userId}@microsoft.com/photos/64x64/$value";
+                string userApiUri = $"users/{userId}@microsoft.com";
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, string.Format(GraphConstants.GraphApiEndpointFormat, uri));
+               // HttpRequestMessage userDateRequest = new HttpRequestMessage(HttpMethod.Get, string.Format(GraphConstants.GraphApiEndpointFormat, userApiUri));
+
+                request.Headers.Add("Authorization", authorizationToken);
+              //  userDateRequest.Headers.Add("Authorization", authorizationToken);
+
+
+                CancellationTokenSource tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+                HttpResponseMessage responseMsg = await _httpClient.SendAsync(request, tokenSource.Token);
+
+                string result = string.Empty;
+
+
+                // If the status code is 404 NotFound, it might because the user doesn't have a profile picture, or the user alias is invalid.
+                // We set the image string to be empty if the response is not successful
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    var content = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
+                    result = String.Concat("data:image/jpeg;base64,", content);
+                    //Byte[] imageArray = File.ReadAllBytes(fs.FullName);
+                    //string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+                }
+
+                return result;
+
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+
+            return null;
         }
 
         public async Task<string> GetUserImage(string userId)
@@ -110,7 +193,7 @@ namespace AppLensV3.Services
                 
                 CancellationTokenSource tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
 
-                foreach(var user in users)
+                foreach (var user in users)
                 {
                     string uri = $"users/{user}@microsoft.com/photo/$value";
                     string userApiUri = $"users/{user}@microsoft.com";
@@ -120,20 +203,20 @@ namespace AppLensV3.Services
 
                     tasks.Add(Task.Run(async () =>
                     {
-                        HttpResponseMessage responseMsg = await _httpClient.SendAsync(request, tokenSource.Token);
+                        var userImage = await GetOrCreateUserImageAsync(user);
+                        authorsDictionary.AddOrUpdate(user, userImage, (k, v) => userImage);
+                        //HttpResponseMessage responseMsg = await _httpClient.SendAsync(request, tokenSource.Token);
 
-                        string content = String.Empty;
+                        //string content = String.Empty;
 
-                        // If the status code is 404 NotFound, it might because the user doesn't have a profile picture, or the user alias is invalid.
-                        // We set the image string to be empty if the response is not successful
-                        if (responseMsg.IsSuccessStatusCode)
-                        {
-                            // content = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
-                            string imageBase64String = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
-                            content = String.Concat("data:image/jpeg; base64,", imageBase64String);
-                        }
+                        //if (responseMsg.IsSuccessStatusCode)
+                        //{
+                        //    // content = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
+                        //    string imageBase64String = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
+                        //    content = String.Concat("data:image/jpeg; base64,", imageBase64String);
+                        //}
 
-                        authorsDictionary.AddOrUpdate(user, content, (k, v) => content);
+                       // authorsDictionary.AddOrUpdate(user, content, (k, v) => content);
                     }));
 
                 }
@@ -150,6 +233,20 @@ namespace AppLensV3.Services
             return null;
         }
 
+    }
+
+    public static class CacheKeys
+    {
+        public static string UserId { get { return "_UserId"; } }
+        public static string CallbackEntry { get { return "_Callback"; } }
+        public static string CallbackMessage { get { return "_CallbackMessage"; } }
+        public static string Parent { get { return "_Parent"; } }
+        public static string Child { get { return "_Child"; } }
+        public static string DependentMessage { get { return "_DependentMessage"; } }
+        public static string DependentCTS { get { return "_DependentCTS"; } }
+        public static string Ticks { get { return "_Ticks"; } }
+        public static string CancelMsg { get { return "_CancelMsg"; } }
+        public static string CancelTokenSource { get { return "_CancelTokenSource"; } }
     }
 
     public class UserInfo

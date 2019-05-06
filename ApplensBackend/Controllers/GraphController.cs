@@ -10,6 +10,7 @@ using AppLensV3.Services;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace AppLensV3.Controllers
 {
@@ -17,27 +18,28 @@ namespace AppLensV3.Controllers
     [Authorize]
     public class GraphController: Controller
     {
+        private IMemoryCache _cache;
         private readonly IGraphClientService _graphClientService;
         private IDiagnosticClientService _diagnosticClientService { get; }
 
-        public GraphController(IGraphClientService graphClientService, IDiagnosticClientService diagnosticClient)
+        public GraphController(IMemoryCache cache, IGraphClientService graphClientService, IDiagnosticClientService diagnosticClient)
         {
+            _cache = cache;
             _graphClientService = graphClientService;
             _diagnosticClientService = diagnosticClient;
         }
 
         [HttpGet("users/{userId}")]
         [HttpOptions("users/{userId}")]
-        public async Task<string> GetUser(string userId)
+        public async Task<IActionResult> GetUser(string userId)
         {
-            //if (string.IsNullOrWhiteSpace(userId))
-            //{
-            //    return BadRequest("userId cannot be empty");
-            //}
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return BadRequest("userId cannot be empty");
+            }
 
-            // List<Communication> comms = await _outageService.GetCommunicationsAsync(subscriptionId, startTimeUtc, endTimeUtc);
-            var res = await _graphClientService.GetUserImage(userId);
-            return res;
+            var response = await _graphClientService.GetOrCreateUserImageAsync(userId);
+            return Ok(response);
         }
 
         [HttpPost("users")]
@@ -51,14 +53,8 @@ namespace AppLensV3.Controllers
             }
 
             var response = await _graphClientService.GetUsers(authors);
-            
-            if (response != null)
-            {
-                return Ok(response);
-            }
-
-            return BadRequest("Bad request");
- 
+            return Ok(response);
         }
+
     }
 }
