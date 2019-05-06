@@ -102,8 +102,7 @@ export class ChangesViewComponent implements OnInit {
                     "language": 'json'
                     };
             }
-            // edge case where we get true/false for old value vs new value
-             if(isBoolean(diffvalue)) {
+            if(isBoolean(diffvalue)) {
                 return {
                     "code": diffvalue.toString(),
                     "language": 'text/plain'
