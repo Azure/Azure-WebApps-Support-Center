@@ -18,6 +18,9 @@ using Microsoft.IdentityModel.Tokens.Saml;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.IdentityModel.Tokens.Saml2;
+using idunno.Authentication.Certificate;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace AppLensV3
 {
@@ -92,6 +95,37 @@ namespace AppLensV3
                     services.AddTransient<IFilterProvider, LocalFilterProvider>();
                 }
             }
+
+            services.AddAuthentication()
+                .AddCertificate(options =>
+                {
+                    options.Events = new CertificateAuthenticationEvents
+                    {
+                        OnValidateCertificate = validateCertificationContext =>
+                        {
+                            if (validateCertificationContext.ClientCertificate != null)
+                            {
+                                var validThumbprints = Configuration.GetValue<string>("AllowedCertThumbprints")?.Split(",", StringSplitOptions.RemoveEmptyEntries);
+
+                                if (validThumbprints == null)
+                                {
+                                    validateCertificationContext.Fail("Failed to validate certificate.");
+                                }
+
+                                if (validThumbprints.Any(thumbprint => thumbprint.Equals(validateCertificationContext.ClientCertificate.Thumbprint, StringComparison.CurrentCultureIgnoreCase)))
+                                {
+                                    validateCertificationContext.Success();
+                                }
+                                else
+                                {
+                                    validateCertificationContext.Fail("Certificate is not valid.");
+                                }
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
