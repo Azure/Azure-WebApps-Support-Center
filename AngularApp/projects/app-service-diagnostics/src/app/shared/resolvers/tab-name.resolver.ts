@@ -21,8 +21,6 @@ export class TabTitleResolver implements Resolve<Observable<string>> {
         detectorId = analysisId;
       }
 
-      //const detectorId = route.params['detectorName'] != null ? route.params['detectorName'] : route.params['analysisId'];
-      console.log("TabTitleResolver has detectorId = " + detectorId);
       return this._diagnosticService.getDetectors().pipe(map(detectors => {
         return this._diagnosticService.getDetectorById(detectorId).name;
       }));

@@ -68,7 +68,6 @@ export class CategoriesService {
 
                 this._categories.push(category);
             }
-            console.log(`${detector.id} is of type ${detector.type}`);
             if (detector.type === DetectorType.Analysis){
                 category.Subcategories.push(<Subcategory>{
                     Name: detector.name,

@@ -113,8 +113,6 @@ export class SideNavComponent implements OnInit {
           }
 
           categoryMenuItem.subItems.push(menuItem);
-
-          console.log(element.type + " = " + element.id);
           if (element.type === DetectorType.Analysis) {
 
             let onClickAnalysisParent = () => {
@@ -124,33 +122,6 @@ export class SideNavComponent implements OnInit {
             let analysisMenuItem = new CollapsibleMenuItem(element.name, onClickAnalysisParent, null, null, true);
             this.analysisTypes.push(analysisMenuItem);
 
-            // element.analysisTypes.forEach(analysis => {
-            //   if (analysis !== "") {
-
-            //     if (this.analysisTypes.findIndex(x => x.label === analysis) < 0) {
-
-                  
-
-            //       let analysisDetector = detectorList.find(x => x.id === analysis);
-            //       if (analysisDetector != null) {
-            //         if (this.analysisTypes.findIndex(x => x.label === analysisDetector.name) < 0) {
-                     
-            //         }
-            //       }
-            //     }
-
-            //     // let onClickAnalysis = () => {
-            //     //   this.navigateTo(`analysis/${analysis}/${element.id}`);
-            //     // };
-
-            //     // let analysismenuSubItem = new CollapsibleMenuItem(element.name, onClickAnalysis, isSelected);
-            //     // this.analysisTypes.forEach(analysisMenuItem => {
-            //     //   if (analysisMenuItem.label == analysis) {
-            //     //     analysisMenuItem.subItems.push(analysismenuSubItem);
-            //     //   }
-            //     // });
-            //   }
-            // });
           }
         });
 

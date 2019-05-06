@@ -24,20 +24,17 @@ export class GenericDetectorComponent implements OnDestroy {
     private _navigator: FeatureNavigationService, private _router: Router) {
 
     if (this._activatedRoute.snapshot.params['analysisId'] != null) {
-      console.log("Found analysisId in route as " + this._activatedRoute.snapshot.params['analysisId']);
       this.analysisDetector = this._activatedRoute.snapshot.params['analysisId'];
       if (this._activatedRoute.snapshot.params['detectorName'] != null) {
         this.detector = this._activatedRoute.snapshot.params['detectorName'];
       }
       else {
-        console.log("Found analysis detector in route as " + this._activatedRoute.snapshot.params['analysisId']);
         this.detector = this._activatedRoute.snapshot.params['analysisId'];
         this.analysisDetector = this.detector;
       }
 
     }
     else if (this._activatedRoute.snapshot.params['detectorName'] != null) {
-      console.log("Found detector in route as " + this._activatedRoute.snapshot.params['detectorName']);
       this.detector = this._activatedRoute.snapshot.params['detectorName'];
     }
 
