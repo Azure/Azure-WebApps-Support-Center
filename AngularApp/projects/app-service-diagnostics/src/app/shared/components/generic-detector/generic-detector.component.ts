@@ -18,6 +18,7 @@ export class GenericDetectorComponent implements OnDestroy {
   detector: string;
   analysisDetector: string;
   navigateSub: Subscription;
+  analysisMode:boolean = false;
 
   constructor(private _activatedRoute: ActivatedRoute, private _resourceService: ResourceService, private _authServiceInstance: AuthService, private _telemetryService: TelemetryService,
     private _navigator: FeatureNavigationService, private _router: Router) {
@@ -45,6 +46,8 @@ export class GenericDetectorComponent implements OnDestroy {
         this._router.navigate([`../../detectors/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
       }
     });
+
+    this.analysisMode = this._activatedRoute.snapshot.data['analysisMode'];
 
     this._authServiceInstance.getStartupInfo().subscribe(startUpInfo => {
       if (startUpInfo) {
