@@ -39,8 +39,6 @@ import { TabChangelistComponent } from './tabs/tab-changelist/tab-changelist.com
 import { GistChangelistComponent } from './gist-changelist/gist-changelist.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TabAnalysisComponent } from './tabs/tab-analysis/tab-analysis.component';
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatIconModule } from '@angular/material';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -183,8 +181,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
   imports: [
     CommonModule,
     FormsModule,
-    MatStepperModule,
-    MatIconModule,
     DashboardModuleRoutes,
     DiagnosticDataModule,
     SharedModule,
