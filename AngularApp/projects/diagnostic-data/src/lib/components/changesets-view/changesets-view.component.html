@@ -17,8 +17,8 @@
             {{scanStatusMessage}}
           </div>
           <div class="scan-row"  *ngIf ="isPublic && allowScanAction">
-            <button class="btn btn-primary" *ngIf="!showViewChanges"  (click)="scanNow()"> Scan Changes now </button>
-            <button class="btn btn-info" *ngIf="showViewChanges" (click)="refreshTimeline()"> View Changes now</button>
+            <button class="btn btn-primary" *ngIf="!showViewChanges"  (click)="scanNow()"> Scan changes now </button>
+            <button class="btn btn-info" *ngIf="showViewChanges" (click)="refreshTimeline()"> View changes now</button>
           </div>
         </div>
         <div id="timeline"></div>

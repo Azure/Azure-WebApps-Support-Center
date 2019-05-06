@@ -7,6 +7,7 @@ import {Changes} from '../../models/changesets';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { DiffEditorModel } from 'ngx-monaco-editor';
 import * as momentNs from 'moment';
+import { isBoolean } from 'util';
 const moment = momentNs;
   @Component({
     selector: 'changes-view',
@@ -100,6 +101,12 @@ export class ChangesViewComponent implements OnInit {
                     "code": JSON.stringify(diffvalue, null, 2),
                     "language": 'json'
                     };
+            }
+            if(isBoolean(diffvalue)) {
+                return {
+                    "code": diffvalue.toString(),
+                    "language": 'text/plain'
+                };
             }
             let jsonObject = JSON.parse(diffvalue);
             if(jsonObject.hasOwnProperty('content') && jsonObject['content'] != null) {
