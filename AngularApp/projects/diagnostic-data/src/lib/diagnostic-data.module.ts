@@ -69,12 +69,15 @@ import { SolutionTypeTagComponent } from './components/solution-type-tag/solutio
 import { SolutionDisplayComponent } from './components/solution-display/solution-display.component';
 import { SolutionDisplayItemComponent } from './components/solution-display/solution-display-item/solution-display-item.component';
 import { AnalysisViewComponent } from './components/analysis-view/analysis-view.component';
+import { MatStepperModule, MatIconModule } from '@angular/material';
 
 
 @NgModule({
   imports: [
     CommonModule,
     NvD3Module,
+    MatStepperModule,
+    MatIconModule,
     NgxDatatableModule,
     MarkdownModule.forRoot(),
     FormsModule,
@@ -99,7 +102,7 @@ import { AnalysisViewComponent } from './components/analysis-view/analysis-view.
     FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent,
     DataSummaryComponent, LoaderViewComponent, StatusIconComponent, DetectorControlComponent,
     DetectorContainerComponent, InternalPipe, CommAlertComponent, GuageControlComponent, SolutionComponent,
-    FormComponent, VerticalDisplayListComponent, VerticalDisplayListItemComponent, SolutionTypeTagComponent
+    FormComponent, VerticalDisplayListComponent, VerticalDisplayListItemComponent, SolutionTypeTagComponent, AnalysisViewComponent
   ],
 })
 export class DiagnosticDataModule {

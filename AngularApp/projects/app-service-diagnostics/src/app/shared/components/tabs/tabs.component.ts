@@ -40,6 +40,19 @@ export class TabsComponent implements OnInit {
         const url = this._router.url.split('?')[0];
         let existingTab = this.navigationItems.find(item => item.url.split('?')[0] === url);
 
+        if (url.indexOf("/analysis/") >= 0){
+          let detectorWithAnalysisPath = url.split("/analysis/")[1];
+          if (detectorWithAnalysisPath.indexOf("/") > 0){
+            let urlArray = url.split("/");
+            if (urlArray.length > 0){
+              urlArray.splice(urlArray.length - 1);
+              let analysisUrl = urlArray.join("/");
+              existingTab = this.navigationItems.find(item => item.url.split('?')[0] === analysisUrl);
+            }
+
+          }
+        }
+
         if (!existingTab) {
           existingTab = {
             title: navigationTitle,

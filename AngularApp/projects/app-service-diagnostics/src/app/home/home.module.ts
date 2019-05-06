@@ -16,6 +16,7 @@ import { SupportTopicRedirectComponent } from './components/support-topic-redire
 import { TimeControlResolver } from './resolvers/time-control.resolver';
 import { ContentService } from '../shared-v2/services/content.service';
 import { DiagnosticDataModule } from 'diagnostic-data';
+import { GenericAnalysisComponent } from '../shared/components/generic-analysis/generic-analysis.component';
 
 export const HomeRoutes = RouterModule.forChild([
   {
@@ -43,6 +44,48 @@ export const HomeRoutes = RouterModule.forChild([
     data: {
       cacheComponent: true
     },
+    resolve: {
+      time: TimeControlResolver,
+      navigationTitle: TabTitleResolver,
+    }
+  },
+  {
+    path: 'analysis/:analysisId/:detectorName',
+    component: GenericAnalysisComponent,
+    data: {
+      cacheComponent: true
+    },
+    children: [
+      {
+        path: '',
+        component: GenericDetectorComponent,
+        data: {
+          analysisMode: true,
+          cacheComponent: true
+        }
+      }
+    ],
+    resolve: {
+      time: TimeControlResolver,
+      navigationTitle: TabTitleResolver,
+    }
+  },
+  {
+    path: 'analysis/:analysisId',
+    component: GenericAnalysisComponent,
+    data: {
+      cacheComponent: true
+    },
+    children: [
+      {
+        path: '',
+        component: GenericDetectorComponent,
+        data: {
+          analysisMode: true,
+          cacheComponent: true
+        }
+      }
+    ],
     resolve: {
       time: TimeControlResolver,
       navigationTitle: TabTitleResolver,

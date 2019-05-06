@@ -1,0 +1,54 @@
+<div [hidden]="detectorId !== ''">
+
+    <mat-vertical-stepper>
+        <mat-step label="Observations">
+            <table class="table table-hover table-fixed">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th colspan="2">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let viewModel of detectorViewModels">
+                        <td class="col-md-1">
+                            <div class="status-icon">
+                                <status-icon [loading]="viewModel.loadingStatus" [status]="viewModel.status"
+                                    [size]="20">
+                                </status-icon>
+                            </div>
+                        </td>
+                        <td> <strong>{{ viewModel.title }} </strong>
+                            <div *ngIf="viewModel.loadingStatus === 1">
+                                <markdown [data]="getDetectorInsightSummary(viewModel)"></markdown>
+                            </div>
+                        </td>
+                        <td>
+                                <!-- [routerLink]="getRouterLink(viewModel.metadata.id)" preserveFragment
+                                queryParamsHandling="preserve" [routerLinkActive]="['active', 'active-tab' ]"
+                                [routerLinkActiveOptions]="{exact: true}" -->
+                            <div *ngIf="viewModel.loadingStatus === 1">
+                                <a (click)="selectDetector(viewModel.metadata.id)">More
+                                        Info</a> 
+                                <i class="fa fa-arrow-circle-o-right" style="margin-left:5px; font-size: 15px"></i>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </mat-step>
+        <mat-step label="Troubleshooting and Next Steps">
+
+        </mat-step>
+        <ng-template matStepperIcon="number">
+            <i aria-hidden="true" class="fa fa-search"></i>
+        </ng-template>
+        <ng-template matStepperIcon="edit">
+            <i aria-hidden="true" class="fa fa-search"></i>
+        </ng-template>
+    </mat-vertical-stepper>
+
+
+</div>
+
+

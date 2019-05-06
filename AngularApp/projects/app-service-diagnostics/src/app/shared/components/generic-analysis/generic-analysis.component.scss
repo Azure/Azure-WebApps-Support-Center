@@ -1,0 +1,9 @@
+.detector-padding {
+    padding:5px 10%;
+}
+
+@media screen and (max-width: 1200px) {
+    .detector-padding {
+        padding:5px 10px;
+    }
+}

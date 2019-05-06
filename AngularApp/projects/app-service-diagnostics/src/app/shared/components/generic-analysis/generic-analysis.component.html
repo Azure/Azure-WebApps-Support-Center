@@ -1,0 +1,12 @@
+<div class="detector-padding">
+  <detector-container [detector]="analysisDetector"></detector-container>
+  <analysis-view [detectorParmName]="detectorName"></analysis-view>
+</div>
+
+<div [hidden]="detectorId === ''">
+  <div class="detector-padding">
+    <button (click)="goBackToAnalysis()" *ngIf="detectorId !== ''" class="btn btn-primary">Back to Analysis</button>
+    <h4>{{ detectorName }}</h4>
+  </div>
+  <router-outlet></router-outlet>
+</div>

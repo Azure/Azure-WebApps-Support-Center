@@ -136,7 +136,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
         ]
       },
       {
-        path: 'analysis/:analysis/:detector',
+        path: 'analysis/:analysisId/:detector',
         component: TabAnalysisComponent,
         children: [
           {
@@ -157,7 +157,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
         ]
       },
       {
-        path: 'analysis/:analysis',
+        path: 'analysis/:analysisId',
         component: TabAnalysisComponent,
         children: [
           {
