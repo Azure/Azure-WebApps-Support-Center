@@ -101,7 +101,7 @@ import {CustomMaterialModule} from './material-module';
     GuageGraphicComponent, GuageControlComponent, SolutionComponent, SolutionsComponent, FormComponent,
     VerticalDisplayListComponent, VerticalDisplayListItemComponent, SolutionTypeTagComponent, SolutionDisplayComponent,
     SolutionDisplayItemComponent,
-    AnalysisViewComponent
+    AnalysisViewComponent,
     ChangeAnalysisOnboardingComponent,
     ChangesetsViewComponent,
     ChangesViewComponent
