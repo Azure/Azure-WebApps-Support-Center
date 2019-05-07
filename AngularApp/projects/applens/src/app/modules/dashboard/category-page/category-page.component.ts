@@ -23,6 +23,8 @@ export class CategoryPageComponent implements OnInit {
     categoryIcon: string;
     detectorsNumber: number = 0;
 
+    allDetectors: DetectorMetaData[];
+    filterdDetectors: DetectorMetaData[];
     supportTopicIdMapping: any[] = [];
     supportTopicsNumber: number = 0;
 
@@ -41,16 +43,28 @@ export class CategoryPageComponent implements OnInit {
         this.categoryName = this._activatedRoute.snapshot.params['category'];
         this.categoryIcon = `https://applensassets.blob.core.windows.net/applensassets/${this.categoryName}.png`;
 
-        const allDetectors = this._diagnosticService.getDetectors();
-        const detectorsListWithSupportTopics = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
+        this._diagnosticService.getDetectors().subscribe((detectors: DetectorMetaData[]) => {
 
+            this.allDetectors = detectors;
+            // Get all the detectors with support topics
+            var detectorsWithSupportTopics = detectors.filter(detector => detector.category && detector.category.toLowerCase() === this.categoryName.toLowerCase() && detector.supportTopicList && detector.supportTopicList.length > 0);
+
+            detectorsWithSupportTopics.forEach(detector => {
+                console.log(`Add detectors with support topics ${detector.id}`);
+                this.filterdDetectors.push(detector);
+                detector.supportTopicList.forEach(supportTopic => {
+                    this.supportTopicIdMapping.push({ supportTopic: supportTopic, detectorName: detector.name });
+                });
+            });
+
+
+            // This is to get the full detectors authors list, and make graph API call
             let authorString = "";
             detectors.forEach(detector => {
                 if (detector.author != undefined && detector.author !== '') {
                     authorString = authorString + "," + detector.author;
                 }
             });
-
 
             const separators = [' ', ',', ';', ':'];
             let authors = authorString.toLowerCase().split(new RegExp(separators.join('|'), 'g'));
@@ -59,7 +73,6 @@ export class CategoryPageComponent implements OnInit {
                     this.authorsList.push(author);
                 }
             });
-
 
             // This seems
             var body = {
@@ -71,10 +84,32 @@ export class CategoryPageComponent implements OnInit {
 
                 console.log("*** All the users json images");
                 console.log(this.userImages);
-                //   let jsonusers = JSON.parse(userImages);
-                //   console.log(jsonusers);
-                //   console.log(jsonusers["jebrook"]);
-            });;
+            });
+
+
+            this._diagnosticService.getDetectors(false).subscribe((publicDetectors: DetectorMetaData[]) => {
+                var publicDetectorsList = publicDetectors.filter(detector => detector.category && detector.category.toLowerCase() === this.categoryName.toLowerCase());
+                publicDetectors.forEach(publicDetector => {
+                    var detectorItem = detectors.find((detector) => detector.id === publicDetector.id);
+                    if (detectorItem && !this.filterdDetectors.find((d) => d.id == detectorItem.id))
+                    {
+                        this.filterdDetectors.push(detectorItem);
+                    }
+                });
+
+                this.filterdDetectors.forEach((detector) => {
+
+                    let detectorItem = new DetectorItem(detector.name, detector.description, detector.author, [], detectorUsersImages, detectorSupportTopics, onClick);
+                    this.detectors.push(detectorItem);
+                })
+            });
+
+        });
+
+
+
+
+        const detectorsListWithSupportTopics = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
 
 
 
