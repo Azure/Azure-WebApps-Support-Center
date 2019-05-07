@@ -1,43 +1,53 @@
 <div [hidden]="detectorId !== ''">
 
-    <mat-vertical-stepper>
-        <mat-step label="Observations">
-            <table class="table table-hover table-fixed">
-                <thead>
-                    <tr>
-                        <th>Status</th>
-                        <th colspan="2">Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let viewModel of detectorViewModels">
-                        <td class="col-md-1">
-                            <div class="status-icon">
-                                <status-icon [loading]="viewModel.loadingStatus" [status]="viewModel.status"
-                                    [size]="20">
-                                </status-icon>
-                            </div>
-                        </td>
-                        <td> <strong>{{ viewModel.title }} </strong>
-                            <div *ngIf="viewModel.loadingStatus === 1">
-                                <markdown [data]="getDetectorInsightSummary(viewModel)"></markdown>
-                            </div>
-                        </td>
-                        <td>
-                            <!-- [routerLink]="getRouterLink(viewModel.metadata.id)" preserveFragment
-                                queryParamsHandling="preserve" [routerLinkActive]="['active', 'active-tab' ]"
-                                [routerLinkActiveOptions]="{exact: true}" -->
-                            <div *ngIf="viewModel.loadingStatus === 1">
-                                <a (click)="selectDetector(viewModel.metadata.id)">More
-                                    Info</a>
-                                <i class="fa fa-arrow-circle-o-right" style="margin-left:5px; font-size: 15px"></i>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <div *ngIf="detectorsPending > 0" style="margin-left:20px">
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <span style="margin-left:10px">{{ detectorsPending }} of {{ detectors.length }} remaining</span>
+    </div>
+
+    <mat-vertical-stepper *ngIf="issueDetectedViewModels.length > 0">
+        <mat-step label="Observations" [editable]="false">
+            <span>Events correlated during this time period</span>
+            <div style="background-color: #f9f9f9;border: 1px solid #ebebeb;padding: 3px;">
+                <table class="table table-hover table-responsive">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let viewModel of issueDetectedViewModels">
+                            <td>
+                                <div style="display: inline-block">
+                                    <status-icon [loading]="viewModel.model.loadingStatus"
+                                        [status]="viewModel.model.status" [size]="20">
+                                    </status-icon>
+                                </div>
+                                <div style="display: inline-block;margin-left: 10px">
+                                    <h4>{{ viewModel.model.title }} </h4>
+                                </div>
+
+                                <div style="margin-top:10px;margin-left:10px">
+                                    <strong>{{ viewModel.insightTitle }}</strong>
+                                    <div style="margin-top:10px">
+                                        <markdown [data]="viewModel.insightDescription"></markdown>
+                                    </div>
+
+                                    <div style="margin-top: 5px">
+                                        <a (click)="selectDetector(viewModel.model.metadata.id)">More
+                                            Info
+                                            <i class="fa fa-arrow-circle-o-right"
+                                                style="margin-left:5px; font-size: 15px"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </mat-step>
-        <mat-step label="Troubleshooting and Next Steps">
+        <mat-step label="Troubleshooting and Next Steps" [editable]="false">
 
         </mat-step>
         <ng-template matStepperIcon="number">
@@ -53,4 +63,17 @@
             </div>
         </ng-template>
     </mat-vertical-stepper>
+
+    <div *ngIf="detectorsPending === 0 && issueDetectedViewModels.length === 0 && loadingChildDetectors">
+        <mat-vertical-stepper>
+            <mat-step label="Observations" [completed]="false" [editable]="false">
+                <span>No issue detected</span>
+            </mat-step>
+            <ng-template matStepperIcon="number">
+                <div class="center-container">
+                    <i aria-hidden="true" class="fa fa-search"></i>
+                </div>
+            </ng-template>
+        </mat-vertical-stepper>
+    </div>
 </div>

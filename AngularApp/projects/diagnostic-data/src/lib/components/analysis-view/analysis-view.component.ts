@@ -20,15 +20,18 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
   detectors: any[] = [];
   LoadingStatus = LoadingStatus;
   detectorViewModels: any[];
+  issueDetectedViewModels: any[] = [];
   detectorMetaData: DetectorMetaData[];
+  detectorsPending: number = 0;
   private childDetectorsEventProperties = {};
+  loadingChildDetectors: boolean = false;
 
   constructor(private _activatedRoute: ActivatedRoute, private _router: Router, private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService, protected telemetryService: TelemetryService, private _navigator: FeatureNavigationService) {
     super(telemetryService);
   }
 
   @Input()
-  detectorParmName:string;
+  detectorParmName: string;
 
   ngOnInit() {
     this._activatedRoute.paramMap.subscribe(params => {
@@ -56,12 +59,27 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
 
           this.detectorMetaData = detectorList.filter(detector => this.detectors.findIndex(d => d.id === detector.id) >= 0);
           this.detectorViewModels = this.detectorMetaData.map(detector => this.getDetectorViewModel(detector));
-
+          this.issueDetectedViewModels = [];
+          
           const requests: Observable<any>[] = [];
+          if (this.detectorViewModels.length > 0) {
+            this.loadingChildDetectors = true;
+          }
           this.detectorViewModels.forEach((metaData, index) => {
+            this.detectorsPending++;
             requests.push((<Observable<DetectorResponse>>metaData.request).pipe(
               map((response: DetectorResponse) => {
+                this.detectorsPending--;
                 this.detectorViewModels[index] = this.updateDetectorViewModelSuccess(metaData, response);
+                if (this.detectorViewModels[index].status === HealthStatus.Critical || this.detectorViewModels[index].status === HealthStatus.Warning) {
+                  console.log(this.detectorViewModels[index]);
+                  let insight = this.getDetectorInsight(this.detectorViewModels[index]);
+                  console.log(insight);
+                  let issueDetectedViewModel = { model: this.detectorViewModels[index], insightTitle: insight.title, insightDescription: insight.description };
+                  this.issueDetectedViewModels.push(issueDetectedViewModel);
+                  console.log(issueDetectedViewModel);
+                }
+
                 return {
                   'ChildDetectorName': this.detectorViewModels[index].title,
                   'ChildDetectorId': this.detectorViewModels[index].metadata.id,
@@ -88,24 +106,22 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
 
   }
 
-  getDetectorInsightSummary(viewModel: any) {
-    let response: DetectorResponse = viewModel.response;
-    if (response.status.statusId === HealthStatus.Critical || response.status.statusId === HealthStatus.Warning) {
-      let allInsights: Insight[] = InsightUtils.parseAllInsightsFromResponse(response);
+  getDetectorInsight(viewModel: any): any {
+    let allInsights: Insight[] = InsightUtils.parseAllInsightsFromResponse(viewModel.response);
+    let insight: any;
+    if (allInsights.length > 0) {
 
-      let insightDescription = "";
+      let description = null;
       if (allInsights[0].hasData()) {
-        let description = allInsights[0].data["Description"];
-        if (description != null) {
-          insightDescription = description;
-        }
+        description = allInsights[0].data["Description"];
       }
-      return insightDescription;
+      insight = { title: allInsights[0].title, description: description };
     }
+    return insight;
+
   }
 
   ngOnChanges() {
-
   }
 
   getRouterLink(detectorId: string): any[] {
