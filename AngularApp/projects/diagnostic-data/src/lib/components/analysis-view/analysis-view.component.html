@@ -24,12 +24,12 @@
                             </div>
                         </td>
                         <td>
-                                <!-- [routerLink]="getRouterLink(viewModel.metadata.id)" preserveFragment
+                            <!-- [routerLink]="getRouterLink(viewModel.metadata.id)" preserveFragment
                                 queryParamsHandling="preserve" [routerLinkActive]="['active', 'active-tab' ]"
                                 [routerLinkActiveOptions]="{exact: true}" -->
                             <div *ngIf="viewModel.loadingStatus === 1">
                                 <a (click)="selectDetector(viewModel.metadata.id)">More
-                                        Info</a> 
+                                    Info</a>
                                 <i class="fa fa-arrow-circle-o-right" style="margin-left:5px; font-size: 15px"></i>
                             </div>
                         </td>
@@ -41,14 +41,16 @@
 
         </mat-step>
         <ng-template matStepperIcon="number">
-            <i aria-hidden="true" class="fa fa-search"></i>
+            <div class="center-container">
+                <i aria-hidden="true" class="fa fa-search"></i>
+            </div>
         </ng-template>
         <ng-template matStepperIcon="edit">
-            <i aria-hidden="true" class="fa fa-search"></i>
+            <div class="center-container">
+                <div>
+                    <i aria-hidden="true" class="fa fa-search"></i>
+                </div>
+            </div>
         </ng-template>
     </mat-vertical-stepper>
-
-
 </div>
-
-
