@@ -8,6 +8,7 @@ import { UriElementsService } from '../../../services/urielements.service';
 import { Observable, Subscription, interval } from 'rxjs';
 import { ArmService } from '../../../services/arm.service';
 import { NetworkTraceResult } from '../../../models/network-trace';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
     templateUrl: 'network-trace-tool.component.html',
@@ -95,10 +96,11 @@ export class NetworkTraceToolComponent implements OnInit {
                 this.status = NetworkTraceStatus.Started;
                 this.armOperationStatus = result.headers.get('Location');
                 this.durationRemaining = this.duration;
-                this.subscriptionTimer = interval(5000).subscribe(res => {
+                interval(5000).pipe(
+                    takeWhile(() => this.durationRemaining > 0)
+                ).subscribe(() => {
                     this.durationRemaining = this.durationRemaining - 5;
                     if (this.durationRemaining <= 0) {
-                        this.subscriptionTimer.unsubscribe();
                         this.subscriptionOperationStatus = interval(15000).subscribe(res => {
                             this.checkNetworkTraceOperationStatus();
                         });
@@ -150,16 +152,6 @@ export class NetworkTraceToolComponent implements OnInit {
                         }
                     });
                 }
-                // if (resp.status === 200) {
-                //     this.status = NetworkTraceStatus.Completed;
-                //     this.subscriptionOperationStatus.unsubscribe();
-                //     let body = resp.text();
-                //     if (body && body.length > 0) {
-                //         let output: NetworkTraceResult[] = JSON.parse(body);
-                //         this.files = [];
-
-                //     }
-                // }
             });
         }
     }

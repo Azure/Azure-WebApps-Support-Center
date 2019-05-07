@@ -1,6 +1,6 @@
 import {
     CommsService, DiagnosticDataModule, DiagnosticService, DiagnosticSiteService,
-    PUBLIC_DEV_CONFIGURATION, PUBLIC_PROD_CONFIGURATION, SolutionService
+    PUBLIC_DEV_CONFIGURATION, PUBLIC_PROD_CONFIGURATION, SolutionService, SettingsService
 } from 'diagnostic-data';
 import { SiteService } from 'projects/app-service-diagnostics/src/app/shared/services/site.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -28,7 +28,8 @@ import { LocalBackendService } from './shared/services/local-backend.service';
 import { PortalKustoTelemetryService } from './shared/services/portal-kusto-telemetry.service';
 import { SharedModule } from './shared/shared.module';
 import { StartupModule } from './startup/startup.module';
-
+import {CustomMaterialModule} from './material-module';
+import { PortalSettingsService } from './shared/services/settings.service';
 @NgModule({
   imports: [
     BrowserModule,
@@ -50,7 +51,8 @@ import { StartupModule } from './startup/startup.module';
         path: 'resource',
         loadChildren: './resources/resources.module#ResourcesModule'
       }
-    ])
+    ]),
+    CustomMaterialModule
   ],
   declarations: [
     AppComponent
@@ -68,7 +70,8 @@ import { StartupModule } from './startup/startup.module';
       provide: ErrorHandler,
       useClass: UnhandledExceptionHandlerService
     },
-    { provide: SolutionService, useExisting: GenericSolutionService }
+    { provide: SolutionService, useExisting: GenericSolutionService },
+    { provide: SettingsService, useExisting: PortalSettingsService}
   ],
   bootstrap: [AppComponent]
 })

@@ -1,19 +1,31 @@
-import { Component, Input, Output, ViewContainerRef, ViewChild, ReflectiveInjector, ComponentFactoryResolver, EventEmitter } from '@angular/core';
-
-import { TextMessageComponent } from '../common/text-message/text-message.component';
+import { Subscription } from 'rxjs';
+import {
+    Component, ComponentFactoryResolver, EventEmitter, Input, Output, ReflectiveInjector, ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import { ButtonMessageComponent } from '../common/button-message/button-message.component';
-import { MainMenuComponent } from '../message-flow/main-menu/main-menu.component';
-import { HealthCheckComponent } from '../message-flow/health-check/health-check.component';
-import { FeedbackComponent } from '../message-flow/feedback/feedback.component';
-import { SolutionsMessageComponent } from '../common/solutions-message/solutions-message.component';
 import { GraphMessageComponent } from '../common/graph-message/graph-message.component';
-import { ProblemStatementMessageComponent } from '../common/problem-statement-message/problem-statement-message.component';
-import { TalkToAgentMessageComponent } from '../message-flow/talk-to-agent/talk-to-agent-message.component';
-import { Message } from '../models/message';
+import {
+    ProblemStatementMessageComponent
+} from '../common/problem-statement-message/problem-statement-message.component';
+import { SolutionsMessageComponent } from '../common/solutions-message/solutions-message.component';
+import { TextMessageComponent } from '../common/text-message/text-message.component';
 import { CategoryMenuComponent } from '../message-flow/category-menu/category-menu.component';
-import { DetectorSummaryComponent } from '../message-flow/detector-summary/detector-summary.component';
-import { DocumentSearchResultsComponent } from '../message-flow/document-search-results/document-search-results.component';
+import {
+    DetectorSummaryComponent
+} from '../message-flow/detector-summary/detector-summary.component';
+import {
+    DocumentSearchResultsComponent
+} from '../message-flow/document-search-results/document-search-results.component';
 import { DocumentSearchComponent } from '../message-flow/document-search/document-search.component';
+import { FeedbackComponent } from '../message-flow/feedback/feedback.component';
+import { HealthCheckComponent } from '../message-flow/health-check/health-check.component';
+import { MainMenuComponent } from '../message-flow/main-menu/main-menu.component';
+import {
+    TalkToAgentMessageComponent
+} from '../message-flow/talk-to-agent/talk-to-agent-message.component';
+import { Message } from '../models/message';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'dynamic-component',
@@ -31,6 +43,7 @@ export class DynamicComponent {
 
     @Output() onViewUpdate = new EventEmitter<any>();
     @Output() onComplete = new EventEmitter<any>();
+    viewUpdateSubscription: Subscription;
 
     @Input() set componentData(message: Message) {
         if (!message) {
@@ -59,7 +72,7 @@ export class DynamicComponent {
         this.currentComponent = component;
 
         // Subscribe to view Update event from Messages and emit out View Update Event
-        this.currentComponent.instance.onViewUpdate.subscribe((response: any) => {
+        this.viewUpdateSubscription = this.currentComponent.instance.onViewUpdate.subscribe((response: any) => {
             this.onViewUpdate.emit();
         });
 
@@ -67,12 +80,17 @@ export class DynamicComponent {
         // On completion, Do the following:
         //  1. Emit out the completion event
         //  2. Unsubscribe to component OnComplete and OnViewUpdate events to stop further notifications.
-        this.currentComponent.instance.onComplete.subscribe((response: { status: boolean, data?: any }) => {
+        this.currentComponent.instance.onComplete.pipe(
+            takeUntil(this.onComplete)
+        ).subscribe((response: { status: boolean, data?: any }) => {
             if (response.status === true) {
                 this.onComplete.emit(response.data);
 
-                this.currentComponent.instance.onViewUpdate.unsubscribe();
-                this.currentComponent.instance.onComplete.unsubscribe();
+                this.viewUpdateSubscription.unsubscribe();
+
+                // Throw ObjectUnsubscribed error if these subjects are still used
+                this.onViewUpdate.unsubscribe();
+                this.onComplete.unsubscribe();
             }
         });
     }

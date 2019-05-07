@@ -99,11 +99,11 @@ export class DetectorControlService {
         return returnValue;
       }
 
-      if (this.isInternalView) {
-        this.allowedDurationInDays = 1;
+      if (this.internalClient) {
+        this.allowedDurationInDays = 3;
       }
       else {
-        this.allowedDurationInDays = 3;
+        this.allowedDurationInDays = 1;
       }
       if (start && end) {
         let diff: momentNs.Duration = moment.duration(end.diff(start));
@@ -119,7 +119,7 @@ export class DetectorControlService {
             }
             else {
               if (diff.asMinutes() === 0) {
-                returnValue = 'Start and End date time cannot be equal.';
+                returnValue = 'Start and End date time cannot be the same.';
               }
               else {
                 if (diff.asMinutes() < 15) {
@@ -185,7 +185,7 @@ export class DetectorControlService {
     else {
       this.timeRangeDefaulted = true;
       if (this.timeRangeErrorString === 'Selected time duration must be at least 15 minutes.') {
-        this.timeRangeErrorString = 'Defaulting to a 15 minutes duration. Selected time duration was less than 15 minutes.';
+        this.timeRangeErrorString = 'Time range set to a 15 minutes duration. Selected time duration was less than 15 minutes.';
         this._endTime = endTime;
         this._startTime = this._endTime.clone().subtract(15, 'minutes');
       }
@@ -203,7 +203,7 @@ export class DetectorControlService {
           }
         }
         else {
-          this.timeRangeErrorString = `Defaulting to last 24 hrs. Start and End date time must not be more than ${(this.allowedDurationInDays * 24).toString()} hrs apart and Start date must be within the past 30 days.`;
+          this.timeRangeErrorString = `Time range set to last 24 hrs. Start and End date time must not be more than ${(this.allowedDurationInDays * 24).toString()} hrs apart and Start date must be within the past 30 days.`;
           this._endTime = moment.utc();
           this._startTime = this._endTime.clone().subtract(1, 'days');
         }
@@ -216,19 +216,19 @@ export class DetectorControlService {
     this._duration = duration;
     this._startTime = moment.utc().subtract(duration.duration);
     this._endTime = this._startTime.clone().add(duration.duration);
-    this._refreshData();
+    this.setCustomStartEnd(this._startTime.toString(), this.endTime.toString());
   }
 
   public moveForwardDuration(): void {
     this._startTime.add(this._duration.duration);
     this._endTime.add(this._duration.duration);
-    this._refreshData();
+    this.setCustomStartEnd(this._startTime.toString(), this.endTime.toString());
   }
 
   public moveBackwardDuration(): void {
     this._startTime.subtract(this._duration.duration);
     this._endTime.subtract(this._duration.duration);
-    this._refreshData();
+    this.setCustomStartEnd(this._startTime.toString(), this.endTime.toString());
   }
 
   public refresh() {

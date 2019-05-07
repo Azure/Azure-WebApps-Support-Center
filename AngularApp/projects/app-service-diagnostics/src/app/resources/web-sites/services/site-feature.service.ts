@@ -89,6 +89,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
         item: {
           id: 'tinfoil',

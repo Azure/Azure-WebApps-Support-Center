@@ -71,6 +71,10 @@ import { SolutionDisplayItemComponent } from './components/solution-display/solu
 import { AnalysisViewComponent } from './components/analysis-view/analysis-view.component';
 import { MatStepperModule, MatIconModule } from '@angular/material';
 
+import { ChangeAnalysisOnboardingComponent } from './components/changeanalysis-onboarding/changeanalysis-onboarding.component';
+import { ChangesetsViewComponent } from './components/changesets-view/changesets-view.component';
+import { ChangesViewComponent } from './components/changes-view/changes-view.component';
+import {CustomMaterialModule} from './material-module';
 
 @NgModule({
   imports: [
@@ -81,7 +85,8 @@ import { MatStepperModule, MatIconModule } from '@angular/material';
     NgxDatatableModule,
     MarkdownModule.forRoot(),
     FormsModule,
-    MonacoEditorModule.forRoot()
+    MonacoEditorModule.forRoot(),
+    CustomMaterialModule
   ],
   providers: [
     ClipboardService
@@ -97,12 +102,18 @@ import { MatStepperModule, MatIconModule } from '@angular/material';
     VerticalDisplayListComponent, VerticalDisplayListItemComponent, SolutionTypeTagComponent, SolutionDisplayComponent,
     SolutionDisplayItemComponent,
     AnalysisViewComponent
+    ChangeAnalysisOnboardingComponent,
+    ChangesetsViewComponent,
+    ChangesViewComponent
   ],
   exports: [
     FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent,
     DataSummaryComponent, LoaderViewComponent, StatusIconComponent, DetectorControlComponent,
     DetectorContainerComponent, InternalPipe, CommAlertComponent, GuageControlComponent, SolutionComponent,
-    FormComponent, VerticalDisplayListComponent, VerticalDisplayListItemComponent, SolutionTypeTagComponent, AnalysisViewComponent
+    FormComponent, VerticalDisplayListComponent, VerticalDisplayListItemComponent, SolutionTypeTagComponent, AnalysisViewComponent,
+    ChangeAnalysisOnboardingComponent,
+    ChangesetsViewComponent,
+    ChangesViewComponent
   ],
 })
 export class DiagnosticDataModule {

@@ -17,6 +17,7 @@ import { TimeControlResolver } from './resolvers/time-control.resolver';
 import { ContentService } from '../shared-v2/services/content.service';
 import { DiagnosticDataModule } from 'diagnostic-data';
 import { GenericAnalysisComponent } from '../shared/components/generic-analysis/generic-analysis.component';
+import { DiagnosticsSettingsComponent } from './components/diagnostics-settings/diagnostics-settings.component';
 
 export const HomeRoutes = RouterModule.forChild([
   {
@@ -94,7 +95,14 @@ export const HomeRoutes = RouterModule.forChild([
   {
     path: 'supportTopicId',
     component: SupportTopicRedirectComponent
-  }
+  },
+  {
+    path: 'settings',
+    component: DiagnosticsSettingsComponent, 
+    data: {
+      navigationTitle: 'App Service Diagnostics Settings'
+    }
+  },
 ]);
 
 @NgModule({
@@ -106,7 +114,7 @@ export const HomeRoutes = RouterModule.forChild([
     SupportBotModule,
     FormsModule
   ],
-  declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent],
+  declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent],
   providers: [CategoryTabResolver, CategoryChatResolver, TimeControlResolver]
 })
 export class HomeModule { }

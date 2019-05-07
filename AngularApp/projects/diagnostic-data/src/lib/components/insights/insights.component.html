@@ -3,26 +3,33 @@
      otherwise I will show it by itself -->
 <ng-template #insightView>
   <div *ngFor="let insight of insights" class="insight-container">
-    <div class="panel panel-default">
+    <div class="panel panel-default insight-panel"
+      [class.critical-insight-panel]="insight.status === InsightStatus.Critical"
+      [class.warning-insight-panel]="insight.status === InsightStatus.Warning"
+      [class.success-insight-panel]="insight.status === InsightStatus.Success"
+      [class.info-insight-panel]="insight.status === InsightStatus.Info">
       <div class="panel-heading">
         <h5 class="panel-title" [class.clickable-header]="hasContent(insight)" (click)="toggleInsightStatus(insight)">
+          <span class="fa insight-expand-icon" [class.fa-angle-right]="hasContent(insight) && !insight.isExpanded"
+            [class.fa-angle-down]="hasContent(insight) && insight.isExpanded"></span>
           <span class="fa status-icon" [class.fa-exclamation-circle]="insight.status === InsightStatus.Critical"
-            [class.fa-exclamation-triangle]="insight.status === InsightStatus.Warning" [class.fa-check-circle]="insight.status === InsightStatus.Success"
+            [class.fa-exclamation-triangle]="insight.status === InsightStatus.Warning"
+            [class.fa-check-circle]="insight.status === InsightStatus.Success"
             [class.fa-info-circle]="insight.status === InsightStatus.Info"></span>
           {{insight.title}}
-          <span *ngIf="hasContent(insight)" class="fa expand-icon" [class.fa-angle-down]="!insight.isExpanded"
-            [class.fa-angle-up]="insight.isExpanded"></span>
         </h5>
         <div class="pull-right" style="margin-top:-18px">
           <div class="col-md-6" [ngClass]="{'con-tooltip bottom':!insight.isRated}" class="insight-rating">
-            <a (click)="setInsightComment(insight, true)"> <i class="fa fa-thumbs-o-up fa-lg" [ngStyle]="{'color':insight.isRated && insight.isHelpful ? 'green': 'gray'}"></i>
+            <a (click)="setInsightComment(insight, true)"> <i class="fa fa-thumbs-o-up fa-lg"
+                [ngStyle]="{'color':insight.isRated && insight.isHelpful ? 'green': 'gray'}"></i>
             </a>
             <div class="tooltip ">
               <p>Helpful</p>
             </div>
           </div>
           <div class="col-md-6" [ngClass]="{'con-tooltip bottom':!insight.isRated}" class="insight-rating">
-            <a (click)="setInsightComment(insight, false)"> <i class="fa fa-thumbs-o-down fa-lg" [ngStyle]="{'color':insight.isRated && !insight.isHelpful ? 'red': 'gray'}"></i>
+            <a (click)="setInsightComment(insight, false)"> <i class="fa fa-thumbs-o-down fa-lg"
+                [ngStyle]="{'color':insight.isRated && !insight.isHelpful ? 'red': 'gray'}"></i>
             </a>
             <div class="tooltip ">
               <p>Not Helpful</p>
@@ -63,7 +70,8 @@
 </ng-template>
 
 <!-- If there is title wrap it in container -->
-<data-container *ngIf="renderingProperties.title; else noContainer" [title]="renderingProperties.title" [description]="renderingProperties.description">
+<data-container *ngIf="renderingProperties.title; else noContainer" [title]="renderingProperties.title"
+  [description]="renderingProperties.description">
   <ng-container *ngTemplateOutlet="insightView"></ng-container>
 </data-container>
 

@@ -8,7 +8,7 @@ import { DetectorControlService, FeatureNavigationService } from 'diagnostic-dat
 import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
 import { AuthService } from '../../../startup/services/auth.service';
-
+import { ArmService } from '../../../shared/services/arm.service';
 @Component({
   selector: 'home',
   templateUrl: './home.component.html',
@@ -26,12 +26,11 @@ export class HomeComponent implements OnInit {
   searchLogTimout: any;
 
   event: any;
-
+  subscriptionId: string;
   constructor(private _resourceService: ResourceService, private _categoryService: CategoryService, private _notificationService: NotificationService, private _router: Router,
     private _detectorControlService: DetectorControlService, private _featureService: FeatureService, private _logger: LoggingV2Service, private _authService: AuthService,
-    private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute) {
+    private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute, private armService: ArmService) {
     this._categoryService.categories.subscribe(categories => this.categories = categories);
-
     this._authService.getStartupInfo().subscribe(startupInfo => {
       if (startupInfo.additionalParameters && Object.keys(startupInfo.additionalParameters).length > 0) {
         let path = 'resource' + startupInfo.resourceId.toLowerCase();
@@ -41,6 +40,7 @@ export class HomeComponent implements OnInit {
         }
       }
     });
+    this.subscriptionId = this._activatedRoute.snapshot.params['subscriptionid'];
   }
 
   ngOnInit() {
@@ -49,6 +49,7 @@ export class HomeComponent implements OnInit {
     if (!this._detectorControlService.startTime) {
       this._detectorControlService.setDefault();
     }
+    this.registerChangeAnalysisFeature();
   }
 
   onSearchBoxFocus(event: any): void {
@@ -86,5 +87,15 @@ export class HomeComponent implements OnInit {
 
   private _logSearch() {
     this._logger.LogSearch(this.searchValue);
+  }
+
+  registerChangeAnalysisFeature(): void {
+    let url = `/subscriptions/${this.subscriptionId}/providers/Microsoft.Features/providers/Microsoft.ChangeAnalysis/features/PreviewAccess/register`;
+    let logData = {
+        'subscriptionId' : this.subscriptionId
+    };
+    this.armService.postResource(url, {}, '2015-12-01', true).subscribe(data => {
+        this._logger.LogAction('Home', 'Registered Change Analysis feature', logData)
+    });
   }
 }

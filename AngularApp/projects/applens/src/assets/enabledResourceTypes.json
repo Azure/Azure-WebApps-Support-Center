@@ -42,6 +42,14 @@
         },
         {
             "service": "ResourceService",
+            "resourceType": "Microsoft.BotService/botServices",
+            "templateFileName": "BotService",
+            "imgSrc": "assets/img/BotService-Logo.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "botServices"
+        },
+        {
+            "service": "ResourceService",
             "resourceType": "Microsoft.ApiManagement/service",
             "templateFileName": "ApiManagementService",
             "imgSrc": "assets/img/Azure-ApiManagement-Logo.png",
