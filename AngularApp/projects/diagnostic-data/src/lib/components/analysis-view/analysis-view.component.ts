@@ -33,6 +33,9 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
   @Input()
   detectorParmName: string;
 
+  @Input()
+  adjustPadding: boolean = false;
+
   ngOnInit() {
     this._activatedRoute.paramMap.subscribe(params => {
       this.analysisId = params.get('analysisId');

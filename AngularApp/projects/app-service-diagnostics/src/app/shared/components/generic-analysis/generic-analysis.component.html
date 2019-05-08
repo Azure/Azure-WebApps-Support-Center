@@ -1,15 +1,14 @@
-<div class="detector-padding">
-  <detector-container [detector]="analysisDetector"></detector-container>
-  <analysis-view detectorParmName="detectorName"></analysis-view>
-</div>
+<detector-container [detector]="analysisDetector"></detector-container>
+<analysis-view adjustPadding="true" detectorParmName="detectorName"></analysis-view>
 
 <div [hidden]="detectorId === ''">
-  <div class="detector-padding">
+  <div>
     <div style="display: inline-block;margin-left: 20px">
       <h2>{{ detectorName }}</h2>
     </div>
     <div style="display: inline-block;margin-left: 10px">
-      <button (click)="goBackToAnalysis()" *ngIf="detectorId !== ''" class="btn btn-sm btn-primary">Back to Analysis</button>
+      <button (click)="goBackToAnalysis()" *ngIf="detectorId !== ''" class="btn btn-sm btn-primary">Back to
+        Analysis</button>
     </div>
   </div>
   <router-outlet></router-outlet>
