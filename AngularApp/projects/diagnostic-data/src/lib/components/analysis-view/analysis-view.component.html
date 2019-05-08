@@ -5,7 +5,8 @@
         <span style="margin-left:10px">{{ detectorsPending }} of {{ detectors.length }} remaining</span>
     </div>
 
-    <div *ngIf="detectors.length> 0 && issueDetectedViewModels.length > 0 || (detectorsPending === 0 && loadingChildDetectors)" class="list-wrapper">
+    <div *ngIf="detectors.length> 0 && issueDetectedViewModels.length > 0 || (detectorsPending === 0 && loadingChildDetectors)"
+        class="list-wrapper">
         <div class="red-line" [ngClass]="{'remove-padding':adjustPadding}"></div>
         <div class="list-item-wrapper">
             <div class="stepper-circle"><i aria-hidden="true" class="fa fa-search dark"></i></div>
@@ -13,10 +14,11 @@
                 <div class="list-title">Observations</div>
                 <div>Events correlated during this time period</div>
                 <div class="list-text" style="margin-top:10px;">
-                    <div *ngIf = "issueDetectedViewModels.length === 0 && detectorsPending === 0">
-                        <div class="success-msg">We could not identify any issues that caused availability drops to your app</div>
+                    <div *ngIf="issueDetectedViewModels.length === 0 && detectorsPending === 0">
+                        <div class="success-msg">We could not identify any issues that caused availability drops to your
+                            app</div>
                     </div>
-                    <div *ngIf = "issueDetectedViewModels.length > 0" class="table-responsive">
+                    <div *ngIf="issueDetectedViewModels.length > 0" class="table-responsive">
                         <table class="table detector-list">
                             <thead>
                                 <tr>
@@ -65,17 +67,18 @@
             <div class="stepper-circle stepper-circle-green"><i aria-hidden="true" class="fa fa-wrench dark"></i></div>
             <div class="list-item">
                 <div class="list-title">Troubleshooting and Next Steps</div>
+                <div>Next steps curated specifically for your app</div>
                 <div class="list-text">
-                    some long text..
-                    some long text..some long text..
-                    some long text..some long text..some long text..
-                    some long text..
-                    some long text..
-                    some long text..
-                    some long text..
-
+                    <div *ngIf="allSolutions.length === 0 && detectorsPending === 0">
+                        <div class="success-msg">We could not identify any futher troubleshooting steps or solutions
+                        </div>
+                    </div>
+                    <div style="width:98%">
+                        <solutions *ngIf="allSolutions.length > 0" [solutions]="allSolutions">
+                        </solutions>
+                    </div>
                 </div>
-                <div class="white-line" [ngClass]="{'remove-padding':adjustPadding}" ></div>
+                <div class="white-line" [ngClass]="{'remove-padding':adjustPadding}"></div>
             </div>
         </div>
     </div>

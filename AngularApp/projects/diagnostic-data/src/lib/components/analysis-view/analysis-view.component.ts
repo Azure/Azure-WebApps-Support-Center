@@ -5,6 +5,7 @@ import { map, catchError } from 'rxjs/operators';
 import { forkJoin as observableForkJoin, Observable, throwError } from 'rxjs';
 import { StatusStyles } from '../../models/styles';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
+import { Solution } from '../solution/solution';
 
 @Component({
   selector: 'analysis-view',
@@ -25,6 +26,7 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
   detectorsPending: number = 0;
   private childDetectorsEventProperties = {};
   loadingChildDetectors: boolean = false;
+  allSolutions: Solution[] = [];
 
   constructor(private _activatedRoute: ActivatedRoute, private _router: Router, private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService, protected telemetryService: TelemetryService, private _navigator: FeatureNavigationService) {
     super(telemetryService);
@@ -41,7 +43,9 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
       this.analysisId = params.get('analysisId');
       this.detectorId = params.get(this.detectorParmName) === null ? "" : params.get(this.detectorParmName);
 
-      this.detectors = [];
+      this.resetGlobals();
+
+
       this._diagnosticService.getDetectors().subscribe(detectorList => {
         if (detectorList) {
 
@@ -63,7 +67,7 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
           this.detectorMetaData = detectorList.filter(detector => this.detectors.findIndex(d => d.id === detector.id) >= 0);
           this.detectorViewModels = this.detectorMetaData.map(detector => this.getDetectorViewModel(detector));
           this.issueDetectedViewModels = [];
-          
+
           const requests: Observable<any>[] = [];
           if (this.detectorViewModels.length > 0) {
             this.loadingChildDetectors = true;
@@ -75,12 +79,10 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
                 this.detectorsPending--;
                 this.detectorViewModels[index] = this.updateDetectorViewModelSuccess(metaData, response);
                 if (this.detectorViewModels[index].status === HealthStatus.Critical || this.detectorViewModels[index].status === HealthStatus.Warning) {
-                  console.log(this.detectorViewModels[index]);
                   let insight = this.getDetectorInsight(this.detectorViewModels[index]);
-                  console.log(insight);
                   let issueDetectedViewModel = { model: this.detectorViewModels[index], insightTitle: insight.title, insightDescription: insight.description };
                   this.issueDetectedViewModels.push(issueDetectedViewModel);
-                  console.log(issueDetectedViewModel);
+                  this.issueDetectedViewModels = this.issueDetectedViewModels.sort((n1, n2) => n1.model.status.statusId - n2.model.status.statusId);
                 }
 
                 return {
@@ -109,6 +111,15 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
 
   }
 
+  resetGlobals() {
+    this.detectors = [];
+    this.detectorsPending = 0;
+    this.detectorViewModels = [];
+    this.issueDetectedViewModels = [];
+    this.loadingChildDetectors = false;
+    this.allSolutions = [];
+
+  }
   getDetectorInsight(viewModel: any): any {
     let allInsights: Insight[] = InsightUtils.parseAllInsightsFromResponse(viewModel.response);
     let insight: any;
@@ -119,22 +130,24 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
         description = allInsights[0].data["Description"];
       }
       insight = { title: allInsights[0].title, description: description };
+
+      // now populate solutions for all the insights
+      allInsights.forEach(i => {
+        if (i.solutions != null) {
+          i.solutions.forEach(s => {
+            if (this.allSolutions.findIndex(x => x.Name === s.Name) === -1) {
+              this.allSolutions.push(s);
+            }
+          });
+        }
+      });
     }
+
     return insight;
 
   }
 
   ngOnChanges() {
-  }
-
-  getRouterLink(detectorId: string): any[] {
-    let link = [];
-    if (this.detectorId !== "") {
-      link = ['../' + detectorId];
-    } else {
-      link = ['./' + detectorId];
-    }
-    return link;
   }
 
   private updateDetectorViewModelSuccess(viewModel: any, res: DetectorResponse) {
@@ -164,8 +177,6 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
 
   public selectDetector(detectorId: string) {
     if (detectorId !== "") {
-      //this.logCardClick(card.title);
-      //this._navigator.NavigateToDetector(this._activatedRoute.snapshot.params['detector'], detectorId);
       this._router.navigate([`../../analysis/${this.analysisId}/${detectorId}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge', preserveFragment: true });
 
     }
