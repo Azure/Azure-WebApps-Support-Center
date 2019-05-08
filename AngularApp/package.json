@@ -28,7 +28,7 @@
     "@angular/core": "6.1.10",
     "@angular/forms": "6.1.10",
     "@angular/http": "6.1.10",
-    "@angular/material": "^6.3.3",
+    "@angular/material": "^7.3.7",
     "@angular/platform-browser": "6.1.10",
     "@angular/platform-browser-dynamic": "6.1.10",
     "@angular/router": "6.1.10",
