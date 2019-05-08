@@ -1,12 +1,18 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { LoadingStatus, DetectorMetaData, DiagnosticService, DetectorControlService, DetectorResponse, HealthStatus, TelemetryEventNames, Insight, InsightUtils, TelemetryService } from 'diagnostic-data';
+ import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
+ import { LoadingStatus } from '../../models/loading';
+import { StatusStyles } from '../../models/styles';
+import { DetectorControlService } from '../../services/detector-control.service';
+import { DiagnosticService } from '../../services/diagnostic.service';
+import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
+import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { Solution } from '../solution/solution';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin as observableForkJoin, Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { StatusStyles } from '../../models/styles';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { DetectorResponse, DetectorMetaData, HealthStatus } from '../../models/detector';
+import { Insight, InsightUtils } from '../../models/insight';
 
 @Component({
   selector: 'detector-list-analysis',
