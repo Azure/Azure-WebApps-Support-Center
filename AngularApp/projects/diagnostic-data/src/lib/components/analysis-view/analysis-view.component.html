@@ -1,6 +1,6 @@
 <div [hidden]="detectorId !== ''">
 
-    <div *ngIf="detectorsPending > 0" style="margin-left:20px">
+    <div *ngIf="detectorsPending > 0" style="margin-left:30px;font-size: large">
         <i class="fa fa-circle-o-notch fa-spin"></i>
         <span style="margin-left:10px">{{ detectorsPending }} of {{ detectors.length }} remaining</span>
     </div>
@@ -29,13 +29,15 @@
                             <tbody>
                                 <tr *ngFor="let viewModel of issueDetectedViewModels">
                                     <td>
-                                        <div style="display: inline-block">
-                                            <status-icon [loading]="viewModel.model.loadingStatus"
-                                                [status]="viewModel.model.status" [size]="20">
-                                            </status-icon>
-                                        </div>
-                                        <div style="display: inline-block;margin-left: 10px">
-                                            <strong>{{ viewModel.model.title }} </strong>
+                                        <div style="white-space: nowrap">
+                                            <div style="display: inline-block">
+                                                <status-icon [loading]="viewModel.model.loadingStatus"
+                                                    [status]="viewModel.model.status" [size]="20">
+                                                </status-icon>
+                                            </div>
+                                            <div style="display: inline-block;margin-left: 10px;">
+                                                <strong>{{ viewModel.model.title }} </strong>
+                                            </div>
                                         </div>
                                     </td>
                                     <td>
@@ -68,7 +70,7 @@
             <div class="list-item">
                 <div class="list-title">Troubleshooting and Next Steps</div>
                 <div>Next steps curated specifically for your app</div>
-                <div class="list-text">
+                <div class="list-text" style="margin-bottom: 20px;">
                     <div *ngIf="allSolutions.length === 0 && detectorsPending === 0">
                         <div class="success-msg">We could not identify any futher troubleshooting steps or solutions
                         </div>

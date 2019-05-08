@@ -28,7 +28,8 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
   loadingChildDetectors: boolean = false;
   allSolutions: Solution[] = [];
 
-  constructor(private _activatedRoute: ActivatedRoute, private _router: Router, private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService, protected telemetryService: TelemetryService, private _navigator: FeatureNavigationService) {
+  constructor(private _activatedRoute: ActivatedRoute, private _router: Router,
+    private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService, protected telemetryService: TelemetryService, private _navigator: FeatureNavigationService) {
     super(telemetryService);
   }
 
@@ -39,13 +40,20 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
   adjustPadding: boolean = false;
 
   ngOnInit() {
+
+    this._detectorControl.update.subscribe(isValidUpdate => {
+      if (isValidUpdate) {
+        this.refresh();
+      }
+    });
+  }
+
+  refresh() {
     this._activatedRoute.paramMap.subscribe(params => {
       this.analysisId = params.get('analysisId');
       this.detectorId = params.get(this.detectorParmName) === null ? "" : params.get(this.detectorParmName);
 
       this.resetGlobals();
-
-
       this._diagnosticService.getDetectors().subscribe(detectorList => {
         if (detectorList) {
 
@@ -82,7 +90,7 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
                   let insight = this.getDetectorInsight(this.detectorViewModels[index]);
                   let issueDetectedViewModel = { model: this.detectorViewModels[index], insightTitle: insight.title, insightDescription: insight.description };
                   this.issueDetectedViewModels.push(issueDetectedViewModel);
-                  this.issueDetectedViewModels = this.issueDetectedViewModels.sort((n1, n2) => n1.model.status.statusId - n2.model.status.statusId);
+                  this.issueDetectedViewModels = this.issueDetectedViewModels.sort((n1, n2) => n1.model.status - n2.model.status);
                 }
 
                 return {
@@ -108,7 +116,6 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
         }
       });
     });
-
   }
 
   resetGlobals() {
