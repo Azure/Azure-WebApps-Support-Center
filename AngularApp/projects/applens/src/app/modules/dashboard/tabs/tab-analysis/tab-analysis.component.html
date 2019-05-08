@@ -11,8 +11,8 @@
       <h4>{{ detectorName }}</h4>
     </div>
     <div style="display: inline-block;margin-left: 10px">
-      <button *ngIf="detectorId !== ''" class="btn btn-sm btn-primary" [routerLink]="['../']" preserveFragment
-        queryParamsHandling="preserve">Back to Analysis</button>
+      <a *ngIf="detectorId !== ''" [routerLink]="['../']" preserveFragment
+        queryParamsHandling="preserve">Back to observations</a>
     </div>
   </div>
   <router-outlet></router-outlet>
