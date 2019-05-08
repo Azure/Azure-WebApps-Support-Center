@@ -96,7 +96,7 @@ namespace AppLensV3.Services
 
                 var getUserAvatarUri = $"https://graph.microsoft.com/v1.0/users/{userId}@microsoft.com/photo/$value";
 
-                string uri = $"users/{userId}@microsoft.com/photos/64x64/$value";
+                string uri = $"users/{userId}@microsoft.com/photo/$value";
                 string userApiUri = $"users/{userId}@microsoft.com";
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, string.Format(GraphConstants.GraphApiEndpointFormat, uri));
