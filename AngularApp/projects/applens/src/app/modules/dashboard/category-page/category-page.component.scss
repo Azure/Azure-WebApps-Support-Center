@@ -235,6 +235,7 @@
     padding: 16px 0;
     font-size: 20px;
     font-weight: bold;
+    max-height: 35%;
 }
 
 .detector-description{
@@ -247,6 +248,7 @@
 
 .detector-authors {
     height: 40%;
+    margin-left: 10px;
 }
 
 .author-list {
@@ -255,10 +257,18 @@
 
 .author-String {
     font-weight: bold;
-}
-.author-avatar .avatar-container {
+    padding-left: 30px;
 }
 
-.author-avatar .avartar-content {
+.author-initial {
+    display: inline-block;
+}
+
+.author-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right:-20px;
 }
 

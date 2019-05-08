@@ -44,8 +44,6 @@ export class DiagnosticApiService {
 
   public getDetectors(version: string, resourceId: string, body?: any, internalClient: boolean = true): Observable<DetectorMetaData[]> {
     let path = `${version}${resourceId}/detectors`;
-    console.log(`Get Detectors: Diagnostic api (Applens) body`);
-    console.log(body);
     return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body, true, false, internalClient).pipe(retry(1), map(response => response.map(detector => detector.metadata)));
   }
 
@@ -172,7 +170,6 @@ export class DiagnosticApiService {
   }
 
   private getCacheKey(method: HttpMethod, path: string) {
-    console.log(`Cache key: ${HttpMethod[method]}-${path}`);
     return `${HttpMethod[method]}-${path}`;
   }
 
