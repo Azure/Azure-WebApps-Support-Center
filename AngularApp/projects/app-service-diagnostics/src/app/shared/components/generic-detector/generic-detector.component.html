@@ -1,4 +1,4 @@
-<div class="detector-padding">
+<div [ngClass]="{'detector-padding': analyisMode === false}">
     <detector-container [analysisMode]="analysisMode" [detector]="detector"></detector-container>
 </div>
 

@@ -1,6 +1,6 @@
 <div [hidden]="detectorId !== ''">
 
-    <div *ngIf="detectorsPending > 0" style="margin-left:30px;font-size: large">
+    <div *ngIf="detectorsPending > 0" style="margin-left:30px;font-size: large;margin-bottom: 30px">
         <i class="fa fa-circle-o-notch fa-spin"></i>
         <span style="margin-left:10px">{{ detectorsPending }} of {{ detectors.length }} remaining</span>
     </div>
