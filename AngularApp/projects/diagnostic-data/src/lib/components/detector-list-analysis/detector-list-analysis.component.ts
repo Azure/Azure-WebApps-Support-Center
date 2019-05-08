@@ -1,18 +1,18 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DiagnosticService, LoadingStatus, DetectorMetaData, DetectorResponse, TelemetryEventNames, HealthStatus, InsightUtils, Insight, DetectorControlService, TelemetryService, FeatureNavigationService } from 'diagnostic-data';
-import { map, catchError } from 'rxjs/operators';
-import { forkJoin as observableForkJoin, Observable, throwError } from 'rxjs';
-import { StatusStyles } from '../../models/styles';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
+import { LoadingStatus, DetectorMetaData, DiagnosticService, DetectorControlService, DetectorResponse, HealthStatus, TelemetryEventNames, Insight, InsightUtils, TelemetryService } from 'diagnostic-data';
 import { Solution } from '../solution/solution';
+import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin as observableForkJoin, Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { StatusStyles } from '../../models/styles';
 
 @Component({
-  selector: 'analysis-view',
-  templateUrl: './analysis-view.component.html',
-  styleUrls: ['./analysis-view.component.scss']
+  selector: 'detector-list-analysis',
+  templateUrl: './detector-list-analysis.component.html',
+  styleUrls: ['./detector-list-analysis.component.scss']
 })
-export class AnalysisViewComponent extends DataRenderBaseComponent implements OnInit {
+export class DetectorListAnalysisComponent  extends DataRenderBaseComponent implements OnInit {
 
   analysisId: string;
   detectorId: string;
@@ -29,7 +29,7 @@ export class AnalysisViewComponent extends DataRenderBaseComponent implements On
   allSolutions: Solution[] = [];
 
   constructor(private _activatedRoute: ActivatedRoute, private _router: Router,
-    private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService, protected telemetryService: TelemetryService, private _navigator: FeatureNavigationService) {
+    private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService, protected telemetryService: TelemetryService) {
     super(telemetryService);
   }
 
