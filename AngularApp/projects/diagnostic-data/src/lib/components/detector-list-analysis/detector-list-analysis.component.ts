@@ -6,13 +6,28 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin as observableForkJoin, Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { StatusStyles } from '../../models/styles';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'detector-list-analysis',
   templateUrl: './detector-list-analysis.component.html',
-  styleUrls: ['./detector-list-analysis.component.scss']
+  styleUrls: ['./detector-list-analysis.component.scss'],
+  animations: [
+    trigger(
+      'loadingAnimation',
+      [
+        state('shown', style({
+          opacity: 1
+        })),
+        state('hidden', style({
+          opacity: 0
+        })),
+        transition('* => *', animate('.3s'))
+      ]
+    )
+  ]
 })
-export class DetectorListAnalysisComponent  extends DataRenderBaseComponent implements OnInit {
+export class DetectorListAnalysisComponent extends DataRenderBaseComponent implements OnInit {
 
   analysisId: string;
   detectorId: string;
@@ -27,6 +42,10 @@ export class DetectorListAnalysisComponent  extends DataRenderBaseComponent impl
   private childDetectorsEventProperties = {};
   loadingChildDetectors: boolean = false;
   allSolutions: Solution[] = [];
+  loadingMessages: string[] = [];
+  loadingMessageIndex:number = 0;
+  loadingMessageTimer: any;
+  showLoadingMessage:boolean = false;
 
   constructor(private _activatedRoute: ActivatedRoute, private _router: Router,
     private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService, protected telemetryService: TelemetryService) {
@@ -37,7 +56,7 @@ export class DetectorListAnalysisComponent  extends DataRenderBaseComponent impl
   detectorParmName: string;
 
   @Input()
-  adjustPadding: boolean = false;
+  withinDiagnoseAndSolve: boolean = false;
 
   ngOnInit() {
 
@@ -67,6 +86,8 @@ export class DetectorListAnalysisComponent  extends DataRenderBaseComponent impl
               element.analysisTypes.forEach(analysis => {
                 if (analysis === this.analysisId) {
                   this.detectors.push({ name: element.name, id: element.id });
+                  this.loadingMessages.push("Checking " + element.name);
+                  console.log("Checking " + element.name);
                 }
               });
             }
@@ -79,6 +100,7 @@ export class DetectorListAnalysisComponent  extends DataRenderBaseComponent impl
           const requests: Observable<any>[] = [];
           if (this.detectorViewModels.length > 0) {
             this.loadingChildDetectors = true;
+            this.startLoadingMessage();
           }
           this.detectorViewModels.forEach((metaData, index) => {
             this.detectorsPending++;
@@ -125,6 +147,7 @@ export class DetectorListAnalysisComponent  extends DataRenderBaseComponent impl
     this.issueDetectedViewModels = [];
     this.loadingChildDetectors = false;
     this.allSolutions = [];
+    this.loadingMessages = [];
 
   }
   getDetectorInsight(viewModel: any): any {
@@ -188,4 +211,27 @@ export class DetectorListAnalysisComponent  extends DataRenderBaseComponent impl
 
     }
   }
+
+  startLoadingMessage(): void {
+    let self = this;
+    this.loadingMessageIndex = 0;
+    this.showLoadingMessage = true;
+
+    setTimeout(() => {
+        self.showLoadingMessage = false;
+    }, 3000)
+    this.loadingMessageTimer = setInterval(() => {
+        self.loadingMessageIndex++;
+        self.showLoadingMessage = true;
+
+        if (self.loadingMessageIndex === self.loadingMessages.length - 1) {
+            clearInterval(this.loadingMessageTimer);
+            return;
+        }
+
+        setTimeout(() => {
+            self.showLoadingMessage = false;
+        }, 3000)
+    }, 4000);
+}
 }
