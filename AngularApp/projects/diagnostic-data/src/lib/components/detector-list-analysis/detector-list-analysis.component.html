@@ -2,8 +2,10 @@
 
     <div *ngIf="detectorsPending > 0" style="margin-left:30px;margin-bottom: 30px">
         <i class="fa fa-circle-o-notch fa-2x fa-spin spin-icon" aria-hidden="true"></i>
-        <span [@loadingAnimation]="showLoadingMessage ? 'shown' : 'hidden'" class="loading-message">{{loadingMessages[loadingMessageIndex]}}</span>
-        <span style="margin-left:10px">({{ detectors.length - detectorsPending }} of {{ detectors.length }} checks completed)</span>
+        <span [@loadingAnimation]="showLoadingMessage ? 'shown' : 'hidden'"
+            class="loading-message">{{loadingMessages[loadingMessageIndex]}}</span>
+        <span style="margin-left:10px">({{ detectors.length - detectorsPending }} of {{ detectors.length }} checks
+            completed)</span>
     </div>
 
     <div *ngIf="detectors.length> 0 && issueDetectedViewModels.length > 0 || (detectorsPending === 0 && loadingChildDetectors)"
@@ -50,7 +52,9 @@
                                     </td>
                                     <td>
                                         <div style="margin-top: 5px;white-space: nowrap;">
-                                            <button [ngClass]= "{'btn btn-primary btn-sm':!withinDiagnoseAndSolve, 'custom-button':withinDiagnoseAndSolve}" (click)="selectDetector(viewModel.model.metadata.id)">More
+                                            <button
+                                                [ngClass]="{'btn btn-primary btn-sm':!withinDiagnoseAndSolve, 'custom-button':withinDiagnoseAndSolve}"
+                                                (click)="selectDetector(viewModel.model.metadata.id)">More
                                                 Info
                                                 <i class="fa fa-arrow-circle-o-right"
                                                     style="margin-left:5px; font-size: 15px"></i>

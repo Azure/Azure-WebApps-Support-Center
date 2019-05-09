@@ -13,11 +13,7 @@ export class TabTitleResolver implements Resolve<Observable<string>> {
       let detectorId = route.params['detectorName'];
       let analysisId = route.params['analysisId'];
 
-      if (analysisId != null && detectorId != null) {
-        detectorId = analysisId;
-      }
-
-      if (detectorId == null && analysisId != null) {
+      if (analysisId != null) {
         detectorId = analysisId;
       }
 
