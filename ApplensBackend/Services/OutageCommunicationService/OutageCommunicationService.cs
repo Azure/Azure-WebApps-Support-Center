@@ -17,7 +17,7 @@ namespace AppLensV3.Services
         private TimeSpan _commAlertWindow = TimeSpan.FromDays(2);
         private TimeSpan _commExpandedWindow = TimeSpan.FromDays(1);
 
-        private string _commsQuery = @"
+        private string _commsQuery1 = @"
         let startDate = datetime({START_TIME});
         let endDate = datetime({END_TIME});
         cluster('Icmcluster').database('ACM.Backend'). 
@@ -25,6 +25,14 @@ namespace AppLensV3.Services
         | where CommunicationType == 'Outage'
         | order by PublishedTime asc
         | project CommunicationId, PublishedTime, Title, RichTextMessage, Status, Severity, IncidentId, CommunicationType, ImpactedServices
+        ";
+
+        private string _commsQuery = @"
+        let startDate = datetime({START_TIME});
+        let endDate = datetime({END_TIME});
+        cluster('azsupport').database('AzureSupportability').ActiveSupportTopicTree
+ | where ProductId in ('14748') 
+| summarize by ProductId, SupportTopicId = SupportTopicL3Id, ProductName, SupportTopicL2Name, SupportTopicL3Name   
         ";
 
         public OutageCommunicationService(IKustoQueryService kustoQueryService)
