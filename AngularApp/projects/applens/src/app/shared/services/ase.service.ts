@@ -17,15 +17,13 @@ export class AseService extends ResourceService {
   }
 
   public startInitializationObservable() {
-    this._initialized = this._observerApiService.getAse(this._armResource.resourceName).pipe(
-      mergeMap((observerResponse: Observer.ObserverAseResponse) => {
+    this._initialized = this._observerApiService.getAse(this._armResource.resourceName)
+      .pipe(
+        map((observerResponse: Observer.ObserverAseResponse) => {
         this._hostingEnvironmentResource = observerResponse.details;
         this._currentResource.next(observerResponse.details);
-        return this._observerApiService.getAseRequestBody(this._hostingEnvironmentResource.Name);
-      }),map((requestBody: any) => {
-        this._requestBody = requestBody.details;
         return true;
-      }),);
+      }));
   }
 
   public getCurrentResource(): Observable<Observer.ObserverAseInfo> {
