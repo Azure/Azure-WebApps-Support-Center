@@ -19,10 +19,8 @@ namespace AppLensV3.Services
         private TimeSpan _commExpandedWindow = TimeSpan.FromDays(1);
 
         private string _supportTopicsQuery = @"
-        let startDate = datetime({START_TIME});
-        let endDate = datetime({END_TIME});
         cluster('azsupport').database('AzureSupportability').ActiveSupportTopicTree
- | where ProductId in ('14748') 
+ | where ProductId in ('{PRODUCTID}') 
 | summarize by ProductId, SupportTopicId = SupportTopicL3Id, ProductName, SupportTopicL2Name, SupportTopicL3Name   
         ";
 
@@ -31,9 +29,9 @@ namespace AppLensV3.Services
             _kustoQueryService = kustoQueryService;
         }
 
-        public async Task<List<Communication>> GetSupportTopicsAsync(string subscription, DateTime startTime, DateTime endTime, string impactedService = "appservice")
+        public async Task<List<Communication>> GetSupportTopicsAsync(string productId, DateTime startTime, DateTime endTime, string impactedService = "appservice")
         {
-            if (string.IsNullOrWhiteSpace(subscription))
+            if (string.IsNullOrWhiteSpace(productId))
             {
                 throw new ArgumentNullException("subscription");
             }
@@ -49,9 +47,7 @@ namespace AppLensV3.Services
             string endTimeStr = DateTimeHelper.GetDateTimeInUtcFormat(endTime).ToString("yyyy-MM-dd HH:mm:ss");
 
             string kustoQuery = _supportTopicsQuery
-                .Replace("{START_TIME}", startTimeStr)
-                .Replace("{END_TIME}", endTimeStr)
-                .Replace("{SUBSCRIPTION}", subscription);
+                .Replace("{PRODUCTID}", productId);
 
             DataTable dt = await _kustoQueryService.ExecuteQueryAsync("azsupport", "AzureSupportability", kustoQuery);
 
