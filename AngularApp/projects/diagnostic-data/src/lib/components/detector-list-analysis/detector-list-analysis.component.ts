@@ -93,7 +93,6 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
                 if (analysis === this.analysisId) {
                   this.detectors.push({ name: element.name, id: element.id });
                   this.loadingMessages.push("Checking " + element.name);
-                  console.log("Checking " + element.name);
                 }
               });
             }
@@ -213,7 +212,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
 
   public selectDetector(detectorId: string) {
     if (detectorId !== "") {
-      this._router.navigate([`../../analysis/${this.analysisId}/${detectorId}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge', preserveFragment: true });
+      this._router.navigate([`../../analysis/${this.analysisId}/detectors/${detectorId}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge', preserveFragment: true });
 
     }
   }

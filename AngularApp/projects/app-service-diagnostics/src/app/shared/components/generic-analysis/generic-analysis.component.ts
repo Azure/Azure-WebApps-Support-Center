@@ -39,7 +39,7 @@ export class GenericAnalysisComponent extends GenericDetectorComponent implement
   }
 
   goBackToAnalysis(){
-    this._routerLocal.navigate([`../../${this.analysisId}`], { relativeTo: this._activatedRouteLocal, queryParamsHandling: 'merge' });
+    this._routerLocal.navigate([`../../../${this.analysisId}`], { relativeTo: this._activatedRouteLocal, queryParamsHandling: 'merge' });
   }
 
 }

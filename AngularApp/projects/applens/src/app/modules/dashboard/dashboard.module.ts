@@ -134,7 +134,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
         ]
       },
       {
-        path: 'analysis/:analysisId/:detector',
+        path: 'analysis/:analysisId/detectors/:detector',
         component: TabAnalysisComponent,
         children: [
           {
@@ -156,6 +156,24 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
       },
       {
         path: 'analysis/:analysisId',
+        component: TabAnalysisComponent,
+        children: [
+          {
+            path: '',
+            component: TabDataComponent
+          },
+          {
+            path: 'data',
+            redirectTo: ''
+          },
+          {
+            path: 'datasource',
+            component: TabDataSourcesComponent
+          }
+        ]
+      },
+      {
+        path: 'analysis/:analysisId/detectors',
         component: TabAnalysisComponent,
         children: [
           {
