@@ -15,7 +15,7 @@
             <div class="stepper-circle"><i aria-hidden="true" class="fa fa-search dark"></i></div>
             <div class="list-item">
                 <div class="list-title">Observations</div>
-                <div>Events correlated during this time period</div>
+                <div>Events observed during this time period</div>
                 <div class="list-text" style="margin-top:10px;">
                     <div *ngIf="issueDetectedViewModels.length === 0 && detectorsPending === 0">
                         <div class="success-msg">We could not identify any issues that caused availability drops to your
@@ -25,7 +25,7 @@
                         <table class="table detector-list">
                             <thead>
                                 <tr>
-                                    <th class="col-sm-2">Observation</th>
+                                    <th class="col-sm-2">Issues</th>
                                     <th colspan="2" class="col-sm-8">Description</th>
                                 </tr>
                             </thead>
