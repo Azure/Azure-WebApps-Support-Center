@@ -2,27 +2,7 @@
   <div class="alert-container">
     <comm-alert></comm-alert>
   </div>
-<!--
-  <div><img *ngIf="userPhotoSrc else loading" id="userPhoto" [src]="userPhotoSrc" class="category-icon" /></div> -->
-
-
-  <!-- <div ><img *ngIf="(userPhotoSrc1 | async); else loading" id="userPhoto" [src]="(userPhotoSrc1 | async)" class="category-icon" /></div> -->
-
   <div class="category-container">
-    <!-- <div class="flexbox"> -->
-
-    <!--
-        <collapsible-menu theme="dark">
-          <search-box [(searchValue)]="searchValue"></search-box>
-          <menu-scroll>
-            <section-divider label="Detectors">
-              <collapsible-menu-item *ngFor="let category of categories" [searchValue]="searchValue" [menuItem]="category"></collapsible-menu-item>
-            </section-divider>
-            <section-divider label="Gists">
-              <collapsible-menu-item *ngFor="let gist of gists" [searchValue]="searchValue" [menuItem]="gist"></collapsible-menu-item>
-            </section-divider>
-          </menu-scroll>
-        </collapsible-menu> -->
 
     <div class="flexed card " *ngFor="let category of categories;let i = index"
       [ngClass]="{'active':category.activeState === 2, 'inactive': category.activeState === 1}"
@@ -31,96 +11,16 @@
         <div class="col-md-3"><img class="category-icon"
             src= {{category.icon}} />
         </div>
-        <div class="col-md-8 category-label">
+        <div class="col-md-9 category-label">
           <div class="category-title">{{category.label}}</div>
           <div class="category-description"><span>Total Detectors: {{category.subItems.length}}</span></div>
         </div>
-        <!-- <div class="actions"><input type="text" placeholder="Rename" value="Tinder" /><input type="button"
-                value="rename" /></div> -->
       </div>
-      <!-- <div *ngIf= "category.activeState !==2 else expanded_card"> -->
-      <!-- <div class="category-content"> -->
-              <!-- <span class="keyword-label">Detectors</span> -->
               <div class="keywords">
                 <div *ngFor="let subCategory of category.subItems; let i = index">
                   <div *ngIf="i<2" class="keyword"><span>{{subCategory.label}}</span></div>
                 </div>
                 <span *ngIf="category.subItems.length > 2" class="detectors-hint">+{{category.subItems.length-2}} detectors</span>
               </div>
-
-        <!-- <ul *ngFor="let subCategory of category.subItems; let i = index">
-          <li *ngIf="i<3">{{subCategory.label}}</li>
-        </ul> -->
-
-
-
-<!--
-        <div><span style="padding-left: 40px; font-weight: bold;">Total Detectors: {{category.subItems.length}}</span> -->
-        <!-- </div> -->
       </div>
-
-      <!-- </div> -->
-
-      <!-- <ng-template #expanded_card>
-          <div class="detector-card-container actions">
-            <div class="detector-card col-md-6" *ngFor="let subCategory of category.subItems;let k = index" (click)="clickAction(subCategory)" >
-                <div class="name info">
-                    <img class="category-icon"
-                    src="http://a2.mzstatic.com/us/r30/Purple6/v4/35/da/1a/35da1a3b-619b-8cf4-beb4-cb1346dfc91f/mzl.yooqqlia.png" />
-                <span class="detector-name">{{subCategory.label}}</span></div>
-                <div class="detector-author">{{subCategory.author}}</div>
-                <div class="detector-description">{{subCategory.description}}</div>
-                </div>
-              </div>
-        </ng-template> -->
-      <!-- <div class="top">
-
-              <div class="management actions">
-                <h2>Show App Key</h2><input type="text" placeholder="Password" /><input type="button" value="show" /><input
-                  class="special block" type="button" value="+ Add platform" />
-              </div>
-            </div>
-          </div> -->
     </div>
-    <ng-template #loading>
-      loading user profile..
-    </ng-template>
-    <!--
-
-  <div class="resource-info content-card">
-    <h4>Resource Information</h4>
-    <div *ngFor="let key of keys">
-      <b>{{key}}:</b> {{resource[key]}}
-    </div>
-  </div>
-
-  <div class="detector-list content-card">
-    <h4>Detectors Enabled For Support Topics</h4>
-    <table>
-      <thead>
-        <th>
-          Pes Id
-        </th>
-        <th>
-          Support Topic Id
-        </th>
-        <th>
-          Detector
-        </th>
-      </thead>
-      <tbody>
-        <tr *ngFor="let s of supportTopicIdMapping">
-          <td>
-            {{s.supportTopic.pesId}}
-          </td>
-          <td>
-            {{s.supportTopic.id}}
-          </td>
-          <td>
-            {{s.detectorName}}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div> -->

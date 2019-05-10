@@ -61,8 +61,6 @@ export class DashboardComponent implements OnDestroy {
 
     let alias = this._adalService.userInfo.profile ? this._adalService.userInfo.profile.upn : '';
     this.userName = alias.replace('@microsoft.com', '');
-    console.log("userName");
-    console.log(this.userName);
     this._diagnosticService.getUserPhoto(this.userName).subscribe(image => {
         // this.userPhotoSource =  "data:image / jpeg; base64," + image;
         // this.userPhotoSource =  "data:image/jpeg;base64," + image;

@@ -13,7 +13,7 @@ export class ApplensSupportTopicService {
   protected detectorTask: Observable<DetectorMetaData[]>;
 
   constructor(private _diagnosticApiService: ApplensDiagnosticService, private _resourceService: ResourceService) {
-    this.detectorTask = this._diagnosticApiService.getDetectors();
+   // this.detectorTask = this._diagnosticApiService.getDetectors();
    }
 
   public getSupportTopics(): Observable<any> {
@@ -30,7 +30,8 @@ export class ApplensSupportTopicService {
 
 
   getPathForSupportTopic(supportTopicId: string, pesId: string): Observable<string> {
-    return this.detectorTask.pipe(map(detectors => {
+  //  return this.detectorTask.pipe(map(detectors => {
+    return this._diagnosticApiService.getDetectors().pipe(map(detectors => {
       let detectorPath = '';
 
       if (detectors) {

@@ -94,6 +94,8 @@ export class SideNavComponent implements OnInit {
 
     this._diagnosticApiService.getDetectors().subscribe(detectorList => {
       if (detectorList) {
+          console.log("Side nav bar, get detectors");
+          console.log(detectorList);
         detectorList.forEach(element => {
           let onClick = () => {
             this.navigateTo(`detectors/${element.id}`);

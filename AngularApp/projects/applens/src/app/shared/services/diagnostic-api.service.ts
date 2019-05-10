@@ -8,6 +8,8 @@ import { environment } from '../../../environments/environment';
 import { HttpMethod } from '../models/http';
 import { Package } from '../models/package';
 import { CacheService } from './cache.service';
+import {throwError as observableThrowError } from 'rxjs';
+import {catchError, tap} from 'rxjs/operators';
 
 @Injectable()
 export class DiagnosticApiService {
@@ -40,10 +42,9 @@ export class DiagnosticApiService {
     let path = `/${resourceId}/detectors/${detector}/statistics/${systemInvokerId}?${invokerParameters}`;
 
     return this.invoke<DetectorResponse>(path, HttpMethod.POST, body);
-  }f
+  }
 
   public getDetectors(version: string, resourceId: string, body?: any, internalClient: boolean = true): Observable<DetectorMetaData[]> {
-    console.log("applens-diag get detectors");
     let path = `${version}${resourceId}/detectors`;
     return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body, true, false, internalClient).pipe(retry(1), map(response => response.map(detector => detector.metadata)));
   }

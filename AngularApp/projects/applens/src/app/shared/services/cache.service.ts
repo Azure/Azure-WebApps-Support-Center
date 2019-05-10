@@ -16,7 +16,7 @@ export class CacheService {
     private inFlightObservables: Map<string, Subject<any>> = new Map<string, Subject<any>>();
 
     // This is useful to enable if you are trying to test and make sure this service is working properly
-    private enableConsoleLogging: boolean = false;
+    private enableConsoleLogging: boolean = true;
 
     get(key: string, fallback?: Observable<any>, invalidateCache: boolean = false): Observable<any> | Subject<any> {
 
@@ -37,7 +37,17 @@ export class CacheService {
 
             this.inFlightObservables.set(key, new Subject());
             this.log(`%c Calling api for ${key}`, 'color: purple');
-            return fallback.pipe(tap((value) => { this.set(key, value); }, error => this.inFlightObservables.delete(key)));
+            return fallback.pipe(tap((value) => {
+                this.set(key, value);
+                console.log(key);
+                console.log(value);
+            },
+            error => {
+                console.log(key);
+                this.inFlightObservables.delete(key);
+
+            }));
+
         } else {
             return observableThrowError('Requested key is not available in Cache');
         }
