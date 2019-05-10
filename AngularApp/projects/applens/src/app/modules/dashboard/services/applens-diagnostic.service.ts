@@ -36,10 +36,6 @@ export class ApplensDiagnosticService {
   }
 
   getDetectors(internalClient: boolean = true): Observable<DetectorMetaData[]> {
-      if (internalClient != undefined  && internalClient === true)
-      {
-          console.log("Get all the detectors");
-      }
     return this._diagnosticApi.getDetectors(
       this._resourceService.versionPrefix,
       this._resourceService.getCurrentResourceId(true),
