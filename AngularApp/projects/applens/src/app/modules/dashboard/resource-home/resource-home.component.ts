@@ -6,6 +6,7 @@ import { DetectorMetaData, SupportTopic } from 'diagnostic-data';
 import { map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
+import { ApplensSupportTopicService } from '../services/applens-support-topic.service';
 
 @Component({
     selector: 'resource-home',
@@ -32,7 +33,7 @@ export class ResourceHomeComponent implements OnInit {
     userPhotoSrc1: Observable<string>;
 
 
-    constructor(private _elementRef: ElementRef, private _router: Router, private _activatedRoute: ActivatedRoute, private _resourceService: ResourceService, private _diagnosticService: ApplensDiagnosticService) { }
+    constructor(private _elementRef: ElementRef, private _router: Router, private _activatedRoute: ActivatedRoute, private _resourceService: ResourceService, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService) { }
 
     ngOnInit() {
         this._resourceService.getCurrentResource().subscribe(resource => {
@@ -40,6 +41,15 @@ export class ResourceHomeComponent implements OnInit {
                 this.resource = resource;
                 this.keys = Object.keys(this.resource);
             }
+        });
+
+        this._supportTopicService.getSupportTopics().subscribe((supportTopics: SupportTopic[]) => {
+            console.log("Here are the support topics");
+
+
+            supportTopics.forEach((supportTopic) => {
+                console.log(supportTopic);
+            });
         });
 
         this._diagnosticService.getUserPhoto("xipeng").subscribe(image => {
@@ -51,19 +61,9 @@ export class ResourceHomeComponent implements OnInit {
          //   document.getElementById("userPhoto").setAttribute("src", blobUrl);
         });
 
-        this.userPhotoSrc1 = this._diagnosticService.getUserPhoto("shgup").pipe(map(image =>
-            // const url = window.URL;
-            // const blobUrl = url.createObjectURL(image.data);
-
-            'data:image/jpeg;base64,' + image
-        ));
-
-
-        this.getPhoto().subscribe((image) => {
-            console.log(image);
-        })
 
         const detectorsWithSupportTopics = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
+            console.log("Get detectors");
             let authorString = "";
             detectors.forEach(detector => {
                 if (detector.author != undefined && detector.author !== '' ) {
@@ -120,7 +120,7 @@ export class ResourceHomeComponent implements OnInit {
                 };
 
 
-             
+
                 if (element.category)
                 {
                     let activeState = 0;
@@ -140,7 +140,7 @@ export class ResourceHomeComponent implements OnInit {
                     // This needs to be filtered in the prod env
                     // let category = element.category ? element.category : "Uncategorized";
 
-              
+
                     // let activeState = 0;
                     // let menuItem = new CategoryItem(activeState, element.name, element.description, element.author, onClick, isSelected);
 
@@ -153,7 +153,7 @@ export class ResourceHomeComponent implements OnInit {
                     // }
 
                     // categoryMenuItem.subItems.push(menuItem);
-                
+
             });
 
             this.categories = this.categories.sort((a, b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));

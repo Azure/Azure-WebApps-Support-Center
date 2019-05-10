@@ -20,13 +20,11 @@ namespace AppLensV3.Controllers
     {
         private IMemoryCache _cache;
         private readonly IGraphClientService _graphClientService;
-        private IDiagnosticClientService _diagnosticClientService { get; }
 
         public GraphController(IMemoryCache cache, IGraphClientService graphClientService, IDiagnosticClientService diagnosticClient)
         {
             _cache = cache;
             _graphClientService = graphClientService;
-            _diagnosticClientService = diagnosticClient;
         }
 
         [HttpGet("users/{userId}")]

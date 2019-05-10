@@ -36,6 +36,7 @@ export class ApplensDiagnosticService {
   }
 
   getDetectors(internalClient: boolean = true): Observable<DetectorMetaData[]> {
+      console.log("applens-diag get detectors");
     return this._diagnosticApi.getDetectors(
       this._resourceService.versionPrefix,
       this._resourceService.getCurrentResourceId(true),
@@ -45,6 +46,10 @@ export class ApplensDiagnosticService {
 
   getUsers(body: any): Observable<any> {
     return this._diagnosticApi.getUsers(body);
+  }
+
+  getSupportTopics(pesId: any): Observable<any> {
+    return this._diagnosticApi.getSupportTopics(pesId);
   }
 
   getGists(): Observable<DetectorMetaData[]> {

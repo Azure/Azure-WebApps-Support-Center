@@ -21,6 +21,7 @@ import { TabDataComponent } from './tabs/tab-data/tab-data.component';
 import { TabDevelopComponent } from './tabs/tab-develop/tab-develop.component';
 import { ApplensDiagnosticService } from './services/applens-diagnostic.service';
 import { ApplensCommsService } from './services/applens-comms.service';
+import { ApplensSupportTopicService } from './services/applens-support-topic.service';
 import { DiagnosticService, DiagnosticDataModule, CommsService, DetectorControlService } from 'diagnostic-data';
 import { CollapsibleMenuModule } from '../../collapsible-menu/collapsible-menu.module';
 import { ObserverService } from '../../shared/services/observer.service';
@@ -218,6 +219,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
   providers: [
     ApplensDiagnosticService,
     ApplensCommsService,
+    ApplensSupportTopicService,
     InitResolver,
     {
       provide: ResourceService,

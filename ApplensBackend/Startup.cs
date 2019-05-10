@@ -50,6 +50,7 @@ namespace AppLensV3
             services.AddSingleton<IEmailNotificationService, EmailNotificationService>();
             services.AddSingleton<IGraphClientService, GraphClientService>();
             services.AddSingleton<IGraphTokenService, GraphTokenService>();
+            services.AddSingleton<ISupportTopicService, SupportTopicService>();
 
             services.AddMemoryCache();
             services.AddMvc();

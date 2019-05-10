@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace AppLensV3.Controllers
 {
+    [Route("api")]
+    [Authorize]
     public class SupportTopicController: ControllerBase
     {
         private readonly ISupportTopicService _supportTopicService;
@@ -20,20 +22,15 @@ namespace AppLensV3.Controllers
 
         [HttpGet("supporttopics/{pesId}")]
         [HttpOptions("supporttopics/{pesId}")]
-        public async Task<IActionResult> Invoke(string subscriptionId, string startTime = null, string endTime = null, string impactedServices = null)
+        public async Task<IActionResult> GetSupportTopics(string pesId)
         {
-            if (string.IsNullOrWhiteSpace(subscriptionId))
+            if (string.IsNullOrWhiteSpace(pesId))
             {
-                return BadRequest("subscriptionId cannot be empty");
+                return BadRequest("Product Id cannot be empty");
             }
 
-            if (!DateTimeHelper.PrepareStartEndTimeWithTimeGrain(startTime, endTime, string.Empty, 30, out DateTime startTimeUtc, out DateTime endTimeUtc, out TimeSpan timeGrainTimeSpan, out string errorMessage))
-            {
-                return BadRequest(errorMessage);
-            }
-
-           // List<Communication> comms = await _outageService.GetCommunicationsAsync(subscriptionId, startTimeUtc, endTimeUtc);
-            return Ok();
+            List<SupportTopic> supportTopicsList = await _supportTopicService.GetSupportTopicsAsync(pesId);
+            return Ok(supportTopicsList);
         }
     }
 }

@@ -31,6 +31,9 @@ export class SiteService extends ResourceService {
           });
         }
         this._requestBody = requestBody.details;
+        console.log("Request body and details");
+        console.log(requestBody);
+        console.log(this._requestBody);
         return true;
       }),);
   }

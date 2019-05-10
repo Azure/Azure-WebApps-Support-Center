@@ -43,6 +43,7 @@ export class DiagnosticApiService {
   }f
 
   public getDetectors(version: string, resourceId: string, body?: any, internalClient: boolean = true): Observable<DetectorMetaData[]> {
+    console.log("applens-diag get detectors");
     let path = `${version}${resourceId}/detectors`;
     return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body, true, false, internalClient).pipe(retry(1), map(response => response.map(detector => detector.metadata)));
   }
@@ -50,6 +51,13 @@ export class DiagnosticApiService {
   public getUsers(body: any): Observable<any> {
     let url: string = `${this.diagnosticApi}api/graph/users`;
     return  this._httpClient.post(url, body, {
+        headers: this._getHeaders()
+      });
+  }
+
+  public getSupportTopics(pesId: any): Observable<any> {
+    let url: string = `${this.diagnosticApi}api/supporttopics/${pesId}`;
+    return  this._httpClient.get(url, {
         headers: this._getHeaders()
       });
   }

@@ -56,8 +56,6 @@ namespace AppLensV3.Services
             _graphTokenService = graphTokenService;
         }
 
-
-        #region snippet1
         public async Task<string> GetOrCreateUserImageAsync(string userId)
         {
             if (string.IsNullOrWhiteSpace(userId))
@@ -80,7 +78,6 @@ namespace AppLensV3.Services
             _cache.Remove(userId);
             return null;
         }
-        #endregion
 
         public async Task<string> GetUserImageAsync(string userId)
         {
