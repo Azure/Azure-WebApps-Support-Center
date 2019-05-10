@@ -7,7 +7,7 @@ import {Changes} from '../../models/changesets';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { DiffEditorModel } from 'ngx-monaco-editor';
 import * as momentNs from 'moment';
-import { isBoolean } from 'util';
+import { isBoolean, isString } from 'util';
 const moment = momentNs;
   @Component({
     selector: 'changes-view',
@@ -52,7 +52,6 @@ export class ChangesViewComponent implements OnInit {
     constructor(private diagnosticService: DiagnosticService, private detectorControlService: DetectorControlService) { }
 
     ngOnInit() {
-        console.log('changes view initialized');
         this.tableItems = [];
         let changesTable = this.changesDataSet[0].table;
         if(changesTable) {
@@ -64,7 +63,7 @@ export class ChangesViewComponent implements OnInit {
         if(rows.length > 0) {
             rows.forEach(row => {
                 let level = row.hasOwnProperty("level") ? row["level"] : row[2];
-                let description = row.hasOwnProperty("descrption") ? row["descrption"] : row[4];
+                let description = row.hasOwnProperty("description") ? row["description"] : row[4];
                 let oldValue = row.hasOwnProperty("oldValue") ? row["oldValue"] : row[5];
                 let newValue = row.hasOwnProperty("newValue") ? row["newValue"] : row[6];
                 let initiatedBy = row.hasOwnProperty("initiatedBy") ? row["initiatedBy"] : row[7];
@@ -95,34 +94,39 @@ export class ChangesViewComponent implements OnInit {
     // Prepare the data for diff view.
     private prepareValuesForDiffView(diffvalue: any): DiffEditorModel {
         try {
-            if(diffvalue instanceof Object || diffvalue instanceof Array ) {
-                return {
-                    // Needed for JSON Pretty
-                    "code": JSON.stringify(diffvalue, null, 2),
-                    "language": 'json'
-                    };
-            }
+            let jsonObject1: any;
             if(isBoolean(diffvalue)) {
                 return {
                     "code": diffvalue.toString(),
                     "language": 'text/plain'
                 };
             }
-            let jsonObject = JSON.parse(diffvalue);
-            if(jsonObject.hasOwnProperty('content') && jsonObject['content'] != null) {
-                return {
-                    "code": jsonObject['content'],
-                    "language": 'text/plain'
+            if(isString(diffvalue)) {
+                diffvalue = diffvalue.replace("mtime", "Modified Time");
+                diffvalue = diffvalue.replace("crtime", "Created Time");
+                jsonObject1 = JSON.parse(diffvalue);
+                if(jsonObject1.hasOwnProperty('content') && jsonObject1['content'] != null) {
+                    return {
+                        "code": jsonObject1['content'],
+                        "language": 'text/plain'
+                    };
+                } return {
+                    "code": JSON.stringify(jsonObject1, null, 2),
+                    'language': 'json'
                 };
-        } else {
-            diffvalue = diffvalue.replace("mtime", "Modified Time");
-            diffvalue = diffvalue.replace("crtime", "Created Time");
-           return {
-                // Needed for JSON Pretty
-                "code": JSON.stringify(JSON.parse(diffvalue), null, 2),
-                "language": 'json'
-                };
-        }
+            }
+            if(diffvalue instanceof Object || diffvalue instanceof Array ) {
+                if(diffvalue.hasOwnProperty('content') && diffvalue['content'] != null) {
+                    return {
+                        "code": diffvalue['content'],
+                        "language": 'text/plain'
+                    };
+                } return {
+                    // Needed for JSON Pretty
+                    "code": JSON.stringify(diffvalue, null, 2),
+                    "language": 'json'
+                    };
+            }
         // Exception is thrown when we try to parse string which is not a json, so just return text/plain
         } catch(ex) {
             return {

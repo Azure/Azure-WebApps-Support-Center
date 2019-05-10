@@ -1,4 +1,4 @@
-import { Component, Inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Inject, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { DiagnosticData, Rendering, DataTableResponseObject, DetectorResponse, RenderingType } from '../../models/detector';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
@@ -18,13 +18,13 @@ const moment = momentNs;
   styleUrls: ['./changesets-view.component.scss',
   '../insights/insights.component.scss']
 })
-export class ChangesetsViewComponent extends DataRenderBaseComponent {
+export class ChangesetsViewComponent extends DataRenderBaseComponent implements OnDestroy {
     isPublic: boolean;
     changeSetText: string = '';
     scanDate: string = '';
     selectedChangeSetId: string = '';
     changesDataSet: DiagnosticData[];
-    loadingChangesTable: boolean = true;
+    loadingChangesTable: boolean = false;
     loadingChangesTimeline: boolean = false;
     changesTableError: string = '';
     sourceGroups = new DataSet([
@@ -49,10 +49,6 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     protected processData(data: DiagnosticData) {
         super.processData(data);
         this.parseData(data.table);
-        if(this.isPublic) {
-           this.checkInitialScanState();
-        }
-
     }
 
     private parseData(data: DataTableResponseObject) {
@@ -64,9 +60,14 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                 this.initializeChangesView(data);
             }
             // Convert UTC timestamp to user readable date
-            this.scanDate = moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
+            this.scanDate = rows[0][6] != '' ? 'Changes were last scanned on ' + moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a") : 'No recent scans were performed on this web app';
+            if(this.isPublic) {
+                this.checkInitialScanState();
+             }
         } else {
+             this.scanDate = 'No recent scans were performed on this web app';
              this.changeSetText = `No change groups have been detected`;
+             this.setDefaultScanStatus();
         }
     }
 
@@ -113,8 +114,6 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                     },
                 renderingProperties: RenderingType.ChangesView
             }];
-            // Add to cache
-            this.changeSetsCache[data.rows[0][0]] = this.changesDataSet;
             this.loadingChangesTable = false;
             this.changesTableError = '';
         }
@@ -198,6 +197,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                     this.pollForScanStatus();
                 });
             }, (error: any) => {
+                this.scanState = "";
                 this.scanStatusMessage = "Unable to submit scan request. Please refresh or try again after sometime";
         });
     }
@@ -234,7 +234,6 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                         this.setScanState("");
                         this.setDefaultScanStatus();
                      } else {
-                        console.log("Starting polling to see scan progress");
                         this.subscription = interval(5000).subscribe(res => {
                             this.pollForScanStatus();
                         });

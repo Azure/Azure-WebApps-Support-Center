@@ -3,9 +3,16 @@
           <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
             Change Analysis feature registration is in progress. Once registration is completed, please use the below setting to enable Change Analysis.
         </div>
+        <div class="row form-group" *ngIf="showGeneralError">
+          {{generalErrorMsg}}
+        </div>
         <loader-view *ngIf="updatingTag || updatingProvider " message="Saving settings..."></loader-view>
+       <div class="row form-group" *ngIf="showInProgress">
+         <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
+         Change Analysis Resource Provider is {{regState}}. This will take a few mins. Please check again later.
+       </div>
         <div *ngIf="!updatingProvider && !updatingTag">
-        <div class="row form-group">
+        <div class="row form-group" *ngIf="!showInProgress">
             <div class="form-group">
                 <label class="control-label col-md-5">Change Analysis</label>
                 <div class="col-md-7">
@@ -20,7 +27,7 @@
                 </div>
             </div>
         </div>
-        <div class="row form-group" *ngIf="changeAnalyisisEnabled">
+        <div class="row form-group" *ngIf="changeAnalyisisEnabled && !showInProgress">
             <label class="control-label col-md-5">Scan for code changes</label>
             <div class="col-md-7">
                   <label class="radio-inline control-label">

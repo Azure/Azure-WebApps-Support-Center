@@ -7,7 +7,7 @@
       <div class="panel-body">
         <div class="row scan-container">
           <div class="scan-row" *ngIf="scanDate != ''">
-           The change were last scanned at {{scanDate}}
+              {{scanDate}}
            <div class="pull-right" *ngIf ="isPublic">
              <a (click)="navigateToSettings()">Go to Change Analysis Settings</a>
            </div>
