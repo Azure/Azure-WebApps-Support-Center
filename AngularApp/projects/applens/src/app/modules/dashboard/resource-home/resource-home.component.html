@@ -8,7 +8,7 @@
       [ngClass]="{'active':category.activeState === 2, 'inactive': category.activeState === 1}"
       (click)="navigateToCategory(category)">
       <div class="bottom row">
-        <div class="col-md-3"><img class="category-icon"
+        <div class="col-md-3 category-icon-container"><img class="category-icon"
             src= {{category.icon}} />
         </div>
         <div class="col-md-9 category-label">

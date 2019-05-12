@@ -18,8 +18,6 @@ td, th {
     margin-left: -20px;
 }
 
-
-
 body {
   background-color: #EBEEF3;
   box-sizing: border-box;
@@ -40,7 +38,7 @@ body {
    flex-wrap: wrap;
     // justify-content: space-around;
     align-items: baseline;
-    margin: 15px;
+    margin: 2.5%;
 }
 
 .keyword-label {
@@ -144,9 +142,14 @@ body {
 }
 
 .category-icon {
-  width:100px;
-  height: 100px;
-  margin: 15px 5px 5px 5px;
+  width:100%;
+  height: 100%;
+  margin: 26% 5% 5% 5%;
+}
+
+.category-icon-container {
+  padding-left: 1%;
+  padding-right: 1%;
 }
 
 .category-label {
