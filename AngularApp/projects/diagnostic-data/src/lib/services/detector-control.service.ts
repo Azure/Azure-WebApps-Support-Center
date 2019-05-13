@@ -212,23 +212,23 @@ export class DetectorControlService {
     }
   }
 
-  public selectDuration(duration: DurationSelector) {
+  public selectDuration(duration: DurationSelector) {    
     this._duration = duration;
     this._startTime = moment.utc().subtract(duration.duration);
     this._endTime = this._startTime.clone().add(duration.duration);
-    this.setCustomStartEnd(this._startTime.toString(), this.endTime.toString());
+    this.setCustomStartEnd(this._startTime.format(), this.endTime.format());
   }
 
   public moveForwardDuration(): void {
     this._startTime.add(this._duration.duration);
     this._endTime.add(this._duration.duration);
-    this.setCustomStartEnd(this._startTime.toString(), this.endTime.toString());
+    this.setCustomStartEnd(this._startTime.format(), this.endTime.format());
   }
 
   public moveBackwardDuration(): void {
     this._startTime.subtract(this._duration.duration);
     this._endTime.subtract(this._duration.duration);
-    this.setCustomStartEnd(this._startTime.toString(), this.endTime.toString());
+    this.setCustomStartEnd(this._startTime.format(), this.endTime.format());
   }
 
   public refresh() {
