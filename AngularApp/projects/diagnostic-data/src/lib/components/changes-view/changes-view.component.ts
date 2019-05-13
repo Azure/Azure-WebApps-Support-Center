@@ -24,6 +24,7 @@ const moment = momentNs;
 export class ChangesViewComponent implements OnInit {
 
     @Input() changesDataSet: DiagnosticData[];
+    @Input() initiatedBy: string = '';
     changesResponse: DetectorResponse;
     dataSource: MatTableDataSource<Changes>;
     displayedColumns = ['level', 'time', 'displayName', 'description', 'initiatedBy'];
@@ -66,7 +67,7 @@ export class ChangesViewComponent implements OnInit {
                 let description = row.hasOwnProperty("description") ? row["description"] : row[4];
                 let oldValue = row.hasOwnProperty("oldValue") ? row["oldValue"] : row[5];
                 let newValue = row.hasOwnProperty("newValue") ? row["newValue"] : row[6];
-                let initiatedBy = row.hasOwnProperty("initiatedBy") ? row["initiatedBy"] : row[7];
+                let initiatedBy = this.initiatedBy;
                 let displayName = row.hasOwnProperty("displayName") ? row["displayName"] : row[3];
                 let timestamp = row.hasOwnProperty("timeStamp") ? row["timeStamp"] : row[0];
                 this.tableItems.push({
