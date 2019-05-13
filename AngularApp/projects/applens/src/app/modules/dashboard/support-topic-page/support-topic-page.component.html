@@ -28,11 +28,11 @@
   <div class="detector-list">
     <div class="flexed-detector card" *ngFor="let supportTopic of supportTopics; let i=index" (click)="navigateToContent(supportTopic)">
       <div class="support-topic-top row">
-        <div class="col-md-2 detector-icon">
-          <ngx-avatar [name]="supportTopic.supportTopicL3Name" [round]="true" initialsSize="2"></ngx-avatar>
+        <div class="col-md-3 support-topic-icon">
+          <ngx-avatar [name]="supportTopic.supportTopicL3Name" [round]="false" initialsSize="2" size="80"></ngx-avatar>
           <!-- <ngx-avatar facebookId="100006264431560"></ngx-avatar> -->
         </div>
-        <div class="col-md-10 support-topic-name">
+        <div class="col-md-9 support-topic-name">
           <div class="support-topic-title">
               {{supportTopic.supportTopicL3Name}}
           </div>
@@ -54,6 +54,5 @@
       </div>
     </div>
   </div>
-  
-  
-  
+
+
