@@ -1,0 +1,59 @@
+<div class="banner">
+    <!-- <div>
+      <button class="back-button" (click)="navigateToHomePage()" >&lt; Home</button>
+    </div> -->
+    <div class="category-info-container">
+      <img class="category-icon" src={{supportTopicIcon}} />
+      <div class="category-title">
+        <span class="catogory-name">
+          {{supportTopicName}}
+        </span>
+        <div class="category-description">
+          <span >
+            {{supportTopics.length}} support topics, {{detectorsNumber}} detectors
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- supportTopicL2Name: string;
+  subItems: SupportTopicItem[];
+  supportTopicId: string;
+  supportTopicL3Name: string;
+  supportTopicPath: string;
+  icon: string;
+  detectorId: string; -->
+
+  <div class="detector-list">
+    <div class="flexed-detector card" *ngFor="let supportTopic of supportTopics; let i=index" (click)="navigateToContent(supportTopic)">
+      <div class="support-topic-top row">
+        <div class="col-md-2 detector-icon">
+          <ngx-avatar [name]="supportTopic.supportTopicL3Name" [round]="true" initialsSize="2"></ngx-avatar>
+          <!-- <ngx-avatar facebookId="100006264431560"></ngx-avatar> -->
+        </div>
+        <div class="col-md-10 support-topic-name">
+          <div class="support-topic-title">
+              {{supportTopic.supportTopicL3Name}}
+          </div>
+          <div class="support-topic-description">
+              {{supportTopic.supportTopicId}}
+          </div>
+        </div>
+      </div>
+      <div class="suppport-topic-bottom">
+          <div *ngIf="supportTopic.detectorName !== ''" class="detector-enabled-description">Detector Enabled 🌺</div>
+          <div *ngIf="supportTopic.detectorName === ''" class="detector-enabled-description">Detector Disabled</div>
+        <div>
+          <!-- <div *ngFor="let image of detector.userImages | keyvalue" class="author-image">
+            <img *ngIf="image.value != undefined && image.value !== ''" class="author-image" src="{{image.value}}" />
+            <ngx-avatar *ngIf="image.value == undefined || image.value === ''" class="author-initial" [name]=image.key size="40" initialsSize="2"></ngx-avatar>
+          </div> -->
+          <span *ngIf="supportTopic.detectorName !== ''" class="detector-enabled">{{supportTopic.detectorName}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  

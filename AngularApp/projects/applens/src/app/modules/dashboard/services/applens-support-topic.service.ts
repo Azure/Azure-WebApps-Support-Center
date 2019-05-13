@@ -13,19 +13,29 @@ export class ApplensSupportTopicService {
   protected detectorTask: Observable<DetectorMetaData[]>;
 
   constructor(private _diagnosticApiService: ApplensDiagnosticService, private _resourceService: ResourceService) {
-   // this.detectorTask = this._diagnosticApiService.getDetectors();
    }
 
   public getSupportTopics(): Observable<any> {
+    let pesId = this.getPesId();
+    return this._diagnosticApiService.getSupportTopics(pesId);
+  }
+
+  public getPesId(): string {
     let pesId = this._resourceService.pesId;
     let requestBody = this._resourceService.getRequestBody();
-
     if (pesId === '14748')
     {
-        console.log(requestBody);
+        if (requestBody.Kind === "functionapp")
+        {
+          pesId = '16072';
+        }
+        else if (requestBody.IsLinux)
+        {
+          pesId = '16170';
+        }
     }
 
-    return this._diagnosticApiService.getSupportTopics(pesId);
+    return pesId;
   }
 
 

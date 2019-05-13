@@ -2,25 +2,87 @@
   <div class="alert-container">
     <comm-alert></comm-alert>
   </div>
-  <div class="category-container">
-
-    <div class="flexed card " *ngFor="let category of categories;let i = index"
-      [ngClass]="{'active':category.activeState === 2, 'inactive': category.activeState === 1}"
+  <div class="btn-group" role="group" aria-label="Basic example">
+    <button type="button" class="btn btn-first-child" (click)="selectView('category')" [class.is-selected]="viewType === 'category'">By Category</button>
+    <!-- <button type="button" class="btn btn-secondary">Middle</button> -->
+    <button type="button" class="btn btn-last-child" (click)="selectView('supporttopic')" [class.is-selected]="viewType === 'supporttopic'">By Support Topic</button>
+  </div>
+  <div *ngIf="viewType === 'category'" class="category-container">
+    <div class="flexed card " *ngFor="let category of categories;let i = index" [ngClass]="{'active':category.activeState === 2, 'inactive': category.activeState === 1}"
       (click)="navigateToCategory(category)">
       <div class="bottom row">
-        <div class="col-md-3 category-icon-container"><img class="category-icon"
-            src= {{category.icon}} />
+        <div class="col-md-3 category-icon-container">
+          <img class="category-icon" src={{category.icon}} />
         </div>
         <div class="col-md-9 category-label">
           <div class="category-title">{{category.label}}</div>
-          <div class="category-description"><span>Total Detectors: {{category.subItems.length}}</span></div>
+          <div class="category-description">
+            <span>Total Detectors: {{category.subItems.length}}</span>
+          </div>
         </div>
       </div>
-              <div class="keywords">
-                <div *ngFor="let subCategory of category.subItems; let i = index">
-                  <div *ngIf="i<2" class="keyword"><span>{{subCategory.label}}</span></div>
-                </div>
-                <span *ngIf="category.subItems.length > 2" class="detectors-hint">+{{category.subItems.length-2}} detectors</span>
-              </div>
+      <div class="keywords">
+        <div *ngFor="let subCategory of category.subItems; let i = index">
+          <div *ngIf="i<2" class="keyword">
+            <span>{{subCategory.label}}</span>
+          </div>
+        </div>
+        <span *ngIf="category.subItems.length > 2" class="detectors-hint">+{{category.subItems.length-2}} detectors</span>
       </div>
     </div>
+  </div>
+
+  <!-- supportTopicL2Name: string;
+    subItems: SupportTopicItem[];
+    supportTopicId: string;
+    supportTopicL3Name: string;
+    supportTopicPath: string;
+    icon: string; -->
+  <div *ngIf="viewType === 'supporttopic'" class="category-container">
+    <div class="flexed card" *ngFor="let supportTopic of supportTopics;let i = index" (click)="navigateToSupportTopic(supportTopic)">
+        <div class="bottom row">
+            <div class="col-md-3 category-icon-container">
+                <!-- onError="this.src='supportTopic.icon';" -->
+              <!-- <img class="category-icon" src="assets\img\{{supportTopic.supportTopicL2Name}}.png"  /> -->
+              <img *ngIf="supportTopic.icon != undefined && supportTopic.icon != ''"class="category-icon" src={{supportTopic.icon}}  />
+            </div>
+            <div class="col-md-9 category-label">
+              <div class="category-title">{{supportTopic.supportTopicL2Name}}</div>
+              <div class="category-description">
+                <span>Total Support Topics: {{supportTopic.subItems.length}}</span>
+              </div>
+            </div>
+            </div>
+            <div class="keywords">
+                <div *ngFor="let subSupportTopic of supportTopic.subItems;let j=index">
+                  <div *ngIf="j<2" class="keyword">
+                    <span>{{subSupportTopic.supportTopicL3Name}}</span>
+                  </div>
+                </div>
+                <span *ngIf="supportTopic.subItems.length > 2" class="detectors-hint">+{{supportTopic.subItems.length-2}} support topics</span>
+              </div>
+    </div>
+    <!-- <div *ngFor="let supportTopic of supportTopics;let i = index">{{supportTopic.supportTopicL2Name}}</div> -->
+    <!-- <div class="flexed card " *ngFor="let supportTopic of supportTopics;let i = index" (click)="navigateToSupportTopic(supportTopic)">
+      <div class="bottom row">
+        <div class="col-md-3 category-icon-container">
+          <img class="category-icon" />
+        </div>
+        <div class="col-md-9 category-label">
+          <div class="category-title">{{supportTopic.supportTopicL2Name}}</div>
+          <div class="category-description">
+            <span>Total Support Topics: {{supportTopic.subItems.length}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="keywords">
+        <div *ngFor="let subCategory of supportTopic.subItems; let i = index">
+          <div *ngIf="i<2" class="keyword">
+            <span>{{subCategory.supportTopicL2Name}}</span>
+          </div>
+        </div>
+        <span *ngIf="category.subItems.length > 2" class="detectors-hint">+{{subCategory.subItems.length-2}} support topics</span>
+      </div>
+    </div> -->
+  </div>
+  </div>

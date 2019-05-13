@@ -37,17 +37,7 @@ export class CacheService {
 
             this.inFlightObservables.set(key, new Subject());
             this.log(`%c Calling api for ${key}`, 'color: purple');
-            return fallback.pipe(tap((value) => {
-                this.set(key, value);
-                console.log(key);
-                console.log(value);
-            },
-            error => {
-                console.log(key);
-                this.inFlightObservables.delete(key);
-
-            }));
-
+            return fallback.pipe(tap((value) => { this.set(key, value); }, error => this.inFlightObservables.delete(key)));
         } else {
             return observableThrowError('Requested key is not available in Cache');
         }

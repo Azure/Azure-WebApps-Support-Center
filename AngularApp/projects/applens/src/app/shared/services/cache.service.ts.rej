@@ -1,0 +1,9 @@
+diff a/AngularApp/projects/applens/src/app/shared/services/cache.service.ts b/AngularApp/projects/applens/src/app/shared/services/cache.service.ts	(rejected hunks)
+@@ -37,7 +37,6 @@
+ 
+             this.inFlightObservables.set(key, new Subject());
+             this.log(`%c Calling api for ${key}`, 'color: purple');
+-            return fallback.pipe(tap((value) => { this.set(key, value); }, error => this.inFlightObservables.delete(key)));
+             return fallback.pipe(tap((value) => {
+                 this.set(key, value);
+                 console.log(key);

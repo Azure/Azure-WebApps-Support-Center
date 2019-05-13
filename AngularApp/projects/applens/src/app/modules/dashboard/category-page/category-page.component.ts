@@ -83,7 +83,6 @@ export class CategoryPageComponent implements OnInit {
         }));
 
         forkJoin(allDetectorsList, publicDetectors).subscribe((res) => {
-            console.log("Inside forkjoin");
             this.detectorsWithSupportTopics.forEach((detector) => {
                 if (!this.filterdDetectors.find((d) => d.id === detector.id)) {
                     this.filterdDetectors.push(detector);
@@ -95,8 +94,6 @@ export class CategoryPageComponent implements OnInit {
                 var detectorId = detector.id;
                 var publicDetectorWithPII = this.allDetectors.find((detectorWithPII) => detectorWithPII.id === detectorId);
                 if (publicDetectorWithPII && !this.filterdDetectors.find((d) => d.id === detectorId)) {
-                    console.log(`Add public detector ${detector.id}`);
-                    console.log(publicDetectorWithPII);
                     this.filterdDetectors.push(publicDetectorWithPII);
                 }
             });

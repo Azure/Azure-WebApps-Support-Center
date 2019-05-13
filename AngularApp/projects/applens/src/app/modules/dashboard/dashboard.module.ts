@@ -42,6 +42,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { TabAnalysisComponent } from './tabs/tab-analysis/tab-analysis.component';
 import { CategoryPageComponent } from './category-page/category-page.component';
 import { AvatarModule } from 'ngx-avatar';
+import { SupportTopicPageComponent } from './support-topic-page/support-topic-page.component';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -61,16 +62,20 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     children: [
       {
         path: '',
-        redirectTo: 'home'
+        redirectTo: 'home/category'
       },
       {
-        path: 'home',
+        path: 'home/:viewType',
         component: ResourceHomeComponent,
         pathMatch: 'full'
       },
       {
         path: 'categories/:category',
         component: CategoryPageComponent,
+      },
+      {
+        path: 'supportTopics/:supportTopic',
+        component: SupportTopicPageComponent,
       },
       {
         path: 'create',
@@ -233,6 +238,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
   ],
   declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent,
     SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent,
-    TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, GistComponent, TabGistCommonComponent, TabGistDevelopComponent, TabChangelistComponent, GistChangelistComponent, TabAnalysisComponent, CategoryPageComponent]
+    TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, GistComponent, TabGistCommonComponent, TabGistDevelopComponent, TabChangelistComponent, GistChangelistComponent, TabAnalysisComponent, CategoryPageComponent, SupportTopicPageComponent]
 })
 export class DashboardModule { }

@@ -6,8 +6,32 @@ td, th {
     padding: 20px;
 }
 
+.btn-group {
+  float: right;
+}
+
+.btn-first-child {
+  border-radius: 0.5em 0 0 0.5em;
+}
+
+.btn-last-child {
+  border-radius: 0 0.5em 0.5em 0;
+}
+
+.btn.is-selected {
+  text-shadow: 0 -1px hsla(0, 0%, 0%, 0.8);
+  color: white;
+  background-color: #28F;
+}
+
+.btn {
+  text-shadow: 0 1px white;
+  margin-right: 1px;
+}
+
 .category-container {
   margin: 20px;
+  display: inline-block;
 }
 
 .content-card {

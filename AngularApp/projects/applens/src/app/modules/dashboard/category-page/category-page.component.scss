@@ -226,6 +226,16 @@
     height: 65%;
   }
 
+  .support-topic-top {
+    border-bottom: 1px solid #E4E7EC;
+    height: 65%;
+    margin: auto 0;
+  }
+
+  .support-topic-bottom {
+    height: 35%;
+  }
+
   .detector-icon {
     margin-top: 8px;
     padding-left:2%;
@@ -238,6 +248,30 @@
     max-height: 35%;
 }
 
+.support-topic-name {
+  padding: 2.5% 0;
+  max-height: 35%;
+}
+
+.support-topic-title {
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.support-topic-description {
+  font-size: 15px;
+  padding: 2% 0;
+  color:gray;
+}
+.detector-enabled-description {
+  padding:3% 2% 1% 2%;
+}
+
+.detector-enabled {
+  padding: 1% 2%;
+  font-weight: bold;
+
+}
 .detector-description{
     padding:15px;
     color:gray;
