@@ -1,19 +1,17 @@
 ﻿using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppLensV3
 {
     [Authorize]
     public class ResourceController : Controller
     {
-        IDiagnosticClientService _diagnosticService;
+        IObserverClientService _observerService;
 
-        public ResourceController(IDiagnosticClientService diagnosticService) {
-            _diagnosticService = diagnosticService;
+        public ResourceController(IObserverClientService observerService) {
+            _observerService = observerService;
         }
 
         [HttpGet("api/sites/{siteName}")]
@@ -30,15 +28,31 @@ namespace AppLensV3
             return await GetSiteInternal(stamp, siteName);
         }
 
+        [HttpGet]
+        [Route("api/stamps/{stamp}/sites/{siteName}/postBody")]
+        public async Task<IActionResult> GetSiteRequestBody(string stamp, string siteName)
+        {
+            var sitePostBody = await _observerService.GetSitePostBody(stamp, siteName);
+
+            return Ok(new { Details = sitePostBody.Content });
+        }
+
+        [HttpGet]
+        [Route("api/hostingEnvironments/{hostingEnvironmentName}/postBody")]
+        public async Task<IActionResult> GetHostingEnvironmentRequestBody(string hostingEnvironmentName)
+        {
+            var hostingEnvironmentPostBody = await _observerService.GetHostingEnvironmentPostBody(hostingEnvironmentName);
+
+            return Ok(new { Details = hostingEnvironmentPostBody.Content });
+        }
+
         [HttpGet("api/hostingEnvironments/{hostingEnvironmentName}")]
         [HttpOptions("api/hostingEnvironments/{hostingEnvironmentName}")]
         public async Task<IActionResult> GetHostingEnvironmentDetails(string hostingEnvironmentName)
         {
-            var hostingEnvironmentDetails = await _diagnosticService.Execute(HttpMethod.Get.Method, $"hostingEnvironments/{hostingEnvironmentName}");
-            var contentJson = await hostingEnvironmentDetails.Content.ReadAsStringAsync();
-            var content = JsonConvert.DeserializeObject(contentJson);
+            var hostingEnvironmentDetails = await _observerService.GetHostingEnvironmentDetails(hostingEnvironmentName);
 
-            var details = new { Details = content };
+            var details = new { Details = hostingEnvironmentDetails.Content };
 
             if (hostingEnvironmentDetails.StatusCode == HttpStatusCode.NotFound)
             {
@@ -50,18 +64,25 @@ namespace AppLensV3
 
         private async Task<IActionResult> GetSiteInternal(string stamp, string siteName)
         {
-            var path = stamp != null ? $"stamps/{stamp}/sites/{siteName}" : $"sites/{siteName}";
-            var siteDetailsResponse = await _diagnosticService.Execute(HttpMethod.Get.Method, path);
-            var contentJson = await siteDetailsResponse.Content.ReadAsStringAsync();
-            var content = JsonConvert.DeserializeObject(contentJson);
+            var hostnamesTask = _observerService.GetHostnames(siteName);
+            var siteDetailsTask = stamp == null ? _observerService.GetSite(siteName) : _observerService.GetSite(stamp, siteName);
+
+            var hostNameResponse = await hostnamesTask;
+            var siteDetailsResponse = await siteDetailsTask;
 
             var details = new
             {
                 SiteName = siteName,
-                Details = content,
+                Details = siteDetailsResponse.Content,
+                HostNames = hostNameResponse.Content
             };
 
-            return StatusCode((int)siteDetailsResponse.StatusCode, details);
+            if (siteDetailsResponse.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(details);
+            }
+
+            return Ok(details);
         }
     }
 }

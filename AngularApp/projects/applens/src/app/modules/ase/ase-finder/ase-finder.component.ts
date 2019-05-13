@@ -37,7 +37,7 @@ export class AseFinderComponent implements OnInit {
 
   navigateToAse(matchingAse: Observer.ObserverAseInfo) {
     let resourceArray: string[] = [
-      'subscriptions', matchingAse.CustomerSubscriptionId,
+      'subscriptions', matchingAse.Subscription,
       'resourceGroups', matchingAse.ResourceGroupName,
       'providers','Microsoft.Web',
       'hostingEnvironments', matchingAse.Name];

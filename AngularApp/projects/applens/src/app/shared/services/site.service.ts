@@ -18,12 +18,21 @@ export class SiteService extends ResourceService {
   }
 
   public startInitializationObservable() {
-    this._initialized = this._observerApiService.getSite(this._armResource.resourceName)
-      .pipe(map((observerResponse: Observer.ObserverSiteResponse) => {
+    this._initialized = this._observerApiService.getSite(this._armResource.resourceName).pipe(
+      mergeMap((observerResponse: Observer.ObserverSiteResponse) => {
         this._siteObject = this.getSiteFromObserverResponse(observerResponse);
         this._currentResource.next(this._siteObject);
+        return this._observerApiService.getSiteRequestBody(this._siteObject.SiteName, this._siteObject.InternalStampName);
+      }),map((requestBody: any) => {
+        if (!requestBody.details.HostNames) {
+          requestBody.details.HostNames = this._siteObject.Hostnames.map(hostname => <any>{
+            name: hostname,
+            type: 0
+          });
+        }
+        this._requestBody = requestBody.details;
         return true;
-      }))
+      }),);
   }
 
   public getCurrentResource(): Observable<any> {
