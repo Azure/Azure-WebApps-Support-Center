@@ -11,6 +11,7 @@ import * as momentNs from 'moment';
 import { Subscription, interval } from 'rxjs';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { SettingsService} from '../../services/settings.service';
+import {ChangeAnalysisUtilities} from '../../utilities/changeanalysis-utilities';
 const moment = momentNs;
 @Component({
   selector: 'changesets-view',
@@ -43,7 +44,8 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
     initiatedBy: string = '';
     constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, protected telemetryService: TelemetryService,
     protected changeDetectorRef: ChangeDetectorRef, protected diagnosticService: DiagnosticService,
-    private detectorControlService: DetectorControlService, private settingsService: SettingsService, private router:Router) {
+    private detectorControlService: DetectorControlService, private settingsService: SettingsService,
+     private router:Router) {
         super(telemetryService);
         this.isPublic = config && config.isPublic;
     }
@@ -84,8 +86,8 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             id: changeset[0],
             content: ' ',
             start: changeset[3],
-            group: this.findGroupBySource(changeset[2]),
-            className: this.findGroupBySource(changeset[2]) == 1 ? 'red' : 'green'
+            group: ChangeAnalysisUtilities.findGroupBySource(changeset[2]),
+            className: ChangeAnalysisUtilities.findGroupBySource(changeset[2]) == 1 ? 'red' : 'green'
         })
         });
         this.loadingChangesTimeline = false;
@@ -168,19 +170,6 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             this.loadingChangesTable = false;
             this.changesTableError = 'Unable to load changes for the selected change group. Please try refresh or try after sometime';
         });
-        }
-    }
-
-    private findGroupBySource(source: any): number {
-        switch(source){
-        case "ARG":
-        return 1;
-        case "ARM":
-        return 1;
-        case "AST":
-        return 2;
-        default:
-        return 1;
         }
     }
 
@@ -385,8 +374,8 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
                     id: row[0],
                     content: ' ',
                     start: row[3],
-                    group: this.findGroupBySource(row[2]),
-                    className: this.findGroupBySource(row[2]) == 1 ? 'red' : 'green'
+                    group: ChangeAnalysisUtilities.findGroupBySource(row[2]),
+                    className: ChangeAnalysisUtilities.findGroupBySource(row[2]) == 1 ? 'red' : 'green'
                 });
                 }
             });

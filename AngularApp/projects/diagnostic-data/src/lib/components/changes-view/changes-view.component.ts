@@ -5,9 +5,8 @@ import { DetectorResponse, DiagnosticData } from '../../models/detector';
 import { MatTableDataSource} from '@angular/material';
 import {Changes} from '../../models/changesets';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import { DiffEditorModel } from 'ngx-monaco-editor';
 import * as momentNs from 'moment';
-import { isBoolean, isString } from 'util';
+import {ChangeAnalysisUtilities} from '../../utilities/changeanalysis-utilities';
 const moment = momentNs;
   @Component({
     selector: 'changes-view',
@@ -74,66 +73,16 @@ export class ChangesViewComponent implements OnInit {
                     "time":  moment(timestamp).format("MMM D YYYY, h:mm:ss a"),
                     "level": level,
                     "levelIcon": this.getIconForLevel(level),
-                    "displayName": this.prepareDisplayValueForTable(displayName),
+                    "displayName":ChangeAnalysisUtilities.prepareDisplayValueForTable(displayName),
                     "description": description == null || description == "" ? "N/A" : description,
                     'oldValue': oldValue,
                     'newValue': newValue,
                     'initiatedBy': initiatedBy == null || initiatedBy == "" ? "N/A" : initiatedBy,
-                    'originalModel': this.prepareValuesForDiffView(oldValue),
-                    'modifiedModel': this.prepareValuesForDiffView(newValue)
+                    'originalModel': ChangeAnalysisUtilities.prepareValuesForDiffView(oldValue),
+                    'modifiedModel': ChangeAnalysisUtilities.prepareValuesForDiffView(newValue)
                 });
             });
             this.dataSource = new MatTableDataSource(this.tableItems);
-        }
-    }
-
-    private prepareDisplayValueForTable(displayName: string): string {
-        displayName = displayName.replace("D:\\home\\site\\wwwroot", "");
-        return displayName;
-    }
-
-    // Prepare the data for diff view.
-    private prepareValuesForDiffView(diffvalue: any): DiffEditorModel {
-        try {
-            let jsonObject1: any;
-            if(isBoolean(diffvalue)) {
-                return {
-                    "code": diffvalue.toString(),
-                    "language": 'text/plain'
-                };
-            }
-            if(isString(diffvalue)) {
-                diffvalue = diffvalue.replace("mtime", "Modified Time");
-                diffvalue = diffvalue.replace("crtime", "Created Time");
-                jsonObject1 = JSON.parse(diffvalue);
-                if(jsonObject1.hasOwnProperty('content') && jsonObject1['content'] != null) {
-                    return {
-                        "code": jsonObject1['content'],
-                        "language": 'text/plain'
-                    };
-                } return {
-                    "code": JSON.stringify(jsonObject1, null, 2),
-                    'language': 'json'
-                };
-            }
-            if(diffvalue instanceof Object || diffvalue instanceof Array ) {
-                if(diffvalue.hasOwnProperty('content') && diffvalue['content'] != null) {
-                    return {
-                        "code": diffvalue['content'],
-                        "language": 'text/plain'
-                    };
-                } return {
-                    // Needed for JSON Pretty
-                    "code": JSON.stringify(diffvalue, null, 2),
-                    "language": 'json'
-                    };
-            }
-        // Exception is thrown when we try to parse string which is not a json, so just return text/plain
-        } catch(ex) {
-            return {
-                "code": diffvalue,
-                "language": 'text/plain'
-            }
         }
     }
 
