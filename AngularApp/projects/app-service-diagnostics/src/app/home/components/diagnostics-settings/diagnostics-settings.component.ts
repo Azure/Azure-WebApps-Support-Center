@@ -6,6 +6,7 @@ import { FeatureRegistration, ProviderRegistration} from '../../../shared/models
 import { Subscription, interval } from 'rxjs';
 import { ArmResource } from '../../../shared-v2/models/arm';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
+import { PortalKustoTelemetryService} from '../../../shared/services/portal-kusto-telemetry.service';
 
 @Component({
   selector: 'diagnostics-settings',
@@ -39,7 +40,8 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
   generalErrorMsg: string = '';
   subscription: Subscription;
   constructor(private armService: ArmService, private authService: AuthService,
-     private activatedRoute: ActivatedRoute, private resourceService: ResourceService) { }
+     private activatedRoute: ActivatedRoute, private resourceService: ResourceService,
+     private loggingService: PortalKustoTelemetryService) { }
 
   ngOnInit() {
     this.subscriptionId = this.activatedRoute.snapshot.params['subscriptionid'];
@@ -180,6 +182,12 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             };
         }
         let body = this.currentResource;
+        let eventProps = {
+            tagName: "hidden-related:diagnostics/changeAnalysisScanEnabled",
+            tagValue: tagValue,
+            resourceId: this.resourceId
+        };
+        this.loggingService.logEvent('UpdateScanTag', eventProps);
        this.armService.patchResource(this.currentResource.id, body).subscribe((response:any) => {
         if( response && response.tags ) {
             let tags = response.tags;
@@ -200,6 +208,11 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
    updateAlwaysOn(isEnabled: boolean = true):void {
        let url = this.resourceId + '/config/web';
        this.siteConfig.properties['alwaysOn'] = isEnabled;
+       let eventProps = {
+           alwaysOnEnabled: isEnabled.toString(),
+           resourceId: this.resourceId
+       };
+       this.loggingService.logEvent("UpdateAlwaysOn", eventProps);
        this.armService.putResource(url, this.siteConfig, '2016-08-01').subscribe(data =>{
         this.siteConfig = data;
         this.alwaysOnState = this.siteConfig.properties['alwaysOn'];
@@ -210,6 +223,11 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
        this.updatingProvider = true;
         let url = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis/`;
         url += isRegister ? `register` : `unregister`;
+        let props = {
+            armUrl: url,
+            resourceId: this.resourceId
+        };
+        this.loggingService.logEvent('UpdateChangeAnalysisResourceProvider', props);
         this.armService.postResource(url, {}, '2018-05-01', true).subscribe((response: any) => {
             let providerRegistrationStateResponse = <ProviderRegistration>response;
             let state = providerRegistrationStateResponse.registrationState;

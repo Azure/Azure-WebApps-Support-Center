@@ -51,7 +51,8 @@ export class ChangeAnalysisUtilities {
         }
     }
 
-    public static findGroupBySource(source: any): number {
+    public static findGroupBySource(source: string): number {
+        source = source.toUpperCase();
         switch(source){
         case "ARG":
         return 1;
