@@ -171,7 +171,7 @@ export class CategoryPageComponent implements OnInit {
     }
 
     navigateToHomePage() {
-        this.navigateTo("../../home");
+        this.navigateTo("../../home/category");
     }
 
 }

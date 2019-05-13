@@ -56,11 +56,13 @@ export class DiagnosticApiService {
       });
   }
 
-  public getSupportTopics(pesId: any): Observable<any> {
+  public getSupportTopics(pesId: any, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
     let url: string = `${this.diagnosticApi}api/supporttopics/${pesId}`;
-    return  this._httpClient.get(url, {
+    let request = this._httpClient.get(url, {
         headers: this._getHeaders()
       });
+
+    return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.GET, url), request, invalidateCache) : request;
   }
 
   public getGists(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {

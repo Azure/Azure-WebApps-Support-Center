@@ -7,17 +7,18 @@
 }
 
 .back-button {
-    background: transparent;
+    float: right;
+    background-color: white;
     background-repeat: no-repeat;
     border: none;
     cursor:pointer;
     overflow: hidden;
     outline: none;
     width: 100px;
-    color: white;
+    color: #367fa9;
 
     &:hover {
-        color: #555;
+        color: #3c8dbc;
     }
 }
 
@@ -305,8 +306,8 @@
 }
 
 .author-image {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     display: inline-block;
     margin-right:-20px;

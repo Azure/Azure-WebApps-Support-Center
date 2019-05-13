@@ -41,6 +41,7 @@ export interface ResourceServiceInputs {
     armResource: ArmResource;
     azureCommImpactedServicesList: string;
     pesId: string;
+    staticSelfHelpContent: string;
 }
 
 export const RESOURCE_SERVICE_INPUTS = new InjectionToken<ResourceServiceInputs>('ResourceServiceInputs');
@@ -54,4 +55,5 @@ export const DEFAULT_RESOURCE_SERVICE_INPUTS: ResourceServiceInputs = {
     armResource: null,
     azureCommImpactedServicesList: '',
     pesId: '',
+    staticSelfHelpContent: ''
 };

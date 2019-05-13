@@ -52,7 +52,7 @@ export class SupportTopicPageComponent implements OnInit {
         this.pesId = this._supportTopicService.getPesId();
         this._diagnosticService.getDetectors().subscribe((detectors: DetectorMetaData[]) => {
           this.detectorsWithSupportTopics = detectors.filter(detector => detector.supportTopicList && detector.supportTopicList.length > 0);
-          
+
           this.detectorsWithSupportTopics.forEach(detector => {
             detector.supportTopicList.forEach(supportTopic => {
               if (supportTopic.pesId === this.pesId)
@@ -64,7 +64,7 @@ export class SupportTopicPageComponent implements OnInit {
 
           this._supportTopicService.getSupportTopics().subscribe((allSupportTopics: SupportTopicResult[]) => {
             let filteredSupportTopics = allSupportTopics.filter((supportTopic) => supportTopic.supportTopicL2Name === this.supportTopicName);
-            
+
             filteredSupportTopics.forEach((sup: SupportTopicResult) => {
               let icon = `https://applensassets.blob.core.windows.net/applensassets/${sup.supportTopicL3Name}.png`;
               let matchingDetector = this.supportTopicIdMapping.find((st) => st.supportTopic.id === sup.supportTopicId);
@@ -88,10 +88,10 @@ export class SupportTopicPageComponent implements OnInit {
 
             console.log(`Filtered`);
             console.log(filteredSupportTopics);
-  
+
         });
 
-                    
+
         console.log("Support topic id mapping");
         console.log(this.supportTopicIdMapping);
 
@@ -231,7 +231,7 @@ export class SupportTopicPageComponent implements OnInit {
     }
 
     navigateToHomePage() {
-        this.navigateTo("../../home");
+        this.navigateTo("../../home/supportTopic");
     }
 
 

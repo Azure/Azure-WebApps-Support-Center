@@ -5,7 +5,7 @@
   <div class="btn-group" role="group" aria-label="Basic example">
     <button type="button" class="btn btn-first-child" (click)="selectView('category')" [class.is-selected]="viewType === 'category'">By Category</button>
     <!-- <button type="button" class="btn btn-secondary">Middle</button> -->
-    <button type="button" class="btn btn-last-child" (click)="selectView('supporttopic')" [class.is-selected]="viewType === 'supporttopic'">By Support Topic</button>
+    <button type="button" class="btn btn-last-child" (click)="selectView('supportTopic')" [class.is-selected]="viewType === 'supportTopic'">By Support Topic</button>
   </div>
   <div *ngIf="viewType === 'category'" class="category-container">
     <div class="flexed card " *ngFor="let category of categories;let i = index" [ngClass]="{'active':category.activeState === 2, 'inactive': category.activeState === 1}"
@@ -38,7 +38,7 @@
     supportTopicL3Name: string;
     supportTopicPath: string;
     icon: string; -->
-  <div *ngIf="viewType === 'supporttopic'" class="category-container">
+  <div *ngIf="viewType === 'supportTopic'" class="category-container">
     <div class="flexed card" *ngFor="let supportTopic of supportTopics;let i = index" (click)="navigateToSupportTopic(supportTopic)">
         <div class="bottom row">
             <div class="col-md-3 category-icon-container">
