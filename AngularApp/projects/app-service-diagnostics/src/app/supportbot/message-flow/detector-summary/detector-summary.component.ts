@@ -100,7 +100,7 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
           })
       });
 
-      let onboardingResponses = detectorResponse.dataset.filter(set => (<Rendering>set.renderingProperties.type === 17));
+      let onboardingResponses = detectorResponse.dataset.filter(set => (set.renderingProperties.type === 17));
       onboardingResponses.forEach(element => {
           let summary = this.parseOnboarding(element, detectorResponse.metadata.id);
           summary.forEach(summary => {
