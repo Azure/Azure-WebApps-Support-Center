@@ -119,7 +119,11 @@ export class SideNavComponent implements OnInit {
               this.navigateTo(`analysis/${element.id}`);
             };
 
-            let analysisMenuItem = new CollapsibleMenuItem(element.name, onClickAnalysisParent, null, null, true);
+            let isSelectedAnalysis = () =>{
+              return this.currentRoutePath && this.currentRoutePath.join('/') === `analysis/${element.id}`;
+            }
+
+            let analysisMenuItem = new CollapsibleMenuItem(element.name, onClickAnalysisParent, isSelectedAnalysis, null, true);
             this.analysisTypes.push(analysisMenuItem);
 
           }

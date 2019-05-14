@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
- import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
- import { LoadingStatus } from '../../models/loading';
+import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
+import { LoadingStatus } from '../../models/loading';
 import { StatusStyles } from '../../models/styles';
 import { DetectorControlService } from '../../services/detector-control.service';
 import { DiagnosticService } from '../../services/diagnostic.service';
@@ -43,15 +43,16 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
   LoadingStatus = LoadingStatus;
   detectorViewModels: any[];
   issueDetectedViewModels: any[] = [];
+  successfulViewModels: any[] = [];
   detectorMetaData: DetectorMetaData[];
   detectorsPending: number = 0;
   private childDetectorsEventProperties = {};
   loadingChildDetectors: boolean = false;
   allSolutions: Solution[] = [];
   loadingMessages: string[] = [];
-  loadingMessageIndex:number = 0;
+  loadingMessageIndex: number = 0;
   loadingMessageTimer: any;
-  showLoadingMessage:boolean = false;
+  showLoadingMessage: boolean = false;
 
   constructor(private _activatedRoute: ActivatedRoute, private _router: Router,
     private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService, protected telemetryService: TelemetryService) {
@@ -118,6 +119,9 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
                   let issueDetectedViewModel = { model: this.detectorViewModels[index], insightTitle: insight.title, insightDescription: insight.description };
                   this.issueDetectedViewModels.push(issueDetectedViewModel);
                   this.issueDetectedViewModels = this.issueDetectedViewModels.sort((n1, n2) => n1.model.status - n2.model.status);
+                } else {
+                  let successViewModel = { model: this.detectorViewModels[index] };
+                  this.successfulViewModels.push(successViewModel);
                 }
 
                 return {
@@ -153,6 +157,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     this.loadingChildDetectors = false;
     this.allSolutions = [];
     this.loadingMessages = [];
+    this.successfulViewModels = [];
 
   }
   getDetectorInsight(viewModel: any): any {
@@ -223,20 +228,20 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     this.showLoadingMessage = true;
 
     setTimeout(() => {
-        self.showLoadingMessage = false;
+      self.showLoadingMessage = false;
     }, 3000)
     this.loadingMessageTimer = setInterval(() => {
-        self.loadingMessageIndex++;
-        self.showLoadingMessage = true;
+      self.loadingMessageIndex++;
+      self.showLoadingMessage = true;
 
-        if (self.loadingMessageIndex === self.loadingMessages.length - 1) {
-            clearInterval(this.loadingMessageTimer);
-            return;
-        }
+      if (self.loadingMessageIndex === self.loadingMessages.length - 1) {
+        clearInterval(this.loadingMessageTimer);
+        return;
+      }
 
-        setTimeout(() => {
-            self.showLoadingMessage = false;
-        }, 3000)
+      setTimeout(() => {
+        self.showLoadingMessage = false;
+      }, 3000)
     }, 4000);
-}
+  }
 }
