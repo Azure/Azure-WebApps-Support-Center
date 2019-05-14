@@ -18,12 +18,10 @@ namespace AppLensV3.Controllers
     [Authorize]
     public class GraphController: Controller
     {
-        private IMemoryCache _cache;
         private readonly IGraphClientService _graphClientService;
 
-        public GraphController(IMemoryCache cache, IGraphClientService graphClientService, IDiagnosticClientService diagnosticClient)
+        public GraphController(IGraphClientService graphClientService, IDiagnosticClientService diagnosticClient)
         {
-            _cache = cache;
             _graphClientService = graphClientService;
         }
 

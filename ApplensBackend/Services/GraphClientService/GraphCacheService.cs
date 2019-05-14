@@ -37,49 +37,6 @@ namespace AppLensV3.Services
             return _collection.TryGetValue(key.ToLower(), out value);
         }
 
-        //public IEnumerable<UserInfo> GetUserInfoList(List<string> usernames)
-        //{
-        //    IEnumerable<UserInfo> list = GetAll();
-
-        //    if (list == null || !list.Any()) return list;
-
-        //    list = list.Where(item => ((item.SystemFilter == null) && (item.ResourceFilter != null) && (item.ResourceFilter.ResourceType & context.OperationContext.Resource.ResourceType) > 0) && (context.ClientIsInternal || !item.ResourceFilter.InternalOnly));
-        //    List<UserInfo> filteredList = new List<UserInfo>();
-
-        //    List<Task> tasks = new List<Task>();
-        //    usernames.ForEach(username =>
-        //    {
-        //        if (!TryGetValue(username, out UserInfo userInfo))
-        //        {
-        //            tasks.Add(Task.Run(async () =>
-        //            {
-        //                HttpResponseMessage responseMsg = await _httpClient.SendAsync(request, tokenSource.Token);
-
-        //                string content = String.Empty;
-
-        //                // If the status code is 404 NotFound, it might because the user doesn't have a profile picture, or the user alias is invalid.
-        //                // We set the image string to be empty if the response is not successful
-        //                if (responseMsg.IsSuccessStatusCode)
-        //                {
-        //                    content = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
-        //                    //content = String.Concat("data:image / jpeg; base64,", imageBase64String);
-        //                }
-
-        //                authorsDictionary.AddOrUpdate(user, content, (k, v) => content);
-        //            }));
-        //        }
-        //    });
-        //    list.ToList().ForEach(item =>
-        //    {
-        //        if (context.OperationContext.Resource.IsApplicable(item.ResourceFilter))
-        //        {
-        //            filteredList.Add(item);
-        //        }
-        //    });
-
-        //    return filteredList.OrderBy(p => p.EntryPointDefinitionAttribute.Name);
-        //}
-
         public UserInfo GetUserInfo(string username)
         {
             if (!TryGetValue(username, out UserInfo userInfo))
