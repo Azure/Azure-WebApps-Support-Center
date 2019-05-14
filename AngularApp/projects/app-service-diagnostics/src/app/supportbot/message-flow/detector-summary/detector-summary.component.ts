@@ -92,7 +92,7 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
         });
       });
 
-      let changeSetResponses = detectorResponse.dataset.filter(set => (<Rendering>set.renderingProperties).type == 16);
+      let changeSetResponses = detectorResponse.dataset.filter(set => (<Rendering>set.renderingProperties).type === 16);
       changeSetResponses.forEach(element => {
           let changeSet = this.parseChangeSets(element, detectorResponse.metadata.id);
           changeSet.forEach(element => {
@@ -100,7 +100,7 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
           })
       });
 
-      let onboardingResponses = detectorResponse.dataset.filter(set => (<Rendering>set.renderingProperties.type == 17));
+      let onboardingResponses = detectorResponse.dataset.filter(set => (<Rendering>set.renderingProperties.type === 17));
       onboardingResponses.forEach(element => {
           let summary = this.parseOnboarding(element, detectorResponse.metadata.id);
           summary.forEach(summary => {
