@@ -7,7 +7,7 @@
           {{generalErrorMsg}}
         </div>
         <loader-view *ngIf="updatingTag || updatingProvider " message="Saving settings..."></loader-view>
-       <div class="row form-group" *ngIf="showInProgress">
+       <div class="row form-group" *ngIf="showInProgress && !updatingProvider && !updatingTag">
          <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
          Change Analysis Resource Provider is {{regState}}. This will take a few mins. Please check again later.
        </div>
@@ -17,25 +17,25 @@
                 <label class="control-label col-md-5">Change Analysis</label>
                 <div class="col-md-7">
                   <fieldset [disabled]="!isFeatureRegistered">
+                    <ng-container *ngFor="let option of EnablementOptions">
                       <label class="radio-inline control-label">
-                          <input type="radio" name="changeAnalysis" value="1" [checked]="isProviderRegistered" (change)="setChangeAnalysisEnabled($event.target.value)"> On
+                        <input type="radio" name="changAnalysis" [checked]="featureRegOption.option == option.option" value="option.option" (change)="setChangeAnalysisEnabled(option)"> {{option.option}}
                       </label>
-                      <label class="radio-inline control-label">
-                          <input  type="radio" name="changeAnalysis" value="0"  [checked]="!isProviderRegistered" (change)="setChangeAnalysisEnabled($event.target.value)"> Off
-                      </label>
+                    </ng-container>
                   </fieldset>
                 </div>
             </div>
         </div>
-        <div class="row form-group" *ngIf="changeAnalyisisEnabled && !showInProgress">
+        <div class="row form-group" *ngIf="featureRegOption.option == 'On' && !showInProgress">
             <label class="control-label col-md-5">Scan for code changes</label>
             <div class="col-md-7">
+              <fieldset [disabled]="!isFeatureRegistered">
+              <ng-container *ngFor="let option of EnablementOptions">
                   <label class="radio-inline control-label">
-                      <input type="radio" name="codeScan" value="1" [checked]="codeScanState" (change)="setCodeScanEnabled($event.target.value)"> On
+                    <input type="radio" name="codeScan" [checked]="codeScanOption.option == option.option" value="option.option" (change)="setCodeScanEnabled(option)"> {{option.option}}
                   </label>
-                  <label class="radio-inline control-label">
-                      <input  type="radio" name="codeScan" value="0"   [checked]="!codeScanState" (change)="setCodeScanEnabled($event.target.value)"> Off
-                  </label>
+                </ng-container>
+              </fieldset>
             </div>
         </div>
         <div class="row form-group">
@@ -47,12 +47,11 @@
         <div class="row form-group">
             <label class="control-label col-md-5">Always on</label>
             <div class="col-md-7">
-                  <label class="radio-inline control-label">
-                      <input type="radio" name="alwaysOn" value="1" [checked]="alwaysOnState" (change)="setAlwaysOnEnabled($event.target.value)"> On
-                  </label>
-                  <label class="radio-inline control-label">
-                      <input  type="radio" name="alwaysOn" value="0" [checked]="!alwaysOnState" (change)="setAlwaysOnEnabled($event.target.value)"> Off
-                  </label>
+              <ng-container *ngFor="let option of EnablementOptions">
+                <label class="radio-inline control-label">
+                  <input type="radio" name="alwaysOn" [checked]="alwaysOnOption.option == option.option" value="option" (change)="setAlwaysOnEnabled(option)"> {{option.option}}
+                </label>
+              </ng-container>
             </div>
         </div>
         <div class="row form-group">

@@ -22,15 +22,8 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
 // ARM Urls
   featureRegUrl: string = '';
   providerRegUrl: string = '';
-// State received from api
-  codeScanState: boolean = false;
+// Feature State received from api
   isFeatureRegistered: boolean = false;
-  isProviderRegistered: boolean = false;
-  alwaysOnState: boolean = false;
-// UI controls
-  changeAnalyisisEnabled: boolean;
-  alwaysOnEnabled: boolean = false;
-  codeScanEnabled: boolean = false;
 // Loading related properties
   updatingProvider: boolean = false;
   updatingTag: boolean = false;
@@ -39,6 +32,16 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
   showGeneralError: boolean = false;
   generalErrorMsg: string = '';
   subscription: Subscription;
+  EnablementOptions = [{
+    option: 'On',
+    value: '1',
+  }, {
+      option: 'Off',
+      value: '0'
+  }];
+  codeScanOption: any = {};
+  featureRegOption: any = {};
+  alwaysOnOption: any = {};
   constructor(private armService: ArmService, private authService: AuthService,
      private activatedRoute: ActivatedRoute, private resourceService: ResourceService,
      private loggingService: PortalKustoTelemetryService) { }
@@ -84,11 +87,9 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
            let providerRegistrationStateResponse = <ProviderRegistration>response;
            let state = providerRegistrationStateResponse.registrationState;
            if (state.toLowerCase() == 'registered') {
-               this.changeAnalyisisEnabled = true;
-               this.isProviderRegistered = true;
+               this.featureRegOption = this.EnablementOptions[0];
            } else if (state.toLowerCase() == 'unregistered') {
-               this.changeAnalyisisEnabled = false;
-               this.isProviderRegistered = false;
+               this.featureRegOption = this.EnablementOptions[1];
            } // It could be that Resource Provider is 'Registering' or 'Unregistering', show in progress and poll for status.
            else {
                 this.showInProgress = true;
@@ -100,18 +101,16 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
        }, (error: any) => {
             this.showGeneralError = true;
             this.generalErrorMsg = 'Unable to check resource provider registration status. Please try again later.';
-            this.changeAnalyisisEnabled = false;
-            this.isProviderRegistered = false;
+            this.featureRegOption = this.EnablementOptions[1];
        })
    }
 
    checkIfCodeScanEnabled(): void {
        let tags = this.currentResource.tags;
        if(tags && tags['hidden-related:diagnostics/changeAnalysisScanEnabled']) {
-           this.codeScanState = tags['hidden-related:diagnostics/changeAnalysisScanEnabled'] == 'true' ? true : false;
-       } else {
-           this.codeScanState = false;
-           this.codeScanEnabled = false;
+           this.codeScanOption = tags['hidden-related:diagnostics/changeAnalysisScanEnabled'] == 'true' ? this.EnablementOptions[0] : this.EnablementOptions[1];
+        } else {
+           this.codeScanOption = this.EnablementOptions[1];
        }
    }
 
@@ -119,7 +118,11 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
        let url = this.resourceId + '/config/web';
        this.armService.getResource(url, '2016-08-01', true).subscribe(data =>{
            this.siteConfig = data;
-           this.alwaysOnState = this.siteConfig.properties['alwaysOn'];
+           if(this.siteConfig.properties['alwaysOn']) {
+                this.alwaysOnOption = this.EnablementOptions[0];
+           } else {
+                this.alwaysOnOption = this.EnablementOptions[1];
+           }
        });
    }
 
@@ -147,33 +150,21 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
 
 
    setChangeAnalysisEnabled(val: any): void {
-        if(val == '1') {
-            this.changeAnalyisisEnabled = true;
-        } else {
-            this.changeAnalyisisEnabled = false;
-        }
+       this.featureRegOption = val;
    }
 
 
    setCodeScanEnabled(val: any): void {
-       if (val == '1') {
-           this.codeScanEnabled = true;
-       } else {
-           this.codeScanEnabled = false;
-       }
+       this.codeScanOption = val;
    }
 
    setAlwaysOnEnabled(val: any): void {
-        if (val == '1') {
-            this.alwaysOnEnabled = true;
-        } else {
-            this.alwaysOnEnabled = false;
-        }
+       this.alwaysOnOption = val;
    }
 
-   updateScanTag(isEnabled: boolean): void {
-       this.updatingTag = true;
-        let tagValue = isEnabled ? 'true' : 'false';
+   updateScanTag(codeScanOption: any): void {
+        this.updatingTag = true;
+        let tagValue = codeScanOption.value == '1' ? 'true' : 'false';
         if(this.currentResource.tags) {
             this.currentResource.tags['hidden-related:diagnostics/changeAnalysisScanEnabled'] = tagValue;
         } else {
@@ -193,20 +184,23 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             let tags = response.tags;
             let scanTagName = `hidden-related:diagnostics/changeAnalysisScanEnabled`;
             if(tags[scanTagName] == 'true') {
-                this.codeScanState = true;
+                this.codeScanOption = this.EnablementOptions[0];
             } else {
-                this.codeScanState = false;
+                this.codeScanOption = this.EnablementOptions[1];
             }
+        } else {
+            this.codeScanOption = this.EnablementOptions[1];
         }
         this.updatingTag = false;
     }, (error: any) => {
         this.updatingTag = false;
-        this.codeScanState = false;
+        this.codeScanOption = this.EnablementOptions[1];
     });
    }
 
-   updateAlwaysOn(isEnabled: boolean = true):void {
+   updateAlwaysOn(alwaysOnOption: any):void {
        let url = this.resourceId + '/config/web';
+       let isEnabled = alwaysOnOption.value == '1' ? true : false;
        this.siteConfig.properties['alwaysOn'] = isEnabled;
        let eventProps = {
            alwaysOnEnabled: isEnabled.toString(),
@@ -215,12 +209,17 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
        this.loggingService.logEvent("UpdateAlwaysOn", eventProps);
        this.armService.putResource(url, this.siteConfig, '2016-08-01').subscribe(data =>{
         this.siteConfig = data;
-        this.alwaysOnState = this.siteConfig.properties['alwaysOn'];
+        if(this.siteConfig.properties['alwaysOn']) {
+            this.alwaysOnOption = this.EnablementOptions[0];
+        } else {
+            this.alwaysOnOption = this.EnablementOptions[1];
+        }
         });
    }
 
-   updateProviderRegister(isRegister: boolean): void {
+   updateProviderRegister(providerRegOption: any): void {
        this.updatingProvider = true;
+       let isRegister = providerRegOption.value == '1' ? true : false;
         let url = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis/`;
         url += isRegister ? `register` : `unregister`;
         let props = {
@@ -232,11 +231,9 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             let providerRegistrationStateResponse = <ProviderRegistration>response;
             let state = providerRegistrationStateResponse.registrationState;
             if (state.toLowerCase() == 'registered') {
-                this.changeAnalyisisEnabled = true;
-                this.isProviderRegistered = true;
+                this.featureRegOption = this.EnablementOptions[0];
             } else if (state.toLowerCase() == 'unregistered') {
-                this.changeAnalyisisEnabled = false;
-                this.isProviderRegistered = false;
+                this.featureRegOption = this.EnablementOptions[1];
             } else {
                 this.showInProgress = true;
                 this.regState = state;
@@ -248,9 +245,8 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         }, (error: any) => {
             this.showGeneralError = true;
             this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. Please try again later.';
-            this.isProviderRegistered = false;
-            this.changeAnalyisisEnabled = false;
             this.updatingProvider = false;
+            this.featureRegOption = this.EnablementOptions[1];
         });
    }
 
@@ -260,35 +256,32 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         let state = providerRegistrationStateResponse.registrationState;
         // Final state, stop polling
         if (state.toLowerCase() == 'registered') {
-            this.changeAnalyisisEnabled = true;
-            this.isProviderRegistered = true;
+            this.featureRegOption = this.EnablementOptions[0];
             if(this.subscription) {
                 this.subscription.unsubscribe();
             }
             this.showInProgress = false;
         }
         if (state.toLowerCase() == 'unregistered') {
-            this.changeAnalyisisEnabled = false;
-            this.isProviderRegistered = false;
+            this.featureRegOption = this.EnablementOptions[1];
             if(this.subscription) {
                 this.subscription.unsubscribe();
             }
             this.showInProgress = false;
         }
     }, (error: any) => {
-        this.changeAnalyisisEnabled = false;
-        this.isProviderRegistered = false;
+        this.featureRegOption = this.EnablementOptions[1];
         this.showInProgress = false;
     })
    }
 
    saveSettings(): void {
        // Register the Resource Provider
-       this.updateProviderRegister(this.changeAnalyisisEnabled);
+       this.updateProviderRegister(this.featureRegOption);
         // Update hidden tag
-       this.updateScanTag(this.codeScanEnabled);
+       this.updateScanTag(this.codeScanOption);
        // Update always on
-       this.updateAlwaysOn(this.alwaysOnEnabled);
+       this.updateAlwaysOn(this.alwaysOnOption);
    }
 
    ngOnDestroy(): void {
