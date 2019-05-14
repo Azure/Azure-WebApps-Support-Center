@@ -9,25 +9,183 @@ using System.Threading.Tasks;
 using AppLensV3.Helpers;
 using Microsoft.Extensions.Configuration;
 using Octokit;
+using Newtonsoft.Json;
 
 namespace AppLensV3.Services
 {
-    public class SelfHelpContentService: ISelfHelpContentService
+    public class SelfHelpContentService : ISelfHelpContentService
     {
-        public void StartPollingSelfHelp()
+        public void StartPollingSelfHelp(int maxRetries = 3)
         {
-            try
+            int retryCount = 0;
+            do
             {
+                try
+                {
 
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    // Ignore exception for now
+                    return;
+                }
+                finally
+                {
+                    retryCount++;
+                }
             }
-            catch (Exception ex)
-            {
-                // Ignore exception and return empty string.
-                return;
-            }
+            while (retryCount < maxRetries);
         }
 
-        public async Task<string> GetSelfHelpContentAsync(string pesId, string supportTopicId)
+
+        /// <summary>
+        /// Get changed files.
+        /// </summary>
+        /// <param name="sha">The commit sha.</param>
+        /// <returns>Task for getting changed files.</returns>
+        public async Task<IEnumerable<string>> GetChangedFiles(string sha)
+        {
+            var allCommits = await OctokitClient.Repository.Commit.Get(UserName, RepoName, sha);
+            return allCommits.Files
+                .Where(f =>
+                    f.Filename.EndsWith(".json", StringComparison.OrdinalIgnoreCase) ||
+                    f.Filename.EndsWith(".csx", StringComparison.OrdinalIgnoreCase))
+                .Select(f => f.Filename);
+        }
+
+
+        /// <summary>
+        /// Get changed files.
+        /// </summary>
+        /// <param name="sha">The commit sha.</param>
+        /// <returns>Task for getting changed files.</returns>
+        public async Task<HttpResponseMessage> GetFileContent(string fileDataUrl)
+        {
+            HttpRequestMessage fileContentRequest = new HttpRequestMessage(HttpMethod.Get, fileDataUrl);
+            HttpResponseMessage fileContentResponse = await HttpClient.SendAsync(fileContentRequest);
+
+
+            return fileContentResponse;
+        }
+
+
+        public async Task<HttpResponseMessage> GetSelfHelpContent(string selfHelpUrl)
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, selfHelpUrl);
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
+
+            var fileContentsTasks = new List<Task<string>>();
+            if (response != null)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var tasks = new List<Task<HttpResponseMessage>>();
+                    dynamic metaDataSet = JsonConvert.DeserializeObject(content);
+
+                    foreach (var fileData in metaDataSet)
+                    {
+                        if (!fileData.name.contains("-scoping-"))
+                        {
+                            string fileDataUrl = fileData.download_url;
+                            tasks.Add(Task.Run(() => GetFileContent(fileDataUrl)));
+                        }
+                    }
+
+                    var staticFiles = await Task.WhenAll(tasks);
+                }
+            }
+
+
+            //DataTableResponseObjectCollection dataSet = JsonConvert.DeserializeObject<DataTableResponseObjectCollection>(content);
+
+            return response;
+
+        }
+
+        /// <summary>
+        /// Task for getting all commits.
+        /// </summary>
+        /// <param name="filePath">The filePath.</param>
+        /// <returns>Task for getting commits.</returns>
+        public async Task<HttpResponseMessage[]> GetAllSelfHelp()
+        {
+            char[] separators = { ' ', ',', ';', ':' };
+
+            // Currently there's a bug in sendgrid v3, email will not be sent if there are duplicates in the recipient list
+            // Remove duplicates before adding to the recipient list
+            string[] selfHelpPaths = CacheSelfHelpPaths.Split(separators, StringSplitOptions.RemoveEmptyEntries).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+
+
+            var tasks = new List<Task<HttpResponseMessage>>();
+            foreach (var path in selfHelpPaths)
+            {
+                var gistFileUrl = string.Format(
+                    SelfHelpConstants.ArticleTemplatePath,
+                    path,
+                    AccessToken);
+
+                tasks.Add(Task.Run(() => GetSelfHelpContent(gistFileUrl)));
+            }
+
+            var selfHelpFiles = await Task.WhenAll(tasks);
+
+            return selfHelpFiles;
+
+
+
+            //GetRawFile(gistFileUrl);
+
+            //CommitRequest request = new CommitRequest
+            //{
+            //    Path = filePath,
+            //    Sha = Branch
+            //};
+
+            //var allCommits = await OctokitClient.Repository.Commit.GetAll(UserName, RepoName, request);
+            //var res = new List<Models.Commit>();
+
+            //var commits = allCommits
+            //    .Select(p => new Tuple<string, DateTimeOffset, string>(p.Sha, p.Commit.Committer.Date, p.Commit.Message))
+            //    .OrderByDescending(o => o.Item2);
+
+            //var previousSha = string.Empty;
+            //var currentSha = string.Empty;
+
+            //var tasks = new List<Task<IEnumerable<string>>>();
+            //foreach (var c in commits)
+            //{
+            //    tasks.Add(Task.Run(() => GetChangedFiles(c.Item1)));
+            //}
+
+            //var changedFiles = await Task.WhenAll(tasks);
+
+            //for (int i = commits.Count() - 1; i >= 0; i--)
+            //{
+            //    if (!changedFiles[i].Any())
+            //    {
+            //        continue;
+            //    }
+
+            //    var commit = commits.ElementAt(i);
+            //    previousSha = currentSha;
+            //    currentSha = commit.Item1;
+
+            //    if (commit.Item3.Contains("CommittedBy"))
+            //    {
+            //        string author = commit.Item3.Split(new string[] { "CommittedBy :" }, StringSplitOptions.RemoveEmptyEntries).Last();
+            //        author = author.Replace("@microsoft.com", string.Empty, StringComparison.OrdinalIgnoreCase);
+            //        string date = commit.Item2.ToString().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).First();
+
+            //        res.Add(new Models.Commit(currentSha, author, date, previousSha, changedFiles[i]));
+            //    }
+            //}
+
+        }
+
+        public async Task<string> GetSelfHelpContentsAsync(string pesId, string supportTopicId)
         {
             return null;
         }
@@ -41,12 +199,14 @@ namespace AppLensV3.Services
             RepoName = configuration["SelfHelpContent:RepoName"];
             Branch = configuration["SelfHelpContent:Branch"];
             AccessToken = configuration["SelfHelpContent:AccessToken"];
-            CacheSelfHelpFolder = configuration["SelfHelpContent:CacheSelfHelpType"];
+            CacheSelfHelpPaths = configuration["SelfHelpContent:CacheSelfHelpPaths"];
 
             OctokitClient = new GitHubClient(new Octokit.ProductHeaderValue(UserName))
             {
                 Credentials = new Credentials(AccessToken)
             };
+
+            StartPollingSelfHelp();
         }
 
         private ConcurrentDictionary<string, Tuple<string, object>> GitHubCache { get; }
@@ -63,10 +223,10 @@ namespace AppLensV3.Services
 
         private string AccessToken { get; }
 
-        private string CacheSelfHelpFolder { get; }
+        private string CacheSelfHelpPaths { get; }
 
 
-       // ArticleTemplatePath
+        // ArticleTemplatePath
         /// <summary>
         /// Get raw file.
         /// </summary>
@@ -90,6 +250,8 @@ namespace AppLensV3.Services
 
                 // TODO : If entry is not in cache for some reason, we need to fetch it again from github without etag header to refresh the cache
             }
+
+            //    private ConcurrentDictionary<string, Tuple<string, object>> GitHubCache { get; }
 
             response.EnsureSuccessStatusCode();
             cachedValue = await response.Content.ReadAsStringAsync();

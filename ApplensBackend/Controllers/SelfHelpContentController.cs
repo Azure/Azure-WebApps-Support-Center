@@ -45,19 +45,19 @@ namespace AppLensV3.Controllers
             return Ok(response);
         }
 
-        [HttpPost("users")]
-        [HttpOptions("users")]
-        public async Task<IActionResult> GetUsers([FromBody]JToken body)
-        {
-            string[] authors = new string[] { };
-            if (body != null && body["authors"] != null)
-            {
-                authors = body["authors"].ToObject<string[]>();
-            }
+        //[HttpPost("users")]
+        //[HttpOptions("users")]
+        //public async Task<IActionResult> GetUsers([FromBody]JToken body)
+        //{
+        //    string[] authors = new string[] { };
+        //    if (body != null && body["authors"] != null)
+        //    {
+        //        authors = body["authors"].ToObject<string[]>();
+        //    }
 
-            var response = await _graphClientService.GetUsers(authors);
-            return Ok(response);
-        }
+        //    var response = await _graphClientService.GetUsers(authors);
+        //    return Ok(response);
+        //}
 
     }
 }
