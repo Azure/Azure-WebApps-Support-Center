@@ -182,7 +182,12 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
     let summary: DetectorSummaryViewModel[] = [];
     let data = diagnosticData.table;
     let totalChangeSets = data.rows.length;
-    let name = totalChangeSets == 1 ? '1 change group has been detected' : `${totalChangeSets} change groups have been detected`;
+    let name = '';
+    if(data.rows.length == 0) {
+        name = 'No change groups detected';
+    } else {
+        name = totalChangeSets == 1 ? '1 change group has been detected' : `${totalChangeSets} change groups have been detected`;
+    }
     summary.push(<DetectorSummaryViewModel>{
         id: <string>detectorId,
         loading: LoadingStatus.Success,

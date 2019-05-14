@@ -87,7 +87,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             content: ' ',
             start: changeset[3],
             group: ChangeAnalysisUtilities.findGroupBySource(changeset[2]),
-            className: ChangeAnalysisUtilities.findGroupBySource(changeset[2]) == 1 ? 'red' : 'green'
+            className: ChangeAnalysisUtilities.findGroupBySource(changeset[2]) == 1 ? 'blue' : 'green'
         })
         });
         this.loadingChangesTimeline = false;
@@ -375,7 +375,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
                     content: ' ',
                     start: row[3],
                     group: ChangeAnalysisUtilities.findGroupBySource(row[2]),
-                    className: ChangeAnalysisUtilities.findGroupBySource(row[2]) == 1 ? 'red' : 'green'
+                    className: ChangeAnalysisUtilities.findGroupBySource(row[2]) == 1 ? 'blue' : 'green'
                 });
                 }
             });
