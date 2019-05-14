@@ -1,0 +1,92 @@
+<div [hidden]="detectorId !== ''">
+
+    <div *ngIf="detectorsPending > 0" style="margin-left:30px;margin-bottom: 30px">
+        <i class="fa fa-circle-o-notch fa-2x fa-spin spin-icon" aria-hidden="true"></i>
+        <span [@loadingAnimation]="showLoadingMessage ? 'shown' : 'hidden'"
+            class="loading-message">{{loadingMessages[loadingMessageIndex]}}</span>
+        <span style="margin-left:10px">({{ detectors.length - detectorsPending }} of {{ detectors.length }} checks
+            completed)</span>
+    </div>
+
+    <div *ngIf="detectors.length> 0 && issueDetectedViewModels.length > 0 || (detectorsPending === 0 && loadingChildDetectors)"
+        class="list-wrapper">
+        <div class="red-line" [ngClass]="{'remove-padding':withinDiagnoseAndSolve}"></div>
+        <div class="list-item-wrapper">
+            <div class="stepper-circle"><i aria-hidden="true" class="fa fa-search dark"></i></div>
+            <div class="list-item">
+                <div class="list-title">Observations</div>
+                <div>Events observed during this time period</div>
+                <div class="list-text" style="margin-top:10px;">
+                    <div *ngIf="issueDetectedViewModels.length === 0 && detectorsPending === 0">
+                        <div class="success-msg">We could not identify any issues that caused availability drops to your
+                            app</div>
+                    </div>
+                    <div *ngIf="issueDetectedViewModels.length > 0" class="table-responsive">
+                        <table class="table detector-list">
+                            <thead>
+                                <tr>
+                                    <th class="col-sm-2">Issues</th>
+                                    <th colspan="2" class="col-sm-8">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let viewModel of issueDetectedViewModels">
+                                    <td>
+                                        <div style="white-space: nowrap">
+                                            <div style="display: inline-block">
+                                                <status-icon [loading]="viewModel.model.loadingStatus"
+                                                    [status]="viewModel.model.status" [size]="20">
+                                                </status-icon>
+                                            </div>
+                                            <div style="display: inline-block;margin-left: 10px;">
+                                                <strong>{{ viewModel.model.title }} </strong>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {{ viewModel.insightTitle }}
+
+                                        <div style="margin-top:10px">
+                                            <markdown [data]="viewModel.insightDescription"></markdown>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="margin-top: 5px;white-space: nowrap;">
+                                            <button
+                                                [ngClass]="{'btn btn-primary btn-sm':!withinDiagnoseAndSolve, 'custom-button':withinDiagnoseAndSolve}"
+                                                (click)="selectDetector(viewModel.model.metadata.id)">More
+                                                Info
+                                                <i class="fa fa-arrow-circle-o-right"
+                                                    style="margin-left:5px; font-size: 15px"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="list-item-wrapper">
+            <div class="stepper-circle stepper-circle-green"><i aria-hidden="true" class="fa fa-wrench dark"></i></div>
+            <div class="list-item">
+                <div class="list-title">Troubleshooting and Next Steps</div>
+                <div>Next steps curated specifically for your app</div>
+                <div class="list-text" style="margin-bottom: 20px;">
+                    <div *ngIf="allSolutions.length === 0 && detectorsPending === 0">
+                        <div class="success-msg">We could not identify any futher troubleshooting steps or solutions
+                        </div>
+                    </div>
+                    <div style="width:98%">
+                        <solutions *ngIf="allSolutions.length > 0" [solutions]="allSolutions">
+                        </solutions>
+                    </div>
+                </div>
+                <div class="white-line" [ngClass]="{'remove-padding':withinDiagnoseAndSolve}"></div>
+            </div>
+        </div>
+    </div>
+</div>

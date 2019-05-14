@@ -19,6 +19,8 @@ export class TabDataComponent implements OnInit {
 
   error: any;
 
+  analysisMode:boolean = false;
+
   ngOnInit() {
 
     this._route.params.subscribe((params: Params) => {
@@ -31,6 +33,8 @@ export class TabDataComponent implements OnInit {
       } else {
         this.detectorControlService.setDetectorQueryParams("");
       }
+
+      this.analysisMode = this._route.snapshot.data['analysisMode'];
     })
   }
 

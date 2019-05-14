@@ -87,6 +87,7 @@ import { Ng5SliderModule } from 'ng5-slider';
 import { CpuMonitoringConfigurationComponent } from './components/daas/cpu-monitoring/cpu-monitoring-configuration/cpu-monitoring-configuration.component';
 import { CpuMonitoringActivityComponent } from './components/daas/cpu-monitoring/cpu-monitoring-activity/cpu-monitoring-activity.component';
 import { CpuMonitoringSessionsComponent } from './components/daas/cpu-monitoring/cpu-monitoring-sessions/cpu-monitoring-sessions.component';
+import { GenericAnalysisComponent } from './components/generic-analysis/generic-analysis.component';
 
 @NgModule({
     declarations: [
@@ -146,7 +147,8 @@ import { CpuMonitoringSessionsComponent } from './components/daas/cpu-monitoring
         CpuMonitoringComponent,
         CpuMonitoringConfigurationComponent,
         CpuMonitoringActivityComponent,
-        CpuMonitoringSessionsComponent
+        CpuMonitoringSessionsComponent,
+        GenericAnalysisComponent
     ],
     imports: [
         HttpModule,

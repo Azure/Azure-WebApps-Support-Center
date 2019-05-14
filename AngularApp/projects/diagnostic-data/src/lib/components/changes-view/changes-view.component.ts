@@ -5,9 +5,8 @@ import { DetectorResponse, DiagnosticData } from '../../models/detector';
 import { MatTableDataSource} from '@angular/material';
 import {Changes} from '../../models/changesets';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import { DiffEditorModel } from 'ngx-monaco-editor';
 import * as momentNs from 'moment';
-import { isBoolean } from 'util';
+import {ChangeAnalysisUtilities} from '../../utilities/changeanalysis-utilities';
 const moment = momentNs;
   @Component({
     selector: 'changes-view',
@@ -24,6 +23,7 @@ const moment = momentNs;
 export class ChangesViewComponent implements OnInit {
 
     @Input() changesDataSet: DiagnosticData[];
+    @Input() initiatedBy: string = '';
     changesResponse: DetectorResponse;
     dataSource: MatTableDataSource<Changes>;
     displayedColumns = ['level', 'time', 'displayName', 'description', 'initiatedBy'];
@@ -52,7 +52,6 @@ export class ChangesViewComponent implements OnInit {
     constructor(private diagnosticService: DiagnosticService, private detectorControlService: DetectorControlService) { }
 
     ngOnInit() {
-        console.log('changes view initialized');
         this.tableItems = [];
         let changesTable = this.changesDataSet[0].table;
         if(changesTable) {
@@ -64,70 +63,26 @@ export class ChangesViewComponent implements OnInit {
         if(rows.length > 0) {
             rows.forEach(row => {
                 let level = row.hasOwnProperty("level") ? row["level"] : row[2];
-                let description = row.hasOwnProperty("descrption") ? row["descrption"] : row[4];
+                let description = row.hasOwnProperty("description") ? row["description"] : row[4];
                 let oldValue = row.hasOwnProperty("oldValue") ? row["oldValue"] : row[5];
                 let newValue = row.hasOwnProperty("newValue") ? row["newValue"] : row[6];
-                let initiatedBy = row.hasOwnProperty("initiatedBy") ? row["initiatedBy"] : row[7];
+                let initiatedBy = this.initiatedBy;
                 let displayName = row.hasOwnProperty("displayName") ? row["displayName"] : row[3];
                 let timestamp = row.hasOwnProperty("timeStamp") ? row["timeStamp"] : row[0];
                 this.tableItems.push({
                     "time":  moment(timestamp).format("MMM D YYYY, h:mm:ss a"),
                     "level": level,
                     "levelIcon": this.getIconForLevel(level),
-                    "displayName": this.prepareDisplayValueForTable(displayName),
+                    "displayName":ChangeAnalysisUtilities.prepareDisplayValueForTable(displayName),
                     "description": description == null || description == "" ? "N/A" : description,
                     'oldValue': oldValue,
                     'newValue': newValue,
                     'initiatedBy': initiatedBy == null || initiatedBy == "" ? "N/A" : initiatedBy,
-                    'originalModel': this.prepareValuesForDiffView(oldValue),
-                    'modifiedModel': this.prepareValuesForDiffView(newValue)
+                    'originalModel': ChangeAnalysisUtilities.prepareValuesForDiffView(oldValue),
+                    'modifiedModel': ChangeAnalysisUtilities.prepareValuesForDiffView(newValue)
                 });
             });
             this.dataSource = new MatTableDataSource(this.tableItems);
-        }
-    }
-
-    private prepareDisplayValueForTable(displayName: string): string {
-        displayName = displayName.replace("D:\\home\\site\\wwwroot", "");
-        return displayName;
-    }
-
-    // Prepare the data for diff view.
-    private prepareValuesForDiffView(diffvalue: any): DiffEditorModel {
-        try {
-            if(diffvalue instanceof Object || diffvalue instanceof Array ) {
-                return {
-                    // Needed for JSON Pretty
-                    "code": JSON.stringify(diffvalue, null, 2),
-                    "language": 'json'
-                    };
-            }
-            if(isBoolean(diffvalue)) {
-                return {
-                    "code": diffvalue.toString(),
-                    "language": 'text/plain'
-                };
-            }
-            let jsonObject = JSON.parse(diffvalue);
-            if(jsonObject.hasOwnProperty('content') && jsonObject['content'] != null) {
-                return {
-                    "code": jsonObject['content'],
-                    "language": 'text/plain'
-                };
-             }
-            diffvalue = diffvalue.replace("mtime", "Modified Time");
-            diffvalue = diffvalue.replace("crtime", "Created Time");
-            return {
-                // Needed for JSON Pretty
-                "code": JSON.stringify(JSON.parse(diffvalue), null, 2),
-                "language": 'json'
-                };
-        // Exception is thrown when we try to parse string which is not a json, so just return text/plain
-        } catch(ex) {
-            return {
-                "code": diffvalue,
-                "language": 'text/plain'
-            }
         }
     }
 

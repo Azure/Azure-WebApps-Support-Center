@@ -13,20 +13,20 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { CardSelectionComponent } from './components/card-selection/card-selection.component';
 import { CommAlertComponent } from './components/comm-alert/comm-alert.component';
 import {
-    CopyInsightDetailsComponent
+  CopyInsightDetailsComponent
 } from './components/copy-insight-details/copy-insight-details.component';
 import { DataContainerComponent } from './components/data-container/data-container.component';
 import { DataRenderBaseComponent } from './components/data-render-base/data-render-base.component';
 import { DataSummaryComponent } from './components/data-summary/data-summary.component';
 import { DataTableComponent } from './components/data-table/data-table.component';
 import {
-    DetectorContainerComponent
+  DetectorContainerComponent
 } from './components/detector-container/detector-container.component';
 import {
-    DetectorControlComponent, InternalPipe
+  DetectorControlComponent, InternalPipe
 } from './components/detector-control/detector-control.component';
 import {
-    DetectorListComponent, DetectorOrderPipe
+  DetectorListComponent, DetectorOrderPipe
 } from './components/detector-list/detector-list.component';
 import { DetectorViewComponent } from './components/detector-view/detector-view.component';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
@@ -40,18 +40,18 @@ import { MarkdownEditorComponent } from './components/markdown-editor/markdown-e
 import { MarkdownComponent } from './components/markdown/markdown.component';
 import { Nvd3GraphComponent } from './components/nvd3-graph/nvd3-graph.component';
 import {
-    StarRatingFeedbackComponent
+  StarRatingFeedbackComponent
 } from './components/star-rating-feedback/star-rating-feedback.component';
 import { StarRatingComponent } from './components/star-rating/star-rating.component';
 import { StatusIconComponent } from './components/status-icon/status-icon.component';
 import {
-    TimeSeriesGraphComponent
+  TimeSeriesGraphComponent
 } from './components/time-series-graph/time-series-graph.component';
 import {
-    TimeSeriesInstanceGraphComponent
+  TimeSeriesInstanceGraphComponent
 } from './components/time-series-instance-graph/time-series-instance-graph.component';
 import {
-    DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig, INTERNAL_PROD_CONFIGURATION
+  DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig, INTERNAL_PROD_CONFIGURATION
 } from './config/diagnostic-data-config';
 import { ClipboardService } from './services/clipboard.service';
 import { CommsService } from './services/comms.service';
@@ -68,10 +68,12 @@ import { VerticalDisplayListItemComponent } from './components/vertical-display-
 import { SolutionTypeTagComponent } from './components/solution-type-tag/solution-type-tag.component';
 import { SolutionDisplayComponent } from './components/solution-display/solution-display.component';
 import { SolutionDisplayItemComponent } from './components/solution-display/solution-display-item/solution-display-item.component';
+
 import { ChangeAnalysisOnboardingComponent } from './components/changeanalysis-onboarding/changeanalysis-onboarding.component';
 import { ChangesetsViewComponent } from './components/changesets-view/changesets-view.component';
 import { ChangesViewComponent } from './components/changes-view/changes-view.component';
-import {CustomMaterialModule} from './material-module';
+import { CustomMaterialModule } from './material-module';
+import { DetectorListAnalysisComponent } from './components/detector-list-analysis/detector-list-analysis.component';
 
 @NgModule({
   imports: [
@@ -98,7 +100,8 @@ import {CustomMaterialModule} from './material-module';
     SolutionDisplayItemComponent,
     ChangeAnalysisOnboardingComponent,
     ChangesetsViewComponent,
-    ChangesViewComponent
+    ChangesViewComponent,
+    DetectorListAnalysisComponent
   ],
   exports: [
     FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent,
@@ -107,7 +110,8 @@ import {CustomMaterialModule} from './material-module';
     FormComponent, VerticalDisplayListComponent, VerticalDisplayListItemComponent, SolutionTypeTagComponent,
     ChangeAnalysisOnboardingComponent,
     ChangesetsViewComponent,
-    ChangesViewComponent
+    ChangesViewComponent,
+    DetectorListAnalysisComponent
   ],
 })
 export class DiagnosticDataModule {

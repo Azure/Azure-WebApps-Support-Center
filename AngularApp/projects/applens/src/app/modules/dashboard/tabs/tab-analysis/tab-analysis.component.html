@@ -1,0 +1,19 @@
+<div style="margin-left:20px">
+  <comm-alert></comm-alert>
+  <detector-container [detector]="analysisId"></detector-container>
+</div>
+
+<detector-list-analysis detectorParmName="detector"></detector-list-analysis>
+
+<div style="margin-left:20px" class="tab-container" [hidden]="detectorId === ''">
+  <div style="margin-left:20px;margin-bottom: 10px">
+    <div style="display: inline-block">
+      <h4>{{ detectorName }}</h4>
+    </div>
+    <div style="display: inline-block;margin-left: 10px">
+      <a *ngIf="detectorId !== ''" [routerLink]="['../../']" preserveFragment
+        queryParamsHandling="preserve">Back to observations</a>
+    </div>
+  </div>
+  <router-outlet></router-outlet>
+</div>

@@ -1,10 +1,11 @@
 
-import {filter} from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { Component, OnInit, PipeTransform, Pipe } from '@angular/core';
 import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from '@angular/router';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { CollapsibleMenuItem } from '../../../collapsible-menu/components/collapsible-menu-item/collapsible-menu-item.component';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
+import { DetectorType } from 'diagnostic-data';
 
 @Component({
   selector: 'side-nav',
@@ -18,6 +19,7 @@ export class SideNavComponent implements OnInit {
   currentRoutePath: string[];
 
   categories: CollapsibleMenuItem[] = [];
+  analysisTypes: CollapsibleMenuItem[] = [];
 
   gists: CollapsibleMenuItem[] = [];
 
@@ -43,25 +45,25 @@ export class SideNavComponent implements OnInit {
   ];
 
   createNew: CollapsibleMenuItem[] = [{
-      label: 'New Detector',
-      onClick: () => {
-        this.navigateTo('create');
-      },
-      expanded: false,
-      subItems: null,
-      isSelected: null,
-      icon: null
+    label: 'New Detector',
+    onClick: () => {
+      this.navigateTo('create');
     },
-    {
-      label: 'New Gist',
-      onClick: () => {
-        this.navigateTo('createGist');
-      },
-      expanded: false,
-      subItems: null,
-      isSelected: null,
-      icon: null
-    }
+    expanded: false,
+    subItems: null,
+    isSelected: null,
+    icon: null
+  },
+  {
+    label: 'New Gist',
+    onClick: () => {
+      this.navigateTo('createGist');
+    },
+    expanded: false,
+    subItems: null,
+    isSelected: null,
+    icon: null
+  }
   ];
 
   ngOnInit() {
@@ -111,19 +113,29 @@ export class SideNavComponent implements OnInit {
           }
 
           categoryMenuItem.subItems.push(menuItem);
+          if (element.type === DetectorType.Analysis) {
+
+            let onClickAnalysisParent = () => {
+              this.navigateTo(`analysis/${element.id}`);
+            };
+
+            let analysisMenuItem = new CollapsibleMenuItem(element.name, onClickAnalysisParent, null, null, true);
+            this.analysisTypes.push(analysisMenuItem);
+
+          }
         });
 
-        this.categories = this.categories.sort((a,b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));
+        this.categories = this.categories.sort((a, b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));
 
         this.detectorsLoading = false;
       }
     },
-    error => {
-      // TODO: handle detector route not found
-      if (error && error.status === 404) {
-        this.getDetectorsRouteNotFound = true;
-      }
-    });
+      error => {
+        // TODO: handle detector route not found
+        if (error && error.status === 404) {
+          this.getDetectorsRouteNotFound = true;
+        }
+      });
 
     this._diagnosticApiService.getGists().subscribe(gistList => {
       if (gistList) {
@@ -145,17 +157,17 @@ export class SideNavComponent implements OnInit {
               categoryMenuItem = new CollapsibleMenuItem(c, null, null, null, true);
               this.gists.push(categoryMenuItem);
             }
-  
+
             categoryMenuItem.subItems.push(menuItem);
           });
         });
       }
     },
-    error => {
-      // TODO: handle detector route not found
-      if (error && error.status === 404) {
-      }
-    });
+      error => {
+        // TODO: handle detector route not found
+        if (error && error.status === 404) {
+        }
+      });
   }
 
   doesMatchCurrentRoute(expectedRoute: string) {

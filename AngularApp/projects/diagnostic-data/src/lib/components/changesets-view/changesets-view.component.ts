@@ -1,6 +1,6 @@
-import { Component, Inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Inject, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { DiagnosticData, Rendering, DataTableResponseObject, DetectorResponse, RenderingType } from '../../models/detector';
+import { DiagnosticData, DataTableResponseObject, DetectorResponse, RenderingType } from '../../models/detector';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import { DiagnosticService } from '../../services/diagnostic.service';
@@ -11,6 +11,7 @@ import * as momentNs from 'moment';
 import { Subscription, interval } from 'rxjs';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { SettingsService} from '../../services/settings.service';
+import {ChangeAnalysisUtilities} from '../../utilities/changeanalysis-utilities';
 const moment = momentNs;
 @Component({
   selector: 'changesets-view',
@@ -18,13 +19,13 @@ const moment = momentNs;
   styleUrls: ['./changesets-view.component.scss',
   '../insights/insights.component.scss']
 })
-export class ChangesetsViewComponent extends DataRenderBaseComponent {
+export class ChangesetsViewComponent extends DataRenderBaseComponent implements OnDestroy {
     isPublic: boolean;
     changeSetText: string = '';
     scanDate: string = '';
     selectedChangeSetId: string = '';
     changesDataSet: DiagnosticData[];
-    loadingChangesTable: boolean = true;
+    loadingChangesTable: boolean = false;
     loadingChangesTimeline: boolean = false;
     changesTableError: string = '';
     sourceGroups = new DataSet([
@@ -39,9 +40,12 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     showViewChanges: boolean = false;
     timeLineDataSet: DataSet;
     changesTimeline: Timeline;
+    changeSetsLocalCopy: {};
+    initiatedBy: string = '';
     constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, protected telemetryService: TelemetryService,
     protected changeDetectorRef: ChangeDetectorRef, protected diagnosticService: DiagnosticService,
-    private detectorControlService: DetectorControlService, private settingsService: SettingsService, private router:Router) {
+    private detectorControlService: DetectorControlService, private settingsService: SettingsService,
+     private router:Router) {
         super(telemetryService);
         this.isPublic = config && config.isPublic;
     }
@@ -49,10 +53,6 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     protected processData(data: DiagnosticData) {
         super.processData(data);
         this.parseData(data.table);
-        if(this.isPublic) {
-           this.checkInitialScanState();
-        }
-
     }
 
     private parseData(data: DataTableResponseObject) {
@@ -64,9 +64,14 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                 this.initializeChangesView(data);
             }
             // Convert UTC timestamp to user readable date
-            this.scanDate = moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
+            this.scanDate = rows[0][6] != '' ? 'Changes were last scanned on ' + moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a") : 'No recent scans were performed on this web app. Make sure scan for code changes has been enabled in settings.';
+            if(this.isPublic) {
+                this.checkInitialScanState();
+             }
         } else {
+             this.scanDate = 'No recent scans were performed on this web app. Make sure scan for code changes has been enabled in settings.';
              this.changeSetText = `No change groups have been detected`;
+             this.setDefaultScanStatus();
         }
     }
 
@@ -74,13 +79,15 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
         this.loadingChangesTimeline = true;
         let changeSets = data.rows;
         let timelineItems = [];
+        this.changeSetsLocalCopy = {};
         changeSets.forEach(changeset => {
+        this.changeSetsLocalCopy[changeset[0]] = changeset;
         timelineItems.push({
             id: changeset[0],
             content: ' ',
             start: changeset[3],
-            group: this.findGroupBySource(changeset[2]),
-            className: this.findGroupBySource(changeset[2]) == 1 ? 'red' : 'green'
+            group: ChangeAnalysisUtilities.findGroupBySource(changeset[2]),
+            className: ChangeAnalysisUtilities.findGroupBySource(changeset[2]) == 1 ? 'red' : 'green'
         })
         });
         this.loadingChangesTimeline = false;
@@ -113,8 +120,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                     },
                 renderingProperties: RenderingType.ChangesView
             }];
-            // Add to cache
-            this.changeSetsCache[data.rows[0][0]] = this.changesDataSet;
+            this.initiatedBy = this.changeSetsLocalCopy.hasOwnProperty(data.rows[0][0]) ? this.changeSetsLocalCopy[data.rows[0][0]][5] : '';
             this.loadingChangesTable = false;
             this.changesTableError = '';
         }
@@ -145,6 +151,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
         // Check cache first
         if (this.changeSetsCache.hasOwnProperty(changeSetId)) {
             this.changesDataSet = this.changeSetsCache[changeSetId];
+            this.initiatedBy = this.changeSetsLocalCopy.hasOwnProperty(changeSetId) ? this.changeSetsLocalCopy[changeSetId][5] : '';
             // Angular change detector does not check contents of array itself, so manually trigger the ui to update.
             this.changeDetectorRef.detectChanges();
             this.loadingChangesTable = false;
@@ -155,6 +162,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
             this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
             this.changeSetsCache[changeSetId] = response.dataset;
             this.changesDataSet = this.changeSetsCache[changeSetId];
+            this.initiatedBy = this.changeSetsLocalCopy.hasOwnProperty(changeSetId) ? this.changeSetsLocalCopy[changeSetId][5] : '';
             this.changeDetectorRef.detectChanges();
             this.loadingChangesTable = false;
             this.changesTableError = '';
@@ -162,19 +170,6 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
             this.loadingChangesTable = false;
             this.changesTableError = 'Unable to load changes for the selected change group. Please try refresh or try after sometime';
         });
-        }
-    }
-
-    private findGroupBySource(source: any): number {
-        switch(source){
-        case "ARG":
-        return 1;
-        case "ARM":
-        return 1;
-        case "AST":
-        return 2;
-        default:
-        return 1;
         }
     }
 
@@ -193,11 +188,19 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                 this.scanState = submissionState;
                 // Request has been submitted, update the UI with the state.
                 this.setScanState(submissionState);
-                // Start polling every 5 secs to see the progress.
-                this.subscription = interval(5000).subscribe(res => {
+                if (submissionState == 'NotEnabled') {
+                    if(this.subscription) {
+                        this.subscription.unsubscribe();
+                    }
+                    this.setScanState("");
+                    this.scanStatusMessage = 'Unable to submit scan request. Please check if you have enabled scan for code changes in settings and try again.';
+                }
+                // Start polling every 15 secs to see the progress.
+                this.subscription = interval(15000).subscribe(res => {
                     this.pollForScanStatus();
                 });
             }, (error: any) => {
+                this.scanState = "";
                 this.scanStatusMessage = "Unable to submit scan request. Please refresh or try again after sometime";
         });
     }
@@ -233,8 +236,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                      } else if (submissionState == "No active requests") {
                         this.setScanState("");
                         this.setDefaultScanStatus();
-                     } else {
-                        console.log("Starting polling to see scan progress");
+                     }  else {
                         this.subscription = interval(5000).subscribe(res => {
                             this.pollForScanStatus();
                         });
@@ -347,7 +349,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
             }
             default:
             return {
-                'fa-check': true
+
             }
         }
     }
@@ -355,11 +357,15 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
     refreshTimeline(): void {
         this.loadingChangesTimeline = true;
         let queryParams = `&changeSetId=*`;
+        this.scanStatusMessage = "Fetching scan results...";
+        this.scanState = "Polling";
+        this.allowScanAction = false;
         this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
         this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
             // Reload timeline with latest changes
             let newChangeRows = response.dataset[0]['table'];
             let newTimelineItems = [];
+            if(this.changesTimeline) {
             newChangeRows.rows.forEach(row => {
                 let existingItem = this.timeLineDataSet.get(row[0]);
                 // Add to timeline if it doesnt exist.
@@ -368,8 +374,8 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
                     id: row[0],
                     content: ' ',
                     start: row[3],
-                    group: this.findGroupBySource(row[2]),
-                    className: this.findGroupBySource(row[2]) == 1 ? 'red' : 'green'
+                    group: ChangeAnalysisUtilities.findGroupBySource(row[2]),
+                    className: ChangeAnalysisUtilities.findGroupBySource(row[2]) == 1 ? 'red' : 'green'
                 });
                 }
             });
@@ -377,11 +383,18 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
             this.timeLineDataSet.add(newTimelineItems);
             this.loadingChangesTimeline = false;
             this.initializeChangesView(newChangeRows);
+            } else {
+                this.constructTimeline(newChangeRows);
+                this.initializeChangesView(newChangeRows);
+            }
+            let totalItems = this.timeLineDataSet.length;
+            this.changeSetText = totalItems + ' change groups have been detected';
             // Convert UTC timestamp to user readable date
-            this.scanDate = moment(newChangeRows.rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
+            this.scanDate = 'Changes were last scanned on ' + moment(newChangeRows.rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
             this.setDefaultScanStatus();
         }, (error: any) => {
-
+            this.scanStatusMessage = "Unable to get scan results";
+            this.scanState = '';
         });
     }
 
@@ -395,6 +408,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent {
         this.scanStatusMessage = "Click the below button to to scan your web app and get the latest changes";
         this.allowScanAction = true;
         this.showViewChanges = false;
+        this.scanState = '';
     }
 
     logTimelineEventClick(): void {

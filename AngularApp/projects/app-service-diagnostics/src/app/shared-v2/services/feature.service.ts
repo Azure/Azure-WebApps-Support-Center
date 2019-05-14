@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DiagnosticService, DetectorMetaData } from 'diagnostic-data';
+import { DiagnosticService, DetectorMetaData, DetectorType } from 'diagnostic-data';
 import { Category } from '../models/category';
 import { Feature, FeatureType, FeatureTypes, FeatureAction } from '../models/features';
 import { ContentService } from './content.service';
@@ -20,6 +20,8 @@ export class FeatureService {
 
       this._diagnosticApiService.getDetectors().subscribe(detectors => {
         detectors.forEach(detector => {
+          if (detector.type === DetectorType.Detector){
+
           this._features.push(<Feature>{
             id: detector.id,
             description: detector.description,
@@ -30,6 +32,18 @@ export class FeatureService {
               this._router.navigateByUrl(`resource${startupInfo.resourceId}/detectors/${detector.id}`);
             })
           });
+        } else {
+          this._features.push(<Feature>{
+            id: detector.id,
+            description: detector.description,
+            category: detector.category,
+            featureType: FeatureTypes.Detector,
+            name: detector.name,
+            clickAction: this._createFeatureAction(detector.name, detector.category, () => {
+              this._router.navigateByUrl(`resource${startupInfo.resourceId}/analysis/${detector.id}`);
+            })
+          });
+        }
         });
       });
 

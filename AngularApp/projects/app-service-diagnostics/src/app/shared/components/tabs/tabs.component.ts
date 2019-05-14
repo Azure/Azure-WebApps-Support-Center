@@ -39,6 +39,10 @@ export class TabsComponent implements OnInit {
 
         const url = this._router.url.split('?')[0];
         let existingTab = this.navigationItems.find(item => item.url.split('?')[0] === url);
+        let analysisTab = this.getAnalysisTabIfAnalysisDetector(url);
+        if (analysisTab) {
+          existingTab = analysisTab;
+        }
 
         if (!existingTab) {
           existingTab = {
@@ -54,6 +58,23 @@ export class TabsComponent implements OnInit {
         this.selectTab(existingTab);
       }
     });
+  }
+
+  getAnalysisTabIfAnalysisDetector(url: string) {
+    if (url.indexOf("/analysis/") && url.indexOf("/detectors/") >= 0) {
+      let detectorWithAnalysisPath = url.split("/analysis/")[1];
+      if (detectorWithAnalysisPath.indexOf("/detectors/") > 0) {
+        if (detectorWithAnalysisPath.indexOf("/") > 0) {
+          let urlArray = url.split("/");
+          if (urlArray.length > 1) {
+            urlArray.splice(urlArray.length - 2);
+            let analysisUrl = urlArray.join("/");
+            let existingTab = this.navigationItems.find(item => item.url.split('?')[0] === analysisUrl);
+            return existingTab;
+          }
+        }
+      }
+    }
   }
 
   selectTab(tab: INavigationItem) {

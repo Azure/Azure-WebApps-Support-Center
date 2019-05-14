@@ -20,7 +20,7 @@
       <span *ngIf="actionStatus === 'Running...'">
         <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
       </span>
-      <span *ngIf="actionStatus === 'Complete!'">
+      <span *ngIf="actionStatus === confirmationMessage">
         <i class="fa fa-check-circle" aria-hidden="true"></i>
       </span>
     </span>

@@ -16,17 +16,35 @@ import { ResourceService } from '../../../shared-v2/services/resource.service';
 })
 export class GenericDetectorComponent implements OnDestroy {
   detector: string;
+  analysisDetector: string;
   navigateSub: Subscription;
+  analysisMode:boolean = false;
 
-  constructor(private _activatedRoute: ActivatedRoute, private _resourceService:ResourceService, private _authServiceInstance: AuthService, private _telemetryService: TelemetryService,
+  constructor(private _activatedRoute: ActivatedRoute, private _resourceService: ResourceService, private _authServiceInstance: AuthService, private _telemetryService: TelemetryService,
     private _navigator: FeatureNavigationService, private _router: Router) {
-    this.detector = this._activatedRoute.snapshot.params['detectorName'];
+
+    if (this._activatedRoute.snapshot.params['analysisId'] != null) {
+      this.analysisDetector = this._activatedRoute.snapshot.params['analysisId'];
+      if (this._activatedRoute.snapshot.params['detectorName'] != null) {
+        this.detector = this._activatedRoute.snapshot.params['detectorName'];
+      }
+      else {
+        this.detector = this._activatedRoute.snapshot.params['analysisId'];
+        this.analysisDetector = this.detector;
+      }
+
+    }
+    else if (this._activatedRoute.snapshot.params['detectorName'] != null) {
+      this.detector = this._activatedRoute.snapshot.params['detectorName'];
+    }
 
     this.navigateSub = this._navigator.OnDetectorNavigate.subscribe((detector: string) => {
       if (detector) {
-        this._router.navigate([`../../detectors/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge'});
+        this._router.navigate([`../../detectors/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
       }
     });
+
+    this.analysisMode = this._activatedRoute.snapshot.data['analysisMode'];
 
     this._authServiceInstance.getStartupInfo().subscribe(startUpInfo => {
       if (startUpInfo) {
@@ -40,9 +58,9 @@ export class GenericDetectorComponent implements OnDestroy {
           'TicketBladeWorkflowId': ticketBladeWorkflowId,
           'SupportTopicId': supportTopicId,
           'PortalSessionId': sessionId,
-          'AzureServiceName':this._resourceService.azureServiceName
+          'AzureServiceName': this._resourceService.azureServiceName
         };
-       this._telemetryService.eventPropertiesSubject.next(eventProperties);
+        this._telemetryService.eventPropertiesSubject.next(eventProperties);
       }
     });
   }
