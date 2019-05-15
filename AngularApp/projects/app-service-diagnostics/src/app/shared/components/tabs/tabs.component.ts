@@ -61,7 +61,7 @@ export class TabsComponent implements OnInit {
   }
 
   getAnalysisTabIfAnalysisDetector(url: string) {
-    if (url.indexOf("/analysis/") && url.indexOf("/detectors/") >= 0) {
+    if (url.indexOf("/analysis/") >=0 && url.indexOf("/detectors/") >= 0 && url.indexOf("/legacy/") === -1) {
       let detectorWithAnalysisPath = url.split("/analysis/")[1];
       if (detectorWithAnalysisPath.indexOf("/detectors/") > 0) {
         if (detectorWithAnalysisPath.indexOf("/") > 0) {
