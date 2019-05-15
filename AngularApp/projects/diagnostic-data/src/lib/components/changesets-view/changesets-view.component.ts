@@ -131,9 +131,11 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
     // TODO: Find a better way of updating angular UI
     private triggerChangeEvent(properties: any): void {
         let domelement = <HTMLInputElement>document.getElementById("changeSetId");
-        domelement.value = properties.items[0];
-        let event = new Event('change');
-        domelement.dispatchEvent(event);
+        if(properties.items.length > 0 && typeof properties.items[0] != 'undefined') {
+            domelement.value = properties.items[0];
+            let event = new Event('change');
+            domelement.dispatchEvent(event);
+        }
     }
 
      refreshChangesTable(): void {

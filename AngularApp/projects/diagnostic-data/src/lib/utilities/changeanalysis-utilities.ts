@@ -10,6 +10,12 @@ export class ChangeAnalysisUtilities {
       public static prepareValuesForDiffView(diffvalue: any): DiffEditorModel {
         try {
             let jsonObject: any;
+            if(diffvalue === null || typeof diffvalue === 'undefined') {
+                return {
+                    "code": "",
+                    "language": 'text/plain'
+                }
+            }
             if(isBoolean(diffvalue)) {
                 return {
                     "code": diffvalue.toString(),
