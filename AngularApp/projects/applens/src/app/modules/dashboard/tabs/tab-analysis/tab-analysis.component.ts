@@ -32,5 +32,7 @@ export class TabAnalysisComponent implements OnInit {
       }
     });
   }
-
+  onActivate(event) {
+    window.scroll(0, 0);
+  }
 }

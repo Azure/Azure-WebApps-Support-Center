@@ -1,7 +1,7 @@
 import { Router } from '@angular/router';
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TelemetryService, FeatureNavigationService } from 'diagnostic-data';
+import { TelemetryService, FeatureNavigationService, DiagnosticService, DetectorMetaData, DetectorType } from 'diagnostic-data';
 import { AuthService } from '../../../startup/services/auth.service';
 import { Subscription } from 'rxjs';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
@@ -18,9 +18,9 @@ export class GenericDetectorComponent implements OnDestroy {
   detector: string;
   analysisDetector: string;
   navigateSub: Subscription;
-  analysisMode:boolean = false;
+  analysisMode: boolean = false;
 
-  constructor(private _activatedRoute: ActivatedRoute, private _resourceService: ResourceService, private _authServiceInstance: AuthService, private _telemetryService: TelemetryService,
+  constructor(private _activatedRoute: ActivatedRoute, private _diagnosticService: DiagnosticService, private _resourceService: ResourceService, private _authServiceInstance: AuthService, private _telemetryService: TelemetryService,
     private _navigator: FeatureNavigationService, private _router: Router) {
 
     if (this._activatedRoute.snapshot.params['analysisId'] != null) {
@@ -40,7 +40,13 @@ export class GenericDetectorComponent implements OnDestroy {
 
     this.navigateSub = this._navigator.OnDetectorNavigate.subscribe((detector: string) => {
       if (detector) {
-        this._router.navigate([`../../detectors/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
+        let detectorMetaData: DetectorMetaData = this._diagnosticService.getDetectorById(detector);
+        if (detectorMetaData.type === DetectorType.Detector) {
+          this._router.navigate([`../../detectors/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
+        } else if (detectorMetaData.type === DetectorType.Analysis) {
+          this._router.navigate([`../../analysis/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
+        }
+
       }
     });
 

@@ -16,9 +16,9 @@ export class GenericAnalysisComponent extends GenericDetectorComponent implement
   analysisId: string = "";
   detectorName: string = "";
 
-  constructor(private _activatedRouteLocal: ActivatedRoute, private _diagnosticService: DiagnosticService, _resourceService: ResourceService, _authServiceInstance: AuthService, _telemetryService: TelemetryService,
-    _navigator: FeatureNavigationService,private _routerLocal: Router) {
-    super(_activatedRouteLocal, _resourceService, _authServiceInstance, _telemetryService, _navigator, _routerLocal);
+  constructor(private _activatedRouteLocal: ActivatedRoute, private _diagnosticServiceLocal: DiagnosticService, _resourceService: ResourceService, _authServiceInstance: AuthService, _telemetryService: TelemetryService,
+    _navigator: FeatureNavigationService, private _routerLocal: Router) {
+    super(_activatedRouteLocal, _diagnosticServiceLocal, _resourceService, _authServiceInstance, _telemetryService, _navigator, _routerLocal);
   }
 
   ngOnInit() {
@@ -26,7 +26,7 @@ export class GenericAnalysisComponent extends GenericDetectorComponent implement
       this.analysisId = params.get('analysisId');
       this.detectorId = params.get('detectorName') === null ? "" : params.get('detectorName');
 
-      this._diagnosticService.getDetectors().subscribe(detectorList => {
+      this._diagnosticServiceLocal.getDetectors().subscribe(detectorList => {
         if (detectorList) {
 
           if (this.detectorId !== "") {
@@ -38,7 +38,7 @@ export class GenericAnalysisComponent extends GenericDetectorComponent implement
     });
   }
 
-  goBackToAnalysis(){
+  goBackToAnalysis() {
     this._routerLocal.navigate([`../../../${this.analysisId}`], { relativeTo: this._activatedRouteLocal, queryParamsHandling: 'merge' });
   }
 

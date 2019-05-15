@@ -3,7 +3,8 @@ import { Component, OnDestroy } from '@angular/core';
 import { ResourceService } from '../../../shared/services/resource.service';
 import * as momentNs from 'moment';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DetectorControlService, FeatureNavigationService } from 'diagnostic-data';
+import { DetectorControlService, FeatureNavigationService, DetectorMetaData, DetectorType } from 'diagnostic-data';
+import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 
 @Component({
   selector: 'dashboard',
@@ -20,12 +21,23 @@ export class DashboardComponent implements OnDestroy {
   navigateSub: Subscription
 
   constructor(public resourceService: ResourceService, private _detectorControlService: DetectorControlService,
-    private _router: Router, private _activatedRoute: ActivatedRoute, private _navigator: FeatureNavigationService) {
+    private _router: Router, private _diagnosticService: ApplensDiagnosticService, private _activatedRoute: ActivatedRoute, private _navigator: FeatureNavigationService) {
     this.contentHeight = (window.innerHeight - 50) + 'px';
 
     this.navigateSub = this._navigator.OnDetectorNavigate.subscribe((detector: string) => {
       if (detector) {
-        this._router.navigate([`./detectors/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge'});
+        this._router.navigate([`./detectors/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
+
+        this._diagnosticService.getDetectors().subscribe(detectors => {
+          let detectorMetaData: DetectorMetaData = detectors.find(d => d.id.toLowerCase() === detector.toLowerCase());
+          if (detectorMetaData) {
+            if (detectorMetaData.type === DetectorType.Detector) {
+              this._router.navigate([`./detectors/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
+            } else if (detectorMetaData.type === DetectorType.Analysis) {
+              this._router.navigate([`./analysis/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
+            }
+          }
+        });
       }
     });
 
@@ -36,7 +48,7 @@ export class DashboardComponent implements OnDestroy {
         'endTime': this._detectorControlService.endTime.format('YYYY-MM-DDTHH:mm')
       }
       // If browser URL contains detectorQueryParams, adding it to route
-      if(!this._activatedRoute.queryParams['detectorQueryParams']) {
+      if (!this._activatedRoute.queryParams['detectorQueryParams']) {
         routeParams['detectorQueryParams'] = this._activatedRoute.snapshot.queryParams['detectorQueryParams'];
       }
       this._router.navigate([], { queryParams: routeParams, relativeTo: this._activatedRoute });
