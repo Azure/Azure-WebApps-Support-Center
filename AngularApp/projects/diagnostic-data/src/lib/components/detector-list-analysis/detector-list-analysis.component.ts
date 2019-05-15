@@ -45,7 +45,6 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
   issueDetectedViewModels: any[] = [];
   successfulViewModels: any[] = [];
   detectorMetaData: DetectorMetaData[];
-  detectorsPending: number = 0;
   private childDetectorsEventProperties = {};
   loadingChildDetectors: boolean = false;
   allSolutions: Solution[] = [];
@@ -109,10 +108,9 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
             this.startLoadingMessage();
           }
           this.detectorViewModels.forEach((metaData, index) => {
-            this.detectorsPending++;
+
             requests.push((<Observable<DetectorResponse>>metaData.request).pipe(
               map((response: DetectorResponse) => {
-                this.detectorsPending--;
                 this.detectorViewModels[index] = this.updateDetectorViewModelSuccess(metaData, response);
 
                 if (this.detectorViewModels[index].loadingStatus !== LoadingStatus.Failed) {
@@ -122,10 +120,11 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
                     this.issueDetectedViewModels.push(issueDetectedViewModel);
                     this.issueDetectedViewModels = this.issueDetectedViewModels.sort((n1, n2) => n1.model.status - n2.model.status);
                   } else {
-                    let successViewModel = { model: this.detectorViewModels[index] };
+                    let insight = this.getDetectorInsight(this.detectorViewModels[index]);
+                    let successViewModel = { model: this.detectorViewModels[index], insightTitle: insight.title, insightDescription: insight.description };
                     this.successfulViewModels.push(successViewModel);
                   }
-                } 
+                }
 
                 return {
                   'ChildDetectorName': this.detectorViewModels[index].title,
@@ -135,7 +134,6 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
                 };
               })
               , catchError(err => {
-                this.detectorsPending--;
                 this.detectorViewModels[index].loadingStatus = LoadingStatus.Failed;
                 return of({});
               })
@@ -153,9 +151,18 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     });
   }
 
+  getPendingDetectorCount(): number {
+    let pendingCount = 0;
+    this.detectorViewModels.forEach((metaData, index) => {
+      if (this.detectorViewModels[index].loadingStatus == LoadingStatus.Loading) {
+        ++pendingCount;
+      }
+    });
+    return pendingCount;
+  }
+
   resetGlobals() {
     this.detectors = [];
-    this.detectorsPending = 0;
     this.detectorViewModels = [];
     this.issueDetectedViewModels = [];
     this.loadingChildDetectors = false;
