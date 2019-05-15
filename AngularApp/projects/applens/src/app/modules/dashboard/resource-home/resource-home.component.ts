@@ -42,6 +42,10 @@ export class ResourceHomeComponent implements OnInit {
             }
         });
 
+        this._diagnosticService.getSelfHelpContent().subscribe((res) => {
+            console.log(res);
+        })
+
         this._supportTopicService.getSupportTopics().subscribe((supportTopics: SupportTopicResult[]) => {
             supportTopics.forEach((supportTopic) => {
                 if (supportTopic.supportTopicL2Name)
@@ -59,7 +63,7 @@ export class ResourceHomeComponent implements OnInit {
                     suppportTopicItem.subItems.push(item);
                 }
 
-                
+
 
 //                 productId: "14748"
 // productName: "Web App (Windows)"
@@ -134,20 +138,20 @@ export class ResourceHomeComponent implements OnInit {
           }
         });
       }
-    
+
     //   private loadSecondFile() {
     //     this._http.get('/asset/second.json').subscribe(() => {
     //       // HANDLE file found
     //     }, () => {
     //       // HANDLE file not found
-    
+
     //     });
     //   }
 
     // getSupportTopicImage(supportTopicL2Name: string):Observable<any>{
     //     // this._http.get('assets/{supportTopicL2Name}.json').subscribe(jsonResponse =>{
     //     //     this.enabledResourceTypes = <ResourceServiceInputs[]>jsonResponse.enabledResourceTypes;
-    //     //   });    
+    //     //   });
 
     //      return this._http.head(`assets/${supportTopicL2Name}.png`,{ observe: 'response', responseType: 'blob' })
     //       .pipe(
@@ -155,12 +159,12 @@ export class ResourceHomeComponent implements OnInit {
     //           return of(`assets/${supportTopicL2Name}.png`);
 
     //         }),
-    //         catchError(error => { 
+    //         catchError(error => {
     //           return of(`https://applensassets.blob.core.windows.net/applensassets/${supportTopicL2Name}.png`);
     //         })
     //       );
     //     }
-          
+
         //   .map((response) => response.status)
         //   .catch((error) => Observable.of(error.status || 404))
         //   .subscribe((status) => console.log(`status = ${status}`));
@@ -170,7 +174,7 @@ export class ResourceHomeComponent implements OnInit {
     // .map((response) => response.status)
     // .catch((error) => Observable.of(error.status || 404))
     // .subscribe((status) => console.log(`status = ${status}`));
-    
+
 
     navigateTo(path: string) {
         let navigationExtras: NavigationExtras = {

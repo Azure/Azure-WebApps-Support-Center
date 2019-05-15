@@ -49,11 +49,13 @@ export class DiagnosticApiService {
     return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body, true, false, internalClient).pipe(retry(1), map(response => response.map(detector => detector.metadata)));
   }
 
-  public getUsers(body: any): Observable<any> {
+  public getUsers(body: any, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
     let url: string = `${this.diagnosticApi}api/graph/users`;
-    return  this._httpClient.post(url, body, {
+    let request =  this._httpClient.post(url, body, {
         headers: this._getHeaders()
       });
+
+    return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.POST, url+body.toString()), request, invalidateCache) : request;
   }
 
   public getSupportTopics(pesId: any, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
@@ -63,6 +65,14 @@ export class DiagnosticApiService {
       });
 
     return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.GET, url), request, invalidateCache) : request;
+  }
+
+  public getSelfHelpContent(pesId: string, supportTopicId: string): Observable<any> {
+      // 14748
+    let url: string = `${this.diagnosticApi}api/selfhelp/pesId/${pesId}/supportTopicId/${supportTopicId}`;
+    return  this._httpClient.get(url, {
+        headers: this._getHeaders()
+      });
   }
 
   public getGists(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {
