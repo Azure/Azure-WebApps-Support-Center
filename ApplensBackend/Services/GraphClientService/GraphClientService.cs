@@ -17,6 +17,7 @@ using System.Threading;
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Mvc;
+using AppLensV3.Models;
 
 namespace AppLensV3.Services
 {
@@ -24,6 +25,7 @@ namespace AppLensV3.Services
         Task<string> GetOrCreateUserImageAsync(string userId);
         Task<string> GetUserImageAsync(string userId);
         Task<IDictionary<string, string>> GetUsers(string[] users);
+        Task<AuthorInfo> GetUserInfoAsync(string userId);
     }
 
 
@@ -79,6 +81,90 @@ namespace AppLensV3.Services
             return null;
         }
 
+        public async Task<AuthorInfo> GetUserInfoAsync(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new ArgumentException("userId");
+            }
+
+            try
+            {
+                var tasks = new List<Task>();
+                string authorizationToken = await _graphTokenService.GetAuthorizationTokenAsync();
+
+                var getUserInfoUri = $"https://graph.microsoft.com/v1.0/users/{userId}@microsoft.com/";
+
+                string uri = $"users/{userId}@microsoft.com";
+                string userApiUri = $"users/{userId}@microsoft.com";
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, string.Format(GraphConstants.GraphApiEndpointFormat, uri));
+
+                request.Headers.Add("Authorization", authorizationToken);
+
+                CancellationTokenSource tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+                HttpResponseMessage responseMsg = await _httpClient.SendAsync(request, tokenSource.Token);
+
+                string result = string.Empty;
+                AuthorInfo userInfo = null;
+
+                // If the status code is 404 NotFound, it might because the user doesn't have a profile picture, or the user alias is invalid.
+                // We set the image string to be empty if the response is not successful
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    result = await responseMsg.Content.ReadAsStringAsync();
+
+                    dynamic resultObject = JsonConvert.DeserializeObject(result);
+
+                    //DisplayName = displayName;
+                    //GivenName = givenName;
+                    //JobTitle = jobTitle;
+                    //Mail = mail;
+                    //OfficeLocation = officeLocation;
+                    //UserPrincipalName = userPrincipalName;
+
+                    userInfo = new AuthorInfo(resultObject.businessPhones.ToString(), resultObject.displayName.ToString(),
+                        resultObject.givenName.ToString(),
+                        resultObject.jobTitle.ToString(),
+                        resultObject.mail.ToString(),
+                        resultObject.officeLocation.ToString(),
+                        resultObject.userPrincipalName.ToString());
+                        //{
+                        //    BusinessPhones = resultObject.businessPhones.ToString(),
+                        //DisplayName = resultObject.displayName.ToString(),
+                        //GivenName = resultObject.givenName.ToString(),
+                        //JobTitle = resultObject.jobTitle.ToString(),
+                        //Mail = resultObject.mail.ToString(),
+                        //OfficeLocation = resultObject.officeLocation.ToString(),
+                        //UserPrincipalName = resultObject.userPrincipalName.ToString(),
+                        //};
+                    //foreach (var fileData in metaDataSet)
+                    //{
+                    //    if (!fileData.name.ToString().Contains("-scoping-"))
+                    //    {
+
+                    //        string fileDataUrl = fileData.download_url;
+
+                    //        Console.WriteLine("Get file data: {0}", fileDataUrl);
+
+                    //        tasks.Add(Task.Run(() => GetFileContent(fileDataUrl)));
+                    //    }
+                    //}
+
+                }
+
+                return userInfo;
+
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+            return null;
+
+        }
+
         public async Task<string> GetUserImageAsync(string userId)
         {
             if (string.IsNullOrWhiteSpace(userId))
@@ -97,12 +183,9 @@ namespace AppLensV3.Services
                 string userApiUri = $"users/{userId}@microsoft.com";
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, string.Format(GraphConstants.GraphApiEndpointFormat, uri));
-               // HttpRequestMessage userDateRequest = new HttpRequestMessage(HttpMethod.Get, string.Format(GraphConstants.GraphApiEndpointFormat, userApiUri));
-
+        
                 request.Headers.Add("Authorization", authorizationToken);
-              //  userDateRequest.Headers.Add("Authorization", authorizationToken);
-
-
+ 
                 CancellationTokenSource tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
                 HttpResponseMessage responseMsg = await _httpClient.SendAsync(request, tokenSource.Token);
 
@@ -115,8 +198,6 @@ namespace AppLensV3.Services
                 {
                     var content = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
                     result = String.Concat("data:image/jpeg;base64,", content);
-                    //Byte[] imageArray = File.ReadAllBytes(fs.FullName);
-                    //string base64ImageRepresentation = Convert.ToBase64String(imageArray);
                 }
 
                 return result;
@@ -127,8 +208,8 @@ namespace AppLensV3.Services
                 throw;
             }
 
-
             return null;
+
         }
 
         public async Task<string> GetUserImage(string userId)

@@ -1,0 +1,435 @@
+/*-- reset --*/
+/* `XHTML, HTML4, HTML5 Reset
+----------------------------------------------------------------------------------------------------*/
+
+a,
+abbr,
+acronym,
+address,
+applet,
+article,
+aside,
+audio,
+b,
+big,
+blockquote,
+body,
+canvas,
+caption,
+center,
+cite,
+code,
+dd,
+del,
+details,
+dfn,
+dialog,
+div,
+dl,
+dt,
+em,
+embed,
+fieldset,
+figcaption,
+figure,
+font,
+footer,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+header,
+hgroup,
+hr,
+html,
+i,
+iframe,
+img,
+ins,
+kbd,
+label,
+legend,
+li,
+main,
+mark,
+menu,
+meter,
+nav,
+object,
+ol,
+output,
+p,
+pre,
+progress,
+q,
+rp,
+rt,
+ruby,
+s,
+samp,
+section,
+small,
+span,
+strike,
+strong,
+sub,
+summary,
+sup,
+table,
+tbody,
+td,
+tfoot,
+th,
+thead,
+time,
+tr,
+tt,
+u,
+ul,
+var,
+video,
+xmp {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section {
+/*
+  Override the default (display: inline) for
+  browsers that do not recognize HTML5 tags.
+
+  IE8 (and lower) requires a shiv:
+  http://ejohn.org/blog/html5-shiv
+*/
+  display: block;
+}
+
+b,
+strong {
+/*
+  Makes browsers agree.
+  IE + Opera = font-weight: bold.
+  Gecko + WebKit = font-weight: bolder.
+*/
+  font-weight: bold;
+}
+
+img {
+  color: transparent;
+  font-size: 0;
+  vertical-align: middle;
+  width: 90px;
+  height:90px;
+/*
+  For IE.
+  https://css-tricks.com/ie-fix-bicubic-scaling-for-images
+*/
+  -ms-interpolation-mode: bicubic;
+}
+
+.user-photo {
+    width: 90px;
+    height:90px;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+li {
+/*
+  For IE6 + IE7:
+
+  "display: list-item" keeps bullets from
+  disappearing if hasLayout is triggered.
+*/
+  display: list-item;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+th,
+td,
+caption {
+  font-weight: normal;
+  vertical-align: top;
+  text-align: left;
+}
+
+q {
+  quotes: none;
+}
+
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+
+sub,
+sup,
+small {
+  font-size: 75%;
+}
+
+sub,
+sup {
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+svg {
+/*
+  For IE9. Without, occasionally draws shapes
+  outside the boundaries of <svg> rectangle.
+*/
+  overflow: hidden;
+}
+a{
+color:#92918f;
+text-decoration:none; 
+}
+.clear {
+  clear: both;
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+/*-- end reset --*/
+body{
+font-size:13px;
+background-color:#f9f9f9;
+font-family: 'Roboto', sans-serif;
+background-image:url(https://dl.dropboxusercontent.com/s/02mc3x6o7qy7ssf/bg.jpg);
+background-repeat:repeat;		
+}
+h1,h2,h3,h4,h5{
+font-weight:normal;
+font-style:normal;	
+}
+.main{
+	width: 600px;
+	height: auto;
+	margin: 50px auto;
+}
+.points{
+	background-color: #585858;
+	width: 10px;
+	height: 10px;
+	margin: auto;
+	-moz-border-radius: 10px;/*Firefox*/
+-webkit-border-radius: 10px;/*Safari, Chrome*/
+border-radius: 10px;
+border: solid 2px #9a9a9a;
+z-index: 100;
+-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=1, Direction=180, Color=#c5c4c4)";/*IE 8*/
+-moz-box-shadow: 0px 3px 1px #c5c4c4;/*FF 3.5+*/
+-webkit-box-shadow: 0px 3px 1px #c5c4c4;/*Saf3-4, Chrome, iOS 4.0.2-4.2, Android 2.3+*/
+box-shadow: 0px 3px 1px #c5c4c4;/* FF3.5+, Opera 9+, Saf1+, Chrome, IE10 */
+filter: progid:DXImageTransform.Microsoft.Shadow(Strength=1, Direction=180, Color=#c5c4c4); /*IE 5.5-7*/
+
+}
+.shield-left{
+	border-top: solid 1px #585858;
+	width: 220px;
+	margin-left: 93px;
+	margin-top: 48px;
+	-moz-transform: rotate(149deg) scale(1, 1) skewX(0deg) skewY(0deg) translate(0px, 0px);/* FF3.5+ */
+-webkit-transform: rotate(149deg) scale(1, 1) skew(0deg, 0deg) translate(0px, 0px);/*Saf3.1+, Chrome*/
+-o-transform: rotate(149deg) scale(1, 1) skew(0deg, 0deg) translate(0px, 0px);/* Opera 10.5 */
+-ms-transform: rotate(149deg) scale(1, 1) skew(0deg, 0deg) translate(0px, 0px);/* IE 9 */
+transform: rotate(149deg) scale(1, 1) skew(0deg, 0deg) translate(0px, 0px);
+z-index: -1;
+-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=1, Direction=0, Color=#c5c4c4)";/*IE 8*/
+-moz-box-shadow: 0px -5px 1px #c5c4c4;/*FF 3.5+*/
+-webkit-box-shadow: 0px -5px 1px #c5c4c4;/*Saf3-4, Chrome, iOS 4.0.2-4.2, Android 2.3+*/
+box-shadow: 0px -5px 1px #c5c4c4;/* FF3.5+, Opera 9+, Saf1+, Chrome, IE10 */
+filter: progid:DXImageTransform.Microsoft.Shadow(Strength=1, Direction=0, Color=#c5c4c4); /*IE 5.5-7*/
+
+}
+.shield-right{
+	border-top: solid 1px #585858;
+	width: 220px;
+	float: right;
+	margin-right: 92px;
+	margin-top: 0px;
+-moz-transform: rotate(31deg) scale(1, 1) skewX(0deg) skewY(0deg) translate(0px, 0px);/* FF3.5+ */
+-webkit-transform: rotate(31deg) scale(1, 1) skew(0deg, 0deg) translate(0px, 0px);/*Saf3.1+, Chrome*/
+-o-transform: rotate(31deg) scale(1, 1) skew(0deg, 0deg) translate(0px, 0px);/* Opera 10.5 */
+-ms-transform: rotate(31deg) scale(1, 1) skew(0deg, 0deg) translate(0px, 0px);/* IE 9 */
+transform: rotate(31deg) scale(1, 1) skew(0deg, 0deg) translate(0px, 0px);
+z-index: -1;
+-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=1, Direction=180, Color=#c5c4c4)";/*IE 8*/
+-moz-box-shadow: 0px 3px 1px #c5c4c4;/*FF 3.5+*/
+-webkit-box-shadow: 0px 3px 1px #c5c4c4;/*Saf3-4, Chrome, iOS 4.0.2-4.2, Android 2.3+*/
+box-shadow: 0px 3px 1px #c5c4c4;/* FF3.5+, Opera 9+, Saf1+, Chrome, IE10 */
+filter: progid:DXImageTransform.Microsoft.Shadow(Strength=1, Direction=180, Color=#c5c4c4); /*IE 5.5-7*/
+
+}
+.card{
+	width: 385px;
+	height: 183px;
+	margin:30px auto;
+    background-color: #FFF;
+    margin-top:50px;
+	-moz-border-radius: 5px;/*Firefox*/
+-webkit-border-radius: 5px;/*Safari, Chrome*/
+border-radius: 5px;
+-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=3, Direction=180, Color=#d2d2d2)";/*IE 8*/
+-moz-box-shadow: 0px 2px 3px #d2d2d2;/*FF 3.5+*/
+-webkit-box-shadow: 0px 2px 3px #d2d2d2;/*Saf3-4, Chrome, iOS 4.0.2-4.2, Android 2.3+*/
+box-shadow: 0px 2px 3px #d2d2d2;/* FF3.5+, Opera 9+, Saf1+, Chrome, IE10 */
+filter: progid:DXImageTransform.Microsoft.Shadow(Strength=3, Direction=180, Color=#d2d2d2); /*IE 5.5-7*/
+border-bottom: solid 2px #c8c8c8;
+border-top: solid 1px #c8c8c8;
+border-right: solid 1px #c8c8c8;
+border-left: solid 1px #c8c8c8;
+}
+.detail{
+	width: 365px;
+	height: 163px;
+	margin:9px auto;
+}
+.detail-images{
+	width: 88px;
+	height: 91px;
+	text-align: center;
+	color: #8b8b8b;
+}
+.card h3{
+	color: #3b3b3b;
+	margin-left: 100px;
+	margin-top: -90px;
+	font-size: 16px;
+}
+.card h4{
+	color: #8b8b8b;
+	margin-left: 100px;
+	font-size: 13px;
+	font-style: italic;
+}
+.card p{
+	color: #787878;
+	margin-left: 100px;
+    font-weight: 400;
+    margin-top:5px;
+}
+.content-shield{
+	width: 365px;
+	border-top: solid 1px #dedede;
+	margin:20px auto;
+}
+.card ul{
+	margin-top: -5px;
+}
+.card ul li{
+	display: inline;
+	margin-right: 6px;
+}
+.card ul li a{
+	color: #FFF;
+	display: inline-block;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	background-color: #DEDEDE;
+	-moz-border-radius: 2px;/*Firefox*/
+-webkit-border-radius: 2px;/*Safari, Chrome*/
+border-radius: 2px;
+width: 30px;
+text-align: center;
+}
+.card ul li a:hover{
+	background-color: #b1b1b1;
+}
+.mail{
+    color: #707070;
+    margin-top:-18px;
+background: #e9e9e9; /* Old browsers */
+background: -moz-linear-gradient(top,  #e9e9e9 0%, #f1f1f1 50%, #e1e1e1 51%, #dbdbdb 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e9e9e9), color-stop(50%,#f1f1f1), color-stop(51%,#e1e1e1), color-stop(100%,#dbdbdb)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #e9e9e9 0%,#f1f1f1 50%,#e1e1e1 51%,#dbdbdb 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #e9e9e9 0%,#f1f1f1 50%,#e1e1e1 51%,#dbdbdb 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #e9e9e9 0%,#f1f1f1 50%,#e1e1e1 51%,#dbdbdb 100%); /* IE10+ */
+background: linear-gradient(to bottom,  #e9e9e9 0%,#f1f1f1 50%,#e1e1e1 51%,#dbdbdb 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e9e9e9', endColorstr='#dbdbdb',GradientType=0 ); /* IE6-9 */
+
+	border: solid 1px #BFBFBF;
+	padding: 6px 20px 6px 20px;	
+	float: right;
+	-moz-border-radius: 2px;/*Firefox*/
+-webkit-border-radius: 2px;/*Safari, Chrome*/
+border-radius: 2px;
+-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=0, Direction=180, Color=#ffffff)";/*IE 8*/
+text-shadow: 0px 1px 0px #ffffff;/* FF3.5+, Opera 9+, Saf1+, Chrome, IE10 */
+filter: progid:DXImageTransform.Microsoft.Shadow(Strength=0, Direction=180, Color=#ffffff); /*IE 5.5-7*/
+-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=0, Direction=135, Color=#ffffff)";/*IE 8*/
+-moz-box-shadow: inset 1px 1px 0px #ffffff;/*FF 3.5+*/
+-webkit-box-shadow: inset 1px 1px 0px #ffffff;/*Saf3-4, Chrome, iOS 4.0.2-4.2, Android 2.3+*/
+box-shadow: inset 1px 1px 0px #ffffff;/* FF3.5+, Opera 9+, Saf1+, Chrome, IE10 */
+filter: progid:DXImageTransform.Microsoft.Shadow(Strength=0, Direction=135, Color=#ffffff); /*IE 5.5-7*/
+}
+.mail:hover{
+	background: #e9e9e9; /* Old browsers */
+background: -moz-linear-gradient(top,  #e9e9e9 0%, #e9e9e9 50%, #e9e9e9 51%, #e9e9e9 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e9e9e9), color-stop(50%,#e9e9e9), color-stop(51%,#e9e9e9), color-stop(100%,#e9e9e9)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #e9e9e9 0%,#e9e9e9 50%,#e9e9e9 51%,#e9e9e9 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #e9e9e9 0%,#e9e9e9 50%,#e9e9e9 51%,#e9e9e9 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #e9e9e9 0%,#e9e9e9 50%,#e9e9e9 51%,#e9e9e9 100%); /* IE10+ */
+background: linear-gradient(to bottom,  #e9e9e9 0%,#e9e9e9 50%,#e9e9e9 51%,#e9e9e9 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e9e9e9', endColorstr='#e9e9e9',GradientType=0 ); /* IE6-9 */
+
+}
+.message{
+	color: #707070;
+	font-size: 20px;
+}
+/*-- copyright --*/
+.copyright{
+width: 385px;
+margin: 10px auto;
+text-align: center;
+color: #787878;
+}
+.copyright p{
+	margin-bottom: 8px;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=0, Direction=180, Color=#ffffff)";/*IE 8*/
+text-shadow: 0px 1px 0px #ffffff;/* FF3.5+, Opera 9+, Saf1+, Chrome, IE10 */
+filter: progid:DXImageTransform.Microsoft.Shadow(Strength=0, Direction=180, Color=#ffffff); /*IE 5.5-7*/
+-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=0, Direction=135, Color=#ffffff)";/*IE 8*/
+}
+.copyright a{
+	color: #787878;
+}
+.copyright a:hover{
+	color: #1c1c1c;
+}

@@ -45,6 +45,7 @@ import { CategoryPageComponent } from './category-page/category-page.component';
 import { AvatarModule } from 'ngx-avatar';
 import { SupportTopicPageComponent } from './support-topic-page/support-topic-page.component';
 import { SelfHelpContentComponent } from './self-help-content/self-help-content.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -70,6 +71,10 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
         path: 'home/:viewType',
         component: ResourceHomeComponent,
         pathMatch: 'full'
+      },
+      {
+        path: 'users/:userId',
+        component: UserProfileComponent,
       },
       {
         path: 'categories/:category',
@@ -245,6 +250,10 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
   ],
   declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent,
     SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent,
+<<<<<<< HEAD
     TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, GistComponent, TabGistCommonComponent, TabGistDevelopComponent, TabChangelistComponent, GistChangelistComponent, TabAnalysisComponent, CategoryPageComponent, SupportTopicPageComponent, SelfHelpContentComponent]
+=======
+    TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, GistComponent, TabGistCommonComponent, TabGistDevelopComponent, TabChangelistComponent, GistChangelistComponent, CategoryPageComponent, SupportTopicPageComponent, SelfHelpContentComponent, UserProfileComponent]
+>>>>>>> Add user page
 })
 export class DashboardModule { }

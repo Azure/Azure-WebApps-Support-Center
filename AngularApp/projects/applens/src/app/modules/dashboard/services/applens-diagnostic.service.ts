@@ -67,6 +67,10 @@ export class ApplensDiagnosticService {
     return this._diagnosticApi.getUserPhoto(userId);
   }
 
+  getUserInfo(userId: string = ""): Observable<any> {
+    return this._diagnosticApi.getUserInfo(userId);
+  }
+
   getCompilerResponse(body: any, isSystemInvoker: boolean, detectorId: string = '', startTime: string = '', endTime: string = '', dataSource: string = '', timeRange: string = '', additionalParams: any): Observable<QueryResponse<DetectorResponse>> {
     body.resource = this._resourceService.getRequestBody();
     if (isSystemInvoker === false)

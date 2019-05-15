@@ -6,6 +6,7 @@ import * as momentNs from 'moment';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DetectorControlService, FeatureNavigationService, DetectorMetaData, DetectorType } from 'diagnostic-data';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
+import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from '@angular/router';
 
 @Component({
   selector: 'dashboard',
@@ -71,6 +72,32 @@ export class DashboardComponent implements OnDestroy {
   reloadHome() {
     window.location.href = '/';
   }
+
+  loadUserPage() {
+    window.location.href = `/users/${this.userName}`;
+    console.log("User page");
+    console.log(window.location);
+  }
+
+  navigateTo(path: string) {
+    let navigationExtras: NavigationExtras = {
+        queryParamsHandling: 'preserve',
+        preserveFragment: true,
+        relativeTo: this._activatedRoute
+    };
+
+    console.log("navigation params");
+    console.log(navigationExtras);
+    console.log(this._activatedRoute);
+    //this._router.navigate(path.split('/'), navigationExtras);
+    this._router.navigate([path], navigationExtras);
+}
+
+navigateToUserPage() {
+ //   this.navigateTo(`/users/${this.userName}`);
+ this.navigateTo(`users/xipeng`);
+}
+
 
   ngOnDestroy() {
     this.navigateSub.unsubscribe();

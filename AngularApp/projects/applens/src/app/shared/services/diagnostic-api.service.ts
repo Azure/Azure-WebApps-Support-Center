@@ -50,7 +50,7 @@ export class DiagnosticApiService {
   }
 
   public getUsers(body: any, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
-    let url: string = `${this.diagnosticApi}api/graph/users`;
+    let url: string = `${this.diagnosticApi}api/graph/userPhotos`;
     let request =  this._httpClient.post(url, body, {
         headers: this._getHeaders()
       });
@@ -81,6 +81,13 @@ export class DiagnosticApiService {
   }
 
   public getUserPhoto(userId: string): Observable<any> {
+    let url: string = `${this.diagnosticApi}api/graph/userPhotos/${userId}`;
+    return this._httpClient.get(url, {
+      headers: this._getHeaders()
+    });
+  }
+
+  public getUserInfo(userId: string): Observable<any> {
     let url: string = `${this.diagnosticApi}api/graph/users/${userId}`;
     return this._httpClient.get(url, {
       headers: this._getHeaders()

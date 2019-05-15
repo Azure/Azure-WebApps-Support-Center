@@ -174,6 +174,10 @@ export class CategoryPageComponent implements OnInit {
         this.navigateTo("../../home/category");
     }
 
+    navigateToUserPage(userId: string) {
+        this.navigateTo(`../../users/${userId}`);
+    }
+
 }
 
 export class DetectorItem {

@@ -25,8 +25,8 @@ namespace AppLensV3.Controllers
             _graphClientService = graphClientService;
         }
 
-        [HttpGet("users/{userId}")]
-        [HttpOptions("users/{userId}")]
+        [HttpGet("userPhotos/{userId}")]
+        [HttpOptions("userPhotos/{userId}")]
         public async Task<IActionResult> GetUser(string userId)
         {
             if (string.IsNullOrWhiteSpace(userId))
@@ -38,8 +38,8 @@ namespace AppLensV3.Controllers
             return Ok(response);
         }
 
-        [HttpPost("users")]
-        [HttpOptions("users")]
+        [HttpPost("userPhotos")]
+        [HttpOptions("userPhotos")]
         public async Task<IActionResult> GetUsers([FromBody]JToken body)
         {
             string[] authors = new string[] { };
@@ -49,6 +49,19 @@ namespace AppLensV3.Controllers
             }
 
             var response = await _graphClientService.GetUsers(authors);
+            return Ok(response);
+        }
+
+        [HttpGet("users/{userId}")]
+        [HttpOptions("users/{userId}")]
+        public async Task<IActionResult> GetUserInfo(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return BadRequest("userId cannot be empty");
+            }
+
+            var response = await _graphClientService.GetUserInfoAsync(userId);
             return Ok(response);
         }
 

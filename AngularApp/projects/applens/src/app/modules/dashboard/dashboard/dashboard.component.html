@@ -59,7 +59,7 @@
           </ul>
         </li> -->
         <li class="user-label"><span>Hello {{userName}}</span></li>
-        <li><img *ngIf="userPhotoSource else loading" id="userPhoto" [src]="userPhotoSource" class="avatar" alt="User Profile Photo"/></li>
+        <li><img *ngIf="userPhotoSource else loading" id="userPhoto" [src]="userPhotoSource" class="avatar" alt="User Profile Photo" (click)="navigateToUserPage()"/></li>
         <!-- <li><i class="fa fa-spinner" aria-hidden="true"></i></li> -->
       </ul>
 </nav>
