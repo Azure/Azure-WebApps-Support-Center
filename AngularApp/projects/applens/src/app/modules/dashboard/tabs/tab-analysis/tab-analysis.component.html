@@ -10,9 +10,16 @@
     <div style="display: inline-block">
       <h4>{{ detectorName }}</h4>
     </div>
-    <div style="display: inline-block;margin-left: 10px">
-      <a *ngIf="detectorId !== ''" [routerLink]="['../../']" preserveFragment
-        queryParamsHandling="preserve">Back to observations</a>
+    <div class="pull-right">
+
+      <div style="display: inline-block">
+        <button class="btn btn-sm btn-primary" *ngIf="detectorId !== ''" [routerLink]="['../../../../detectors',detectorId]"
+          preserveFragment queryParamsHandling="preserve">Expand View</button>
+      </div>
+      <div style="display: inline-block;margin-left: 10px;margin-right:20px">
+        <button class="btn btn-sm btn-primary" *ngIf="detectorId !== ''" [routerLink]="['../../']" preserveFragment
+          queryParamsHandling="preserve">Back to Observations</button>
+      </div>
     </div>
   </div>
   <router-outlet (activate)="onActivate($event)"></router-outlet>
