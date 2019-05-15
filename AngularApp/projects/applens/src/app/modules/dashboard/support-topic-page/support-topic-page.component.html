@@ -41,10 +41,10 @@
           </div>
         </div>
       </div>
-      <div class="suppport-topic-bottom">
-          <div *ngIf="supportTopic.detectorName !== ''" class="detector-enabled-description">Detector Enabled 🌺</div>
-          <div *ngIf="supportTopic.detectorName === ''" class="detector-enabled-description">Detector Disabled</div>
-        <div>
+      <div class="support-topic-bottom">
+          <div *ngIf="supportTopic.detectorName !== ''" class="label label-success detector-enabled-description">Detector Enabled</div>
+          <div *ngIf="supportTopic.detectorName === ''" class="label label-default detector-disabled-description">Self Help Content</div>
+        <div class="detector-enabled-name">
           <!-- <div *ngFor="let image of detector.userImages | keyvalue" class="author-image">
             <img *ngIf="image.value != undefined && image.value !== ''" class="author-image" src="{{image.value}}" />
             <ngx-avatar *ngIf="image.value == undefined || image.value === ''" class="author-initial" [name]=image.key size="40" initialsSize="2"></ngx-avatar>

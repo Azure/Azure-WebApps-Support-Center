@@ -67,9 +67,9 @@ export class DiagnosticApiService {
     return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.GET, url), request, invalidateCache) : request;
   }
 
-  public getSelfHelpContent(pesId: string, supportTopicId: string): Observable<any> {
+  public getSelfHelpContent(pesId: string, supportTopicId: string, path: string): Observable<any> {
       // 14748
-    let url: string = `${this.diagnosticApi}api/selfhelp/pesId/${pesId}/supportTopicId/${supportTopicId}`;
+    let url: string = `${this.diagnosticApi}api/selfhelp/pesId/${pesId}/supportTopicId/${supportTopicId}/path/${path}`;
     return  this._httpClient.get(url, {
         headers: this._getHeaders()
       });

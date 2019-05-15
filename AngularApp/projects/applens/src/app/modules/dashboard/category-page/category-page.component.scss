@@ -236,6 +236,11 @@
 
   .support-topic-bottom {
     height: 35%;
+    margin:3%;  
+  }
+
+  .detector-enabled-name {
+    display: inline;
   }
 
   .detector-icon {
@@ -271,13 +276,16 @@
   color:gray;
 }
 .detector-enabled-description {
-  padding:3% 2% 1% 2%;
+  margin-left: 3%;
+  margin-right: 0.5%;
 }
 
 .detector-enabled {
   padding: 1% 2%;
   font-weight: bold;
-
+  display: inline;
+  color: #0000007a;
+  font-size:13px;
 }
 .detector-description{
     padding:15px;
@@ -311,6 +319,6 @@
     border-radius: 50%;
     display: inline-block;
     margin-right:-20px;
-    border: 1px solid #d1d1d1
+    border: 0.8px solid #d1d1d1
 }
 

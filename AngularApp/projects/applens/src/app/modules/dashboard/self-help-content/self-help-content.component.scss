@@ -1,0 +1,36 @@
+.no-padding {
+    padding: 0px;
+}
+
+.card-description {
+    background-color: transparent;
+    border: none;
+    padding: 0.5rem 1.25rem 0rem 1.25rem;
+    font-size: 14px;
+}
+
+.data-container-header {
+    background-color: rgba(1, 77, 183, 0.1);
+    color:#012b65;
+    font-size: 16px;
+    min-height: 42px;
+    border-bottom: 1px solid #c0d3eb;
+}
+
+.data-container-card {
+    border: 1px solid #c0d3eb;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 30px;
+}
+
+.data-container-body {
+    margin: 15px;
+}
+
+.data-container-body .h1 {
+    font-size: 30px;
+}
+
+.data-container-body .h2 {
+    font-size: 25px;
+}

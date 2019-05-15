@@ -79,7 +79,7 @@ export class SupportTopicPageComponent implements OnInit {
                 this.detectorsNumber++;
               }
 
-              let item = new SupportTopicItem(sup.supportTopicL2Name, sup.supportTopicId, sup.supportTopicL3Name, sup.supportTopicPath, icon, [], matchingDetectorId, matchingDetectorName, matchingDetectorInternalOnly);
+              let item = new SupportTopicItem(sup.supportTopicL2Name, sup.productId, sup.supportTopicId, sup.supportTopicL3Name, sup.supportTopicPath, icon, [], matchingDetectorId, matchingDetectorName, matchingDetectorInternalOnly);
               if (!this.supportTopics.find((st => st.supportTopicL3Name === sup.supportTopicL3Name)))
               {
                 this.supportTopics.push(item);
@@ -100,120 +100,6 @@ export class SupportTopicPageComponent implements OnInit {
           this.supportTopicsNumber = this.supportTopics.length;
           return this.detectorsWithSupportTopics;
         });
-
-
-
-
-        // Observable to get all the detectors
-        // const allDetectorsList = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
-        //     this.allDetectors = detectors;
-        //     // Get all the detectors with support topics
-        //     var detectorsWithSupportTopics = detectors.filter(detector => detector.supportTopicList && detector.supportTopicList.length > 0);
-
-        //     detectorsWithSupportTopics.forEach(detector => {
-        //         console.log(`Add detectors with support topics ${detector.id}`);
-        //         this.detectorsWithSupportTopics.push(detector);
-        //         detector.supportTopicList.forEach(supportTopic => {
-        //             this.supportTopicIdMapping.push({ supportTopic: supportTopic, detectorName: detector.name });
-        //         });
-        //     });
-
-
-        //     // This is to get the full detectors authors list, and make graph API call
-        //     let authorString = "";
-        //     detectors.forEach(detector => {
-        //         if (detector.author != undefined && detector.author !== '') {
-        //             authorString = authorString + "," + detector.author;
-        //         }
-        //     });
-
-        //     const separators = [' ', ',', ';', ':'];
-        //     let authors = authorString.toLowerCase().split(new RegExp(separators.join('|'), 'g'));
-        //     authors.forEach(author => {
-        //         if (author && author.length > 0 && !this.authorsList.find(existingAuthor => existingAuthor === author)) {
-        //             this.authorsList.push(author);
-        //         }
-        //     });
-        // }));
-
-        // // Observable to get all the public detectors
-        // const publicDetectors = this._diagnosticService.getDetectors(false).pipe(map((publicDetectors: DetectorMetaData[]) => {
-        //     this.publicDetectorsList = publicDetectors.filter(detector => detector.category && detector.category.toLowerCase() === this.categoryName.toLowerCase());
-        // }));
-
-        // forkJoin(allDetectorsList, publicDetectors).subscribe((res) => {
-        //     this.detectorsWithSupportTopics.forEach((detector) => {
-        //         if (!this.filterdDetectors.find((d) => d.id === detector.id)) {
-        //             this.filterdDetectors.push(detector);
-        //         }
-        //     })
-
-        //     // For the public detectors, since there is no PII returned from the backend. Get the detector metadata from the full list with public detector id.
-        //     this.publicDetectorsList.forEach((detector) => {
-        //         var detectorId = detector.id;
-        //         var publicDetectorWithPII = this.allDetectors.find((detectorWithPII) => detectorWithPII.id === detectorId);
-        //         if (publicDetectorWithPII && !this.filterdDetectors.find((d) => d.id === detectorId)) {
-        //             this.filterdDetectors.push(publicDetectorWithPII);
-        //         }
-        //     });
-
-
-        //     // This seems should be executed after forkjoin
-        //     var body = {
-        //         authors: this.authorsList
-        //     };
-
-        //     if (res[1] !== null) {
-        //         this._diagnosticService.getUsers(body).subscribe((userImages) => {
-
-        //             this.userImages = userImages;
-
-        //             console.log("*** All the users json images");
-        //             console.log(this.userImages);
-
-        //             this.filterdDetectors.forEach((detector) => {
-        //                 let onClick = () => {
-        //                     this.navigateTo(`../../detectors/${detector.id}`);
-        //                 };
-
-        //                 let detectorUsersImages: { [name: string]: string } = {};
-
-        //                 if (detector.author != undefined) {
-        //                     let authors = detector.author.toLowerCase();
-        //                     const separators = [' ', ',', ';', ':'];
-        //                     let detectorAuthors = authors.split(new RegExp(separators.join('|'), 'g'));
-
-        //                     detectorAuthors.forEach(author => {
-        //                         if (!this.filterdDetectorAuthors.find(existingAuthor=> existingAuthor === author))
-        //                         {
-        //                             this.filterdDetectorAuthors.push(author);
-        //                         }
-        //                         detectorUsersImages[author] = this.userImages.hasOwnProperty(author) ? this.userImages[author] : undefined;
-        //                     });
-        //                 }
-
-        //                 console.log(`${detector.id}: Detector user images`);
-        //                 console.log(detectorUsersImages);
-
-        //                 let detectorSupportTopics = [];
-        //                 if (detector.supportTopicList && detector.supportTopicList.length > 0) {
-        //                     detector.supportTopicList.forEach((supportTopic) => {
-        //                         detectorSupportTopics.push(supportTopic);
-        //                     });
-
-        //                 }
-
-        //                 let detectorItem = new DetectorItem(detector.name, detector.description, detector.author, [], detectorUsersImages, detectorSupportTopics, onClick);
-        //                 this.detectors.push(detectorItem);
-        //             });
-
-        //             this.authorsNumber = this.filterdDetectorAuthors.length;
-        //             this.detectorsNumber = this.filterdDetectors.length;
-        //             this.supportTopicsNumber = this.supportTopicIdMapping.length;
-        //         });
-        //     }
-
-        // });
     }
 
     navigateTo(path: string) {
@@ -241,7 +127,15 @@ export class SupportTopicPageComponent implements OnInit {
         console.log(`Navigating to : ../../detectors/${supportTopic.detectorId}`);
         this.navigateTo(`../../detectors/${supportTopic.detectorId}`);
       }
+      else {
+        this.navigateTo(`../../pesId/${supportTopic.pesId}/supportTopics/${supportTopic.supportTopicId}`);
+      //   this._diagnosticService.getSelfHelpContent("").subscribe((res) => {
+      //     console.log(res);
+      // })
+      }
     }
+
+
 
 }
 

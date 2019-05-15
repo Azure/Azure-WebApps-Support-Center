@@ -51,8 +51,8 @@ export class ApplensDiagnosticService {
     return this._diagnosticApi.getSupportTopics(pesId);
   }
 
-  getSelfHelpContent(pesId: string = "14748", supportTopicId: string = "32630466"): Observable<any> {
-    return this._diagnosticApi.getSelfHelpContent(pesId, supportTopicId);
+  getSelfHelpContent(pesId: string = "14748", supportTopicId: string = "32581605", path: string = "microsoft.web"): Observable<any> {
+    return this._diagnosticApi.getSelfHelpContent(pesId, supportTopicId, path);
   }
 
   getGists(): Observable<DetectorMetaData[]> {

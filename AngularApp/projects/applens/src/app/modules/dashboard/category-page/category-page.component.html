@@ -34,7 +34,7 @@
       <div class="detector-authors">
         <div *ngFor="let image of detector.userImages | keyvalue" class="author-image">
           <img *ngIf="image.value != undefined && image.value !== ''" class="author-image" src="{{image.value}}" />
-          <ngx-avatar *ngIf="image.value == undefined || image.value === ''" class="author-initial" [name]=image.key size="40" initialsSize="2"></ngx-avatar>
+          <ngx-avatar *ngIf="image.value == undefined || image.value === ''" class="author-initial" [name]=image.key size="35" initialsSize="2"></ngx-avatar>
         </div>
         <span class="author-String">{{detector.authorString}}</span>
       </div>

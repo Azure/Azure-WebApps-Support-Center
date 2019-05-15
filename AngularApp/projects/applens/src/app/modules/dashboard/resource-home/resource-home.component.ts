@@ -42,21 +42,17 @@ export class ResourceHomeComponent implements OnInit {
             }
         });
 
-        this._diagnosticService.getSelfHelpContent().subscribe((res) => {
-            console.log(res);
-        })
-
         this._supportTopicService.getSupportTopics().subscribe((supportTopics: SupportTopicResult[]) => {
             supportTopics.forEach((supportTopic) => {
                 if (supportTopic.supportTopicL2Name)
                 {
-                    let item = new SupportTopicItem(supportTopic.supportTopicL2Name, supportTopic.supportTopicId, supportTopic.supportTopicL3Name, supportTopic.supportTopicPath);
+                    let item = new SupportTopicItem(supportTopic.supportTopicL2Name, supportTopic.productId, supportTopic.supportTopicId, supportTopic.supportTopicL3Name, supportTopic.supportTopicPath);
 
                     let suppportTopicItem = this.supportTopics.find((sup: SupportTopicItem) => supportTopic.supportTopicL2Name === sup.supportTopicL2Name);
                     if (!suppportTopicItem) {
                         let supportTopicIcon = `https://applensassets.blob.core.windows.net/applensassets/${supportTopic.supportTopicL2Name}.png`;
                         //let supportTopicIcon = "";
-                        suppportTopicItem = new SupportTopicItem(supportTopic.supportTopicL2Name, supportTopic.supportTopicId, null, null, supportTopicIcon);
+                        suppportTopicItem = new SupportTopicItem(supportTopic.supportTopicL2Name, supportTopic.productId, supportTopic.supportTopicId, null, null, supportTopicIcon);
                         this.supportTopics.push(suppportTopicItem);
                     }
 
@@ -225,6 +221,7 @@ export class SupportTopicResult {
 export class SupportTopicItem {
     supportTopicL2Name: string;
     subItems: SupportTopicItem[];
+    pesId: string;
     supportTopicId: string;
     supportTopicL3Name: string;
     supportTopicPath: string;
@@ -235,9 +232,10 @@ export class SupportTopicItem {
     detectorName: string;
     detectorInternal: boolean;
 
-    constructor(supportTopicL2Name: string, supportTopicId: string, supportTopicL3Name: string, supportTopicPath: string, icon: string = "", subItems: SupportTopicItem[]=[], detectorId: string = "", detectorName:string = "", detectorInternal:boolean = true) {
+    constructor(supportTopicL2Name: string, pesId: string, supportTopicId: string, supportTopicL3Name: string, supportTopicPath: string, icon: string = "", subItems: SupportTopicItem[]=[], detectorId: string = "", detectorName:string = "", detectorInternal:boolean = true) {
         this.supportTopicL2Name = supportTopicL2Name;
         this.subItems = subItems;
+        this.pesId = pesId;
         this.supportTopicId = supportTopicId;
         this.supportTopicL3Name = supportTopicL3Name;
         this.supportTopicPath = supportTopicPath;

@@ -8,6 +8,7 @@ import { RouterModule, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } fr
 import { AngularSplitModule } from 'angular-split-ng6';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
+import { MarkdownModule } from 'ngx-markdown';
 import { StartupService } from '../../shared/services/startup.service';
 import { Observable } from 'rxjs';
 import { SideNavComponent, SearchMenuPipe } from './side-nav/side-nav.component';
@@ -43,6 +44,7 @@ import { TabAnalysisComponent } from './tabs/tab-analysis/tab-analysis.component
 import { CategoryPageComponent } from './category-page/category-page.component';
 import { AvatarModule } from 'ngx-avatar';
 import { SupportTopicPageComponent } from './support-topic-page/support-topic-page.component';
+import { SelfHelpContentComponent } from './self-help-content/self-help-content.component';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -76,6 +78,10 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
       {
         path: 'supportTopics/:supportTopic',
         component: SupportTopicPageComponent,
+      },
+      {
+        path: 'pesId/:pesId/supportTopics/:supportTopicId',
+        component: SelfHelpContentComponent,
       },
       {
         path: 'create',
@@ -219,7 +225,8 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     AngularSplitModule,
     CollapsibleMenuModule,
     NgxSmartModalModule.forRoot(),
-    NgSelectModule
+    NgSelectModule,
+    MarkdownModule.forRoot()
   ],
   providers: [
     ApplensDiagnosticService,
@@ -238,6 +245,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
   ],
   declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent,
     SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent,
-    TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, GistComponent, TabGistCommonComponent, TabGistDevelopComponent, TabChangelistComponent, GistChangelistComponent, TabAnalysisComponent, CategoryPageComponent, SupportTopicPageComponent]
+    TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, GistComponent, TabGistCommonComponent, TabGistDevelopComponent, TabChangelistComponent, GistChangelistComponent, TabAnalysisComponent, CategoryPageComponent, SupportTopicPageComponent, SelfHelpContentComponent]
 })
 export class DashboardModule { }

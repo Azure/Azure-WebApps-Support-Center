@@ -8,7 +8,7 @@
             "versionPrefix": "v4/",
             "azureCommImpactedServicesList": "appservice",
             "pesId": "14748",
-            "staticSelfHelpContent": "https://github.com/Azure/SelfHelpContent/tree/master/articles/microsoft.web"
+            "staticSelfHelpContent": "microsoft.web"
         },
         {
             "service": "AseService",
@@ -18,7 +18,7 @@
             "versionPrefix": "v2/",
             "azureCommImpactedServicesList": "appservice",
             "pesId": "16533",
-            "staticSelfHelpContent": "https://github.com/Azure/SelfHelpContent/tree/master/articles/microsoft.ase"
+            "staticSelfHelpContent": "microsoft.ase"
         },
         {
             "service": "ResourceService",
@@ -28,7 +28,7 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "logicapp",
             "pesId": "15791",
-            "staticSelfHelpContent": "https://github.com/Azure/SelfHelpContent/tree/master/articles/microsoft.logicapps"
+            "staticSelfHelpContent": "microsoft.logicapps"
         },
         {
             "service": "ResourceService",
@@ -38,7 +38,7 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "kubernetesservice",
             "pesId": "16450",
-            "staticSelfHelpContent": "https://github.com/Azure/SelfHelpContent/tree/master/articles/microsoft.containerservice"
+            "staticSelfHelpContent": "microsoft.containerservice"
         },
         {
             "service": "ResourceService",
@@ -66,7 +66,7 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "",
             "pesId": "15551",
-            "staticSelfHelpContent": "https://github.com/Azure/SelfHelpContent/tree/master/articles/microsoft.apim"
+            "staticSelfHelpContent": "/microsoft.apim"
         },
         {
             "service": "ResourceService",
@@ -76,7 +76,7 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "",
             "pesId": "16512",
-            "staticSelfHelpContent": "https://github.com/Azure/SelfHelpContent/tree/master/articles/microsoft.asc"
+            "staticSelfHelpContent": "microsoft.asc"
         },
         {
             "service": "ResourceService",
@@ -86,7 +86,7 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "",
             "pesId": "16513",
-            "staticSelfHelpContent": "https://github.com/Azure/SelfHelpContent/tree/master/articles/microsoft.asd"
+            "staticSelfHelpContent": "microsoft.asd"
         }
     ]
 }

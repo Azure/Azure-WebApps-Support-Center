@@ -76,11 +76,12 @@ namespace AppLensV3.Services
         }
 
 
-        public async Task<HttpResponseMessage> GetSelfHelpContent(string selfHelpUrl)
+        public async Task<string> PullSelfHelpContent(string pesId, string supportTopicId, string path)
         {
-            Console.WriteLine("Get self help for url: {0}", selfHelpUrl);
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, selfHelpUrl);
+            Console.WriteLine("Get self help for url: {0}", path);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, path);
             HttpResponseMessage response = await HttpClient.SendAsync(request);
+            var selfHelpStr = String.Empty;
 
             if (response != null)
             {
@@ -104,50 +105,66 @@ namespace AppLensV3.Services
                         }
                     }
 
-
-                    ////
-                    ///
-                    //response.EnsureSuccessStatusCode();
-                    //cachedValue = await response.Content.ReadAsStringAsync();
-                    //etag = GetHeaderValue(response, "ETag").Replace("W/", string.Empty);
-                    //Tuple<string, object> cachedInfo = new Tuple<string, object>(etag, cachedValue);
-                    //GitHubCache.AddOrUpdate(url, cachedInfo, (key, oldvalue) => cachedInfo);
-
-
-
                     var staticFiles = await Task.WhenAll(tasks);
-                    ConcurrentDictionary<string, string> supportTopicsSelfHelp = new ConcurrentDicstionary<string, string>();
-                    for (int i = 0; i < staticFiles.Length; i++)
+                    var cacheValue= SelfHelpCache.TryGetValue(pesId, out ConcurrentDictionary<string, string> supportTopicsSelfHelp);
+
+                    if (!cacheValue)
                     {
-                        if (staticFiles[i].IsSuccessStatusCode)
+                        var selfHelpMapping = new ConcurrentDictionary<string, string>();
+                        for (int i = 0; i < staticFiles.Length; i++)
                         {
-                            string fileContent = await staticFiles[i].Content.ReadAsStringAsync();
-                            supportTopicsSelfHelp.AddOrUpdate()
-                            SelfHelpCache.AddOrUpdate(pesId, )
+                            if (staticFiles[i].IsSuccessStatusCode)
+                            {
+                                string fileContent = await staticFiles[i].Content.ReadAsStringAsync();
+
+                                string[] separators = { "supportTopicIds=", "productPesIds=" };
+
+                                string[] substrs = fileContent.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                                Console.Write("supportTopicIds={0}, productPesIds= {1}", supportTopicId, pesId);
+                                Console.Write(substrs[1]);
+                                Console.Write(substrs[2]);
+                                string supportTopicIds = substrs[1].Split('"', StringSplitOptions.RemoveEmptyEntries)[0];
+                                string productId = substrs[2].Split('"', StringSplitOptions.RemoveEmptyEntries)[0];
+
+                                Console.Write("Get supportTopicIds={0}, productPesIds= {1}", supportTopicIds, productId);
+
+                                // Currently there's a bug in sendgrid v3, email will not be sent if there are duplicates in the recipient list
+                                // Remove duplicates before adding to the recipient list
+
+                                if (supportTopicIds.Contains(supportTopicId))
+                                {
+                                    selfHelpStr = fileContent;
+                                }
+
+                                selfHelpMapping.AddOrUpdate(supportTopicIds, fileContent, (key, oldvalue) => fileContent);
+   
+                            }
                         }
+
+                        SelfHelpCache.AddOrUpdate(pesId, selfHelpMapping, (key, oldvalue) => selfHelpMapping);
                     }
 
-                    var a = staticFiles;
-                    Console.Write(staticFiles);
+
                 }
             }
 
 
             //DataTableResponseObjectCollection dataSet = JsonConvert.DeserializeObject<DataTableResponseObjectCollection>(content);
 
-            return response;
+            Console.Write("Return {0}", selfHelpStr);
+            return selfHelpStr;
 
         }
 
 
-        public async Task<string> GetSelfHelpBySupportTopic(string pesId, string supportTopicId, string path)
+        public async Task<string> GetSelfHelpBySupportTopicFromGit(string pesId, string supportTopicId, string path)
         {
             var selfHelpUrl = string.Format(
             SelfHelpConstants.ArticleTemplatePath,
             path,
             AccessToken);
 
-            GetSelfHelpContent(selfHelpUrl);
+            return await PullSelfHelpContent(pesId, supportTopicId, selfHelpUrl);
         }
 
 
@@ -156,23 +173,21 @@ namespace AppLensV3.Services
         /// </summary>
         /// <param name="filePath">The filePath.</param>
         /// <returns>Task for getting commits.</returns>
-        public async Task<string> GetSelfHelpBySupportTopicFromCache(string pesId, string supportTopicId, string path)
+        public async Task<string> GetSelfHelpBySupportTopic(string pesId, string supportTopicId, string path)
         {
 
             var supportTopicsSelfHelp = SelfHelpCache.TryGetValue(pesId, out ConcurrentDictionary<string, string> resourceSelfHelp);
-            if (supportTopicsSelfHelp)
+            if (supportTopicsSelfHelp && resourceSelfHelp.TryGetValue(supportTopicId, out string selfHelpContent))
             {
-                if (resourceSelfHelp.TryGetValue(supportTopicId, out string selfHelpContent))
-                {
-                    return selfHelpContent;
-                }
-                else
-                {
-                   // Polling the latest self help from 
-                }
+
+                return selfHelpContent;
+                
+            }
+            else
+            {
+                return await GetSelfHelpBySupportTopicFromGit(pesId, supportTopicId, path);
             }
 
-            return selfHelpFiles;
 
         }
 
@@ -183,7 +198,7 @@ namespace AppLensV3.Services
         /// </summary>
         /// <param name="filePath">The filePath.</param>
         /// <returns>Task for getting commits.</returns>
-        public async Task<HttpResponseMessage[]> GetAllSelfHelp()
+        public async Task<string[]> GetAllSelfHelp()
         {
             char[] separators = { ' ', ',', ';', ':' };
 
@@ -192,7 +207,7 @@ namespace AppLensV3.Services
             string[] selfHelpPaths = CacheSelfHelpPaths.Split(separators, StringSplitOptions.RemoveEmptyEntries).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
 
 
-            var tasks = new List<Task<HttpResponseMessage>>();
+            var tasks = new List<Task<string>>();
             foreach (var path in selfHelpPaths)
             {
                 var selfHelpUrl = string.Format(
@@ -200,7 +215,7 @@ namespace AppLensV3.Services
                     path,
                     AccessToken);
 
-                tasks.Add(Task.Run(() => GetSelfHelpContent(selfHelpUrl)));
+                tasks.Add(Task.Run(() => GetSelfHelpBySupportTopic("", "", selfHelpUrl)));
             }
 
             var selfHelpFiles = await Task.WhenAll(tasks);
@@ -218,7 +233,7 @@ namespace AppLensV3.Services
         public SelfHelpContentService(IConfiguration configuration)
         {
             InitializeHttpClient();
-            SelfHelpCache = new ConcurrentDictionary<string, Tuple<string, object>>();
+            SelfHelpCache = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
             UserName = configuration["SelfHelpContent:UserName"];
             RepoName = configuration["SelfHelpContent:RepoName"];
             Branch = configuration["SelfHelpContent:Branch"];
@@ -251,87 +266,9 @@ namespace AppLensV3.Services
         private string CacheSelfHelpPaths { get; }
 
 
-        // ArticleTemplatePath
-        /// <summary>
-        /// Get raw file.
-        /// </summary>
-        /// <param name="url">The url.</param>
-        /// <returns>Task for getting raw file.</returns>
-        public async Task<string> GetRawFile(string url)
-        {
-            TryGetETAGAndCacheValue(url, out string etag, out object cachedValue, out bool isEntryInCache);
+ 
 
-            List<KeyValuePair<string, string>> additionalHeaders = new List<KeyValuePair<string, string>>();
-            additionalHeaders.Add(new KeyValuePair<string, string>("Accept", GithubConstants.RawFileHeaderMediaType));
-            HttpResponseMessage response = await GetInternal(url, etag, additionalHeaders);
-            if (response.StatusCode == HttpStatusCode.NotModified)
-            {
-                if (isEntryInCache)
-                {
-                    return cachedValue.ToString();
-                }
 
-                throw new Exception($"url content not found in cache : {url}");
-
-                // TODO : If entry is not in cache for some reason, we need to fetch it again from github without etag header to refresh the cache
-            }
-
-            //    private ConcurrentDictionary<string, Tuple<string, object>> GitHubCache { get; }
-
-            response.EnsureSuccessStatusCode();
-            cachedValue = await response.Content.ReadAsStringAsync();
-            etag = GetHeaderValue(response, "ETag").Replace("W/", string.Empty);
-            Tuple<string, object> cachedInfo = new Tuple<string, object>(etag, cachedValue);
-            SelfHelpCache.AddOrUpdate(url, cachedInfo, (key, oldvalue) => cachedInfo);
-
-            return cachedValue.ToString();
-        }
-
-        /// <summary>
-        /// Get source file.
-        /// </summary>
-        /// <param name="id">The id.</param>
-        /// <returns>Task for getting source file.</returns>
-        public async Task<string> GetSourceFile(string id)
-        {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
-
-            var gistFileUrl = string.Format(
-                GithubConstants.SourceFilePathFormat,
-                UserName,
-                RepoName,
-                id,
-                Branch,
-                AccessToken);
-
-            return await GetRawFile(gistFileUrl);
-        }
-
-        /// <summary>
-        /// Get package configuration.
-        /// </summary>
-        /// <param name="id">The id.</param>
-        /// <returns>Task for getting configuration.</returns>
-        public async Task<string> GetConfiguration(string id)
-        {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
-
-            var gistFileUrl = string.Format(
-                GithubConstants.ConfigPathFormat,
-                UserName,
-                RepoName,
-                id,
-                Branch,
-                AccessToken);
-
-            return await GetRawFile(gistFileUrl);
-        }
 
         /// <summary>
         /// Get commit content.
@@ -435,18 +372,18 @@ namespace AppLensV3.Services
             return response;
         }
 
-        private void TryGetETAGAndCacheValue(string url, out string etag, out object cachedValue, out bool isEntryInCache)
-        {
-            etag = string.Empty;
-            cachedValue = null;
-            isEntryInCache = SelfHelpCache.TryGetValue(url, out Tuple<string, object> cachedInfo);
+        //private void TryGetETAGAndCacheValue(string url, out string etag, out object cachedValue, out bool isEntryInCache)
+        //{
+        //    etag = string.Empty;
+        //    cachedValue = null;
+        //    isEntryInCache = SelfHelpCache.TryGetValue(url, out Co<string, object> cachedInfo);
 
-            if (isEntryInCache)
-            {
-                etag = cachedInfo.Item1;
-                cachedValue = cachedInfo.Item2;
-            }
-        }
+        //    if (isEntryInCache)
+        //    {
+        //        etag = cachedInfo.Item1;
+        //        cachedValue = cachedInfo.Item2;
+        //    }
+        //}
 
         private void InitializeHttpClient()
         {

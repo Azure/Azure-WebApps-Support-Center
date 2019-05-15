@@ -38,6 +38,21 @@ export class ApplensSupportTopicService {
     return pesId;
   }
 
+  public getSelfHelpPath(): string {
+    let selfHelpPath = this._resourceService.staticSelfHelpContent;
+    let pesId = this._resourceService.pesId;
+    let requestBody = this._resourceService.getRequestBody();
+    if (pesId === '14748')
+    {
+        if (requestBody.Kind === "functionapp")
+        {
+          selfHelpPath = "microsoft.function";
+        }
+    }
+
+    return selfHelpPath;
+  }
+
 
   getPathForSupportTopic(supportTopicId: string, pesId: string): Observable<string> {
   //  return this.detectorTask.pipe(map(detectors => {
