@@ -39,6 +39,12 @@ namespace AppLensV3.Services
         }
 
 
+        public Task<HttpResponseMessage> GetSelfHelpContentAsync(string pesId, string supportTopicId)
+        {
+            return null;
+        }
+
+
         /// <summary>
         /// Get changed files.
         /// </summary>
@@ -72,10 +78,10 @@ namespace AppLensV3.Services
 
         public async Task<HttpResponseMessage> GetSelfHelpContent(string selfHelpUrl)
         {
+            Console.WriteLine("Get self help for url: {0}", selfHelpUrl);
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, selfHelpUrl);
             HttpResponseMessage response = await HttpClient.SendAsync(request);
 
-            var fileContentsTasks = new List<Task<string>>();
             if (response != null)
             {
                 string content = await response.Content.ReadAsStringAsync();
@@ -87,14 +93,42 @@ namespace AppLensV3.Services
 
                     foreach (var fileData in metaDataSet)
                     {
-                        if (!fileData.name.contains("-scoping-"))
+                        if (!fileData.name.ToString().Contains("-scoping-"))
                         {
+
                             string fileDataUrl = fileData.download_url;
+
+                            Console.WriteLine("Get file data: {0}", fileDataUrl);
+
                             tasks.Add(Task.Run(() => GetFileContent(fileDataUrl)));
                         }
                     }
 
+
+                    ////
+                    ///
+                    //response.EnsureSuccessStatusCode();
+                    //cachedValue = await response.Content.ReadAsStringAsync();
+                    //etag = GetHeaderValue(response, "ETag").Replace("W/", string.Empty);
+                    //Tuple<string, object> cachedInfo = new Tuple<string, object>(etag, cachedValue);
+                    //GitHubCache.AddOrUpdate(url, cachedInfo, (key, oldvalue) => cachedInfo);
+
+
+
                     var staticFiles = await Task.WhenAll(tasks);
+                    ConcurrentDictionary<string, string> supportTopicsSelfHelp = new ConcurrentDicstionary<string, string>();
+                    for (int i = 0; i < staticFiles.Length; i++)
+                    {
+                        if (staticFiles[i].IsSuccessStatusCode)
+                        {
+                            string fileContent = await staticFiles[i].Content.ReadAsStringAsync();
+                            supportTopicsSelfHelp.AddOrUpdate()
+                            SelfHelpCache.AddOrUpdate(pesId, )
+                        }
+                    }
+
+                    var a = staticFiles;
+                    Console.Write(staticFiles);
                 }
             }
 
@@ -104,6 +138,45 @@ namespace AppLensV3.Services
             return response;
 
         }
+
+
+        public async Task<string> GetSelfHelpBySupportTopic(string pesId, string supportTopicId, string path)
+        {
+            var selfHelpUrl = string.Format(
+            SelfHelpConstants.ArticleTemplatePath,
+            path,
+            AccessToken);
+
+            GetSelfHelpContent(selfHelpUrl);
+        }
+
+
+        /// <summary>
+        /// Task for getting all commits.
+        /// </summary>
+        /// <param name="filePath">The filePath.</param>
+        /// <returns>Task for getting commits.</returns>
+        public async Task<string> GetSelfHelpBySupportTopicFromCache(string pesId, string supportTopicId, string path)
+        {
+
+            var supportTopicsSelfHelp = SelfHelpCache.TryGetValue(pesId, out ConcurrentDictionary<string, string> resourceSelfHelp);
+            if (supportTopicsSelfHelp)
+            {
+                if (resourceSelfHelp.TryGetValue(supportTopicId, out string selfHelpContent))
+                {
+                    return selfHelpContent;
+                }
+                else
+                {
+                   // Polling the latest self help from 
+                }
+            }
+
+            return selfHelpFiles;
+
+        }
+
+
 
         /// <summary>
         /// Task for getting all commits.
@@ -122,66 +195,17 @@ namespace AppLensV3.Services
             var tasks = new List<Task<HttpResponseMessage>>();
             foreach (var path in selfHelpPaths)
             {
-                var gistFileUrl = string.Format(
+                var selfHelpUrl = string.Format(
                     SelfHelpConstants.ArticleTemplatePath,
                     path,
                     AccessToken);
 
-                tasks.Add(Task.Run(() => GetSelfHelpContent(gistFileUrl)));
+                tasks.Add(Task.Run(() => GetSelfHelpContent(selfHelpUrl)));
             }
 
             var selfHelpFiles = await Task.WhenAll(tasks);
 
             return selfHelpFiles;
-
-
-
-            //GetRawFile(gistFileUrl);
-
-            //CommitRequest request = new CommitRequest
-            //{
-            //    Path = filePath,
-            //    Sha = Branch
-            //};
-
-            //var allCommits = await OctokitClient.Repository.Commit.GetAll(UserName, RepoName, request);
-            //var res = new List<Models.Commit>();
-
-            //var commits = allCommits
-            //    .Select(p => new Tuple<string, DateTimeOffset, string>(p.Sha, p.Commit.Committer.Date, p.Commit.Message))
-            //    .OrderByDescending(o => o.Item2);
-
-            //var previousSha = string.Empty;
-            //var currentSha = string.Empty;
-
-            //var tasks = new List<Task<IEnumerable<string>>>();
-            //foreach (var c in commits)
-            //{
-            //    tasks.Add(Task.Run(() => GetChangedFiles(c.Item1)));
-            //}
-
-            //var changedFiles = await Task.WhenAll(tasks);
-
-            //for (int i = commits.Count() - 1; i >= 0; i--)
-            //{
-            //    if (!changedFiles[i].Any())
-            //    {
-            //        continue;
-            //    }
-
-            //    var commit = commits.ElementAt(i);
-            //    previousSha = currentSha;
-            //    currentSha = commit.Item1;
-
-            //    if (commit.Item3.Contains("CommittedBy"))
-            //    {
-            //        string author = commit.Item3.Split(new string[] { "CommittedBy :" }, StringSplitOptions.RemoveEmptyEntries).Last();
-            //        author = author.Replace("@microsoft.com", string.Empty, StringComparison.OrdinalIgnoreCase);
-            //        string date = commit.Item2.ToString().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).First();
-
-            //        res.Add(new Models.Commit(currentSha, author, date, previousSha, changedFiles[i]));
-            //    }
-            //}
 
         }
 
@@ -194,7 +218,7 @@ namespace AppLensV3.Services
         public SelfHelpContentService(IConfiguration configuration)
         {
             InitializeHttpClient();
-            GitHubCache = new ConcurrentDictionary<string, Tuple<string, object>>();
+            SelfHelpCache = new ConcurrentDictionary<string, Tuple<string, object>>();
             UserName = configuration["SelfHelpContent:UserName"];
             RepoName = configuration["SelfHelpContent:RepoName"];
             Branch = configuration["SelfHelpContent:Branch"];
@@ -209,7 +233,8 @@ namespace AppLensV3.Services
             StartPollingSelfHelp();
         }
 
-        private ConcurrentDictionary<string, Tuple<string, object>> GitHubCache { get; }
+        // <pesId, <supportTopicId, selfHelpString>>
+        private ConcurrentDictionary<string, ConcurrentDictionary<string, string>> SelfHelpCache { get; }
 
         private GitHubClient OctokitClient { get; }
 
@@ -257,7 +282,7 @@ namespace AppLensV3.Services
             cachedValue = await response.Content.ReadAsStringAsync();
             etag = GetHeaderValue(response, "ETag").Replace("W/", string.Empty);
             Tuple<string, object> cachedInfo = new Tuple<string, object>(etag, cachedValue);
-            GitHubCache.AddOrUpdate(url, cachedInfo, (key, oldvalue) => cachedInfo);
+            SelfHelpCache.AddOrUpdate(url, cachedInfo, (key, oldvalue) => cachedInfo);
 
             return cachedValue.ToString();
         }
@@ -328,19 +353,7 @@ namespace AppLensV3.Services
             }
         }
 
-        /// <summary>
-        /// Get commit configuration.
-        /// </summary>
-        /// <param name="id">The id.</param>
-        /// <param name="sha">The commit sha.</param>
-        /// <returns>Task for getting commit configuration.</returns>
-        public async Task<string> GetCommitConfiguration(string id, string sha)
-        {
-            var filePath = $"{id.ToLower()}/package.json";
 
-            var commitContent = await OctokitClient.Repository.Content.GetAllContentsByRef(UserName, RepoName, filePath, sha);
-            return commitContent?[0].Content;
-        }
 
         /// <summary>
         /// Task for getting all commits.
@@ -397,20 +410,6 @@ namespace AppLensV3.Services
             return res;
         }
 
-        /// <summary>
-        /// Get changed files.
-        /// </summary>
-        /// <param name="sha">The commit sha.</param>
-        /// <returns>Task for getting changed files.</returns>
-        public async Task<IEnumerable<string>> GetChangedFiles(string sha)
-        {
-            var allCommits = await OctokitClient.Repository.Commit.Get(UserName, RepoName, sha);
-            return allCommits.Files
-                .Where(f =>
-                    f.Filename.EndsWith(".json", StringComparison.OrdinalIgnoreCase) ||
-                    f.Filename.EndsWith(".csx", StringComparison.OrdinalIgnoreCase))
-                .Select(f => f.Filename);
-        }
 
         private async Task<HttpResponseMessage> GetInternal(string url, string etag, List<KeyValuePair<string, string>> additionalHeaders = null)
         {
@@ -440,7 +439,7 @@ namespace AppLensV3.Services
         {
             etag = string.Empty;
             cachedValue = null;
-            isEntryInCache = GitHubCache.TryGetValue(url, out Tuple<string, object> cachedInfo);
+            isEntryInCache = SelfHelpCache.TryGetValue(url, out Tuple<string, object> cachedInfo);
 
             if (isEntryInCache)
             {

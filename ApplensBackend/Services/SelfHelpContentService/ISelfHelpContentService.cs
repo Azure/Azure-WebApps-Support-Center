@@ -16,5 +16,7 @@ namespace AppLensV3.Services
     public interface ISelfHelpContentService
     {
         Task<HttpResponseMessage[]> GetAllSelfHelp();
+
+        Task<HttpResponseMessage> GetSelfHelpContentAsync(string pesId, string supportTopicId);
     }
 }

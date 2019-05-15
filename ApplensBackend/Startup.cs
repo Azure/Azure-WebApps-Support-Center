@@ -51,6 +51,7 @@ namespace AppLensV3
             services.AddSingleton<IGraphClientService, GraphClientService>();
             services.AddSingleton<IGraphTokenService, GraphTokenService>();
             services.AddSingleton<ISupportTopicService, SupportTopicService>();
+            services.AddSingleton<ISelfHelpContentService, SelfHelpContentService>();
 
             services.AddMemoryCache();
             services.AddMvc();

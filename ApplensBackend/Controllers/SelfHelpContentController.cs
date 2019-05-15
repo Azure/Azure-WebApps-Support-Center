@@ -41,6 +41,7 @@ namespace AppLensV3.Controllers
                 return BadRequest("supportTopicId cannot be empty");
             }
 
+            var response1 = await _selfHelpContentService.GetAllSelfHelp();
             var response = await _selfHelpContentService.GetSelfHelpContentAsync(pesId, supportTopicId);
             return Ok(response);
         }
