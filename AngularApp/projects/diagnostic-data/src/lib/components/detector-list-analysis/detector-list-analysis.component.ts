@@ -8,7 +8,7 @@ import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { Solution } from '../solution/solution';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin as observableForkJoin, Observable, throwError } from 'rxjs';
+import { forkJoin as observableForkJoin, Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { DetectorResponse, DetectorMetaData, HealthStatus } from '../../models/detector';
@@ -114,15 +114,18 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
               map((response: DetectorResponse) => {
                 this.detectorsPending--;
                 this.detectorViewModels[index] = this.updateDetectorViewModelSuccess(metaData, response);
-                if (this.detectorViewModels[index].status === HealthStatus.Critical || this.detectorViewModels[index].status === HealthStatus.Warning) {
-                  let insight = this.getDetectorInsight(this.detectorViewModels[index]);
-                  let issueDetectedViewModel = { model: this.detectorViewModels[index], insightTitle: insight.title, insightDescription: insight.description };
-                  this.issueDetectedViewModels.push(issueDetectedViewModel);
-                  this.issueDetectedViewModels = this.issueDetectedViewModels.sort((n1, n2) => n1.model.status - n2.model.status);
-                } else {
-                  let successViewModel = { model: this.detectorViewModels[index] };
-                  this.successfulViewModels.push(successViewModel);
-                }
+
+                if (this.detectorViewModels[index].loadingStatus !== LoadingStatus.Failed) {
+                  if (this.detectorViewModels[index].status === HealthStatus.Critical || this.detectorViewModels[index].status === HealthStatus.Warning) {
+                    let insight = this.getDetectorInsight(this.detectorViewModels[index]);
+                    let issueDetectedViewModel = { model: this.detectorViewModels[index], insightTitle: insight.title, insightDescription: insight.description };
+                    this.issueDetectedViewModels.push(issueDetectedViewModel);
+                    this.issueDetectedViewModels = this.issueDetectedViewModels.sort((n1, n2) => n1.model.status - n2.model.status);
+                  } else {
+                    let successViewModel = { model: this.detectorViewModels[index] };
+                    this.successfulViewModels.push(successViewModel);
+                  }
+                } 
 
                 return {
                   'ChildDetectorName': this.detectorViewModels[index].title,
@@ -132,8 +135,9 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
                 };
               })
               , catchError(err => {
+                this.detectorsPending--;
                 this.detectorViewModels[index].loadingStatus = LoadingStatus.Failed;
-                return throwError(err);
+                return of({});
               })
             ));
           });

@@ -8,7 +8,7 @@
             completed)</span>
     </div>
 
-    <div *ngIf="detectors.length> 0 && issueDetectedViewModels.length > 0 || (detectorsPending === 0 && loadingChildDetectors)"
+    <div *ngIf="detectors.length > 0 && (issueDetectedViewModels.length > 0 || successfulViewModels.length > 0) || (detectorsPending === 0 && loadingChildDetectors)"
         class="list-wrapper">
         <div class="red-line" [ngClass]="{'remove-padding':withinDiagnoseAndSolve}"></div>
         <div class="list-item-wrapper">
@@ -16,7 +16,12 @@
             <div class="list-item">
                 <div class="list-title">Observations</div>
                 <div>Events observed during this time period</div>
-                <div class="list-text" style="margin-top:10px;">
+                
+                <div *ngIf="detectorsPending > 0" style="margin-top:10px">
+                    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                    <span style="margin-left:5px">Loading...</span>
+                </div>
+                <div class="list-text">
                     <div *ngIf="issueDetectedViewModels.length === 0 && detectorsPending === 0">
                         <div class="success-msg">We could not identify any issues that caused availability drops to your
                             app</div>
