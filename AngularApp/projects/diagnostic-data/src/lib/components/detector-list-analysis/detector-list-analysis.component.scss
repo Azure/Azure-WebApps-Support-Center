@@ -79,6 +79,11 @@
     color:black;
 }
 
+.list-text {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
 .detector-list {
     background: #f9f9f9;
     border: 1px solid #ebebeb;
@@ -107,3 +112,18 @@
     font-size: 20px;
     font-weight: lighter;
   }
+
+.special .list-group-item:first-child {
+    border-top-right-radius: 0px !important;
+    border-top-left-radius: 0px !important;
+ }
+ 
+.special .list-group-item:last-child {
+   border-bottom-right-radius: 0px !important;
+   border-bottom-left-radius: 0px !important;
+ }
+
+.nopadding {
+    padding: 0 !important;
+    margin: 5px !important;
+ }

@@ -45,7 +45,6 @@
                                     </td>
                                     <td>
                                         {{ viewModel.insightTitle }}
-
                                         <div style="margin-top:10px">
                                             <markdown [data]="viewModel.insightDescription"></markdown>
                                         </div>
@@ -75,7 +74,7 @@
             <div class="list-item">
                 <div class="list-title">Troubleshooting and Next Steps</div>
                 <div>Next steps curated specifically for your app</div>
-                <div class="list-text" style="margin-bottom: 20px;">
+                <div class="list-text">
                     <div *ngIf="allSolutions.length === 0 && detectorsPending === 0">
                         <div class="success-msg">We could not identify any futher troubleshooting steps or solutions
                         </div>
@@ -96,15 +95,18 @@
         <div class="list-item-wrapper">
             <div class="stepper-circle stepper-circle-green"><i aria-hidden="true" class="fa fa-check dark"></i></div>
             <div class="list-item">
-                <div class="list-title">Successful tests</div>
-                <div>Checks that succeeded for your app</div>
+                <div class="list-title">Successful Checks</div>
+                <div>Tests that succeeded for your app</div>
                 <div class="list-text" style="margin-bottom: 20px;">
-                    <div style="width:98%">
-                        <ng-container *ngFor="let viewModel of successfulViewModels">
-                            <button
-                                class ="btn btn-sm btn-success"
-                                (click)="selectDetector(viewModel.model.metadata.id)">{{ viewModel.model.title }} </button>
-                        </ng-container>
+                    <div class="row">
+                        <div class="col-sm-3" [ngClass]="{'nopadding':withinDiagnoseAndSolve}">
+                            <ul class="list-group special">
+                                <li *ngFor="let viewModel of successfulViewModels" class="list-group-item">
+                                    <a
+                                        (click)="selectDetector(viewModel.model.metadata.id)">{{ viewModel.model.title }}</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="white-line" [ngClass]="{'remove-padding':withinDiagnoseAndSolve}"></div>
