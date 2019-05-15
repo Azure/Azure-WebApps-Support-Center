@@ -14,7 +14,7 @@
     <collapsible-menu theme="dark">
       <search-box [(searchValue)]="searchValue"></search-box>
       <menu-scroll>
-        <section-divider label="Analysis">
+        <section-divider label="Analysis" [hidden]="analysisTypes.length === 0">
           <collapsible-menu-item *ngFor="let item of analysisTypes" [menuItem]="item"></collapsible-menu-item>
         </section-divider>
         <section-divider label="Create">
