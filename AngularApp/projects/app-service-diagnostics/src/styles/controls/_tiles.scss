@@ -37,6 +37,10 @@
         background: $disabled-color;
         cursor: arrow;
     }
+
+    &:focus{
+        background-color: rgb(250, 242, 232);
+    }
 }
 
 .tile-container {
