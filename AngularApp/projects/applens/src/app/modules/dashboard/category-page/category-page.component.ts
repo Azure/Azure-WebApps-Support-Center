@@ -175,6 +175,7 @@ export class CategoryPageComponent implements OnInit {
     }
 
     navigateToUserPage(userId: string) {
+        console.log("Click click");
         this.navigateTo(`../../users/${userId}`);
     }
 

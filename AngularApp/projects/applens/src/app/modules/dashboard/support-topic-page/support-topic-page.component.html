@@ -27,30 +27,33 @@
 
   <div class="detector-list">
     <div class="flexed-detector card" *ngFor="let supportTopic of supportTopics; let i=index" (click)="navigateToContent(supportTopic)">
-      <div class="support-topic-top row">
-        <div class="col-md-3 support-topic-icon">
-          <ngx-avatar [name]="supportTopic.supportTopicL3Name" [round]="false" initialsSize="2" size="80"></ngx-avatar>
-          <!-- <ngx-avatar facebookId="100006264431560"></ngx-avatar> -->
+      <div class="detector-top row">
+          <div class="col-md-2 detector-icon">
+          <ngx-avatar [name]="supportTopic.supportTopicL3Name" [round]="true" initialsSize="2"></ngx-avatar>
         </div>
-        <div class="col-md-9 support-topic-name">
+        <div class="col-md-10 detector-name">
           <div class="support-topic-title">
               {{supportTopic.supportTopicL3Name}}
           </div>
-          <div class="support-topic-description">
-              {{supportTopic.supportTopicId}}
-          </div>
         </div>
       </div>
-      <div class="support-topic-bottom">
-          <div *ngIf="supportTopic.detectorName !== ''" class="label label-success detector-enabled-description">Detector Enabled</div>
-          <div *ngIf="supportTopic.detectorName === ''" class="label label-default detector-disabled-description">Self Help Content</div>
-        <div class="detector-enabled-name">
-          <!-- <div *ngFor="let image of detector.userImages | keyvalue" class="author-image">
-            <img *ngIf="image.value != undefined && image.value !== ''" class="author-image" src="{{image.value}}" />
-            <ngx-avatar *ngIf="image.value == undefined || image.value === ''" class="author-initial" [name]=image.key size="40" initialsSize="2"></ngx-avatar>
-          </div> -->
-          <span *ngIf="supportTopic.detectorName !== ''" class="detector-enabled">{{supportTopic.detectorName}}</span>
-        </div>
+      <div class="detector-bottom">
+          <div class="detector-description">
+              <div>
+              <div *ngIf="supportTopic.detectorName !== ''" class="label label-success detector-enabled-description">
+                Detector Enabled
+
+              </div>
+              <div class="detector-enabled-name">
+                  <span *ngIf="supportTopic.detectorName !== ''" class="detector-enabled">{{supportTopic.detectorName}}</span>
+              </div>
+              </div>
+              <div *ngIf="supportTopic.detectorName === ''" class="label label-default detector-disabled-description">Self Help Content</div>
+
+            </div>
+          <div class="detector-authors">
+             ID: {{supportTopic.supportTopicId}}
+          </div>
       </div>
     </div>
   </div>

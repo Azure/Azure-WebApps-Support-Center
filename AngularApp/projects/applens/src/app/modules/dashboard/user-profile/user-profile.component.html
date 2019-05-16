@@ -1,11 +1,11 @@
 <!-- main -->
 <section class="main">
-    <div class="points"></div>
-    <div class="shield-left"></div>
-    <div class="shield-right"></div>
-    <!-- card -->
+  <div class="points"></div>
+  <div class="shield-left"></div>
+  <div class="shield-right"></div>
+  <!-- card -->
 
-    <!-- businessPhones: string;
+  <!-- businessPhones: string;
     displayName: string;
     givenName: string;
     jobTitle: string;
@@ -14,28 +14,30 @@
     userPrincipalName: string; -->
 
 
-    <div class="card">
-      <div class="detail">
-      <div class="detail-images">
-        <!-- <img src="https://dl.dropboxusercontent.com/s/pil7jdc7d7m8u0h/pic.png" alt="Picture"> -->
-        <img *ngIf="userPhotoSource else loading" id="userPhoto" [src]="userPhotoSource" class="user-photo" alt="User Profile Photo"/>
+  <div class="card">
+    <div class="detail">
+      <div class="card-top">
+        <div class="detail-images">
+          <!-- <img src="https://dl.dropboxusercontent.com/s/pil7jdc7d7m8u0h/pic.png" alt="Picture"> -->
+          <img *ngIf="userPhotoSource" id="userPhoto" [src]="userPhotoSource" class="user-photo"
+            alt="User Profile Photo" />
+          <ngx-avatar *ngIf="userPhotoSource == undefined || userPhotoSource === ''" [round]="false"
+            [name]=userInfo.displayName size="90" initialsSize="2"></ngx-avatar>
+        </div>
+        <div *ngIf="userInfo">
+          <h3>{{userInfo.displayName}}</h3>
+          <h4>{{userInfo.jobTitle}}</h4>
+          <div class="user-detail">
+            <p><i class="fa fa-phone fa-lg message"></i> {{businessPhones}}</p>
+            <p><i class="fa fa-home fa-lg message"></i> {{userInfo.officeLocation}}</p>
+            <p>{{userInfo.userPrincipalName}}</p>
+          </div>
+        </div>
       </div>
-      <h3>{{userInfo.displayName}}</h3>
-      <h4>{{userInfo.jobTitle}}</h4>
-      <div style="margin-top: 10px">
-      <p><i class="fa fa-phone fa-lg message"></i> {{businessPhones}}</p>
-      <p><i class="fa fa-home fa-lg message"></i>  {{userInfo.officeLocation}}</p>
-      <p>{{userInfo.userPrincipalName}}</p>
-    </div>
-      <!-- <p>Design is not just what it looks like<br> and feels like. Design is how it works.</p> -->
-      <div class="content-shield"></div>
-      <a class="mail" href="mailto:hello@imohamad.me">Mail&nbsp;&nbsp;&nbsp;&nbsp; <i class="fa fa-envelope fa-lg message"></i></a>
+      <div class="content-shield">
+        <a class="mail" href="mailto:{{userId}}@microsoft.com">Mail&nbsp;&nbsp;&nbsp;&nbsp; <i
+            class="fa fa-envelope fa-lg message"></i></a>
       </div>
     </div>
-  <!-- /card -->
-  <ng-template #loading>
-      <!-- <li class="user-label loading-element"><span>  <i class="fa fa-spinner-3x" aria-hidden="true"></i></span></li> -->
-      <div class="loading-element"><span>loading..</span></div>
-    </ng-template>
-  </section>
-  <!-- /main -->
+  </div>
+</section>

@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AdalService } from 'adal-angular4';
-import { Subscription } from 'rxjs';
-import { ResourceService } from '../../../shared/services/resource.service';
-import * as momentNs from 'moment';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DetectorControlService, FeatureNavigationService } from 'diagnostic-data';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
+import { AvatarModule } from 'ngx-avatar';
 
 @Component({
   selector: 'user-profile',
@@ -31,9 +28,8 @@ export class UserProfileComponent implements OnInit {
 
     this._diagnosticService.getUserInfo(this.userId).subscribe((userInfo: UserInfo) => {
       this.userInfo = userInfo;
-      this.businessPhones = userInfo.businessPhones.replace('"', '').replace(']', '').replace('[', '');
-      console.log("UserInfo");
-      console.log(userInfo);
+      this.businessPhones = userInfo.businessPhones.replace(/"/g, '').replace(']', '').replace('[', '');
+      console.log(this.businessPhones);
     });
 
   }

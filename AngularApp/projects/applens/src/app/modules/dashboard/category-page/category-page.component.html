@@ -32,7 +32,7 @@
         {{detector.description}}
       </div>
       <div class="detector-authors">
-        <div *ngFor="let image of detector.userImages | keyvalue" class="author-image" >
+        <div *ngFor="let image of detector.userImages | keyvalue" class="author-image"  (click)="navigateToUserPage(image.key)" >
           <img *ngIf="image.value != undefined && image.value !== ''" class="author-image" src="{{image.value}}"  (click)="navigateToUserPage(image.key)"  />
           <ngx-avatar *ngIf="image.value == undefined || image.value === ''" class="author-initial" [name]=image.key size="35" initialsSize="2"  (click)="navigateToUserPage(image.key)" ></ngx-avatar>
         </div>

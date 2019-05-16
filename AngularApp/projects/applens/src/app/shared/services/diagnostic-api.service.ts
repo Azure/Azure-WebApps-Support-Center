@@ -49,6 +49,24 @@ export class DiagnosticApiService {
     return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body, true, false, internalClient).pipe(retry(1), map(response => response.map(detector => detector.metadata)));
   }
 
+  public getUserPhoto(userId: string, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
+    let url: string = `${this.diagnosticApi}api/graph/userPhotos/${userId}`;
+    let request = this._httpClient.get(url, {
+      headers: this._getHeaders()
+    });
+
+    return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.POST, url), request, invalidateCache) : request;
+  }
+
+  public getUserInfo(userId: string, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
+    let url: string = `${this.diagnosticApi}api/graph/users/${userId}`;
+    let request = this._httpClient.get(url, {
+      headers: this._getHeaders()
+    });
+
+    return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.POST, url), request, invalidateCache) : request;
+  }
+
   public getUsers(body: any, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
     let url: string = `${this.diagnosticApi}api/graph/userPhotos`;
     let request =  this._httpClient.post(url, body, {
@@ -67,31 +85,19 @@ export class DiagnosticApiService {
     return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.GET, url), request, invalidateCache) : request;
   }
 
-  public getSelfHelpContent(pesId: string, supportTopicId: string, path: string): Observable<any> {
+  public getSelfHelpContent(pesId: string, supportTopicId: string, path: string, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
       // 14748
     let url: string = `${this.diagnosticApi}api/selfhelp/pesId/${pesId}/supportTopicId/${supportTopicId}/path/${path}`;
-    return  this._httpClient.get(url, {
+    let request = this._httpClient.get(url, {
         headers: this._getHeaders()
       });
+
+      return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.GET, url), request, invalidateCache) : request;
   }
 
   public getGists(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {
     let path = `${version}${resourceId}/gists`;
     return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body).pipe(retry(1), map(response => response.map(gist => gist.metadata)));
-  }
-
-  public getUserPhoto(userId: string): Observable<any> {
-    let url: string = `${this.diagnosticApi}api/graph/userPhotos/${userId}`;
-    return this._httpClient.get(url, {
-      headers: this._getHeaders()
-    });
-  }
-
-  public getUserInfo(userId: string): Observable<any> {
-    let url: string = `${this.diagnosticApi}api/graph/users/${userId}`;
-    return this._httpClient.get(url, {
-      headers: this._getHeaders()
-    });
   }
 
   public getCompilerResponse(version: string, resourceId: string, body: any, startTime?: string, endTime?: string,

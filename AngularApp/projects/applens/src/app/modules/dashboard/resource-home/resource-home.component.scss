@@ -8,25 +8,30 @@ td, th {
 
 .btn-group {
   float: right;
+  border: 1px solid;
+  border-radius: 5px;
+  border-color: #28F;
+  box-shadow: none;
+  text-shadow: none;
 }
 
-.btn-first-child {
-  border-radius: 0.5em 0 0 0.5em;
-}
+// .btn-first-child {
+//   border-radius: 0.5em 0 0 0.5em;
+// //   color:#2288fc;
+// }
 
-.btn-last-child {
-  border-radius: 0 0.5em 0.5em 0;
-}
+// .btn-last-child {
+//   border-radius: 0 0.5em 0.5em 0;
+// }
 
 .btn.is-selected {
-  text-shadow: 0 -1px hsla(0, 0%, 0%, 0.8);
   color: white;
   background-color: #28F;
 }
 
 .btn {
-  text-shadow: 0 1px white;
-  margin-right: 1px;
+  background-color: white;
+  color:#2288fc;
 }
 
 .category-container {
