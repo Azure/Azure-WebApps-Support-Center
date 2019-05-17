@@ -111,7 +111,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
        if(tags && tags['hidden-related:diagnostics/changeAnalysisScanEnabled']) {
            this.codeScanOption = tags['hidden-related:diagnostics/changeAnalysisScanEnabled'] == 'true' ? this.EnablementOptions[0] : this.EnablementOptions[1];
         } else {
-           this.codeScanOption = this.EnablementOptions[1];
+           this.codeScanOption = this.EnablementOptions[0];
        }
    }
 
