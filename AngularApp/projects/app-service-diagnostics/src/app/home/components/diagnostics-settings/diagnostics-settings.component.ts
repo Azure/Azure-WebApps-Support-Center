@@ -61,19 +61,20 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     this.armService.getResource<any>(this.featureRegUrl, '2015-12-01', true).subscribe(response => {
         let featureRegistrationResponse = <FeatureRegistration>response;
         let state = featureRegistrationResponse.properties.state;
-        if(state.toLowerCase() == 'notregistered') {
+        if(state.toLowerCase() == 'registered') {
+            // Once feature is registered, check if Resource Provider is registered
+            this.isFeatureRegistered = true;
+            this.checkIfProviderRegistered();
+            this.checkIfCodeScanEnabled();
+            this.getSiteConfig();
+        }
+        else {
             // show in progres text and disable enabling
             this.isFeatureRegistered = false;
             // start polling until registered
             this.subscription = interval(20000).subscribe(res => {
                 this.pollForFeatureRegStatus();
             });
-        } else {
-            // Once feature is registered, check if Resource Provider is registered
-            this.isFeatureRegistered = true;
-            this.checkIfProviderRegistered();
-            this.checkIfCodeScanEnabled();
-            this.getSiteConfig();
         }
     }, (error: any) => {
         this.showGeneralError = true;
@@ -91,7 +92,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
            } else if (state.toLowerCase() == 'unregistered') {
                this.featureRegOption = this.EnablementOptions[1];
            } // It could be that Resource Provider is 'Registering' or 'Unregistering', show in progress and poll for status.
-           else {
+           else if (state.toLowerCase() == 'registering' || state.toLowerCase() == 'unregistering'){
                 this.showInProgress = true;
                 this.regState = state;
                 this.subscription = interval(30000).subscribe(res => {
