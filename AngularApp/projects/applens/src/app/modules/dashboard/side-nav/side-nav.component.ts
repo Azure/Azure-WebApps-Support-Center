@@ -177,6 +177,16 @@ export class SideNavComponent implements OnInit {
   doesMatchCurrentRoute(expectedRoute: string) {
     return this.currentRoutePath && this.currentRoutePath.join('/') === expectedRoute;
   }
+
+  getResourceSummary() {
+    this.ngxSmartModalService.getModal('devModeModal').open();
+  }
+
+  dismissSummaryModal() {
+    // Set the default popped up behaviour of local development modal as a key value pair in localStorage
+    localStorage.setItem("localdevmodal.hidden", this.hideModal === true ? "true" : "false");
+    this.ngxSmartModalService.getModal('devModeModal').close();
+  }
 }
 
 @Pipe({

@@ -25,6 +25,8 @@
   icon: string;
   detectorId: string; -->
 
+
+
   <div class="detector-list">
     <div class="flexed-detector card" *ngFor="let supportTopic of supportTopics; let i=index" (click)="navigateToContent(supportTopic)">
       <div class="detector-top row">
@@ -32,9 +34,7 @@
           <ngx-avatar [name]="supportTopic.supportTopicL3Name" [round]="true" initialsSize="2"></ngx-avatar>
         </div>
         <div class="col-md-10 detector-name">
-          <div class="support-topic-title">
               {{supportTopic.supportTopicL3Name}}
-          </div>
         </div>
       </div>
       <div class="detector-bottom">
