@@ -35,9 +35,6 @@ menu-scroll {
     font-size: 16px;
 }
 
-.resource-logo {
-    max-width: 25px;
-}
 
 .user-panel > .info {
     left: 30px;
@@ -48,6 +45,6 @@ menu-scroll {
 }
 
 .user-panel.active,
-.user-panel:hover {
+.user-panel {
     background: #1e282c;
 }

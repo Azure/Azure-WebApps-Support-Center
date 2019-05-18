@@ -24,6 +24,8 @@ export class DashboardComponent implements OnDestroy {
   userName: string = "";
   userPhotoSource: string;
 
+  currentRoutePath: string[];
+
   constructor(public resourceService: ResourceService, private _detectorControlService: DetectorControlService,
     private _router: Router, private _activatedRoute: ActivatedRoute, private _navigator: FeatureNavigationService, private _diagnosticService: ApplensDiagnosticService, private _adalService: AdalService) {
     this.contentHeight = (window.innerHeight - 50) + 'px';
@@ -91,6 +93,10 @@ export class DashboardComponent implements OnDestroy {
     console.log(this._activatedRoute);
     //this._router.navigate(path.split('/'), navigationExtras);
     this._router.navigate([path], navigationExtras);
+}
+
+doesMatchCurrentRoute(expectedRoute: string) {
+    return this.currentRoutePath && this.currentRoutePath.join('/') === expectedRoute;
 }
 
 navigateToUserPage() {
