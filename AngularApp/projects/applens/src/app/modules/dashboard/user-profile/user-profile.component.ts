@@ -29,7 +29,6 @@ export class UserProfileComponent implements OnInit {
     this._diagnosticService.getUserInfo(this.userId).subscribe((userInfo: UserInfo) => {
       this.userInfo = userInfo;
       this.businessPhones = userInfo.businessPhones.replace(/"/g, '').replace(']', '').replace('[', '');
-      console.log(this.businessPhones);
     });
 
   }

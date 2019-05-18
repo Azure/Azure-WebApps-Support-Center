@@ -17,7 +17,7 @@
   </div>
 </div>
 <div class="detector-list">
-  <div class="flexed-detector card" *ngFor="let detector of detectors; let i=index">
+  <div class="flexed-detector card" *ngFor="let detector of detectors; let i=index" (click)="detector.onClick()">
     <div class="detector-top row" (click)="detector.onClick()">
       <div class="col-md-2 detector-icon">
         <ngx-avatar [name]="detector.name" [round]="true" initialsSize="2"></ngx-avatar>

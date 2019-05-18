@@ -1,12 +1,14 @@
 import { AdalService } from 'adal-angular4';
 import { Subscription } from 'rxjs';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ResourceService } from '../../../shared/services/resource.service';
 import * as momentNs from 'moment';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DetectorControlService, FeatureNavigationService, DetectorMetaData, DetectorType } from 'diagnostic-data';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from '@angular/router';
+import { NgxSmartModalService } from 'ngx-smart-modal';
+import { UserInfo } from '../user-profile/user-profile.component'
 
 @Component({
   selector: 'dashboard',
@@ -21,13 +23,17 @@ export class DashboardComponent implements OnDestroy {
   contentHeight: string;
 
   navigateSub: Subscription;
+  userId: string="";
   userName: string = "";
   userPhotoSource: string;
 
   currentRoutePath: string[];
+  resource: any;
+  keys: string[];
+
 
   constructor(public resourceService: ResourceService, private _detectorControlService: DetectorControlService,
-    private _router: Router, private _activatedRoute: ActivatedRoute, private _navigator: FeatureNavigationService, private _diagnosticService: ApplensDiagnosticService, private _adalService: AdalService) {
+    private _router: Router, private _activatedRoute: ActivatedRoute, private _navigator: FeatureNavigationService, private _diagnosticService: ApplensDiagnosticService, private _adalService: AdalService, public ngxSmartModalService: NgxSmartModalService) {
     this.contentHeight = (window.innerHeight - 50) + 'px';
 
     this.navigateSub = this._navigator.OnDetectorNavigate.subscribe((detector: string) => {
@@ -63,12 +69,25 @@ export class DashboardComponent implements OnDestroy {
 
 
     let alias = this._adalService.userInfo.profile ? this._adalService.userInfo.profile.upn : '';
-    this.userName = alias.replace('@microsoft.com', '');
-    this._diagnosticService.getUserPhoto(this.userName).subscribe(image => {
+    this.userId = alias.replace('@microsoft.com', '');
+    this._diagnosticService.getUserPhoto(this.userId).subscribe(image => {
         // this.userPhotoSource =  "data:image / jpeg; base64," + image;
         // this.userPhotoSource =  "data:image/jpeg;base64," + image;
         this.userPhotoSource = image;
     });
+
+    this._diagnosticService.getUserInfo(this.userId).subscribe((userInfo: UserInfo) => {
+        this.userName = userInfo.givenName;
+      });
+  }
+
+  ngOnInit() {
+    this.resourceService.getCurrentResource().subscribe(resource => {
+        if (resource) {
+          this.resource = resource;
+          this.keys = Object.keys(this.resource);
+        }
+      });
   }
 
   reloadHome() {
@@ -103,6 +122,11 @@ navigateToUserPage() {
  //   this.navigateTo(`/users/${this.userName}`);
  this.navigateTo(`users/xipeng`);
 }
+
+
+openResourceInfoModal() {
+    this.ngxSmartModalService.getModal('resourceInfoModal').open();
+  }
 
 
   ngOnDestroy() {

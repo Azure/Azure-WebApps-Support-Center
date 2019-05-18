@@ -171,5 +171,18 @@ body{
   .resource-summary a {
     color:greenyellow;
     font-style: italic;
-    font-size:11px;
+    font-size:12px;
+  }
+
+  .resource-summary:hover{
+    color:white;
+    background-color: #7ab323;
+
+    a {
+        color:white;
+    }
+  }
+
+  .resource-content {
+      margin:10px;
   }
