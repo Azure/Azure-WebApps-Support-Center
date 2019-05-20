@@ -19,7 +19,8 @@ export class SectionDividerComponent implements OnInit {
   @Input() label: string;
   @Input() initiallyExpanded: boolean = true;
   @Input() collapsible: boolean = true;
-
+  @Input() disableExpandIcon: boolean = false;
+  
   expanded: boolean = true;
 
   constructor() { }

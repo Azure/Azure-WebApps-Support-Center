@@ -178,6 +178,11 @@ export class SideNavComponent implements OnInit {
     return this.currentRoutePath && this.currentRoutePath.join('/') === expectedRoute;
   }
 
+  openDocumentation()
+  {
+    { window.open('https://app-service-diagnostics-docs.azurewebsites.net/api/Diagnostics.ModelsAndUtils.Models.Response.html#extensionmethods', '_blank') },
+  }
+
 //   getResourceSummary() {
 //     this.ngxSmartModalService.getModal('devModeModal').open();
 //   }
