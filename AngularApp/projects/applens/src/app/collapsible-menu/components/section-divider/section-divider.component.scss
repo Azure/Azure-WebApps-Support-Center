@@ -49,11 +49,11 @@
 }
 
 .menu-label {
-    position: fixed;
-    left: 45px;
+    position: relative;
+    padding-left: 10px;
 }
 
 .menu-expand-icon {
-    position: fixed;
-    left: 180px;
+   margin-left: auto;
+   marigh-right: 0;
 }
