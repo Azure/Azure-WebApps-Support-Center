@@ -257,8 +257,8 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             this.updatingProvider = false;
         }, (error: any) => {
            this.logHTTPError(error, 'updateProviderRegister');
-            // When 404 error occurs when registering Resource Provider, retry
-            if(error.status === 404 && this.retryCount <= 3 && isRegister) {
+            // When error occurs when updating Resource Provider, retry
+            if(this.retryCount <= 3 && isRegister) {
                 this.updatingProvider = false;
                 this.showInProgress = true;
                 this.regState = 'Registering';
