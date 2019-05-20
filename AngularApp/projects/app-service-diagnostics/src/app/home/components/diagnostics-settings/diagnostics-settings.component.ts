@@ -7,6 +7,7 @@ import { Subscription, interval } from 'rxjs';
 import { ArmResource } from '../../../shared-v2/models/arm';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
 import { PortalKustoTelemetryService} from '../../../shared/services/portal-kusto-telemetry.service';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'diagnostics-settings',
@@ -42,6 +43,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
   codeScanOption: any = {};
   featureRegOption: any = {};
   alwaysOnOption: any = {};
+  retryCount: number = 1;
   constructor(private armService: ArmService, private authService: AuthService,
      private activatedRoute: ActivatedRoute, private resourceService: ResourceService,
      private loggingService: PortalKustoTelemetryService) { }
@@ -73,10 +75,12 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             this.isFeatureRegistered = false;
             // start polling until registered
             this.subscription = interval(20000).subscribe(res => {
+                this.loggingService.logTrace("Polling for Feature Registration Status");
                 this.pollForFeatureRegStatus();
             });
         }
     }, (error: any) => {
+        this.logHTTPError(error, 'checkIfFeatureRegister');
         this.showGeneralError = true;
         this.generalErrorMsg = 'Unable to check feature registration status.  Please try again later.';
         this.isFeatureRegistered = false;
@@ -100,6 +104,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
                 });
            }
        }, (error: any) => {
+            this.logHTTPError(error, 'checkIfProviderRegistered');
             this.showGeneralError = true;
             this.generalErrorMsg = 'Unable to check resource provider registration status. Please try again later.';
             this.featureRegOption = this.EnablementOptions[1];
@@ -140,6 +145,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             }
         }
     }, (error: any) => {
+        this.logHTTPError(error, 'pollForFeatureRegStatus');
         this.isFeatureRegistered = false;
         this.showGeneralError = true;
         this.generalErrorMsg = 'Unable to check feature registration status. Please try again later.';
@@ -194,6 +200,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         }
         this.updatingTag = false;
     }, (error: any) => {
+        this.logHTTPError(error, 'updateScanTag');
         this.updatingTag = false;
         this.codeScanOption = this.EnablementOptions[1];
     });
@@ -215,11 +222,16 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         } else {
             this.alwaysOnOption = this.EnablementOptions[1];
         }
+        }, (error:any) => {
+            this.logHTTPError(error, 'updateAlwaysOn');
+            this.alwaysOnOption = this.EnablementOptions[0];
         });
    }
 
-   updateProviderRegister(providerRegOption: any): void {
-       this.updatingProvider = true;
+   updateProviderRegister(providerRegOption: any, isRetry: boolean = false): void {
+       if(!isRetry) {
+            this.updatingProvider = true;
+       }
        let isRegister = providerRegOption.value == '1' ? true : false;
         let url = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis/`;
         url += isRegister ? `register` : `unregister`;
@@ -228,8 +240,8 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             resourceId: this.resourceId
         };
         this.loggingService.logEvent('UpdateChangeAnalysisResourceProvider', props);
-        this.armService.postResource(url, {}, '2018-05-01', true).subscribe((response: any) => {
-            let providerRegistrationStateResponse = <ProviderRegistration>response;
+        this.armService.postResourceFullResponse(url, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
+            let providerRegistrationStateResponse = <ProviderRegistration>response.body;
             let state = providerRegistrationStateResponse.registrationState;
             if (state.toLowerCase() == 'registered') {
                 this.featureRegOption = this.EnablementOptions[0];
@@ -244,10 +256,24 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             }
             this.updatingProvider = false;
         }, (error: any) => {
-            this.showGeneralError = true;
-            this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. Please try again later.';
-            this.updatingProvider = false;
-            this.featureRegOption = this.EnablementOptions[1];
+           this.logHTTPError(error, 'updateProviderRegister');
+            // When 404 error occurs when registering Resource Provider, retry
+            if(error.status === 404 && this.retryCount <= 3 && isRegister) {
+                this.updatingProvider = false;
+                this.showInProgress = true;
+                this.regState = 'Registering';
+                setTimeout( () => {
+                    this.loggingService.logTrace('Attempting retry to register resource provider, retry attempt '+this.retryCount);
+                    this.updateProviderRegister(this.EnablementOptions[0], true);
+                    this.retryCount++;
+                }, 30000);
+            } else {
+                this.showGeneralError = true;
+                this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. Please try again later.';
+                this.updatingProvider = false;
+                this.showInProgress = false;
+                this.featureRegOption = this.EnablementOptions[1];
+            }
         });
    }
 
@@ -271,6 +297,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             this.showInProgress = false;
         }
     }, (error: any) => {
+        this.logHTTPError(error, 'pollResourceProviderReg');
         this.featureRegOption = this.EnablementOptions[1];
         this.showInProgress = false;
     })
@@ -283,6 +310,14 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
        this.updateScanTag(this.codeScanOption);
        // Update always on
        this.updateAlwaysOn(this.alwaysOnOption);
+   }
+
+   logHTTPError(error: any, methodName: string): void {
+        let errorLoggingProps = {
+            errorMsg: error.message ? error.message : 'Server Error',
+            statusCode: error.status ? error.status : 500
+        };
+        this.loggingService.logTrace('HTTP error in '+methodName, errorLoggingProps);
    }
 
    ngOnDestroy(): void {

@@ -9,6 +9,7 @@ import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
 import { AuthService } from '../../../startup/services/auth.service';
 import { ArmService } from '../../../shared/services/arm.service';
+import { HttpResponse } from '@angular/common/http';
 @Component({
   selector: 'home',
   templateUrl: './home.component.html',
@@ -91,11 +92,14 @@ export class HomeComponent implements OnInit {
 
   registerChangeAnalysisFeature(): void {
     let url = `/subscriptions/${this.subscriptionId}/providers/Microsoft.Features/providers/Microsoft.ChangeAnalysis/features/PreviewAccess/register`;
-    let logData = {
-        'subscriptionId' : this.subscriptionId
-    };
-    this.armService.postResource(url, {}, '2015-12-01', true).subscribe(data => {
+    this.armService.postResourceFullResponse(url, {}, true, '2015-12-01').subscribe((data: HttpResponse<{}>) => {
+        let logData = {
+            'subscriptionId' : this.subscriptionId,
+            'responseStatus': data.status
+        };
         this._logger.LogAction('Home', 'Registered Change Analysis feature', logData)
+    }, (error: any) => {
+        this._logger.LogError('HTTP Error while registering change analysis feature: '+error.message, + 'Status Code : '+error.status);
     });
   }
 }
