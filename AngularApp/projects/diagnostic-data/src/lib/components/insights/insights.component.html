@@ -2,7 +2,7 @@
      If there is a title I will wrap it in a container,
      otherwise I will show it by itself -->
 <ng-template #insightView>
-  <div *ngFor="let insight of insights" class="insight-container">
+  <div *ngFor="let insight of insights" class="insight-container" tabindex="0">
     <div class="panel panel-default insight-panel"
       [class.critical-insight-panel]="insight.status === InsightStatus.Critical"
       [class.warning-insight-panel]="insight.status === InsightStatus.Warning"
