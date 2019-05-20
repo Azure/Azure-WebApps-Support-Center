@@ -57,12 +57,15 @@ side-nav {
     }
 }
 
+.avatar:hover {
+    cursor: pointer;
+}
+
 .avatar {
     width:50px;
     height: 50px;
     float: right;
     margin-right:10px;
-
 
     // background-color: #367fa9;
     // color: #ffffff;
@@ -164,26 +167,23 @@ body{
 
   .resource-summary {
     display: inline-block;
-    float:right;
-    padding: 2px 1.5px;
-    border: 1px solid greenyellow;
-    border-radius: 5px;
-    margin-top:3px;
+    float: right;
+    padding: 2px;
+    margin-top: 5px;
+    color:#367fa9;
   }
 
-  .resource-summary a {
-    color:greenyellow;
-    font-style: italic;
-    font-size:12px;
+  .resource-summary i {
+    background-color:#367fa9;
+    font-size:18px;
+    color: white;
   }
 
-  .resource-summary:hover{
-    color:white;
-    background-color: #7ab323;
-
-    a {
-        color:white;
-    }
+  .resource-summary i:hover{
+    color: black;
+    //  background-color: white;
+    //  border-radius: 50%;
+    //  border: 1px solid white;
   }
 
   .resource-content {

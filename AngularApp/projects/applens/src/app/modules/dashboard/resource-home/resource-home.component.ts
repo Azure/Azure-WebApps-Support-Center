@@ -133,7 +133,7 @@ export class ResourceHomeComponent implements OnInit {
             supportTopic.icon = `https://applensassets.blob.core.windows.net/applensassets/${supportTopic.supportTopicL2Name}.png`;
           }
         });
-      }
+    }
 
     //   private loadSecondFile() {
     //     this._http.get('/asset/second.json').subscribe(() => {

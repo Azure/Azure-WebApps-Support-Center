@@ -12,7 +12,8 @@ input {
 }
 
 .search-container {
-    padding: 5px;
+    padding: 6px;
+    font-size: 13px;
 }
 
 /* DARK THEME */
@@ -40,8 +41,8 @@ input {
 }
 
 :host-context(.light-theme) input {
-    height: 25px;
-    font-size: 12px;
+    height: 30px;
+    font-size: 13px;
     padding: 6px;
 }
 
@@ -50,6 +51,6 @@ input {
 }
 
 :host-context(.light-theme) .input-group-addon {
-    font-size: 10px;
+    font-size: 13px;
     padding: 3px 0px 3px 5px;
 }
