@@ -13,7 +13,7 @@
 }
 
 .section-divider {
-    cursor: pointer;   
+    cursor: pointer;
     display: flex;
     align-items: center;
 }
@@ -51,9 +51,10 @@
 .menu-label {
     position: relative;
     padding-left: 10px;
+    font-size:13px;
 }
 
 .menu-expand-icon {
    margin-left: auto;
-   marigh-right: 0;
+   margin-right: 0;
 }

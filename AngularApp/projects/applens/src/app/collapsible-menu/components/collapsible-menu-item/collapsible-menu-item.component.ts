@@ -62,7 +62,11 @@ export class CollapsibleMenuItemComponent {
   }
 
   getPadding() {
-    return (35 + this.level * 15) + 'px';
+    return (45 + this.level * 15) + 'px';
+  }
+
+  getFontSize() {
+      return (14 - this.level) + 'px';
   }
 
 }
