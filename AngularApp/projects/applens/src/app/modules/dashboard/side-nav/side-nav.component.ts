@@ -180,7 +180,7 @@ export class SideNavComponent implements OnInit {
 
   openDocumentation()
   {
-    { window.open('https://app-service-diagnostics-docs.azurewebsites.net/api/Diagnostics.ModelsAndUtils.Models.Response.html#extensionmethods', '_blank') },
+    window.open('https://app-service-diagnostics-docs.azurewebsites.net/api/Diagnostics.ModelsAndUtils.Models.Response.html#extensionmethods', '_blank');
   }
 
 //   getResourceSummary() {
