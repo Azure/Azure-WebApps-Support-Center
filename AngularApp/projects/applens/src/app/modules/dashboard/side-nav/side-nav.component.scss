@@ -1,11 +1,13 @@
 .main-sidebar {
   height: calc(100vh - 50px);
   padding: 0;
+  background-color: #367fa9;
+  border-right:1px solid white;
 }
 
 menu-scroll {
   // navbar + title + search box = 50 + 45 + 44 = 139
-  height: calc(100vh - 139px);
+  height: calc(100vh - 90px);
 }
 
 .sidebar-menu > li > a {

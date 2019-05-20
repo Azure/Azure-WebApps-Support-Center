@@ -1,10 +1,10 @@
-.site-content {
-    padding-top: 50px;
-}
+// .site-content {
+//     padding-top: 50px;
+// }
 
 side-nav {
     position: fixed;
-    top: 95px;
+    top: 50px;
 }
 
 .sidebar {
@@ -17,6 +17,8 @@ side-nav {
     cursor: pointer;
     position: fixed;
     top: 0;
+    background-color: #3c8dbc!important;
+    width:120px;
 }
 
 .logo1 {
@@ -41,7 +43,8 @@ side-nav {
 .content-wrapper.white-background, .content-wrapper.gray-background {
     min-height: calc(100vh - 95px);
     height: 100%;
-    margin-top:-55px;
+    // margin-top:-55px;
+    margin-top:0px;
 
     // Nested onboarding-flow components have two navbars totalling 92px
     ::ng-deep onboarding-flow {
@@ -102,15 +105,15 @@ side-nav {
 
 .user-panel {
     cursor: pointer;
-    background: #1e282c;
+    background: #367fa9;
     width: 230px;
-    height:55px;
+    height:50px;
     position: fixed;
 }
 
 .user-panel.active,
 .user-panel {
-    background: #1e282c;
+    background: #367fa9;
     width: 230px;
 }
 
