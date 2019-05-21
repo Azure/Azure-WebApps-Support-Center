@@ -2,7 +2,7 @@
      If there is a title I will wrap it in a container,
      otherwise I will show it by itself -->
 <ng-template #insightView>
-  <div *ngFor="let insight of insights" class="insight-container" tabindex="0">
+  <div *ngFor="let insight of insights" class="insight-container" tabindex="0" attr.name="{{insight.title}}" attr.aria-label="{{insight.title}}" attr.aria-expanded="{{insight.isExpanded}}" role="insight" (keyup.enter)="toggleInsightStatus(insight)">
     <div class="panel panel-default insight-panel"
       [class.critical-insight-panel]="insight.status === InsightStatus.Critical"
       [class.warning-insight-panel]="insight.status === InsightStatus.Warning"
@@ -20,7 +20,7 @@
         </h5>
         <div class="pull-right" style="margin-top:-18px">
           <div class="col-md-6" [ngClass]="{'con-tooltip bottom':!insight.isRated}" class="insight-rating">
-            <a (click)="setInsightComment(insight, true)"> <i class="fa fa-thumbs-o-up fa-lg"
+            <a attr.name="Thumbs up for insight: {{insight.title}}" role="button" tabindex="0" attr.aria-label="Thumbs up for insight: {{insight.title}}"  (click)="setInsightComment(insight, true)" (keyup.enter)="setInsightComment(insight, true)"> <i class="fa fa-thumbs-o-up fa-lg"
                 [ngStyle]="{'color':insight.isRated && insight.isHelpful ? 'green': 'gray'}"></i>
             </a>
             <div class="tooltip ">
@@ -28,7 +28,7 @@
             </div>
           </div>
           <div class="col-md-6" [ngClass]="{'con-tooltip bottom':!insight.isRated}" class="insight-rating">
-            <a (click)="setInsightComment(insight, false)"> <i class="fa fa-thumbs-o-down fa-lg"
+            <a attr.name="Thumbs down for insight: {{insight.title}}" role="button" tabindex="0" attr.aria-label="Thumbs down for insight: {{insight.title}}" (click)="setInsightComment(insight, false)" (keyup.enter)="setInsightComment(insight, false)"> <i class="fa fa-thumbs-o-down fa-lg"
                 [ngStyle]="{'color':insight.isRated && !insight.isHelpful ? 'red': 'gray'}"></i>
             </a>
             <div class="tooltip ">
