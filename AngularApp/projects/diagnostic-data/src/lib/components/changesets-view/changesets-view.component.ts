@@ -159,7 +159,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             this.loadingChangesTable = false;
             this.changesTableError = '';
         } else {
-            let queryParams = `&changeSetId=${changeSetId}`;
+            let queryParams = `&changeSetId=${encodeURI(changeSetId)}`;
             this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
             this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
             this.changeSetsCache[changeSetId] = response.dataset;
@@ -196,11 +196,12 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
                     }
                     this.setScanState("");
                     this.scanStatusMessage = 'Unable to submit scan request. Please check if you have enabled scan for code changes in settings and try again.';
+                } else {
+                    // Start polling every 15 secs to see the progress.
+                    this.subscription = interval(15000).subscribe(res => {
+                        this.pollForScanStatus();
+                    });
                 }
-                // Start polling every 15 secs to see the progress.
-                this.subscription = interval(15000).subscribe(res => {
-                    this.pollForScanStatus();
-                });
             }, (error: any) => {
                 this.scanState = "";
                 this.scanStatusMessage = "Unable to submit scan request. Please refresh or try again after sometime";
