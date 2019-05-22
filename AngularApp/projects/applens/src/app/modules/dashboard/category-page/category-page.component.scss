@@ -18,7 +18,7 @@
     color: #367fa9;
 
     &:hover {
-        color: #3c8dbc;
+        color: #0d1dea;;
     }
 }
 
@@ -33,7 +33,12 @@
 
 .category-icon {
     width: 8%;
+    margin-top: 10px;
+}
+
+.category-icon-avatar {
     margin-top: 20px;
+    display: inline-block;
 }
 
 .category-title {
@@ -340,6 +345,11 @@
 .author-image:hover span {
     display: block;
 }
+
+.loading-page {
+    margin: 60px;
+    text-align: center;
+  }
 
 
 

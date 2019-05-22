@@ -44,6 +44,9 @@
       </div>
     </div>
   </div>
+  <div *ngIf="detectors == undefined || detectors.length === 0" class="loading-page">
+      <i class="fa fa-spinner fa-spin fa-4x fa-fw"></i>
+    </div>
 </div>
 
 

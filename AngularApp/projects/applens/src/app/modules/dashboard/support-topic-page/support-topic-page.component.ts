@@ -47,7 +47,9 @@ export class SupportTopicPageComponent implements OnInit {
 
     ngOnInit() {
         this.supportTopicName = this._activatedRoute.snapshot.params['supportTopic'];
-        this.supportTopicIcon = `https://applensassets.blob.core.windows.net/applensassets/${this.supportTopicName}.png`;
+        this._supportTopicService.getCategoryImage(this.supportTopicName).subscribe((iconString) => {
+            this.supportTopicIcon = iconString;
+        });
 
         this.pesId = this._supportTopicService.getPesId();
         this._diagnosticService.getDetectors().subscribe((detectors: DetectorMetaData[]) => {

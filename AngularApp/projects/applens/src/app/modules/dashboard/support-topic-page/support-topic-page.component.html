@@ -1,9 +1,10 @@
 <div class="banner">
     <div>
-        <button class="btn back-button" (click)="navigateToHomePage()" >&lt; Home</button>
+        <a class="btn back-button" (click)="navigateToHomePage()" >&lt; Home</a>
       </div>
     <div class="category-info-container">
-      <img class="category-icon" src={{supportTopicIcon}} />
+      <img *ngIf="supportTopicIcon != undefined && supportTopicIcon != ''" class="category-icon" src={{supportTopicIcon}} />
+      <ngx-avatar *ngIf="supportTopicIcon == undefined || supportTopicIcon == ''" [name]="supportTopicName" class="category-icon-avatar" [round]="false" initialsSize="2" size="100"></ngx-avatar>
       <div class="category-title">
         <span class="catogory-name">
           {{supportTopicName}}
@@ -56,6 +57,9 @@
           </div>
       </div>
     </div>
+    <div *ngIf="supportTopics == undefined || supportTopics.length === 0" class="loading-page">
+        <i class="fa fa-spinner fa-spin fa-4x fa-fw"></i>
+      </div>
   </div>
 
 
