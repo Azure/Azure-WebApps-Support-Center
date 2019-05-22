@@ -12,7 +12,8 @@
       (click)="navigateToCategory(category)">
       <div class="bottom row">
         <div class="col-md-3 category-icon-container">
-          <img class="category-icon" src={{category.icon}} />
+            <img *ngIf="category.icon != undefined && category.icon != ''" class="category-icon" src={{category.icon}}  />
+            <ngx-avatar *ngIf="category.icon == undefined || category.icon == ''" [name]="category.label" [round]="false" initialsSize="2" size="115"></ngx-avatar>
         </div>
         <div class="col-md-9 category-label">
           <div class="category-title">{{category.label}}</div>
@@ -38,6 +39,9 @@
     supportTopicL3Name: string;
     supportTopicPath: string;
     icon: string; -->
+
+
+
   <div *ngIf="viewType === 'supportTopic'" class="category-container">
     <div class="flexed card" *ngFor="let supportTopic of supportTopics;let i = index" (click)="navigateToSupportTopic(supportTopic)">
         <div class="bottom row">
@@ -45,6 +49,7 @@
                 <!-- onError="this.src='supportTopic.icon';" -->
               <!-- <img class="category-icon" src="assets\img\{{supportTopic.supportTopicL2Name}}.png"  /> -->
               <img *ngIf="supportTopic.icon != undefined && supportTopic.icon != ''"class="category-icon" src={{supportTopic.icon}}  />
+              <ngx-avatar *ngIf="supportTopic.icon == undefined || supportTopic.icon == ''" [name]="supportTopic.supportTopicL2Name" [round]="false" initialsSize="2" size="115"></ngx-avatar>
             </div>
             <div class="col-md-9 category-label">
               <div class="category-title">{{supportTopic.supportTopicL2Name}}</div>

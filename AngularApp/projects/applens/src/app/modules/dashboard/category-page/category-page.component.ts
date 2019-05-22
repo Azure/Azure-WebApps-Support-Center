@@ -7,6 +7,7 @@ import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from 
 import { DiagnosticService } from 'diagnostic-data';
 import { AvatarModule } from 'ngx-avatar';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
+import { HttpMethod } from '../../../shared/models/http';
 
 
 @Component({

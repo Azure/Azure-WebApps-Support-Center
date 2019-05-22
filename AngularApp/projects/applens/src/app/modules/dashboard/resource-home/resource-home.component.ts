@@ -2,11 +2,14 @@ import { Component, OnInit, Output, ElementRef, HostListener, EventEmitter } fro
 import { ResourceService } from '../../../shared/services/resource.service';
 import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from '@angular/router';
 import { DetectorMetaData } from 'diagnostic-data';
-import { map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 import { ApplensSupportTopicService } from '../services/applens-support-topic.service';
+import { CacheService } from '../../../shared/services/cache.service';
 import { HttpClient } from '@angular/common/http';
+import { catchError, mergeMap, retry, map, retryWhen, delay, take, concat } from 'rxjs/operators';
+
+
 
 @Component({
     selector: 'resource-home',
@@ -16,7 +19,7 @@ import { HttpClient } from '@angular/common/http';
 export class ResourceHomeComponent implements OnInit {
 
     currentRoutePath: string[];
-    categories: CategoryItem[]=[];
+    categories: CategoryItem[] = [];
     resource: any;
     keys: string[];
     activeCategoryName: string = undefined;
@@ -26,12 +29,12 @@ export class ResourceHomeComponent implements OnInit {
     detectorsWithSupportTopics: DetectorMetaData[];
     detectorsPublicOrWithSupportTopics: DetectorMetaData[] = [];
 
-    supportTopics: SupportTopicItem[]=[];
-
+    supportTopics: SupportTopicItem[] = [];
+    supportTopicL2Images: { [name: string]: any } = {};
     viewType: string = 'category';
 
 
-    constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: HttpClient, private _resourceService: ResourceService, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService) { }
+    constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: HttpClient, private _resourceService: ResourceService, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService, private _cacheService: CacheService) { }
 
     ngOnInit() {
         this.viewType = this._activatedRoute.snapshot.params['viewType'];
@@ -42,36 +45,101 @@ export class ResourceHomeComponent implements OnInit {
             }
         });
 
-        this._supportTopicService.getSupportTopics().subscribe((supportTopics: SupportTopicResult[]) => {
-            supportTopics.forEach((supportTopic) => {
-                if (supportTopic.supportTopicL2Name)
-                {
-                    let item = new SupportTopicItem(supportTopic.supportTopicL2Name, supportTopic.productId, supportTopic.supportTopicId, supportTopic.supportTopicL3Name, supportTopic.supportTopicPath);
+        // return this.ocpApimKeyBehaviorSubject.pipe(
+        //     mergeMap((key:string)=>{
+        //       return this._http.get(url, { headers: this.getWebSearchHeaders() }).pipe(map(response => response.json()));
+        //     })
+        //   );
 
-                    let suppportTopicItem = this.supportTopics.find((sup: SupportTopicItem) => supportTopic.supportTopicL2Name === sup.supportTopicL2Name);
-                    if (!suppportTopicItem) {
-                        let supportTopicIcon = `https://applensassets.blob.core.windows.net/applensassets/${supportTopic.supportTopicL2Name}.png`;
-                        //let supportTopicIcon = "";
-                        suppportTopicItem = new SupportTopicItem(supportTopic.supportTopicL2Name, supportTopic.productId, supportTopic.supportTopicId, null, null, supportTopicIcon);
-                        this.supportTopics.push(suppportTopicItem);
-                    }
 
-                    suppportTopicItem.subItems.push(item);
+
+    // getSupportTopicImage1(supportTopicL2Name: string):Observable<any>{
+    //     // this._http.get('assets/{supportTopicL2Name}.json').subscribe(jsonResponse =>{
+    //     //     this.enabledResourceTypes = <ResourceServiceInputs[]>jsonResponse.enabledResourceTypes;
+    //     //   });
+
+    //     return this._http.head(`assets/img/${supportTopicL2Name}.png`,{ observe: 'response', responseType: 'blob' }).pipe(
+    //         map(response => {
+    //             console.log("Get image from assets");
+    //           return of(`assets/img/${supportTopicL2Name}.png`);
+    //         }),
+    //         catchError(error => {
+    //             console.log("Get image from blob");
+    //             console.log(error);
+    //             return of(`https://applensassets.blob.core.windows.net/applensassets/${supportTopicL2Name}.png`);
+    //         })
+    //       );
+
+
+    // return this._diagnosticService.getDetectors().pipe(
+    //     mergeMap((detectors: DetectorMetaData[]) => {
+    //       const subDetectors: string[] = [];
+    //       detectorList.forEach(childSet => (<DetectorListRendering>childSet.renderingProperties).detectorIds.forEach(detector => subDetectors.push(detector)));
+
+    //       this.detectorSummaryViewModels = detectors.filter(detector => subDetectors.indexOf(detector.id) != -1).map(detector => {
+    //         return <DetectorSummaryViewModel>{
+    //           id: detector.id,
+    //           loading: LoadingStatus.Loading,
+    //           name: detector.name,
+    //           path: `detectors/${detector.id}`,
+    //           status: null,
+    //           type: DetectorSummaryType.ChildDetector
+    //         };
+    //       });
+
+    //       this.loading = false;
+
+    //       const tasks = this.detectorSummaryViewModels.map(detector => {
+    //         return this._diagnosticService.getDetector(detector.id, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString).pipe(
+    //           map(response => {
+    //             detector.status = response.status.statusId;
+    //             detector.loading = LoadingStatus.Success;
+    //         }));
+    //       });
+
+    //       return forkJoin(tasks);
+    //     })
+    //   );
+
+    // this._authService.getStartupInfo()
+    // .subscribe((startUpInfo: StartupInfo) => {
+    //     if (startUpInfo.resourceType === ResourceType.Site) {
+    //         this._armService.getResource<Site>(startUpInfo.resourceId).pipe(
+    //             mergeMap((site: ResponseMessageEnvelope<Site>) => {
+    //                 this.currentSite = site.properties;
+    //                 return this._rbacService.hasPermission(this.currentSite.serverFarmId, [this._rbacService.readScope]);
+    //             }))
+    //             .subscribe((hasPermission: boolean) => {
+    //                 this.hasReadAccessToServerFarm = hasPermission;
+    //                 //disable for Linux
+
+    //                 if (SiteExtensions.operatingSystem(this.currentSite) === OperatingSystem.windows) {
+    //                     this.initialize();
+    //                 }
+    //             });
+    //     }
+    // });
+
+    this._supportTopicService.getSupportTopics().subscribe((supportTopics: SupportTopicResult[]) => {
+        supportTopics.forEach((supportTopic) => {
+            let supportTopicL2Name = supportTopic.supportTopicL2Name;
+            this._supportTopicService.getCategoryImage(supportTopicL2Name).subscribe((iconString) => {
+                this.supportTopicL2Images[supportTopicL2Name] = iconString;
+                let item = new SupportTopicItem(supportTopic.supportTopicL2Name, supportTopic.productId, supportTopic.supportTopicId, supportTopic.supportTopicL3Name, supportTopic.supportTopicPath);
+                let suppportTopicItem = this.supportTopics.find((sup: SupportTopicItem) => supportTopic.supportTopicL2Name === sup.supportTopicL2Name);
+
+                if (!suppportTopicItem) {
+                    suppportTopicItem = new SupportTopicItem(supportTopic.supportTopicL2Name, supportTopic.productId, supportTopic.supportTopicId, null, null, iconString);
+                    console.log("image source");
+                    console.log(suppportTopicItem);
+                    this.supportTopics.push(suppportTopicItem);
                 }
 
+                suppportTopicItem.subItems.push(item);
 
-
-//                 productId: "14748"
-// productName: "Web App (Windows)"
-// supportTopicId: "32581610"
-// supportTopicL2Name: "Problems with WebJobs"
-// supportTopicL3Name: "Cannot create WebJobs"
-// supportTopicPath: "Web App (Windows)/Problems with WebJobs/Cannot create WebJobs"
-
-
-                // handle the support topics service.
             });
         });
+    });
 
         const detectorsWithSupportTopics = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
             this.detectorsWithSupportTopics = detectors.filter(detector => detector.supportTopicList && detector.supportTopicList.length > 0);
@@ -90,6 +158,7 @@ export class ResourceHomeComponent implements OnInit {
             });
 
             this.detectorsPublicOrWithSupportTopics.forEach(element => {
+
                 let onClick = () => {
                     this.navigateTo(`detectors/${element.id}`);
                 };
@@ -98,20 +167,28 @@ export class ResourceHomeComponent implements OnInit {
                     return this.currentRoutePath && this.currentRoutePath.join('/') === `detectors/${element.id}`;
                 };
 
-                if (element.category)
-                {
-                    let menuItem = new CategoryItem(element.name, element.description, element.author, onClick, isSelected);
 
-                    let categoryMenuItem = this.categories.find((cat: CategoryItem) => cat.label === element.category);
-                    if (!categoryMenuItem) {
-                        let categoryIcon = `https://applensassets.blob.core.windows.net/applensassets/${element.category}.png`;
+                let categoryName = element.category;
+                if (categoryName) {
 
-                        categoryMenuItem = new CategoryItem(element.category, null, null, null, null, categoryIcon);
-                        this.categories.push(categoryMenuItem);
-                    }
 
-                    categoryMenuItem.subItems.push(menuItem);
+            this._supportTopicService.getCategoryImage(categoryName).subscribe((iconString) => {
+                let menuItem = new CategoryItem(element.name, element.description, element.author, onClick, isSelected);
+                let categoryMenuItem = this.categories.find((cat: CategoryItem) => cat.label === element.category);
+
+                if (!categoryMenuItem) {
+
+                    categoryMenuItem = new CategoryItem(element.category, null, null, null, null, iconString);
+
+                    this.categories.push(categoryMenuItem);
                 }
+
+                categoryMenuItem.subItems.push(menuItem);
+
+            });
+        }
+
+
             });
         });
     };
@@ -124,16 +201,16 @@ export class ResourceHomeComponent implements OnInit {
         this.navigateTo(`../../supportTopics/${supportTopic.supportTopicL2Name}`);
     }
 
-    private loadIcon(supportTopic: SupportTopicItem) {
-        this._http.get(`assets/img/${supportTopic.supportTopicL2Name}.png`).subscribe((res) => {
-            supportTopic.icon = `assets/img/${supportTopic.supportTopicL2Name}.png`;
-        }, (err) => {
-          // HANDLE file not found
-          if (err.status === 404) {
-            supportTopic.icon = `https://applensassets.blob.core.windows.net/applensassets/${supportTopic.supportTopicL2Name}.png`;
-          }
-        });
-    }
+    // private loadIcon(supportTopicL2Name: string): Observable<string> {
+    //     return this._http.get(`assets/img/${supportTopicL2Name}.png`).subscribe(
+    //         (res) => {
+    //             return `assets/img/${supportTopicL2Name}.png`;
+    //         },
+    //         (err) => {
+    //             // HANDLE file not found
+    //             return `https://applensassets.blob.core.windows.net/applensassets/${supportTopicL2Name}.png`;
+    //         });
+    // }
 
     //   private loadSecondFile() {
     //     this._http.get('/asset/second.json').subscribe(() => {
@@ -144,26 +221,35 @@ export class ResourceHomeComponent implements OnInit {
     //     });
     //   }
 
-    // getSupportTopicImage(supportTopicL2Name: string):Observable<any>{
-    //     // this._http.get('assets/{supportTopicL2Name}.json').subscribe(jsonResponse =>{
-    //     //     this.enabledResourceTypes = <ResourceServiceInputs[]>jsonResponse.enabledResourceTypes;
-    //     //   });
 
-    //      return this._http.head(`assets/${supportTopicL2Name}.png`,{ observe: 'response', responseType: 'blob' })
-    //       .pipe(
-    //         map(response => {
-    //           return of(`assets/${supportTopicL2Name}.png`);
 
-    //         }),
-    //         catchError(error => {
-    //           return of(`https://applensassets.blob.core.windows.net/applensassets/${supportTopicL2Name}.png`);
-    //         })
-    //       );
-    //     }
 
-        //   .map((response) => response.status)
-        //   .catch((error) => Observable.of(error.status || 404))
-        //   .subscribe((status) => console.log(`status = ${status}`));
+
+
+    getSupportTopicImage1(supportTopicL2Name: string):Observable<any>{
+        // this._http.get('assets/{supportTopicL2Name}.json').subscribe(jsonResponse =>{
+        //     this.enabledResourceTypes = <ResourceServiceInputs[]>jsonResponse.enabledResourceTypes;
+        //   });
+
+        return this._http.head(`assets/img/${supportTopicL2Name}.png`,{ observe: 'response', responseType: 'blob' });
+
+        //  return this._http.head(`assets/img/${supportTopicL2Name}.png`,{ observe: 'response', responseType: 'blob' })
+        //   .pipe(
+        //     map(response => {
+        //         console.log("Get image from assets");
+        //       return of(`assets/img/${supportTopicL2Name}.png`);
+        //     }),
+        //     catchError(error => {
+        //         console.log("Get image from blob");
+        //         console.log(error);
+        //       return of(`https://applensassets.blob.core.windows.net/applensassets/${supportTopicL2Name}.png`);
+        //     })
+        //   );
+        }
+
+    //   .map((response) => response.status)
+    //   .catch((error) => Observable.of(error.status || 404))
+    //   .subscribe((status) => console.log(`status = ${status}`));
 
 
     //     this.http.head("/some-file.txt")
@@ -225,22 +311,18 @@ export class SupportTopicItem {
     supportTopicId: string;
     supportTopicL3Name: string;
     supportTopicPath: string;
-    // onClick: Function;
-    // isSelected: Function;
     icon: string;
     detectorId: string;
     detectorName: string;
     detectorInternal: boolean;
 
-    constructor(supportTopicL2Name: string, pesId: string, supportTopicId: string, supportTopicL3Name: string, supportTopicPath: string, icon: string = "", subItems: SupportTopicItem[]=[], detectorId: string = "", detectorName:string = "", detectorInternal:boolean = true) {
+    constructor(supportTopicL2Name: string, pesId: string, supportTopicId: string, supportTopicL3Name: string, supportTopicPath: string, icon: string = "", subItems: SupportTopicItem[] = [], detectorId: string = "", detectorName: string = "", detectorInternal: boolean = true) {
         this.supportTopicL2Name = supportTopicL2Name;
         this.subItems = subItems;
         this.pesId = pesId;
         this.supportTopicId = supportTopicId;
         this.supportTopicL3Name = supportTopicL3Name;
         this.supportTopicPath = supportTopicPath;
-        // this.onClick = onClick;
-        // this.isSelected = isSelected;
         this.icon = icon;
         this.detectorId = detectorId;
         this.detectorName = detectorName;
