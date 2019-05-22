@@ -7,13 +7,18 @@
         <section-divider label="Analysis" [hidden]="analysisTypes.length === 0">
           <collapsible-menu-item *ngFor="let item of analysisTypes" [menuItem]="item"></collapsible-menu-item>
         </section-divider>
-        <section-divider [label]="'Create'" [initiallyExpanded]="false" [disableExpandIcon] = "true">
+        <section-divider [label]="'Create'" [initiallyExpanded]="false" [disableExpandIcon]="true">
           <i class="fa fa-plus-circle fa-fw menu-icon menu-icon-create" aria-hidden="true"></i>
           <collapsible-menu-item *ngFor="let item of createNew" [menuItem]="item"></collapsible-menu-item>
         </section-divider>
         <section-divider [label]="'Documentation'" [initiallyExpanded]="false" [collapsible]="false" (click)="openDocumentation()">
-            <i class="fa fa-book fa-fw menu-icon menu-icon-documentation" aria-hidden="true"></i>
+          <i class="fa fa-book fa-fw menu-icon menu-icon-documentation" aria-hidden="true"></i>
           <collapsible-menu-item *ngFor="let doc of documentation" [menuItem]="doc"></collapsible-menu-item>
+        </section-divider>
+        <section-divider [label]="'Analysis'" [initiallyExpanded]="false" [collapsible]="false">
+          <i class="fa fa-heartbeat fa-fw menu-icon menu-icon-analysis" aria-hidden="true"></i>
+          <collapsible-menu-item *ngFor="let analysis of analysises" [menuItem]="analysis"></collapsible-menu-item>
+          <i *ngIf="!categories || categories.length === 0" class="fa fa-spinner fa-spin fa-3x fa-fw loading-menu"></i>
         </section-divider>
         <section-divider [label]="'Detectors'">
           <i class="fa fa-search fa-fw menu-icon menu-icon-detectors" aria-hidden="true"></i>

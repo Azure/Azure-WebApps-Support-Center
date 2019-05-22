@@ -21,6 +21,8 @@ export class SideNavComponent implements OnInit {
   categories: CollapsibleMenuItem[] = [];
   analysisTypes: CollapsibleMenuItem[] = [];
 
+  analysises: any[] = [];
+
   gists: CollapsibleMenuItem[] = [];
 
   searchValue: string;

@@ -101,7 +101,7 @@ export class ApplensSupportTopicService {
         {
             keyWords: ["create", "creation", "develop", "development"],
             path: "assets/img/SupportTopicImages/create.png",
-        }
+        },
         {
             keyWords: ["troubleshoot"],
             path: "assets/img/SupportTopicImages/troubleshoot.png",
