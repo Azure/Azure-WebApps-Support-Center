@@ -59,7 +59,7 @@
             <li role="separator" class="divider"></li>
           </ul>
         </li> -->
-        <li class="user-label"><span>Hello, {{userName}}</span></li>
+        <li class="user-label"><span *ngIf="userName">Hello, {{userName}}</span></li>
         <li><img *ngIf="userPhotoSource else loading" id="userPhoto" [src]="userPhotoSource" class="avatar" alt="User Profile Photo" (click)="navigateToUserPage()"/></li>
         <!-- <li><i class="fa fa-spinner" aria-hidden="true"></i></li> -->
       </ul>
@@ -107,5 +107,8 @@
 
 <ng-template #loading>
   <!-- <li class="user-label loading-element"><span>  <i class="fa fa-spinner-3x" aria-hidden="true"></i></span></li> -->
-  <div class="loading-element"><span>loading..</span></div>
+  <div class="loading-element">
+      <span class="fa-li fa fa-spinner fa-spin fa-2x photo-loading"></span>
+    <!-- <span>loading..</span> -->
+  </div>
 </ng-template>

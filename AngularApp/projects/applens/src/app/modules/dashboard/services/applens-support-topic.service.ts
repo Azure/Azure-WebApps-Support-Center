@@ -21,14 +21,10 @@ export class ApplensSupportTopicService {
         {
             keyWords: ["best", "practice"],
             path: "assets/img/SupportTopicImages/best.png",
-        }
+        },
         {
             keyWords: ["backup", "back up"],
             path: "assets/img/SupportTopicImages/backup.png",
-        },
-        {
-            keyWords: ["domain"],
-            path: "assets/img/SupportTopicImages/domain.png",
         },
         {
             keyWords: ["health"],
@@ -61,6 +57,10 @@ export class ApplensSupportTopicService {
         {
             keyWords: ["ssl", "cert"],
             path: "assets/img/SupportTopicImages/ssl.png",
+        },
+        {
+            keyWords: ["domain"],
+            path: "assets/img/SupportTopicImages/domain.png",
         },
         {
             keyWords: ["authentication", "authenticate", "authorization"],

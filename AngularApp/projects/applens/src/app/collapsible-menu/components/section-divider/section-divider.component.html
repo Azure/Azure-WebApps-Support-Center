@@ -1,6 +1,6 @@
 <div class="section-divider" [class.not-expandable]="!collapsible" (click)="expanded = !expanded">
   <div>
-    <ng-content select="i"></ng-content>  
+    <ng-content select=".menu-icon"></ng-content>  
     </div>
   <div class="menu-label">
       {{label.toUpperCase()}}
@@ -13,5 +13,6 @@
 <div class="section-children">
   <div class="expandable-content" [@expand]="collapsible && expanded ? 'shown' : 'hidden'">
       <ng-content select="collapsible-menu-item"></ng-content>
+      <ng-content select=".fa-spin "></ng-content>
   </div>
 </div>
