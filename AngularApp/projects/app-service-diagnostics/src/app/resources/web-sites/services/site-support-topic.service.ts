@@ -20,11 +20,6 @@ export class SiteSupportTopicService extends SupportTopicService {
       pesId: '14748',
       supportTopicId: '32542218',
       path: '/diagnostics/availability/analysis',
-    },
-    {
-      pesId: '14748',
-      supportTopicId: '32581616',
-      path: '/diagnostics/availability/memoryanalysis',
     }
   ];
 
