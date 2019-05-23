@@ -23,7 +23,7 @@ export class ApplensSupportTopicService {
             path: "assets/img/SupportTopicImages/ip.png",
         },
         {
-            keyWords: ["code", "edit"],
+            keyWords: ["code", "edit", "debug"],
             path: "assets/img/SupportTopicImages/code.png",
         },
         {
@@ -71,7 +71,7 @@ export class ApplensSupportTopicService {
             path: "assets/img/SupportTopicImages/availability.png",
         },
         {
-            keyWords: ["performance"],
+            keyWords: ["performance", "slow"],
             path: "assets/img/SupportTopicImages/performance.png",
         },
         {

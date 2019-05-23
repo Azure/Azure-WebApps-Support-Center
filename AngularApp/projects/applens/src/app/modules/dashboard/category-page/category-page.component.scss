@@ -20,6 +20,10 @@
     &:hover {
         color: #0d1dea;;
     }
+
+    &:active:focus, &:active:focus {
+      outline: none;
+    }
 }
 
 .category-info-container {

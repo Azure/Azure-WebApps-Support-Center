@@ -20,7 +20,7 @@ export class SelfHelpContentComponent implements OnInit {
     pesId: string = "";
     supportTopicId: string = "";
     selfHelpPath: string = "microsoft.web";
-    selfHelpContent: string = "";
+    selfHelpContent: string = undefined;
     title: string = "";
 
     constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: HttpClient, private _resourceService: ResourceService, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService, private _markdownService: MarkdownService, private _location: Location) { }
@@ -30,12 +30,8 @@ export class SelfHelpContentComponent implements OnInit {
         this.supportTopicId = this._activatedRoute.snapshot.params['supportTopicId'];
         this.selfHelpPath = this._supportTopicService.getSelfHelpPath();
 
-        this._diagnosticService.getSelfHelpContent(this.pesId, this.supportTopicId, this.selfHelpPath).subscribe((res) => {
-            this.selfHelpContent = res;
-            console.log(this.pesId);
-            console.log(this.supportTopicId);
-            console.log(this.selfHelpPath);
-            console.log(this.selfHelpContent);
+        this._diagnosticService.getSelfHelpContent(this.pesId, this.supportTopicId, this.selfHelpPath).subscribe((res: string) => {
+            this.selfHelpContent = res === '' ? "No self help documentation is found" : res;
         });
     }
 

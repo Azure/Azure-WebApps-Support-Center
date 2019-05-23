@@ -43,8 +43,6 @@
     <div class="flexed card" *ngFor="let supportTopic of supportTopics;let i = index" (click)="navigateToSupportTopic(supportTopic)">
       <div class="bottom row">
         <div class="col-md-3 category-icon-container">
-          <!-- onError="this.src='supportTopic.icon';" -->
-          <!-- <img class="category-icon" src="assets\img\{{supportTopic.supportTopicL2Name}}.png"  /> -->
           <img *ngIf="supportTopic.icon != undefined && supportTopic.icon != ''" class="category-icon" src={{supportTopic.icon}} />
           <ngx-avatar *ngIf="supportTopic.icon == undefined || supportTopic.icon == ''" [name]="supportTopic.supportTopicL2Name" [round]="false"
             initialsSize="2" size="115"></ngx-avatar>

@@ -86,7 +86,6 @@ export class DiagnosticApiService {
   }
 
   public getSelfHelpContent(pesId: string, supportTopicId: string, path: string, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
-      // 14748
     let url: string = `${this.diagnosticApi}api/selfhelp/pesId/${pesId}/supportTopicId/${supportTopicId}/path/${path}`;
     let request = this._httpClient.get(url, {
         headers: this._getHeaders()

@@ -37,6 +37,8 @@ namespace AppLensV3.Helpers
         internal const int TokenRefreshIntervalInMs = 10 * 60 * 1000;   // 10 minutes
         internal const string DefaultGraphEndpoint = "https://graph.microsoft.com/";
         internal const string GraphApiEndpointFormat = "https://graph.microsoft.com/v1.0/{0}";
+        internal const string GraphUserApiEndpointFormat = "https://graph.microsoft.com/v1.0/users/{0}@microsoft.com";
+        internal const string GraphUserImageApiEndpointFormat = "https://graph.microsoft.com/v1.0/users/{0}@microsoft.com/photo/$value";
     }
 
     internal static class SelfHelpConstants

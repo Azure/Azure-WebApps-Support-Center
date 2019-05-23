@@ -9,6 +9,7 @@ import { AvatarModule } from 'ngx-avatar';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 import { HttpMethod } from '../../../shared/models/http';
 import { ApplensSupportTopicService } from '../services/applens-support-topic.service';
+import { Location } from '@angular/common';
 
 
 @Component({
@@ -41,13 +42,13 @@ export class CategoryPageComponent implements OnInit {
     detectorsPublicOrWithSupportTopics: DetectorMetaData[] = [];
 
 
-    constructor(private _route: Router, private _activatedRoute: ActivatedRoute, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService) { }
+    constructor(private _route: Router, private _activatedRoute: ActivatedRoute, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService, private _location: Location) { }
 
     ngOnInit() {
         this.categoryName = this._activatedRoute.snapshot.params['category'];
-        this._supportTopicService.getCategoryImage(this.categoryName).subscribe((iconString) => {
+        const supportTopicImage = this._supportTopicService.getCategoryImage(this.categoryName).pipe(map(iconString => {
             this.categoryIcon = iconString;
-        });
+        }));
 
         // Observable to get all the detectors
         const allDetectorsList = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
@@ -56,7 +57,6 @@ export class CategoryPageComponent implements OnInit {
             var detectorsWithSupportTopics = detectors.filter(detector => detector.category && detector.category.toLowerCase() === this.categoryName.toLowerCase() && detector.supportTopicList && detector.supportTopicList.length > 0);
 
             detectorsWithSupportTopics.forEach(detector => {
-                console.log(`Add detectors with support topics ${detector.id}`);
                 this.detectorsWithSupportTopics.push(detector);
                 detector.supportTopicList.forEach(supportTopic => {
                     this.supportTopicIdMapping.push({ supportTopic: supportTopic, detectorName: detector.name });
@@ -86,7 +86,7 @@ export class CategoryPageComponent implements OnInit {
             this.publicDetectorsList = publicDetectors.filter(detector => detector.category && detector.category.toLowerCase() === this.categoryName.toLowerCase());
         }));
 
-        forkJoin(allDetectorsList, publicDetectors).subscribe((res) => {
+        forkJoin(supportTopicImage, allDetectorsList, publicDetectors).subscribe((res) => {
             this.detectorsWithSupportTopics.forEach((detector) => {
                 if (!this.filterdDetectors.find((d) => d.id === detector.id)) {
                     this.filterdDetectors.push(detector);
@@ -108,7 +108,7 @@ export class CategoryPageComponent implements OnInit {
                 authors: this.authorsList
             };
 
-            if (res[1] !== null) {
+            if (res[2] !== null) {
                 this._diagnosticService.getUsers(body).subscribe((userImages) => {
                     this.userImages = userImages;
 
@@ -170,9 +170,9 @@ export class CategoryPageComponent implements OnInit {
         //this._router.navigate(path.split('/'), navigationExtras);
         this._route.navigate([path], navigationExtras);
     }
-
-    navigateToHomePage() {
-        this.navigateTo("../../home/category");
+     
+    navigateBack() {
+        this._location.back();
     }
 
     navigateToUserPage(userId: string) {

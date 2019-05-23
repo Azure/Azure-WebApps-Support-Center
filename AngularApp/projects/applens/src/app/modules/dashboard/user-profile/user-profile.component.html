@@ -1,42 +1,34 @@
-<!-- main -->
+<div class="back-button-container">
+  <button class="btn back-button" (click)="navigateBack()">&lt; Back</button>
+</div>
 <section class="main">
   <div class="points"></div>
   <div class="shield-left"></div>
   <div class="shield-right"></div>
-  <!-- card -->
-
-  <!-- businessPhones: string;
-    displayName: string;
-    givenName: string;
-    jobTitle: string;
-    mail: string;
-    officeLocation: string;
-    userPrincipalName: string; -->
-
-
   <div class="card">
     <div class="detail">
       <div class="card-top">
         <div class="detail-images">
-          <!-- <img src="https://dl.dropboxusercontent.com/s/pil7jdc7d7m8u0h/pic.png" alt="Picture"> -->
-          <img *ngIf="userPhotoSource" id="userPhoto" [src]="userPhotoSource" class="user-photo"
-            alt="User Profile Photo" />
-          <ngx-avatar *ngIf="userPhotoSource == undefined || userPhotoSource === ''" [round]="false"
-            [name]=userInfo.displayName size="90" initialsSize="2"></ngx-avatar>
+          <img *ngIf="userPhotoSource" id="userPhoto" [src]="userPhotoSource" class="user-photo" alt="User Profile Photo" />
+          <ngx-avatar *ngIf="userPhotoSource == undefined || userPhotoSource === ''" [round]="false" [name]=userInfo.displayName size="90"
+            initialsSize="2"></ngx-avatar>
         </div>
         <div *ngIf="userInfo">
           <h3>{{userInfo.displayName}}</h3>
           <h4>{{userInfo.jobTitle}}</h4>
           <div class="user-detail">
-            <p><i class="fa fa-phone fa-lg message"></i> {{businessPhones}}</p>
-            <p><i class="fa fa-home fa-lg message"></i> {{userInfo.officeLocation}}</p>
+            <p>
+              <i class="fa fa-phone fa-lg message"></i> {{businessPhones}}</p>
+            <p>
+              <i class="fa fa-home fa-lg message"></i> {{userInfo.officeLocation}}</p>
             <p>{{userInfo.userPrincipalName}}</p>
           </div>
         </div>
       </div>
       <div class="content-shield">
-        <a class="mail" href="mailto:{{userId}}@microsoft.com">Mail&nbsp;&nbsp;&nbsp;&nbsp; <i
-            class="fa fa-envelope fa-lg message"></i></a>
+        <a class="mail" href="mailto:{{userId}}@microsoft.com">Mail&nbsp;&nbsp;&nbsp;&nbsp;
+          <i class="fa fa-envelope fa-lg message"></i>
+        </a>
       </div>
     </div>
   </div>

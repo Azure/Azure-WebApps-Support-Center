@@ -15,8 +15,6 @@ namespace AppLensV3.Services
 {
     public interface ISelfHelpContentService
     {
-        Task<string[]> GetAllSelfHelp();
-
         Task<string> GetSelfHelpBySupportTopic(string pesId, string supportTopicId, string path);
     }
 }

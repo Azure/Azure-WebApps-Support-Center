@@ -1,6 +1,6 @@
 <div class="banner">
   <div>
-    <a class="btn back-button" (click)="navigateToHomePage()">&lt; Home</a>
+    <a class="btn back-button" (click)="navigateBack()">&lt; Back</a>
   </div>
   <div class="category-info-container">
     <img *ngIf="supportTopicIcon != undefined && supportTopicIcon != ''" class="category-icon"
@@ -17,6 +17,7 @@
         </span>
       </div>
     </div>
+  </div>
   </div>
 <div class="detector-list">
   <div class="flexed-detector card" *ngFor="let supportTopic of supportTopics; let i=index"
