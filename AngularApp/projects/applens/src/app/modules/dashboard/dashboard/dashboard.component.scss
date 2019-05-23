@@ -1,7 +1,3 @@
-// .site-content {
-//     padding-top: 50px;
-// }
-
 side-nav {
     position: fixed;
     top: 50px;
@@ -43,7 +39,6 @@ side-nav {
 .content-wrapper.white-background, .content-wrapper.gray-background {
     min-height: calc(100vh - 95px);
     height: 100%;
-    // margin-top:-55px;
     margin-top:0px;
 
     // Nested onboarding-flow components have two navbars totalling 92px
@@ -66,22 +61,6 @@ side-nav {
     height: 50px;
     float: right;
     margin-right:10px;
-
-    // background-color: #367fa9;
-    // color: #ffffff;
-    // border-bottom: 0 solid transparent;
-
-    // transition: width .3s ease-in-out;
-    // display: block;
-    // height: 50px;
-    // font-size: 20px;
-    // line-height: 50px;
-    // text-align: center;
-    // width: 230px;
-    // font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    // padding: 0 15px;
-    // font-weight: 300;
-    // overflow: hidden;
 }
 
 .user-label {
@@ -140,7 +119,6 @@ body{
      width: 30px;
      height: auto;
      border: 3px solid purple;
-    //  position: absolute;
      -moz-border-radius: 10px;
      -webkit-border-radius: 10px;
      border-radius: 10px;
@@ -181,9 +159,6 @@ body{
 
   .resource-summary i:hover{
     color: black;
-    //  background-color: white;
-    //  border-radius: 50%;
-    //  border: 1px solid white;
   }
 
   .resource-content {

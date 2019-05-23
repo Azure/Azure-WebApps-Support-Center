@@ -45,8 +45,5 @@ namespace AppLensV3.Helpers
     {
         internal const string RawFileHeaderMediaType = "application/vnd.github.VERSION.raw";
         internal const string ArticleTemplatePath = "https://api.github.com/repos/Azure/SelfHelpContent/contents/articles/{0}?ref=master&access_token={1}";
-        internal const string RawTemplatePath = "https://raw.githubusercontent.com/Azure/SelfHelpContent/master/articles/microsoft.web/";
-        internal const string SourceFilePathFormat = "https://api.github.com/repos/{0}/{1}/contents/{2}/{2}.md?ref={3}&access_token={4}";
-        internal const string ConfigPathFormat = "https://api.github.com/repos/{0}/{1}/contents/{2}/package.json?ref={3}&access_token={4}";
     }
 }

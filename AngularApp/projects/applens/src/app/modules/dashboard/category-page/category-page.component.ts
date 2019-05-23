@@ -63,7 +63,6 @@ export class CategoryPageComponent implements OnInit {
                 });
             });
 
-
             // This is to get the full detectors authors list, and make graph API call
             let authorString = "";
             detectors.forEach(detector => {
@@ -102,8 +101,6 @@ export class CategoryPageComponent implements OnInit {
                 }
             });
 
-
-            // This seems should be executed after forkjoin
             var body = {
                 authors: this.authorsList
             };
@@ -125,8 +122,7 @@ export class CategoryPageComponent implements OnInit {
                                 let detectorAuthors = authors.split(new RegExp(separators.join('|'), 'g'));
 
                                 detectorAuthors.forEach(author => {
-                                    if (!this.filterdDetectorAuthors.find(existingAuthor=> existingAuthor === author))
-                                    {
+                                    if (!this.filterdDetectorAuthors.find(existingAuthor => existingAuthor === author)) {
                                         this.filterdDetectorAuthors.push(author);
                                     }
                                     detectorUsersImages[author] = this.userImages.hasOwnProperty(author) ? this.userImages[author] : undefined;
@@ -140,8 +136,8 @@ export class CategoryPageComponent implements OnInit {
                                 });
                             }
 
-                        let detectorItem = new DetectorItem(detector.name, detector.description, iconString, detector.author, [], detectorUsersImages, detectorSupportTopics, onClick);
-                        this.detectors.push(detectorItem);
+                            let detectorItem = new DetectorItem(detector.name, detector.description, iconString, detector.author, [], detectorUsersImages, detectorSupportTopics, onClick);
+                            this.detectors.push(detectorItem);
 
                         });
                     });
@@ -163,7 +159,7 @@ export class CategoryPageComponent implements OnInit {
         };
         this._route.navigate([path], navigationExtras);
     }
-     
+
     navigateBack() {
         this._location.back();
     }
@@ -184,7 +180,7 @@ export class DetectorItem {
     supportTopics: any[] = [];
     onClick: Function;
 
-    constructor(name: string, description: string,  icon: string, authorString: string, authors: any[], userImages: any, supportTopics: any[], onClick: Function) {
+    constructor(name: string, description: string, icon: string, authorString: string, authors: any[], userImages: any, supportTopics: any[], onClick: Function) {
         this.name = name;
 
         if (description == undefined || description === "") {

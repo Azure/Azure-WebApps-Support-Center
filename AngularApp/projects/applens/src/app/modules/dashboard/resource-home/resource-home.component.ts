@@ -45,23 +45,23 @@ export class ResourceHomeComponent implements OnInit {
             }
         });
 
-    this._supportTopicService.getSupportTopics().subscribe((supportTopics: SupportTopicResult[]) => {
-        supportTopics.forEach((supportTopic) => {
-            let supportTopicL2Name = supportTopic.supportTopicL2Name;
-            this._supportTopicService.getCategoryImage(supportTopicL2Name).subscribe((iconString) => {
-                this.supportTopicL2Images[supportTopicL2Name] = iconString;
-                let item = new SupportTopicItem(supportTopic.supportTopicL2Name, supportTopic.productId, "Detector", supportTopic.supportTopicId, supportTopic.supportTopicL3Name, supportTopic.supportTopicPath);
-                let suppportTopicItem = this.supportTopics.find((sup: SupportTopicItem) => supportTopic.supportTopicL2Name === sup.supportTopicL2Name);
+        this._supportTopicService.getSupportTopics().subscribe((supportTopics: SupportTopicResult[]) => {
+            supportTopics.forEach((supportTopic) => {
+                let supportTopicL2Name = supportTopic.supportTopicL2Name;
+                this._supportTopicService.getCategoryImage(supportTopicL2Name).subscribe((iconString) => {
+                    this.supportTopicL2Images[supportTopicL2Name] = iconString;
+                    let item = new SupportTopicItem(supportTopic.supportTopicL2Name, supportTopic.productId, "Detector", supportTopic.supportTopicId, supportTopic.supportTopicL3Name, supportTopic.supportTopicPath);
+                    let suppportTopicItem = this.supportTopics.find((sup: SupportTopicItem) => supportTopic.supportTopicL2Name === sup.supportTopicL2Name);
 
-                if (!suppportTopicItem) {
-                    suppportTopicItem = new SupportTopicItem(supportTopic.supportTopicL2Name, supportTopic.productId, "Detector", supportTopic.supportTopicId, null, null, iconString);
-                    this.supportTopics.push(suppportTopicItem);
-                }
+                    if (!suppportTopicItem) {
+                        suppportTopicItem = new SupportTopicItem(supportTopic.supportTopicL2Name, supportTopic.productId, "Detector", supportTopic.supportTopicId, null, null, iconString);
+                        this.supportTopics.push(suppportTopicItem);
+                    }
 
-                suppportTopicItem.subItems.push(item);
+                    suppportTopicItem.subItems.push(item);
+                });
             });
         });
-    });
 
         const detectorsWithSupportTopics = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
             this.detectorsWithSupportTopics = detectors.filter(detector => detector.supportTopicList && detector.supportTopicList.length > 0);
@@ -94,21 +94,21 @@ export class ResourceHomeComponent implements OnInit {
                 if (categoryName) {
 
 
-            this._supportTopicService.getCategoryImage(categoryName).subscribe((iconString) => {
-                let menuItem = new CategoryItem(element.name, element.description, element.author, onClick, isSelected);
-                let categoryMenuItem = this.categories.find((cat: CategoryItem) => cat.label === element.category);
+                    this._supportTopicService.getCategoryImage(categoryName).subscribe((iconString) => {
+                        let menuItem = new CategoryItem(element.name, element.description, element.author, onClick, isSelected);
+                        let categoryMenuItem = this.categories.find((cat: CategoryItem) => cat.label === element.category);
 
-                if (!categoryMenuItem) {
+                        if (!categoryMenuItem) {
 
-                    categoryMenuItem = new CategoryItem(element.category, null, null, null, null, iconString);
+                            categoryMenuItem = new CategoryItem(element.category, null, null, null, null, iconString);
 
-                    this.categories.push(categoryMenuItem);
+                            this.categories.push(categoryMenuItem);
+                        }
+
+                        categoryMenuItem.subItems.push(menuItem);
+
+                    });
                 }
-
-                categoryMenuItem.subItems.push(menuItem);
-
-            });
-        }
 
 
             });

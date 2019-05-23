@@ -15,15 +15,6 @@ td, th {
   text-shadow: none;
 }
 
-// .btn-first-child {
-//   border-radius: 0.5em 0 0 0.5em;
-// //   color:#2288fc;
-// }
-
-// .btn-last-child {
-//   border-radius: 0 0.5em 0.5em 0;
-// }
-
 .btn.is-selected {
   color: white;
   background-color: #28F;
@@ -66,7 +57,6 @@ body {
 .keywords {
     display: flex;
    flex-wrap: wrap;
-    // justify-content: space-around;
     align-items: baseline;
     margin: 2.5%;
 }
@@ -268,13 +258,6 @@ body {
       transform: scale(2,2);
       cursor: pointer;
     }
-
-  //   .detector-card-container {
-  //     opacity: 0;
-  //     transition: height 350ms cubic-bezier(.55,0,.1,1), width 350ms cubic-bezier(.55,0,.1,1);
-  // //    transition: transform 350ms, opacity 100ms;
-  //     cursor: pointer;
-  //   }
 
     .top .icon {
       opacity: 0;

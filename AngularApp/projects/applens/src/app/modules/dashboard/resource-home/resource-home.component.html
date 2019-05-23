@@ -11,11 +11,10 @@
       (click)="navigateToCategory(category)">
       <div class="bottom row">
         <div *ngIf="category.icon != undefined && category.icon != ''" class="col-md-3 category-icon-container">
-          <img  class="category-icon" src={{category.icon}} />
+          <img class="category-icon" src={{category.icon}} />
         </div>
         <div *ngIf="category.icon == undefined || category.icon == ''" class="col-md-3 category-avatar-container">
-          <ngx-avatar [name]="category.label" [round]="false"
-          initialsSize="2" size="80"></ngx-avatar>
+          <ngx-avatar [name]="category.label" [round]="false" initialsSize="2" size="80"></ngx-avatar>
         </div>
         <div class="col-md-9 category-label">
           <div class="category-title">{{category.label}}</div>

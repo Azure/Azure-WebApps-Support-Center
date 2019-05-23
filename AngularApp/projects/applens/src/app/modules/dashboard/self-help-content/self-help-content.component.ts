@@ -9,7 +9,7 @@ import { ApplensDiagnosticService } from '../services/applens-diagnostic.service
 import { ApplensSupportTopicService } from '../services/applens-support-topic.service';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { MarkdownService } from 'ngx-markdown';
-import {Location} from '@angular/common';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'self-help-content',

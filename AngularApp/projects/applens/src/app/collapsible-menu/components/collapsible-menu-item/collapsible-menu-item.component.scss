@@ -35,10 +35,6 @@
     padding: 10px 5px 9px 35px;
 }
 
-// :host-context(.light-theme) .menu-item {
-//     border-bottom: 1px solid #ccc;
-// }
-
 :host-context(.light-theme) .menu-item:hover,
 :host-context(.light-theme) .menu-item.selected {
     background-color: rgba(0,137,250,.1);

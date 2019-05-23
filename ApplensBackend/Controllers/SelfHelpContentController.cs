@@ -47,8 +47,6 @@ namespace AppLensV3.Controllers
             }
 
             var response = await _selfHelpContentService.GetSelfHelpBySupportTopic(pesId, supportTopicId, path);
-
-          //  var response1 = await _selfHelpContentService.GetAllSelfHelp();
             return Ok(response);
         }
     }

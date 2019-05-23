@@ -8,8 +8,8 @@ import { environment } from '../../../environments/environment';
 import { HttpMethod } from '../models/http';
 import { Package } from '../models/package';
 import { CacheService } from './cache.service';
-import {throwError as observableThrowError } from 'rxjs';
-import {catchError, tap} from 'rxjs/operators';
+import { throwError as observableThrowError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 @Injectable()
 export class DiagnosticApiService {
@@ -24,12 +24,12 @@ export class DiagnosticApiService {
   }
 
   public getDetector(version: string, resourceId: string, detector: string, startTime?: string, endTime?: string,
-      body?: any, refresh: boolean = false, internalView: boolean = true, additionalQueryParams? : string):
-      Observable<DetectorResponse> {
+    body?: any, refresh: boolean = false, internalView: boolean = true, additionalQueryParams?: string):
+    Observable<DetectorResponse> {
     let timeParameters = this._getTimeQueryParameters(startTime, endTime);
     let path = `${version}${resourceId}/detectors/${detector}?${timeParameters}`;
 
-    if(additionalQueryParams != undefined) {
+    if (additionalQueryParams != undefined) {
       path += additionalQueryParams;
     }
 
@@ -37,7 +37,7 @@ export class DiagnosticApiService {
   }
 
   public getSystemInvoker(resourceId: string, detector: string, systemInvokerId: string = '', dataSource: string,
-      timeRange: string, body?: any): Observable<DetectorResponse> {
+    timeRange: string, body?: any): Observable<DetectorResponse> {
     let invokerParameters = this._getSystemInvokerParameters(dataSource, timeRange);
     let path = `/${resourceId}/detectors/${detector}/statistics/${systemInvokerId}?${invokerParameters}`;
 
@@ -69,18 +69,18 @@ export class DiagnosticApiService {
 
   public getUsers(body: any, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
     let url: string = `${this.diagnosticApi}api/graph/userPhotos`;
-    let request =  this._httpClient.post(url, body, {
-        headers: this._getHeaders()
-      });
+    let request = this._httpClient.post(url, body, {
+      headers: this._getHeaders()
+    });
 
-    return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.POST, url+body.toString()), request, invalidateCache) : request;
+    return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.POST, url + body.toString()), request, invalidateCache) : request;
   }
 
   public getSupportTopics(pesId: any, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
     let url: string = `${this.diagnosticApi}api/supporttopics/${pesId}`;
     let request = this._httpClient.get(url, {
-        headers: this._getHeaders()
-      });
+      headers: this._getHeaders()
+    });
 
     return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.GET, url), request, invalidateCache) : request;
   }
@@ -88,10 +88,10 @@ export class DiagnosticApiService {
   public getSelfHelpContent(pesId: string, supportTopicId: string, path: string, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
     let url: string = `${this.diagnosticApi}api/selfhelp/pesId/${pesId}/supportTopicId/${supportTopicId}/path/${path}`;
     let request = this._httpClient.get(url, {
-        headers: this._getHeaders()
-      });
+      headers: this._getHeaders()
+    });
 
-      return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.GET, url), request, invalidateCache) : request;
+    return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.GET, url), request, invalidateCache) : request;
   }
 
   public getGists(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {
@@ -100,11 +100,11 @@ export class DiagnosticApiService {
   }
 
   public getCompilerResponse(version: string, resourceId: string, body: any, startTime?: string, endTime?: string,
-      additionalParams?: any): Observable<QueryResponse<DetectorResponse>> {
+    additionalParams?: any): Observable<QueryResponse<DetectorResponse>> {
     let timeParameters = this._getTimeQueryParameters(startTime, endTime);
     let path = `${version}${resourceId}/diagnostics/query?${timeParameters}`;
 
-    if(additionalParams.formQueryParams != undefined) {
+    if (additionalParams.formQueryParams != undefined) {
       path += additionalParams.formQueryParams;
     }
 
@@ -113,7 +113,7 @@ export class DiagnosticApiService {
   }
 
   public getSystemCompilerResponse(resourceId: string, body: any, detectorId: string = '', dataSource: string = '',
-      timeRange: string = '',  additionalParams?: any): Observable<QueryResponse<DetectorResponse>> {
+    timeRange: string = '', additionalParams?: any): Observable<QueryResponse<DetectorResponse>> {
     let invokerParameters = this._getSystemInvokerParameters(dataSource, timeRange);
     let path = `/${resourceId}/detectors/${detectorId}/statisticsQuery?${invokerParameters}`;
 
@@ -122,7 +122,7 @@ export class DiagnosticApiService {
   }
 
   public getLocalDevelopmentResponse(detectorId: string, version: string, resourceId: string, body: any,
-      startTime?: string, endTime?: string): Observable<string> {
+    startTime?: string, endTime?: string): Observable<string> {
     let path = resourceId;
     var url: string = `${this.diagnosticApi}api/localdev?detectorId=${detectorId}`;
     let method: HttpMethod = HttpMethod.POST;
@@ -146,7 +146,7 @@ export class DiagnosticApiService {
     });
   }
 
-  public getChangedFiles(sha: string): Observable<any>{
+  public getChangedFiles(sha: string): Observable<any> {
     let url: string = `${this.diagnosticApi}api/github/package/${sha}/changedfiles`;
     return this._httpClient.get(url, {
       headers: this._getHeaders()
@@ -160,7 +160,7 @@ export class DiagnosticApiService {
     });
   }
 
-  public getCommitContentByFilePath(filePath: string, sha: string): Observable<any>{
+  public getCommitContentByFilePath(filePath: string, sha: string): Observable<any> {
     let url: string = `${this.diagnosticApi}api/github/package/commit/${sha}/${filePath}`;
     return this._httpClient.get(url, {
       headers: this._getHeaders()
@@ -182,12 +182,12 @@ export class DiagnosticApiService {
   }
 
   public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true,
-      invalidateCache: boolean = false, internalClient: boolean = true, internalView: boolean = true, emailRecipients: string="",
-      additionalParams?: any): Observable<T> {
+    invalidateCache: boolean = false, internalClient: boolean = true, internalView: boolean = true, emailRecipients: string = "",
+    additionalParams?: any): Observable<T> {
     let url = `${this.diagnosticApi}api/invoke`
     let request: Observable<any>;
 
-    if(additionalParams && additionalParams.getFullResponse) {
+    if (additionalParams && additionalParams.getFullResponse) {
       request = this._httpClient.post<T>(url, body, {
         headers: this._getHeaders(path, method, internalClient, internalView, emailRecipients, additionalParams),
         observe: 'response'
@@ -199,7 +199,7 @@ export class DiagnosticApiService {
     }
 
     let keyPostfix = internalClient === true ? "-true" : "-false";
-    return useCache ? this._cacheService.get(this.getCacheKey(method, path+keyPostfix), request, invalidateCache) : request;
+    return useCache ? this._cacheService.get(this.getCacheKey(method, path + keyPostfix), request, invalidateCache) : request;
   }
 
   private getCacheKey(method: HttpMethod, path: string) {
@@ -216,7 +216,7 @@ export class DiagnosticApiService {
   }
 
   private _getHeaders(path?: string, method?: HttpMethod, internalClient: boolean = true, internalView: boolean = true, emailRecipients: string = "",
-      additionalParams?: any): HttpHeaders {
+    additionalParams?: any): HttpHeaders {
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', 'application/json');
@@ -224,8 +224,7 @@ export class DiagnosticApiService {
     headers = headers.set('x-ms-internal-view', String(internalView));
     headers = headers.set('Authorization', `Bearer ${this._adalService.userInfo.token}`)
 
-    if (emailRecipients !== "")
-    {
+    if (emailRecipients !== "") {
       headers = headers.set('x-ms-emailRecipients', emailRecipients);
     }
 
@@ -237,11 +236,11 @@ export class DiagnosticApiService {
       headers = headers.set('x-ms-method', HttpMethod[method]);
     }
 
-    if(additionalParams && additionalParams.scriptETag) {
-      headers = headers.set('diag-script-etag',additionalParams.scriptETag);
+    if (additionalParams && additionalParams.scriptETag) {
+      headers = headers.set('diag-script-etag', additionalParams.scriptETag);
     }
 
-    if(additionalParams && additionalParams.assemblyName) {
+    if (additionalParams && additionalParams.assemblyName) {
       headers = headers.set('diag-assembly-name', encodeURI(additionalParams.assemblyName));
     }
 

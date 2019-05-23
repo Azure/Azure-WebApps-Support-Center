@@ -2,7 +2,6 @@
     width: 100%;
     background-color: white;
     height: 160px;
-  // background-image : url('https://applensassets.blob.core.windows.net/applensassets/banner.png');
   border-bottom: solid #ccc7c7 1px;
 }
 
@@ -209,13 +208,6 @@
         transform: scale(2,2);
         cursor: pointer;
       }
-
-    //   .detector-card-container {
-    //     opacity: 0;
-    //     transition: height 350ms cubic-bezier(.55,0,.1,1), width 350ms cubic-bezier(.55,0,.1,1);
-    // //    transition: transform 350ms, opacity 100ms;
-    //     cursor: pointer;
-    //   }
 
       .top .icon {
         opacity: 0;

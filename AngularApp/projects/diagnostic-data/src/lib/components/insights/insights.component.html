@@ -8,7 +8,7 @@
       [class.warning-insight-panel]="insight.status === InsightStatus.Warning"
       [class.success-insight-panel]="insight.status === InsightStatus.Success"
       [class.info-insight-panel]="insight.status === InsightStatus.Info">
-      <div tabIndex="1" role="button" class="panel-heading">
+      <div class="panel-heading">
         <h5  class="panel-title" [class.clickable-header]="hasContent(insight)" (click)="toggleInsightStatus(insight)">
           <span class="fa insight-expand-icon" [class.fa-angle-right]="hasContent(insight) && !insight.isExpanded"
             [class.fa-angle-down]="hasContent(insight) && insight.isExpanded"></span>

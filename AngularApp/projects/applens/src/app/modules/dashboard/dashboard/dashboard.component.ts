@@ -22,7 +22,7 @@ export class DashboardComponent implements OnDestroy {
   contentHeight: string;
 
   navigateSub: Subscription;
-  userId: string="";
+  userId: string = "";
   userName: string = "";
   userPhotoSource: string;
 
@@ -65,28 +65,24 @@ export class DashboardComponent implements OnDestroy {
       this._router.navigate([], { queryParams: routeParams, relativeTo: this._activatedRoute });
     }
 
-
-
     let alias = this._adalService.userInfo.profile ? this._adalService.userInfo.profile.upn : '';
     this.userId = alias.replace('@microsoft.com', '');
     this._diagnosticService.getUserPhoto(this.userId).subscribe(image => {
-        // this.userPhotoSource =  "data:image / jpeg; base64," + image;
-        // this.userPhotoSource =  "data:image/jpeg;base64," + image;
-        this.userPhotoSource = image;
+      this.userPhotoSource = image;
     });
 
     this._diagnosticService.getUserInfo(this.userId).subscribe((userInfo: UserInfo) => {
-        this.userName = userInfo.givenName;
-      });
+      this.userName = userInfo.givenName;
+    });
   }
 
   ngOnInit() {
     this.resourceService.getCurrentResource().subscribe(resource => {
-        if (resource) {
-          this.resource = resource;
-          this.keys = Object.keys(this.resource);
-        }
-      });
+      if (resource) {
+        this.resource = resource;
+        this.keys = Object.keys(this.resource);
+      }
+    });
   }
 
   reloadHome() {
@@ -99,26 +95,25 @@ export class DashboardComponent implements OnDestroy {
 
   navigateTo(path: string) {
     let navigationExtras: NavigationExtras = {
-        queryParamsHandling: 'preserve',
-        preserveFragment: true,
-        relativeTo: this._activatedRoute
+      queryParamsHandling: 'preserve',
+      preserveFragment: true,
+      relativeTo: this._activatedRoute
     };
     this._router.navigate([path], navigationExtras);
-}
-
-doesMatchCurrentRoute(expectedRoute: string) {
-    return this.currentRoutePath && this.currentRoutePath.join('/') === expectedRoute;
-}
-
-navigateToUserPage() {
- this.navigateTo(`users/xipeng`);
-}
-
-
-openResourceInfoModal() {
-    this.ngxSmartModalService.getModal('resourceInfoModal').open();
   }
 
+  doesMatchCurrentRoute(expectedRoute: string) {
+    return this.currentRoutePath && this.currentRoutePath.join('/') === expectedRoute;
+  }
+
+  navigateToUserPage() {
+    this.navigateTo(`users/xipeng`);
+  }
+
+
+  openResourceInfoModal() {
+    this.ngxSmartModalService.getModal('resourceInfoModal').open();
+  }
 
   ngOnDestroy() {
     this.navigateSub.unsubscribe();

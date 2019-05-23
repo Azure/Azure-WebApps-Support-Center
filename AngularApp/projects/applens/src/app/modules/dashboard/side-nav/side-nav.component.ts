@@ -119,7 +119,7 @@ export class SideNavComponent implements OnInit {
               this.navigateTo(`analysis/${element.id}`);
             };
 
-            let isSelectedAnalysis = () =>{
+            let isSelectedAnalysis = () => {
               return this.currentRoutePath && this.currentRoutePath.join('/') === `analysis/${element.id}`;
             }
 
@@ -178,20 +178,9 @@ export class SideNavComponent implements OnInit {
     return this.currentRoutePath && this.currentRoutePath.join('/') === expectedRoute;
   }
 
-  openDocumentation()
-  {
+  openDocumentation() {
     window.open('https://app-service-diagnostics-docs.azurewebsites.net/api/Diagnostics.ModelsAndUtils.Models.Response.html#extensionmethods', '_blank');
   }
-
-//   getResourceSummary() {
-//     this.ngxSmartModalService.getModal('devModeModal').open();
-//   }
-
-//   dismissSummaryModal() {
-//     // Set the default popped up behaviour of local development modal as a key value pair in localStorage
-//     localStorage.setItem("localdevmodal.hidden", this.hideModal === true ? "true" : "false");
-//     this.ngxSmartModalService.getModal('devModeModal').close();
-//   }
 }
 
 @Pipe({

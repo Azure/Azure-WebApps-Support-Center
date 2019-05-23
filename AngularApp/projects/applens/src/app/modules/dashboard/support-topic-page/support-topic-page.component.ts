@@ -42,7 +42,6 @@ export class SupportTopicPageComponent implements OnInit {
 
   detectorsPublicOrWithSupportTopics: DetectorMetaData[] = [];
 
-
   constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: HttpClient, private _resourceService: ResourceService, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService, private _location: Location) { }
 
   ngOnInit() {
@@ -69,7 +68,6 @@ export class SupportTopicPageComponent implements OnInit {
         filteredSupportTopics.forEach((sup: SupportTopicResult) => {
           this._supportTopicService.getCategoryImage(sup.supportTopicL3Name).subscribe((iconString) => {
             let icon = iconString;
-
             let matchingDetector = this.supportTopicIdMapping.find((st) => st.supportTopic.id === sup.supportTopicId);
             let matchingDetectorType = "Detector";
             let matchingDetectorId = "";
@@ -104,7 +102,7 @@ export class SupportTopicPageComponent implements OnInit {
     };
     this._router.navigate([path], navigationExtras);
   }
-  
+
   navigateBack() {
     this._location.back();
   }
@@ -123,7 +121,3 @@ export class SupportTopicPageComponent implements OnInit {
     }
   }
 }
-
-
-
-

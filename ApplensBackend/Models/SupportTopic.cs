@@ -19,15 +19,5 @@ namespace AppLensV3.Models
         public string SupportTopicL3Name { get; set; }
 
         public string SupportTopicPath { get; set; }
-
-        //public SupportTopic(string productId, string supportTopicId, string productName, string supportTopicL2Name, string supportTopicL3Name, string supportTopicPath)
-        //{
-        //    ProductId = productId;
-        //    SupportTopicId = supportTopicId;
-        //    ProductName = productName;
-        //    SupportTopicL2Name = supportTopicL2Name;
-        //    SupportTopicL3Name = supportTopicL3Name;
-        //    SupportTopicPath = supportTopicPath;
-        //}
     }
 }

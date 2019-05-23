@@ -16,7 +16,7 @@ namespace AppLensV3.Controllers
 {
     [Route("api/graph/")]
     [Authorize]
-    public class GraphController: Controller
+    public class GraphController : Controller
     {
         private readonly IGraphClientService _graphClientService;
 

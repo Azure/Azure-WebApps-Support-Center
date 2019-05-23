@@ -3,10 +3,9 @@
     <a class="btn back-button" (click)="navigateBack()">&lt; Back</a>
   </div>
   <div class="category-info-container">
-    <img *ngIf="supportTopicIcon != undefined && supportTopicIcon != ''" class="category-icon"
-      src={{supportTopicIcon}} />
-    <ngx-avatar *ngIf="supportTopicIcon == undefined || supportTopicIcon === ''" [name]="supportTopicName"
-      class="category-icon-avatar" [round]="false" initialsSize="2" size="100"></ngx-avatar>
+    <img *ngIf="supportTopicIcon != undefined && supportTopicIcon != ''" class="category-icon" src={{supportTopicIcon}} />
+    <ngx-avatar *ngIf="supportTopicIcon == undefined || supportTopicIcon === ''" [name]="supportTopicName" class="category-icon-avatar"
+      [round]="false" initialsSize="2" size="100"></ngx-avatar>
     <div class="category-title">
       <span class="catogory-name">
         {{supportTopicName}}
@@ -18,15 +17,15 @@
       </div>
     </div>
   </div>
-  </div>
+</div>
 <div class="detector-list">
-  <div class="flexed-detector card" *ngFor="let supportTopic of supportTopics; let i=index"
-    (click)="navigateToContent(supportTopic)">
+  <div class="flexed-detector card" *ngFor="let supportTopic of supportTopics; let i=index" (click)="navigateToContent(supportTopic)">
     <div class="detector-top row">
       <div class="col-md-2 detector-icon">
-          <img *ngIf="supportTopic.icon != undefined && supportTopic.icon != ''" class="support-topic-l3-icon"
-          src={{supportTopic.icon}} />
-        <ngx-avatar *ngIf="supportTopic.icon == undefined || supportTopic.icon === ''" [name]="supportTopic.supportTopicL3Name" [round]="true" initialsSize="2"></ngx-avatar>
+        <img *ngIf="supportTopic.icon != undefined && supportTopic.icon != ''" class="support-topic-l3-icon" src={{supportTopic.icon}}
+        />
+        <ngx-avatar *ngIf="supportTopic.icon == undefined || supportTopic.icon === ''" [name]="supportTopic.supportTopicL3Name" [round]="true"
+          initialsSize="2"></ngx-avatar>
       </div>
       <div class="col-md-10 detector-name">
         {{supportTopic.supportTopicL3Name}}
@@ -43,8 +42,7 @@
             Detector Enabled
           </div>
         </div>
-        <div *ngIf="supportTopic.detectorName === ''" class="label label-default detector-disabled-description">Self
-          Help Content</div>
+        <div *ngIf="supportTopic.detectorName === ''" class="label label-default detector-disabled-description">Self Help Content</div>
       </div>
     </div>
   </div>

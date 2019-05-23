@@ -12,7 +12,6 @@ import { HttpMethod } from '../../../shared/models/http';
 
 @Injectable()
 export class ApplensSupportTopicService {
-
     private categoryKeywordsImagePathMapping = [
         {
             keyWords: ["scal"],
@@ -157,7 +156,6 @@ export class ApplensSupportTopicService {
                 pesId = '16170';
             }
         }
-
         return pesId;
     }
 
@@ -213,7 +211,6 @@ export class ApplensSupportTopicService {
                 selfHelpPath = "microsoft.function";
             }
         }
-
         return selfHelpPath;
     }
 
@@ -231,7 +228,6 @@ export class ApplensSupportTopicService {
                     detectorPath = `/detectors/${matchingDetector.id}`;
                 }
             }
-
             return detectorPath;
         }));
     }
