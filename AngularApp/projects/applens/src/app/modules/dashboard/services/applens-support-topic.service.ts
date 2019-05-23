@@ -5,7 +5,7 @@ import { DetectorMetaData, SupportTopic } from 'diagnostic-data';
 import { ApplensDiagnosticService } from './applens-diagnostic.service';
 import { CacheService } from '../../../shared/services/cache.service';
 import { HttpClient } from '@angular/common/http';
-import { catchError, mergeMap, map} from 'rxjs/operators';
+import { catchError, mergeMap, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { HttpMethod } from '../../../shared/models/http';
 
@@ -15,7 +15,7 @@ export class ApplensSupportTopicService {
 
     private categoryKeywordsImagePathMapping = [
         {
-            keyWords: ["scale", "scaling"],
+            keyWords: ["scal"],
             path: "assets/img/SupportTopicImages/scale.png",
         },
         {
@@ -111,10 +111,6 @@ export class ApplensSupportTopicService {
             path: "assets/img/SupportTopicImages/problem.png",
         },
         {
-            keyWords: ["function"],
-            path: "assets/img/SupportTopicImages/function.png",
-        },
-        {
             keyWords: ["vnet", "network", "connection"],
             path: "assets/img/SupportTopicImages/network.png",
         },
@@ -133,114 +129,110 @@ export class ApplensSupportTopicService {
         {
             keyWords: ["configur", "manag"],
             path: "assets/img/SupportTopicImages/configure.png",
+        },
+        {
+            keyWords: ["function"],
+            path: "assets/img/SupportTopicImages/function.png",
         }
     ]
 
-  protected detectorTask: Observable<DetectorMetaData[]>;
+    protected detectorTask: Observable<DetectorMetaData[]>;
 
-  constructor(private _diagnosticApiService: ApplensDiagnosticService, private _resourceService: ResourceService, private _http: HttpClient, private _cacheService: CacheService) {
-   }
-
-  public getSupportTopics(): Observable<any> {
-    let pesId = this.getPesId();
-    return this._diagnosticApiService.getSupportTopics(pesId);
-  }
-
-  public getPesId(): string {
-    let pesId = this._resourceService.pesId;
-    let requestBody = this._resourceService.getRequestBody();
-    if (pesId === '14748')
-    {
-        if (requestBody.Kind === "functionapp")
-        {
-          pesId = '16072';
-        }
-        else if (requestBody.IsLinux)
-        {
-          pesId = '16170';
-        }
+    constructor(private _diagnosticApiService: ApplensDiagnosticService, private _resourceService: ResourceService, private _http: HttpClient, private _cacheService: CacheService) {
     }
 
-    return pesId;
-  }
-
-  getCategoryImagePath(supportTopicL2Name: string): string{
-    let imagePath = "";
-
-    let item = this.categoryKeywordsImagePathMapping.find((item) => {
-        if (supportTopicL2Name)
-        return item.keyWords.findIndex((keyword) => {
-            return supportTopicL2Name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
-        }) !== -1;
-    });
-
-    if (item != undefined)
-    {
-        imagePath = item.path;
+    public getSupportTopics(): Observable<any> {
+        let pesId = this.getPesId();
+        return this._diagnosticApiService.getSupportTopics(pesId);
     }
-    return imagePath;
-}
 
-    getCategoryImage(supportTopicL2Name: string, useCache: boolean = true, invalidateCache: boolean = false):Observable<any>{
+    public getPesId(): string {
+        let pesId = this._resourceService.pesId;
+        let requestBody = this._resourceService.getRequestBody();
+        if (pesId === '14748') {
+            if (requestBody.Kind === "functionapp") {
+                pesId = '16072';
+            }
+            else if (requestBody.IsLinux) {
+                pesId = '16170';
+            }
+        }
+
+        return pesId;
+    }
+
+    getCategoryImagePath(supportTopicL2Name: string): string {
+        let imagePath = "";
+
+        let item = this.categoryKeywordsImagePathMapping.find((item) => {
+            if (supportTopicL2Name)
+                return item.keyWords.findIndex((keyword) => {
+                    return supportTopicL2Name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+                }) !== -1;
+        });
+
+        if (item != undefined) {
+            imagePath = item.path;
+        }
+        return imagePath;
+    }
+
+    getCategoryImage(supportTopicL2Name: string, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
 
         let imagePath = this.getCategoryImagePath(supportTopicL2Name);
 
-        if (imagePath !== "")
-        {
-            let request = this._http.get(imagePath,{ observe: 'response', responseType: 'blob' }).pipe(
+        if (imagePath !== "") {
+            let request = this._http.get(imagePath, { observe: 'response', responseType: 'blob' }).pipe(
                 mergeMap(response => {
-                  return of(imagePath);
+                    return of(imagePath);
                 }),
                 catchError(error => {
                     return of(``);
                 })
-              );
+            );
 
-              return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.POST, imagePath), request, invalidateCache) : request;
+            return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.POST, imagePath), request, invalidateCache) : request;
         }
-        else
-        {
+        else {
             return of(``);
         }
     }
 
 
 
-public getCacheKey(method: HttpMethod, path: string) {
-   return `${HttpMethod[method]}-${path}`;
- }
-
-  public getSelfHelpPath(): string {
-    let selfHelpPath = this._resourceService.staticSelfHelpContent;
-    let pesId = this._resourceService.pesId;
-    let requestBody = this._resourceService.getRequestBody();
-    if (pesId === '14748')
-    {
-        if (requestBody.Kind === "functionapp")
-        {
-          selfHelpPath = "microsoft.function";
-        }
+    public getCacheKey(method: HttpMethod, path: string) {
+        return `${HttpMethod[method]}-${path}`;
     }
 
-    return selfHelpPath;
-  }
-
-
-  getPathForSupportTopic(supportTopicId: string, pesId: string): Observable<string> {
-    return this._diagnosticApiService.getDetectors().pipe(map(detectors => {
-      let detectorPath = '';
-
-      if (detectors) {
-        const matchingDetector = detectors.find(detector =>
-          detector.supportTopicList &&
-          detector.supportTopicList.findIndex(supportTopic => supportTopic.id === supportTopicId) >= 0);
-
-        if (matchingDetector) {
-          detectorPath = `/detectors/${matchingDetector.id}`;
+    public getSelfHelpPath(): string {
+        let selfHelpPath = this._resourceService.staticSelfHelpContent;
+        let pesId = this._resourceService.pesId;
+        let requestBody = this._resourceService.getRequestBody();
+        if (pesId === '14748') {
+            if (requestBody.Kind === "functionapp") {
+                selfHelpPath = "microsoft.function";
+            }
         }
-      }
 
-      return detectorPath;
-    }));
-  }
+        return selfHelpPath;
+    }
+
+
+    getPathForSupportTopic(supportTopicId: string, pesId: string): Observable<string> {
+        return this._diagnosticApiService.getDetectors().pipe(map(detectors => {
+            let detectorPath = '';
+
+            if (detectors) {
+                const matchingDetector = detectors.find(detector =>
+                    detector.supportTopicList &&
+                    detector.supportTopicList.findIndex(supportTopic => supportTopic.id === supportTopicId) >= 0);
+
+                if (matchingDetector) {
+                    detectorPath = `/detectors/${matchingDetector.id}`;
+                }
+            }
+
+            return detectorPath;
+        }));
+    }
 }

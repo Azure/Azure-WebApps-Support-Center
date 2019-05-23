@@ -15,7 +15,6 @@ namespace AppLensV3.Services
 {
     public class SelfHelpContentService : ISelfHelpContentService
     {
-
         private IConfiguration _configuration;
         private ConcurrentDictionary<string, ConcurrentDictionary<string, string>> SelfHelpCache { get; set; }
 
@@ -135,9 +134,6 @@ namespace AppLensV3.Services
                                     }
 
                                     selfHelpMapping.AddOrUpdate(supportTopicIds, fileContent, (key, oldvalue) => fileContent);
-
-                                    Console.WriteLine("update for {0}: {1}", productId, supportTopicIds);
-                                    Console.Write(fileContent);
                                 }
                             }
 
@@ -170,7 +166,6 @@ namespace AppLensV3.Services
             var supportTopicsSelfHelp = SelfHelpCache.TryGetValue(pesId, out ConcurrentDictionary<string, string> resourceSelfHelp);
             if (supportTopicsSelfHelp && resourceSelfHelp.TryGetValue(supportTopicId, out string selfHelpContent))
             {
-
                 return selfHelpContent;
             }
             else
@@ -211,7 +206,6 @@ namespace AppLensV3.Services
             }
             while (retryCount < maxRetries);
         }
-
     }
 }
 

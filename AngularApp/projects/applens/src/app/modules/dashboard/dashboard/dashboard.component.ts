@@ -95,8 +95,6 @@ export class DashboardComponent implements OnDestroy {
 
   loadUserPage() {
     window.location.href = `/users/${this.userName}`;
-    console.log("User page");
-    console.log(window.location);
   }
 
   navigateTo(path: string) {
@@ -105,11 +103,6 @@ export class DashboardComponent implements OnDestroy {
         preserveFragment: true,
         relativeTo: this._activatedRoute
     };
-
-    console.log("navigation params");
-    console.log(navigationExtras);
-    console.log(this._activatedRoute);
-    //this._router.navigate(path.split('/'), navigationExtras);
     this._router.navigate([path], navigationExtras);
 }
 
@@ -118,7 +111,6 @@ doesMatchCurrentRoute(expectedRoute: string) {
 }
 
 navigateToUserPage() {
- //   this.navigateTo(`/users/${this.userName}`);
  this.navigateTo(`users/xipeng`);
 }
 

@@ -33,7 +33,7 @@ namespace AppLensV3.Services
         {
             if (string.IsNullOrWhiteSpace(productId))
             {
-                throw new ArgumentNullException("subscription");
+                throw new ArgumentNullException("productId");
             }
 
             string kustoQuery = _supportTopicsQuery
@@ -65,6 +65,5 @@ namespace AppLensV3.Services
 
             return supportTopicsList;
         }
-
     }
 }

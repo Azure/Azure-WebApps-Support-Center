@@ -112,9 +112,6 @@ export class CategoryPageComponent implements OnInit {
                 this._diagnosticService.getUsers(body).subscribe((userImages) => {
                     this.userImages = userImages;
 
-                    console.log("*** All the users json images");
-                    console.log(this.userImages);
-
                     this.filterdDetectors.forEach((detector) => {
                         this._supportTopicService.getCategoryImage(detector.name).subscribe((iconString) => {
                             let onClick = () => {
@@ -164,10 +161,6 @@ export class CategoryPageComponent implements OnInit {
             preserveFragment: true,
             relativeTo: this._activatedRoute
         };
-
-        console.log("navigation params");
-        console.log(navigationExtras);
-        //this._router.navigate(path.split('/'), navigationExtras);
         this._route.navigate([path], navigationExtras);
     }
      
@@ -176,7 +169,6 @@ export class CategoryPageComponent implements OnInit {
     }
 
     navigateToUserPage(userId: string) {
-        console.log("Click click");
         this.navigateTo(`../../users/${userId}`);
     }
 

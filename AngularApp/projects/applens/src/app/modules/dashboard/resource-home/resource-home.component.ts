@@ -48,8 +48,6 @@ export class ResourceHomeComponent implements OnInit {
     this._supportTopicService.getSupportTopics().subscribe((supportTopics: SupportTopicResult[]) => {
         supportTopics.forEach((supportTopic) => {
             let supportTopicL2Name = supportTopic.supportTopicL2Name;
-            console.log("Get support topic name");
-            console.log(supportTopicL2Name);
             this._supportTopicService.getCategoryImage(supportTopicL2Name).subscribe((iconString) => {
                 this.supportTopicL2Images[supportTopicL2Name] = iconString;
                 let item = new SupportTopicItem(supportTopic.supportTopicL2Name, supportTopic.productId, "Detector", supportTopic.supportTopicId, supportTopic.supportTopicL3Name, supportTopic.supportTopicPath);
@@ -61,7 +59,6 @@ export class ResourceHomeComponent implements OnInit {
                 }
 
                 suppportTopicItem.subItems.push(item);
-
             });
         });
     });
@@ -125,38 +122,6 @@ export class ResourceHomeComponent implements OnInit {
     navigateToSupportTopic(supportTopic: SupportTopicItem) {
         this.navigateTo(`../../supportTopics/${supportTopic.supportTopicL2Name}`);
     }
-
-    getSupportTopicImage1(supportTopicL2Name: string):Observable<any>{
-        // this._http.get('assets/{supportTopicL2Name}.json').subscribe(jsonResponse =>{
-        //     this.enabledResourceTypes = <ResourceServiceInputs[]>jsonResponse.enabledResourceTypes;
-        //   });
-
-        return this._http.head(`assets/img/${supportTopicL2Name}.png`,{ observe: 'response', responseType: 'blob' });
-
-        //  return this._http.head(`assets/img/${supportTopicL2Name}.png`,{ observe: 'response', responseType: 'blob' })
-        //   .pipe(
-        //     map(response => {
-        //         console.log("Get image from assets");
-        //       return of(`assets/img/${supportTopicL2Name}.png`);
-        //     }),
-        //     catchError(error => {
-        //         console.log("Get image from blob");
-        //         console.log(error);
-        //       return of(`https://applensassets.blob.core.windows.net/applensassets/${supportTopicL2Name}.png`);
-        //     })
-        //   );
-        }
-
-    //   .map((response) => response.status)
-    //   .catch((error) => Observable.of(error.status || 404))
-    //   .subscribe((status) => console.log(`status = ${status}`));
-
-
-    //     this.http.head("/some-file.txt")
-    // .map((response) => response.status)
-    // .catch((error) => Observable.of(error.status || 404))
-    // .subscribe((status) => console.log(`status = ${status}`));
-
 
     navigateTo(path: string) {
         let navigationExtras: NavigationExtras = {
