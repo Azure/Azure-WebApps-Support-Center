@@ -1,7 +1,6 @@
-import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
-import { FeatureService } from '../../../shared-v2/services/feature.service';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Feature } from '../../../shared-v2/models/features';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
 import { NotificationService } from '../../../shared-v2/services/notification.service';
 
@@ -16,7 +15,8 @@ export class SearchResultsComponent implements OnChanges {
 
   features: Feature[];
 
-  constructor(public featureService: FeatureService, private _activatedRoute: ActivatedRoute, private _router: Router, private _logger: LoggingV2Service, private _notificationService: NotificationService) { }
+  constructor(public featureService: FeatureService, private _logger: LoggingV2Service,
+    private _notificationService: NotificationService) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['searchValue']) {

@@ -15,22 +15,26 @@ export class DetectorControlService {
     {
       displayName: '1h',
       duration: momentNs.duration(1, 'hours'),
-      internalOnly: false
+      internalOnly: false,
+      ariaLabel: "1 Hour"
     },
     {
       displayName: '6h',
       duration: momentNs.duration(6, 'hours'),
-      internalOnly: false
+      internalOnly: false,
+      ariaLabel: "6 Hours"
     },
     {
       displayName: '1d',
       duration: momentNs.duration(1, 'days'),
-      internalOnly: false
+      internalOnly: false,
+      ariaLabel: "1 Day"
     },
     {
       displayName: '3d',
       duration: momentNs.duration(3, 'days'),
-      internalOnly: true
+      internalOnly: true,
+      ariaLabel: "3 Days"
     }
   ];
 
@@ -216,19 +220,19 @@ export class DetectorControlService {
     this._duration = duration;
     this._startTime = moment.utc().subtract(duration.duration);
     this._endTime = this._startTime.clone().add(duration.duration);
-    this.setCustomStartEnd(this._startTime.format(), this.endTime.format());
+    this.setCustomStartEnd(this._startTime.format(this.stringFormat), this.endTime.format(this.stringFormat));
   }
 
   public moveForwardDuration(): void {
     this._startTime.add(this._duration.duration);
     this._endTime.add(this._duration.duration);
-    this.setCustomStartEnd(this._startTime.format(), this.endTime.format());
+    this.setCustomStartEnd(this._startTime.format(this.stringFormat), this.endTime.format(this.stringFormat));
   }
 
   public moveBackwardDuration(): void {
     this._startTime.subtract(this._duration.duration);
     this._endTime.subtract(this._duration.duration);
-    this.setCustomStartEnd(this._startTime.format(), this.endTime.format());
+    this.setCustomStartEnd(this._startTime.format(this.stringFormat), this.endTime.format(this.stringFormat));
   }
 
   public refresh() {
@@ -281,4 +285,5 @@ export interface DurationSelector {
   displayName: string;
   duration: momentNs.Duration;
   internalOnly: boolean;
+  ariaLabel: string;
 }

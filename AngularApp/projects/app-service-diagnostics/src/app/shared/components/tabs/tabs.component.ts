@@ -104,6 +104,17 @@ export class TabsComponent implements OnInit {
         this._router.navigateByUrl(this.navigationItems[index - 1].url);
       }
     }
-  }
+    }
+
+    navigateTab(index: number): void {
+
+        if (index >= 0) {
+            const tab = this.navigationItems[index];
+            if (!tab.isActive) {
+                this._router.navigateByUrl(tab.url);
+            }
+        }
+    }
+
 
 }

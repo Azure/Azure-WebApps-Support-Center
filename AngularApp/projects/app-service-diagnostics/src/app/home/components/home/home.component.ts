@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { ResourceService } from '../../../shared-v2/services/resource.service';
-import { CategoryService } from '../../../shared-v2/services/category.service';
-import { Category } from '../../../shared-v2/models/category';
-import { NotificationService, Notification } from '../../../shared-v2/services/notification.service';
-import { Router, ActivatedRoute } from '@angular/router';
 import { DetectorControlService, FeatureNavigationService } from 'diagnostic-data';
+import { HttpResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Category } from '../../../shared-v2/models/category';
+import { CategoryService } from '../../../shared-v2/services/category.service';
 import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
-import { AuthService } from '../../../startup/services/auth.service';
+import { NotificationService } from '../../../shared-v2/services/notification.service';
+import { ResourceService } from '../../../shared-v2/services/resource.service';
 import { ArmService } from '../../../shared/services/arm.service';
-import { HttpResponse } from '@angular/common/http';
+import { AuthService } from '../../../startup/services/auth.service';
+
 @Component({
   selector: 'home',
   templateUrl: './home.component.html',
@@ -18,16 +19,13 @@ import { HttpResponse } from '@angular/common/http';
 export class HomeComponent implements OnInit {
 
   resourceName: string;
-
   categories: Category[];
-
   searchValue: string;
   searchBoxFocus: boolean;
-
   searchLogTimout: any;
-
   event: any;
   subscriptionId: string;
+
   constructor(private _resourceService: ResourceService, private _categoryService: CategoryService, private _notificationService: NotificationService, private _router: Router,
     private _detectorControlService: DetectorControlService, private _featureService: FeatureService, private _logger: LoggingV2Service, private _authService: AuthService,
     private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute, private armService: ArmService) {

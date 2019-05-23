@@ -18,7 +18,7 @@ export class SolutionComponent extends DataRenderBaseComponent {
   renderingProperties: Rendering;
   actionStatus: string;
   confirmationMessage: string;
-  defaultCopyText = 'Copy to Email';
+  defaultCopyText = 'Copy';
   copyText = this.defaultCopyText;
   appName: string;
   renderedInternalMarkdown = '';

@@ -1,5 +1,5 @@
 <div class="tile-container">
-  <a *ngFor="let tile of tiles" class="tile" (click)="tile.action()" (keyup.enter)="tile.action()" tabindex="0">
-      {{tile.title}}
-  </a>
+  <button type="button" *ngFor="let tile of tiles" class="tile" (click)="tile.action()" (keyup.enter)="tile.action()" tabindex="0">
+    {{tile.title}}
+  </button>
 </div>

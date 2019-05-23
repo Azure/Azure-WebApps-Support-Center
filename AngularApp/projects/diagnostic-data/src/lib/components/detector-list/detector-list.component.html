@@ -1,13 +1,13 @@
 <div>
   <div class="detector-container" *ngFor="let viewModel of detectorViewModels">
-    <div class="detector-header"  (click)="toggleDetectorHeaderStatus(viewModel)">
+    <div class="detector-header"  (click)="toggleDetectorHeaderStatus(viewModel)"  role="button" attr.aria-expanded="{{viewModel.expanded}}">
       <div class="status-icon">
         <status-icon [loading]="viewModel.loadingStatus" [status]="viewModel.status" [size]="20"></status-icon>
       </div>
       <div class="detector-title">
         {{viewModel.title}} <span style="margin-left: 20px;font-size: 16px" *ngIf="viewModel.loadingStatus == LoadingStatus.Failed" (click)="retryRequest(viewModel)">Error: Click to retry</span>
       </div>
-      <div class="expand-icon">
+      <div class="expand-icon"  role="button" attr.aria-expanded="{{viewModel.expanded}}" >
         <span class="fa" [class.fa-angle-down]="!viewModel.expanded" [class.fa-angle-up]="viewModel.expanded"></span>
       </div>
     </div>
