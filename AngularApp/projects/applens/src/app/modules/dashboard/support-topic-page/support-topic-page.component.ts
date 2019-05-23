@@ -23,7 +23,6 @@ export class SupportTopicPageComponent implements OnInit {
     supportTopicName: string;
     supportTopic: SupportTopicItem;
     supportTopics: SupportTopicItem[] = [];
-    detectors: DetectorItem[] = [];
     supportTopicIcon: string;
     supportTopicsNumber: number=0;
     detectorsNumber: number=0;
@@ -68,37 +67,30 @@ export class SupportTopicPageComponent implements OnInit {
             let filteredSupportTopics = allSupportTopics.filter((supportTopic) => supportTopic.supportTopicL2Name === this.supportTopicName);
 
             filteredSupportTopics.forEach((sup: SupportTopicResult) => {
-              let icon = `https://applensassets.blob.core.windows.net/applensassets/${sup.supportTopicL3Name}.png`;
-              let matchingDetector = this.supportTopicIdMapping.find((st) => st.supportTopic.id === sup.supportTopicId);
-              let matchingDetectorId = "";
-              let matchingDetectorName = "";
-              let matchingDetectorInternalOnly = true;
-              if (matchingDetector != undefined)
-              {
-                matchingDetectorId =matchingDetector.detectorId;
-                matchingDetectorName = matchingDetector.detectorName;
-                matchingDetectorInternalOnly = true;
-                this.detectorsNumber++;
-              }
+              this._supportTopicService.getCategoryImage(sup.supportTopicL3Name).subscribe((iconString) => {
+                let icon = iconString;
 
-              let item = new SupportTopicItem(sup.supportTopicL2Name, sup.productId, sup.supportTopicId, sup.supportTopicL3Name, sup.supportTopicPath, icon, [], matchingDetectorId, matchingDetectorName, matchingDetectorInternalOnly);
-              if (!this.supportTopics.find((st => st.supportTopicL3Name === sup.supportTopicL3Name)))
-              {
-                this.supportTopics.push(item);
-              }
+                let matchingDetector = this.supportTopicIdMapping.find((st) => st.supportTopic.id === sup.supportTopicId);
+                let matchingDetectorId = "";
+                let matchingDetectorName = "";
+                let matchingDetectorInternalOnly = true;
+                if (matchingDetector != undefined)
+                {
+                  matchingDetectorId =matchingDetector.detectorId;
+                  matchingDetectorName = matchingDetector.detectorName;
+                  matchingDetectorInternalOnly = true;
+                  this.detectorsNumber++;
+                }
+
+                let item = new SupportTopicItem(sup.supportTopicL2Name, sup.productId, sup.supportTopicId, sup.supportTopicL3Name, sup.supportTopicPath, icon, [], matchingDetectorId, matchingDetectorName, matchingDetectorInternalOnly);
+                if (!this.supportTopics.find((st => st.supportTopicL3Name === sup.supportTopicL3Name)))
+                {
+                  this.supportTopics.push(item);
+                }
+              });
             });
-
-            console.log(`Filtered`);
-            console.log(filteredSupportTopics);
-
         });
 
-
-        console.log("Support topic id mapping");
-        console.log(this.supportTopicIdMapping);
-
-        console.log(`Support Toipcs of ${this.supportTopicName}`);
-        console.log(this.supportTopics);
           this.supportTopicsNumber = this.supportTopics.length;
           return this.detectorsWithSupportTopics;
         });
@@ -110,11 +102,6 @@ export class SupportTopicPageComponent implements OnInit {
             preserveFragment: true,
             relativeTo: this._activatedRoute
         };
-
-        console.log("navigation params");
-        console.log(navigationExtras);
-        console.log(path);
-        //this._router.navigate(path.split('/'), navigationExtras);
         this._router.navigate([path], navigationExtras);
     }
 
@@ -131,39 +118,10 @@ export class SupportTopicPageComponent implements OnInit {
       }
       else {
         this.navigateTo(`../../pesId/${supportTopic.pesId}/supportTopics/${supportTopic.supportTopicId}`);
-      //   this._diagnosticService.getSelfHelpContent("").subscribe((res) => {
-      //     console.log(res);
-      // })
       }
     }
-
-
-
 }
 
-export class DetectorItem {
-    name: string;
-    description: string;
-    authorString: string;
-    authors: any[] = [];
-    userImages: any;
-    supportTopics: any[] = [];
-    onClick: Function;
-
-    constructor(name: string, description: string, authorString: string, authors: any[], userImages: any, supportTopics: any[], onClick: Function) {
-        this.name = name;
-
-        if (description == undefined || description === "") {
-            description = "This detector doesn't have any description."
-        }
-        this.description = description;
-        this.authorString = authorString;
-        this.authors = authors;
-        this.userImages = userImages;
-        this.supportTopics = supportTopics;
-        this.onClick = onClick;
-    }
-}
 
 
 

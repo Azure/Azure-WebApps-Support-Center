@@ -1,15 +1,18 @@
 <div class="banner">
   <div>
-    <button class="btn back-button" (click)="navigateToHomePage()" >&lt; Home</button>
+    <button class="btn back-button" (click)="navigateToHomePage()">&lt; Home</button>
   </div>
   <div class="category-info-container">
-    <img class="category-icon" src={{categoryIcon}} />
+      <img *ngIf="categoryIcon != undefined && categoryIcon != ''" class="category-icon"
+      src={{categoryIcon}} />
+    <ngx-avatar *ngIf="categoryIcon == undefined || categoryIcon === ''" [name]="categoryName"
+    class="category-icon-avatar" [round]="false" initialsSize="2" size="100"></ngx-avatar>
     <div class="category-title">
       <span class="catogory-name">
         {{categoryName}}
       </span>
       <div class="category-description">
-        <span >
+        <span>
           {{detectorsNumber}} detectors, {{authorsNumber}} contributors
         </span>
       </div>
@@ -20,7 +23,9 @@
   <div class="flexed-detector card" *ngFor="let detector of detectors; let i=index" (click)="detector.onClick()">
     <div class="detector-top row" (click)="detector.onClick()">
       <div class="col-md-2 detector-icon">
-        <ngx-avatar [name]="detector.name" [round]="true" initialsSize="2"></ngx-avatar>
+          <img *ngIf="detector.icon != undefined && detector.icon != ''" class="support-topic-l3-icon"
+          src={{detector.icon}} />
+        <ngx-avatar *ngIf="detector.icon == undefined || detector.icon === ''" [name]="detector.name" [round]="true" initialsSize="2"></ngx-avatar>
       </div>
       <div class="col-md-10 detector-name">
         {{detector.name}}
@@ -30,23 +35,30 @@
       <div class="detector-description" (click)="detector.onClick()">
         {{detector.description}}
       </div>
-      <div class="detector-authors">
+      <div *ngIf="detector.authorString != undefined && detector.authorString !== ''" class="detector-authors">
         <div class="author-image-container">
-        <div *ngFor="let image of detector.userImages | keyvalue" class="author-image"  (click)="navigateToUserPage(image.key)" >
-          <span>{{image.key}}</span>
-          <img *ngIf="image.value != undefined && image.value !== ''" class="author-image" src="{{image.value}}"  (click)="navigateToUserPage(image.key)"  />
-          <ngx-avatar *ngIf="image.value == undefined || image.value === ''" class="author-initial" [name]=image.key size="35" initialsSize="2"  (click)="navigateToUserPage(image.key)" ></ngx-avatar>
+          <div *ngFor="let image of detector.userImages | keyvalue" class="author-image"
+            (click)="navigateToUserPage(image.key)">
+            <span>{{image.key}}</span>
+            <img *ngIf="image.value != undefined && image.value !== ''" class="author-image" src="{{image.value}}"
+              (click)="navigateToUserPage(image.key)" />
+            <ngx-avatar *ngIf="image.value == undefined || image.value === ''" class="author-initial" [name]=image.key
+              size="35" initialsSize="2" (click)="navigateToUserPage(image.key)"></ngx-avatar>
+          </div>
+        </div>
+        <div class="author-String">
+          <span>{{detector.authorString}}</span>
         </div>
       </div>
+      <div *ngIf="detector.authorString == undefined || detector.authorString == ''" class="detector-authors">
+        <ngx-avatar class="author-initial author-initial-unknown" name="?" size="35" initialsSize="2"></ngx-avatar>
         <div class="author-String">
-        <span>{{detector.authorString}}</span>
-      </div>
+          <span>Unknown</span>
+        </div>
       </div>
     </div>
   </div>
   <div *ngIf="detectors == undefined || detectors.length === 0" class="loading-page">
-      <i class="fa fa-spinner fa-spin fa-4x fa-fw"></i>
-    </div>
+    <i class="fa fa-spinner fa-spin fa-4x fa-fw"></i>
+  </div>
 </div>
-
-

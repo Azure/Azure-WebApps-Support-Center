@@ -19,6 +19,22 @@ export class ApplensSupportTopicService {
             path: "assets/img/SupportTopicImages/scale.png",
         },
         {
+            keyWords: ["ip"],
+            path: "assets/img/SupportTopicImages/ip.png",
+        },
+        {
+            keyWords: ["code", "edit"],
+            path: "assets/img/SupportTopicImages/code.png",
+        },
+        {
+            keyWords: ["swap", "slot", "migrat"],
+            path: "assets/img/SupportTopicImages/slot.png",
+        },
+        {
+            keyWords: ["identity"],
+            path: "assets/img/SupportTopicImages/identity.png",
+        },
+        {
             keyWords: ["best", "practice"],
             path: "assets/img/SupportTopicImages/best.png",
         },
@@ -47,7 +63,11 @@ export class ApplensSupportTopicService {
             path: "assets/img/SupportTopicImages/oss.png",
         },
         {
-            keyWords: ["availability", "down"],
+            keyWords: ["down", "fail", "crash", "stop"],
+            path: "assets/img/SupportTopicImages/fail.png",
+        },
+        {
+            keyWords: ["availability"],
             path: "assets/img/SupportTopicImages/availability.png",
         },
         {
@@ -71,11 +91,15 @@ export class ApplensSupportTopicService {
             path: "assets/img/SupportTopicImages/deploy.png",
         },
         {
-            keyWords: ["configur", "management"],
-            path: "assets/img/SupportTopicImages/configure.png",
+            keyWords: ["connect"],
+            path: "assets/img/SupportTopicImages/connect.png",
         },
         {
-            keyWords: ["monitoring", "metrics"],
+            keyWords: ["traffic"],
+            path: "assets/img/SupportTopicImages/traffic.png",
+        },
+        {
+            keyWords: ["monitor", "metrics"],
             path: "assets/img/SupportTopicImages/monitoring.png",
         },
         {
@@ -91,7 +115,7 @@ export class ApplensSupportTopicService {
             path: "assets/img/SupportTopicImages/function.png",
         },
         {
-            keyWords: ["network", "connection"],
+            keyWords: ["vnet", "network", "connection"],
             path: "assets/img/SupportTopicImages/network.png",
         },
         {
@@ -99,12 +123,16 @@ export class ApplensSupportTopicService {
             path: "assets/img/SupportTopicImages/dns.png",
         },
         {
-            keyWords: ["create", "creation", "develop", "development"],
+            keyWords: ["creat", "develop", "development"],
             path: "assets/img/SupportTopicImages/create.png",
         },
         {
             keyWords: ["troubleshoot"],
             path: "assets/img/SupportTopicImages/troubleshoot.png",
+        },
+        {
+            keyWords: ["configur", "manag"],
+            path: "assets/img/SupportTopicImages/configure.png",
         }
     ]
 
@@ -136,10 +164,6 @@ export class ApplensSupportTopicService {
     return pesId;
   }
 
-  getSupportTopicImagePath(supportTopicL2Name: string): string {
-
-    return null;
-}
   getCategoryImagePath(supportTopicL2Name: string): string{
     let imagePath = "";
 
@@ -149,9 +173,6 @@ export class ApplensSupportTopicService {
             return supportTopicL2Name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
         }) !== -1;
     });
-
-    console.log(`get category image path for ${supportTopicL2Name}`);
-    console.log(item);
 
     if (item != undefined)
     {

@@ -8,6 +8,7 @@ import { DiagnosticService } from 'diagnostic-data';
 import { AvatarModule } from 'ngx-avatar';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 import { HttpMethod } from '../../../shared/models/http';
+import { ApplensSupportTopicService } from '../services/applens-support-topic.service';
 
 
 @Component({
@@ -40,11 +41,13 @@ export class CategoryPageComponent implements OnInit {
     detectorsPublicOrWithSupportTopics: DetectorMetaData[] = [];
 
 
-    constructor(private _route: Router, private _activatedRoute: ActivatedRoute, private _diagnosticService: ApplensDiagnosticService) { }
+    constructor(private _route: Router, private _activatedRoute: ActivatedRoute, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService) { }
 
     ngOnInit() {
         this.categoryName = this._activatedRoute.snapshot.params['category'];
-        this.categoryIcon = `https://applensassets.blob.core.windows.net/applensassets/${this.categoryName}.png`;
+        this._supportTopicService.getCategoryImage(this.categoryName).subscribe((iconString) => {
+            this.categoryIcon = iconString;
+        });
 
         // Observable to get all the detectors
         const allDetectorsList = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
@@ -107,46 +110,43 @@ export class CategoryPageComponent implements OnInit {
 
             if (res[1] !== null) {
                 this._diagnosticService.getUsers(body).subscribe((userImages) => {
-
                     this.userImages = userImages;
 
                     console.log("*** All the users json images");
                     console.log(this.userImages);
 
                     this.filterdDetectors.forEach((detector) => {
-                        let onClick = () => {
-                            this.navigateTo(`../../detectors/${detector.id}`);
-                        };
+                        this._supportTopicService.getCategoryImage(detector.name).subscribe((iconString) => {
+                            let onClick = () => {
+                                this.navigateTo(`../../detectors/${detector.id}`);
+                            };
 
-                        let detectorUsersImages: { [name: string]: string } = {};
+                            let detectorUsersImages: { [name: string]: string } = {};
+                            if (detector.author != undefined) {
+                                let authors = detector.author.toLowerCase();
+                                const separators = [' ', ',', ';', ':'];
+                                let detectorAuthors = authors.split(new RegExp(separators.join('|'), 'g'));
 
-                        if (detector.author != undefined) {
-                            let authors = detector.author.toLowerCase();
-                            const separators = [' ', ',', ';', ':'];
-                            let detectorAuthors = authors.split(new RegExp(separators.join('|'), 'g'));
+                                detectorAuthors.forEach(author => {
+                                    if (!this.filterdDetectorAuthors.find(existingAuthor=> existingAuthor === author))
+                                    {
+                                        this.filterdDetectorAuthors.push(author);
+                                    }
+                                    detectorUsersImages[author] = this.userImages.hasOwnProperty(author) ? this.userImages[author] : undefined;
+                                });
+                            }
 
-                            detectorAuthors.forEach(author => {
-                                if (!this.filterdDetectorAuthors.find(existingAuthor=> existingAuthor === author))
-                                {
-                                    this.filterdDetectorAuthors.push(author);
-                                }
-                                detectorUsersImages[author] = this.userImages.hasOwnProperty(author) ? this.userImages[author] : undefined;
-                            });
-                        }
+                            let detectorSupportTopics = [];
+                            if (detector.supportTopicList && detector.supportTopicList.length > 0) {
+                                detector.supportTopicList.forEach((supportTopic) => {
+                                    detectorSupportTopics.push(supportTopic);
+                                });
+                            }
 
-                        console.log(`${detector.id}: Detector user images`);
-                        console.log(detectorUsersImages);
-
-                        let detectorSupportTopics = [];
-                        if (detector.supportTopicList && detector.supportTopicList.length > 0) {
-                            detector.supportTopicList.forEach((supportTopic) => {
-                                detectorSupportTopics.push(supportTopic);
-                            });
-
-                        }
-
-                        let detectorItem = new DetectorItem(detector.name, detector.description, detector.author, [], detectorUsersImages, detectorSupportTopics, onClick);
+                        let detectorItem = new DetectorItem(detector.name, detector.description, iconString, detector.author, [], detectorUsersImages, detectorSupportTopics, onClick);
                         this.detectors.push(detectorItem);
+
+                        });
                     });
 
                     this.authorsNumber = this.filterdDetectorAuthors.length;
@@ -185,19 +185,21 @@ export class CategoryPageComponent implements OnInit {
 export class DetectorItem {
     name: string;
     description: string;
+    icon: string;
     authorString: string;
     authors: any[] = [];
     userImages: any;
     supportTopics: any[] = [];
     onClick: Function;
 
-    constructor(name: string, description: string, authorString: string, authors: any[], userImages: any, supportTopics: any[], onClick: Function) {
+    constructor(name: string, description: string,  icon: string, authorString: string, authors: any[], userImages: any, supportTopics: any[], onClick: Function) {
         this.name = name;
 
         if (description == undefined || description === "") {
             description = "This detector doesn't have any description."
         }
         this.description = description;
+        this.icon = icon;
         this.authorString = authorString;
         this.authors = authors;
         this.userImages = userImages;
