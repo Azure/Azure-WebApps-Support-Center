@@ -1,23 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using AppLensV3.Helpers;
 using AppLensV3.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace AppLensV3.Services
 {
@@ -81,41 +72,33 @@ namespace AppLensV3.Services
                 throw new ArgumentException("userId");
             }
 
-            try
+            string authorizationToken = await _graphTokenService.GetAuthorizationTokenAsync();
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, string.Format(GraphConstants.GraphUserApiEndpointFormat, userId));
+            request.Headers.Add("Authorization", authorizationToken);
+
+            CancellationTokenSource tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+            HttpResponseMessage responseMsg = await _httpClient.SendAsync(request, tokenSource.Token);
+
+            string result = string.Empty;
+            AuthorInfo userInfo = null;
+
+            if (responseMsg.IsSuccessStatusCode)
             {
-                var tasks = new List<Task>();
-                string authorizationToken = await _graphTokenService.GetAuthorizationTokenAsync();
+                result = await responseMsg.Content.ReadAsStringAsync();
+                dynamic resultObject = JsonConvert.DeserializeObject(result);
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, string.Format(GraphConstants.GraphUserApiEndpointFormat, userId));
-                request.Headers.Add("Authorization", authorizationToken);
-
-                CancellationTokenSource tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
-                HttpResponseMessage responseMsg = await _httpClient.SendAsync(request, tokenSource.Token);
-
-                string result = string.Empty;
-                AuthorInfo userInfo = null;
-
-                if (responseMsg.IsSuccessStatusCode)
-                {
-                    result = await responseMsg.Content.ReadAsStringAsync();
-                    dynamic resultObject = JsonConvert.DeserializeObject(result);
-
-                    userInfo = new AuthorInfo(
-                        resultObject.businessPhones.ToString(),
-                        resultObject.displayName.ToString(),
-                        resultObject.givenName.ToString(),
-                        resultObject.jobTitle.ToString(),
-                        resultObject.mail.ToString(),
-                        resultObject.officeLocation.ToString(),
-                        resultObject.userPrincipalName.ToString());
-                }
-
-                return userInfo;
+                userInfo = new AuthorInfo(
+                    resultObject.businessPhones.ToString(),
+                    resultObject.displayName.ToString(),
+                    resultObject.givenName.ToString(),
+                    resultObject.jobTitle.ToString(),
+                    resultObject.mail.ToString(),
+                    resultObject.officeLocation.ToString(),
+                    resultObject.userPrincipalName.ToString());
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+
+            return userInfo;
         }
 
         public async Task<string> GetUserImageAsync(string userId)
@@ -125,62 +108,45 @@ namespace AppLensV3.Services
                 throw new ArgumentException("userId");
             }
 
-            try
+            var tasks = new List<Task>();
+
+            string authorizationToken = await _graphTokenService.GetAuthorizationTokenAsync();
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, string.Format(GraphConstants.GraphUserImageApiEndpointFormat, userId));
+            request.Headers.Add("Authorization", authorizationToken);
+
+            CancellationTokenSource tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+            HttpResponseMessage responseMsg = await _httpClient.SendAsync(request, tokenSource.Token);
+
+            string result = string.Empty;
+
+            // If the status code is 404 NotFound, it might because the user doesn't have a profile picture, or the user alias is invalid.
+            // We set the image string to be empty if the response is not successful
+            if (responseMsg.IsSuccessStatusCode)
             {
-                var tasks = new List<Task>();
-
-                string authorizationToken = await _graphTokenService.GetAuthorizationTokenAsync();
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, string.Format(GraphConstants.GraphUserImageApiEndpointFormat, userId));
-                request.Headers.Add("Authorization", authorizationToken);
-
-                CancellationTokenSource tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
-                HttpResponseMessage responseMsg = await _httpClient.SendAsync(request, tokenSource.Token);
-
-                string result = string.Empty;
-
-                // If the status code is 404 NotFound, it might because the user doesn't have a profile picture, or the user alias is invalid.
-                // We set the image string to be empty if the response is not successful
-                if (responseMsg.IsSuccessStatusCode)
-                {
-                    var content = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
-                    result = string.Concat("data:image/jpeg;base64,", content);
-                }
-
-                return result;
+                var content = Convert.ToBase64String(await responseMsg.Content.ReadAsByteArrayAsync());
+                result = string.Concat("data:image/jpeg;base64,", content);
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+
+            return result;
         }
 
         public async Task<IDictionary<string, string>> GetUsers(string[] users)
         {
 
-            try
-            {
-                var tasks = new List<Task>();
-                var authorsDictionary = new ConcurrentDictionary<string, string>();
+            var tasks = new List<Task>();
+            var authorsDictionary = new ConcurrentDictionary<string, string>();
 
-                foreach (var user in users)
+            foreach (var user in users)
+            {
+                tasks.Add(Task.Run(async () =>
                 {
-                    tasks.Add(Task.Run(async () =>
-                    {
-                        var userImage = await GetOrCreateUserImageAsync(user);
-                        authorsDictionary.AddOrUpdate(user, userImage, (k, v) => userImage);
-                    }));
-                }
+                    var userImage = await GetOrCreateUserImageAsync(user);
+                    authorsDictionary.AddOrUpdate(user, userImage, (k, v) => userImage);
+                }));
+            }
 
-                await Task.WhenAll(tasks);
-                return authorsDictionary;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            await Task.WhenAll(tasks);
+            return authorsDictionary;
         }
     }
 }
-
-
-

@@ -71,83 +71,69 @@ namespace AppLensV3.Services
 
         public async Task<HttpResponseMessage> GetFileContent(string fileDataUrl)
         {
-            try
-            {
-                HttpRequestMessage fileContentRequest = new HttpRequestMessage(HttpMethod.Get, fileDataUrl);
-                HttpResponseMessage fileContentResponse = await HttpClient.SendAsync(fileContentRequest);
+            HttpRequestMessage fileContentRequest = new HttpRequestMessage(HttpMethod.Get, fileDataUrl);
+            HttpResponseMessage fileContentResponse = await HttpClient.SendAsync(fileContentRequest);
 
-                return fileContentResponse;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return fileContentResponse;
         }
 
         public async Task<string> PullSelfHelpContent(string pesId, string supportTopicId, string path)
         {
-            try
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, path);
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
+            var selfHelpStr = string.Empty;
+
+            if (response != null)
             {
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, path);
-                HttpResponseMessage response = await HttpClient.SendAsync(request);
-                var selfHelpStr = string.Empty;
+                string content = await response.Content.ReadAsStringAsync();
 
-                if (response != null)
+                if (response.IsSuccessStatusCode)
                 {
-                    string content = await response.Content.ReadAsStringAsync();
+                    var tasks = new List<Task<HttpResponseMessage>>();
+                    dynamic metaDataSet = JsonConvert.DeserializeObject(content);
 
-                    if (response.IsSuccessStatusCode)
+                    foreach (var fileData in metaDataSet)
                     {
-                        var tasks = new List<Task<HttpResponseMessage>>();
-                        dynamic metaDataSet = JsonConvert.DeserializeObject(content);
-
-                        foreach (var fileData in metaDataSet)
+                        if (!fileData.name.ToString().Contains("-scoping-"))
                         {
-                            if (!fileData.name.ToString().Contains("-scoping-"))
-                            {
-                                string fileDataUrl = fileData.download_url;
-                                tasks.Add(Task.Run(() => GetFileContent(fileDataUrl)));
-                            }
-                        }
-
-                        var staticFiles = await Task.WhenAll(tasks);
-                        var cacheValue = SelfHelpCache.TryGetValue(pesId, out ConcurrentDictionary<string, string> supportTopicsSelfHelp);
-
-                        if (!cacheValue)
-                        {
-                            var selfHelpMapping = new ConcurrentDictionary<string, string>();
-                            for (int i = 0; i < staticFiles.Length; i++)
-                            {
-                                if (staticFiles[i].IsSuccessStatusCode)
-                                {
-                                    string fileContent = await staticFiles[i].Content.ReadAsStringAsync();
-
-                                    string[] separators = { "supportTopicIds=", "productPesIds=" };
-
-                                    string[] substrs = fileContent.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-                                    string supportTopicIds = substrs[1].Split('"', StringSplitOptions.RemoveEmptyEntries)[0];
-                                    string productId = substrs[2].Split('"', StringSplitOptions.RemoveEmptyEntries)[0];
-
-                                    if (supportTopicIds.Contains(supportTopicId))
-                                    {
-                                        selfHelpStr = fileContent;
-                                    }
-
-                                    selfHelpMapping.AddOrUpdate(supportTopicIds, fileContent, (key, oldvalue) => fileContent);
-                                }
-                            }
-
-                            SelfHelpCache.AddOrUpdate(pesId, selfHelpMapping, (key, oldvalue) => selfHelpMapping);
+                            string fileDataUrl = fileData.download_url;
+                            tasks.Add(Task.Run(() => GetFileContent(fileDataUrl)));
                         }
                     }
-                }
 
-                return selfHelpStr;
+                    var staticFiles = await Task.WhenAll(tasks);
+                    var cacheValue = SelfHelpCache.TryGetValue(pesId, out ConcurrentDictionary<string, string> supportTopicsSelfHelp);
+
+                    if (!cacheValue)
+                    {
+                        var selfHelpMapping = new ConcurrentDictionary<string, string>();
+                        for (int i = 0; i < staticFiles.Length; i++)
+                        {
+                            if (staticFiles[i].IsSuccessStatusCode)
+                            {
+                                string fileContent = await staticFiles[i].Content.ReadAsStringAsync();
+
+                                string[] separators = { "supportTopicIds=", "productPesIds=" };
+
+                                string[] substrs = fileContent.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                                string supportTopicIds = substrs[1].Split('"', StringSplitOptions.RemoveEmptyEntries)[0];
+                                string productId = substrs[2].Split('"', StringSplitOptions.RemoveEmptyEntries)[0];
+
+                                if (supportTopicIds.Contains(supportTopicId))
+                                {
+                                    selfHelpStr = fileContent;
+                                }
+
+                                selfHelpMapping.AddOrUpdate(supportTopicIds, fileContent, (key, oldvalue) => fileContent);
+                            }
+                        }
+
+                        SelfHelpCache.AddOrUpdate(pesId, selfHelpMapping, (key, oldvalue) => selfHelpMapping);
+                    }
+                }
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+
+            return selfHelpStr;
         }
 
         public async Task<string> GetSelfHelpBySupportTopicFromGit(string pesId, string supportTopicId, string path)
@@ -208,5 +194,3 @@ namespace AppLensV3.Services
         }
     }
 }
-
-

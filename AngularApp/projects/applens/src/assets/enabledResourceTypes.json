@@ -14,7 +14,7 @@
             "service": "AseService",
             "resourceType": "Microsoft.Web/hostingEnvironments",
             "templateFileName": "HostingEnvironment",
-            "imgSrc": "assets/img/Azure-WebApps-Logo.png",
+            "imgSrc": "assets/img/Azure-Ase-Logo.png",
             "versionPrefix": "v2/",
             "azureCommImpactedServicesList": "appservice",
             "pesId": "16533",

@@ -50,7 +50,7 @@ export class SupportTopicPageComponent implements OnInit {
       this.supportTopicIcon = iconString;
     });
 
-    this.pesId = this._supportTopicService.getPesId();
+    this.pesId = this._resourceService.pesId;
     this._diagnosticService.getDetectors().subscribe((detectors: DetectorMetaData[]) => {
       this.detectorsWithSupportTopics = detectors.filter(detector => detector.supportTopicList && detector.supportTopicList.length > 0);
 

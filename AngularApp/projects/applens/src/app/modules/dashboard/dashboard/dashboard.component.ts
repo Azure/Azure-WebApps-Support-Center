@@ -7,7 +7,8 @@ import { DetectorControlService, FeatureNavigationService, DetectorMetaData, Det
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from '@angular/router';
 import { NgxSmartModalService } from 'ngx-smart-modal';
-import { UserInfo } from '../user-profile/user-profile.component'
+import { UserInfo } from '../user-profile/user-profile.component';
+import { StartupService } from '../../../shared/services/startup.service';
 
 @Component({
   selector: 'dashboard',
@@ -15,7 +16,6 @@ import { UserInfo } from '../user-profile/user-profile.component'
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnDestroy {
-
   startTime: momentNs.Moment;
   endTime: momentNs.Moment;
 
@@ -29,10 +29,12 @@ export class DashboardComponent implements OnDestroy {
   currentRoutePath: string[];
   resource: any;
   keys: string[];
+  observerLink: string="";
 
 
   constructor(public resourceService: ResourceService, private _detectorControlService: DetectorControlService,
-    private _router: Router, private _activatedRoute: ActivatedRoute, private _navigator: FeatureNavigationService, private _diagnosticService: ApplensDiagnosticService, private _adalService: AdalService, public ngxSmartModalService: NgxSmartModalService) {
+    private _router: Router, private _activatedRoute: ActivatedRoute, private _navigator: FeatureNavigationService,
+    private _diagnosticService: ApplensDiagnosticService, private _adalService: AdalService, public ngxSmartModalService: NgxSmartModalService, private startupService: StartupService) {
     this.contentHeight = (window.innerHeight - 50) + 'px';
 
     this.navigateSub = this._navigator.OnDetectorNavigate.subscribe((detector: string) => {
@@ -77,9 +79,21 @@ export class DashboardComponent implements OnDestroy {
   }
 
   ngOnInit() {
+    let serviceInputs = this.startupService.getInputs();
+
     this.resourceService.getCurrentResource().subscribe(resource => {
       if (resource) {
         this.resource = resource;
+
+        if (serviceInputs.resourceType.toString() === 'Microsoft.Web/hostingEnvironments' && this.resource && this.resource.Name)
+        {
+            this.observerLink = "https://wawsobserver.azurewebsites.windows.net/MiniEnvironments/"+ this.resource.Name;
+        }
+        else if (serviceInputs.resourceType.toString() === 'Microsoft.Web/sites')
+        {
+            this.observerLink = "https://wawsobserver.azurewebsites.windows.net/sites/"+ this.resource.SiteName;
+        }
+
         this.keys = Object.keys(this.resource);
       }
     });
@@ -87,10 +101,6 @@ export class DashboardComponent implements OnDestroy {
 
   reloadHome() {
     window.location.href = '/';
-  }
-
-  loadUserPage() {
-    window.location.href = `/users/${this.userName}`;
   }
 
   navigateTo(path: string) {
@@ -107,9 +117,8 @@ export class DashboardComponent implements OnDestroy {
   }
 
   navigateToUserPage() {
-    this.navigateTo(`users/xipeng`);
+    this.navigateTo(`users/${this.userId}`);
   }
-
 
   openResourceInfoModal() {
     this.ngxSmartModalService.getModal('resourceInfoModal').open();

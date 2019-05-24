@@ -141,22 +141,8 @@ export class ApplensSupportTopicService {
     }
 
     public getSupportTopics(): Observable<any> {
-        let pesId = this.getPesId();
-        return this._diagnosticApiService.getSupportTopics(pesId);
-    }
-
-    public getPesId(): string {
         let pesId = this._resourceService.pesId;
-        let requestBody = this._resourceService.getRequestBody();
-        if (pesId === '14748') {
-            if (requestBody.Kind === "functionapp") {
-                pesId = '16072';
-            }
-            else if (requestBody.IsLinux) {
-                pesId = '16170';
-            }
-        }
-        return pesId;
+        return this._diagnosticApiService.getSupportTopics(pesId);
     }
 
     getCategoryImagePath(supportTopicL2Name: string): string {

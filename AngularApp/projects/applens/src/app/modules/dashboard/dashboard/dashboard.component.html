@@ -40,6 +40,9 @@
       </div>
       <div class="modal-content">
         <div class="resource-content">
+          <div *ngIf="observerLink !== ''">
+            <a href="{{observerLink}}" target="_blank">Observer Link</a>
+          </div>
           <div *ngFor="let key of keys">
             <b>{{key}}:</b> {{resource[key]}}
           </div>
