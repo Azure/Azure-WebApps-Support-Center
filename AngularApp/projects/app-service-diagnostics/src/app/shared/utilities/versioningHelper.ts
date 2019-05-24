@@ -5,7 +5,7 @@ export class VersioningHelper {
     static isV2Subscription(subscriptionId: string): boolean {
 
         // When we decide to enable the A/B testing for v2, change this to true
-        let enableV2 = false;
+        let enableV2 = true;
 
         let isBetaSubscription = DemoSubscriptions.betaSubscriptions.findIndex(item => subscriptionId.toLowerCase() === item.toLowerCase()) > -1;
         if (isBetaSubscription) {
