@@ -85,6 +85,15 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
           if (this.detectorId !== "") {
             let currentDetector = detectorList.find(detector => detector.id == this.detectorId)
             this.detectorName = currentDetector.name;
+            return;
+          } else {
+            this.detectorEventProperties = {
+              'StartTime': String(this._detectorControl.startTime),
+              'EndTime': String(this._detectorControl.endTime),
+              'DetectorId': this.analysisId,
+              'ParentDetectorId': "",
+              'Url': window.location.href
+            };
           }
 
           detectorList.forEach(element => {
@@ -226,11 +235,25 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     };
   }
 
-  public selectDetector(detectorId: string) {
-    if (detectorId !== "") {
-      this._router.navigate([`../../analysis/${this.analysisId}/detectors/${detectorId}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge', preserveFragment: true });
+  public selectDetector(viewModel: any) {
+    if (viewModel != null && viewModel.model.metadata.id) {
+      let detectorId = viewModel.model.metadata.id;
+      if (detectorId !== "") {
 
+        const clickDetectorEventProperties = {
+          'ChildDetectorName': viewModel.model.title,
+          'ChildDetectorId': viewModel.model.metadata.id,
+          'IsExpanded': true,
+          'Status': viewModel.model.status
+        };
+
+        // Log children detectors click
+        this.logEvent(TelemetryEventNames.ChildDetectorClicked, clickDetectorEventProperties);
+
+        this._router.navigate([`../../analysis/${this.analysisId}/detectors/${detectorId}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge', preserveFragment: true });
+      }
     }
+
   }
 
   startLoadingMessage(): void {
