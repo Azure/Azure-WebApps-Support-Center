@@ -30,6 +30,7 @@ export class CategoryPageComponent implements OnInit {
     detectorsWithSupportTopics: DetectorMetaData[] = [];
     publicDetectorsList: DetectorMetaData[] = [];
     filterdDetectors: DetectorMetaData[] = [];
+    filteredDetectorsLoaded: boolean = false;
     filterdDetectorAuthors: string[] = [];
     supportTopicIdMapping: any[] = [];
     supportTopicsNumber: number = 0;
@@ -86,6 +87,7 @@ export class CategoryPageComponent implements OnInit {
         }));
 
         forkJoin(supportTopicImage, allDetectorsList, publicDetectors).subscribe((res) => {
+            this.filteredDetectorsLoaded = true;
             this.detectorsWithSupportTopics.forEach((detector) => {
                 if (!this.filterdDetectors.find((d) => d.id === detector.id)) {
                     this.filterdDetectors.push(detector);
@@ -119,8 +121,7 @@ export class CategoryPageComponent implements OnInit {
                             if (detector.author != undefined) {
                                 let authors = detector.author.toLowerCase();
                                 const separators = [' ', ',', ';', ':'];
-                                let detectorAuthors = authors.split(new RegExp(separators.join('|'), 'g'));
-
+                                let detectorAuthors = authors.split(new RegExp(separators.join('|'), 'g')).filter(author=> author != '');
                                 detectorAuthors.forEach(author => {
                                     if (!this.filterdDetectorAuthors.find(existingAuthor => existingAuthor === author)) {
                                         this.filterdDetectorAuthors.push(author);
@@ -141,7 +142,7 @@ export class CategoryPageComponent implements OnInit {
 
                         });
                     });
-
+                    
                     this.authorsNumber = this.filterdDetectorAuthors.length;
                     this.detectorsNumber = this.filterdDetectors.length;
                     this.supportTopicsNumber = this.supportTopicIdMapping.length;

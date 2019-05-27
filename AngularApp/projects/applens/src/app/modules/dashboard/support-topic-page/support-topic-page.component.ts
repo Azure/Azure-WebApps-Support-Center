@@ -24,6 +24,7 @@ export class SupportTopicPageComponent implements OnInit {
   supportTopicName: string;
   supportTopic: SupportTopicItem;
   supportTopics: SupportTopicItem[] = [];
+  supportTopicsLoaded: boolean = false;
   supportTopicIcon: string;
   supportTopicsNumber: number = 0;
   detectorsNumber: number = 0;
@@ -63,6 +64,7 @@ export class SupportTopicPageComponent implements OnInit {
       });
 
       this._supportTopicService.getSupportTopics().subscribe((allSupportTopics: SupportTopicResult[]) => {
+        this.supportTopicsLoaded = true;
         let filteredSupportTopics = allSupportTopics.filter((supportTopic) => supportTopic.supportTopicL2Name === this.supportTopicName);
 
         filteredSupportTopics.forEach((sup: SupportTopicResult) => {
