@@ -11,8 +11,13 @@
         <span *ngIf="userName">Hello, {{userName}}</span>
       </li>
       <li>
-        <img *ngIf="userPhotoSource else loading" id="userPhoto" [src]="userPhotoSource" class="avatar" alt="User Profile Photo"
+        <img *ngIf="userPhotoSource != undefined && userPhotoSource !== ''" id="userPhoto" [src]="userPhotoSource" class="avatar" alt="User Profile Photo"
           (click)="navigateToUserPage()" />
+        <ngx-avatar *ngIf="displayName != undefined && displayName !== '' && userPhotoSource === ''"  class="avatar avatar-initial" [round]="false" [name]=displayName
+        initialsSize="2"></ngx-avatar>
+        <div *ngIf="userPhotoSource == undefined" class="loading-element">
+          <span class="fa-li fa fa-spinner fa-spin fa-2x photo-loading"></span>
+        </div>
       </li>
     </ul>
   </nav>
@@ -41,7 +46,7 @@
       <div class="modal-content">
         <div class="resource-content">
           <div *ngIf="observerLink !== ''">
-            <a href="{{observerLink}}" target="_blank">Observer Link</a>
+            <a href="{{observerLink}}" target="_blank">Observer Link <i class="fa fa-link" aria-hidden="true"></i></a>
           </div>
           <div *ngFor="let key of keys">
             <b>{{key}}:</b> {{resource[key]}}
@@ -51,8 +56,8 @@
     </ngx-smart-modal>
   </div>
 </div>
-<ng-template #loading>
+<!-- <ng-template #loading>
   <div class="loading-element">
     <span class="fa-li fa fa-spinner fa-spin fa-2x photo-loading"></span>
   </div>
-</ng-template>
+</ng-template> -->

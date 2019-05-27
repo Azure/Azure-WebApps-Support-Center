@@ -26,7 +26,7 @@ export class ApplensSupportTopicService {
             path: "assets/img/SupportTopicImages/code.png",
         },
         {
-            keyWords: ["swap", "slot", "migrat"],
+            keyWords: ["swap", "slot", "migrat", "mov"],
             path: "assets/img/SupportTopicImages/slot.png",
         },
         {
@@ -44,10 +44,6 @@ export class ApplensSupportTopicService {
         {
             keyWords: ["health"],
             path: "assets/img/SupportTopicImages/health.png",
-        },
-        {
-            keyWords: ["adding functions"],
-            path: "assets/img/SupportTopicImages/adding_functions.png",
         },
         {
             keyWords: ["durable"],
@@ -118,19 +114,19 @@ export class ApplensSupportTopicService {
             path: "assets/img/SupportTopicImages/dns.png",
         },
         {
-            keyWords: ["creat", "develop", "development"],
+            keyWords: ["creat", "develop", "development", "add"],
             path: "assets/img/SupportTopicImages/create.png",
         },
         {
-            keyWords: ["troubleshoot"],
+            keyWords: ["troubleshoot", "diagnos", "solv"],
             path: "assets/img/SupportTopicImages/troubleshoot.png",
         },
         {
-            keyWords: ["configur", "manag"],
+            keyWords: ["configur", "manag", "setting"],
             path: "assets/img/SupportTopicImages/configure.png",
         },
         {
-            keyWords: ["function"],
+            keyWords: ["function", "adding functions"],
             path: "assets/img/SupportTopicImages/function.png",
         }
     ]

@@ -24,7 +24,8 @@ export class DashboardComponent implements OnDestroy {
   navigateSub: Subscription;
   userId: string = "";
   userName: string = "";
-  userPhotoSource: string;
+  displayName: string="";
+  userPhotoSource: string = undefined;
 
   currentRoutePath: string[];
   resource: any;
@@ -75,6 +76,7 @@ export class DashboardComponent implements OnDestroy {
 
     this._diagnosticService.getUserInfo(this.userId).subscribe((userInfo: UserInfo) => {
       this.userName = userInfo.givenName;
+      this.displayName = userInfo.displayName;
     });
   }
 

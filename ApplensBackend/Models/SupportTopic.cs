@@ -13,7 +13,6 @@ namespace AppLensV3.Models
 
         public string ProductName { get; set; }
 
-
         public string SupportTopicL2Name { get; set; }
 
         public string SupportTopicL3Name { get; set; }

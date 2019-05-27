@@ -55,7 +55,7 @@ export class SiteService extends ResourceService {
     }
 
     public updatePesIdAndImgSrc() {
-        if (this._requestBody.Kind === "functionapp") {
+        if (this._requestBody.Kind && this._requestBody.Kind.toString().toLowerCase().indexOf("functionapp") !== -1) {
             this.pesId = '16072';
             this.imgSrc = 'assets/img/Azure-Functions-Logo.png';
         }

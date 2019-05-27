@@ -68,7 +68,8 @@ export class ResourceHomeComponent implements OnInit {
             return this.detectorsWithSupportTopics;
         }));
 
-        const publicDetectors = this._diagnosticService.getDetectors(false);
+       // const publicDetectors = this._diagnosticService.getDetectors(false);
+        const publicDetectors = this._diagnosticService.getDetectors(true);
 
         forkJoin(detectorsWithSupportTopics, publicDetectors).subscribe((detectorLists) => {
             detectorLists.forEach((detectorList: DetectorMetaData[]) => {
