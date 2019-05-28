@@ -46,7 +46,7 @@ namespace AppLensV3.Controllers
                 return BadRequest("path cannot be empty");
             }
 
-            var response = await _selfHelpContentService.GetSelfHelpBySupportTopic(pesId, supportTopicId, path);
+            var response = await _selfHelpContentService.GetSelfHelpBySupportTopicAsync(pesId, supportTopicId, path);
             return Ok(response);
         }
     }

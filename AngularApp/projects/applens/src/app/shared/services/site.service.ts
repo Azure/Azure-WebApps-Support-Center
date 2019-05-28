@@ -58,6 +58,7 @@ export class SiteService extends ResourceService {
         if (this._requestBody.Kind && this._requestBody.Kind.toString().toLowerCase().indexOf("functionapp") !== -1) {
             this.pesId = '16072';
             this.imgSrc = 'assets/img/Azure-Functions-Logo.png';
+            this.staticSelfHelpContent = 'microsoft.function';
         }
         else if (this._requestBody.IsLinux) {
             this.pesId = '16170';

@@ -66,7 +66,6 @@ namespace AppLensV3.Services
                 Credentials = new Credentials(AccessToken)
             };
 
-            StartPollingSelfHelp();
         }
 
         public async Task<HttpResponseMessage> GetFileContent(string fileDataUrl)
@@ -81,6 +80,7 @@ namespace AppLensV3.Services
         {
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, path);
             HttpResponseMessage response = await HttpClient.SendAsync(request);
+
             var selfHelpStr = string.Empty;
 
             if (response != null)
@@ -104,7 +104,7 @@ namespace AppLensV3.Services
                     var staticFiles = await Task.WhenAll(tasks);
                     var cacheValue = SelfHelpCache.TryGetValue(pesId, out ConcurrentDictionary<string, string> supportTopicsSelfHelp);
 
-                    if (!cacheValue)
+                    if (!cacheValue || !supportTopicsSelfHelp.TryGetValue(supportTopicId, out selfHelpStr))
                     {
                         var selfHelpMapping = new ConcurrentDictionary<string, string>();
                         for (int i = 0; i < staticFiles.Length; i++)
@@ -136,7 +136,7 @@ namespace AppLensV3.Services
             return selfHelpStr;
         }
 
-        public async Task<string> GetSelfHelpBySupportTopicFromGit(string pesId, string supportTopicId, string path)
+        public async Task<string> GetSelfHelpBySupportTopicFromGitAsync(string pesId, string supportTopicId, string path)
         {
             var selfHelpUrl = string.Format(
             SelfHelpConstants.ArticleTemplatePath,
@@ -146,7 +146,7 @@ namespace AppLensV3.Services
             return await PullSelfHelpContent(pesId, supportTopicId, selfHelpUrl);
         }
 
-        public async Task<string> GetSelfHelpBySupportTopic(string pesId, string supportTopicId, string path)
+        public async Task<string> GetSelfHelpBySupportTopicAsync(string pesId, string supportTopicId, string path)
         {
 
             var supportTopicsSelfHelp = SelfHelpCache.TryGetValue(pesId, out ConcurrentDictionary<string, string> resourceSelfHelp);
@@ -156,7 +156,7 @@ namespace AppLensV3.Services
             }
             else
             {
-                return await GetSelfHelpBySupportTopicFromGit(pesId, supportTopicId, path);
+                return await GetSelfHelpBySupportTopicFromGitAsync(pesId, supportTopicId, path);
             }
         }
 
@@ -174,7 +174,7 @@ namespace AppLensV3.Services
                     foreach (var path in selfHelpPaths)
                     {
                         Console.WriteLine("Get self helf for {0}", path);
-                        tasks.Add(Task.Run(() => GetSelfHelpBySupportTopicFromGit(string.Empty, string.Empty, path)));
+                        tasks.Add(Task.Run(() => GetSelfHelpBySupportTopicFromGitAsync(string.Empty, string.Empty, path)));
                     }
 
                     var selfHelpFiles = await Task.WhenAll(tasks);
