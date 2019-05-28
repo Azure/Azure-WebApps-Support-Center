@@ -60,6 +60,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
   }
 
    checkIfFeatureRegister(): void {
+    this.clearErrors();
     this.armService.getResource<any>(this.featureRegUrl, '2015-12-01', true).subscribe(response => {
         let featureRegistrationResponse = <FeatureRegistration>response;
         let state = featureRegistrationResponse.properties.state;
@@ -82,12 +83,13 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     }, (error: any) => {
         this.logHTTPError(error, 'checkIfFeatureRegister');
         this.showGeneralError = true;
-        this.generalErrorMsg = 'Unable to check feature registration status.  Please try again later.';
+        this.generalErrorMsg = 'Unable to check feature registration status. Either you dont have permissions to perform the operation or your token expired. If later, Please refresh the page and try again.';
         this.isFeatureRegistered = false;
     });
    }
 
    checkIfProviderRegistered(): void {
+       this.clearErrors();
        this.armService.getResource<any>(this.providerRegUrl, '2018-05-01', true).subscribe(response => {
            let providerRegistrationStateResponse = <ProviderRegistration>response;
            let state = providerRegistrationStateResponse.registrationState;
@@ -106,7 +108,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
        }, (error: any) => {
             this.logHTTPError(error, 'checkIfProviderRegistered');
             this.showGeneralError = true;
-            this.generalErrorMsg = 'Unable to check resource provider registration status. Please try again later.';
+            this.generalErrorMsg = 'Unable to check resource provider registration status.  Either you dont have permissions to perform the operation or your token expired. If later, Please refresh the page and try again.';
             this.featureRegOption = this.EnablementOptions[1];
        })
    }
@@ -229,6 +231,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
    }
 
    updateProviderRegister(providerRegOption: any, isRetry: boolean = false): void {
+       this.clearErrors();
        if(!isRetry) {
             this.updatingProvider = true;
        }
@@ -269,7 +272,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
                 }, 30000);
             } else {
                 this.showGeneralError = true;
-                this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. Please try again later.';
+                this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. Either you dont have permissions to perform the operation or your token expired. If later, Please refresh the page and try again.';
                 this.updatingProvider = false;
                 this.showInProgress = false;
                 this.featureRegOption = this.EnablementOptions[1];
@@ -318,6 +321,11 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             statusCode: error.status ? error.status : 500
         };
         this.loggingService.logTrace('HTTP error in '+methodName, errorLoggingProps);
+   }
+
+   clearErrors(): void {
+       this.generalErrorMsg = '';
+       this.showGeneralError = false;
    }
 
    ngOnDestroy(): void {
