@@ -44,6 +44,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
   featureRegOption: any = {};
   alwaysOnOption: any = {};
   retryCount: number = 1;
+  showFeatureRegProgress: boolean = false;
   constructor(private armService: ArmService, private authService: AuthService,
      private activatedRoute: ActivatedRoute, private resourceService: ResourceService,
      private loggingService: PortalKustoTelemetryService) { }
@@ -61,8 +62,8 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
 
    checkIfFeatureRegister(): void {
     this.clearErrors();
-    this.armService.getResource<any>(this.featureRegUrl, '2015-12-01', true).subscribe(response => {
-        let featureRegistrationResponse = <FeatureRegistration>response;
+    this.armService.getResourceFullResponse<any>(this.featureRegUrl, true, '2015-12-01').subscribe(response => {
+        let featureRegistrationResponse = <FeatureRegistration>response.body;
         let state = featureRegistrationResponse.properties.state;
         if(state.toLowerCase() == 'registered') {
             // Once feature is registered, check if Resource Provider is registered
@@ -74,24 +75,35 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         else {
             // show in progres text and disable enabling
             this.isFeatureRegistered = false;
+            this.showFeatureRegProgress = true;
+            this.featureRegOption = this.EnablementOptions[1];
+            this.alwaysOnOption = this.EnablementOptions[1];
             // start polling until registered
             this.subscription = interval(20000).subscribe(res => {
                 this.loggingService.logTrace("Polling for Feature Registration Status");
                 this.pollForFeatureRegStatus();
             });
+
         }
     }, (error: any) => {
         this.logHTTPError(error, 'checkIfFeatureRegister');
         this.showGeneralError = true;
-        this.generalErrorMsg = 'Unable to check Change Analysis feature status. Either you dont have permissions to perform the operation or your token expired. If later, Please refresh the page and try again.';
+        if(error.status === 403) {
+            this.generalErrorMsg = 'Unable to check Change Analysis feature status. You may not have sufficient permissions to perform this operation. Make sure you have required permissions for this subscription and try again.';
+        } else if (error.status === 401) {
+            this.generalErrorMsg = 'Unable to check Change Anaylsis feature status. Your token may have expired. Please refresh and try again.';
+        } else {
+            this.generalErrorMsg = 'Unable to check Change Analysis feature status. Please try again later.';
+        }
         this.isFeatureRegistered = false;
+        this.showFeatureRegProgress = false;
     });
    }
 
    checkIfProviderRegistered(): void {
        this.clearErrors();
-       this.armService.getResource<any>(this.providerRegUrl, '2018-05-01', true).subscribe(response => {
-           let providerRegistrationStateResponse = <ProviderRegistration>response;
+       this.armService.getResourceFullResponse<any>(this.providerRegUrl, true, '2018-05-01').subscribe(response => {
+           let providerRegistrationStateResponse = <ProviderRegistration>response.body;
            let state = providerRegistrationStateResponse.registrationState;
            if (state.toLowerCase() == 'registered') {
                this.featureRegOption = this.EnablementOptions[0];
@@ -104,11 +116,19 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
                 this.subscription = interval(30000).subscribe(res => {
                     this.pollResourceProviderReg();
                 });
+           } else {
+                this.featureRegOption = this.EnablementOptions[1];
            }
        }, (error: any) => {
             this.logHTTPError(error, 'checkIfProviderRegistered');
             this.showGeneralError = true;
-            this.generalErrorMsg = 'Unable to check Change Analysis Resource Provider status.  Either you dont have permissions to perform the operation or your token expired. If later, Please refresh the page and try again.';
+            if(error.status === 403) {
+                this.generalErrorMsg = 'Unable to check Change Analysis Resource Provider status. You may not have permissions to perform this operation. Make sure you have sufficient permissions for this subscription and try again.';
+            } else if (error.status === 401) {
+                this.generalErrorMsg = 'Unable to check Change Anaylsis Resource Provider status. Your token could have expired. Please refresh and try again.';
+            } else {
+                this.generalErrorMsg = 'Unable to check Change Analysis Resource Provider status. Please try again later.';
+            }
             this.featureRegOption = this.EnablementOptions[1];
        })
    }
@@ -136,12 +156,13 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
 
 
    pollForFeatureRegStatus(): void {
-    this.armService.getResource<any>(this.featureRegUrl, '2015-12-01', true).subscribe(response => {
-        let featureRegistrationStateResponse = <FeatureRegistration>response;
+    this.armService.getResourceFullResponse<any>(this.featureRegUrl, true, '2015-12-01').subscribe(response => {
+        let featureRegistrationStateResponse = <FeatureRegistration>response.body;
         let state = featureRegistrationStateResponse.properties.state;
         // Stop polling once its registered
         if(state.toLowerCase() == 'registered') {
             this.isFeatureRegistered = true;
+            this.showFeatureRegProgress = false;
             if(this.subscription) {
                 this.subscription.unsubscribe();
             }
@@ -150,7 +171,14 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         this.logHTTPError(error, 'pollForFeatureRegStatus');
         this.isFeatureRegistered = false;
         this.showGeneralError = true;
-        this.generalErrorMsg = 'Unable to check Change Anaylsis feature status. Either you dont have permissions to perform the operation or your token expired. If later, Please refresh the page and try again.';
+        this.showFeatureRegProgress = false;
+        if(error.status === 403) {
+            this.generalErrorMsg = 'Unable to check Change Anaylsis feature status. You may not have permissions to perform the operation. Make sure you have sufficient permissions for this subscription and try again.';
+        } else if(error.status === 401) {
+            this.generalErrorMsg = 'Unable to check Change Anaylsis feature status. Your token could have expired. If later, Please refresh the page and try again.';
+        } else {
+            this.generalErrorMsg = 'Unable to check Change Anaylsis feature status. Please try again later.';
+        }
         if(this.subscription) {
             this.subscription.unsubscribe();
         }
@@ -217,7 +245,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
            resourceId: this.resourceId
        };
        this.loggingService.logEvent("UpdateAlwaysOn", eventProps);
-       this.armService.putResource(url, this.siteConfig, '2016-08-01').subscribe(data =>{
+       this.armService.putResource(url, this.siteConfig, '2016-08-01', true).subscribe(data =>{
         this.siteConfig = data;
         if(this.siteConfig.properties['alwaysOn']) {
             this.alwaysOnOption = this.EnablementOptions[0];
@@ -272,7 +300,13 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
                 }, 30000);
             } else {
                 this.showGeneralError = true;
-                this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. Either you dont have permissions to perform the operation or your token expired. If later, Please refresh the page and try again.';
+                if(error.status === 403) {
+                    this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. You may not have permissions to perform the operation. Make sure you have sufficient permissions for this subscription and try again.';
+                } else if(error.status === 401) {
+                    this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. Your token could have expired. Please refresh the page and try again.';
+                } else {
+                    this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. Please try again later.';
+                }
                 this.updatingProvider = false;
                 this.showInProgress = false;
                 this.featureRegOption = this.EnablementOptions[1];
