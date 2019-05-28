@@ -1,10 +1,12 @@
-<div class="col-6 col-md-6 top-space">
+<div class="col-6 col-md-4 top-space">
         <div class="row form-group" *ngIf="!isFeatureRegistered">
           <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
             Change Analysis feature registration is in progress. Once registration is completed, please use the below setting to enable Change Analysis.
         </div>
         <div class="row form-group" *ngIf="showGeneralError">
-          {{generalErrorMsg}}
+          <div class="alert alert-danger" role="alert">
+            <p>{{generalErrorMsg}} </p>
+          </div>
         </div>
         <loader-view *ngIf="updatingTag || updatingProvider " message="Saving settings..."></loader-view>
        <div class="row form-group" *ngIf="showInProgress && !updatingProvider && !updatingTag">

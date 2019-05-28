@@ -83,7 +83,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     }, (error: any) => {
         this.logHTTPError(error, 'checkIfFeatureRegister');
         this.showGeneralError = true;
-        this.generalErrorMsg = 'Unable to check feature registration status. Either you dont have permissions to perform the operation or your token expired. If later, Please refresh the page and try again.';
+        this.generalErrorMsg = 'Unable to check Change Analysis feature status. Either you dont have permissions to perform the operation or your token expired. If later, Please refresh the page and try again.';
         this.isFeatureRegistered = false;
     });
    }
@@ -108,7 +108,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
        }, (error: any) => {
             this.logHTTPError(error, 'checkIfProviderRegistered');
             this.showGeneralError = true;
-            this.generalErrorMsg = 'Unable to check resource provider registration status.  Either you dont have permissions to perform the operation or your token expired. If later, Please refresh the page and try again.';
+            this.generalErrorMsg = 'Unable to check Change Analysis Resource Provider status.  Either you dont have permissions to perform the operation or your token expired. If later, Please refresh the page and try again.';
             this.featureRegOption = this.EnablementOptions[1];
        })
    }
@@ -150,7 +150,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         this.logHTTPError(error, 'pollForFeatureRegStatus');
         this.isFeatureRegistered = false;
         this.showGeneralError = true;
-        this.generalErrorMsg = 'Unable to check feature registration status. Please try again later.';
+        this.generalErrorMsg = 'Unable to check Change Anaylsis feature status. Either you dont have permissions to perform the operation or your token expired. If later, Please refresh the page and try again.';
         if(this.subscription) {
             this.subscription.unsubscribe();
         }
