@@ -3,7 +3,7 @@
     <div (click)="collapsed = !collapsed" class="list-header">
         <i tabindex="0" (keypress)="collapsed = !collapsed" class="collapse-icon fa" [class.fa-plus]="collapsed"
             [class.fa-minus]="!collapsed"></i>
-        <span class="list-item-title">{{title}}</span>
+        <span class="pl-3">{{title}}</span>
     </div>
 
     <div *ngIf="!collapsed" class="list-items-container">
