@@ -1,4 +1,4 @@
-
+import { AdalService } from 'adal-angular4';
 import { filter } from 'rxjs/operators';
 import { Component, OnInit, PipeTransform, Pipe } from '@angular/core';
 import { Router, ActivatedRoute, NavigationExtras, NavigationEnd, Params } from '@angular/router';
@@ -13,6 +13,8 @@ import { DetectorType } from 'diagnostic-data';
   styleUrls: ['./side-nav.component.scss']
 })
 export class SideNavComponent implements OnInit {
+
+  userId: string = "";
 
   detectorsLoading: boolean = true;
 
@@ -29,8 +31,10 @@ export class SideNavComponent implements OnInit {
 
   getDetectorsRouteNotFound: boolean = false;
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, public resourceService: ResourceService) {
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _adalService: AdalService, private _diagnosticApiService: ApplensDiagnosticService, public resourceService: ResourceService) {
     this.contentHeight = (window.innerHeight - 139) + 'px';
+    let alias = this._adalService.userInfo.profile ? this._adalService.userInfo.profile.upn : '';
+    this.userId = alias.replace('@microsoft.com', '');
   }
 
   documentation: CollapsibleMenuItem[] = [
@@ -44,7 +48,18 @@ export class SideNavComponent implements OnInit {
     }
   ];
 
-  createNew: CollapsibleMenuItem[] = [{
+  createNew: CollapsibleMenuItem[] = [
+    {
+      label: 'Your Detectors',
+      onClick: () => {
+        this.navigateToUserPage();
+      },
+      expanded: false,
+      subItems: null,
+      isSelected: null,
+      icon: null
+    },
+    {
     label: 'New Detector',
     onClick: () => {
       this.navigateTo('create');
@@ -88,6 +103,10 @@ export class SideNavComponent implements OnInit {
     };
 
     this._router.navigate(path.split('/'), navigationExtras);
+  }
+
+  navigateToUserPage() {
+    this.navigateTo(`users/${this.userId}`);
   }
 
   initializeDetectors() {

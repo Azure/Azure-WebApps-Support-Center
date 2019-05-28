@@ -31,7 +31,7 @@ export class SelfHelpContentComponent implements OnInit {
         this.selfHelpPath = this._supportTopicService.getSelfHelpPath();
 
         this._diagnosticService.getSelfHelpContent(this.pesId, this.supportTopicId, this.selfHelpPath).subscribe((res: string) => {
-            this.selfHelpContent = res === '' ? "No self help documentation is found" : res;
+            this.selfHelpContent = res == undefined || res === '' ? "No self help documentation is found" : res;
         });
     }
 

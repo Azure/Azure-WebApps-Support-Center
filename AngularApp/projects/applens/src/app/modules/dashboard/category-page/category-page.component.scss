@@ -35,6 +35,33 @@
     margin:0 auto;
 }
 
+.author-icon {
+  margin-top: 10px;
+  border: 1px solid #80808099;
+  border-radius: 50%;
+}
+
+.author-email:hover, .author-email:active {
+  text-decoration: underline;
+}
+
+.author-email {
+  color: #299fda!important;
+}
+
+.author-description {
+  color: gray;
+}
+
+.detector-number {
+  font-weight: bold;
+}
+
+.working-space {
+  color: #289e28;
+  margin-right: 10px;
+}
+
 .category-icon {
     width: 8%;
     margin-top: 10px;
@@ -57,6 +84,14 @@
    color:#585858;
 }
 
+.author-title {
+  display: inline-block;
+  margin: 10px 0 0 40px!important;
+  vertical-align: middle;
+  color:#585858;
+  padding-top: 15px;
+}
+
 .category-description {
     color: gray;
  }
@@ -65,6 +100,12 @@
     color: black;
     font-size: xx-large;
     font-weight: bold;
+}
+
+.author-name {
+  color: black;
+  font-size: large;
+  font-weight: bold;
 }
 
 .category-info {

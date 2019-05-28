@@ -3,8 +3,8 @@
     <collapsible-menu theme="light">
       <search-box [(searchValue)]="searchValue"></search-box>
       <menu-scroll>
-        <section-divider [label]="'Create'" [initiallyExpanded]="false" [disableExpandIcon]="true">
-          <i class="fa fa-plus-circle fa-fw menu-icon menu-icon-create" aria-hidden="true"></i>
+        <section-divider [label]="'Develop'" [initiallyExpanded]="false" [disableExpandIcon]="true">
+          <i class="fa fa-code fa-fw menu-icon menu-icon-create" aria-hidden="true"></i>
           <collapsible-menu-item *ngFor="let item of createNew" [menuItem]="item"></collapsible-menu-item>
         </section-divider>
         <section-divider [label]="'Documentation'" [initiallyExpanded]="false" [collapsible]="false" (click)="openDocumentation()">

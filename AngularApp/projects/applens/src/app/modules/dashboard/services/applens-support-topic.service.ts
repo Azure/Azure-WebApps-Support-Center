@@ -126,6 +126,14 @@ export class ApplensSupportTopicService {
             path: "assets/img/SupportTopicImages/configure.png",
         },
         {
+            keyWords: ["storage", "volume"],
+            path: "assets/img/SupportTopicImages/storage.png",
+        },
+        {
+            keyWords: ["application insight", "ai", "app insight"],
+            path: "assets/img/SupportTopicImages/appinsight.png",
+        },
+        {
             keyWords: ["function", "adding functions"],
             path: "assets/img/SupportTopicImages/function.png",
         }
