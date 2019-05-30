@@ -45,6 +45,8 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
   alwaysOnOption: any = {};
   retryCount: number = 1;
   showFeatureRegProgress: boolean = false;
+  permissionErrorMsg: string = 'You may not have sufficient permissions to perform this operation. Make sure you have required permissions for this subscription and try again.';
+  tokenErrorMsg: string = 'Your token may have expired. Please refresh and try again.';
   constructor(private armService: ArmService, private authService: AuthService,
      private activatedRoute: ActivatedRoute, private resourceService: ResourceService,
      private loggingService: PortalKustoTelemetryService) { }
@@ -83,15 +85,14 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
                 this.loggingService.logTrace("Polling for Feature Registration Status");
                 this.pollForFeatureRegStatus();
             });
-
         }
     }, (error: any) => {
         this.logHTTPError(error, 'checkIfFeatureRegister');
         this.showGeneralError = true;
         if(error.status === 403) {
-            this.generalErrorMsg = 'Unable to check Change Analysis feature status. You may not have sufficient permissions to perform this operation. Make sure you have required permissions for this subscription and try again.';
+            this.generalErrorMsg = 'Unable to check Change Analysis feature status. ' + this.permissionErrorMsg;
         } else if (error.status === 401) {
-            this.generalErrorMsg = 'Unable to check Change Anaylsis feature status. Your token may have expired. Please refresh and try again.';
+            this.generalErrorMsg = 'Unable to check Change Anaylsis feature status. ' + this.tokenErrorMsg;
         } else {
             this.generalErrorMsg = 'Unable to check Change Analysis feature status. Please try again later.';
         }
@@ -123,9 +124,9 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             this.logHTTPError(error, 'checkIfProviderRegistered');
             this.showGeneralError = true;
             if(error.status === 403) {
-                this.generalErrorMsg = 'Unable to check Change Analysis Resource Provider status. You may not have permissions to perform this operation. Make sure you have sufficient permissions for this subscription and try again.';
+                this.generalErrorMsg = 'Unable to check Change Analysis Resource Provider status. ' + this.permissionErrorMsg;
             } else if (error.status === 401) {
-                this.generalErrorMsg = 'Unable to check Change Anaylsis Resource Provider status. Your token could have expired. Please refresh and try again.';
+                this.generalErrorMsg = 'Unable to check Change Anaylsis Resource Provider status. ' + this.tokenErrorMsg;
             } else {
                 this.generalErrorMsg = 'Unable to check Change Analysis Resource Provider status. Please try again later.';
             }
@@ -173,9 +174,9 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         this.showGeneralError = true;
         this.showFeatureRegProgress = false;
         if(error.status === 403) {
-            this.generalErrorMsg = 'Unable to check Change Anaylsis feature status. You may not have permissions to perform the operation. Make sure you have sufficient permissions for this subscription and try again.';
+            this.generalErrorMsg = 'Unable to check Change Anaylsis feature status. ' +this.permissionErrorMsg;
         } else if(error.status === 401) {
-            this.generalErrorMsg = 'Unable to check Change Anaylsis feature status. Your token could have expired. If later, Please refresh the page and try again.';
+            this.generalErrorMsg = 'Unable to check Change Anaylsis feature status. ' +this.tokenErrorMsg;
         } else {
             this.generalErrorMsg = 'Unable to check Change Anaylsis feature status. Please try again later.';
         }
@@ -301,9 +302,9 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             } else {
                 this.showGeneralError = true;
                 if(error.status === 403) {
-                    this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. You may not have permissions to perform the operation. Make sure you have sufficient permissions for this subscription and try again.';
+                    this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. ' +this.permissionErrorMsg;
                 } else if(error.status === 401) {
-                    this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. Your token could have expired. Please refresh the page and try again.';
+                    this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. '+this.tokenErrorMsg;
                 } else {
                     this.generalErrorMsg = 'Unable to register/unregister Change Analysis Resource Provider. Please try again later.';
                 }
