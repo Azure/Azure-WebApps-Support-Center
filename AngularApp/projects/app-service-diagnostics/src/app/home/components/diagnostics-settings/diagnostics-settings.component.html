@@ -1,5 +1,5 @@
-<div class="col-6 col-md-4 top-space">
-        <div class="row form-group" *ngIf="!isFeatureRegistered">
+<div class="col-6 col-sm-8 mt-5">
+        <div class="row form-group" *ngIf="showFeatureRegProgress">
           <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
             Change Analysis feature registration is in progress. Once registration is completed, please use the below setting to enable Change Analysis.
         </div>
@@ -14,48 +14,37 @@
         <div *ngIf="!updatingProvider && !updatingTag">
         <div class="row form-group" *ngIf="!showInProgress">
             <div class="form-group">
-                <label class="control-label col-md-5">Change Analysis</label>
-                <div class="col-md-7">
-                  <fieldset [disabled]="!isFeatureRegistered">
-                    <ng-container *ngFor="let option of EnablementOptions">
-                      <label class="radio-inline control-label">
-                        <input type="radio" name="changAnalysis" [checked]="featureRegOption.option == option.option" value="option.option" (change)="setChangeAnalysisEnabled(option)"> {{option.option}}
-                      </label>
-                    </ng-container>
-                  </fieldset>
+                <label class="control-label col-sm-2 settings-label">Change Analysis</label>
+                <div class="col-sm-2">
+                  <toggle-button [disabled]="!isFeatureRegistered" [selected]="providerRegOption.option == 'On'" (selectedChange)="$event ? providerRegOption = EnablementOptions[0] : providerRegOption = EnablementOptions[1]"></toggle-button>
+                </div>
+                <div class="col-sm-8">
+                  <span class="fa fa-question-circle"></span> Enable Change Analysis to view property changes. This setting is effective for all webapps in this subscription.
                 </div>
             </div>
         </div>
-        <div class="row form-group" *ngIf="featureRegOption.option == 'On' && !showInProgress">
-            <label class="control-label col-md-5">Scan for code changes</label>
-            <div class="col-md-7">
-              <fieldset [disabled]="!isFeatureRegistered">
-              <ng-container *ngFor="let option of EnablementOptions">
-                  <label class="radio-inline control-label">
-                    <input type="radio" name="codeScan" [checked]="codeScanOption.option == option.option" value="option.option" (change)="setCodeScanEnabled(option)"> {{option.option}}
-                  </label>
-                </ng-container>
-              </fieldset>
+        <div class="row form-group" *ngIf="providerRegOption.option == 'On' && !showInProgress">
+            <label class="control-label col-sm-2 settings-label">Scan for code changes</label>
+            <div class="col-sm-2">
+                <toggle-button [selected]="codeScanOption.option == 'On'" (selectedChange)="$event ? codeScanOption = EnablementOptions[0] : codeScanOption = EnablementOptions[1]"></toggle-button>
+            </div>
+            <div class="col-sm-8">
+              <span class="fa fa-question-circle"></span> Enable scan for code changes to view code changes. This setting is effective per web app.
             </div>
         </div>
         <div class="row form-group">
-            <div class="alert alert-info" role="alert">
-               <p>Enabling Change Analysis will wake up KUDU every 4 hours to update change information. Please configure your web app to Always-on to avoid performance impact.
-                 <br> To enable Always on, use the below setting or go to Configuration -> General settings -> Always on -> On.</p>
-              </div>
-        </div>
-        <div class="row form-group">
-            <label class="control-label col-md-5">Always on</label>
-            <div class="col-md-7">
-              <ng-container *ngFor="let option of EnablementOptions">
-                <label class="radio-inline control-label">
-                  <input type="radio" name="alwaysOn" [checked]="alwaysOnOption.option == option.option" value="option" (change)="setAlwaysOnEnabled(option)"> {{option.option}}
-                </label>
-              </ng-container>
+            <label class="control-label col-sm-2 settings-label">Always on</label>
+            <div class="col-sm-2">
+              <toggle-button [disabled]="!isFeatureRegistered" [selected]="alwaysOnOption.option == 'On'" (selectedChange)="$event ? alwaysOnOption = EnablementOptions[0] : alwaysOnOption = EnablementOptions[1]"></toggle-button>
+            </div>
+            <div class="col-sm-8">
+              <span class="fa fa-question-circle"></span> Enabling scan for code changes will wake up Kudu every 4 hours to update change information. Please enable Always on to avoid performance impact.
             </div>
         </div>
         <div class="row form-group">
-          <button class="btn btn-primary" [disabled]="!isFeatureRegistered" (click)="saveSettings()">Save</button>
+          <div class="ml-3">
+            <button class="btn btn-primary" [disabled]="!isFeatureRegistered" (click)="saveSettings()">Save</button>
+          </div>
         </div>
       </div>
 </div>

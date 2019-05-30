@@ -75,3 +75,8 @@
 [role=radiogroup]:not([aria-disabled=true]).dirty [role=radio][aria-checked=true] {
   background-color: #6917aa;
 }
+
+.toggle-disabled {
+    cursor: not-allowed;
+    opacity: .65;
+}
