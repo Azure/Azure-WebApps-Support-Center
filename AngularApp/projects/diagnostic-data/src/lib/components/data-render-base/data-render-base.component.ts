@@ -3,7 +3,7 @@ import { ReplaySubject } from 'rxjs';
 import { Component, Input, OnInit } from '@angular/core';
 import { DiagnosticData, RenderingType } from '../../models/detector';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
-import {CompilationProperties} from '../../models/compilation-properties';
+import { CompilationProperties } from '../../models/compilation-properties';
 export interface DataRenderer {
   diagnosticDataInput: DiagnosticData;
 }
@@ -27,7 +27,7 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
   @Input() executionScript: string;
   @Input() detector: string = '';
   @Input() compilationPackage: CompilationProperties;
-  constructor(protected telemetryService: TelemetryService) {}
+  constructor(protected telemetryService: TelemetryService) { }
 
   ngOnInit() {
     this._diagnosticDataSubject.subscribe((data: DiagnosticData) => {
@@ -42,9 +42,11 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
   }
 
   protected logEvent(eventMessage: string, eventProperties?: any, measurements?: any) {
-    for (const id of Object.keys(this.detectorEventProperties)) {
-      if (this.detectorEventProperties.hasOwnProperty(id)) {
-        eventProperties[id] = String(this.detectorEventProperties[id]);
+    if (this.detectorEventProperties) {
+      for (const id of Object.keys(this.detectorEventProperties)) {
+        if (this.detectorEventProperties.hasOwnProperty(id)) {
+          eventProperties[id] = String(this.detectorEventProperties[id]);
+        }
       }
     }
     this.telemetryService.logEvent(eventMessage, eventProperties, measurements);

@@ -159,7 +159,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             this.loadingChangesTable = false;
             this.changesTableError = '';
         } else {
-            let queryParams = `&changeSetId=${encodeURI(changeSetId)}`;
+            let queryParams = `&changeSetId=${encodeURIComponent(changeSetId)}`;
             this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
             this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
             this.changeSetsCache[changeSetId] = response.dataset;

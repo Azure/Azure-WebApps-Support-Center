@@ -1,7 +1,7 @@
 
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { DiagnosticService, DetectorMetaData } from 'diagnostic-data';
+import { DiagnosticService, DetectorMetaData, DetectorType } from 'diagnostic-data';
 import { Observable } from 'rxjs';
 import { ResourceService } from './resource.service';
 
@@ -24,7 +24,11 @@ export class SupportTopicService {
           detector.supportTopicList.findIndex(supportTopic => supportTopic.id === supportTopicId) >= 0);
 
         if (matchingDetector) {
-          detectorPath = `/detectors/${matchingDetector.id}`;
+          if (matchingDetector.type === DetectorType.Detector) {
+            detectorPath = `/detectors/${matchingDetector.id}`;
+          } else if (matchingDetector.type === DetectorType.Analysis) {
+            detectorPath = `/analysis/${matchingDetector.id}`;
+          }
         }
       }
 

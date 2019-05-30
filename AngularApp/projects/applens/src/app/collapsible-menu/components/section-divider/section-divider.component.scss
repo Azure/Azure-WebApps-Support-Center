@@ -5,6 +5,7 @@
 
 .section-expand-icon {
     min-width: 10px;
+    font-size:small;
 }
 
 .expandable-content {
@@ -12,7 +13,7 @@
 }
 
 .section-divider {
-    cursor: pointer;   
+    cursor: pointer;
     display: flex;
     align-items: center;
 }
@@ -39,10 +40,21 @@
     background-color: #ffffff;
     font-weight: 600;
     font-size: 10px;
-    padding: 20px 25px 7px 15px;
+    padding: 20px 25px 7px 10px;
 }
 
 :host-context(.light-theme) .menu,
 :host-context(.light-theme) .main-sidebar {
-    background-color: #ffffff
+    background-color: #ffffff;
+}
+
+.menu-label {
+    position: relative;
+    padding-left: 4px;
+    font-size:13px;
+}
+
+.menu-expand-icon {
+   margin-left: auto;
+   margin-right: 0;
 }

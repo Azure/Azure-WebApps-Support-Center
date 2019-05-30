@@ -18,6 +18,7 @@ import { CustomUrlSerializerService } from './shared/services/custom-url-seriali
 import { DiagnosticDataModule } from 'diagnostic-data';
 import { UnhandledExceptionHandlerService } from 'diagnostic-data';
 import {CustomMaterialModule} from './material-module';
+
 @Injectable()
 export class ValidResourceResolver implements Resolve<void>{
   constructor(private _startupService: StartupService, private _http: Http, private _router: Router) { }

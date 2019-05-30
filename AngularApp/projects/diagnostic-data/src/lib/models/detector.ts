@@ -9,7 +9,8 @@ export interface DetectorResponse {
     dataset: DiagnosticData[];
     metadata: DetectorMetaData;
     status: Status;
-    dataProvidersMetadata: DataProviderMetadata[];
+  dataProvidersMetadata: DataProviderMetadata[];
+  suggestedUtterances: any;
 }
 
 export interface Status {
@@ -52,6 +53,7 @@ export interface DetectorMetaData {
     analysisTypes: string[];
     type: DetectorType;
     category: string;
+    score: number;
 }
 
 export interface DataProviderMetadata {
@@ -174,4 +176,14 @@ export interface DetectorListRendering extends Rendering {
 
 export interface MarkdownRendering extends Rendering {
     isContainerNeeded: boolean;
+}
+
+export interface RecommendedUtterance {
+  sampleUtterance: SampleUtterance;
+  score: number;
+}
+
+interface SampleUtterance {
+  text: string;
+  links: string[];
 }

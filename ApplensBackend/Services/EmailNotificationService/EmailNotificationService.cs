@@ -17,7 +17,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using Microsoft.AspNetCore.Hosting;
 
-namespace AppLensV3.Services.EmailNotificationService
+namespace AppLensV3.Services
 {
     public class EmailNotificationService : IEmailNotificationService
     {

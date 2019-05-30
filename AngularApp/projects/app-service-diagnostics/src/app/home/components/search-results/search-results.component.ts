@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { Feature } from '../../../shared-v2/models/features';
 import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
@@ -12,7 +12,7 @@ import { NotificationService } from '../../../shared-v2/services/notification.se
 export class SearchResultsComponent implements OnChanges {
 
   @Input() searchValue: string;
-
+  @Output() resultCount = new EventEmitter<number>();
   features: Feature[];
 
   constructor(public featureService: FeatureService, private _logger: LoggingV2Service,
@@ -21,6 +21,7 @@ export class SearchResultsComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['searchValue']) {
       this.features = this.featureService.getFeatures(this.searchValue);
+      this.resultCount.emit(this.features.length);
     }
   }
 

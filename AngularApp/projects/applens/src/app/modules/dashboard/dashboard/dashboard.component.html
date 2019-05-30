@@ -1,17 +1,63 @@
 <header class="main-header">
-  <a (click)="reloadHome()" class="logo">
-    <span class="logo-lg">
-      <span class="app-title">App</span>Lens
-    </span>
-  </a>
-
-  <nav class="navbar navbar-fixed-top" role="navigation"></nav>
+  <!-- Header Navbar: style can be found in header.less -->
+  <nav class="navbar navbar-fixed-top" role="navigation">
+    <a (click)="reloadHome()" class="logo">
+      <span class="logo-lg">
+        <span class="app-title">App</span>Lens
+      </span>
+    </a>
+    <ul class="nav navbar-nav navbar-right">
+      <li class="user-label">
+        <span *ngIf="userName">Hello, {{userName}}</span>
+      </li>
+      <li>
+        <img *ngIf="userPhotoSource != undefined && userPhotoSource !== ''" id="userPhoto" [src]="userPhotoSource" class="avatar" alt="User Profile Photo"
+          (click)="navigateToUserPage()" />
+        <ngx-avatar *ngIf="displayName != undefined && displayName !== '' && userPhotoSource === ''"  class="avatar avatar-initial" [round]="false" [name]=displayName
+        initialsSize="2"></ngx-avatar>
+        <div *ngIf="userPhotoSource == undefined" class="loading-element">
+          <span class="fa-li fa fa-spinner fa-spin fa-2x photo-loading"></span>
+        </div>
+      </li>
+    </ul>
+  </nav>
 </header>
-
 <div class="site-content">
+  <section class="sidebar">
+    <div class="user-panel" [class.active]="doesMatchCurrentRoute('home')">
+      <div class="pull-left image" (click)="navigateTo('home/category')">
+        <img [src]="resourceService.imgSrc" class="resource-logo" style="max-width:25px">
+      </div>
+      <div class="info" (click)="navigateTo('home/category')">
+        <p>{{resourceService.getResourceName()}}</p>
+      </div>
+      <div class='resource-summary' (click)="openResourceInfoModal()">
+        <i class="fa fa-info-circle" aria-hidden="true"></i>
+      </div>
+    </div>
+  </section>
   <side-nav></side-nav>
-
-  <div class="content-wrapper white-background">
+  <div class="content-wrapper gray-background">
     <router-outlet></router-outlet>
+    <ngx-smart-modal #resourceInfoModal identifier="resourceInfoModal" [customClass]="'wide-modal'">
+      <div class="modal-header" style="background-color: #4968d0; padding: 10px 15px 10px 15px">
+        <h4 class="modal-title" id="myModalLabel" style="color:white">Resource Information</h4>
+      </div>
+      <div class="modal-content">
+        <div class="resource-content">
+          <div *ngIf="observerLink !== ''">
+            <a href="{{observerLink}}" target="_blank">Observer Link <i class="fa fa-link" aria-hidden="true"></i></a>
+          </div>
+          <div *ngFor="let key of keys">
+            <b>{{key}}:</b> {{resource[key]}}
+          </div>
+        </div>
+      </div>
+    </ngx-smart-modal>
   </div>
 </div>
+<!-- <ng-template #loading>
+  <div class="loading-element">
+    <span class="fa-li fa fa-spinner fa-spin fa-2x photo-loading"></span>
+  </div>
+</ng-template> -->

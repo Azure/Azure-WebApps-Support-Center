@@ -1,35 +1,30 @@
 <aside class="main-sidebar">
-
   <section class="sidebar">
-
-    <div class="user-panel" [class.active]="doesMatchCurrentRoute('home')" (click)="navigateTo('home')">
-      <div class="pull-left image">
-        <img [src]="resourceService.imgSrc" class="resource-logo" style="max-width:25px">
-      </div>
-      <div class="info">
-        <p>{{resourceService.getResourceName()}}</p>
-      </div>
-    </div>
-
-    <collapsible-menu theme="dark">
+    <collapsible-menu theme="light">
       <search-box [(searchValue)]="searchValue"></search-box>
       <menu-scroll>
-        <section-divider label="Analysis" [hidden]="analysisTypes.length === 0">
-          <collapsible-menu-item *ngFor="let item of analysisTypes" [menuItem]="item"></collapsible-menu-item>
-        </section-divider>
-        <section-divider label="Create">
+        <section-divider [label]="'Develop'" [initiallyExpanded]="false" [disableExpandIcon]="true">
+          <i class="fa fa-code fa-fw menu-icon menu-icon-create" aria-hidden="true"></i>
           <collapsible-menu-item *ngFor="let item of createNew" [menuItem]="item"></collapsible-menu-item>
         </section-divider>
-        <section-divider label="Documentation">
+        <section-divider [label]="'Documentation'" [initiallyExpanded]="false" [collapsible]="false" (click)="openDocumentation()">
+          <i class="fa fa-book fa-fw menu-icon menu-icon-documentation" aria-hidden="true"></i>
           <collapsible-menu-item *ngFor="let doc of documentation" [menuItem]="doc"></collapsible-menu-item>
         </section-divider>
-        <section-divider label="Detectors">
-          <collapsible-menu-item *ngFor="let category of categories" [searchValue]="searchValue" [menuItem]="category">
-          </collapsible-menu-item>
+        <section-divider [label]="'Analysis'" [disableExpandIcon]="analysisTypes.length < 1" >
+          <i class="fa fa-heartbeat fa-fw menu-icon menu-icon-analysis" aria-hidden="true"></i>
+          <collapsible-menu-item *ngFor="let item of analysisTypes" [menuItem]="item"></collapsible-menu-item>
+          <i *ngIf="!categories || categories.length === 0" class="fa fa-spinner fa-spin fa-3x fa-fw loading-menu"></i>
         </section-divider>
-        <section-divider label="Gists">
-          <collapsible-menu-item *ngFor="let gist of gists" [searchValue]="searchValue" [menuItem]="gist">
-          </collapsible-menu-item>
+        <section-divider [label]="'Detectors'">
+          <i class="fa fa-search fa-fw menu-icon menu-icon-detectors" aria-hidden="true"></i>
+          <collapsible-menu-item *ngFor="let category of categories" [searchValue]="searchValue" [menuItem]="category"></collapsible-menu-item>
+          <i *ngIf="!categories || categories.length === 0" class="fa fa-spinner fa-spin fa-3x fa-fw loading-menu"></i>
+        </section-divider>
+        <section-divider [label]="'Gists'" [initiallyExpanded]="false">
+          <i class="fa fa-file-code-o fa-fw menu-icon menu-icon-gists" aria-hidden="true"></i>
+          <collapsible-menu-item *ngFor="let gist of gists" [searchValue]="searchValue" [menuItem]="gist"></collapsible-menu-item>
+          <i *ngIf="!gists || gists.length === 0" class="fa fa-spinner fa-spin fa-3x fa-fw loading-menu"></i>
         </section-divider>
       </menu-scroll>
     </collapsible-menu>

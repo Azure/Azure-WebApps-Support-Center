@@ -20,7 +20,7 @@ export class DiagnosticService {
         return null;
     }
 
-    public getDetectors(): Observable<DetectorMetaData[]> {
+    public getDetectors(internalClient:boolean = true): Observable<DetectorMetaData[]> {
         return null;
     }
 

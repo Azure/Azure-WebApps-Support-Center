@@ -2,41 +2,68 @@
   <div class="alert-container">
     <comm-alert></comm-alert>
   </div>
-
-  <div class="resource-info content-card">
-    <h4>Resource Information</h4>
-    <div *ngFor="let key of keys">
-      <b>{{key}}:</b> {{resource[key]}}
+  <div class="btn-group" role="group" aria-label="Button Group">
+    <button type="button" class="btn btn-first-child" (click)="selectView('category')" [class.is-selected]="viewType === 'category'">By Category</button>
+    <button type="button" class="btn btn-last-child" (click)="selectView('supportTopic')" [class.is-selected]="viewType === 'supportTopic'">By Support Topic</button>
+  </div>
+  <div *ngIf="viewType === 'category'" class="category-container">
+    <div class="flexed card " *ngFor="let category of categories;let i = index" [ngClass]="{'active':category.activeState === 2, 'inactive': category.activeState === 1}"
+      (click)="navigateToCategory(category)">
+      <div class="bottom row">
+        <div *ngIf="category.icon != undefined && category.icon != ''" class="col-md-3 category-icon-container">
+          <img class="category-icon" src={{category.icon}} />
+        </div>
+        <div *ngIf="category.icon == undefined || category.icon == ''" class="col-md-3 category-avatar-container">
+          <ngx-avatar [name]="category.label" [round]="false" initialsSize="2" size="80"></ngx-avatar>
+        </div>
+        <div class="col-md-9 category-label">
+          <div class="category-title">{{category.label}}</div>
+          <div class="category-description">
+            <span>Total Detectors: {{category.subItems.length}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="keywords">
+        <div *ngFor="let subCategory of category.subItems; let i = index">
+          <div *ngIf="i<2" class="keyword">
+            <span>{{subCategory.label}}</span>
+          </div>
+        </div>
+        <span *ngIf="category.subItems.length > 2" class="detectors-hint">+{{category.subItems.length-2}} detectors</span>
+      </div>
+    </div>
+    <div *ngIf="categories == undefined || categories.length === 0" class="loading-home-page">
+      <i class="fa fa-spinner fa-spin fa-4x fa-fw"></i>
     </div>
   </div>
 
-  <div class="detector-list content-card">
-    <h4>Detectors Enabled For Support Topics</h4>
-    <table>
-      <thead>
-        <th>
-          Pes Id
-        </th>
-        <th>
-          Support Topic Id
-        </th>
-        <th>
-          Detector
-        </th>
-      </thead>
-      <tbody>
-        <tr *ngFor="let s of supportTopicIdMapping">
-          <td>
-            {{s.supportTopic.pesId}}
-          </td>
-          <td>
-            {{s.supportTopic.id}}
-          </td>
-          <td>
-            {{s.detectorName}}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div *ngIf="viewType === 'supportTopic'" class="category-container">
+    <div class="flexed card" *ngFor="let supportTopic of supportTopics;let i = index" (click)="navigateToSupportTopic(supportTopic)">
+      <div class="bottom row">
+        <div *ngIf="supportTopic.icon != undefined && supportTopic.icon != ''" class="col-md-3 category-icon-container">
+          <img class="category-icon" src={{supportTopic.icon}} />
+        </div>
+        <div *ngIf="supportTopic.icon == undefined || supportTopic.icon == ''" class="col-md-3 category-avatar-container">
+          <ngx-avatar [name]="supportTopic.supportTopicL2Name" [round]="false" initialsSize="2" size="80"></ngx-avatar>
+        </div>
+        <div class="col-md-9 category-label">
+          <div class="category-title">{{supportTopic.supportTopicL2Name}}</div>
+          <div class="category-description">
+            <span>Total Support Topics: {{supportTopic.subItems.length}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="keywords">
+        <div *ngFor="let subSupportTopic of supportTopic.subItems;let j=index">
+          <div *ngIf="j<2" class="keyword">
+            <span>{{subSupportTopic.supportTopicL3Name}}</span>
+          </div>
+        </div>
+        <span *ngIf="supportTopic.subItems.length > 2" class="detectors-hint">+{{supportTopic.subItems.length-2}} support topics</span>
+      </div>
+    </div>
+    <div *ngIf="supportTopics == undefined || supportTopics.length === 0" class=" loading-home-page">
+      <i class="fa fa-spinner fa-spin fa-4x fa-fw"></i>
+    </div>
   </div>
 </div>

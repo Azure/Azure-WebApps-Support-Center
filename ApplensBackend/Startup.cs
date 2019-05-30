@@ -6,7 +6,6 @@ using System.IO;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using AppLensV3.Services;
-using AppLensV3.Services.EmailNotificationService;
 using System;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Linq;
@@ -49,7 +48,12 @@ namespace AppLensV3
             services.AddSingleton<IOutageCommunicationService, OutageCommunicationService>();
             services.AddSingleton<ILocalDevelopmentClientService, LocalDevelopmentClientService>();
             services.AddSingleton<IEmailNotificationService, EmailNotificationService>();
+            services.AddSingleton<IGraphClientService, GraphClientService>();
+            services.AddSingleton<IGraphTokenService, GraphTokenService>();
+            services.AddSingleton<ISupportTopicService, SupportTopicService>();
+            services.AddSingleton<ISelfHelpContentService, SelfHelpContentService>();
 
+            services.AddMemoryCache();
             services.AddMvc();
 
             services.AddAuthentication(auth =>

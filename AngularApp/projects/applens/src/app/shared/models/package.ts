@@ -5,7 +5,8 @@ export interface Package {
     committedByAlias: string;
     packageConfig: string;
     dllBytes: string;
-    pdbBytes: string;
+  pdbBytes: string;
+  metadata: string;
 }
 
 export interface Dependency {

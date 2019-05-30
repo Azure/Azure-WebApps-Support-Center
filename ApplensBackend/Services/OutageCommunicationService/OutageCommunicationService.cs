@@ -58,7 +58,7 @@ namespace AppLensV3.Services
 
             List<Communication> commsList = new List<Communication>();
 
-            if(dt == null || dt.Rows == null || dt.Rows.Count == 0)
+            if (dt == null || dt.Rows == null || dt.Rows.Count == 0)
             {
                 return commsList;
             }
@@ -83,15 +83,15 @@ namespace AppLensV3.Services
 
             Communication impactedServiceComm = null;
             Communication mostRecentImpactedServiceComm = commsList.FirstOrDefault(p => p.ImpactedServices.Exists(q => q.Name.ToLower().Contains(impactedService.ToLower())));
-            if(mostRecentImpactedServiceComm != null)
+            if (mostRecentImpactedServiceComm != null)
             {
-                if(mostRecentImpactedServiceComm.Status == CommunicationStatus.Active)
+                if (mostRecentImpactedServiceComm.Status == CommunicationStatus.Active)
                 {
                     mostRecentImpactedServiceComm.IsAlert = true;
                     mostRecentImpactedServiceComm.IsExpanded = true;
                     impactedServiceComm = mostRecentImpactedServiceComm;
                 }
-                else if(mostRecentImpactedServiceComm.Status == CommunicationStatus.Resolved)
+                else if (mostRecentImpactedServiceComm.Status == CommunicationStatus.Resolved)
                 {
                     Communication rca = commsList.FirstOrDefault(p => (
                                 p.IncidentId == mostRecentImpactedServiceComm.IncidentId &&
@@ -99,7 +99,7 @@ namespace AppLensV3.Services
                                 p.CommunicationId != mostRecentImpactedServiceComm.CommunicationId &&
                                 p.Title.ToUpper().Contains("RCA")));
 
-                    if(rca != null && ((currentTimeUTC - rca.PublishedTime) <= _commAlertWindow))
+                    if (rca != null && ((currentTimeUTC - rca.PublishedTime) <= _commAlertWindow))
                     {
                         rca.IsAlert = true;
                         // NOTE:- For now, resolved incidents will be collapsed by Default.
@@ -107,7 +107,7 @@ namespace AppLensV3.Services
                         //rca.IsExpanded = ((currentTimeUTC - rca.PublishedTime) <= _commExpandedWindow);
                         impactedServiceComm = rca;
                     }
-                    else if((currentTimeUTC - mostRecentImpactedServiceComm.PublishedTime) <= _commAlertWindow)
+                    else if ((currentTimeUTC - mostRecentImpactedServiceComm.PublishedTime) <= _commAlertWindow)
                     {
                         mostRecentImpactedServiceComm.IsAlert = true;
                         // NOTE:- For now, resolved incidents will be collapsed by Default.
@@ -117,7 +117,7 @@ namespace AppLensV3.Services
                     }
                 }
             }
-            
+
             return commsList;
         }
 

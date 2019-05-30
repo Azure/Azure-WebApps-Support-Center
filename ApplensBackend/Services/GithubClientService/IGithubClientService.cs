@@ -29,6 +29,13 @@ namespace AppLensV3
         Task<string> GetSourceFile(string id);
 
         /// <summary>
+        /// Get metadata file.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <returns>Task for getting metadata file.</returns>
+        Task<string> GetMetadataFile(string id);
+
+        /// <summary>
         /// Get package configuration.
         /// </summary>
         /// <param name="id">The id.</param>

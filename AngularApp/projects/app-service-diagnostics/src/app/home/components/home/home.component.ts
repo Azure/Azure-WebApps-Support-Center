@@ -20,11 +20,17 @@ export class HomeComponent implements OnInit {
 
   resourceName: string;
   categories: Category[];
-  searchValue: string;
+  searchValue = '';
   searchBoxFocus: boolean;
   searchLogTimout: any;
   event: any;
   subscriptionId: string;
+  searchResultCount: number;
+  get inputAriaLabel(): string {
+    return this.searchValue !== '' ?
+        `${this.searchResultCount} Result` + (this.searchResultCount !== 1 ? 's' : '') :
+        '';
+  }
 
   constructor(private _resourceService: ResourceService, private _categoryService: CategoryService, private _notificationService: NotificationService, private _router: Router,
     private _detectorControlService: DetectorControlService, private _featureService: FeatureService, private _logger: LoggingV2Service, private _authService: AuthService,
@@ -58,6 +64,7 @@ export class HomeComponent implements OnInit {
   clearSearch() {
     this.searchBoxFocus = false;
     this.searchValue = '';
+    this.searchResultCount = 0;
   }
 
   updateSearchValue(searchValue) {
@@ -70,6 +77,22 @@ export class HomeComponent implements OnInit {
     this.searchLogTimout = setTimeout(() => {
       this._logSearch();
     }, 5000);
+  }
+
+  onResultCount(count: number) {
+    this.searchResultCount = count;
+  }
+
+  onSearchLostFocus() {
+    if (this.searchValue === '') {
+      this.searchResultCount = 0;
+    }
+  }
+
+  onFocusClear() {
+    if (this.searchValue === '') {
+      this.clearSearch();
+    }
   }
 
   private _updateRouteBasedOnAdditionalParameters(route: string, additionalParameters: any): string {

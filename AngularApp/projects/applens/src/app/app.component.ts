@@ -8,7 +8,7 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  
+
   constructor(private _adalService: AdalService) {
     this._adalService.init({
       clientId: environment.adal.clientId,

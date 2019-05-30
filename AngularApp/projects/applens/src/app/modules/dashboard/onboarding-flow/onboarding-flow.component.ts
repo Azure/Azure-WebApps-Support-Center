@@ -11,6 +11,7 @@ import { Package } from '../../../shared/models/package';
 import { GithubApiService } from '../../../shared/services/github-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
+import { RecommendedUtterance } from '../../../../../../diagnostic-data/src/public_api';
 
 const moment = momentNs;
 
@@ -61,7 +62,10 @@ export class OnboardingFlowComponent implements OnInit {
   allGists: string[] = [];
   selectedGist: string = '';
   temporarySelection: object = {};
-
+  allUtterances: any[] = [];
+  recommendedUtterances: RecommendedUtterance[] = [];
+  utteranceInput: string = "";
+  
   modalPublishingButtonText: string;
   modalPublishingButtonDisabled: boolean;
 
@@ -239,7 +243,8 @@ export class OnboardingFlowComponent implements OnInit {
     var body = {
       script: this.code,
       references: this.reference,
-      entityType: this.gistMode ? 'gist' : 'signal'
+      entityType: this.gistMode ? 'gist' : 'signal',
+      detectorUtterances: JSON.stringify(this.allUtterances.map(x => x.text))
     };
 
     this.runButtonDisabled = true;
@@ -258,13 +263,17 @@ export class OnboardingFlowComponent implements OnInit {
       })
       .subscribe((response: any) => {
         this.queryResponse = response.body;
+          if (this.queryResponse.invocationOutput.suggestedUtterances && this.queryResponse.invocationOutput.suggestedUtterances.results) {
+          this.recommendedUtterances = this.queryResponse.invocationOutput.suggestedUtterances.results;
+        }
         this.runButtonDisabled = false;
         this.runButtonText = "Run";
         this.runButtonIcon = "fa fa-play";
-        this.queryResponse.compilationOutput.compilationTraces.forEach(element => {
-          this.buildOutput.push(element);
-        });
-
+        if (this.queryResponse.compilationOutput.compilationTraces) {
+          this.queryResponse.compilationOutput.compilationTraces.forEach(element => {
+            this.buildOutput.push(element);
+          });
+        }
         // If the script etag returned by the server does not match the previous script-etag, update the values in memory
         if (response.headers.get('diag-script-etag') != undefined && this.compilationPackage.scriptETag !== response.headers.get('diag-script-etag')) {
           this.compilationPackage.scriptETag = response.headers.get('diag-script-etag');
@@ -307,6 +316,10 @@ export class OnboardingFlowComponent implements OnInit {
       this.ngxSmartModalService.getModal('publishModal').open();
     }
   }
+  
+  prepareMetadata() {
+    this.publishingPackage.metadata = JSON.stringify({ "utterances": this.allUtterances });
+  }
 
   publish() {
     if (!this.publishingPackage ||
@@ -315,7 +328,8 @@ export class OnboardingFlowComponent implements OnInit {
       this.publishingPackage.dllBytes === '') {
       return;
     }
-
+    
+    this.prepareMetadata();
     this.publishButtonDisabled = true;
     this.runButtonDisabled = true;
     this.modalPublishingButtonDisabled = true;
@@ -323,6 +337,7 @@ export class OnboardingFlowComponent implements OnInit {
 
     this.diagnosticApiService.publishDetector(this.emailRecipients, this.publishingPackage).subscribe(data => {
       this.deleteProgress();
+      this.utteranceInput = "";
       this.runButtonDisabled = false;
       this.localDevButtonDisabled = false;
       this.publishButtonText = "Publish";
@@ -385,9 +400,10 @@ export class OnboardingFlowComponent implements OnInit {
         id: queryResponse.invocationOutput.metadata.id,
         codeString: code,
         committedByAlias: this.userName,
-        dllBytes: queryResponse.compilationOutput.assemblyBytes,
-        pdbBytes: queryResponse.compilationOutput.pdbBytes,
-        packageConfig: JSON.stringify(this.configuration)
+        dllBytes: this.compilationPackage.assemblyBytes,
+        pdbBytes: this.compilationPackage.pdbBytes,
+        packageConfig: JSON.stringify(this.configuration),
+        metadata: JSON.stringify({ "utterances": this.allUtterances })
       };
     });
   }
@@ -402,6 +418,14 @@ export class OnboardingFlowComponent implements OnInit {
     this.resourceId = this.resourceService.getCurrentResourceId();
     this.hideModal = localStorage.getItem("localdevmodal.hidden") === "true";
     let detectorFile: Observable<string>;
+    this.recommendedUtterances = [];
+    this.utteranceInput = "";
+    this.githubService.getMetadataFile(this.id).subscribe(res => {
+      this.allUtterances = JSON.parse(res).utterances;
+    },
+      (err) => {
+        this.allUtterances = [];
+      });
     this.compilationPackage = new CompilationProperties();
 
     switch (this.mode) {

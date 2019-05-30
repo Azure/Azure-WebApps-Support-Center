@@ -10,6 +10,8 @@ export class ResourceService {
   public versionPrefix: string;
   public templateFileName: string;
   public azureCommImpactedServicesList: string;
+  public pesId: string;
+  public staticSelfHelpContent: string;
 
   protected _requestBody: any = null;
   protected _armResource: ArmResource;
@@ -21,6 +23,8 @@ export class ResourceService {
     this.imgSrc = inputs.imgSrc;
     this.versionPrefix = inputs.versionPrefix;
     this.azureCommImpactedServicesList = inputs.azureCommImpactedServicesList;
+    this.pesId = inputs.pesId;
+    this.staticSelfHelpContent = inputs.staticSelfHelpContent;
   }
 
   public startInitializationObservable() {
