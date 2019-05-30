@@ -190,20 +190,6 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     });
    }
 
-
-   setChangeAnalysisEnabled(val: any): void {
-       this.providerRegOption = val;
-   }
-
-
-   setCodeScanEnabled(val: any): void {
-       this.codeScanOption = val;
-   }
-
-   setAlwaysOnEnabled(val: any): void {
-       this.alwaysOnOption = val;
-   }
-
    updateScanTag(codeScanOption: any): void {
         this.updatingTag = true;
         let tagValue = codeScanOption.value == '1' ? 'true' : 'false';
