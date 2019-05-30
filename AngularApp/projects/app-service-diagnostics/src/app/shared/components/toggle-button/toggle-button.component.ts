@@ -15,7 +15,7 @@ export class ToggleButtonComponent implements OnInit {
   @Input() selected: boolean;
   @Input() ToggleText: string;
   @Output() selectedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Input() disabled: boolean = false;
+  @Input() isDisabled: boolean = false;
 
   update(val) {
     if (this.selected != val) {

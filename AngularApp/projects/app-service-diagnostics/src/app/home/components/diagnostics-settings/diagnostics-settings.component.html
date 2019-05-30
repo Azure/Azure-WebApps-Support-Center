@@ -18,10 +18,10 @@
             <div class="form-group">
                 <label class="control-label col-sm-2 settings-label">Change Analysis</label>
                 <div class="col-sm-2">
-                  <toggle-button [disabled]="!isFeatureRegistered" [selected]="providerRegOption.option == 'On'" (selectedChange)="$event ? providerRegOption = EnablementOptions[0] : providerRegOption = EnablementOptions[1]"></toggle-button>
+                  <toggle-button [isDisabled]="!isFeatureRegistered" [selected]="providerRegOption.option == 'On'" (selectedChange)="$event ? providerRegOption = EnablementOptions[0] : providerRegOption = EnablementOptions[1]"></toggle-button>
                 </div>
                 <div class="col-sm-8">
-                  <span class="fa fa-question-circle"></span> Enable Change Analysis to view property changes. This setting is effective for all webapps in this subscription.
+                  <span class="fa fa-question-circle"></span> Enable Change Analysis to view property changes. This setting is effective for all web apps in this subscription.
                 </div>
             </div>
         </div>
@@ -37,7 +37,7 @@
         <div class="row form-group">
             <label class="control-label col-sm-2 settings-label">Always on</label>
             <div class="col-sm-2">
-              <toggle-button [disabled]="!isFeatureRegistered" [selected]="alwaysOnOption.option == 'On'" (selectedChange)="$event ? alwaysOnOption = EnablementOptions[0] : alwaysOnOption = EnablementOptions[1]"></toggle-button>
+              <toggle-button [isDisabled]="!isFeatureRegistered" [selected]="alwaysOnOption.option == 'On'" (selectedChange)="$event ? alwaysOnOption = EnablementOptions[0] : alwaysOnOption = EnablementOptions[1]"></toggle-button>
             </div>
             <div class="col-sm-8">
               <span class="fa fa-question-circle"></span> Enabling scan for code changes will wake up Kudu every 4 hours to update change information. Please enable Always on to avoid performance impact.
