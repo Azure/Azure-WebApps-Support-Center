@@ -39,7 +39,7 @@ export class MainComponent implements OnInit {
     },
     {
       resourceType: null,
-      routeName: (name) => `${name}/home`,
+      routeName: (name) => `${name}`,
       displayName: 'ARM Resource ID',
       enabled: true,
       caseId: false
@@ -85,7 +85,7 @@ export class MainComponent implements OnInit {
   selectResourceType(type: ResourceTypeState) {
     if (type.enabled) {
       this.selectedResourceType = type;
-      this.showResourceTypeOptions = false
+      this.showResourceTypeOptions = false;
     }
   }
 
