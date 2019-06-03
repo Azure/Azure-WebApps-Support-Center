@@ -90,11 +90,11 @@ namespace AppLensV3
                 {
                     Configuration.Bind("AzureAd", options);
                 });
+            }
 
-                if (Configuration["ServerMode"] == "internal")
-                {
-                    services.AddTransient<IFilterProvider, LocalFilterProvider>();
-                }
+            if (Configuration["ServerMode"] == "internal")
+            {
+                services.AddTransient<IFilterProvider, LocalFilterProvider>();
             }
         }
 
