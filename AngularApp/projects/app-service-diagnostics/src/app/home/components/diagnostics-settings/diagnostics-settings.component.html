@@ -40,7 +40,7 @@
               <toggle-button [isDisabled]="!isFeatureRegistered" [selected]="alwaysOnOption.option == 'On'" (selectedChange)="$event ? alwaysOnOption = EnablementOptions[0] : alwaysOnOption = EnablementOptions[1]"></toggle-button>
             </div>
             <div class="col-sm-8">
-              <span class="fa fa-question-circle"></span> Enabling scan for code changes will wake up Kudu every 4 hours to update change information. Please enable Always on to avoid performance impact.
+              <span class="fa fa-question-circle"></span> Enable Always on to minimize the time spent on Kudu startup when the service scans for code changes and to optimize the performance of your web app.
             </div>
         </div>
         <div class="row form-group">
