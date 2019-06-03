@@ -95,6 +95,7 @@ namespace AppLensV3
                     if (!HitPassThroughApi(path))
                     {
                         var requestMessage = new HttpRequestMessage(method == "POST" ? HttpMethod.Post : HttpMethod.Get, path);
+                        requestMessage.Headers.Add("x-ms-internal-client", internalClient.ToString());
                         requestMessage.Headers.Add("x-ms-internal-view", internalView.ToString());
 
                         if (method.ToUpper() == "POST")

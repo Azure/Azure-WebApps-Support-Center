@@ -11,7 +11,7 @@
           <i class="fa fa-book fa-fw menu-icon menu-icon-documentation" aria-hidden="true"></i>
           <collapsible-menu-item *ngFor="let doc of documentation" [menuItem]="doc"></collapsible-menu-item>
         </section-divider>
-        <section-divider [label]="'Analysis'" [disableExpandIcon]="analysisTypes.length < 1" >
+        <section-divider [label]="'Analysis'" *ngIf="analysisTypes.length > 0" >
           <i class="fa fa-heartbeat fa-fw menu-icon menu-icon-analysis" aria-hidden="true"></i>
           <collapsible-menu-item *ngFor="let item of analysisTypes" [menuItem]="item"></collapsible-menu-item>
           <i *ngIf="!categories || categories.length === 0" class="fa fa-spinner fa-spin fa-3x fa-fw loading-menu"></i>

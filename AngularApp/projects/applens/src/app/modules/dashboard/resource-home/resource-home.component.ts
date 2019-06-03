@@ -20,6 +20,7 @@ export class ResourceHomeComponent implements OnInit {
 
     currentRoutePath: string[];
     categories: CategoryItem[] = [];
+    categoryLoaded: boolean = false;
     resource: any;
     keys: string[];
     activeCategoryName: string = undefined;
@@ -30,6 +31,7 @@ export class ResourceHomeComponent implements OnInit {
     detectorsPublicOrWithSupportTopics: DetectorMetaData[] = [];
 
     supportTopics: SupportTopicItem[] = [];
+    supportTopicsLoaded: boolean = false;
     supportTopicL2Images: { [name: string]: any } = {};
     viewType: string = 'category';
 
@@ -61,6 +63,8 @@ export class ResourceHomeComponent implements OnInit {
                     suppportTopicItem.subItems.push(item);
                 });
             });
+
+            this.supportTopicsLoaded = true;
         });
 
         const detectorsWithSupportTopics = this._diagnosticService.getDetectors().pipe(map((detectors: DetectorMetaData[]) => {
@@ -68,7 +72,7 @@ export class ResourceHomeComponent implements OnInit {
             return this.detectorsWithSupportTopics;
         }));
 
-       const publicDetectors = this._diagnosticService.getDetectors(false);
+        const publicDetectors = this._diagnosticService.getDetectors(false);
 
         forkJoin(detectorsWithSupportTopics, publicDetectors).subscribe((detectorLists) => {
             detectorLists.forEach((detectorList: DetectorMetaData[]) => {
@@ -80,7 +84,6 @@ export class ResourceHomeComponent implements OnInit {
             });
 
             this.detectorsPublicOrWithSupportTopics.forEach(element => {
-
                 let onClick = () => {
                     this.navigateTo(`detectors/${element.id}`);
                 };
@@ -88,7 +91,6 @@ export class ResourceHomeComponent implements OnInit {
                 let isSelected = () => {
                     return this.currentRoutePath && this.currentRoutePath.join('/') === `detectors/${element.id}`;
                 };
-
 
                 let categoryName = element.category;
                 if (categoryName) {
@@ -112,7 +114,15 @@ export class ResourceHomeComponent implements OnInit {
 
 
             });
-        });
+
+
+            if (detectorLists[1]) {
+                this.categoryLoaded = true;
+            }
+        }
+        );
+
+
     };
 
     navigateToCategory(category: CategoryItem) {

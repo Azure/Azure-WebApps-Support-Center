@@ -61,7 +61,7 @@ export class SiteService extends ResourceService {
             this.staticSelfHelpContent = 'microsoft.function';
         }
         else if (this._requestBody.IsLinux) {
-            this.pesId = '16170';
+            this.pesId = '16170';   
             this.imgSrc = 'assets/img/Azure-Tux-Logo.png';
         }
     }
