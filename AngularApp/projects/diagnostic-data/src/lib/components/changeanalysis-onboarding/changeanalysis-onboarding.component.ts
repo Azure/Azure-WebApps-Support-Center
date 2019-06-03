@@ -42,6 +42,7 @@ export class ChangeAnalysisOnboardingComponent extends DataRenderBaseComponent {
    }
 
    navigateToSettings(): void {
+       this.logEnablementClick();
         let path = this.settingsService.getUrlToNavigate();
         this.router.navigateByUrl(path);
    }
