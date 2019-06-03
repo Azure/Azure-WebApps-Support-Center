@@ -67,7 +67,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     this.armService.getResourceFullResponse<any>(this.featureRegUrl, true, '2015-12-01').subscribe(response => {
         let featureRegistrationResponse = <FeatureRegistration>response.body;
         let state = featureRegistrationResponse.properties.state;
-        if(state.toLowerCase() == 'registered') {
+        if(state.toLowerCase() === 'registered') {
             // Once feature is registered, check if Resource Provider is registered
             this.isFeatureRegistered = true;
             this.checkIfProviderRegistered();
@@ -80,6 +80,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             this.showFeatureRegProgress = true;
             this.providerRegOption = this.EnablementOptions[1];
             this.alwaysOnOption = this.EnablementOptions[1];
+            this.codeScanOption = this.EnablementOptions[0];
             // start polling until registered
             this.subscription = interval(20000).subscribe(res => {
                 this.loggingService.logTrace("Polling for Feature Registration Status");
@@ -106,12 +107,12 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
        this.armService.getResourceFullResponse<any>(this.providerRegUrl, true, '2018-05-01').subscribe(response => {
            let providerRegistrationStateResponse = <ProviderRegistration>response.body;
            let state = providerRegistrationStateResponse.registrationState;
-           if (state.toLowerCase() == 'registered') {
+           if (state.toLowerCase() === 'registered') {
                this.providerRegOption = this.EnablementOptions[0];
-           } else if (state.toLowerCase() == 'unregistered') {
+           } else if (state.toLowerCase() === 'unregistered') {
                this.providerRegOption = this.EnablementOptions[1];
            } // It could be that Resource Provider is 'Registering' or 'Unregistering', show in progress and poll for status.
-           else if (state.toLowerCase() == 'registering' || state.toLowerCase() == 'unregistering'){
+           else if (state.toLowerCase() === 'registering' || state.toLowerCase() === 'unregistering'){
                 this.showInProgress = true;
                 this.regState = state;
                 this.subscription = interval(30000).subscribe(res => {
@@ -162,7 +163,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         let featureRegistrationStateResponse = <FeatureRegistration>response.body;
         let state = featureRegistrationStateResponse.properties.state;
         // Stop polling once its registered
-        if(state.toLowerCase() == 'registered') {
+        if(state.toLowerCase() === 'registered') {
             this.isFeatureRegistered = true;
             this.showFeatureRegProgress = false;
             // Default to Off after Feature is Registered.
@@ -265,9 +266,9 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         this.armService.postResourceFullResponse(url, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
             let providerRegistrationStateResponse = <ProviderRegistration>response.body;
             let state = providerRegistrationStateResponse.registrationState;
-            if (state.toLowerCase() == 'registered') {
+            if (state.toLowerCase() === 'registered') {
                 this.providerRegOption = this.EnablementOptions[0];
-            } else if (state.toLowerCase() == 'unregistered') {
+            } else if (state.toLowerCase() === 'unregistered') {
                 this.providerRegOption = this.EnablementOptions[1];
             } else {
                 this.showInProgress = true;
@@ -310,14 +311,14 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         let providerRegistrationStateResponse = <ProviderRegistration>response;
         let state = providerRegistrationStateResponse.registrationState;
         // Final state, stop polling
-        if (state.toLowerCase() == 'registered') {
+        if (state.toLowerCase() === 'registered') {
             this.providerRegOption = this.EnablementOptions[0];
             if(this.subscription) {
                 this.subscription.unsubscribe();
             }
             this.showInProgress = false;
         }
-        if (state.toLowerCase() == 'unregistered') {
+        if (state.toLowerCase() === 'unregistered') {
             this.providerRegOption = this.EnablementOptions[1];
             if(this.subscription) {
                 this.subscription.unsubscribe();

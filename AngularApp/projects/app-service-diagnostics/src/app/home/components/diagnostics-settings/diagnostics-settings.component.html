@@ -25,10 +25,10 @@
                 </div>
             </div>
         </div>
-        <div class="row form-group" *ngIf="providerRegOption.option == 'On' && !showInProgress">
+        <div class="row form-group" *ngIf="providerRegOption.option === 'On' && !showInProgress">
             <label class="control-label col-sm-2 settings-label">Scan for code changes</label>
             <div class="col-sm-2">
-                <toggle-button [selected]="codeScanOption.option == 'On'" (selectedChange)="$event ? codeScanOption = EnablementOptions[0] : codeScanOption = EnablementOptions[1]"></toggle-button>
+                <toggle-button [selected]="codeScanOption.option === 'On'" (selectedChange)="$event ? codeScanOption = EnablementOptions[0] : codeScanOption = EnablementOptions[1]"></toggle-button>
             </div>
             <div class="col-sm-8">
               <span class="fa fa-question-circle"></span> Enable scan for code changes to view code changes. This setting is effective per web app.
@@ -37,7 +37,7 @@
         <div class="row form-group">
             <label class="control-label col-sm-2 settings-label">Always on</label>
             <div class="col-sm-2">
-              <toggle-button [isDisabled]="!isFeatureRegistered" [selected]="alwaysOnOption.option == 'On'" (selectedChange)="$event ? alwaysOnOption = EnablementOptions[0] : alwaysOnOption = EnablementOptions[1]"></toggle-button>
+              <toggle-button [isDisabled]="!isFeatureRegistered" [selected]="alwaysOnOption.option === 'On'" (selectedChange)="$event ? alwaysOnOption = EnablementOptions[0] : alwaysOnOption = EnablementOptions[1]"></toggle-button>
             </div>
             <div class="col-sm-8">
               <span class="fa fa-question-circle"></span> Enable Always on to minimize the time spent on Kudu startup when the service scans for code changes and to optimize the performance of your web app.
