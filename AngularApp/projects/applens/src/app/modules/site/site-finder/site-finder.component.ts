@@ -49,6 +49,7 @@ export class SiteFinderComponent implements OnInit {
       'sites', matchingSite.SiteName];
 
     resourceArray.push('home');
+    resourceArray.push('category');
 
     this._router.navigate(resourceArray, { queryParamsHandling: 'preserve' });
   }

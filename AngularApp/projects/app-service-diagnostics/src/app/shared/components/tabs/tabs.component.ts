@@ -39,6 +39,10 @@ export class TabsComponent implements OnInit {
 
         const url = this._router.url.split('?')[0];
         let existingTab = this.navigationItems.find(item => item.url.split('?')[0] === url);
+        let analysisTab = this.getAnalysisTabIfAnalysisDetector(url);
+        if (analysisTab) {
+          existingTab = analysisTab;
+        }
 
         if (!existingTab) {
           existingTab = {
@@ -54,6 +58,23 @@ export class TabsComponent implements OnInit {
         this.selectTab(existingTab);
       }
     });
+  }
+
+  getAnalysisTabIfAnalysisDetector(url: string) {
+    if (url.indexOf("/analysis/") >=0 && url.indexOf("/detectors/") >= 0 && url.indexOf("/legacy/") === -1) {
+      let detectorWithAnalysisPath = url.split("/analysis/")[1];
+      if (detectorWithAnalysisPath.indexOf("/detectors/") > 0) {
+        if (detectorWithAnalysisPath.indexOf("/") > 0) {
+          let urlArray = url.split("/");
+          if (urlArray.length > 1) {
+            urlArray.splice(urlArray.length - 2);
+            let analysisUrl = urlArray.join("/");
+            let existingTab = this.navigationItems.find(item => item.url.split('?')[0] === analysisUrl);
+            return existingTab;
+          }
+        }
+      }
+    }
   }
 
   selectTab(tab: INavigationItem) {
@@ -83,6 +104,17 @@ export class TabsComponent implements OnInit {
         this._router.navigateByUrl(this.navigationItems[index - 1].url);
       }
     }
-  }
+    }
+
+    navigateTab(index: number): void {
+
+        if (index >= 0) {
+            const tab = this.navigationItems[index];
+            if (!tab.isActive) {
+                this._router.navigateByUrl(tab.url);
+            }
+        }
+    }
+
 
 }

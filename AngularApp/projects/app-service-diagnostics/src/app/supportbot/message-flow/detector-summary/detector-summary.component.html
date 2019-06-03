@@ -1,11 +1,11 @@
 <div class="detector-summary-container" [class.with-full-report]="showTopLevelFullReport" *ngIf="!loading else loadingMessage">
   <div class="full-report" *ngIf="showTopLevelFullReport">
     {{detector.name}}
-    <div class="full-report-link">
+    <div class="full-report-link" tabindex="0" (keyup.enter)="openFullReport()">
       <a (click)="openFullReport()">View Full Report <i class="fa fa-chevron-right"></i></a>
     </div>
   </div>
-  <div class="status-bar" *ngFor="let model of detectorSummaryViewModels" (click)="selectDetectorSummaryItem(model)">
+  <div class="status-bar" *ngFor="let model of detectorSummaryViewModels" (click)="selectDetectorSummaryItem(model)" (keyup.enter)="selectDetectorSummaryItem(model)"  tabindex="0">
     <div class="status-bar-icon align-content-center">
         <status-icon [loading]="model.loading" [status]="model.status" [size]="16"></status-icon>
     </div>

@@ -6,15 +6,19 @@
             "templateFileName": "WebApp",
             "imgSrc": "assets/img/Azure-WebApps-Logo.png",
             "versionPrefix": "v4/",
-            "azureCommImpactedServicesList": "appservice"
+            "azureCommImpactedServicesList": "appservice",
+            "pesId": "14748",
+            "staticSelfHelpContent": "microsoft.web"
         },
         {
             "service": "AseService",
             "resourceType": "Microsoft.Web/hostingEnvironments",
             "templateFileName": "HostingEnvironment",
-            "imgSrc": "assets/img/Azure-WebApps-Logo.png",
+            "imgSrc": "assets/img/Azure-Ase-Logo.png",
             "versionPrefix": "v2/",
-            "azureCommImpactedServicesList": "appservice"
+            "azureCommImpactedServicesList": "appservice",
+            "pesId": "16533",
+            "staticSelfHelpContent": "microsoft.ase"
         },
         {
             "service": "ResourceService",
@@ -22,7 +26,9 @@
             "templateFileName": "LogicApp",
             "imgSrc": "assets/img/Azure-LogicApps-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": "logicapp"
+            "azureCommImpactedServicesList": "logicapp",
+            "pesId": "15791",
+            "staticSelfHelpContent": "microsoft.logicapps"
         },
         {
             "service": "ResourceService",
@@ -30,7 +36,9 @@
             "templateFileName": "KubernetesService",
             "imgSrc": "assets/img/Azure-KubernetesService-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": "kubernetesservice"
+            "azureCommImpactedServicesList": "kubernetesservice",
+            "pesId": "16450",
+            "staticSelfHelpContent": "microsoft.containerservice"
         },
         {
             "service": "ResourceService",
@@ -38,7 +46,17 @@
             "templateFileName": "OpenShiftManagedClusters",
             "imgSrc": "assets/img/Azure-KubernetesService-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": "openShiftManagedClusters"
+            "azureCommImpactedServicesList": "openShiftManagedClusters",
+            "pesId": "",
+            "staticSelfHelpContent": ""
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.BotService/botServices",
+            "templateFileName": "BotService",
+            "imgSrc": "assets/img/BotService-Logo.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "botServices"
         },
         {
             "service": "ResourceService",
@@ -46,23 +64,29 @@
             "templateFileName": "ApiManagementService",
             "imgSrc": "assets/img/Azure-ApiManagement-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": ""
+            "azureCommImpactedServicesList": "",
+            "pesId": "15551",
+            "staticSelfHelpContent": "/microsoft.apim"
         },
         {
             "service": "ResourceService",
             "resourceType": "Microsoft.CertificateRegistration/certificateOrders",
             "templateFileName": "AppServiceCertificate",
-            "imgSrc": "",
+            "imgSrc": "assets/img/Azure-AppServiceCertificate-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": ""
+            "azureCommImpactedServicesList": "",
+            "pesId": "16512",
+            "staticSelfHelpContent": "microsoft.asc"
         },
         {
             "service": "ResourceService",
             "resourceType": "Microsoft.DomainRegistration/domains",
             "templateFileName": "AppServiceDomain",
-            "imgSrc": "",
+            "imgSrc": "assets/img/Azure-AppServiceDomain-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": ""
+            "azureCommImpactedServicesList": "",
+            "pesId": "16513",
+            "staticSelfHelpContent": "microsoft.asd"
         }
     ]
 }

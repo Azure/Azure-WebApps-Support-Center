@@ -9,7 +9,8 @@ export interface DetectorResponse {
     dataset: DiagnosticData[];
     metadata: DetectorMetaData;
     status: Status;
-    dataProvidersMetadata: DataProviderMetadata[];
+  dataProvidersMetadata: DataProviderMetadata[];
+  suggestedUtterances: any;
 }
 
 export interface Status {
@@ -22,7 +23,8 @@ export enum HealthStatus {
     Warning,
     Info,
     Success,
-    None
+    None,
+    Onboarding
 }
 
 export interface DiagnosticData {
@@ -48,7 +50,10 @@ export interface DetectorMetaData {
     description: string;
     author: string;
     supportTopicList: SupportTopic[];
+    analysisTypes: string[];
+    type: DetectorType;
     category: string;
+    score: number;
 }
 
 export interface DataProviderMetadata {
@@ -72,6 +77,10 @@ export interface SupportTopic {
     pesId: string;
 }
 
+export enum DetectorType{
+    Detector = "Detector",
+    Analysis = "Analysis"
+}
 export enum RenderingType {
     NoGraph = 0,
     Table,
@@ -88,7 +97,10 @@ export enum RenderingType {
     Cards,
     Solution,
     Guage,
-    Form
+    Form,
+    ChangeSets,
+    ChangeAnalysisOnboarding,
+    ChangesView
 }
 
 export enum TimeSeriesType {
@@ -164,4 +176,14 @@ export interface DetectorListRendering extends Rendering {
 
 export interface MarkdownRendering extends Rendering {
     isContainerNeeded: boolean;
+}
+
+export interface RecommendedUtterance {
+  sampleUtterance: SampleUtterance;
+  score: number;
+}
+
+interface SampleUtterance {
+  text: string;
+  links: string[];
 }

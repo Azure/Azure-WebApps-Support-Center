@@ -1,15 +1,17 @@
 <div class="view-container">
 
-  <ngx-smart-modal #publishModal identifier="publishModal">
+  <ngx-smart-modal #publishModal identifier="publishModal" [customClass]="'publish-dialog'">
     <div>
       <h4>Confirm?</h4>
       <hr style="margin-top: 10px;margin-bottom: 10px;">
       <span>Published changes will be live in Applens and App Services "Diagnose and Solve" blade for external
         customers if the detector is marked public.</span>
-
-      <div style="margin-top:10px;margin-bottom: 10px">
+      <search-term-addition [allUtterances]="allUtterances" [recommendedUtterances]="recommendedUtterances" [utteranceInput]="utteranceInput" [detectorId]="id"></search-term-addition>
+      <div style="margin-top:10px;margin-bottom: 10px;position: relative;">
         <button type="button" class="btn btn-primary" (click)="publish()"
-          [class.disabled]="modalPublishingButtonDisabled" style="margin-right:6px">{{modalPublishingButtonText}}</button>
+                [class.disabled]="modalPublishingButtonDisabled" style="margin-right:6px">
+          {{modalPublishingButtonText}}
+        </button>
         <button type="button" class="btn btn-danger" (click)="publishModal.close()">Cancel</button>
       </div>
     </div>

@@ -6,7 +6,7 @@ import { ToolNames } from '../models/tools-constants';
 import { GenericApiService } from './generic-api.service';
 import { AuthService } from '../../startup/services/auth.service';
 import { ResourceType, AppType } from '../models/portal';
-import { DetectorMetaData } from 'diagnostic-data';
+import { DetectorMetaData, DetectorType } from 'diagnostic-data';
 import { SiteService } from './site.service';
 import { Sku } from '../models/server-farm';
 
@@ -68,17 +68,31 @@ export class CategoriesService {
 
                 this._categories.push(category);
             }
-
-            category.Subcategories.push(<Subcategory>{
-                Name: detector.name,
-                BgColor: '#1446a0',
-                TextColor: 'White',
-                Href:  `${resourceId}/detectors/${detector.id}`,
-                OperatingSystem: OperatingSystem.any,
-                AppStack: '',
-                AppType: AppType.WebApp | AppType.FunctionApp,
-                Sku: Sku.All
-            });
+            if (detector.type === DetectorType.Analysis){
+                category.Subcategories.push(<Subcategory>{
+                    Name: detector.name,
+                    BgColor: '#1446a0',
+                    TextColor: 'White',
+                    Href:  `${resourceId}/analysis/${detector.id}`,
+                    OperatingSystem: OperatingSystem.any,
+                    AppStack: '',
+                    AppType: AppType.WebApp | AppType.FunctionApp,
+                    Sku: Sku.All
+                });
+            }
+            else{
+                category.Subcategories.push(<Subcategory>{
+                    Name: detector.name,
+                    BgColor: '#1446a0',
+                    TextColor: 'White',
+                    Href:  `${resourceId}/detectors/${detector.id}`,
+                    OperatingSystem: OperatingSystem.any,
+                    AppStack: '',
+                    AppType: AppType.WebApp | AppType.FunctionApp,
+                    Sku: Sku.All
+                });
+            }
+            
         });
     }
 

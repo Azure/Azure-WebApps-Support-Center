@@ -22,20 +22,24 @@
     @extend %tile;
     border: 1px solid transparent;
 
-    &:hover{
+    &:hover {
         background-color: lighten($primary-color, 10%);
         box-shadow: $card-box-shadow-hover;
         color: $body-bg-color;
         text-decoration: none;
     }
 
-    &:active{
+    &:active {
         background-color: darken($primary-color, 10%)
     }
 
     &:disabled {
         background: $disabled-color;
         cursor: arrow;
+    }
+
+    &:focus {
+        background-color: lighten($primary-color, 10%);
     }
 }
 

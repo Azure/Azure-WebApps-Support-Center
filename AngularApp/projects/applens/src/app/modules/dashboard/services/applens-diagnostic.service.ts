@@ -14,8 +14,8 @@ export class ApplensDiagnosticService {
 
   getDetector(detector: string, startTime: string, endTime: string, refresh: boolean = false, internalView: boolean = true, formQueryParams?: string): Observable<DetectorResponse> {
     return this._diagnosticApi.getDetector(
-      this._resourceService.versionPrefix, 
-      this._resourceService.getCurrentResourceId(true), 
+      this._resourceService.versionPrefix,
+      this._resourceService.getCurrentResourceId(true),
       detector,
       startTime,
       endTime,
@@ -27,7 +27,7 @@ export class ApplensDiagnosticService {
 
   getSystemInvoker(detector: string, systemInvokerId: string = '', dataSource: string, timeRange: string): Observable<DetectorResponse> {
     return this._diagnosticApi.getSystemInvoker(
-      this._resourceService.getCurrentResourceId(true), 
+      this._resourceService.getCurrentResourceId(true),
       detector,
       systemInvokerId,
       dataSource,
@@ -35,11 +35,28 @@ export class ApplensDiagnosticService {
       this._resourceService.getRequestBody());
   }
 
-  getDetectors(): Observable<DetectorMetaData[]> {
-    return this._diagnosticApi.getDetectors(
-      this._resourceService.versionPrefix, 
-      this._resourceService.getCurrentResourceId(true),
-      this._resourceService.getRequestBody());
+  getDetectors(internalClient: boolean = true, query?: string): Observable<DetectorMetaData[]> {
+    var queryParams: any[] = null;
+    if (query != null)
+      queryParams = [{ "key": "text", "value": query }];
+      return this._diagnosticApi.getDetectors(
+        this._resourceService.versionPrefix, 
+        this._resourceService.getCurrentResourceId(true),
+        this._resourceService.getRequestBody(),
+        queryParams,
+        internalClient);
+  }
+
+  getUsers(body: any): Observable<any> {
+    return this._diagnosticApi.getUsers(body);
+  }
+
+  getSupportTopics(pesId: any): Observable<any> {
+    return this._diagnosticApi.getSupportTopics(pesId);
+  }
+
+  getSelfHelpContent(pesId: string = "14748", supportTopicId: string = "32581605", path: string = "microsoft.web"): Observable<any> {
+    return this._diagnosticApi.getSelfHelpContent(pesId, supportTopicId, path);
   }
 
   getGists(): Observable<DetectorMetaData[]> {
@@ -47,6 +64,15 @@ export class ApplensDiagnosticService {
       this._resourceService.versionPrefix,
       this._resourceService.getCurrentResourceId(true),
       this._resourceService.getRequestBody());
+  }
+
+
+  getUserPhoto(userId: string = ""): Observable<any> {
+    return this._diagnosticApi.getUserPhoto(userId);
+  }
+
+  getUserInfo(userId: string = ""): Observable<any> {
+    return this._diagnosticApi.getUserInfo(userId);
   }
 
   getCompilerResponse(body: any, isSystemInvoker: boolean, detectorId: string = '', startTime: string = '', endTime: string = '', dataSource: string = '', timeRange: string = '', additionalParams: any): Observable<QueryResponse<DetectorResponse>> {
@@ -75,7 +101,7 @@ export class ApplensDiagnosticService {
 
   prepareLocalDevelopment(body: any, detectorId: string = '', startTime: string = '', endTime: string = '', dataSource: string = '', timeRange: string = ''): Observable<string> {
     body.resource = this._resourceService.getRequestBody();
-    detectorId = detectorId === '' ? 'newdetector' : detectorId; 
+    detectorId = detectorId === '' ? 'newdetector' : detectorId;
     return this._diagnosticApi.getLocalDevelopmentResponse(
       detectorId.toLowerCase(),
       this._resourceService.versionPrefix,

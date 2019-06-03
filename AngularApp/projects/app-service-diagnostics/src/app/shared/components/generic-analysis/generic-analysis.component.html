@@ -1,0 +1,14 @@
+<detector-container [detector]="analysisDetector"></detector-container>
+<detector-list-analysis withinDiagnoseAndSolve="true" detectorParmName="detectorName"></detector-list-analysis>
+
+<div [hidden]="detectorId === ''">
+  <div>
+    <div style="display: inline-block;margin-left: 20px">
+      <h2>{{ detectorName }}</h2>
+    </div>
+    <div style="display: inline-block;margin-left: 10px">
+      <a (click)="goBackToAnalysis()" *ngIf="detectorId !== ''">Back to Observations</a>
+    </div>
+  </div>
+  <router-outlet></router-outlet>
+</div>

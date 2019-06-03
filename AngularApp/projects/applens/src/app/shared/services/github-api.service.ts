@@ -18,6 +18,10 @@ export class GithubApiService {
     return this._diagnosticApiService.get<string>(`api/github/package/${id}`, true);
   }
 
+  public getMetadataFile(id: string): Observable<string> {
+    return this._diagnosticApiService.get<string>(`api/github/package/${id}/metadata`, true);
+  }
+
   public getSystemInvokerFile(id: string): Observable<string> {
     return this._diagnosticApiService.get<string>(`api/github/package/${id}`, true);
   }

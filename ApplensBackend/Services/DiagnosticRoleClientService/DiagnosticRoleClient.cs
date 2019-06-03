@@ -1,4 +1,4 @@
-﻿using AppLensV3.Services.EmailNotificationService;
+﻿using AppLensV3.Services;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -79,13 +79,12 @@ namespace AppLensV3
                 MaxResponseContentBufferSize = int.MaxValue
             };
 
-            client.DefaultRequestHeaders.Add("x-ms-internal-client", "true");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             return client;
         }
 
-        public async Task<HttpResponseMessage> Execute(string method, string path, string body = null, bool internalView = true, HttpRequestHeaders additionalHeaders = null)
+        public async Task<HttpResponseMessage> Execute(string method, string path, string body = null, bool internalClient = true, bool internalView = true, HttpRequestHeaders additionalHeaders = null)
         {
             try
             {
@@ -114,6 +113,7 @@ namespace AppLensV3
                     {
                         var requestMessage = new HttpRequestMessage(HttpMethod.Post, "api/invoke");
                         requestMessage.Headers.Add("x-ms-path-query", path);
+                        requestMessage.Headers.Add("x-ms-internal-client", internalClient.ToString());
                         requestMessage.Headers.Add("x-ms-internal-view", internalView.ToString());
                         requestMessage.Headers.Add("x-ms-verb", method);
                         requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
@@ -144,6 +144,7 @@ namespace AppLensV3
                         AddAdditionalHeaders(additionalHeaders, ref requestMessage);
                     }
 
+                    requestMessage.Headers.Add("x-ms-internal-client", internalClient.ToString());
                     requestMessage.Headers.Add("x-ms-internal-view", internalView.ToString());
 
                     response = await _client.SendAsync(requestMessage);

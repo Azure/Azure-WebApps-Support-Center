@@ -10,7 +10,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using AppLensV3.Services.EmailNotificationService;
+using AppLensV3.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -66,6 +66,12 @@ namespace AppLensV3.Controllers
             if (Request.Headers.ContainsKey("x-ms-method"))
             {
                 method = Request.Headers["x-ms-method"];
+            }
+
+            bool internalClient = true;
+            if (Request.Headers.ContainsKey("x-ms-internal-client"))
+            {
+                bool.TryParse(Request.Headers["x-ms-internal-client"], out internalClient);
             }
 
             bool internalView = true;
@@ -139,7 +145,7 @@ namespace AppLensV3.Controllers
                 headers.Add("diag-assembly-name", assemblyName);
             }
 
-            var response = await DiagnosticClient.Execute(method, path, body?.ToString(), internalView, headers);
+            var response = await DiagnosticClient.Execute(method, path, body?.ToString(), internalClient, internalView, headers);
 
             if (response != null)
             {

@@ -1,7 +1,7 @@
 @import "styles/common/variables";
 @import "styles/controls/buttons";
 @import "~@ng-select/ng-select/themes/default.theme.css";
-
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 .ngx-datatable.bootstrap {
   border: 1px solid #dddddd;
 }
@@ -76,6 +76,7 @@ body {
 .wide-modal {
   max-width: 560px!important;
   padding: 0px!important;
+  min-height: 160px!important;
 }
 
 .package-modal {
@@ -95,10 +96,6 @@ body {
 
 .nav > li > a {
   padding: 5px 15px;
-}
-
-.nav-tabs > li {
-  outline: none;
 }
 
 /********************************************************************/
@@ -149,4 +146,13 @@ body {
 
 .cc-modal {
   max-width: 800px;
+}
+
+.skin-blue .wrapper {
+    background-color: #f0f0f0
+}
+
+.publish-dialog{
+  min-width: 70vw !important;
+  min-height: 70vh !important;
 }

@@ -1,29 +1,45 @@
-.site-content {
-    padding-top: 50px;
-}
-
 side-nav {
     position: fixed;
     top: 50px;
+}
+
+.sidebar {
+    width: 230px;
+    height:50px;
+    padding:0px;
 }
 
 .logo {
     cursor: pointer;
     position: fixed;
     top: 0;
+    background-color: #3c8dbc!important;
+    width:120px;
+}
+
+.logo1 {
+    cursor: pointer;
+    position: fixed;
+    top: 0;
+    right: 0;
 }
 
 .white-background {
     background-color: white;
 }
 
+.gray-background {
+    background-color: rgb(240, 240, 240);
+}
+
 .app-title {
     color: #ffb353
 }
 
-.content-wrapper.white-background {
-    min-height: calc(100vh - 50px);
+.content-wrapper.white-background, .content-wrapper.gray-background {
+    min-height: calc(100vh - 95px);
     height: 100%;
+    margin-top:0px;
 
     // Nested onboarding-flow components have two navbars totalling 92px
     ::ng-deep onboarding-flow {
@@ -35,3 +51,122 @@ side-nav {
         height: calc(100vh - 50px);
     }
 }
+
+.avatar:hover {
+    cursor: pointer;
+}
+
+.avatar {
+    width:50px;
+    height: 50px;
+    float: right;
+    margin-right:10px;
+}
+
+.user-label {
+    top: 15px;
+    color: white;
+    right: 15px;
+    font-weight: bold;
+}
+
+.loading-element {
+    top: 15px;
+    right: 15px;
+    width:50px;
+    height: 50px;
+    float: right;
+    margin-right:10px;
+    color: white;
+}
+
+.user-panel > .info {
+    left: 25px;
+    padding: 2px 5px 5px 15px;
+    display: inline-block;
+}
+
+.user-panel {
+    cursor: pointer;
+    background: #367fa9;
+    width: 230px;
+    height:50px;
+    position: fixed;
+}
+
+.user-panel.active,
+.user-panel {
+    background: #367fa9;
+    width: 230px;
+}
+
+.resource-logo {
+    max-width: 25px;
+}
+
+
+body{
+    width:500px;
+    margin:auto;
+    margin-top:20px;
+  }
+
+  p{
+    margin:0;
+    padding:4px
+  }
+
+  .speech-bubble {
+     width: 30px;
+     height: auto;
+     border: 3px solid purple;
+     -moz-border-radius: 10px;
+     -webkit-border-radius: 10px;
+     border-radius: 10px;
+  }
+  .speech-bubble:before {
+     content:"";
+     position: absolute;
+     left:13px;
+     border-top: 0px solid transparent;
+     border-right: 9px solid purple;
+     border-bottom: 13px solid transparent;
+     margin: 13px 0 0 -25px;
+  }
+  .speech-bubble:after {
+     content:"";
+     position: absolute;
+     left:18px;
+     top:40px;
+     border-top: 0px solid transparent;
+     border-right: 7px solid white;
+     border-bottom: 10px solid transparent;
+     margin: -25px;
+  }
+
+  .resource-summary {
+    display: inline-block;
+    float: right;
+    padding: 2px;
+    margin-top: 3px;
+    color:#367fa9;
+  }
+
+  .resource-summary i {
+    background-color:#367fa9;
+    font-size:18px;
+    color: white;
+  }
+
+  .resource-summary i:hover{
+    color: black;
+  }
+
+  .resource-content {
+      margin:10px;
+  }
+
+  .photo-loading {
+      left: -20px;
+      margin-top: 10px;
+  }

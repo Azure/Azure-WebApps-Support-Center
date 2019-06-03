@@ -21,7 +21,7 @@ export class GenericSolutionService {
     private _router: Router) {}
 
   assertPropertyExists(dict: {}, property: string) {
-    if (!(property in dict)) {
+    if (!(property in dict) || property == undefined) {
       throw new Error(`Property Not Found: expected property named "${property}"`);
     }
   }

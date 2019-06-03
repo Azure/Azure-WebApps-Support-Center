@@ -10,7 +10,7 @@
 
   <div *ngIf="content">
     <div class="article-container">
-      <div class="article" *ngFor="let article of content" (click)="openArticle(article)">
+      <div class="article" *ngFor="let article of content" (click)="openArticle(article)" tabindex="0" (keyup.enter)="openArticle(article)">
         <a>{{article.title}}
           <i class="fa fa-external-link"></i>
         </a>

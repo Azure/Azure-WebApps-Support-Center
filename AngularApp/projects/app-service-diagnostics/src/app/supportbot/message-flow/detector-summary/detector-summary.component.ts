@@ -91,8 +91,26 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
           this.detectorSummaryViewModels.push(insight);
         });
       });
-      if (insightResponses.length <= 0) {
-        // If no insights found, return default message
+
+      let changeSetResponses = detectorResponse.dataset.filter(set => (<Rendering>set.renderingProperties).type === 16);
+      changeSetResponses.forEach(element => {
+          let changeSet = this.parseChangeSets(element, detectorResponse.metadata.id);
+          changeSet.forEach(element => {
+              this.detectorSummaryViewModels.push(element);
+          })
+      });
+
+      let onboardingResponses = detectorResponse.dataset.filter(set => (set.renderingProperties.type === 17));
+      onboardingResponses.forEach(element => {
+          let summary = this.parseOnboarding(element, detectorResponse.metadata.id);
+          summary.forEach(summary => {
+              this.detectorSummaryViewModels.push(summary);
+          })
+      });
+
+      let showDefaultMsg = insightResponses.length <= 0 && changeSetResponses.length <=0 && onboardingResponses.length <=0;
+      if (showDefaultMsg) {
+        // If no insights and no change sets found, return default message
         this.detectorSummaryViewModels.push(<DetectorSummaryViewModel>{
           id: 'default',
           loading: LoadingStatus.Success,
@@ -159,6 +177,41 @@ export class DetectorSummaryComponent implements OnInit, AfterViewInit, IChatMes
 
     return insights;
   }
+
+  parseChangeSets(diagnosticData: DiagnosticData, detectorId: string): DetectorSummaryViewModel[] {
+    let summary: DetectorSummaryViewModel[] = [];
+    let data = diagnosticData.table;
+    let totalChangeSets = data.rows.length;
+    let name = '';
+    if(data.rows.length == 0) {
+        name = 'No change groups detected';
+    } else {
+        name = totalChangeSets == 1 ? '1 change group has been detected' : `${totalChangeSets} change groups have been detected`;
+    }
+    summary.push(<DetectorSummaryViewModel>{
+        id: <string>detectorId,
+        loading: LoadingStatus.Success,
+        name: name,
+        path: `detectors/${detectorId}`,
+        status: HealthStatus.Info,
+        type: DetectorSummaryType.ChildDetector
+    });
+        return summary;
+    }
+
+    parseOnboarding(diagnosticData: DiagnosticData, detectorId: string): DetectorSummaryViewModel[] {
+        let summary: DetectorSummaryViewModel[] = [];
+        let name = 'Enable Change Analysis to investigate the changes made to your web application.'
+        summary.push(<DetectorSummaryViewModel>{
+            id: <string>detectorId,
+            loading: LoadingStatus.Success,
+            name: name,
+            path: `settings`,
+            status: HealthStatus.Onboarding,
+            type: DetectorSummaryType.ChildDetector
+        });
+        return summary;
+    }
 }
 
 export class DetectorSummaryMessage extends Message {

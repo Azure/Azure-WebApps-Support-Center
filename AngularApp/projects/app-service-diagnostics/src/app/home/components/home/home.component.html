@@ -1,26 +1,38 @@
 <div class="home-container">
-    <div class="input-group input-group-lg search-input-group">
-        <input tabindex="100" type="text" class="form-control" aria-label="Search App Service Diagnostics" placeholder="Search App Service Diagnostics" [ngModel]="searchValue" (ngModelChange)="updateSearchValue($event)" (focus)="onSearchBoxFocus(event)">
-        <div class="input-group-btn">
-            <button class="btn btn-default" type="button" aria-label="Clear" title="Clear" tabindex="101" (click)="clearSearch()"><i class="fa fa-close"></i></button>
-        </div>
+  <div class="input-group input-group-lg search-input-group" (keyup.escape)="clearSearch()" role="search">
+    <input tabindex="0" type="search" class="form-control" placeholder="Search App Service Diagnostics"
+      [ngModel]="searchValue" (ngModelChange)="updateSearchValue($event)" (focus)="onSearchBoxFocus(event)"
+      (focusout)="onSearchLostFocus()" aria-controls="search-results">
+    <div class="input-group-btn" id="clear-search">
+      <button class="btn btn-default" type="button" aria-label="Clear" title="Clear" tabindex="0"
+        (click)="clearSearch()" (focus)="onFocusClear()">
+        <i class="fa fa-close"></i>
+      </button>
     </div>
-    <div *ngIf="!searchBoxFocus else searchResults" class="main-area">
-        <h2>App Service Diagnostics</h2>
-        <p id="page-description">
-            Use App Service Diagnostics to investigate how your app is performing, diagnose issues, and discover how to improve your application. Select the problem category that best matches the information or tool that you're interested in: 
-        </p>
-        <div *ngIf="categories" class="category-container">
-            <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
-                <category-tile [category]="category"></category-tile>
-            </div>
-        </div>
-        <div class="privacy-statement">
-                <a href="https://azure.microsoft.com/en-us/support/legal/?amp%3Bclcid=0x9" target="_blank">Privacy</a>
-            </div>
+  </div>
+  <div role="status">
+    <p *ngIf="inputAriaLabel">{{inputAriaLabel}}</p>
+  </div>
+  <div id="search-results" role="region" aria-live="polite">
+    <ng-container *ngIf="searchBoxFocus">
+      <search-results [searchValue]="searchValue" (resultCount)="onResultCount($event)"
+        (keyup.escape)="clearSearch()"></search-results>
+    </ng-container>
+  </div>
+  <div class="main-area">
+    <h2 tabindex="0">App Service Diagnostics</h2>
+    <p id="page-description" tabindex="0">
+      Use App Service Diagnostics to investigate how your app is performing, diagnose issues, and discover how to
+      improve your application. Select the problem category that best matches the information or tool that you're
+      interested in:
+    </p>
+    <div *ngIf="categories" class="category-container">
+      <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
+        <category-tile [category]="category"></category-tile>
+      </div>
     </div>
+    <div class="privacy-statement" tabindex="0">
+      <a href="https://azure.microsoft.com/en-us/support/legal/?amp%3Bclcid=0x9" target="_blank">Privacy</a>
+    </div>
+  </div>
 </div>
-
-<ng-template #searchResults>
-    <search-results [searchValue]="searchValue"></search-results>
-</ng-template>

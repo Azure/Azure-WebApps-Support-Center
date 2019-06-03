@@ -1,0 +1,64 @@
+<div class="col-6 col-md-4 top-space">
+        <div class="row form-group" *ngIf="showFeatureRegProgress">
+          <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
+            Change Analysis feature registration is in progress. Once registration is completed, please use the below setting to enable Change Analysis.
+        </div>
+        <div class="row form-group" *ngIf="showGeneralError">
+          <div class="alert alert-danger" role="alert">
+            <p>{{generalErrorMsg}} </p>
+          </div>
+        </div>
+        <loader-view *ngIf="updatingTag || updatingProvider " message="Saving settings..."></loader-view>
+       <div class="row form-group" *ngIf="showInProgress && !updatingProvider && !updatingTag">
+         <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
+         Change Analysis Resource Provider is {{regState}}. This will take a few mins. Please check again later.
+       </div>
+        <div *ngIf="!updatingProvider && !updatingTag">
+        <div class="row form-group" *ngIf="!showInProgress">
+            <div class="form-group">
+                <label class="control-label col-md-5">Change Analysis</label>
+                <div class="col-md-7">
+                  <fieldset [disabled]="!isFeatureRegistered">
+                    <ng-container *ngFor="let option of EnablementOptions">
+                      <label class="radio-inline control-label">
+                        <input type="radio" name="changAnalysis" [checked]="featureRegOption.option == option.option" value="option.option" (change)="setChangeAnalysisEnabled(option)"> {{option.option}}
+                      </label>
+                    </ng-container>
+                  </fieldset>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group" *ngIf="featureRegOption.option == 'On' && !showInProgress">
+            <label class="control-label col-md-5">Scan for code changes</label>
+            <div class="col-md-7">
+              <fieldset [disabled]="!isFeatureRegistered">
+              <ng-container *ngFor="let option of EnablementOptions">
+                  <label class="radio-inline control-label">
+                    <input type="radio" name="codeScan" [checked]="codeScanOption.option == option.option" value="option.option" (change)="setCodeScanEnabled(option)"> {{option.option}}
+                  </label>
+                </ng-container>
+              </fieldset>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="alert alert-info" role="alert">
+               <p>Enabling Change Analysis will wake up KUDU every 4 hours to update change information. Please configure your web app to Always-on to avoid performance impact.
+                 <br> To enable Always on, use the below setting or go to Configuration -> General settings -> Always on -> On.</p>
+              </div>
+        </div>
+        <div class="row form-group">
+            <label class="control-label col-md-5">Always on</label>
+            <div class="col-md-7">
+              <ng-container *ngFor="let option of EnablementOptions">
+                <label class="radio-inline control-label">
+                  <input type="radio" name="alwaysOn" [checked]="alwaysOnOption.option == option.option" value="option" (change)="setAlwaysOnEnabled(option)"> {{option.option}}
+                </label>
+              </ng-container>
+            </div>
+        </div>
+        <div class="row form-group">
+          <button class="btn btn-primary" [disabled]="!isFeatureRegistered" (click)="saveSettings()">Save</button>
+        </div>
+      </div>
+</div>
+

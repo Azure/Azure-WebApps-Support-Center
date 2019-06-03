@@ -21,13 +21,14 @@
     "bundle-report": "webpack-bundle-analyzer ../Backend/wwwroot/stats.json -p 8889"
   },
   "dependencies": {
-    "@angular/animations": "6.1.10",
-    "@angular/cdk": "^6.3.3",
+    "@angular/animations": "^7.2.13",
+    "@angular/cdk": "^7.3.7",
     "@angular/common": "6.1.10",
     "@angular/compiler": "6.1.10",
     "@angular/core": "6.1.10",
     "@angular/forms": "6.1.10",
     "@angular/http": "6.1.10",
+    "@angular/material": "^7.3.7",
     "@angular/platform-browser": "6.1.10",
     "@angular/platform-browser-dynamic": "6.1.10",
     "@angular/router": "6.1.10",
@@ -51,6 +52,7 @@
     "ng-pick-datetime-moment": "1.0.7",
     "ng2-nvd3": "^2.0.0",
     "ng5-slider": "^1.1.13",
+    "ngx-avatar": "^3.3.5",
     "ngx-markdown": "6.0.0 - 6.2.0",
     "ngx-monaco-editor": "^6.0.0",
     "ngx-smart-modal": "^6.0.4",
@@ -58,11 +60,12 @@
     "rxjs": "6.2.2",
     "rxjs-compat": "6.2.2",
     "ua-parser-js": "^0.7.19",
+    "vis": "^4.21.0",
     "web-animations-js": "^2.3.1",
     "zone.js": "^0.8.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "0.8.0",
+    "@angular-devkit/build-angular": "^0.8.0",
     "@angular-devkit/build-ng-packagr": "0.8.0",
     "@angular-devkit/build-optimizer": "0.8.0",
     "@angular/cli": "^6.1.5",

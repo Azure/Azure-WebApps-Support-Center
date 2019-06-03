@@ -1,18 +1,18 @@
 @import '../styles/common/variables';
 
-textarea{
+textarea {
     resize: none;
 }
 
-.chat-message-container{
-    margin-top:10px !important;
-    margin-right:10px !important;
+.chat-message-container {
+    margin-top: 10px !important;
+    margin-right: 10px !important;
 }
 
 %chat-message {
-    font-size:13px;
-    display: inline-block; 
-    max-width:50%; 
+    font-size: 13px;
+    display: inline-block;
+    max-width: 50%;
     padding: 10px;
     padding-right: 30px;
     border-radius: 10px;
@@ -26,12 +26,13 @@ textarea{
     border: $chat-message-system-border;
     float: left;
 }
-.message-sent-by-user{
+
+.message-sent-by-user {
     @extend %chat-message;
 
     background-color: $chat-message-user-color;
     border-bottom-right-radius: 0;
-    border:none;
+    border: none;
     float: right;
     color: $chat-message-user-text-color;
 }
@@ -41,14 +42,14 @@ textarea{
     margin-left: 0px;
 }
 
-.category-container-header{
-    margin-left:12px;
-    color:#989898;
+.category-container-header {
+    margin-left: 12px;
+    color: #989898;
     font-size: 13px;
-    font-variant:small-caps;
+    font-variant: small-caps;
 }
 
-.category-content{
+.category-content {
     margin-left: auto;
     margin-right: auto;
     position: relative;
@@ -62,70 +63,87 @@ textarea{
     animation-duration: 200ms !important;
     -webkit-animation-duration: 200ms !important;
     -moz-animation-duration: 200ms !important;
-  }
+}
 
-  .load-message .load-message-dot:nth-last-child(1) {animation: loadingMessageAnimation .6s .1s linear infinite;}
-  .load-message .load-message-dot:nth-last-child(2) {animation: loadingMessageAnimation .6s .2s linear infinite;}
-  .load-message .load-message-dot:nth-last-child(3) {animation: loadingMessageAnimation .6s .3s linear infinite;}
+.load-message .load-message-dot:nth-last-child(1) {
+    animation: loadingMessageAnimation .6s .1s linear infinite;
+}
 
-  .load-message-dot {
+.load-message .load-message-dot:nth-last-child(2) {
+    animation: loadingMessageAnimation .6s .2s linear infinite;
+}
+
+.load-message .load-message-dot:nth-last-child(3) {
+    animation: loadingMessageAnimation .6s .3s linear infinite;
+}
+
+.load-message-dot {
     display: inline-block;
     width: 8px;
     height: 8px;
     border-radius: 4px;
     background-color: #C7C7C7;
 }
+
 @keyframes loadingMessageAnimation {
-    0% {transform: translate(0,0);}
-    50% {transform: translate(0,8px);}
-    100% {transform: translate(0,0);}
+    0% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(0, 8px);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
 }
 
-#chat-scrollbar{
+#chat-scrollbar {
     overflow-y: scroll;
-    overflow-x:hidden;
-    width:100%;
+    overflow-x: hidden;
+    width: 100%;
     padding: 10px 10px 20px 10px;
     background-color: white;
 
 }
-#chat-scrollbar::-webkit-scrollbar-track
-{
+
+#chat-scrollbar::-webkit-scrollbar-track {
     background-color: rgba(226, 226, 226, 0.28);
-	border-radius: 5px;
+    border-radius: 5px;
 }
 
-#chat-scrollbar::-webkit-scrollbar
-{
-	width: 5px;
-	background-color: transparent;
+#chat-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent;
 }
 
-#chat-scrollbar::-webkit-scrollbar-thumb
-{
-	border-radius: 5px;
-	background-color:rgba(172, 172, 172, 0.28);
+#chat-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: rgba(172, 172, 172, 0.28);
 }
 
-
-.report-tab{
+.report-tab {
     margin-top: 8px !important;
 }
-.report-tab:hover{
+
+.report-tab:hover {
     cursor: hand !important;
 }
-.report-tab.active{
+
+.report-tab.active {
     margin-top: 5px !important;
 }
-.report-tab > a {  
+
+.report-tab>a {
     cursor: pointer !important;
     border: 1px solid #d8d8d8 !important;
     border-radius: 5px !important;
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
-    margin-left:10px !important;
-}
-.report-tab.active > a{
-    border-bottom: 3px solid #5d8ea6 !important;
+    margin-left: 10px !important;
 }
 
+.report-tab.active>a {
+    border-bottom: 3px solid #5d8ea6 !important;
+}

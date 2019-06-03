@@ -1,6 +1,6 @@
-<detector-control *ngIf="!hideDetectorControl && detectorResponse"></detector-control>
+<detector-control *ngIf="!hideDetectorControl && detectorResponse && !analysisMode"></detector-control>
 <div style="padding:0px 20px">
-  <detector-view [detectorResponse]="detectorResponse" [error]="error" [startTime]="detectorControlService.startTime" [endTime]="detectorControlService.endTime"
+  <detector-view [analysisMode]="analysisMode" [detectorResponse]="detectorResponse" [error]="error" [startTime]="detectorControlService.startTime" [endTime]="detectorControlService.endTime"
    [developmentMode]="false" [detector]="detectorName">
   </detector-view>
 </div>
