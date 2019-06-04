@@ -11,7 +11,7 @@
           <i class="fa fa-book fa-fw menu-icon menu-icon-documentation" aria-hidden="true"></i>
           <collapsible-menu-item *ngFor="let doc of documentation" [menuItem]="doc"></collapsible-menu-item>
         </section-divider>
-        <section-divider [label]="'Analysis'" *ngIf="analysisTypes.length > 0" >
+        <section-divider  *ngIf="analysisTypes.length > 0" [label]="'Analysis'">
           <i class="fa fa-heartbeat fa-fw menu-icon menu-icon-analysis" aria-hidden="true"></i>
           <collapsible-menu-item *ngFor="let item of analysisTypes" [menuItem]="item"></collapsible-menu-item>
           <i *ngIf="!categories || categories.length === 0" class="fa fa-spinner fa-spin fa-3x fa-fw loading-menu"></i>
@@ -21,7 +21,7 @@
           <collapsible-menu-item *ngFor="let category of categories" [searchValue]="searchValue" [menuItem]="category"></collapsible-menu-item>
           <i *ngIf="!categories || categories.length === 0" class="fa fa-spinner fa-spin fa-3x fa-fw loading-menu"></i>
         </section-divider>
-        <section-divider [label]="'Gists'" [initiallyExpanded]="false">
+        <section-divider *ngIf="gists.length > 0" [label]="'Gists'" [initiallyExpanded]="false">
           <i class="fa fa-file-code-o fa-fw menu-icon menu-icon-gists" aria-hidden="true"></i>
           <collapsible-menu-item *ngFor="let gist of gists" [searchValue]="searchValue" [menuItem]="gist"></collapsible-menu-item>
           <i *ngIf="!gists || gists.length === 0" class="fa fa-spinner fa-spin fa-3x fa-fw loading-menu"></i>
