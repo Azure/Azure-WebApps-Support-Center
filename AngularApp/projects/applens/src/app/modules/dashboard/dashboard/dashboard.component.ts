@@ -1,6 +1,6 @@
 import { AdalService } from 'adal-angular4';
 import { Subscription } from 'rxjs';
-import { Component, OnDestroy, OnInit， Pip, Pipe, PipeTransform } from '@angular/core';
+import { Component, OnDestroy, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ResourceService } from '../../../shared/services/resource.service';
 import * as momentNs from 'moment';
 import { DetectorControlService, FeatureNavigationService, DetectorMetaData, DetectorType } from 'diagnostic-data';
