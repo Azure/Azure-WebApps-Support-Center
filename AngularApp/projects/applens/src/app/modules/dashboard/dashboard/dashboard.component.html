@@ -29,7 +29,7 @@
         <img [src]="resourceService.imgSrc" class="resource-logo" style="max-width:25px">
       </div>
       <div class="info" (click)="navigateTo('home/category')">
-        <p>{{resourceService.getResourceName()}}</p>
+        <p>{{resourceName}}</p>
       </div>
       <div class='resource-summary' (click)="openResourceInfoModal()">
         <i class="fa fa-info-circle" aria-hidden="true"></i>
