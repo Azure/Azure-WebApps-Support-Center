@@ -130,6 +130,7 @@ export class CategoryPageComponent implements OnInit {
                                 detectorAuthors.forEach(author => {
                                     if (!this.filterdDetectorAuthors.find(existingAuthor => existingAuthor === author)) {
                                         this.filterdDetectorAuthors.push(author);
+                                        this.authorsNumber++;
                                     }
                                     detectorUsersImages[author] = this.userImages.hasOwnProperty(author) ? this.userImages[author] : undefined;
                                 });
@@ -148,8 +149,7 @@ export class CategoryPageComponent implements OnInit {
 
                         this.filteredDetectorsLoaded = true;
                     });
-                    
-                    this.authorsNumber = this.filterdDetectorAuthors.length;
+
                     this.detectorsNumber = this.filterdDetectors.length;
                     this.supportTopicsNumber = this.supportTopicIdMapping.length;
                 });

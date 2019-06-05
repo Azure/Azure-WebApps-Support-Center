@@ -116,15 +116,22 @@ namespace AppLensV3.Services
                                 string[] separators = { "supportTopicIds=", "productPesIds=" };
 
                                 string[] substrs = fileContent.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-                                string supportTopicIds = substrs[1].Split('"', StringSplitOptions.RemoveEmptyEntries)[0];
-                                string productId = substrs[2].Split('"', StringSplitOptions.RemoveEmptyEntries)[0];
 
-                                if (supportTopicIds.Contains(supportTopicId))
+                                string supportTopicIds = string.Empty;
+                                string productId = string.Empty;
+
+                                if (substrs.Length >= 3)
                                 {
-                                    selfHelpStr = fileContent;
-                                }
+                                    supportTopicIds = substrs[1].Split('"', StringSplitOptions.RemoveEmptyEntries)[0];
+                                    productId = substrs[2].Split('"', StringSplitOptions.RemoveEmptyEntries)[0];
 
-                                selfHelpMapping.AddOrUpdate(supportTopicIds, fileContent, (key, oldvalue) => fileContent);
+                                    if (supportTopicIds.Contains(supportTopicId))
+                                    {
+                                        selfHelpStr = fileContent;
+                                    }
+
+                                    selfHelpMapping.AddOrUpdate(supportTopicIds, fileContent, (key, oldvalue) => fileContent);
+                                }
                             }
                         }
 

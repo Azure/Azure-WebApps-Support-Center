@@ -114,20 +114,36 @@ export class ApplensSupportTopicService {
             path: "assets/img/SupportTopicImages/dns.png",
         },
         {
-            keyWords: ["creat", "develop", "development", "add"],
-            path: "assets/img/SupportTopicImages/create.png",
-        },
-        {
             keyWords: ["troubleshoot", "diagnos", "solv"],
             path: "assets/img/SupportTopicImages/troubleshoot.png",
         },
         {
-            keyWords: ["configur", "manag", "setting"],
-            path: "assets/img/SupportTopicImages/configure.png",
+            keyWords: ["api"],
+            path: "assets/img/SupportTopicImages/api.png",
+        },
+        {
+            keyWords: ["trigger", "bind"],
+            path: "assets/img/SupportTopicImages/trigger.png",
+        },
+        {
+            keyWords: ["portal"],
+            path: "assets/img/SupportTopicImages/portal.png"
         },
         {
             keyWords: ["storage", "volume"],
-            path: "assets/img/SupportTopicImages/storage.png",
+            path: "assets/img/SupportTopicImages/storage.png"
+        },
+        {
+            keyWords: ["manag", "setting"],
+            path: "assets/img/SupportTopicImages/configure.png",
+        },
+        {
+            keyWords: ["configur"],
+            path: "assets/img/SupportTopicImages/configure.png",
+        },
+        {
+            keyWords: ["creat", "develop", "development", "add"],
+            path: "assets/img/SupportTopicImages/create.png",
         },
         {
             keyWords: ["application insight", "ai", "app insight"],

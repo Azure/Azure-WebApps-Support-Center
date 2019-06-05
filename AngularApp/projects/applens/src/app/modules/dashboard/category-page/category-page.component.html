@@ -12,7 +12,7 @@
       </span>
       <div class="category-description">
         <span>
-          {{detectorsNumber}} detectors, {{authorsNumber}} contributors
+          {{detectorsNumber}} detectors <span *ngIf="authorsNumber>0">, {{authorsNumber}} contributors </span>
         </span>
       </div>
     </div>
@@ -45,12 +45,6 @@
         </div>
         <div class="author-String">
           <span>{{detector.authorString}}</span>
-        </div>
-      </div>
-      <div *ngIf="detector.authorString == undefined || detector.authorString == ''" class="detector-authors">
-        <ngx-avatar class="author-initial author-initial-unknown" name="?" size="35" initialsSize="2"></ngx-avatar>
-        <div class="author-String">
-          <span>Unknown</span>
         </div>
       </div>
     </div>
