@@ -1,7 +1,7 @@
 import { NgModule, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardComponent, FormatResourceNamePipe } from './dashboard/dashboard.component';
 import { SharedModule } from '../../shared/shared.module';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { RouterModule, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
@@ -50,207 +50,209 @@ import { SearchTermAdditionComponent } from './search-term-addition/search-term-
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
-  constructor(private _resourceService: ResourceService, private _detectorControlService: DetectorControlService) { }
+    constructor(private _resourceService: ResourceService, private _detectorControlService: DetectorControlService) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    this._detectorControlService.setCustomStartEnd(route.queryParams['startTime'], route.queryParams['endTime']);
-    return this._resourceService.waitForInitialization();
-  }
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+        this._detectorControlService.setCustomStartEnd(route.queryParams['startTime'], route.queryParams['endTime']);
+        return this._resourceService.waitForInitialization();
+    }
 }
 
 export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild([
-  {
-    path: '',
-    component: DashboardComponent,
-    resolve: { info: InitResolver },
-    children: [
-      {
+    {
         path: '',
-        redirectTo: 'home/category'
-      },
-      {
-        path: 'home/:viewType',
-        component: ResourceHomeComponent,
-        pathMatch: 'full'
-      },
-      {
-        path: 'users/:userId',
-        component: UserProfileComponent,
-      },
-      {
-        path: 'categories/:category',
-        component: CategoryPageComponent,
-      },
-      {
-        path: 'supportTopics/:supportTopic',
-        component: SupportTopicPageComponent,
-      },
-      {
-        path: 'pesId/:pesId/supportTopics/:supportTopicId',
-        component: SelfHelpContentComponent,
-      },
-      {
-        path: 'create',
-        component: OnboardingFlowComponent
-      },
-      {
-        path: 'createGist',
-        component: GistComponent
-      },
-      {
-        path: 'gists/:gist',
-        component: TabGistCommonComponent,
+        component: DashboardComponent,
+        resolve: { info: InitResolver },
         children: [
-          {
-            path: '',
-            component: TabGistDevelopComponent,
-          }, {
-            path: 'edit',
-            redirectTo: ''
-          }, {
-            path: 'changelist',
-            component: TabChangelistComponent
-          }, {
-            path: 'changelist/:sha',
-            component: TabChangelistComponent
-          }
-        ]
-      },
-      {
-        path: 'detectors/:detector',
-        component: TabCommonComponent,
-        children: [
-          {
-            path: '',
-            component: TabDataComponent
-          },
-          {
-            path: 'data',
-            redirectTo: ''
-          },
-          {
-            path: 'edit',
-            component: TabDevelopComponent
-          }, {
-            path: 'changelist',
-            component: TabChangelistComponent
-          },
-          {
-            path: 'datasource',
-            component: TabDataSourcesComponent
-          },
-          {
-            path: 'monitoring',
-            component: TabMonitoringComponent
-          },
-          {
-            path: 'analytics',
-            component: TabAnalyticsDashboardComponent
-          },
-          {
-            path: 'monitoring/edit',
-            component: TabMonitoringDevelopComponent
-          },
-          {
-            path: 'analytics/edit',
-            component: TabAnalyticsDevelopComponent
-          }
-        ]
-      },
-      {
-        path: 'analysis/:analysisId/detectors/:detector',
-        component: TabAnalysisComponent,
-        children: [
-          {
-            path: '',
-            component: TabDataComponent,
-            data: {
-              analysisMode: true
+            {
+                path: '',
+                redirectTo: 'home/category'
+            },
+            {
+                path: 'home/:viewType',
+                component: ResourceHomeComponent,
+                pathMatch: 'full'
+            },
+            {
+                path: 'users/:userId',
+                component: UserProfileComponent,
+            },
+            {
+                path: 'categories/:category',
+                component: CategoryPageComponent,
+            },
+            {
+                path: 'supportTopics/:supportTopic',
+                component: SupportTopicPageComponent,
+            },
+            {
+                path: 'pesId/:pesId/supportTopics/:supportTopicId',
+                component: SelfHelpContentComponent,
+            },
+            {
+                path: 'create',
+                component: OnboardingFlowComponent
+            },
+            {
+                path: 'createGist',
+                component: GistComponent
+            },
+            {
+                path: 'gists/:gist',
+                component: TabGistCommonComponent,
+                children: [
+                    {
+                        path: '',
+                        component: TabGistDevelopComponent,
+                    }, {
+                        path: 'edit',
+                        redirectTo: ''
+                    }, {
+                        path: 'changelist',
+                        component: TabChangelistComponent
+                    }, {
+                        path: 'changelist/:sha',
+                        component: TabChangelistComponent
+                    }
+                ]
+            },
+            {
+                path: 'detectors/:detector',
+                component: TabCommonComponent,
+                children: [
+                    {
+                        path: '',
+                        component: TabDataComponent
+                    },
+                    {
+                        path: 'data',
+                        redirectTo: ''
+                    },
+                    {
+                        path: 'edit',
+                        component: TabDevelopComponent
+                    }, {
+                        path: 'changelist',
+                        component: TabChangelistComponent
+                    },
+                    {
+                        path: 'datasource',
+                        component: TabDataSourcesComponent
+                    },
+                    {
+                        path: 'monitoring',
+                        component: TabMonitoringComponent
+                    },
+                    {
+                        path: 'analytics',
+                        component: TabAnalyticsDashboardComponent
+                    },
+                    {
+                        path: 'monitoring/edit',
+                        component: TabMonitoringDevelopComponent
+                    },
+                    {
+                        path: 'analytics/edit',
+                        component: TabAnalyticsDevelopComponent
+                    }
+                ]
+            },
+            {
+                path: 'analysis/:analysisId/detectors/:detector',
+                component: TabAnalysisComponent,
+                children: [
+                    {
+                        path: '',
+                        component: TabDataComponent,
+                        data: {
+                            analysisMode: true
+                        }
+                    },
+                    {
+                        path: 'data',
+                        redirectTo: ''
+                    },
+                    {
+                        path: 'datasource',
+                        component: TabDataSourcesComponent
+                    }
+                ]
+            },
+            {
+                path: 'analysis/:analysisId',
+                component: TabAnalysisComponent,
+                children: [
+                    {
+                        path: '',
+                        component: TabDataComponent
+                    },
+                    {
+                        path: 'data',
+                        redirectTo: ''
+                    },
+                    {
+                        path: 'datasource',
+                        component: TabDataSourcesComponent
+                    }
+                ]
+            },
+            {
+                path: 'analysis/:analysisId/detectors',
+                component: TabAnalysisComponent,
+                children: [
+                    {
+                        path: '',
+                        component: TabDataComponent
+                    },
+                    {
+                        path: 'data',
+                        redirectTo: ''
+                    },
+                    {
+                        path: 'datasource',
+                        component: TabDataSourcesComponent
+                    }
+                ]
             }
-          },
-          {
-            path: 'data',
-            redirectTo: ''
-          },
-          {
-            path: 'datasource',
-            component: TabDataSourcesComponent
-          }
         ]
-      },
-      {
-        path: 'analysis/:analysisId',
-        component: TabAnalysisComponent,
-        children: [
-          {
-            path: '',
-            component: TabDataComponent
-          },
-          {
-            path: 'data',
-            redirectTo: ''
-          },
-          {
-            path: 'datasource',
-            component: TabDataSourcesComponent
-          }
-        ]
-      },
-      {
-        path: 'analysis/:analysisId/detectors',
-        component: TabAnalysisComponent,
-        children: [
-          {
-            path: '',
-            component: TabDataComponent
-          },
-          {
-            path: 'data',
-            redirectTo: ''
-          },
-          {
-            path: 'datasource',
-            component: TabDataSourcesComponent
-          }
-        ]
-      }
-    ]
-  },
+    },
 
 ]);
 
 @NgModule({
-  imports: [
-    AvatarModule,
-    CommonModule,
-    FormsModule,
-    DashboardModuleRoutes,
-    DiagnosticDataModule,
-    SharedModule,
-    MonacoEditorModule.forRoot(),
-    AngularSplitModule,
-    CollapsibleMenuModule,
-    NgxSmartModalModule.forRoot(),
-    NgSelectModule,
-    MarkdownModule.forRoot()
-  ],
-  providers: [
-    ApplensDiagnosticService,
-    ApplensCommsService,
-    ApplensSupportTopicService,
-    InitResolver,
-    {
-      provide: ResourceService,
-      useFactory: ResourceServiceFactory,
-      deps: [StartupService, ObserverService]
-    },
-    { provide: DiagnosticService, useExisting: ApplensDiagnosticService },
-    { provide: CommsService, useExisting: ApplensCommsService },
-    { provide: DiagnosticSiteService, useExisting: ResourceService },
-    { provide: SolutionService, useExisting: GenericSolutionService }
-  ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent, SearchTermAdditionComponent,
-    SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent,
-    TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, GistComponent, TabGistCommonComponent, TabGistDevelopComponent, TabChangelistComponent, GistChangelistComponent, TabAnalysisComponent, CategoryPageComponent, SupportTopicPageComponent, SelfHelpContentComponent, UserProfileComponent]
+    imports: [
+        AvatarModule,
+        CommonModule,
+        FormsModule,
+        DashboardModuleRoutes,
+        DiagnosticDataModule,
+        SharedModule,
+        MonacoEditorModule.forRoot(),
+        AngularSplitModule,
+        CollapsibleMenuModule,
+        NgxSmartModalModule.forRoot(),
+        NgSelectModule,
+        MarkdownModule.forRoot()
+    ],
+    providers: [
+        ApplensDiagnosticService,
+        ApplensCommsService,
+        ApplensSupportTopicService,
+        InitResolver,
+        {
+            provide: ResourceService,
+            useFactory: ResourceServiceFactory,
+            deps: [StartupService, ObserverService]
+        },
+        { provide: DiagnosticService, useExisting: ApplensDiagnosticService },
+        { provide: CommsService, useExisting: ApplensCommsService },
+        { provide: DiagnosticSiteService, useExisting: ResourceService },
+        { provide: SolutionService, useExisting: GenericSolutionService }
+    ],
+    declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent, SearchTermAdditionComponent,
+        SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent,
+        TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, GistComponent, TabGistCommonComponent,
+        TabGistDevelopComponent, TabChangelistComponent, GistChangelistComponent, TabAnalysisComponent, CategoryPageComponent, SupportTopicPageComponent,
+        SelfHelpContentComponent, UserProfileComponent, FormatResourceNamePipe]
 })
 export class DashboardModule { }

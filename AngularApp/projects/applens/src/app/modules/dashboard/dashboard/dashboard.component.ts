@@ -1,6 +1,6 @@
 import { AdalService } from 'adal-angular4';
 import { Subscription } from 'rxjs';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit， Pip, Pipe, PipeTransform } from '@angular/core';
 import { ResourceService } from '../../../shared/services/resource.service';
 import * as momentNs from 'moment';
 import { DetectorControlService, FeatureNavigationService, DetectorMetaData, DetectorType } from 'diagnostic-data';
@@ -29,7 +29,6 @@ export class DashboardComponent implements OnDestroy {
 
   currentRoutePath: string[];
   resource: any;
-  resourceName: string="";
   keys: string[];
   observerLink: string="";
 
@@ -84,7 +83,6 @@ export class DashboardComponent implements OnDestroy {
   ngOnInit() {
     let serviceInputs = this.startupService.getInputs();
 
-    this.resourceName = this.getFormattedResourceName();
     this.resourceService.getCurrentResource().subscribe(resource => {
       if (resource) {
         this.resource = resource;
@@ -101,15 +99,6 @@ export class DashboardComponent implements OnDestroy {
         this.keys = Object.keys(this.resource);
       }
     });
-  }
-
-  getFormattedResourceName(): string {
-      let resourceName = this.resourceService.getResourceName();
-      if (resourceName && resourceName.length >= 35)
-      {
-          resourceName = resourceName.substring(0, 35).concat("...");
-      }
-      return resourceName;
   }
 
   reloadHome() {
@@ -142,3 +131,17 @@ export class DashboardComponent implements OnDestroy {
   }
 
 }
+
+@Pipe({name: 'formatResourceName'})
+export class FormatResourceNamePipe implements PipeTransform {
+    transform(resourceName: string): string {
+        let displayedResourceName = resourceName;
+        if (resourceName && resourceName.length >= 35)
+        {
+            displayedResourceName = resourceName.substring(0, 35).concat("...");
+        }
+
+        return displayedResourceName;
+    }
+}
+
