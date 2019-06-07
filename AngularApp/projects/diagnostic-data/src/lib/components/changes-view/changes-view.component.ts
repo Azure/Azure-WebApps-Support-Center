@@ -1,12 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DiagnosticService } from '../../services/diagnostic.service';
 import { DetectorControlService } from '../../services/detector-control.service';
+import { TelemetryService } from '../../services/telemetry/telemetry.service';
+import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { DetectorResponse, DiagnosticData } from '../../models/detector';
 import { MatTableDataSource} from '@angular/material';
-import {Changes} from '../../models/changesets';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import { Change } from '../../models/changesets';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import * as momentNs from 'moment';
-import {ChangeAnalysisUtilities} from '../../utilities/changeanalysis-utilities';
+import { ChangeAnalysisUtilities } from '../../utilities/changeanalysis-utilities';
 const moment = momentNs;
   @Component({
     selector: 'changes-view',
@@ -22,13 +24,14 @@ const moment = momentNs;
   })
 export class ChangesViewComponent implements OnInit {
 
+    @Input() changesetId: string = '';
     @Input() changesDataSet: DiagnosticData[];
     @Input() initiatedBy: string = '';
     changesResponse: DetectorResponse;
-    dataSource: MatTableDataSource<Changes>;
+    dataSource: MatTableDataSource<Change>;
     displayedColumns = ['level', 'time', 'displayName', 'description', 'initiatedBy'];
-    expandedElement: Changes | null;
-    tableItems: Changes[];
+    expandedElement: Change | null;
+    tableItems: Change[];
     options = {
         theme: 'vs',
         automaticLayout: true,
@@ -49,7 +52,9 @@ export class ChangesViewComponent implements OnInit {
         "displayValue": "Noise"
     }];
 
-    constructor(private diagnosticService: DiagnosticService, private detectorControlService: DetectorControlService) { }
+    private _changeFeedbacks: Map<Change, boolean> = new Map<Change, boolean>();
+
+    constructor(private diagnosticService: DiagnosticService, private detectorControlService: DetectorControlService, private telemetryService: TelemetryService) { }
 
     ngOnInit() {
         this.tableItems = [];
@@ -69,6 +74,7 @@ export class ChangesViewComponent implements OnInit {
                 let initiatedBy = this.initiatedBy;
                 let displayName = row.hasOwnProperty("displayName") ? row["displayName"] : row[3];
                 let timestamp = row.hasOwnProperty("timeStamp") ? row["timeStamp"] : row[0];
+                let jsonPath = row.hasOwnProperty("jsonPath") ? row["jsonPath"] : row[8];
                 this.tableItems.push({
                     "time":  moment(timestamp).format("MMM D YYYY, h:mm:ss a"),
                     "level": level,
@@ -78,6 +84,7 @@ export class ChangesViewComponent implements OnInit {
                     'oldValue': oldValue,
                     'newValue': newValue,
                     'initiatedBy': initiatedBy == null || initiatedBy == "" ? "N/A" : initiatedBy,
+                    'jsonPath': jsonPath,
                     'originalModel': ChangeAnalysisUtilities.prepareValuesForDiffView(oldValue),
                     'modifiedModel': ChangeAnalysisUtilities.prepareValuesForDiffView(newValue)
                 });
@@ -97,12 +104,48 @@ export class ChangesViewComponent implements OnInit {
             default:
             return this.changeLevelIcon[0].imgSrc;
         }
-
     }
 
     applyFilter(filterValue: string) {
         this.dataSource.filter = filterValue.trim().toLowerCase();
     }
 
+    getFeedbackButtonClass(changeItem: Change, isHelpfulButton: boolean): string[] {
+        let classNames: string[] = ["feedback-button"];
+
+        let feedbackProvided = this._changeFeedbacks.has(changeItem);
+        if (feedbackProvided) {
+            classNames.push("disabled");
+
+            let changeHelpful = this._changeFeedbacks.get(changeItem);
+            if ((isHelpfulButton && !changeHelpful)
+                || (!isHelpfulButton && changeHelpful)) {
+                classNames.push("greyed-out");
+            }
+        }
+
+        return classNames;
+    }
+
+    sendFeedback(changeItem: Change, isHelpful: boolean): void {
+        let feedbackProvided = this._changeFeedbacks.has(changeItem);
+        if (feedbackProvided) {
+            return;
+        }
+
+        this._changeFeedbacks.set(changeItem, isHelpful);
+
+        let eventProps = {
+            'isHelpful': isHelpful.toString(),
+            'changeLevel': changeItem.level,
+            'dataSource': ChangeAnalysisUtilities.getDataSourceFromChangesetId(this.changesetId),
+            'displayName': changeItem.displayName,
+            'jsonPath': changeItem.jsonPath,
+            'changeTimestamp': changeItem.time,
+            'oldValueLength': changeItem.originalModel.code.length.toString(),
+            'newValueLength': changeItem.modifiedModel.code.length.toString()
+        };
+        this.telemetryService.logEvent(TelemetryEventNames.ChangeAnalysisChangeFeedbackClicked, eventProps);
+   }
 }
 

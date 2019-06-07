@@ -109,6 +109,11 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
     }
 
     private initializeChangesView(data: DataTableResponseObject) {
+        if (data.rows.length == 0) {
+            return;
+        }
+
+        this.selectedChangeSetId = data.rows[0][0];
         let latestChangeSet = data.rows[0][7];
         if(latestChangeSet != null) {
             this.loadingChangesTable = true;

@@ -57,6 +57,11 @@ export class ChangeAnalysisUtilities {
         }
     }
 
+    public static getDataSourceFromChangesetId(changesetId: string): string {
+        let splits = changesetId ? changesetId.split('_') : [];
+        return splits.length > 0 ? splits[0] : null;
+    }
+
     public static findGroupBySource(source: string): number {
         source = source.toUpperCase();
         switch(source){
