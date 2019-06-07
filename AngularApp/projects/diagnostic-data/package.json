@@ -7,7 +7,8 @@
     "@swimlane/ngx-datatable": "^13.1.0",
     "copy-html-to-clipboard": "^4.0.1",
     "applicationinsights-js": "1.0.20",
-    "ngx-monaco-editor": "^6.0.0"
+    "ngx-monaco-editor": "^6.0.0",
+    "ngx-bootstrap": "^3.0.1"
   },
   "dependencies": {
     "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
@@ -15,7 +16,6 @@
     "@swimlane/ngx-datatable": "^13.1.0",
     "applicationinsights-js": "1.0.20",
     "copy-html-to-clipboard": "^4.0.1",
-    "ngx-bootstrap": "^3.0.1",
     "ngx-monaco-editor": "^6.0.0"
   }
 }
