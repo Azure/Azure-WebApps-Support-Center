@@ -53,6 +53,7 @@
     "ng2-nvd3": "^2.0.0",
     "ng5-slider": "^1.1.13",
     "ngx-avatar": "^3.3.5",
+    "ngx-bootstrap": "3.0.0",
     "ngx-markdown": "6.0.0 - 6.2.0",
     "ngx-monaco-editor": "^6.0.0",
     "ngx-smart-modal": "^6.0.4",

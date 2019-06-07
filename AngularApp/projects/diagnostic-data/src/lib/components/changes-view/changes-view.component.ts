@@ -7,6 +7,7 @@ import {Changes} from '../../models/changesets';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import * as momentNs from 'moment';
 import {ChangeAnalysisUtilities} from '../../utilities/changeanalysis-utilities';
+
 const moment = momentNs;
   @Component({
     selector: 'changes-view',
@@ -23,7 +24,7 @@ const moment = momentNs;
 export class ChangesViewComponent implements OnInit {
 
     @Input() changesDataSet: DiagnosticData[];
-    @Input() initiatedBy: string = '';
+    @Input() initiatedByList: any;
     changesResponse: DetectorResponse;
     dataSource: MatTableDataSource<Changes>;
     displayedColumns = ['level', 'time', 'displayName', 'description', 'initiatedBy'];
@@ -66,7 +67,6 @@ export class ChangesViewComponent implements OnInit {
                 let description = row.hasOwnProperty("description") ? row["description"] : row[4];
                 let oldValue = row.hasOwnProperty("oldValue") ? row["oldValue"] : row[5];
                 let newValue = row.hasOwnProperty("newValue") ? row["newValue"] : row[6];
-                let initiatedBy = this.initiatedBy;
                 let displayName = row.hasOwnProperty("displayName") ? row["displayName"] : row[3];
                 let timestamp = row.hasOwnProperty("timeStamp") ? row["timeStamp"] : row[0];
                 this.tableItems.push({
@@ -77,9 +77,10 @@ export class ChangesViewComponent implements OnInit {
                     "description": description == null || description == "" ? "N/A" : description,
                     'oldValue': oldValue,
                     'newValue': newValue,
-                    'initiatedBy': initiatedBy == null || initiatedBy == "" ? "N/A" : initiatedBy,
+                    'initiatedBy': ChangeAnalysisUtilities.getInitiatedByField(this.initiatedByList),
                     'originalModel': ChangeAnalysisUtilities.prepareValuesForDiffView(oldValue),
-                    'modifiedModel': ChangeAnalysisUtilities.prepareValuesForDiffView(newValue)
+                    'modifiedModel': ChangeAnalysisUtilities.prepareValuesForDiffView(newValue),
+                    'initiatedByList' : this.initiatedByList
                 });
             });
             this.dataSource = new MatTableDataSource(this.tableItems);

@@ -70,4 +70,16 @@ export class ChangeAnalysisUtilities {
         return 1;
         }
     }
+
+    public static getInitiatedByField(initiatedByList: any): string {
+        if(initiatedByList === []) {
+            return "Unable to determine";
+        }
+        let totalUsers = initiatedByList.length;
+        if(totalUsers > 2) {
+            return initiatedByList.slice(0,2).join(',')+ " +"+ (totalUsers - 2);
+        }
+        return initiatedByList.join(',');
+    }
+
 }
