@@ -446,8 +446,9 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
         if(initiatedByListIndex > 0) {
             return changeSet[initiatedByListIndex];
         }
-        let users = [];
-        users.push(changeSet[initiatedByIndex]);
-        return users;
+        if(changeSet[initiatedByIndex] === null || changeSet[initiatedByIndex] === "") {
+            return ["N/A"];
+        }
+        return [changeSet[initiatedByIndex]];
     }
 }
