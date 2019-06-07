@@ -3,12 +3,13 @@ import { DiagnosticService } from '../../services/diagnostic.service';
 import { DetectorControlService } from '../../services/detector-control.service';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
-import { DetectorResponse, DiagnosticData } from '../../models/detector';
+import { DetectorResponse, DiagnosticData, DataTableResponseObject } from '../../models/detector';
 import { MatTableDataSource} from '@angular/material';
 import { Change } from '../../models/changesets';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import * as momentNs from 'moment';
 import { ChangeAnalysisUtilities } from '../../utilities/changeanalysis-utilities';
+import { DataTableUtilities } from '../../utilities/datatable-utilities';
 const moment = momentNs;
   @Component({
     selector: 'changes-view',
@@ -60,21 +61,21 @@ export class ChangesViewComponent implements OnInit {
         this.tableItems = [];
         let changesTable = this.changesDataSet[0].table;
         if(changesTable) {
-            this.parseChangesData(changesTable.rows);
+            this.parseChangesData(changesTable, changesTable.rows);
         }
     }
 
-    private parseChangesData(rows: any[][]) {
-        if(rows.length > 0) {
-            rows.forEach(row => {
-                let level = row.hasOwnProperty("level") ? row["level"] : row[2];
-                let description = row.hasOwnProperty("description") ? row["description"] : row[4];
-                let oldValue = row.hasOwnProperty("oldValue") ? row["oldValue"] : row[5];
-                let newValue = row.hasOwnProperty("newValue") ? row["newValue"] : row[6];
+    private parseChangesData(changesTable: DataTableResponseObject, rows: any[][]) {
+        if(changesTable.rows.length > 0) {
+            changesTable.rows.forEach(row => {
+                let level       = this.getChangeProperty(row, "level", changesTable);
+                let description = this.getChangeProperty(row, "description", changesTable);
+                let oldValue    = this.getChangeProperty(row, "oldValue", changesTable);
+                let newValue    = this.getChangeProperty(row, "newValue", changesTable);
+                let displayName = this.getChangeProperty(row, "displayName", changesTable);
+                let timestamp   = this.getChangeProperty(row, "timeStamp", changesTable);
+                let jsonPath    = this.getChangeProperty(row, "jsonPath", changesTable);
                 let initiatedBy = this.initiatedBy;
-                let displayName = row.hasOwnProperty("displayName") ? row["displayName"] : row[3];
-                let timestamp = row.hasOwnProperty("timeStamp") ? row["timeStamp"] : row[0];
-                let jsonPath = row.hasOwnProperty("jsonPath") ? row["jsonPath"] : row[8];
                 this.tableItems.push({
                     "time":  moment(timestamp).format("MMM D YYYY, h:mm:ss a"),
                     "level": level,
@@ -90,6 +91,15 @@ export class ChangesViewComponent implements OnInit {
                 });
             });
             this.dataSource = new MatTableDataSource(this.tableItems);
+        }
+    }
+
+    private getChangeProperty(row: any[], propertyName: string, changesTable: DataTableResponseObject): string {
+        if(row.hasOwnProperty(propertyName)) {
+            return row[propertyName];
+        } else {
+            let propertyIndex = DataTableUtilities.getColumnIndexByName(changesTable, propertyName, true);
+            return propertyIndex >= 0 ? row[propertyIndex] : null;
         }
     }
 

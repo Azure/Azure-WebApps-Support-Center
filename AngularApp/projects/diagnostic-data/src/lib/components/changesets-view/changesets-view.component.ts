@@ -11,7 +11,8 @@ import * as momentNs from 'moment';
 import { Subscription, interval } from 'rxjs';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { SettingsService} from '../../services/settings.service';
-import {ChangeAnalysisUtilities} from '../../utilities/changeanalysis-utilities';
+import { ChangeAnalysisUtilities } from '../../utilities/changeanalysis-utilities';
+import { DataTableUtilities } from '../../utilities/datatable-utilities';
 const moment = momentNs;
 @Component({
   selector: 'changesets-view',
@@ -113,8 +114,13 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             return;
         }
 
-        this.selectedChangeSetId = data.rows[0][0];
-        let latestChangeSet = data.rows[0][7];
+        let changeSetIdColumnIndex = DataTableUtilities.getColumnIndexByName(data, "ChangeSetId");
+        let inputsColumnIndex = DataTableUtilities.getColumnIndexByName(data, "Inputs");
+        let initiatedByColumnIndex = DataTableUtilities.getColumnIndexByName(data, "InitiatedBy");
+        let latestChangeSetId = data.rows[0][changeSetIdColumnIndex];
+        let latestChangeSet = data.rows[0][inputsColumnIndex];
+        this.selectedChangeSetId = latestChangeSetId;
+
         if(latestChangeSet != null) {
             this.loadingChangesTable = true;
             this.changesTableError = '';
@@ -125,7 +131,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
                     },
                 renderingProperties: RenderingType.ChangesView
             }];
-            this.initiatedBy = this.changeSetsLocalCopy.hasOwnProperty(data.rows[0][0]) ? this.changeSetsLocalCopy[data.rows[0][0]][5] : '';
+            this.initiatedBy = this.changeSetsLocalCopy.hasOwnProperty(latestChangeSetId) ? this.changeSetsLocalCopy[latestChangeSetId][initiatedByColumnIndex] : '';
             this.loadingChangesTable = false;
             this.changesTableError = '';
         }
