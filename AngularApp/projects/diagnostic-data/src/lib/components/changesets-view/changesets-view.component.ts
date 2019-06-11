@@ -41,7 +41,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
     timeLineDataSet: DataSet;
     changesTimeline: Timeline;
     changeSetsLocalCopy: {};
-    initiatedBy: any[];
+    initiatedBy: string[];
     changeSetsColumn: DataTableResponseColumn[];
     constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, protected telemetryService: TelemetryService,
     protected changeDetectorRef: ChangeDetectorRef, protected diagnosticService: DiagnosticService,
@@ -443,7 +443,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
     getInitiatedByUsers(changeSet: any[]):any[] {
         let initiatedByListIndex = this.getColumnIndexByName('initiatedByList');
         let initiatedByIndex = this.getColumnIndexByName('initiatedBy');
-        if(initiatedByListIndex > 0) {
+        if(initiatedByListIndex >= 0) {
             return changeSet[initiatedByListIndex];
         }
         if(changeSet[initiatedByIndex] === null || changeSet[initiatedByIndex] === "") {

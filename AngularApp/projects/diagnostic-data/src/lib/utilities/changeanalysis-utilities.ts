@@ -72,10 +72,10 @@ export class ChangeAnalysisUtilities {
     }
 
     public static getInitiatedByField(initiatedByList: any): string {
-        if(initiatedByList === []) {
+        let totalUsers = initiatedByList.length;
+        if(totalUsers === 0) {
             return "Unable to determine";
         }
-        let totalUsers = initiatedByList.length;
         if(totalUsers > 2) {
             return initiatedByList.slice(0,2).join(',')+ " +"+ (totalUsers - 2);
         }

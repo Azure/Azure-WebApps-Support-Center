@@ -10,5 +10,5 @@ export interface Changes {
     initiatedBy: string;
     originalModel: DiffEditorModel;
     modifiedModel: DiffEditorModel;
-    initiatedByList: any;
+    initiatedByList: string[];
   }
