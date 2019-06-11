@@ -29,7 +29,7 @@
               {{changesTableError}}
             </div>
             <div style="margin:10px" *ngIf="changesDataSet && !loadingChangesTable">
-                <changes-view  [changesetId]="selectedChangeSetId" [changesDataSet]="changesDataSet" [initiatedBy]="initiatedBy"></changes-view>
+                <changes-view [detectorEventProperties]="detectorEventProperties" [changesetId]="selectedChangeSetId" [changesDataSet]="changesDataSet" [initiatedBy]="initiatedBy"></changes-view>
             </div>
         </div>
 

@@ -10,6 +10,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import * as momentNs from 'moment';
 import { ChangeAnalysisUtilities } from '../../utilities/changeanalysis-utilities';
 import { DataTableUtilities } from '../../utilities/datatable-utilities';
+import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 const moment = momentNs;
   @Component({
     selector: 'changes-view',
@@ -23,7 +24,7 @@ const moment = momentNs;
         ]),
       ],
   })
-export class ChangesViewComponent implements OnInit {
+export class ChangesViewComponent extends DataRenderBaseComponent implements OnInit {
 
     @Input() changesetId: string = '';
     @Input() changesDataSet: DiagnosticData[];
@@ -55,17 +56,19 @@ export class ChangesViewComponent implements OnInit {
 
     private _changeFeedbacks: Map<Change, boolean> = new Map<Change, boolean>();
 
-    constructor(private diagnosticService: DiagnosticService, private detectorControlService: DetectorControlService, private telemetryService: TelemetryService) { }
+    constructor(private diagnosticService: DiagnosticService, private detectorControlService: DetectorControlService, protected telemetryService: TelemetryService) {
+        super(telemetryService);
+     }
 
     ngOnInit() {
         this.tableItems = [];
         let changesTable = this.changesDataSet[0].table;
         if(changesTable) {
-            this.parseChangesData(changesTable, changesTable.rows);
+            this.parseChangesData(changesTable);
         }
     }
 
-    private parseChangesData(changesTable: DataTableResponseObject, rows: any[][]) {
+    private parseChangesData(changesTable: DataTableResponseObject) {
         if(changesTable.rows.length > 0) {
             changesTable.rows.forEach(row => {
                 let level       = this.getChangeProperty(row, "level", changesTable);
@@ -155,7 +158,7 @@ export class ChangesViewComponent implements OnInit {
             'oldValueLength': changeItem.originalModel.code.length.toString(),
             'newValueLength': changeItem.modifiedModel.code.length.toString()
         };
-        this.telemetryService.logEvent(TelemetryEventNames.ChangeAnalysisChangeFeedbackClicked, eventProps);
+        this.logEvent(TelemetryEventNames.ChangeAnalysisChangeFeedbackClicked, eventProps);
    }
 }
 
