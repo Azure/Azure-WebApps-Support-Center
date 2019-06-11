@@ -100,7 +100,8 @@ export enum RenderingType {
     Form,
     ChangeSets,
     ChangeAnalysisOnboarding,
-    ChangesView
+    ChangesView,
+    DependencyGraph
 }
 
 export enum TimeSeriesType {
