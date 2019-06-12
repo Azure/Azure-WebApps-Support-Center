@@ -216,7 +216,7 @@ export class DetectorControlService {
     }
   }
 
-  public selectDuration(duration: DurationSelector) {    
+  public selectDuration(duration: DurationSelector) {
     this._duration = duration;
     this._startTime = moment.utc().subtract(duration.duration);
     this._endTime = this._startTime.clone().add(duration.duration);
@@ -257,9 +257,9 @@ export class DetectorControlService {
     return this._error;
   }
 
-  public get startTime(): momentNs.Moment { return this._startTime; }
+  public get startTime(): momentNs.Moment { return (this._startTime ? this._startTime.clone() : this._startTime); }
 
-  public get endTime(): momentNs.Moment { return this._endTime; }
+  public get endTime(): momentNs.Moment { return (this._endTime ? this._endTime.clone() : this._endTime); }
 
   public get duration(): DurationSelector { return this._duration; }
 

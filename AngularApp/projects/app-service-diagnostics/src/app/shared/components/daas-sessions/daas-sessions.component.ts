@@ -190,6 +190,10 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
         }
     }
 
+    convertUtcIfNeeded(datestring:string):string{
+        return datestring.toUpperCase().endsWith('Z') ? datestring : datestring += 'Z';;
+    }
+
 }
 
 @Pipe({ name: 'datetimediff' })

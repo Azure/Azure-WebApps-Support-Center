@@ -71,7 +71,7 @@
                         <i class="fa health-icon fa-hourglass-half warning-icon-color" aria-hidden="true"></i>
                     </span>
                     <b>{{ session.StartTime }} UTC</b>
-                    <span>- {{ session.StartTime | datetimediff }} ago</span>
+                    <span>- {{ convertUtcIfNeeded(session.StartTime) | datetimediff }} ago</span>
                     <span>{{ getSessionSize(session) }}</span>
                     <div class="inline" style="margin-left:30px" *ngIf="!isSessionInProgress(session)">
                         <div class="inline tool-tip hotspot-clickable" style="font-size:medium">
