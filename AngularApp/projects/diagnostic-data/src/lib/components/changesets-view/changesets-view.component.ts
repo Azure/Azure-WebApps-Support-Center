@@ -39,7 +39,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
     subscription: Subscription;
     scanState: string = '';
     showViewChanges: boolean = false;
-    timeLineDataSet: DataSet;
+    timeLineDataSet: any;
     changesTimeline: Timeline;
     changeSetsLocalCopy: {};
     initiatedBy: string[];
