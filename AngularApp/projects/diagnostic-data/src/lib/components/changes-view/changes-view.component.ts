@@ -5,7 +5,7 @@ import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { DetectorResponse, DiagnosticData, DataTableResponseObject } from '../../models/detector';
 import { MatTableDataSource} from '@angular/material';
-import { Change } from '../../models/changesets';
+import { Change, ChangeLevel } from '../../models/changesets';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import * as momentNs from 'moment';
 import { ChangeAnalysisUtilities } from '../../utilities/changeanalysis-utilities';
@@ -71,7 +71,7 @@ export class ChangesViewComponent extends DataRenderBaseComponent implements OnI
     private parseChangesData(changesTable: DataTableResponseObject) {
         if(changesTable.rows.length > 0) {
             changesTable.rows.forEach(row => {
-                let level       = this.getChangeProperty(row, "level", changesTable);
+                let level: ChangeLevel = ChangeLevel[this.getChangeProperty(row, "level", changesTable)];
                 let description = this.getChangeProperty(row, "description", changesTable);
                 let oldValue    = this.getChangeProperty(row, "oldValue", changesTable);
                 let newValue    = this.getChangeProperty(row, "newValue", changesTable);
@@ -94,6 +94,7 @@ export class ChangesViewComponent extends DataRenderBaseComponent implements OnI
                     'initiatedByList' : this.initiatedByList
                 });
             });
+            this.tableItems.sort((i1, i2) => i1.level - i2.level);
             this.dataSource = new MatTableDataSource(this.tableItems);
         }
     }
@@ -107,16 +108,16 @@ export class ChangesViewComponent extends DataRenderBaseComponent implements OnI
         }
     }
 
-    private getIconForLevel(level: string): string {
+    private getIconForLevel(level: ChangeLevel): string {
         switch(level){
-            case "Normal":
-            return this.changeLevelIcon[0].imgSrc;
-            case "Important":
-            return this.changeLevelIcon[1].imgSrc;
-            case "Noisy":
-            return this.changeLevelIcon[2].imgSrc;
+            case ChangeLevel.Normal:
+                return this.changeLevelIcon[0].imgSrc;
+            case ChangeLevel.Important:
+                return this.changeLevelIcon[1].imgSrc;
+            case ChangeLevel.Noisy:
+                return this.changeLevelIcon[2].imgSrc;
             default:
-            return this.changeLevelIcon[0].imgSrc;
+                return this.changeLevelIcon[0].imgSrc;
         }
     }
 
