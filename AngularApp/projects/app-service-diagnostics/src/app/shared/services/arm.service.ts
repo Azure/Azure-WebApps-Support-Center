@@ -70,7 +70,7 @@ export class ArmService {
         return this._cache.get(url, request, invalidateCache);
     }
 
-    postResource<T, S>(resourceUri: string, body?: S, apiVersion?: string, invalidateCache: boolean = false): Observable<boolean | {} | ResponseMessageEnvelope<T>> {
+    postResource<T, S>(resourceUri: string, body?: S, apiVersion?: string, invalidateCache: boolean = false, appendBodyToCacheKey: boolean = false): Observable<boolean | {} | ResponseMessageEnvelope<T>> {
         const url =  this.createUrl(resourceUri, apiVersion);
         let bodyString: string = '';
         if (body) {
@@ -79,15 +79,12 @@ export class ArmService {
 
         const request = this._http.post<S>(url, bodyString, { headers: this.getHeaders() }).pipe(
             retry(2),
-            // map((response: Response) => {
-            //     let body = response.text();
-
-            //     return body && body.length > 0 ? <ResponseMessageEnvelope<T>>(response.json()) : response.ok;
-            // }),
             catchError(this.handleError)
         );
 
-        return this._cache.get(url, request, invalidateCache);
+        let cacheKey: string = appendBodyToCacheKey ? url+bodyString : url;
+
+        return this._cache.get(cacheKey, request, invalidateCache);
     }
 
     deleteResource<T>(resourceUri: string, apiVersion?: string, invalidateCache: boolean = false): Observable<any> {
@@ -244,6 +241,5 @@ export class ArmService {
         }
 
         return headers;
-
     }
 }

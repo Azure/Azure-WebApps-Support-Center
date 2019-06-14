@@ -68,7 +68,8 @@ import { VerticalDisplayListItemComponent } from './components/vertical-display-
 import { SolutionTypeTagComponent } from './components/solution-type-tag/solution-type-tag.component';
 import { SolutionDisplayComponent } from './components/solution-display/solution-display.component';
 import { SolutionDisplayItemComponent } from './components/solution-display/solution-display-item/solution-display-item.component';
-
+import { AppInsightsQueryService } from './services/appinsights.service';
+import { AppInsightsMarkdownComponent } from './components/app-insights-markdown/app-insights-markdown.component';
 import { ChangeAnalysisOnboardingComponent } from './components/changeanalysis-onboarding/changeanalysis-onboarding.component';
 import { ChangesetsViewComponent } from './components/changesets-view/changesets-view.component';
 import { ChangesViewComponent } from './components/changes-view/changes-view.component';
@@ -102,7 +103,8 @@ import { PopoverModule} from 'ngx-bootstrap';
     ChangeAnalysisOnboardingComponent,
     ChangesetsViewComponent,
     ChangesViewComponent,
-    DetectorListAnalysisComponent
+    DetectorListAnalysisComponent,
+    AppInsightsMarkdownComponent
   ],
   exports: [
     FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent,
@@ -112,7 +114,8 @@ import { PopoverModule} from 'ngx-bootstrap';
     ChangeAnalysisOnboardingComponent,
     ChangesetsViewComponent,
     ChangesViewComponent,
-    DetectorListAnalysisComponent
+    DetectorListAnalysisComponent,
+    AppInsightsMarkdownComponent
   ],
 })
 export class DiagnosticDataModule {
@@ -127,7 +130,8 @@ export class DiagnosticDataModule {
         TelemetryService,
         DetectorControlService,
         CommsService,
-        FeatureNavigationService
+        FeatureNavigationService,
+        AppInsightsQueryService
       ]
     };
   }

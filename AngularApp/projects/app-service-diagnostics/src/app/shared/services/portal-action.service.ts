@@ -74,6 +74,19 @@ export class PortalActionService {
         this._portalService.openBlade(bladeInfo, 'troubleshoot');
     }
 
+    public openAppInsightsExtensionBlade(detailBlade: string, appInsightsResourceUri: string) {
+        const bladeInfo = {
+            detailBlade: detailBlade,
+            extension: 'AppInsightsExtension',
+            detailBladeInputs: {
+                ResourceId: appInsightsResourceUri,
+                ConfigurationId: ''
+            }
+        };
+
+        this._portalService.openBlade(bladeInfo, 'troubleshoot');
+    }
+
     public openAppInsightsFailuresBlade(appInsightsResourceUri: string) {
         const bladeInfo = {
             detailBlade: 'FailuresCuratedFrameBlade',

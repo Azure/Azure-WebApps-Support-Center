@@ -25,6 +25,7 @@ export class DetectorContainerComponent implements OnInit {
   }
 
   @Input() analysisMode:boolean = false;
+  @Input() isAnalysisView:boolean = false;
 
   constructor(private _route: ActivatedRoute, private _diagnosticService: DiagnosticService,
     public detectorControlService: DetectorControlService) { }

@@ -14,4 +14,6 @@ export class DataContainerComponent {
   @Input() noBodyPadding: boolean = false;
 
   @Input() hideIfNoTitle: boolean = true;
+
+  @Input() applicationInsightContainerStyle: number = 0;
 }

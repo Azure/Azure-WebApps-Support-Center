@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Moment } from 'moment';
+import { Component, OnInit, Input, Inject } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { LoadingStatus } from '../../models/loading';
 import { StatusStyles } from '../../models/styles';
@@ -10,9 +11,13 @@ import { Solution } from '../solution/solution';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin as observableForkJoin, Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 import { DetectorResponse, DetectorMetaData, HealthStatus } from '../../models/detector';
 import { Insight, InsightUtils } from '../../models/insight';
+import { DataTableResponseColumn, DataTableResponseObject, DiagnosticData, RenderingType, Rendering, TimeSeriesType, TimeSeriesRendering } from '../../models/detector';
+import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
+import { AppInsightsQueryService } from '../../services/appinsights.service';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { AppInsightQueryMetadata, AppInsightData, BladeInfo } from '../../models/app-insights';
 
 @Component({
   selector: 'detector-list-analysis',
@@ -47,15 +52,36 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
   detectorMetaData: DetectorMetaData[];
   private childDetectorsEventProperties = {};
   loadingChildDetectors: boolean = false;
+  appInsights: any;
   allSolutions: Solution[] = [];
   loadingMessages: string[] = [];
   loadingMessageIndex: number = 0;
   loadingMessageTimer: any;
   showLoadingMessage: boolean = false;
+  startTime: Moment;
+  endTime: Moment;
+  renderingProperties: Rendering;
+  isPublic: boolean;
+  isAppInsightsEnabled: boolean = false;
+  appInsightQueryMetaDataList: AppInsightQueryMetadata[] = [];
+  appInsightDataList: AppInsightData[] = [];
+  diagnosticDataSet: DiagnosticData[] = [];
+  loadingAppInsightsResource: boolean = true;
+  loadingAppInsightsQueryData: boolean = true;
 
   constructor(private _activatedRoute: ActivatedRoute, private _router: Router,
-    private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService, protected telemetryService: TelemetryService) {
+    private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService,
+    protected telemetryService: TelemetryService, public _appInsightsService: AppInsightsQueryService,
+    @Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig) {
     super(telemetryService);
+    this.isPublic = config && config.isPublic;
+
+    if (this.isPublic) {
+      this._appInsightsService.CheckIfAppInsightsEnabled().subscribe(isAppinsightsEnabled => {
+        this.isAppInsightsEnabled = isAppinsightsEnabled;
+        this.loadingAppInsightsResource = false;
+      });
+    }
   }
 
   @Input()
@@ -65,12 +91,76 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
   withinDiagnoseAndSolve: boolean = false;
 
   ngOnInit() {
-
     this._detectorControl.update.subscribe(isValidUpdate => {
       if (isValidUpdate) {
         this.refresh();
       }
     });
+
+    this.startTime = this._detectorControl.startTime;
+    this.endTime = this._detectorControl.endTime;
+  }
+
+  public getMetaDataMarkdown(metaData: AppInsightQueryMetadata) {
+    let str = "<pre>" + metaData.query + "</pre>";
+    return str;
+  }
+
+  getApplicationInsightsData(response: DetectorResponse) {
+    let appInsightDiagnosticData = response.dataset.filter(data => (<Rendering>data.renderingProperties).type === RenderingType.ApplicationInsightsView);
+
+    appInsightDiagnosticData.forEach((diagnosticData: DiagnosticData) => {
+      diagnosticData.table.rows.map(row => {
+        this.appInsightQueryMetaDataList.push(<AppInsightQueryMetadata>{
+          title: row[0],
+          description: row[1],
+          query: row[2],
+          poralBladeInfo: row[3],
+          renderingProperties: row[4]
+        });
+      });
+    });
+
+    if (this.isPublic && this.appInsightQueryMetaDataList !== []) {
+      this._appInsightsService.loadAppInsightsResourceObservable.subscribe(loadStatus => {
+        if (loadStatus === true) {
+          this.loadingAppInsightsResource = false;
+          this.appInsightQueryMetaDataList.forEach(appInsightData => {
+            this._appInsightsService.ExecuteQuerywithPostMethod(appInsightData.query).subscribe(data => {
+              if (data && data["Tables"]) {
+                let rows = data["Tables"][0]["Rows"];
+                let columns = data["Tables"][0]["Columns"];
+                let dataColumns: DataTableResponseColumn[] = [];
+                columns.forEach(column => {
+                  dataColumns.push(<DataTableResponseColumn>{
+                    columnName: column.ColumnName,
+                    dataType: column.DataType,
+                    columnType: column.ColumnType,
+                  })
+                });
+
+                this.appInsightDataList.push(<AppInsightData>{
+                  title: appInsightData.title,
+                  description: appInsightData.description,
+                  renderingProperties: appInsightData.renderingProperties,
+                  table: rows,
+                  poralBladeInfo: appInsightData.poralBladeInfo,
+                  diagnosticData: <DiagnosticData>{
+                    table: <DataTableResponseObject>{
+                      columns: dataColumns,
+                      rows: rows,
+                    },
+                    renderingProperties: appInsightData.renderingProperties,
+                  }
+                });
+              }
+
+              this.loadingAppInsightsQueryData = false;
+            });
+          });
+        }
+      });
+    }
   }
 
   refresh() {
@@ -79,6 +169,13 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
       this.detectorId = params.get(this.detectorParmName) === null ? "" : params.get(this.detectorParmName);
 
       this.resetGlobals();
+
+      // Add application insights analysis data
+      this._diagnosticService.getDetector(this.analysisId, this._detectorControl.startTimeString, this._detectorControl.endTimeString)
+        .subscribe((response: DetectorResponse) => {
+          this.getApplicationInsightsData(response);
+        });
+
       this._diagnosticService.getDetectors().subscribe(detectorList => {
         if (detectorList) {
 
@@ -97,6 +194,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
           }
 
           detectorList.forEach(element => {
+
             if (element.analysisTypes != null && element.analysisTypes.length > 0) {
               element.analysisTypes.forEach(analysis => {
                 if (analysis === this.analysisId) {
@@ -180,6 +278,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     this.successfulViewModels = [];
 
   }
+
   getDetectorInsight(viewModel: any): any {
     let allInsights: Insight[] = InsightUtils.parseAllInsightsFromResponse(viewModel.response);
     let insight: any;
@@ -204,7 +303,6 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     }
 
     return insight;
-
   }
 
   ngOnChanges() {

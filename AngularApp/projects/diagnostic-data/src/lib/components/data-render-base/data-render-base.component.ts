@@ -27,6 +27,8 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
   @Input() executionScript: string;
   @Input() detector: string = '';
   @Input() compilationPackage: CompilationProperties;
+  @Input() isAnalysisView:boolean = false;
+  
   constructor(protected telemetryService: TelemetryService) { }
 
   ngOnInit() {

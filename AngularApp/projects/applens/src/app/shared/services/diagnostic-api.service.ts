@@ -1,9 +1,9 @@
 import { AdalService } from 'adal-angular4';
 import { DetectorMetaData, DetectorResponse, QueryResponse } from 'diagnostic-data';
-import { Observable } from 'rxjs';
-import { map, retry } from 'rxjs/operators';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {map, retry} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { HttpMethod } from '../models/http';
 import { Package } from '../models/package';

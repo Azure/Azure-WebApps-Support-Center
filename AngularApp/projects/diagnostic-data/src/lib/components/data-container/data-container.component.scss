@@ -21,3 +21,35 @@
     border: 1px solid #c0d3eb;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.data-container-header-appinsight {
+    background-color: #e4caef;
+    color:black;
+    font-size: 16px;
+    min-height: 42px;
+    border-bottom: 1px solid #7f5292;
+}
+
+.data-container-header-appinsight-analysis {
+    border: none!important;
+      background-color:white;
+      color:black;
+      font-size: 13px;
+      min-height: 30px;
+      border: none;
+      font-weight: bold;
+      padding:0px;
+  }
+
+  .data-container-card-appinsight-analysis .panel-body {
+    padding:15px 0px 0px 0px;
+  }
+
+.data-container-card-appinsight {
+    border: 1px solid #7f5292;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.data-container-card-appinsight-analysis {
+    border:none;
+}

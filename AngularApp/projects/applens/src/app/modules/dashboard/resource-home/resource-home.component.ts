@@ -9,8 +9,6 @@ import { CacheService } from '../../../shared/services/cache.service';
 import { HttpClient } from '@angular/common/http';
 import { catchError, mergeMap, retry, map, retryWhen, delay, take, concat } from 'rxjs/operators';
 
-
-
 @Component({
     selector: 'resource-home',
     templateUrl: './resource-home.component.html',

@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 import { DiagnosticData, Rendering, RenderingType } from '../../models/detector';
 import { CardSelectionComponent } from '../card-selection/card-selection.component';
+import { AppInsightsMarkdownComponent } from '../app-insights-markdown/app-insights-markdown.component';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { DataSummaryComponent } from '../data-summary/data-summary.component';
 import { DataTableComponent } from '../data-table/data-table.component';
@@ -32,7 +33,7 @@ import { ChangesetsViewComponent } from '../changesets-view/changesets-view.comp
     TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent,
     InsightsComponent, TimeSeriesInstanceGraphComponent, DynamicInsightComponent, MarkdownComponent,
     DetectorListComponent, DropdownComponent, CardSelectionComponent, SolutionComponent, GuageControlComponent, FormComponent,
-    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent
+    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppInsightsMarkdownComponent
   ]
 })
 export class DynamicDataComponent implements OnInit {
@@ -50,6 +51,7 @@ export class DynamicDataComponent implements OnInit {
   @Input() executionScript: string;
   @Input() detector: string = '';
   @Input() compilationPackage: CompilationProperties;
+  @Input() isAnalysisView:boolean = false;
   @ViewChild('dynamicDataContainer', { read: ViewContainerRef }) dynamicDataContainer: ViewContainerRef;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
@@ -72,6 +74,7 @@ export class DynamicDataComponent implements OnInit {
       instance.executionScript = this.executionScript;
       instance.detector = this.detector;
       instance.compilationPackage = this.compilationPackage;
+      instance.isAnalysisView = this.isAnalysisView;
     });
   }
 
@@ -106,9 +109,11 @@ export class DynamicDataComponent implements OnInit {
       case RenderingType.Form:
         return FormComponent;
       case RenderingType.ChangeSets:
-        return ChangesetsViewComponent;  
+        return ChangesetsViewComponent;
       case RenderingType.ChangeAnalysisOnboarding:
-        return ChangeAnalysisOnboardingComponent;  
+        return ChangeAnalysisOnboardingComponent;
+      case RenderingType.ApplicationInsightsView:
+        return AppInsightsMarkdownComponent;
       default:
         return null;
     }

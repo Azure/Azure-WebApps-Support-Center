@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Observable ,  BehaviorSubject, of } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { StartupInfo, ResourceType } from '../../models/portal';
 import { Verbs } from '../../models/portal';
 import { AuthService } from '../../../startup/services/auth.service';
@@ -8,8 +8,9 @@ import { ArmService } from '../arm.service';
 import { SiteService } from '../site.service';
 import { AppAnalysisService } from '../appanalysis.service';
 import { PortalService } from '../../../startup/services/portal.service';
+import { PortalActionService } from '../portal-action.service';
 import { AvailabilityLoggingService } from '../logging/availability.logging.service';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 
 @Injectable()
 export class AppInsightsService {
@@ -35,7 +36,7 @@ export class AppInsightsService {
         appId: undefined
     };
 
-    constructor(private http: Http, private authService: AuthService, private armService: ArmService, private siteService: SiteService, private appAnalysisService: AppAnalysisService, private portalService: PortalService, private logger: AvailabilityLoggingService) {
+    constructor(private http: Http, private authService: AuthService, private armService: ArmService, private siteService: SiteService, private appAnalysisService: AppAnalysisService, private portalService: PortalService, private portalActionService: PortalActionService, private logger: AvailabilityLoggingService) {
 
         this.loadAppInsightsResourceObservable = new BehaviorSubject<boolean>(null);
         this.loadAppDiagnosticPropertiesObservable = new BehaviorSubject<boolean>(null);
@@ -98,19 +99,6 @@ export class AppInsightsService {
 
             this.logger.LogAppInsightsSettings(this.appInsightsSettings.enabledForWebApp);
         });
-
-        // Check if App Insights is connected to Support Center.
-        /*this.siteService.getSiteAppSettings(subscription, resourceGroup, siteName, slotName)
-            .subscribe(data => {
-                if (data && data.properties && this.isNotNullOrEmpty(data.properties[this.appId_AppSettingStr]) && this.isNotNullOrEmpty(data.properties[this.appKey_AppSettingStr]) && this.isNotNullOrEmpty(data.properties[this.resourceUri_AppSettingStr])) {
-
-                    this.appInsightsSettings.connectedWithSupportCenter = true;
-                    // TODO : To make the check more robust, we can make a ping call to the resource to identify whether the key is valid or not.
-                }
-                else {
-                    this.appInsightsSettings.connectedWithSupportCenter = false;
-                }
-            });*/
     }
 
     private postCommandToGetAIResource(resouceUri: string) {
@@ -120,9 +108,18 @@ export class AppInsightsService {
         }));
     }
 
+    CheckIfAppInsightsEnabled(): Observable<boolean> {
+        let appInsightsEnabled: boolean = false;
+        return this.portalService.getAppInsightsResourceInfo().pipe(
+            map((aiResource: string) => {
+                appInsightsEnabled = this.isNotNullOrEmpty(aiResource);
+                return this.isNotNullOrEmpty(aiResource);
+            }));
+    }
+
     DeleteAppInsightsAccessKeyIfExists(): Observable<any> {
 
-        const url =  `${this.armService.armUrl}${this.appInsightsSettings.resourceUri}/ApiKeys?api-version=2015-05-01`;
+        const url = `${this.armService.armUrl}${this.appInsightsSettings.resourceUri}/ApiKeys?api-version=2015-05-01`;
         return this.http.get(url).pipe(tap((data: any) => {
             if (data && data.length && data.length > 0) {
 
@@ -137,8 +134,7 @@ export class AppInsightsService {
     }
 
     GenerateAppInsightsAccessKey(): Observable<any> {
-
-        const url =  `${this.appInsightsSettings.resourceUri}/ApiKeys`;
+        const url = `${this.appInsightsSettings.resourceUri}/ApiKeys`;
         const body: any = {
             name: this.appInsights_KeyStr,
             linkedReadProperties: [`${this.appInsightsSettings.resourceUri}/api`],
@@ -157,7 +153,39 @@ export class AppInsightsService {
         return this.armService.getResource<any>(resourceUri, '2015-05-01');
     }
 
+    ExecuteQuerywithPostMethod(query: string): Observable<any> {
+        if (!this.isNotNullOrEmpty(query)) {
+            return of([]);
+        }
+
+        const resourceUri: string = `${this.appInsightsSettings.resourceUri}/api/query`;
+        const body: any = {
+            query: query
+        }
+
+        return this.armService.postResource<any, any>(resourceUri, body, '2015-05-01', true, true);
+    }
+
+    public openAppInsightsBlade() {
+        this.portalActionService.openAppInsightsBlade();
+    }
+
+    public openAppInsightsFailuresBlade() {
+        this.portalActionService.openAppInsightsFailuresBlade(this.appInsightsSettings.resourceUri);
+    }
+
+    public openAppInsightsPerformanceBlade() {
+        this.portalActionService.openAppInsightsPerformanceBlade(this.appInsightsSettings.resouceUri);
+    }
+
+    public openAppInsightsExtensionBlade(detailBlade?: string) {
+        return this.portalService.getAppInsightsResourceInfo().subscribe(
+            (aiResource: string) => {
+                this.portalActionService.openAppInsightsExtensionBlade(detailBlade, aiResource);
+            });
+    }
+
     private isNotNullOrEmpty(item: any): boolean {
-        return (item && item != '');
+        return (item != undefined && item != '');
     }
 }
