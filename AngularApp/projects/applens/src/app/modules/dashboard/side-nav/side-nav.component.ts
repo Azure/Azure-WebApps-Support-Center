@@ -211,9 +211,7 @@ export class SideNavComponent implements OnInit {
   pure: false
 })
 export class SearchMenuPipe implements PipeTransform {
-  constructor(private _telemetryService: TelemetryService){}
   transform(items: CollapsibleMenuItem[], searchString: string) {
-    this._telemetryService.logEvent(TelemetryEventNames.SideNavigationFilter, {"searchString": searchString, "ts": Math.floor((new Date()).getTime() / 1000).toString()});
     return searchString && items ? items.filter(item => item.label.toLowerCase().indexOf(searchString.toLowerCase()) >= 0) : items;
   }
 }
