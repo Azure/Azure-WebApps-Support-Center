@@ -13,6 +13,7 @@ import { ResourceService } from '../../../shared/services/resource.service';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 import { RecommendedUtterance } from '../../../../../../diagnostic-data/src/public_api';
 import { TelemetryService } from '../../../../../../diagnostic-data/src/lib/services/telemetry/telemetry.service';
+import {TelemetryEventNames} from '../../../../../../diagnostic-data/src/lib/services/telemetry/telemetry.common';
 
 const moment = momentNs;
 
@@ -123,6 +124,7 @@ export class OnboardingFlowComponent implements OnInit {
     if (!this.initialized) {
       this.initialize();
       this.initialized = true;
+      this._telemetryService.logPageView(TelemetryEventNames.OnboardingFlowLoaded, {"ts": Math.floor((new Date()).getTime() / 1000).toString()});
     }
   }
 

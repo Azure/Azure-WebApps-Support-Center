@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RecommendedUtterance } from '../../../../../../diagnostic-data/src/public_api';
 import { TelemetryService } from '../../../../../../diagnostic-data/src/lib/services/telemetry/telemetry.service';
+import {TelemetryEventNames} from '../../../../../../diagnostic-data/src/lib/services/telemetry/telemetry.common';
 
 @Component({
   selector: 'search-term-addition',
@@ -19,6 +20,7 @@ export class SearchTermAdditionComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._telemetryService.logPageView(TelemetryEventNames.SearchTermAdditionLoaded, {"ts": Math.floor((new Date()).getTime() / 1000).toString()});
   }
 
   ngAfterViewInit() {

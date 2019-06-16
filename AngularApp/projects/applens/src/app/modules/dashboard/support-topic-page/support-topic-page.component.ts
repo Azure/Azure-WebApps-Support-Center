@@ -10,6 +10,8 @@ import { ApplensSupportTopicService } from '../services/applens-support-topic.se
 import { HttpClient } from '@angular/common/http';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { Location } from '@angular/common';
+import { TelemetryService } from '../../../../../../diagnostic-data/src/lib/services/telemetry/telemetry.service';
+import {TelemetryEventNames} from '../../../../../../diagnostic-data/src/lib/services/telemetry/telemetry.common';
 
 @Component({
   selector: 'support-topic-page',
@@ -43,7 +45,7 @@ export class SupportTopicPageComponent implements OnInit {
 
   detectorsPublicOrWithSupportTopics: DetectorMetaData[] = [];
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: HttpClient, private _resourceService: ResourceService, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService, private _location: Location) { }
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: HttpClient, private _resourceService: ResourceService, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService, private _location: Location, private _telemetryService: TelemetryService) { }
 
   ngOnInit() {
     this.supportTopicName = this._activatedRoute.snapshot.params['supportTopic'];
@@ -65,6 +67,7 @@ export class SupportTopicPageComponent implements OnInit {
 
       this._supportTopicService.getSupportTopics().subscribe((allSupportTopics: SupportTopicResult[]) => {
         this.supportTopicsLoaded = true;
+        this._telemetryService.logPageView(TelemetryEventNames.SupportTopicsLoaded, {"ts": Math.floor((new Date()).getTime() / 1000).toString()})
         let filteredSupportTopics = allSupportTopics.filter((supportTopic) => supportTopic.supportTopicL2Name === this.supportTopicName);
 
         filteredSupportTopics.forEach((sup: SupportTopicResult) => {

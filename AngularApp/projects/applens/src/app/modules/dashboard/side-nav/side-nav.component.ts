@@ -6,6 +6,8 @@ import { ResourceService } from '../../../shared/services/resource.service';
 import { CollapsibleMenuItem } from '../../../collapsible-menu/components/collapsible-menu-item/collapsible-menu-item.component';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 import { DetectorType } from 'diagnostic-data';
+import { TelemetryService } from '../../../../../../diagnostic-data/src/lib/services/telemetry/telemetry.service';
+import {TelemetryEventNames} from '../../../../../../diagnostic-data/src/lib/services/telemetry/telemetry.common';
 
 @Component({
   selector: 'side-nav',
@@ -31,7 +33,7 @@ export class SideNavComponent implements OnInit {
 
   getDetectorsRouteNotFound: boolean = false;
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _adalService: AdalService, private _diagnosticApiService: ApplensDiagnosticService, public resourceService: ResourceService) {
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _adalService: AdalService, private _diagnosticApiService: ApplensDiagnosticService, public resourceService: ResourceService, private _telemetryService: TelemetryService) {
     this.contentHeight = (window.innerHeight - 139) + 'px';
     let alias = this._adalService.userInfo.profile ? this._adalService.userInfo.profile.upn : '';
     this.userId = alias.replace('@microsoft.com', '');
@@ -115,6 +117,7 @@ export class SideNavComponent implements OnInit {
       if (detectorList) {
         detectorList.forEach(element => {
           let onClick = () => {
+            this._telemetryService.logEvent(TelemetryEventNames.SideNavigationItemClicked, { "elementId": element.id, "ts": Math.floor((new Date()).getTime() / 1000).toString() });
             this.navigateTo(`detectors/${element.id}`);
           };
 
@@ -151,6 +154,7 @@ export class SideNavComponent implements OnInit {
         this.categories = this.categories.sort((a, b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));
 
         this.detectorsLoading = false;
+        this._telemetryService.logPageView(TelemetryEventNames.SideNavigationLoaded, {"ts": Math.floor((new Date()).getTime() / 1000).toString()});
       }
     },
       error => {
@@ -207,7 +211,9 @@ export class SideNavComponent implements OnInit {
   pure: false
 })
 export class SearchMenuPipe implements PipeTransform {
+  constructor(private _telemetryService: TelemetryService){}
   transform(items: CollapsibleMenuItem[], searchString: string) {
+    this._telemetryService.logEvent(TelemetryEventNames.SideNavigationFilter, {"searchString": searchString, "ts": Math.floor((new Date()).getTime() / 1000).toString()});
     return searchString && items ? items.filter(item => item.label.toLowerCase().indexOf(searchString.toLowerCase()) >= 0) : items;
   }
 }
