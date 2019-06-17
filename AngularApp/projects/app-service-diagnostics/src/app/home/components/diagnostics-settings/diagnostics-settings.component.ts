@@ -30,46 +30,48 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     generalErrorMsg: string = '';
 
     // Resource Properties
-    private _subscriptionId: string;
-    private _currentResource: ArmResource;
-    private _resourceId: string = '';
+    private subscriptionId: string;
+    private currentResource: ArmResource;
+    private resourceId: string = '';
 
     // ARM Urls
-    private _providerRegUrl: string = '';
+    private providerStatusUrl: string = '';
+    private providerRegistrationUrl: string = '';
 
     // Registration Status
-    private _pollResourceProviderStatusSubscription: Subscription;
-    private _isRPRegistered: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private _isHiddenTagAdded: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private pollResourceProviderStatusSubscription: Subscription;
+    private isRPRegistered: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private isHiddenTagAdded: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     constructor(private armService: ArmService, private authService: AuthService,
         private activatedRoute: ActivatedRoute, private resourceService: ResourceService,
         private loggingService: PortalKustoTelemetryService) { }
 
     ngOnInit() {
-        this._subscriptionId = this.activatedRoute.snapshot.params['subscriptionid'];
+        this.subscriptionId = this.activatedRoute.snapshot.params['subscriptionid'];
         this.authService.getStartupInfo().subscribe(data => {
-            this._resourceId = data.resourceId;
+            this.resourceId = data.resourceId;
         });
-        this._providerRegUrl = `/subscriptions/${this._subscriptionId}/providers/Microsoft.ChangeAnalysis`;
-        this._currentResource = this.resourceService.resource;
+        this.providerStatusUrl = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis`;
+        this.providerRegistrationUrl = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis/register`;
+        this.currentResource = this.resourceService.resource;
 
-        this._isRPRegistered.subscribe(_ => this._updateChangeAnalysisEnableStatus());
-        this._isHiddenTagAdded.subscribe(_ => this._updateChangeAnalysisEnableStatus());
+        this.isRPRegistered.subscribe(_ => this.updateChangeAnalysisEnableStatus());
+        this.isHiddenTagAdded.subscribe(_ => this.updateChangeAnalysisEnableStatus());
 
-        this._pollResourceProviderRegStatus();
-        this._checkIfCodeScanEnabled();
+        this.pollResourceProviderRegStatus();
+        this.checkIfCodeScanEnabled();
     }
 
-    private _pollResourceProviderRegStatus(): void {
+    private pollResourceProviderRegStatus(): void {
         this.pollingResourceProviderRegProgress = true;
-        this._pollResourceProviderStatusSubscription = timer(0, 5000).subscribe(_ => {
-            this._checkIfResourceProviderRegistered();
+        this.pollResourceProviderStatusSubscription = timer(0, 5000).subscribe(_ => {
+            this.checkIfResourceProviderRegistered();
         });
     }
 
-    private _checkIfResourceProviderRegistered(): void {
-        this.armService.getResourceFullResponse<any>(this._providerRegUrl, true, '2018-05-01').subscribe(response => {
+    private checkIfResourceProviderRegistered(): void {
+        this.armService.getResourceFullResponse<any>(this.providerStatusUrl, true, '2018-05-01').subscribe(response => {
             let providerRegistrationStateResponse = <ProviderRegistration>response.body;
             let state = providerRegistrationStateResponse.registrationState.toLowerCase();
             this.resourceProviderRegState = state;
@@ -77,11 +79,11 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             if (state === 'registered' || state === 'unregistered') {
                 this.pollingResourceProviderRegProgress = false;
                 this.showResourceProviderRegStatus = false;
-                if (this._pollResourceProviderStatusSubscription) {
-                    this._pollResourceProviderStatusSubscription.unsubscribe();
+                if (this.pollResourceProviderStatusSubscription) {
+                    this.pollResourceProviderStatusSubscription.unsubscribe();
                 }
 
-                this._isRPRegistered.next(state === 'registered' ? true : false);
+                this.isRPRegistered.next(state === 'registered' ? true : false);
             } else {
                 // only show the regstration status when it needs long polling
                 this.showResourceProviderRegStatus = true;
@@ -91,72 +93,71 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             this.pollingResourceProviderRegProgress = false;
             this.showResourceProviderRegStatus = false;
             this.showGeneralError = true;
-            this.generalErrorMsg = this._getGeneralErrorMsg('Unable to check Change Analysis Resource Provider status. ', error.status);
-            if (this._pollResourceProviderStatusSubscription) {
-                this._pollResourceProviderStatusSubscription.unsubscribe();
+            this.generalErrorMsg = this.getGeneralErrorMsg('Unable to check Change Analysis Resource Provider status. ', error.status);
+            if (this.pollResourceProviderStatusSubscription) {
+                this.pollResourceProviderStatusSubscription.unsubscribe();
             }
         });
     }
 
-    private _checkIfCodeScanEnabled(): void {
-        let tags = this._currentResource.tags;
+    private checkIfCodeScanEnabled(): void {
+        let tags = this.currentResource.tags;
         if (tags && tags[scanTag] === 'true') {
-            this._isHiddenTagAdded.next(true);
+            this.isHiddenTagAdded.next(true);
         } else {
-            this._isHiddenTagAdded.next(false);
+            this.isHiddenTagAdded.next(false);
         }
     }
 
-    private _updateChangeAnalysisEnableStatus(): void {
-        this.isEnabled = this._isRPRegistered.getValue() && this._isHiddenTagAdded.getValue();
+    private updateChangeAnalysisEnableStatus(): void {
+        this.isEnabled = this.isRPRegistered.getValue() && this.isHiddenTagAdded.getValue();
     }
 
-    private _registerResourceProvider(): void {
+    private registerResourceProvider(): void {
         this.updatingProvider = true;
 
-        let url = `/subscriptions/${this._subscriptionId}/providers/Microsoft.ChangeAnalysis/register`;
         let props = {
-            armUrl: url,
-            resourceId: this._resourceId
+            armUrl: this.providerRegistrationUrl,
+            resourceId: this.resourceId
         };
         this.loggingService.logEvent('RegisterChangeAnalysisResourceProvider', props);
 
-        this.armService.postResourceFullResponse(url, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
+        this.armService.postResourceFullResponse(this.providerRegistrationUrl, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
             this.updatingProvider = false;
-            this._pollResourceProviderRegStatus();
+            this.pollResourceProviderRegStatus();
         }, (error: any) => {
             this.logHTTPError(error, 'registerResourceProvider');
             this.updatingProvider = false;
             this.showGeneralError = true;
-            this.generalErrorMsg = this._getGeneralErrorMsg('Unable to register Change Analysis Resource Provider. ', error.status);
+            this.generalErrorMsg = this.getGeneralErrorMsg('Unable to register Change Analysis Resource Provider. ', error.status);
         });
     }
 
-    private _updateScanTag(enable: boolean): void {
+    private updateScanTag(enable: boolean): void {
         this.updatingTag = true;
         let tagValue = enable ? 'true' : 'false';
-        this._currentResource.tags = this._currentResource.tags ? this._currentResource.tags : {}
-        this._currentResource.tags[scanTag] = tagValue;
+        this.currentResource.tags = this.currentResource.tags ? this.currentResource.tags : {}
+        this.currentResource.tags[scanTag] = tagValue;
 
         let eventProps = {
             tagName: scanTag,
             tagValue: tagValue,
-            resourceId: this._resourceId
+            resourceId: this.resourceId
         };
         this.loggingService.logEvent('UpdateScanTag', eventProps);
 
-        this.armService.patchResource(this._currentResource.id, this._currentResource).subscribe((response: any) => {
+        this.armService.patchResource(this.currentResource.id, this.currentResource).subscribe((response: any) => {
             this.updatingTag = false;
             if (response && response.tags && response.tags[scanTag] === 'true') {
-                this._isHiddenTagAdded.next(true);
+                this.isHiddenTagAdded.next(true);
             } else {
-                this._isHiddenTagAdded.next(false);
+                this.isHiddenTagAdded.next(false);
             }
         }, (error: any) => {
             this.logHTTPError(error, 'updateScanTag');
             this.updatingTag = false;
             this.showGeneralError = true;
-            this.generalErrorMsg = this._getGeneralErrorMsg('Unable to add scan tag. ', error.status);
+            this.generalErrorMsg = this.getGeneralErrorMsg('Error occurred when trying to enable Change Analysis. ', error.status);
         });
     }
 
@@ -164,12 +165,12 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         this.clearErrors();
 
         // Register the Resource Provider
-        if (this.enableButtonSelectedValue && !this._isRPRegistered.getValue()) {
-            this._registerResourceProvider();
+        if (this.enableButtonSelectedValue && !this.isRPRegistered.getValue()) {
+            this.registerResourceProvider();
         }
 
         // Update hidden tag
-        this._updateScanTag(this.enableButtonSelectedValue);
+        this.updateScanTag(this.enableButtonSelectedValue);
     }
 
     private logHTTPError(error: any, methodName: string): void {
@@ -186,16 +187,16 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this._unregisterSubscription(this._pollResourceProviderStatusSubscription);
+        this.unregisterSubscription(this.pollResourceProviderStatusSubscription);
     }
 
-    private _unregisterSubscription(subscription: Subscription): void {
+    private unregisterSubscription(subscription: Subscription): void {
         if (subscription) {
             subscription.unsubscribe();
         }
     }
 
-    private _getGeneralErrorMsg(baseMsg: string, errorStatus: number) {
+    private getGeneralErrorMsg(baseMsg: string, errorStatus: number) {
         if (errorStatus === 403) {
             return baseMsg + 'You may not have sufficient permissions to perform this operation. Make sure you have required permissions for this subscription and try again.';
         } else if (errorStatus === 401) {
