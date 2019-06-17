@@ -19,7 +19,9 @@ const scanTag = "hidden-related:diagnostics/changeAnalysisScanEnabled";
 
 export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     // Loading related properties
+    showFeatureRegStatus: boolean = false;
     pollingFeatureRegStatus: boolean = false;
+    showResourceProviderRegStatus: boolean = false;
     pollingResourceProviderRegProgress: boolean = false;
     isEnabled = false;
     enableButtonSelectedValue: boolean | null = null;
@@ -77,16 +79,21 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             // Stop polling once its registered
             if (state.toLowerCase() === 'registered') {
                 this.pollingFeatureRegStatus = false;
+                this.showFeatureRegStatus = false;
                 if (this._pollFeatureFlagStatusSubscription) {
                     this._pollFeatureFlagStatusSubscription.unsubscribe();
                 }
 
                 this._pollResourceProviderRegStatus();
                 this._checkIfCodeScanEnabled();
+            } else {
+                // only show the regstration status when it needs long polling
+                this.showFeatureRegStatus = true;
             }
         }, (error: any) => {
             this.logHTTPError(error, 'checkIfFeatureFlagRegistered');
             this.pollingFeatureRegStatus = false;
+            this.showFeatureRegStatus = false;
             this.showGeneralError = true;
             this.generalErrorMsg = this._getGeneralErrorMsg('Unable to check Change Anaylsis feature status. ', error.status);
             if (this._pollFeatureFlagStatusSubscription) {
@@ -110,21 +117,26 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
 
             if (state === 'registered' || state === 'unregistered') {
                 this.pollingResourceProviderRegProgress = false;
+                this.showResourceProviderRegStatus = false;
                 if (this._pollResourceProviderStatusSubscription) {
                     this._pollResourceProviderStatusSubscription.unsubscribe();
                 }
 
                 this._isRPRegistered.next(state === 'registered' ? true : false);
+            } else {
+                // only show the regstration status when it needs long polling
+                this.showResourceProviderRegStatus = true;
             }
         }, (error: any) => {
             this.logHTTPError(error, 'checkIfResourceProviderRegistered');
             this.pollingResourceProviderRegProgress = false;
+            this.showResourceProviderRegStatus = false;
             this.showGeneralError = true;
             this.generalErrorMsg = this._getGeneralErrorMsg('Unable to check Change Analysis Resource Provider status. ', error.status);
             if (this._pollResourceProviderStatusSubscription) {
                 this._pollResourceProviderStatusSubscription.unsubscribe();
             }
-        })
+        });
     }
 
     private _checkIfCodeScanEnabled(): void {

@@ -1,5 +1,5 @@
 <div class="col-6 col-sm-8 mt-5">
-  <div class="row form-group" *ngIf="pollingFeatureRegStatus">
+  <div class="row form-group" *ngIf="showFeatureRegStatus">
     <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
     Change Analysis feature registration is in progress. Once registration is completed, please use the below setting to enable Change Analysis.
   </div>
@@ -9,7 +9,7 @@
     </div>
   </div>
   <loader-view *ngIf="updatingTag || updatingProvider " message="Saving settings..."></loader-view>
-  <div class="row form-group" *ngIf="pollingResourceProviderRegProgress">
+  <div class="row form-group" *ngIf="showResourceProviderRegStatus">
     <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
     Change Analysis Resource Provider is {{resourceProviderRegState}}. This will take a few mins. Please check again later.
   </div>
