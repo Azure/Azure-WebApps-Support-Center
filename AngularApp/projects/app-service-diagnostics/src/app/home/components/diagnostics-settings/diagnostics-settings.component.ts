@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ArmService } from './../../../shared/services/arm.service';
 import { AuthService } from '../../../startup/services/auth.service';
 import { ActivatedRoute } from '@angular/router';
-import { FeatureRegistration, ProviderRegistration } from '../../../shared/models/feature-registration';
+import { ProviderRegistration } from '../../../shared/models/feature-registration';
 import { Subscription, timer, BehaviorSubject } from 'rxjs';
 import { ArmResource } from '../../../shared-v2/models/arm';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
@@ -19,8 +19,6 @@ const scanTag = "hidden-related:diagnostics/changeAnalysisScanEnabled";
 
 export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     // Loading related properties
-    showFeatureRegStatus: boolean = false;
-    pollingFeatureRegStatus: boolean = false;
     showResourceProviderRegStatus: boolean = false;
     pollingResourceProviderRegProgress: boolean = false;
     isEnabled = false;
@@ -37,11 +35,9 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     private _resourceId: string = '';
 
     // ARM Urls
-    private _featureRegUrl: string = '';
     private _providerRegUrl: string = '';
 
     // Registration Status
-    private _pollFeatureFlagStatusSubscription: Subscription;
     private _pollResourceProviderStatusSubscription: Subscription;
     private _isRPRegistered: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _isHiddenTagAdded: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -55,51 +51,14 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         this.authService.getStartupInfo().subscribe(data => {
             this._resourceId = data.resourceId;
         });
-        this._featureRegUrl = `/subscriptions/${this._subscriptionId}/providers/Microsoft.Features/providers/Microsoft.ChangeAnalysis/features/PreviewAccess`;
         this._providerRegUrl = `/subscriptions/${this._subscriptionId}/providers/Microsoft.ChangeAnalysis`;
         this._currentResource = this.resourceService.resource;
 
-        this._isRPRegistered.subscribe(_ => this._checkChangeAnalysisEnableStatus());
-        this._isHiddenTagAdded.subscribe(_ => this._checkChangeAnalysisEnableStatus());
+        this._isRPRegistered.subscribe(_ => this._updateChangeAnalysisEnableStatus());
+        this._isHiddenTagAdded.subscribe(_ => this._updateChangeAnalysisEnableStatus());
 
-        this._pollFeatureFlagRegStatus();
-    }
-
-    private _pollFeatureFlagRegStatus(): void {
-        this.pollingFeatureRegStatus = true;
-        this._pollFeatureFlagStatusSubscription = timer(0, 20000).subscribe(_ => {
-            this._checkIfFeatureFlagRegistered();
-        });
-    }
-
-    private _checkIfFeatureFlagRegistered(): void {
-        this.armService.getResourceFullResponse<any>(this._featureRegUrl, true, '2015-12-01').subscribe(response => {
-            let featureRegistrationStateResponse = <FeatureRegistration>response.body;
-            let state = featureRegistrationStateResponse.properties.state;
-            // Stop polling once its registered
-            if (state.toLowerCase() === 'registered') {
-                this.pollingFeatureRegStatus = false;
-                this.showFeatureRegStatus = false;
-                if (this._pollFeatureFlagStatusSubscription) {
-                    this._pollFeatureFlagStatusSubscription.unsubscribe();
-                }
-
-                this._pollResourceProviderRegStatus();
-                this._checkIfCodeScanEnabled();
-            } else {
-                // only show the regstration status when it needs long polling
-                this.showFeatureRegStatus = true;
-            }
-        }, (error: any) => {
-            this.logHTTPError(error, 'checkIfFeatureFlagRegistered');
-            this.pollingFeatureRegStatus = false;
-            this.showFeatureRegStatus = false;
-            this.showGeneralError = true;
-            this.generalErrorMsg = this._getGeneralErrorMsg('Unable to check Change Anaylsis feature status. ', error.status);
-            if (this._pollFeatureFlagStatusSubscription) {
-                this._pollFeatureFlagStatusSubscription.unsubscribe();
-            }
-        });
+        this._pollResourceProviderRegStatus();
+        this._checkIfCodeScanEnabled();
     }
 
     private _pollResourceProviderRegStatus(): void {
@@ -148,7 +107,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         }
     }
 
-    private _checkChangeAnalysisEnableStatus(): void {
+    private _updateChangeAnalysisEnableStatus(): void {
         this.isEnabled = this._isRPRegistered.getValue() && this._isHiddenTagAdded.getValue();
     }
 
@@ -227,7 +186,6 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this._unregisterSubscription(this._pollFeatureFlagStatusSubscription);
         this._unregisterSubscription(this._pollResourceProviderStatusSubscription);
     }
 

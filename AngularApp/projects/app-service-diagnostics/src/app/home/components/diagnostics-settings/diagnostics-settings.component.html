@@ -1,8 +1,4 @@
 <div class="col-6 col-sm-8 mt-5">
-  <div class="row form-group" *ngIf="showFeatureRegStatus">
-    <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
-    Change Analysis feature registration is in progress. Once registration is completed, please use the below setting to enable Change Analysis.
-  </div>
   <div class="row form-group" *ngIf="showGeneralError">
     <div class="alert alert-danger" role="alert">
       <p>{{generalErrorMsg}} </p>
@@ -13,7 +9,7 @@
     <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
     Change Analysis Resource Provider is {{resourceProviderRegState}}. This will take a few mins. Please check again later.
   </div>
-  <div *ngIf="!pollingFeatureRegStatus && !pollingResourceProviderRegProgress && !updatingProvider && !updatingTag">
+  <div *ngIf="!pollingResourceProviderRegProgress && !updatingProvider && !updatingTag">
     <div class="row form-group">
       <label class="control-label col-sm-2 settings-label">Change Analysis</label>
       <div class="col-sm-2">
