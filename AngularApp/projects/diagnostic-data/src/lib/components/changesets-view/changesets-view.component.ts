@@ -65,12 +65,12 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
                 this.initializeChangesView(data);
             }
             // Convert UTC timestamp to user readable date
-            this.scanDate = rows[0][6] != '' ? 'Changes were last scanned on ' + moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a") : 'No recent scans were performed on this web app. Make sure scan for code changes has been enabled in settings.';
+            this.scanDate = rows[0][6] != '' ? 'Changes were last scanned on ' + moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a") : 'No recent scans were performed on this web app. Please enable Change Analysis using Change Analysis Settings.';
             if(this.isPublic) {
                 this.checkInitialScanState();
              }
         } else {
-             this.scanDate = 'No recent scans were performed on this web app. Make sure scan for code changes has been enabled in settings.';
+             this.scanDate = 'No recent scans were performed on this web app. Please enable Change Analysis using Change Analysis Settings.';
              this.changeSetText = `No change groups have been detected`;
              this.setDefaultScanStatus();
         }
