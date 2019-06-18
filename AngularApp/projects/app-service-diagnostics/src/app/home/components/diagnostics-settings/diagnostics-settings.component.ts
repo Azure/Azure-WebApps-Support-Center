@@ -76,7 +76,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             let state = providerRegistrationStateResponse.registrationState.toLowerCase();
             this.resourceProviderRegState = state;
 
-            if (state === 'registered' || state === 'unregistered') {
+            if (state === 'registered' || state === 'unregistered' || state === 'notregistered') {
                 this.pollingResourceProviderRegProgress = false;
                 this.showResourceProviderRegStatus = false;
                 if (this.pollResourceProviderStatusSubscription) {
