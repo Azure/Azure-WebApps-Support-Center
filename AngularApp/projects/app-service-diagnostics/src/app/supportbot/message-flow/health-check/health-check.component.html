@@ -2,7 +2,7 @@
   <div class="panel-heading" style="padding:0">
     <ul class="nav nav-tabs">
       <li role="presentation" class="report-tab" *ngFor="let item of healthCheckpoints; let i = index"
-      [ngClass]="{'active': i === selectedCategoryIndex}" tabindex="0" (keyup.enter)="setCategory(i)">
+      [ngClass]="{'active': i === selectedCategoryIndex}" tabindex="0" (keyup.enter)="setCategory(i)" attr.aria-label="{{item.title}} tab item">
         <a (click)="setCategory(i)">
           <div style="display: flex">
             <status-icon [status]="item.healthStatus" [loading]="item.loadingStatus"></status-icon>
