@@ -1,5 +1,4 @@
 
-
 <div class="row table-top" *ngIf="tableItems.length > 0">
   <div class="col-sm-4">
       <div class="search-container">
@@ -65,9 +64,9 @@
   <!-- Initiated By Column -->
   <ng-container matColumnDef="initiatedBy">
       <th mat-header-cell *matHeaderCellDef> Initiated By </th>
-      <ng-template #popTemplate let-multipleUsers="initiatedByList"> <div *ngFor="let user of multipleUsers">{{user}}</div> </ng-template>
       <td mat-cell *matCellDef="let element">
-        <div *ngIf="element.initiatedByList.length > 2; else rowWithoutPopOver" [popover]="popTemplate" popoverTitle="Multiple Users" triggers="hover" placement="top" [popoverContext]="element"  container="body">
+        <ng-template #popTemplate> <div *ngFor="let user of element.initiatedByList">{{user}}</div> </ng-template>
+        <div *ngIf="element.initiatedByList.length > 2; else rowWithoutPopOver" [ngbPopover]="popTemplate" triggers="mouseenter:mouseleave" popoverTitle="Multiple Users"  placement="right" container="body">
           {{element.initiatedBy}}
         </div>
       <ng-template #rowWithoutPopOver>{{element.initiatedBy}}</ng-template>

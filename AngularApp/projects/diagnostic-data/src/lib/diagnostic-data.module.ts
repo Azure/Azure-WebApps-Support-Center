@@ -75,7 +75,7 @@ import { ChangesetsViewComponent } from './components/changesets-view/changesets
 import { ChangesViewComponent } from './components/changes-view/changes-view.component';
 import { CustomMaterialModule } from './material-module';
 import { DetectorListAnalysisComponent } from './components/detector-list-analysis/detector-list-analysis.component';
-import { PopoverModule} from 'ngx-bootstrap';
+import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
   imports: [
     CommonModule,
@@ -85,7 +85,7 @@ import { PopoverModule} from 'ngx-bootstrap';
     FormsModule,
     MonacoEditorModule.forRoot(),
     CustomMaterialModule,
-    PopoverModule.forRoot()
+    NgbModule.forRoot()
   ],
   providers: [
     ClipboardService

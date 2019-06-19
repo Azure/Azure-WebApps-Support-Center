@@ -32,7 +32,7 @@ import {CustomMaterialModule} from './material-module';
 import { PortalSettingsService } from './shared/services/settings.service';
 import { AppInsightsService } from './shared/services/appinsights/appinsights.service';
 import { AppInsightsQueryService } from './../../../diagnostic-data/src/lib/services/appinsights.service';
-
+import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
   imports: [
     BrowserModule,
@@ -55,7 +55,8 @@ import { AppInsightsQueryService } from './../../../diagnostic-data/src/lib/serv
         loadChildren: './resources/resources.module#ResourcesModule'
       }
     ]),
-    CustomMaterialModule
+    CustomMaterialModule,
+    NgbModule.forRoot()
   ],
   declarations: [
     AppComponent

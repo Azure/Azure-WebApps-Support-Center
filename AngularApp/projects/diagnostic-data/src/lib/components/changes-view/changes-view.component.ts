@@ -11,6 +11,7 @@ import * as momentNs from 'moment';
 import { ChangeAnalysisUtilities } from '../../utilities/changeanalysis-utilities';
 import { DataTableUtilities } from '../../utilities/datatable-utilities';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
+import { NgbPopoverModule} from '@ng-bootstrap/ng-bootstrap';
 const moment = momentNs;
   @Component({
     selector: 'changes-view',
