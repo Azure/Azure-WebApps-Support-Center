@@ -10,13 +10,7 @@ import { VersioningHelper } from '../../../shared/utilities/versioningHelper';
 @Injectable()
 export class SiteSupportTopicService extends SupportTopicService {
 
-  private _hardCodedSupportTopicIdMapping = [
-    {
-      pesId: '14748',
-      supportTopicId: '32457411',
-      path: '/diagnostics/performance/analysis',
-    }
-  ];
+  private _hardCodedSupportTopicIdMapping = [];
 
   constructor(protected _diagnosticService: DiagnosticService, protected _webSiteService: WebSitesService) {
     super(_diagnosticService, _webSiteService);
@@ -26,7 +20,7 @@ export class SiteSupportTopicService extends SupportTopicService {
       // To enable a/b testing, uncomment the below line with the right path and Support Topic Id
       // (the below is an example of how we did the testing for CPU detector)
       
-      this._hardCodedSupportTopicIdMapping.push({pesId: '14748',supportTopicId: '32542218',path: '/diagnostics/availability/analysis' });
+      //this._hardCodedSupportTopicIdMapping.push({pesId: '14748',supportTopicId: '32542218',path: '/diagnostics/availability/analysis' });
     }
   }
 

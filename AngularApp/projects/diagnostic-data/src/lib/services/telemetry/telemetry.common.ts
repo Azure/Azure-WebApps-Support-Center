@@ -12,6 +12,7 @@ export const TelemetryEventNames = {
     ChangeAnalysisTimelineClicked: 'ChangeAnalysisTimelineClicked',
     OndemandScanClicked: 'OndemandScanClicked',
     ChangeAnalysisEnableClicked: 'ChangeAnalysisEnableClicked',
+    ChangeAnalysisChangeClicked: 'ChangeAnalysisChangeClicked',
     ChangeAnalysisChangeFeedbackClicked: 'ChangeAnalysisChangeFeedbackClicked',
 };
 

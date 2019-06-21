@@ -44,6 +44,9 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
     changeSetsLocalCopy: {};
     initiatedBy: string[];
     changeSetsColumn: DataTableResponseColumn[];
+
+    private readonly noScanMsg: string = 'No recent scans were performed on this web app.';
+
     constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, protected telemetryService: TelemetryService,
     protected changeDetectorRef: ChangeDetectorRef, protected diagnosticService: DiagnosticService,
     private detectorControlService: DetectorControlService, private settingsService: SettingsService,
@@ -67,12 +70,12 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
                 this.initializeChangesView(data);
             }
             // Convert UTC timestamp to user readable date
-            this.scanDate = rows[0][6] != '' ? 'Changes were last scanned on ' + moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a") : 'No recent scans were performed on this web app. Make sure scan for code changes has been enabled in settings.';
+            this.scanDate = rows[0][6] != '' ? 'Changes were last scanned on ' + moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a") : this.noScanMsg + ' Please enable Change Analysis using Change Analysis Settings.';
             if(this.isPublic) {
                 this.checkInitialScanState();
              }
         } else {
-             this.scanDate = 'No recent scans were performed on this web app. Make sure scan for code changes has been enabled in settings.';
+             this.scanDate = this.noScanMsg + ' Please enable Change Analysis using Change Analysis Settings.';
              this.changeSetText = `No change groups have been detected`;
              this.setDefaultScanStatus();
         }
@@ -223,48 +226,52 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
 
     private checkInitialScanState() {
         this.settingsService.getScanEnabled().subscribe(isEnabled => {
-        if(isEnabled) {
-            this.scanStatusMessage = "Checking recent scan status...";
-            this.scanState = "Polling";
-            this.allowScanAction = false;
-            let queryParams = `&scanAction=checkscan`;
-            this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
-                this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) => {
-                    let dataset = response.dataset;
-                    let table = dataset[0].table;
-                    let rows = table.rows;
-                    let submissionState = rows[0][1];
-                    this.scanState = submissionState;
-                    if (submissionState == "Completed") {
-                        this.setScanState(submissionState);
-                        let completedTime = rows[0][3];
-                        let currentMoment = moment();
-                        let completedMoment = moment(completedTime);
-                        let diff = currentMoment.diff(completedMoment, 'seconds');
-                        // If scan has been completed more than a minute ago, display default message
-                        if (diff >= 60) {
+            if (isEnabled) {
+                if (this.scanDate.startsWith(this.noScanMsg)) {
+                    this.scanDate = this.noScanMsg;
+                }
+
+                this.scanStatusMessage = "Checking recent scan status...";
+                this.scanState = "Polling";
+                this.allowScanAction = false;
+                let queryParams = `&scanAction=checkscan`;
+                this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
+                    this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) => {
+                        let dataset = response.dataset;
+                        let table = dataset[0].table;
+                        let rows = table.rows;
+                        let submissionState = rows[0][1];
+                        this.scanState = submissionState;
+                        if (submissionState == "Completed") {
+                            this.setScanState(submissionState);
+                            let completedTime = rows[0][3];
+                            let currentMoment = moment();
+                            let completedMoment = moment(completedTime);
+                            let diff = currentMoment.diff(completedMoment, 'seconds');
+                            // If scan has been completed more than a minute ago, display default message
+                            if (diff >= 60) {
+                                this.setDefaultScanStatus();
+                            } else {
+                                this.scanStatusMessage = "Scanning is complete. Click the below button to view the latest changes now.";
+                                this.allowScanAction = true;
+                                this.showViewChanges = true;
+                            }
+                        } else if (submissionState == "No active requests") {
+                            this.setScanState("");
                             this.setDefaultScanStatus();
                         } else {
-                            this.scanStatusMessage = "Scanning is complete. Click the below button to view the latest changes now.";
-                            this.allowScanAction = true;
-                            this.showViewChanges = true;
+                            this.subscription = interval(5000).subscribe(res => {
+                                this.pollForScanStatus();
+                            });
                         }
-                     } else if (submissionState == "No active requests") {
+                    }, (error: any) => {
+                        // Stop timer in case of any error
+                        if (this.subscription) {
+                            this.subscription.unsubscribe();
+                        }
+                        this.scanState = "";
                         this.setScanState("");
-                        this.setDefaultScanStatus();
-                     }  else {
-                        this.subscription = interval(5000).subscribe(res => {
-                            this.pollForScanStatus();
-                        });
-                     }
-                }, (error: any) => {
-                    // Stop timer in case of any error
-                    if(this.subscription) {
-                        this.subscription.unsubscribe();
-                    }
-                    this.scanState = "";
-                    this.setScanState("");
-                });
+                    });
             } else {
                 this.scanStatusMessage = '';
                 this.allowScanAction = false;
