@@ -65,11 +65,10 @@
   <ng-container matColumnDef="initiatedBy">
       <th mat-header-cell *matHeaderCellDef> Initiated By </th>
       <td mat-cell *matCellDef="let element">
-        <ng-template #popTemplate> <div *ngFor="let user of element.initiatedByList">{{user}}</div> </ng-template>
-        <div *ngIf="element.initiatedByList.length > 2; else rowWithoutPopOver" [ngbPopover]="popTemplate" triggers="mouseenter:mouseleave" popoverTitle="Multiple Users"  placement="right" container="body">
-          {{element.initiatedBy}}
-        </div>
-      <ng-template #rowWithoutPopOver>{{element.initiatedBy}}</ng-template>
+          <ul *ngIf="element.initiatedByList.length > 1; else singleUser">
+            <li *ngFor="let user of element.initiatedByList"> {{user}}</li>
+          </ul>
+          <ng-template #singleUser>{{element.initiatedByList[0]}}</ng-template>
       </td>
     </ng-container>
 
