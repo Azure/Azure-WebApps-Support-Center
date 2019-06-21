@@ -462,7 +462,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
         let initiatedByListIndex = this.getColumnIndexByName('initiatedByList');
         let initiatedByIndex = this.getColumnIndexByName('initiatedBy');
         if(initiatedByListIndex >= 0) {
-            return changeSet[initiatedByListIndex];
+            return changeSet[initiatedByListIndex].length > 0 ? changeSet[initiatedByListIndex] : ['Unable to Determine'];
         }
         if(changeSet[initiatedByIndex] === null || changeSet[initiatedByIndex] === "") {
             return ["N/A"];
