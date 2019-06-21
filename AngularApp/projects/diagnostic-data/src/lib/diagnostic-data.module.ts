@@ -75,7 +75,7 @@ import { ChangesetsViewComponent } from './components/changesets-view/changesets
 import { ChangesViewComponent } from './components/changes-view/changes-view.component';
 import { CustomMaterialModule } from './material-module';
 import { DetectorListAnalysisComponent } from './components/detector-list-analysis/detector-list-analysis.component';
-import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -84,8 +84,7 @@ import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
     MarkdownModule.forRoot(),
     FormsModule,
     MonacoEditorModule.forRoot(),
-    CustomMaterialModule,
-    NgbModule.forRoot()
+    CustomMaterialModule
   ],
   providers: [
     ClipboardService
