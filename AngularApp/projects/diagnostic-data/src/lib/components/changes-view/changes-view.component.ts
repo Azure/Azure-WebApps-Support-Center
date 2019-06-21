@@ -124,6 +124,15 @@ export class ChangesViewComponent extends DataRenderBaseComponent implements OnI
         this.dataSource.filter = filterValue.trim().toLowerCase();
     }
 
+    selectChange(changeItem: Change) {
+        this.expandedElement = this.expandedElement === changeItem ? null : changeItem;
+
+        let eventProps = this.getTelemetryPropertiesFromChange(changeItem);
+        eventProps['isExpand'] = this.expandedElement === changeItem,
+
+        this.logEvent(TelemetryEventNames.ChangeAnalysisChangeClicked, eventProps);
+    }
+
     getFeedbackButtonClass(changeItem: Change, isHelpfulButton: boolean): string[] {
         let classNames: string[] = ["feedback-button"];
 
@@ -149,8 +158,14 @@ export class ChangesViewComponent extends DataRenderBaseComponent implements OnI
 
         this._changeFeedbacks.set(changeItem, isHelpful);
 
+        let eventProps = this.getTelemetryPropertiesFromChange(changeItem);
+        eventProps['isHelpful'] = isHelpful.toString();
+
+        this.logEvent(TelemetryEventNames.ChangeAnalysisChangeFeedbackClicked, eventProps);
+   }
+
+    private getTelemetryPropertiesFromChange(changeItem: Change): any {
         let eventProps = {
-            'isHelpful': isHelpful.toString(),
             'changeLevel': changeItem.level,
             'dataSource': ChangeAnalysisUtilities.getDataSourceFromChangesetId(this.changesetId),
             'displayName': changeItem.displayName,
@@ -159,7 +174,8 @@ export class ChangesViewComponent extends DataRenderBaseComponent implements OnI
             'oldValueLength': changeItem.originalModel.code.length.toString(),
             'newValueLength': changeItem.modifiedModel.code.length.toString()
         };
-        this.logEvent(TelemetryEventNames.ChangeAnalysisChangeFeedbackClicked, eventProps);
-   }
+
+        return eventProps;
+    }
 }
 
