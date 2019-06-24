@@ -54,7 +54,6 @@ export class HomeComponent implements OnInit {
     if (!this._detectorControlService.startTime) {
       this._detectorControlService.setDefault();
     }
-    this.registerChangeAnalysisFeature();
   }
 
   onSearchBoxFocus(event: any): void {
@@ -109,18 +108,5 @@ export class HomeComponent implements OnInit {
 
   private _logSearch() {
     this._logger.LogSearch(this.searchValue);
-  }
-
-  registerChangeAnalysisFeature(): void {
-    let url = `/subscriptions/${this.subscriptionId}/providers/Microsoft.Features/providers/Microsoft.ChangeAnalysis/features/PreviewAccess/register`;
-    this.armService.postResourceFullResponse(url, {}, true, '2015-12-01').subscribe((data: HttpResponse<{}>) => {
-        let logData = {
-            'subscriptionId' : this.subscriptionId,
-            'responseStatus': data.status
-        };
-        this._logger.LogAction('Home', 'Registered Change Analysis feature', logData)
-    }, (error: any) => {
-        this._logger.LogError('HTTP Error while registering change analysis feature: '+error.message, + 'Status Code : '+error.status);
-    });
   }
 }

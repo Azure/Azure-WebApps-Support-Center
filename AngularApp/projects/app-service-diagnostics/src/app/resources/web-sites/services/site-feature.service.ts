@@ -28,12 +28,14 @@ export class SiteFeatureService extends FeatureService {
 
     super(_diagnosticApiService, _contentService, _router, _authService, _logger);
     this._authService.getStartupInfo().subscribe(startupInfo => {
-      if (this._resourceService.appType == AppType.WebApp && this._resourceService.platform == OperatingSystem.windows) {
-        this.getLegacyAvailabilityAndPerformanceFeatures(startupInfo.resourceId).forEach(feature => this._features.push(feature));
-      }
+      
+      // removing v2 detectors for Availability and Perf
+      // if (this._resourceService.appType == AppType.WebApp && this._resourceService.platform == OperatingSystem.windows) {
+      //   this.getLegacyAvailabilityAndPerformanceFeatures(startupInfo.resourceId).forEach(feature => this._features.push(feature));
+      // }
       this.addDiagnosticTools(startupInfo.resourceId);
       this.addProactiveTools(startupInfo.resourceId);
-      this.addPremiumTools(startupInfo.resourceId);
+      this.addPremiumTools();
     });
   }
 
@@ -83,7 +85,7 @@ export class SiteFeatureService extends FeatureService {
     ];
   }
 
-  addPremiumTools(resourceId: string) {
+  addPremiumTools() {
     this.premiumTools = <SiteFilteredItem<Feature>[]>[
       {
         appType: AppType.WebApp,
@@ -103,37 +105,6 @@ export class SiteFeatureService extends FeatureService {
         }
       }
     ];
-
-    this._resourceService.getSitePremierAddOns(resourceId).subscribe(data => {
-
-      if (data && data.value) {
-        let premierAddOns: any[] = data.value;
-        let zRayAddOn = premierAddOns.find(x => (x.plan && (x.plan.product === "z-ray")));
-        if (zRayAddOn) {
-          this.premiumTools.push({
-            appType: AppType.WebApp,
-            platform: OperatingSystem.windows,
-            sku: Sku.NotDynamic,
-            hostingEnvironmentKind: HostingEnvironmentKind.All,
-            stack: '',
-            item: {
-              id: 'zray',
-              name: 'PHP Debugging',
-              category: 'Premium Tools',
-              description: '',
-              featureType: FeatureTypes.Tool,
-              clickAction: this._createFeatureAction('zray', 'Premium Tools', () => {
-                const site: Site = <Site>this._resourceService.resource.properties;
-                let scmHostName = site.enabledHostNames.find(h => h.indexOf('.scm.') > 0);
-                if (scmHostName) {
-                  window.open(`https://${scmHostName}/ZendServer`, '_blank');
-                }
-              })
-            }
-          });
-        }
-      }
-    });
   }
 
   addProactiveTools(resourceId: string) {

@@ -34,6 +34,7 @@ import { SharedV2Module } from '../shared-v2/shared-v2.module';
 import { DiagnosticDataModule } from 'diagnostic-data';
 import { GenericCategoryFlow } from './message-flow/v2-flows/generic-category.flow';
 import { AvailabilityPerformanceFlow } from './message-flow/v2-flows/availability-performance.flow';
+import { HealthCheckV3Component } from './message-flow/health-check-v3/health-check-v3.component';
 
 @NgModule({
     declarations: [
@@ -53,7 +54,8 @@ import { AvailabilityPerformanceFlow } from './message-flow/v2-flows/availabilit
         CategoryMenuComponent,
         DetectorSummaryComponent,
         DocumentSearchComponent,
-        DocumentSearchResultsComponent
+        DocumentSearchResultsComponent,
+        HealthCheckV3Component
     ],
     imports: [
         SharedModule,

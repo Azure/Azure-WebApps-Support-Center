@@ -101,6 +101,7 @@ export enum RenderingType {
     ChangeSets,
     ChangeAnalysisOnboarding,
     ChangesView,
+    ApplicationInsightsView,
     DependencyGraph
 }
 

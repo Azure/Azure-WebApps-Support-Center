@@ -4,10 +4,12 @@ import { Message, TextMessage, ButtonListMessage } from '../../models/message';
 import { MessageGroup } from '../../models/message-group';
 import { RegisterMessageFlowWithFactory } from '../message-flow.factory';
 import { HealthCheckComponent } from './health-check.component';
+import { HealthCheckV3Component } from '../health-check-v3/health-check-v3.component';
 import { CpuAnalysisChatFlow } from '../cpu-analysis-chat/cpu-analysis-chat-flow';
 import { AppAnalysisService } from '../../../shared/services/appanalysis.service';
 import { BotLoggingService } from '../../../shared/services/logging/bot.logging.service';
 import { MessageSender, ButtonActionType } from '../../models/message-enums';
+
 @Injectable()
 @RegisterMessageFlowWithFactory()
 export class HealthCheckMessageFlow extends IMessageFlowProvider {
@@ -88,6 +90,12 @@ export class HealthCheckMessageFlow extends IMessageFlowProvider {
 
 export class HealthCheckMessage extends Message {
     constructor() {
-        super(HealthCheckComponent, {});
+        //super(HealthCheckComponent, {});
+
+        //
+        // Comment above line and uncomment the below line
+        // to enable the applensv3 HealthCheck component
+        //
+        super(HealthCheckV3Component, {});
     }
 }

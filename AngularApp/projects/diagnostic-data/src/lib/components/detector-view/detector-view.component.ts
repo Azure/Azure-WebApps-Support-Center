@@ -67,6 +67,7 @@ export class DetectorViewComponent implements OnInit {
   @Input() detector: string = '';
   @Input() compilationPackage: CompilationProperties;
   @Input() analysisMode:boolean = false;
+  @Input() isAnalysisView: boolean = false;
   feedbackButtonLabel: string = 'Send Feedback';
 
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private telemetryService: TelemetryService,
@@ -77,7 +78,6 @@ export class DetectorViewComponent implements OnInit {
 
   ngOnInit() {
     this.loadDetector();
-
     this.errorSubject.subscribe((data: any) => {
       this.errorState = data;
     });

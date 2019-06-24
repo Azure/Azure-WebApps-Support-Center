@@ -1,6 +1,6 @@
 import { DiffEditorModel } from 'ngx-monaco-editor';
-export interface Changes {
-    level: string;
+export interface Change {
+    level: ChangeLevel;
     levelIcon: string;
     time: string;
     displayName: string;
@@ -8,6 +8,15 @@ export interface Changes {
     oldValue: string;
     newValue: string;
     initiatedBy: string;
+    jsonPath: string;
     originalModel: DiffEditorModel;
     modifiedModel: DiffEditorModel;
+    initiatedByList: string[];
   }
+
+
+export enum ChangeLevel {
+  Important,
+  Normal,
+  Noisy
+}

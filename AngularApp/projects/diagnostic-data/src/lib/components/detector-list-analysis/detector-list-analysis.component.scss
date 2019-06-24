@@ -39,6 +39,11 @@
     z-index: 1;
 }
 
+.stepper-circle-purple {
+    background-color: #68217a;
+    z-index: 1;
+}
+
 .stepper-circle-brown {
     background-color: #ff9104;
     z-index: 1;
@@ -123,3 +128,50 @@
     padding: 0 !important;
     margin: 5px !important;
  }
+
+.app-insights-image {
+    width:18px; 
+    height: 18px; 
+    margin-top:-3px;
+}
+
+.loading-status {
+    margin-left:5px;
+}
+
+.loading-status-container {
+    margin-top:10px
+}
+
+.app-insights-container {
+    font-size:13px
+}
+
+.app-insights-disabled {
+   color:#505050;
+}
+
+.app-insights-disabled-site
+{
+    font-weight:500;
+    color:black;
+}
+
+.app-insights-blade-link
+{
+    width:100%;
+    text-align:right;
+    font-size:13px;
+    padding:3px; 
+    margin:12px 0px;
+}
+
+.app-insights-blade-link i
+{
+    font-size: 15px;
+}
+
+.analysis-content
+{
+    width:98%
+}

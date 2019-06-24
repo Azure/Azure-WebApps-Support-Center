@@ -30,6 +30,9 @@ import { SharedModule } from './shared/shared.module';
 import { StartupModule } from './startup/startup.module';
 import {CustomMaterialModule} from './material-module';
 import { PortalSettingsService } from './shared/services/settings.service';
+import { AppInsightsService } from './shared/services/appinsights/appinsights.service';
+import { AppInsightsQueryService } from './../../../diagnostic-data/src/lib/services/appinsights.service';
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -65,6 +68,7 @@ import { PortalSettingsService } from './shared/services/settings.service';
       useFactory: (_localBackendService: LocalBackendService, _genericApiService: GenericApiService) => environment.useApplensBackend ? _localBackendService : _genericApiService,
       deps: [LocalBackendService, GenericApiService] },
     { provide: CommsService, useExisting: GenericCommsService },
+    { provide: AppInsightsQueryService, useExisting: AppInsightsService },
     { provide: DiagnosticSiteService, useExisting: SiteService },
     {
       provide: ErrorHandler,

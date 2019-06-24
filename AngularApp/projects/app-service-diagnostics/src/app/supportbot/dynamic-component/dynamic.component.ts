@@ -26,10 +26,11 @@ import {
 } from '../message-flow/talk-to-agent/talk-to-agent-message.component';
 import { Message } from '../models/message';
 import { takeUntil } from 'rxjs/operators';
+import { HealthCheckV3Component } from '../message-flow/health-check-v3/health-check-v3.component';
 
 @Component({
     selector: 'dynamic-component',
-    entryComponents: [TextMessageComponent, MainMenuComponent, ButtonMessageComponent, HealthCheckComponent, FeedbackComponent,
+    entryComponents: [TextMessageComponent, MainMenuComponent, ButtonMessageComponent, HealthCheckComponent, HealthCheckV3Component, FeedbackComponent,
         SolutionsMessageComponent, GraphMessageComponent, ProblemStatementMessageComponent, TalkToAgentMessageComponent, CategoryMenuComponent,
         DetectorSummaryComponent, DocumentSearchComponent, DocumentSearchResultsComponent],
     template: `

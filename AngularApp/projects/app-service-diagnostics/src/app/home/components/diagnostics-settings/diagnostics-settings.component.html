@@ -1,53 +1,31 @@
 <div class="col-6 col-sm-8 mt-5">
-        <div class="row form-group" *ngIf="showFeatureRegProgress">
-          <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
-            Change Analysis feature registration is in progress. Once registration is completed, please use the below setting to enable Change Analysis.
-        </div>
-        <div class="row form-group" *ngIf="showGeneralError">
-          <div class="alert alert-danger" role="alert">
-            <p>{{generalErrorMsg}} </p>
-          </div>
-        </div>
-        <loader-view *ngIf="updatingTag || updatingProvider " message="Saving settings..."></loader-view>
-       <div class="row form-group" *ngIf="showInProgress && !updatingProvider && !updatingTag">
-         <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
-         Change Analysis Resource Provider is {{regState}}. This will take a few mins. Please check again later.
-       </div>
-        <div *ngIf="!updatingProvider && !updatingTag">
-        <div class="row form-group" *ngIf="!showInProgress">
-            <div class="form-group">
-                <label class="control-label col-sm-2 settings-label">Change Analysis</label>
-                <div class="col-sm-2">
-                  <toggle-button [isDisabled]="!isFeatureRegistered" [selected]="providerRegOption.option == 'On'" (selectedChange)="$event ? providerRegOption = EnablementOptions[0] : providerRegOption = EnablementOptions[1]"></toggle-button>
-                </div>
-                <div class="col-sm-8">
-                  <span class="fa fa-question-circle"></span> Enable Change Analysis to view property changes. This setting is effective for all web apps in this subscription.
-                </div>
-            </div>
-        </div>
-        <div class="row form-group" *ngIf="providerRegOption.option === 'On' && !showInProgress">
-            <label class="control-label col-sm-2 settings-label">Scan for code changes</label>
-            <div class="col-sm-2">
-                <toggle-button [selected]="codeScanOption.option === 'On'" (selectedChange)="$event ? codeScanOption = EnablementOptions[0] : codeScanOption = EnablementOptions[1]"></toggle-button>
-            </div>
-            <div class="col-sm-8">
-              <span class="fa fa-question-circle"></span> Enable scan for code changes to view code changes. This setting is effective per web app.
-            </div>
-        </div>
-        <div class="row form-group">
-            <label class="control-label col-sm-2 settings-label">Always on</label>
-            <div class="col-sm-2">
-              <toggle-button [isDisabled]="!isFeatureRegistered" [selected]="alwaysOnOption.option === 'On'" (selectedChange)="$event ? alwaysOnOption = EnablementOptions[0] : alwaysOnOption = EnablementOptions[1]"></toggle-button>
-            </div>
-            <div class="col-sm-8">
-              <span class="fa fa-question-circle"></span> Enable Always on to minimize the time spent on Kudu startup when the service scans for code changes and to optimize the performance of your web app.
-            </div>
-        </div>
-        <div class="row form-group">
-          <div class="ml-3">
-            <button class="btn btn-primary" [disabled]="!isFeatureRegistered" (click)="saveSettings()">Save</button>
-          </div>
-        </div>
+  <div class="row form-group" *ngIf="showGeneralError">
+    <div class="alert alert-danger" role="alert">
+      <p>{{generalErrorMsg}} </p>
+    </div>
+  </div>
+  <loader-view *ngIf="updatingTag || updatingProvider " message="Saving settings..."></loader-view>
+  <div class="row form-group" *ngIf="showResourceProviderRegStatus">
+    <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
+    Change Analysis Resource Provider is {{resourceProviderRegState}}. This will take a few mins. Please check again later.
+  </div>
+  <div *ngIf="!pollingResourceProviderRegProgress && !updatingProvider && !updatingTag">
+    <div class="row form-group option-group">
+      <label class="control-label col-sm-2 settings-label">Change Analysis</label>
+      <div class="col-sm-2 toggle-button">
+        <toggle-button [selected]="isEnabled"
+          (selectedChange)="$event ? enableButtonSelectedValue = true : enableButtonSelectedValue = false">
+        </toggle-button>
       </div>
+      <div class="col-sm-8">
+        <span class="fa fa-question-circle"></span>
+        This setting is effective per web app.
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="ml-3">
+        <button class="btn btn-primary" (click)="saveSettings()">Save</button>
+      </div>
+    </div>
+  </div>
 </div>
-

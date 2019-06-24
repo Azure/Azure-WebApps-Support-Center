@@ -11,7 +11,9 @@ export const TelemetryEventNames = {
     FormButtonClicked: 'FormButtonClicked',
     ChangeAnalysisTimelineClicked: 'ChangeAnalysisTimelineClicked',
     OndemandScanClicked: 'OndemandScanClicked',
-    ChangeAnalysisEnableClicked: 'ChangeAnalysisEnableClicked'
+    ChangeAnalysisEnableClicked: 'ChangeAnalysisEnableClicked',
+    ChangeAnalysisChangeClicked: 'ChangeAnalysisChangeClicked',
+    ChangeAnalysisChangeFeedbackClicked: 'ChangeAnalysisChangeFeedbackClicked',
 };
 
 export interface ITelemetryProvider {

@@ -1,4 +1,12 @@
+.option-group {
+    display: flex;
+}
+
 .settings-label {
-color: black;
-font-size: 13px;
+    color: black;
+    font-size: 13px;
+}
+
+.toggle-button {
+    min-width: 180px;
 }

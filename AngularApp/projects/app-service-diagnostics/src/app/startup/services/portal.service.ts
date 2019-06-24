@@ -46,7 +46,7 @@ export class PortalService {
             }
         });
     }
-
+  
     openBlade(bladeInfo: OpenBladeInfo, source: string) {
         this.postMessage(Verbs.openBlade, JSON.stringify(bladeInfo));
     }
