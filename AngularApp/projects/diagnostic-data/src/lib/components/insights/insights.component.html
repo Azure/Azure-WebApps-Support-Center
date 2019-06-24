@@ -3,7 +3,7 @@
      otherwise I will show it by itself -->
 <ng-template #insightView>
   <div *ngFor="let insight of insights" class="insight-container" tabindex="0" attr.name="{{insight.title}}"
-    attr.aria-label="{{insight.title}}" attr.aria-expanded="{{insight.isExpanded}}" role="group"
+    attr.aria-label="{{insight.title}}" attr.aria-expanded="{{insight.isExpanded}}" role="button"
     (keyup.enter)="toggleInsightStatus(insight)">
     <div class="panel panel-default insight-panel"
       [class.critical-insight-panel]="insight.status === InsightStatus.Critical"

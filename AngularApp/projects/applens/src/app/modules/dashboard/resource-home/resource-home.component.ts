@@ -8,6 +8,9 @@ import { ApplensSupportTopicService } from '../services/applens-support-topic.se
 import { CacheService } from '../../../shared/services/cache.service';
 import { HttpClient } from '@angular/common/http';
 import { catchError, mergeMap, retry, map, retryWhen, delay, take, concat } from 'rxjs/operators';
+import { TelemetryService } from '../../../../../../diagnostic-data/src/lib/services/telemetry/telemetry.service';
+import {TelemetryEventNames} from '../../../../../../diagnostic-data/src/lib/services/telemetry/telemetry.common';
+import {AdalService} from 'adal-angular4';
 
 @Component({
     selector: 'resource-home',
@@ -34,7 +37,7 @@ export class ResourceHomeComponent implements OnInit {
     viewType: string = 'category';
 
 
-    constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: HttpClient, private _resourceService: ResourceService, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService, private _cacheService: CacheService) { }
+    constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: HttpClient, private _resourceService: ResourceService, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService, private _cacheService: CacheService, private _telemetryService: TelemetryService, private _adalService: AdalService) { }
 
     ngOnInit() {
         this.viewType = this._activatedRoute.snapshot.params['viewType'];
@@ -112,6 +115,9 @@ export class ResourceHomeComponent implements OnInit {
 
 
             });
+            let alias = this._adalService.userInfo.profile ? this._adalService.userInfo.profile.upn : '';
+            let userId = alias.replace('@microsoft.com', '').toLowerCase();
+            this._telemetryService.logPageView(TelemetryEventNames.HomePageLoaded, {"numCategories": this.categories.length.toString(), "userId": userId});
 
 
             if (detectorLists[1]) {
@@ -124,6 +130,7 @@ export class ResourceHomeComponent implements OnInit {
     };
 
     navigateToCategory(category: CategoryItem) {
+        this._telemetryService.logEvent(TelemetryEventNames.CategoryCardClicked, { "category": category.label});
         this.navigateTo(`../../categories/${category.label}`);
     }
 

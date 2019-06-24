@@ -11,6 +11,8 @@ import { HttpMethod } from '../../../shared/models/http';
 import { ApplensSupportTopicService } from '../services/applens-support-topic.service';
 import { Location } from '@angular/common';
 import { DetectorType } from '../../../../../../diagnostic-data/src/lib/models/detector';
+import { TelemetryService } from '../../../../../../diagnostic-data/src/lib/services/telemetry/telemetry.service';
+import {TelemetryEventNames} from '../../../../../../diagnostic-data/src/lib/services/telemetry/telemetry.common';
 
 
 @Component({
@@ -44,7 +46,7 @@ export class CategoryPageComponent implements OnInit {
     detectorsPublicOrWithSupportTopics: DetectorMetaData[] = [];
 
 
-    constructor(private _route: Router, private _activatedRoute: ActivatedRoute, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService, private _location: Location) { }
+    constructor(private _route: Router, private _activatedRoute: ActivatedRoute, private _diagnosticService: ApplensDiagnosticService, private _supportTopicService: ApplensSupportTopicService, private _location: Location, private _telemetryService: TelemetryService) { }
 
     ngOnInit() {
         this.categoryName = this._activatedRoute.snapshot.params['category'];
@@ -114,6 +116,7 @@ export class CategoryPageComponent implements OnInit {
                     this.filterdDetectors.forEach((detector) => {
                         this._supportTopicService.getCategoryImage(detector.name).subscribe((iconString) => {
                             let onClick = () => {
+                                this._telemetryService.logEvent(TelemetryEventNames.DetectorCardClicked, { "detector": detector.id});
                                 if (detector.type === DetectorType.Analysis) {
                                     this.navigateTo(`../../analysis/${detector.id}`);
                                   }
@@ -149,6 +152,7 @@ export class CategoryPageComponent implements OnInit {
 
                         this.filteredDetectorsLoaded = true;
                     });
+                    this._telemetryService.logPageView(TelemetryEventNames.CategoryPageLoaded, {"numDetectors": this.filterdDetectors.length.toString(), "categoryName": this.categoryName});
 
                     this.detectorsNumber = this.filterdDetectors.length;
                     this.supportTopicsNumber = this.supportTopicIdMapping.length;
