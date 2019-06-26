@@ -24,6 +24,10 @@ export class PortalSettingsService {
     return this.settingsUrl;
    }
 
+   public getResourceUri(): string {
+    return this.resourceId;
+}
+
    public getScanEnabled(): Observable<boolean> {
        let url = this.resourceId;
     return this.armService.getResource<ResponseMessageEnvelope<any>>(url, '2018-02-01', true).pipe(map((data: ResponseMessageEnvelope<any>) => {

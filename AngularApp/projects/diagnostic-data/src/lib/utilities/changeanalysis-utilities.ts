@@ -2,6 +2,18 @@ import { DiffEditorModel } from 'ngx-monaco-editor';
 import { isBoolean, isString, isNumber } from 'util';
 
 export class ChangeAnalysisUtilities {
+
+    static readonly azureResourceList = [
+        {
+            "resourceType": "Microsoft.Web",
+            "imgPath": "../../../assets/img/azure-icons/AzureAppService.png"
+        },
+        {
+            "resourceType": "Microsoft.Sql",
+            "imgPath": "../../../assets/img/azure-icons/Azure SQL Database.png"
+        }
+    ];
+
     public static  prepareDisplayValueForTable(displayName: string): string {
         displayName = displayName.replace("D:\\home\\site\\wwwroot", "");
         return displayName;
@@ -85,6 +97,16 @@ export class ChangeAnalysisUtilities {
             return initiatedByList.slice(0,2).join(',')+ " +"+ (totalUsers - 2);
         }
         return initiatedByList.join(',');
+    }
+
+    public static getResourceType(resourceUri: string): string {
+        return resourceUri.split("providers/")[1].split("/")[0];
+    }
+
+    public static getImgPathForResource(searchResourceType: string): string {
+        let azureIconsList = this.azureResourceList;
+        let resource = azureIconsList.find(element => element.resourceType == searchResourceType);
+        return resource ? resource.imgPath : '';
     }
 
 }

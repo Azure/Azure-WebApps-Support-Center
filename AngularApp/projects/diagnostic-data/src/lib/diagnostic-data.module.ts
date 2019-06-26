@@ -104,7 +104,7 @@ import { AppDependenciesComponent } from './components/app-dependencies/app-depe
     ChangesetsViewComponent,
     ChangesViewComponent,
     DetectorListAnalysisComponent,
-    AppDependenciesComponent
+    AppDependenciesComponent,
     AppInsightsMarkdownComponent
   ],
   exports: [

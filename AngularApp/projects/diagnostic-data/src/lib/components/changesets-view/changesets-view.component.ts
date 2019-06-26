@@ -18,7 +18,7 @@ const moment = momentNs;
   selector: 'changesets-view',
   templateUrl: './changesets-view.component.html',
   styleUrls: ['./changesets-view.component.scss',
-  '../insights/insights.component.scss']
+'../insights/insights.component.scss']
 })
 export class ChangesetsViewComponent extends DataRenderBaseComponent implements OnDestroy {
     isPublic: boolean;

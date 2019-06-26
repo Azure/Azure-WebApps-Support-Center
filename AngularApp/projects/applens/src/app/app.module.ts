@@ -15,9 +15,10 @@ import { AadAuthGuard } from './shared/auth/aad-auth-guard.service';
 import { LoginComponent } from './shared/components/login/login.component';
 import { AdalService, AdalGuard, AdalInterceptor } from 'adal-angular4';
 import { CustomUrlSerializerService } from './shared/services/custom-url-serializer.service';
-import { DiagnosticDataModule } from 'diagnostic-data';
+import { DiagnosticDataModule, SettingsService } from 'diagnostic-data';
 import { UnhandledExceptionHandlerService } from 'diagnostic-data';
 import {CustomMaterialModule} from './material-module';
+import { ApplensSettingsService } from './shared/services/applens-settings.service';
 
 @Injectable()
 export class ValidResourceResolver implements Resolve<void>{
@@ -113,6 +114,10 @@ export const Routes = RouterModule.forRoot([
     {
       provide: ErrorHandler,
       useClass: UnhandledExceptionHandlerService
+    },
+    {
+        provide: SettingsService,
+        useExisting: ApplensSettingsService
     }
   ],
   bootstrap: [AppComponent]

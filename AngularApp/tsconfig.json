@@ -25,6 +25,7 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "resolveJsonModule": true
   }
 }
