@@ -7,7 +7,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../startup/services/auth.service';
 import { LoggingV2Service } from './logging-v2.service';
 import { OperatingSystem } from '../../shared/models/site';
-import { WebSitesService } from '../../resources/web-sites/services/web-sites.service';
 import { AppType } from '../../shared/models/portal';
 
 @Injectable()
@@ -19,14 +18,8 @@ export class FeatureService {
   protected _featureDisplayOrder = [];
 
   constructor(protected _diagnosticApiService: DiagnosticService, protected _contentService: ContentService, protected _router: Router, protected _authService: AuthService,
-    protected _logger: LoggingV2Service, protected _resourceService: WebSitesService) {
+    protected _logger: LoggingV2Service) {
 
-    this._featureDisplayOrder = [{
-      category: "Availability and Performance",
-      platform: OperatingSystem.windows,
-      appType: AppType.WebApp,
-      order: ['appdownanalysis', 'perfanalysis', 'webappcpu', 'memoryusage', 'webapprestart'].reverse()
-    }];
 
     this._authService.getStartupInfo().subscribe(startupInfo => {
       this._diagnosticApiService.getDetectors().subscribe(detectors => {
@@ -77,46 +70,6 @@ export class FeatureService {
   }
 
   sortFeatures() {
-    let featureDisplayOrder = this._featureDisplayOrder;
-
-    featureDisplayOrder.forEach(feature => {
-
-      if (feature.platform === this._resourceService.platform && this._resourceService.appType === feature.appType) {
-        // Add all the features for this category to a temporary array
-        let categoryFeatures: Feature[] = [];
-        this._features.forEach(x => {
-          if (x.category != null && x.category.indexOf(feature.category) > -1) {
-            categoryFeatures.push(x);
-          }
-        });
-
-        // Remove all the features for the sorted category
-        this._features = this._features.filter(x => {
-          return x.category !== feature.category;
-        });
-
-        // Sort all the features for this category
-        categoryFeatures.sort(
-          function (a, b) {
-            let categoryOrder = featureDisplayOrder.find(x => x.category.toLowerCase().startsWith(feature.category.toLowerCase()));
-            if (categoryOrder != null) {
-              if (categoryOrder.order.indexOf(a.id.toLowerCase()) < categoryOrder.order.indexOf(b.id.toLowerCase())) {
-                return 1;
-              } else if (categoryOrder.order.indexOf(b.id.toLowerCase()) === categoryOrder.order.indexOf(a.id.toLowerCase())) {
-                return 0;
-              }
-              else {
-                return -1;
-              }
-            }
-          }
-        );
-
-        // add the sorted features for this category back to the array
-        this._features = this._features.concat(categoryFeatures);
-      }
-    });
-
   }
 
   protected _createFeatureAction(name: string, category: string, func: Function): FeatureAction {

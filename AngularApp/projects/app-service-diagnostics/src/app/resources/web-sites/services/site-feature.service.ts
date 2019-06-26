@@ -26,9 +26,17 @@ export class SiteFeatureService extends FeatureService {
   constructor(protected _diagnosticApiService: DiagnosticService, protected _resourceService: WebSitesService, protected _contentService: ContentService, protected _router: Router,
     protected _authService: AuthService, private _portalActionService: PortalActionService, private _websiteFilter: WebSiteFilter, protected _logger: LoggingV2Service) {
 
-    super(_diagnosticApiService, _contentService, _router, _authService, _logger, _resourceService);
+    super(_diagnosticApiService, _contentService, _router, _authService, _logger);
+
+    this._featureDisplayOrder = [{
+        category: "Availability and Performance",
+        platform: OperatingSystem.windows,
+        appType: AppType.WebApp,
+        order: ['appdownanalysis', 'perfanalysis', 'webappcpu', 'memoryusage', 'webapprestart'].reverse()
+      }];
+
     this._authService.getStartupInfo().subscribe(startupInfo => {
-      
+
       // removing v2 detectors for Availability and Perf
       // if (this._resourceService.appType == AppType.WebApp && this._resourceService.platform == OperatingSystem.windows) {
       //   this.getLegacyAvailabilityAndPerformanceFeatures(startupInfo.resourceId).forEach(feature => this._features.push(feature));
@@ -38,6 +46,50 @@ export class SiteFeatureService extends FeatureService {
       this.addPremiumTools();
     });
   }
+
+  sortFeatures() {
+    let featureDisplayOrder = this._featureDisplayOrder;
+
+    featureDisplayOrder.forEach(feature => {
+
+      if (feature.platform === this._resourceService.platform && this._resourceService.appType === feature.appType) {
+        // Add all the features for this category to a temporary array
+        let categoryFeatures: Feature[] = [];
+        this._features.forEach(x => {
+          if (x.category != null && x.category.indexOf(feature.category) > -1) {
+            categoryFeatures.push(x);
+          }
+        });
+
+        // Remove all the features for the sorted category
+        this._features = this._features.filter(x => {
+          return x.category !== feature.category;
+        });
+
+        // Sort all the features for this category
+        categoryFeatures.sort(
+          function (a, b) {
+            let categoryOrder = featureDisplayOrder.find(x => x.category.toLowerCase().startsWith(feature.category.toLowerCase()));
+            if (categoryOrder != null) {
+              if (categoryOrder.order.indexOf(a.id.toLowerCase()) < categoryOrder.order.indexOf(b.id.toLowerCase())) {
+                return 1;
+              } else if (categoryOrder.order.indexOf(b.id.toLowerCase()) === categoryOrder.order.indexOf(a.id.toLowerCase())) {
+                return 0;
+              }
+              else {
+                return -1;
+              }
+            }
+          }
+        );
+
+        // add the sorted features for this category back to the array
+        this._features = this._features.concat(categoryFeatures);
+      }
+    });
+
+  }
+
 
   getLegacyAvailabilityAndPerformanceFeatures(resourceId: string): Feature[] {
     resourceId = resourceId.startsWith('/') ? resourceId.replace('/', '') : resourceId;
