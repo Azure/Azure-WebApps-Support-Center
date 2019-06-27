@@ -43,6 +43,9 @@ export class TelemetryService {
                 }
             }
         }
+        if (!(properties["url"] || properties["Url"])){
+            properties.Url = window.location.href;
+        }
 
         for (const telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logEvent(eventMessage, properties, measurements);
@@ -51,6 +54,9 @@ export class TelemetryService {
 
     public logPageView(name: string, properties?: any, measurements?: any, url?: string, duration?: number) {
         for (const telemetryProvider of this.telemetryProviders) {
+            if (!url){
+                url = window.location.href;
+            }
             telemetryProvider.logPageView(name, url, properties, measurements, duration);
         }
     }

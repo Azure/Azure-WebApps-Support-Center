@@ -146,9 +146,10 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         };
         this.loggingService.logEvent('UpdateScanTag', eventProps);
 
-        this.armService.patchResource(this.currentResource.id, this.currentResource).subscribe((response: any) => {
+        this.armService.patchResourceFullResponse(this.currentResource.id, this.currentResource, true).subscribe((response: HttpResponse<{}>) => {
             this.updatingTag = false;
-            if (response && response.tags && response.tags[scanTag] === 'true') {
+            let resource = <ArmResource>response.body;
+            if (resource && resource.tags && resource.tags[scanTag] === 'true') {
                 this.isHiddenTagAdded.next(true);
             } else {
                 this.isHiddenTagAdded.next(false);

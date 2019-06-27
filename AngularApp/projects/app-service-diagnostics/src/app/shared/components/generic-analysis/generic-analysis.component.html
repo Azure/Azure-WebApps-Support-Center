@@ -7,7 +7,8 @@
       <h2>{{ detectorName }}</h2>
     </div>
     <div style="display: inline-block;margin-left: 10px">
-      <a (click)="goBackToAnalysis()" *ngIf="detectorId !== ''">Back to Observations</a>
+      <a tabindex="0" (keyup.enter)="goBackToAnalysis()" aria-label="Link to go back to the analysis view" role="button"
+        (click)="goBackToAnalysis()" *ngIf="detectorId !== ''">Back to Observations</a>
     </div>
   </div>
   <router-outlet></router-outlet>

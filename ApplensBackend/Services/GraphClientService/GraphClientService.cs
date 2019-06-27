@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using AppLensV3.Helpers;
 using AppLensV3.Models;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace AppLensV3.Services
 {
@@ -18,11 +20,14 @@ namespace AppLensV3.Services
         Task<string> GetUserImageAsync(string userId);
         Task<IDictionary<string, string>> GetUsers(string[] users);
         Task<AuthorInfo> GetUserInfoAsync(string userId);
+        Boolean CheckSecurityGroup(string userId);
     }
 
     public class GraphClientService : IGraphClientService
     {
         private IMemoryCache _cache;
+
+        private List<string> TestSecurityGroup;
 
         private IGraphTokenService _graphTokenService;
 
@@ -42,10 +47,14 @@ namespace AppLensV3.Services
             }
         }
 
-        public GraphClientService(IMemoryCache cache, IGraphTokenService graphTokenService)
+        public GraphClientService(IMemoryCache cache, IGraphTokenService graphTokenService, IConfiguration configuration)
         {
             _cache = cache;
             _graphTokenService = graphTokenService;
+            TestSecurityGroup = configuration["TestSecurityGroup"]?.Split(",").ToList();
+            if (TestSecurityGroup == null){
+                TestSecurityGroup = new List<string>();
+            }
         }
 
         public async Task<string> GetOrCreateUserImageAsync(string userId)
@@ -147,6 +156,19 @@ namespace AppLensV3.Services
 
             await Task.WhenAll(tasks);
             return authorsDictionary;
+        }
+
+        public Boolean CheckSecurityGroup(string userId){
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new ArgumentException("userId");
+            }
+
+            if (TestSecurityGroup.FirstOrDefault(user => user==userId) != null){
+                return true;
+            }
+
+            return false;
         }
     }
 }

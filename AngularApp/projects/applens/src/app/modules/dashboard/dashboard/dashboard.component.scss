@@ -173,3 +173,41 @@ body{
       left: -20px;
       margin-top: 10px;
   }
+
+  .search-input{
+    background-color: #FCFCFC;
+    border: 1px solid #D8DCE1;
+    line-height: 28px;
+    border-radius: 3px;
+    width: 100%;
+    padding-left: 28px;
+    font-size: 16px;
+    color: #464646;
+  }
+
+  .icon-err{
+    margin-top: -1px;
+    margin-left: -17px;
+    font-size: 25px;
+    position: absolute;
+    color: #bf0000;
+  }
+  
+  .search-icon{
+    font-size: 19px;
+    color: #3c8dbc;
+    position: absolute;
+    padding-left: 6px;
+    margin-top: 7px;
+  }
+  
+  .search-box{
+    display: block;
+    width: 40%;
+    margin-top: 0.5%;
+    margin-left: 30%;
+  }
+  
+  ::placeholder {
+    color: #848080;
+  }

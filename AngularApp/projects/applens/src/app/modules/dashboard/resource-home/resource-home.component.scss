@@ -436,3 +436,46 @@ input[type='button'] {
   margin: 60px;
   text-align: center;
 }
+
+.search-input{
+  background-color: #FCFCFC;
+    border: 1px solid #D8DCE1;
+    line-height: 55px;
+    border-radius: 3px;
+    width: 100%;
+    padding-left: 40px;
+    font-size: 20px;
+    color: #464646;
+}
+
+.icon-err{
+  margin-top: 5px;
+    margin-left: -22px;
+    font-size: 34px;
+    position: absolute;
+    color: #bf0000;
+}
+
+.search-icon{
+  font-size: 22px;
+    color: #3c8dbc;
+    position: absolute;
+    padding-left: 11px;
+    margin-top: 17px;
+}
+
+.search-box-container{
+  width: 100%; 
+}
+
+.search-box{
+  display: block;
+    width: 50%;
+    margin-top: 0.5%;
+    margin-left: 25%;
+    padding-bottom: 15px;
+}
+
+::placeholder {
+  color: #848080;
+}

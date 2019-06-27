@@ -24,6 +24,13 @@ export const TelemetryEventNames = {
     ChangeAnalysisEnableClicked: 'ChangeAnalysisEnableClicked',
     ChangeAnalysisChangeClicked: 'ChangeAnalysisChangeClicked',
     ChangeAnalysisChangeFeedbackClicked: 'ChangeAnalysisChangeFeedbackClicked',
+    SearchResultsLoaded: 'SearchResultsLoaded',
+    SearchQueryResults: 'SearchQueryResults',
+    SearchResultClicked: 'SearchResultClicked',
+    SearchResultFeedback: 'SearchResultFeedback',
+    AuthorSelectSearchTerm: 'AuthorSelectSearchTerm',
+    AuthorCreateSearchTerm: 'AuthorCreateSearchTerm',
+    AuthorRemoveSearchTerm: 'AuthorRemoveSearchTerm'
 };
 
 export interface ITelemetryProvider {

@@ -1,7 +1,7 @@
 <div *ngIf="detectorDataLocalCopy">
   <div *ngIf="!hideDetectorHeader && !analysisMode">
     <section class="content-header">
-      <span class="span-h1" *ngIf="!isSystemInvoker && !insideDetectorList">{{detectorDataLocalCopy.metadata.name}}</span>
+      <h2><span class="span-h1" *ngIf="!isSystemInvoker && !insideDetectorList">{{detectorDataLocalCopy.metadata.name}}</span></h2>
       <div class="description">{{detectorDataLocalCopy.metadata.description}}</div>
       <section *ngIf="!isPublic">
         <div class="description">By

@@ -79,6 +79,15 @@ export class DiagnosticApiService {
     return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.POST, url + body.toString()), request, invalidateCache) : request;
   }
 
+  public getHasTestersAccess(userId: string, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
+    let url: string = `${this.diagnosticApi}api/graph/hasTestersAccess/${userId}`;
+    let request = this._httpClient.get(url, {
+      headers: this._getHeaders()
+    });
+
+    return useCache ? this._cacheService.get(this.getCacheKey(HttpMethod.POST, url), request, invalidateCache) : request;
+  }
+
   public getSupportTopics(pesId: any, useCache: boolean = true, invalidateCache: boolean = false): Observable<any> {
     let url: string = `${this.diagnosticApi}api/supporttopics/${pesId}`;
     let request = this._httpClient.get(url, {

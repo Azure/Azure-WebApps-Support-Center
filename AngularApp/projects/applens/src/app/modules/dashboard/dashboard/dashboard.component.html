@@ -20,6 +20,13 @@
         </div>
       </li>
     </ul>
+    <div *ngIf="_searchService.searchIsEnabled && !_searchService.resourceHomeOpen" class="search-box">
+      <i class="fa fa-search search-icon"></i>
+      <input placeholder="Describe your problem and hit enter" class="search-input" [(ngModel)]="_searchService.searchTerm" (keyup.enter)="triggerSearch()">
+      <span class="icon-err" [style.display]="_searchService.searchTerm?.trim().length>0 && _searchService.searchTerm?.trim().length<4? '': 'none'" title="At least 4 characters">
+        <i class="fa fa-exclamation"></i>
+      </span>
+    </div>
   </nav>
 </header>
 <div class="site-content">
