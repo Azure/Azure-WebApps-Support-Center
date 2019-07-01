@@ -14,8 +14,4 @@ export class SettingsService {
    public getScanEnabled(): Observable<boolean>  {
        return null;
    }
-
-   public getResourceUri(): string {
-       return null;
-   }
 }

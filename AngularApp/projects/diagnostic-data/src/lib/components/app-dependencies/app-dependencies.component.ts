@@ -5,7 +5,7 @@ import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { Network, DataSet, Node, Edge, IdType, Timeline } from 'vis';
 import { ChangeAnalysisUtilities } from '../../utilities/changeanalysis-utilities';
 import { DataTableUtilities} from '../../utilities/datatable-utilities';
-import { SettingsService } from '../../services/settings.service';
+
 @Component({
   selector: 'app-dependencies',
   templateUrl: './app-dependencies.component.html',
@@ -17,7 +17,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
     datasetLocalCopy: DataTableResponseObject;
     azureIcons: any = {};
     primaryResourceId: string = '';
-    constructor(protected telemetryService: TelemetryService, private settingService: SettingsService) {
+    constructor(protected telemetryService: TelemetryService) {
         super(telemetryService);
     }
 
@@ -34,8 +34,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
 
     constructNetwork(rows: any[][]): void {
         if(rows.length > 0) {
-            //this.primaryResourceId = this.settingService.getResourceUri();
-            this.primaryResourceId = '/subscriptions/72383ac7-d6f4-4a5e-bf56-b172f2fdafb2/resourceGroups/rekha-changeanalysis/providers/Microsoft.Web/sites/rekha-new';
+            this.primaryResourceId = rows[0][DataTableUtilities.getColumnIndexByName(this.datasetLocalCopy, 'PrimaryResource')];
             let columnIndex = DataTableUtilities.getColumnIndexByName(this.datasetLocalCopy, 'ResourceId');
             let networkDataSet = [];
             networkDataSet.push({

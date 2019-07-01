@@ -18,7 +18,6 @@ import { CustomUrlSerializerService } from './shared/services/custom-url-seriali
 import { DiagnosticDataModule, SettingsService } from 'diagnostic-data';
 import { UnhandledExceptionHandlerService } from 'diagnostic-data';
 import {CustomMaterialModule} from './material-module';
-import { ApplensSettingsService } from './shared/services/applens-settings.service';
 
 @Injectable()
 export class ValidResourceResolver implements Resolve<void>{
@@ -114,10 +113,6 @@ export const Routes = RouterModule.forRoot([
     {
       provide: ErrorHandler,
       useClass: UnhandledExceptionHandlerService
-    },
-    {
-        provide: SettingsService,
-        useExisting: ApplensSettingsService
     }
   ],
   bootstrap: [AppComponent]
