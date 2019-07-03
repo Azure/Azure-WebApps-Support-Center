@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, Injector, OnInit, AfterViewInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
@@ -10,7 +10,9 @@ import { MessageSender } from '../../models/message-enums';
 export class TextMessageComponent implements OnInit, AfterViewInit, IChatMessageComponent {
 
     message: string = '';
+    focus: boolean = false;
     messageByUser: boolean = false;
+    @ViewChild('messagefocus') el:ElementRef;
 
     @Output() onViewUpdate = new EventEmitter();
     @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
@@ -21,12 +23,16 @@ export class TextMessageComponent implements OnInit, AfterViewInit, IChatMessage
     ngOnInit(): void {
         this.message = this.injector.get('message');
         const sender = this.injector.get('sender');
+        this.focus = this.injector.get('focus');
         if (sender === MessageSender.User) {
             this.messageByUser = true;
         }
     }
 
     ngAfterViewInit(): void {
+        if(this.focus){
+            this.el.nativeElement.focus();
+        }
         this.onViewUpdate.emit();
 
         this.onComplete.emit({

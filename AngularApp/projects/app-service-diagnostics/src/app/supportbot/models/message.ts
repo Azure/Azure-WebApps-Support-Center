@@ -9,10 +9,11 @@ export abstract class Message {
 }
 
 export class TextMessage extends Message {
-    constructor(message: string, sender: MessageSender = MessageSender.System, messageDelayInMs: number = MessageSender.User ? 0 : 1000) {
+    constructor(message: string, sender: MessageSender = MessageSender.System, messageDelayInMs: number = MessageSender.User ? 0 : 1000, focus: boolean = false) {
         super(TextMessageComponent, {
             message: message,
-            sender: sender
+            sender: sender,
+            focus: focus
         }, messageDelayInMs);
     }
 }
