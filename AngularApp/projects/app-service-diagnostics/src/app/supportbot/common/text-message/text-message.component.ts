@@ -12,7 +12,7 @@ export class TextMessageComponent implements OnInit, AfterViewInit, IChatMessage
     message: string = '';
     focus: boolean = false;
     messageByUser: boolean = false;
-    @ViewChild('messagefocus') el:ElementRef;
+    @ViewChild('messagefocus') elem:ElementRef;
 
     @Output() onViewUpdate = new EventEmitter();
     @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
@@ -31,7 +31,7 @@ export class TextMessageComponent implements OnInit, AfterViewInit, IChatMessage
 
     ngAfterViewInit(): void {
         if(this.focus){
-            this.el.nativeElement.focus();
+            this.elem.nativeElement.focus();
         }
         this.onViewUpdate.emit();
 
