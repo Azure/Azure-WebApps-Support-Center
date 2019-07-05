@@ -1,5 +1,10 @@
 import { Subscription } from './subscription';
 
+interface KeyValuePair{
+    key: string;
+    value: any;
+}
+
 export interface StartupInfo {
     token: string;
     subscriptions: Subscription[];
@@ -12,6 +17,7 @@ export interface StartupInfo {
     workflowId?:  string;
     resourceType?: ResourceType;
     additionalParameters?: any;
+    optionalParameters?: Array<KeyValuePair>;
 }
 
 export enum ResourceType {

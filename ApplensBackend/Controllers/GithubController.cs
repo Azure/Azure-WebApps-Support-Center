@@ -46,6 +46,31 @@ namespace AppLensV3.Controllers
         }
 
         /// <summary>
+        /// Get isSearchEnabled for product id.
+        /// </summary>
+        /// <param name="productId">The productId.</param>
+        /// <returns>Boolean search enabled flag.</returns>
+        [HttpGet("search/isEnabledForProductId/{productId}")]
+        public async Task<IActionResult> GetSearchEnabledForProductId(string productId){
+            if (string.IsNullOrWhiteSpace(productId))
+            {
+                return BadRequest("productId cannot be empty");
+            }
+            try{
+                var resConf = await GithubService.GetResourceConfigFile();
+                if (resConf.Contains(productId)){
+                    return Ok(true);
+                }
+                else{
+                    return Ok(false);
+                }
+            }
+            catch (Exception ex) {
+                throw new Exception("Exception while reading resource config from github: " + ex.ToString());
+            }
+        }
+
+        /// <summary>
         /// Get package configuration.
         /// </summary>
         /// <param name="id">The id.</param>

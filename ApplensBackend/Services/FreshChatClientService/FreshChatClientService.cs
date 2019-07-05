@@ -275,8 +275,8 @@ namespace AppLensV3.Services
         private string MaskPassword(string content)
         {
             // (?<=(\bpass\b)|(\bpwd\b)|(\bpassword\b)|(\buserpass\b)) Pattern should start with either pass or pwd or password or userpass.
-            // [^\w\r\n] Followed by at least one character including space but not the newline character.
-            // \b[\S]+ Match an entire word that contains any character and there should be at least one character present
+            // [^\w\r\n]+ Followed by at least one character including space but not the newline character.
+            // (.+) Match everything else and there should be at least one character present
 
             /* Matches
              * pass abc@#_!(?%123 
@@ -291,7 +291,7 @@ namespace AppLensV3.Services
              * Pass:
              * I am doing fine :)
              */
-            string pattern = @"(?<=(\bpass\b)|(\bpwd\b)|(\bpassword\b)|(\buserpass\b))[^\w\r\n]+\b[\S]+";
+            string pattern = @"(?<=(\bpass\b)|(\bpwd\b)|(\bpassword\b)|(\buserpass\b))[^\w\r\n]+(.+)";
             return Regex.Replace(content, pattern, m => ":****", RegexOptions.IgnoreCase);
         }
 

@@ -55,6 +55,11 @@ export class ApplensDiagnosticService {
     return this._diagnosticApi.getSupportTopics(pesId);
   }
 
+  getSearchEnabledForProductId(): Observable<any> {
+    let pesId = this._resourceService.pesId;
+    return this._diagnosticApi.get(`api/github/search/isEnabledForProductId/${pesId}`, true);
+  }
+
   getSelfHelpContent(pesId: string = "14748", supportTopicId: string = "32581605", path: string = "microsoft.web"): Observable<any> {
     return this._diagnosticApi.getSelfHelpContent(pesId, supportTopicId, path);
   }

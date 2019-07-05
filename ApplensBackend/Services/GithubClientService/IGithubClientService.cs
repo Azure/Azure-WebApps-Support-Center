@@ -63,5 +63,11 @@ namespace AppLensV3
         /// <param name="sha">The commit sha.</param>
         /// <returns>Task for getting changed files.</returns>
         Task<IEnumerable<string>> GetChangedFiles(string sha);
+
+        /// <summary>
+        /// Get Resource configuration for search
+        /// </summary>
+        /// <returns>Resource Configuration JSON for search api</returns>
+        Task<string> GetResourceConfigFile();
     }
 }

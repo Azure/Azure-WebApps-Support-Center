@@ -26,7 +26,7 @@ export class AvailabilityPerformanceFlow extends IMessageFlowProvider {
         categoryMainMenu.messages.push(new TextMessage('Did you find what you were looking for?', MessageSender.System, 3000));
         categoryMainMenu.messages.push(new ButtonListMessage(this._getButtonListDidYouFindHelpful('in-chat-search'), 'Did you find what you were looking for?', 'Availability and Performance'));
         categoryMainMenu.messages.push(new TextMessage('Yes I found the right information.', MessageSender.User));
-        categoryMainMenu.messages.push(new TextMessage('Great I\'m glad I could be of help!', MessageSender.System));
+        categoryMainMenu.messages.push(new TextMessage('Great I\'m glad I could be of help!', MessageSender.System, undefined, true));
 
         messageGroupList.push(categoryMainMenu);
         messageGroupList.push(availailabilityPerformance);

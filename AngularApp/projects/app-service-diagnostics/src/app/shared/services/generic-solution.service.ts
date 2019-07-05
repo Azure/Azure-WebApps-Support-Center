@@ -13,7 +13,9 @@ import { PortalActionService } from './portal-action.service';
 export class GenericSolutionService {
 
   allowedRoutes = {
-    'restart': ['post']
+    'restart': ['post'],
+    'config/web': ['get', 'put', 'patch'],
+    'config/appsettings/list': ['get', 'put']
   }
 
   constructor(private armService: ArmService, private portalService: PortalService,
@@ -40,6 +42,7 @@ export class GenericSolutionService {
   }
 
   buildRoute(resourceUri: string, routeSegment: string): string {
+    resourceUri = !resourceUri.endsWith('/') ? resourceUri+'/': resourceUri;
     return resourceUri + routeSegment;
   }
 

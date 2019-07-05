@@ -135,6 +135,21 @@ namespace AppLensV3
         }
 
         /// <summary>
+        /// Get Resource configuration for search
+        /// </summary>
+        /// <returns>Resource Configuration JSON for search api</returns>
+        public async Task<string> GetResourceConfigFile(){
+            var resourceConfigFileUrl = string.Format(
+                GithubConstants.ResourceConfigFormat,
+                UserName,
+                RepoName,
+                Branch,
+                AccessToken);
+            
+            return await GetRawFile(resourceConfigFileUrl);
+        }
+
+        /// <summary>
         /// Get package configuration.
         /// </summary>
         /// <param name="id">The id.</param>

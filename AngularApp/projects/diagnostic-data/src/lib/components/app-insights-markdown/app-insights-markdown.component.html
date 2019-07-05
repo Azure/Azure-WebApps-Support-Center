@@ -15,32 +15,6 @@
 </ng-template>
 
 <ng-template #loadInternalView>
-  <div class="panel panel-default">
-    <div class="panel-heading" class="app-insights-internal-markdown">
-      <h5 class="panel-title">
-        <span class="fa status-icon" [class.fa-info-circle]="true"></span>
-        This is the internal view of Application Insights Analysis.
-      </h5>
-    </div>
-    <div class="panel-body">
-      <table>
-        <tbody>
-          <tr>
-            <td class="table-value">
-              <div class="app-insights-markdown">
-                <div>
-                  In external portal, we will automatically check if customer has enabled Applictaion Insight.
-                  <br />If yes, the following queries and analysis will be automatically run for customer.
-                  <br />
-                  <br />Using application insights will help customer detect and diagnose issues in the web application code easily.
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
   <div *ngFor="let metadata of appInsightQueryMetaDataList;let i = index" class="dynamic-data-container">
     <data-container [title]="metadata.title" [description]="metadata.description" [applicationInsightContainerStyle]="1">
       <markdown [data]="getMetaDataMarkdown(metadata)"></markdown>
