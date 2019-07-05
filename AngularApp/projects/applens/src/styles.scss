@@ -82,6 +82,7 @@ body {
 .package-modal {
   max-width: 100% !important;
   max-height: 90%;
+  overflow-y: scroll !important;
 }
 
 .panel.with-nav-tabs .panel-heading.app-nav-bar {
