@@ -3,14 +3,39 @@ import { isBoolean, isString, isNumber } from 'util';
 
 export class ChangeAnalysisUtilities {
 
+    static readonly basePath: string = '../../../assets/img/azure-icons/';
     static readonly azureResourceList = [
         {
             "resourceType": "Microsoft.Web",
-            "imgPath": "../../../assets/img/azure-icons/AzureAppService.png"
+            "imgPath": ChangeAnalysisUtilities.basePath +"AzureAppService.png"
         },
         {
             "resourceType": "Microsoft.Sql",
-            "imgPath": "../../../assets/img/azure-icons/Azure SQL Database.png"
+            "imgPath": ChangeAnalysisUtilities.basePath +"Azure SQL Database.png"
+        },
+        {
+            "resourceType": "Microsoft.Cache",
+            "imgPath": ChangeAnalysisUtilities.basePath +"Azure Cache Redis Product icon_COLOR.png"
+        },
+        {
+            "resourceType": "Microsoft.ApiManagement",
+            "imgPath": ChangeAnalysisUtilities.basePath +"Azure API Management.png"
+        },
+        {
+            "resourceType": "Microsoft.Insights",
+            "imgPath": ChangeAnalysisUtilities.basePath +"Azure Application Insights.png"
+        },
+        {
+            "resourceType": "Microsoft.ClassicCompute",
+            "imgPath": ChangeAnalysisUtilities.basePath + "Azure Cloud Service.png"
+        },
+        {
+            "resourceType":  "Microsoft.ContainerService",
+            "imgPath": ChangeAnalysisUtilities.basePath + "Azure Container Service_COLOR.png"
+        },
+        {
+            "resourceType": "Microsoft.Logic",
+            "imgPath": ChangeAnalysisUtilities.basePath + "Logic Apps_COLOR.png"
         }
     ];
 
@@ -105,8 +130,21 @@ export class ChangeAnalysisUtilities {
 
     public static getImgPathForResource(searchResourceType: string): string {
         let azureIconsList = this.azureResourceList;
-        let resource = azureIconsList.find(element => element.resourceType == searchResourceType);
+        let resource = azureIconsList.find(element => element.resourceType.toLowerCase() == searchResourceType.toLowerCase());
         return resource ? resource.imgPath : '';
     }
+
+    public static getSubscription(resourceUri: string): string {
+        return resourceUri.split("subscriptions/")[1].split("/")[0];
+    }
+
+    public static getResourceGroup(resourceUri: string): string {
+        return resourceUri.split("resourceGroups/")[1].split("/")[0];
+    }
+
+    public static getResourceName(resourceUri: string, provider:string): string {
+        return resourceUri.split(provider+"/")[1];
+    }
+
 
 }

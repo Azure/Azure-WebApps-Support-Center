@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { DiagnosticData, DataTableResponseObject } from '../../models/detector';
+import { DiagnosticData, DataTableResponseObject, DetectorResponse } from '../../models/detector';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { Network, DataSet, Node, Edge, IdType, Timeline } from 'vis';
 import { ChangeAnalysisUtilities } from '../../utilities/changeanalysis-utilities';
 import { DataTableUtilities} from '../../utilities/datatable-utilities';
-
+import { DiagnosticService } from '../../services/diagnostic.service';
+import { DetectorControlService } from '../../services/detector-control.service';
 @Component({
   selector: 'app-dependencies',
   templateUrl: './app-dependencies.component.html',
@@ -17,7 +18,8 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
     datasetLocalCopy: DataTableResponseObject;
     azureIcons: any = {};
     primaryResourceId: string = '';
-    constructor(protected telemetryService: TelemetryService) {
+    selectedResourceId: string = '';
+    constructor(protected telemetryService: TelemetryService, protected diagnosticService: DiagnosticService, protected detectorControlService: DetectorControlService) {
         super(telemetryService);
     }
 
@@ -82,11 +84,42 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
             }
         };
         var network = new Network(container, networkData, networkOptions);
-        network.on("selectNode", function (params) {
-          console.log('selectNode Event:', params);
-        });
+        network.on("selectNode", this.triggerTimelineRefresh);
         }
 
+    }
+
+    private triggerTimelineRefresh(properties: any): void {
+        let domelement = <HTMLInputElement>document.getElementById("resourceUri");
+        if(typeof properties.nodes != 'undefined') {
+            domelement.value = properties.nodes[0];
+            let event = new Event('change');
+            domelement.dispatchEvent(event);
+        }
+    }
+
+    refreshChangeTimeline(): void {
+        //this.logGraphClick();
+        let selectedResource = <HTMLInputElement> document.getElementById('resourceUri');
+        if(selectedResource.value) {
+            console.log(selectedResource.value);
+            this.selectedResourceId = selectedResource.value;
+            this.loadChangesTimeLine();
+        }
+    }
+
+    loadChangesTimeLine(): void {
+        let sub = ChangeAnalysisUtilities.getSubscription(this.selectedResourceId);
+        let resourceGroups = ChangeAnalysisUtilities.getResourceGroup(this.selectedResourceId);
+        let provider = ChangeAnalysisUtilities.getResourceType(this.selectedResourceId);
+        let resourceName = ChangeAnalysisUtilities.getResourceName(this.selectedResourceId, provider);
+        let queryParams = `&fId=101&btnId=9&inpId=1&val=${encodeURIComponent(sub)}&inpId=2&val=${encodeURIComponent(resourceGroups)}&inpId=3&val=${encodeURIComponent(provider)}&inpId=4&val=${encodeURIComponent(resourceName)}`;
+        this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
+            this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
+                console.log(response.dataset);
+            }, (error: any) => {
+
+            });
     }
 
 }
