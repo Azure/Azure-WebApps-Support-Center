@@ -1,4 +1,4 @@
-import { Component, Inject, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, Inject, ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { DiagnosticData, DataTableResponseObject, DetectorResponse, RenderingType, DataTableResponseColumn } from '../../models/detector';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
@@ -13,6 +13,7 @@ import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { SettingsService} from '../../services/settings.service';
 import { ChangeAnalysisUtilities } from '../../utilities/changeanalysis-utilities';
 import { DataTableUtilities } from '../../utilities/datatable-utilities';
+import { ChangeAnalysisService} from '../../services/change-analysis.service';
 const moment = momentNs;
 @Component({
   selector: 'changesets-view',
@@ -20,7 +21,7 @@ const moment = momentNs;
   styleUrls: ['./changesets-view.component.scss',
 '../insights/insights.component.scss']
 })
-export class ChangesetsViewComponent extends DataRenderBaseComponent implements OnDestroy {
+export class ChangesetsViewComponent extends DataRenderBaseComponent implements OnInit,OnDestroy {
     isPublic: boolean;
     changeSetText: string = '';
     scanDate: string = '';
@@ -44,15 +45,27 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
     changeSetsLocalCopy: {};
     initiatedBy: string[];
     changeSetsColumn: DataTableResponseColumn[];
-
+    resourceChangeGroups: DiagnosticData;
     private readonly noScanMsg: string = 'No recent scans were performed on this web app.';
 
     constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, protected telemetryService: TelemetryService,
     protected changeDetectorRef: ChangeDetectorRef, protected diagnosticService: DiagnosticService,
     private detectorControlService: DetectorControlService, private settingsService: SettingsService,
-     private router:Router) {
+     private router:Router, protected changeAnalysisService: ChangeAnalysisService) {
         super(telemetryService);
         this.isPublic = config && config.isPublic;
+    }
+
+    ngOnInit() {
+    super.ngOnInit();
+    this.changeAnalysisService.getResourceChangeGroups.subscribe(
+        updatedChangeGroups => {
+            if(updatedChangeGroups != '') {
+                this.resourceChangeGroups = JSON.parse(updatedChangeGroups);
+                this.processData(this.resourceChangeGroups);
+            }
+        });
+
     }
 
     protected processData(data: DiagnosticData) {
@@ -63,22 +76,75 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
 
     private parseData(data: DataTableResponseObject) {
         let rows = data.rows;
+        let resourceName = this.changeAnalysisService.getCurrentResourceName();
         if (rows.length > 0 && rows[0].length > 0) {
             this.changeSetText = rows.length == 1 ? `1 change group detected` : `${rows.length} change groups have been detected`;
-            this.constructTimeline(data);
+            this.changeSetText = resourceName != '' ? this.changeSetText + ` for ${resourceName}` : this.changeSetText;
+            this.constructOrUpdateTimeline(data);
             if(!this.developmentMode) {
                 this.initializeChangesView(data);
             }
-            // Convert UTC timestamp to user readable date
-            this.scanDate = rows[0][6] != '' ? 'Changes were last scanned on ' + moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a") : this.noScanMsg + ' Please enable Change Analysis using Change Analysis Settings.';
-            if(this.isPublic) {
+            if(this.changeAnalysisService.getAppService()) {
+                // Convert UTC timestamp to user readable date
+                this.scanDate = rows[0][6] != '' ? 'Changes were last scanned on ' + moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a") : this.noScanMsg + ' Please enable Change Analysis using Change Analysis Settings.';
+            } else {
+                this.scanDate = '';
+            }
+
+            if(this.isPublic && this.changeAnalysisService.getAppService()) {
                 this.checkInitialScanState();
              }
         } else {
-             this.scanDate = this.noScanMsg + ' Please enable Change Analysis using Change Analysis Settings.';
+            if(this.changeAnalysisService.getAppService()) {
+                 this.scanDate = this.noScanMsg + ' Please enable Change Analysis using Change Analysis Settings.';
+            } else {
+                this.scanDate = '';
+            }
              this.changeSetText = `No change groups have been detected`;
+             this.changeSetText = resourceName != '' ? this.changeSetText + ` for ${resourceName}` : this.changeSetText;
              this.setDefaultScanStatus();
+             if(this.changesTimeline) {
+                 this.timeLineDataSet.clear();
+                 this.changesDataSet = [{
+                    table:{
+                            columns:[],
+                            rows: []
+                         },
+                     renderingProperties: RenderingType.ChangesView
+                 }];
+
+                 this.loadingChangesTable = false;
+                 this.changesTableError = '';
+                 this.changeDetectorRef.detectChanges();
+                 this.changeDetectorRef.markForCheck();
+             }
+
         }
+    }
+
+    constructOrUpdateTimeline(data: DataTableResponseObject) {
+        if(this.changesTimeline) {
+            this.updateTimeline(data);
+        } else {
+            this.constructTimeline(data);
+        }
+    }
+
+    updateTimeline(data: DataTableResponseObject) {
+        this.timeLineDataSet.clear();
+        let changeSets = data.rows;
+        let updatedTimelineItems = [];
+        changeSets.forEach(changeset => {
+            this.changeSetsLocalCopy[changeset[0]] = changeset;
+            updatedTimelineItems.push({
+                id: changeset[0],
+                content: ' ',
+                start: changeset[3],
+                group: ChangeAnalysisUtilities.findGroupBySource(changeset[2]),
+                className: ChangeAnalysisUtilities.findGroupBySource(changeset[2]) == 1 ? 'blue' : 'green'
+            })
+        });
+        this.timeLineDataSet.add(updatedTimelineItems);
     }
 
     private constructTimeline(data: DataTableResponseObject) {

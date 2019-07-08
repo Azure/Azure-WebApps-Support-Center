@@ -36,6 +36,10 @@ export class ChangeAnalysisUtilities {
         {
             "resourceType": "Microsoft.Logic",
             "imgPath": ChangeAnalysisUtilities.basePath + "Logic Apps_COLOR.png"
+        },
+        {
+            "resourceType": "Microsoft.Storage",
+            "imgPath": ChangeAnalysisUtilities.basePath + "Azure Storage.png"
         }
     ];
 

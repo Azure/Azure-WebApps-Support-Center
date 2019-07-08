@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { DiagnosticData, DataTableResponseObject, DetectorResponse } from '../../models/detector';
+import { DiagnosticData, DataTableResponseObject, DetectorResponse, Rendering } from '../../models/detector';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { Network, DataSet, Node, Edge, IdType, Timeline } from 'vis';
 import { ChangeAnalysisUtilities } from '../../utilities/changeanalysis-utilities';
 import { DataTableUtilities} from '../../utilities/datatable-utilities';
 import { DiagnosticService } from '../../services/diagnostic.service';
 import { DetectorControlService } from '../../services/detector-control.service';
+import { ChangeAnalysisService} from '../../services/change-analysis.service';
+import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 @Component({
   selector: 'app-dependencies',
   templateUrl: './app-dependencies.component.html',
@@ -19,7 +21,9 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
     azureIcons: any = {};
     primaryResourceId: string = '';
     selectedResourceId: string = '';
-    constructor(protected telemetryService: TelemetryService, protected diagnosticService: DiagnosticService, protected detectorControlService: DetectorControlService) {
+    showLoader: boolean = false;
+    constructor(protected telemetryService: TelemetryService, protected diagnosticService: DiagnosticService,
+        protected detectorControlService: DetectorControlService, protected changeAnalysisService: ChangeAnalysisService) {
         super(telemetryService);
     }
 
@@ -42,7 +46,8 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
             networkDataSet.push({
                 id: this.primaryResourceId,
                 image: ChangeAnalysisUtilities.getImgPathForResource(ChangeAnalysisUtilities.getResourceType(this.primaryResourceId)),
-                shape: 'image'
+                shape: 'circularImage',
+                title: this.primaryResourceId
             });
 
             rows.forEach(row => {
@@ -51,7 +56,8 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
                 networkDataSet.push({
                     id: resourceUri,
                     image: ChangeAnalysisUtilities.getImgPathForResource(resourceType),
-                    shape: 'image'
+                    shape: 'circularImage',
+                    title: resourceUri
                 })
             });
 
@@ -77,6 +83,17 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
           edges: edges
         };
         var networkOptions = {
+            nodes: {
+                borderWidth: 2,
+                size: 30,
+                color: {
+                    border: '#365bf2',
+                    background: '#fcfcfc'
+                  }
+            },
+            interaction: {
+                hover: true
+            },
             layout: {
                 hierarchical: {
                     direction: 'UD'
@@ -102,10 +119,16 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
         //this.logGraphClick();
         let selectedResource = <HTMLInputElement> document.getElementById('resourceUri');
         if(selectedResource.value) {
-            console.log(selectedResource.value);
             this.selectedResourceId = selectedResource.value;
             this.loadChangesTimeLine();
         }
+    }
+
+    logGraphClick(): void {
+        let eventProps = {
+            'Detector': this.detector,
+        }
+        this.telemetryService.logEvent(TelemetryEventNames.DependencyGraphClick, eventProps);
     }
 
     loadChangesTimeLine(): void {
@@ -114,11 +137,18 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
         let provider = ChangeAnalysisUtilities.getResourceType(this.selectedResourceId);
         let resourceName = ChangeAnalysisUtilities.getResourceName(this.selectedResourceId, provider);
         let queryParams = `&fId=101&btnId=9&inpId=1&val=${encodeURIComponent(sub)}&inpId=2&val=${encodeURIComponent(resourceGroups)}&inpId=3&val=${encodeURIComponent(provider)}&inpId=4&val=${encodeURIComponent(resourceName)}`;
+        this.showLoader = true;
+        this.changeAnalysisService.setCurrentResourceName(resourceName);
+        this.changeAnalysisService.setAppService(provider);
         this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
             this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
-                console.log(response.dataset);
+                let changeSets = response.dataset.filter(set => (<Rendering>set.renderingProperties).type === 16);
+                if(changeSets.length > 0) {
+                    this.changeAnalysisService.loadResourceChangeGroups(JSON.stringify(changeSets[0]));
+                }
+                this.showLoader = false;
             }, (error: any) => {
-
+                this.showLoader = false;
             });
     }
 

@@ -1,2 +1,7 @@
 <div id="mynetwork" class="col-sm-12"></div>
+
 <input type="hidden" id="resourceUri" (change)="refreshChangeTimeline()">
+
+<h5 *ngIf="showLoader">
+  <span class="fa fa-circle-o-notch fa-spin spin-icon"></span> Loading change groups for {{selectedResourceId}}...
+</h5>

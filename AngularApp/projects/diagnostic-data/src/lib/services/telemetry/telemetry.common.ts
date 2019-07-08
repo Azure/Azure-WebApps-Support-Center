@@ -30,7 +30,8 @@ export const TelemetryEventNames = {
     SearchResultFeedback: 'SearchResultFeedback',
     AuthorSelectSearchTerm: 'AuthorSelectSearchTerm',
     AuthorCreateSearchTerm: 'AuthorCreateSearchTerm',
-    AuthorRemoveSearchTerm: 'AuthorRemoveSearchTerm'
+    AuthorRemoveSearchTerm: 'AuthorRemoveSearchTerm',
+    DependencyGraphClick: 'DependencyGraphClick'
 };
 
 export interface ITelemetryProvider {
