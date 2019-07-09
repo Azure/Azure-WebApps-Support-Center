@@ -4,6 +4,7 @@ import { isBoolean, isString, isNumber } from 'util';
 export class ChangeAnalysisUtilities {
 
     static readonly basePath: string = '../../../assets/img/azure-icons/';
+    static readonly changeAnalysisSupportedResources = ['Microsoft.Sql', 'Microsoft.Storage', 'Microsoft.Cache', 'Microsoft.Network', 'Microsoft.Web'];
     static readonly azureResourceList = [
         {
             "resourceType": "Microsoft.Web",
@@ -18,28 +19,12 @@ export class ChangeAnalysisUtilities {
             "imgPath": ChangeAnalysisUtilities.basePath +"Azure Cache Redis Product icon_COLOR.png"
         },
         {
-            "resourceType": "Microsoft.ApiManagement",
-            "imgPath": ChangeAnalysisUtilities.basePath +"Azure API Management.png"
-        },
-        {
-            "resourceType": "Microsoft.Insights",
-            "imgPath": ChangeAnalysisUtilities.basePath +"Azure Application Insights.png"
-        },
-        {
-            "resourceType": "Microsoft.ClassicCompute",
-            "imgPath": ChangeAnalysisUtilities.basePath + "Azure Cloud Service.png"
-        },
-        {
-            "resourceType":  "Microsoft.ContainerService",
-            "imgPath": ChangeAnalysisUtilities.basePath + "Azure Container Service_COLOR.png"
-        },
-        {
-            "resourceType": "Microsoft.Logic",
-            "imgPath": ChangeAnalysisUtilities.basePath + "Logic Apps_COLOR.png"
-        },
-        {
             "resourceType": "Microsoft.Storage",
             "imgPath": ChangeAnalysisUtilities.basePath + "Azure Storage.png"
+        },
+        {
+            "resourceType": "Microsoft.Network",
+            "imgPath": ChangeAnalysisUtilities.basePath + "Azure Virtual Network.png"
         }
     ];
 
@@ -135,7 +120,7 @@ export class ChangeAnalysisUtilities {
     public static getImgPathForResource(searchResourceType: string): string {
         let azureIconsList = this.azureResourceList;
         let resource = azureIconsList.find(element => element.resourceType.toLowerCase() == searchResourceType.toLowerCase());
-        return resource ? resource.imgPath : '';
+        return resource ? resource.imgPath : ChangeAnalysisUtilities.basePath + 'Azure Resouce.png';
     }
 
     public static getSubscription(resourceUri: string): string {
@@ -148,6 +133,10 @@ export class ChangeAnalysisUtilities {
 
     public static getResourceName(resourceUri: string, provider:string): string {
         return resourceUri.split(provider+"/")[1];
+    }
+
+    public static isResourceProviderSupported(provider: string): boolean {
+        return this.changeAnalysisSupportedResources.includes(provider);
     }
 
 
