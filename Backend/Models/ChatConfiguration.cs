@@ -11,15 +11,28 @@ namespace Backend.Models
 
         public bool GlobalEnabled { get; set; }
 
+        public OffHoursRegion[] OffHoursRegions { get; set; }
+
+        public PublicHolidayRegion[] PublicHolidayRegions { get; set; }
+
         public ChatHoursDuration[] GlobalChatHours { get; set; }
 
-        public PublicHoliday[] PublicHolidays { get; set; }
-
-        public OffHours[] OffHours { get; set; }
-        
         public ProductSpecificSettings[] ProductSpecificSettings { get; set; }
     }
-    
+
+    public class OffHoursRegion
+    {
+        public string Name { get; set; }
+        public OffHours[] Hours { get; set; }
+    }
+
+    public class PublicHolidayRegion
+    {
+        public string Name { get; set; }
+        public PublicHoliday[] Holidays { get; set; }
+    }
+
+
     public class PublicHoliday
     {
         public int Day { get; set; }
@@ -47,6 +60,12 @@ namespace Backend.Models
         public string BusinessStartTimePST { get; set; }
 
         public string BusinessEndTimePST { get; set; }
+
+        public string PublicHolidaysRegion { get; set; }
+
+        public string OffHoursRegion { get; set; }
+
+        public string[] SupportTopics { get; set; }
     }
 
     public class ProductSpecificSettings

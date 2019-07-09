@@ -63,7 +63,7 @@ export class PortalActionService {
 
     public openAppInsightsBlade() {
         const bladeInfo = {
-            detailBlade: 'AppServicesEnablementBlade',
+            detailBlade: 'AppMonitorEnablementV2',
             extension: 'AppInsightsExtension',
             detailBladeInputs: {
                 resourceUri: this.currentSite.id,

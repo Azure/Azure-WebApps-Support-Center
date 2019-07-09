@@ -23,12 +23,15 @@ export class SolutionComponent extends DataRenderBaseComponent {
   appName: string;
   renderedInternalMarkdown = '';
   overrideOptions: {};
+  showActionButton: boolean;
 
   constructor(telemetryService: TelemetryService, private _siteService: SolutionService) {
     super(telemetryService);
   }
 
   ngOnInit() {
+    this.showActionButton = this.solution.Action != ActionType.Markdown;
+
     let uriParts = this.solution.ResourceUri.split('/');
     this.appName = uriParts[uriParts.length - 1];
 

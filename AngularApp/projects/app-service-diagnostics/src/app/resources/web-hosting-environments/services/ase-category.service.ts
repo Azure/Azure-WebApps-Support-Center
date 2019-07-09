@@ -19,7 +19,7 @@ export class AseCategoryService extends CategoryService {
       id: 'Scaling',
       name: 'Scaling',
       description: 'Find out the current status of your scale operations, why your scale operations may be taking a long time, or why they are failing',
-      keywords: ['Scale Up', 'Scale Out', 'Deployent', 'Stuck'],
+      keywords: ['Scale Up', 'Scale Out', 'Deployment', 'Stuck'],
       color: 'rgb(249, 213, 180)',
       createFlowForCategory: true,
       chatEnabled: false

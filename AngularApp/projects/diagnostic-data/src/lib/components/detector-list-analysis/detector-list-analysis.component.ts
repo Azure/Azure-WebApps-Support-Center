@@ -107,6 +107,9 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
   }
 
   getApplicationInsightsData(response: DetectorResponse) {
+    this.appInsightQueryMetaDataList = [];
+    this.appInsightDataList = [];
+
     let appInsightDiagnosticData = response.dataset.filter(data => (<Rendering>data.renderingProperties).type === RenderingType.ApplicationInsightsView);
 
     appInsightDiagnosticData.forEach((diagnosticData: DiagnosticData) => {
@@ -167,7 +170,6 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     this._activatedRoute.paramMap.subscribe(params => {
       this.analysisId = params.get('analysisId');
       this.detectorId = params.get(this.detectorParmName) === null ? "" : params.get(this.detectorParmName);
-
       this.resetGlobals();
 
       // Add application insights analysis data
