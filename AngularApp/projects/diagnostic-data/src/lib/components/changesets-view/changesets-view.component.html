@@ -28,7 +28,7 @@
             <div class="text-danger" *ngIf="changesTableError != ''">
               {{changesTableError}}
             </div>
-            <div style="margin:10px" *ngIf="changesDataSet[0].table.rows.length > 0 && !loadingChangesTable">
+            <div style="margin:10px" *ngIf="changesDataSet && !loadingChangesTable">
                 <changes-view  [changesDataSet]="changesDataSet" [initiatedByList]="initiatedBy"  [detectorEventProperties]="detectorEventProperties" [changesetId]="selectedChangeSetId" ></changes-view>
             </div>
         </div>

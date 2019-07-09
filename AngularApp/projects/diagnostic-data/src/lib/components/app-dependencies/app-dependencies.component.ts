@@ -116,7 +116,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
     }
 
     refreshChangeTimeline(): void {
-        //this.logGraphClick();
+        this.logGraphClick();
         let selectedResource = <HTMLInputElement> document.getElementById('resourceUri');
         if(selectedResource.value) {
             this.selectedResourceId = selectedResource.value;
