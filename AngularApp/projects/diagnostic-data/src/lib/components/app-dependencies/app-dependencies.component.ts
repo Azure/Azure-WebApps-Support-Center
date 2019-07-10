@@ -47,8 +47,8 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
             networkDataSet.push({
                 id: this.primaryResourceId,
                 image: ChangeAnalysisUtilities.getImgPathForResource(ChangeAnalysisUtilities.getResourceType(this.primaryResourceId)),
-                shape: 'circularImage',
-                title: this.primaryResourceId
+                title: this.primaryResourceId,
+                shape: 'image'
             });
 
             rows.forEach(row => {
@@ -57,8 +57,8 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
                 networkDataSet.push({
                     id: resourceUri,
                     image: ChangeAnalysisUtilities.getImgPathForResource(resourceType),
-                    shape: 'circularImage',
-                    title: resourceUri
+                    title: resourceUri,
+                    shape: 'image'
                 })
             });
 
@@ -88,7 +88,6 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
                 borderWidth: 2,
                 size: 30,
                 color: {
-                    border: '#365bf2',
                     background: '#fcfcfc'
                   }
             },
