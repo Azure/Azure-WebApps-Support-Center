@@ -40,7 +40,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
     }
 
     constructNetwork(rows: any[][]): void {
-        if(rows.length > 0) {
+        if(rows && rows.length > 0) {
             this.primaryResourceId = rows[0][DataTableUtilities.getColumnIndexByName(this.datasetLocalCopy, 'PrimaryResource')];
             let columnIndex = DataTableUtilities.getColumnIndexByName(this.datasetLocalCopy, 'ResourceId');
             let networkDataSet = [];
