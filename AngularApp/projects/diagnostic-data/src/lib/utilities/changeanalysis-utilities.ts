@@ -12,19 +12,19 @@ export class ChangeAnalysisUtilities {
         },
         {
             "resourceType": "Microsoft.Sql",
-            "imgPath": ChangeAnalysisUtilities.basePath +"Azure SQL Database.png"
+            "imgPath": ChangeAnalysisUtilities.basePath +"AzureSQLDatabase.png"
         },
         {
             "resourceType": "Microsoft.Cache",
-            "imgPath": ChangeAnalysisUtilities.basePath +"Azure Cache Redis Product icon_COLOR.png"
+            "imgPath": ChangeAnalysisUtilities.basePath +"AzureCacheRedis.png"
         },
         {
             "resourceType": "Microsoft.Storage",
-            "imgPath": ChangeAnalysisUtilities.basePath + "Azure Storage.png"
+            "imgPath": ChangeAnalysisUtilities.basePath + "AzureStorage.png"
         },
         {
             "resourceType": "Microsoft.Network",
-            "imgPath": ChangeAnalysisUtilities.basePath + "Azure Virtual Network.png"
+            "imgPath": ChangeAnalysisUtilities.basePath + "AzureVirtualNetwork.png"
         }
     ];
 
@@ -120,7 +120,7 @@ export class ChangeAnalysisUtilities {
     public static getImgPathForResource(searchResourceType: string): string {
         let azureIconsList = this.azureResourceList;
         let resource = azureIconsList.find(element => element.resourceType.toLowerCase() == searchResourceType.toLowerCase());
-        return resource ? resource.imgPath : ChangeAnalysisUtilities.basePath + 'Azure Resouce.png';
+        return resource ? resource.imgPath : ChangeAnalysisUtilities.basePath + 'AzureResouce.png';
     }
 
     public static getSubscription(resourceUri: string): string {
@@ -128,7 +128,8 @@ export class ChangeAnalysisUtilities {
     }
 
     public static getResourceGroup(resourceUri: string): string {
-        return resourceUri.split("resourceGroups/")[1].split("/")[0];
+        let regex = new RegExp("resourceGroups/", "i");
+        return resourceUri.split(regex)[1].split("/")[0];
     }
 
     public static getResourceName(resourceUri: string, provider:string): string {
@@ -136,7 +137,7 @@ export class ChangeAnalysisUtilities {
     }
 
     public static isResourceProviderSupported(provider: string): boolean {
-        return this.changeAnalysisSupportedResources.includes(provider);
+        return ChangeAnalysisUtilities.changeAnalysisSupportedResources.indexOf(provider) >= 0;
     }
 
 

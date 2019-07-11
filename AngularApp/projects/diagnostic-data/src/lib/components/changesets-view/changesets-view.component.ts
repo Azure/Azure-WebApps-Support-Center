@@ -77,14 +77,15 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
     private parseData(data: DataTableResponseObject) {
         let rows = data.rows;
         let resourceName = this.changeAnalysisService.getCurrentResourceName();
+        let isAppService = this.changeAnalysisService.getAppService();
         if (rows.length > 0 && rows[0].length > 0) {
-            this.changeSetText = rows.length == 1 ? `1 change group detected` : `${rows.length} change groups have been detected`;
+            this.changeSetText = rows.length === 1 ? `1 change group detected` : `${rows.length} change groups have been detected`;
             this.changeSetText = resourceName != '' ? this.changeSetText + ` for ${resourceName}` : this.changeSetText;
             this.constructOrUpdateTimeline(data);
             if(!this.developmentMode) {
                 this.initializeChangesView(data);
             }
-            if(this.changeAnalysisService.getAppService()) {
+            if(isAppService) {
                 // Convert UTC timestamp to user readable date
                 this.scanDate = rows[0][6] != '' ? 'Changes were last scanned on ' + moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a") : this.noScanMsg + ' Please enable Change Analysis using Change Analysis Settings.';
             } else {
@@ -95,7 +96,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
                 this.checkInitialScanState();
              }
         } else {
-            if(this.changeAnalysisService.getAppService()) {
+            if(isAppService) {
                  this.scanDate = this.noScanMsg + ' Please enable Change Analysis using Change Analysis Settings.';
             } else {
                 this.scanDate = '';
