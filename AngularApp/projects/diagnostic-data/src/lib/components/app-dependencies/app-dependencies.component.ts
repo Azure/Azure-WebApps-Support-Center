@@ -44,21 +44,26 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
             this.primaryResourceId = rows[0][DataTableUtilities.getColumnIndexByName(this.datasetLocalCopy, 'PrimaryResource')];
             let columnIndex = DataTableUtilities.getColumnIndexByName(this.datasetLocalCopy, 'ResourceId');
             let networkDataSet = [];
+            let provider = ChangeAnalysisUtilities.getResourceType(this.primaryResourceId);
+            let resourceName = ChangeAnalysisUtilities.getResourceName(this.primaryResourceId, provider).split("/")[1];
             networkDataSet.push({
                 id: this.primaryResourceId,
                 image: ChangeAnalysisUtilities.getImgPathForResource(ChangeAnalysisUtilities.getResourceType(this.primaryResourceId)),
                 title: this.primaryResourceId,
-                shape: 'image'
+                shape: 'circularImage',
+                label: resourceName
             });
 
             rows.forEach(row => {
                 let resourceUri = row[columnIndex];
                 let resourceType = ChangeAnalysisUtilities.getResourceType(resourceUri);
+                let resourceName = ChangeAnalysisUtilities.getResourceName(resourceUri, resourceType).split("/")[1];
                 networkDataSet.push({
                     id: resourceUri,
                     image: ChangeAnalysisUtilities.getImgPathForResource(resourceType),
                     title: resourceUri,
-                    shape: 'image'
+                    shape: 'circularImage',
+                    label: resourceName
                 })
             });
 
@@ -70,7 +75,12 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
             edgesDataSet.push({
                 from: this.primaryResourceId,
                 to: rows[i][columnIndex],
-                arrows: 'to'
+                arrows: 'to',
+                color: {
+                    color: '#222222',
+                    hover: 'blue',
+                    highlight: 'blue'
+                }
             })
         }
 
@@ -88,16 +98,12 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
                 borderWidth: 2,
                 size: 30,
                 color: {
+                    border: '#222222',
                     background: '#fcfcfc'
                   }
             },
             interaction: {
                 hover: true
-            },
-            layout: {
-                hierarchical: {
-                    direction: 'UD'
-                }
             }
         };
         var network = new Network(container, networkData, networkOptions);
