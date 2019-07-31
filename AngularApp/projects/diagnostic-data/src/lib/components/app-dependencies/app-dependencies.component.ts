@@ -46,6 +46,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
             let networkDataSet = [];
             let provider = ChangeAnalysisUtilities.getResourceType(this.primaryResourceId);
             let resourceName = ChangeAnalysisUtilities.getResourceName(this.primaryResourceId, provider).split("/")[1];
+            this.changeAnalysisService.setCurrentResourceName(resourceName);
             networkDataSet.push({
                 id: this.primaryResourceId,
                 image: ChangeAnalysisUtilities.getImgPathForResource(ChangeAnalysisUtilities.getResourceType(this.primaryResourceId)),
