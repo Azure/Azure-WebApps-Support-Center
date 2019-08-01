@@ -77,7 +77,7 @@ namespace AppLensV3.Controllers
                 }
             }
 
-            var diagnosticPath = $"v4/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{provider}/{resourceType}/{resourceName}/insights?pesId={pesId}&supportTopicId={supportTopicId}&startTime={startTime}&endTime={endTime}";
+            var diagnosticPath = $"subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{provider}/{resourceType}/{resourceName}/insights?pesId={pesId}&supportTopicId={supportTopicId}&startTime={startTime}&endTime={endTime}";
             var insights = await diagnosticClientService.Execute(HttpMethod.Post.Method, diagnosticPath, null, true, false);
 
             if (insights.IsSuccessStatusCode)
@@ -88,83 +88,6 @@ namespace AppLensV3.Controllers
             }
 
             return null;
-        }
-
-        private string GetVersion(string resourceType, out bool isPassthrough)
-        {
-            switch (resourceType)
-            {
-                case "sites":
-                    isPassthrough = false;
-                    return "/v4";
-                default:
-                    isPassthrough = true;
-                    return "";
-            }
-        }
-
-        private async Task<string> GetPostBodyOperation(string subscriptionId, string resourceGroupName, string resourceType, string resourceName)
-        {
-            Task<ObserverResponse> getResourceTask = null;
-            Task<string> postBodyTask = null;
-
-            switch (resourceType)
-            {
-                case InsightsConstants.SiteResourceTypeName:
-                    getResourceTask = observerService.GetSite(resourceName);
-                    break;
-                case InsightsConstants.HostingEnvironmentResourceTypeName:
-                    getResourceTask = observerService.GetHostingEnvironmentDetails(resourceName);
-                    break;
-            }
-
-            var resource = await getResourceTask;
-            if (resource.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                throw new Exception("Could not find resource");
-            }
-
-            switch (resourceType)
-            {
-                case InsightsConstants.SiteResourceTypeName:
-                    postBodyTask = GetSitePostBody(resource.Content, subscriptionId, resourceGroupName, resourceName);
-                    break;
-                case InsightsConstants.HostingEnvironmentResourceTypeName:
-                    postBodyTask = GetHostingEnvironmentPostBody(resource.Content, subscriptionId, resourceGroupName, resourceName);
-                    break;
-                default:
-                    break;
-            }
-
-            return await postBodyTask;
-        }
-
-        private async Task<string> GetSitePostBody(JObject resource, string subscription, string resourceGroupName, string resourceName)
-        {
-            string postBodyString = null;
-            if (resource != null)
-            {
-                JToken site = resource.Children().FirstOrDefault(jt => jt["Subscription"].ToString() == subscription && jt["ResourceGroupName"].ToString() == resourceGroupName);
-                if (site != null)
-                {
-                    var internalStampName = site.Value<string>("InternalStampName") as string;
-                    var resp = await observerService.GetSitePostBody(internalStampName, resourceName);
-                    postBodyString = resp.Content;
-                }
-            }
-
-            return postBodyString;
-        }
-
-        private async Task<string> GetHostingEnvironmentPostBody(JObject resource, string subscription, string resourceGroupName, string resourceName)
-        {
-            string postBodyString = null;
-            if (resource != null && resource.Value<string>("CustomerSubscriptionId") == subscription && resource.Value<string>("ResourceGroup") == resourceGroupName)
-            {
-                postBodyString = (await observerService.GetHostingEnvironmentPostBody(resourceName)).Content;
-            }
-
-            return postBodyString;
         }
     }
 }
