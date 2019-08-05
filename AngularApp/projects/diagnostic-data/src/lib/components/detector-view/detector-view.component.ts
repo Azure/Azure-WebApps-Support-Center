@@ -42,7 +42,6 @@ export class DetectorViewComponent implements OnInit {
   ratingEventProperties: { [name: string]: string };
   authorEmails: string;
   insightsListEventProperties = {};
-  currentSiteString = `Current Site: ${window.location.href}`;
 
   emailToAuthor: string = '';
   emailToApplensTeam: string = '';
