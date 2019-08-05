@@ -87,6 +87,16 @@
             "azureCommImpactedServicesList": "",
             "pesId": "16513",
             "staticSelfHelpContent": "microsoft.asd"
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.Microservices4Spring/appClusters",
+            "templateFileName": "SpringCloudService",
+            "imgSrc": "assets/img/Azure-WebApps-Logo.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "",
+            "pesId": "",
+            "staticSelfHelpContent": ""
         }
     ]
 }

@@ -46,6 +46,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
             let networkDataSet = [];
             let provider = ChangeAnalysisUtilities.getResourceType(this.primaryResourceId);
             let resourceName = ChangeAnalysisUtilities.getResourceName(this.primaryResourceId, provider).split("/")[1];
+            this.changeAnalysisService.setCurrentResourceName(resourceName);
             networkDataSet.push({
                 id: this.primaryResourceId,
                 image: ChangeAnalysisUtilities.getImgPathForResource(ChangeAnalysisUtilities.getResourceType(this.primaryResourceId)),
@@ -103,7 +104,10 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
                   }
             },
             interaction: {
-                hover: true
+                hover: true,
+                zoomView: false,
+                dragNodes: false,
+                dragView: false
             }
         };
         var network = new Network(container, networkData, networkOptions);
@@ -148,6 +152,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
             this.showLoader = true;
             this.changeAnalysisService.setCurrentResourceName(resourceName);
             this.changeAnalysisService.setAppService(provider);
+            this.changeAnalysisService.setResourceUri(this.selectedResourceId);
             this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
                 this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
                     let changeSets = response.dataset.filter(set => (<Rendering>set.renderingProperties).type === 16);

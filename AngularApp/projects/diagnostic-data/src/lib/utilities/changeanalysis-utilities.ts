@@ -29,8 +29,11 @@ export class ChangeAnalysisUtilities {
     ];
 
     public static  prepareDisplayValueForTable(displayName: string): string {
-        displayName = displayName.replace("D:\\home\\site\\wwwroot", "");
-        return displayName;
+        if(displayName) {
+            displayName = displayName.replace("D:\\home\\site\\wwwroot", "");
+            return displayName;
+        }
+        return "N/A";
     }
 
       public static prepareValuesForDiffView(diffvalue: any): DiffEditorModel {
@@ -120,7 +123,7 @@ export class ChangeAnalysisUtilities {
     public static getImgPathForResource(searchResourceType: string): string {
         let azureIconsList = this.azureResourceList;
         let resource = azureIconsList.find(element => element.resourceType.toLowerCase() == searchResourceType.toLowerCase());
-        return resource ? resource.imgPath : ChangeAnalysisUtilities.basePath + 'AzureResouce.png';
+        return resource ? resource.imgPath : ChangeAnalysisUtilities.basePath + 'AzureResource.png';
     }
 
     public static getSubscription(resourceUri: string): string {

@@ -111,6 +111,24 @@ export class SitesCategoryService extends CategoryService {
         createFlowForCategory: true,
         chatEnabled: false
       }
+    },
+    //Separate tile for Navigator for Windows Web App
+    {
+        appType: AppType.WebApp,
+        platform: OperatingSystem.windows,
+        stack: '',
+        sku: Sku.All,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
+        item: {
+            id: 'navigator',
+            name: 'Navigator',
+            description: 'Are you having issues after making changes on your app and its dependencies? Review Navigator to investigate the recent changes in your app and dependencies.',
+            keywords: ['Dependency Map', 'Changes', 'Dependency', 'Change Analysis'],
+            color: 'rgb(255, 217, 119)',
+            createFlowForCategory: false,
+            chatEnabled: false,
+            overridePath: `resource${this._resourceService.resourceIdForRouting}/detectors/navigator`
+        }
     }
   ];
 

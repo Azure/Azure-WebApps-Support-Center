@@ -3,12 +3,7 @@
   <input type="hidden" id="resourceUri" (change)="refreshChangeTimeline()">
 
 <div *ngIf="showNotSupport">
-  {{selectedResourceType}} is not supported on Change Analysis. Please see the below list of supported resources.
-  <ul>
-    <li *ngFor="let resource of supportedResources">
-      {{ resource }}
-    </li>
-  </ul>
+  {{selectedResourceType}} is not supported on Change Analysis. View other dependency resource changes to isolate potential causes to an issue.
 </div>
 <h5 *ngIf="showLoader">
   <span class="fa fa-circle-o-notch fa-spin spin-icon"></span> Loading change groups for {{selectedResourceId}}...

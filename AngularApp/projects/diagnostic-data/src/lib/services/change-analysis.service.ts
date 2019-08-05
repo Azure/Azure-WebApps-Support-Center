@@ -9,7 +9,7 @@ export class ChangeAnalysisService {
   private changeGroupsData: BehaviorSubject<string> = new BehaviorSubject<string>('');
   private isAppService: boolean = true;
   private currentResourceName: string = '';
-
+  private resourceUri: string = '';
   getResourceChangeGroups = this.changeGroupsData.asObservable();
 
   constructor() { }
@@ -32,6 +32,14 @@ export class ChangeAnalysisService {
 
   public getCurrentResourceName(): string {
       return this.currentResourceName;
+  }
+
+  public getResouceUri(): string {
+      return this.resourceUri;
+  }
+
+  public setResourceUri(name: string) {
+      this.resourceUri = name;
   }
 
 }
