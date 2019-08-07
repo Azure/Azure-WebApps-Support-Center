@@ -1,5 +1,5 @@
 
-import {map, retry} from 'rxjs/operators';
+import { map, retry } from 'rxjs/operators';
 import { Http, Headers, Response } from '@angular/http';
 import { Injectable } from '@angular/core';
 import { ResponseMessageEnvelope } from '../models/responsemessageenvelope';
@@ -49,23 +49,23 @@ export class GenericApiService {
             return this.invoke<DetectorResponse>(path, 'POST');
         } else {
             let path = `${this.resourceId}/detectors/${detectorName}?startTime=${startTime}&endTime=${endTime}`;
-            if(additionalQueryParams != undefined) {
+            if (additionalQueryParams != undefined) {
                 path += additionalQueryParams;
             }
-            return this._armService.getResource<DetectorResponse>(path, '2015-08-01', refresh).pipe(
+            return this._armService.getResource<DetectorResponse>(path, null, refresh).pipe(
                 map((response: ResponseMessageEnvelope<DetectorResponse>) => response.properties));
         }
     }
 
     public invoke<T>(path: string, method = 'GET', body: any = {}): Observable<T> {
-        const url =  `${this.localEndpoint}/api/invoke`;
+        const url = `${this.localEndpoint}/api/invoke`;
 
         const request = this._http.post(url, body, {
             headers: this._getHeaders(path, method)
         }).pipe(
             retry(2),
             map((response: Response) => <T>(response.json())
-        ));
+            ));
 
         return request;
     }
@@ -76,14 +76,14 @@ export class GenericApiService {
         headers.append('Accept', 'application/json');
 
         if (path) {
-          headers.append('x-ms-path-query', path);
+            headers.append('x-ms-path-query', path);
         }
 
         if (method) {
-          headers.append('x-ms-method', method);
+            headers.append('x-ms-method', method);
         }
 
         return headers;
-      }
+    }
 
 }

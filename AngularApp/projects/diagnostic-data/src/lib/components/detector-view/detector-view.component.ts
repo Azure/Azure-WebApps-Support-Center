@@ -42,7 +42,9 @@ export class DetectorViewComponent implements OnInit {
   ratingEventProperties: { [name: string]: string };
   authorEmails: string;
   insightsListEventProperties = {};
-  currentSiteString = `Current Site: ${window.location.href} `;
+
+  emailToAuthor: string = '';
+  emailToApplensTeam: string = '';
 
   @Input()
   set detectorResponse(value: DetectorResponse) {
@@ -106,6 +108,9 @@ export class DetectorViewComponent implements OnInit {
         };
 
         this.feedbackDetector = this.isSystemInvoker ? this.feedbackDetector : data.metadata.id;
+        let subject = encodeURIComponent(`Detector Feedback for ${this.feedbackDetector}`);
+        let body = encodeURIComponent('Current site: ' + window.location.href + '\n' + 'Please provide feedback here:');
+        this.emailToApplensTeam  = `mailto:applensdisc@microsoft.com?subject=${subject}&body=${body}`;
 
         if (!this.isSystemInvoker && data.metadata && data.metadata.author) {
           this.authorInfo = data.metadata.author;
@@ -121,6 +126,7 @@ export class DetectorViewComponent implements OnInit {
             }
           });
           this.authorEmails = authorsArray.join(';');
+          this.emailToAuthor = `mailto:${this.authorEmails}?cc=applensdisc@microsoft.com&subject=${subject}&body=${body}`;
         }
 
         this.buttonViewActiveComponent = null;

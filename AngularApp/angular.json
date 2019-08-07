@@ -40,8 +40,8 @@
               "node_modules/admin-lte/dist/css/AdminLTE.min.css",
               "node_modules/admin-lte/dist/css/skins/skin-blue.css",
               "projects/applens/src/styles.scss",
-			  "node_modules/vis/dist/vis.min.css",
-			  "node_modules/vis/dist/vis-timeline-graph2d.min.css"
+              "node_modules/vis/dist/vis.min.css",
+              "node_modules/vis/dist/vis-timeline-graph2d.min.css"
             ],
             "scripts": [
               "node_modules/moment/min/moment.min.js",
@@ -256,6 +256,7 @@
             "assets": [
               "projects/app-service-diagnostics/src/favicon.ico",
               "projects/app-service-diagnostics/src/assets",
+              "projects/app-service-diagnostics/src/armResourceConfig",
               {
                 "glob": "**/*",
                 "input": "node_modules/ngx-monaco-editor/assets/monaco",
@@ -270,8 +271,8 @@
               "node_modules/@swimlane/ngx-datatable/release/assets/icons.css",
               "projects/app-service-diagnostics/src/styles.scss",
               "projects/app-service-diagnostics/src/styles/main.scss",
-              "node_modules/vis/dist/vis.min.css",			  
-			  "node_modules/vis/dist/vis-timeline-graph2d.min.css"
+              "node_modules/vis/dist/vis.min.css",
+              "node_modules/vis/dist/vis-timeline-graph2d.min.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

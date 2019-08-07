@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Category } from '../models/category';
 import { DiagnosticService } from 'diagnostic-data';
 import { BehaviorSubject } from 'rxjs';
-
+import { GenericArmConfigService } from '../../shared/services/generic-arm-config.service';
+import { ArmResourceConfig } from '../../shared/models/arm/armResourceConfig';
 @Injectable()
 export class CategoryService {
 
@@ -12,8 +13,17 @@ export class CategoryService {
 
   private _commonCategories: Category[] = [];
 
-  constructor() {
+  constructor(private _genericArmConfigService?: GenericArmConfigService) {
     this._addCategories(this._commonCategories);
+  }
+
+  public initCategoriesForArmResource(resourceUri: string) {
+    if (this._genericArmConfigService) {
+      let currConfig: ArmResourceConfig = this._genericArmConfigService.getArmResourceConfig(resourceUri);
+      if (currConfig.categories && currConfig.categories.length > 0) {
+        this._addCategories(currConfig.categories);
+      }
+    }
   }
 
   protected _addCategories(categories: Category[]) {

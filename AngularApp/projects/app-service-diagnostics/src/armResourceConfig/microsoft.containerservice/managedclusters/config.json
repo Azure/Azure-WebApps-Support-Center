@@ -1,0 +1,32 @@
+{
+	"homePageText": {
+		"title": "Azure Kubernetes Services Diagnostics",
+		"description": "Use Azure Kubernetes Services Diagnostics to investigate how your cluster is performing, diagnose issues, and discover how to improve its reliability. Select the problem category that best matches the information or tool that you're interested in:",
+		"searchBarPlaceHolder": "Search Azure Kubernetes Services"
+	},
+	"matchRegEx": "/Microsoft.ContainerService/managedClusters/",
+	"searchSuffix": "AKS",
+	"azureServiceName": "Azure Kubernetes Services",
+	"armApiVersion": "2019-04-01",
+	"isSearchEnabled": true,
+	"isApplicableForLiveChat": false,
+	"categories": [{
+			"id": "Control Plane",
+			"name": "Control Plane",
+			"description": "Investigate issues with the control plane of your cluster. Find out the common causes and investigate in detail.",
+			"keywords": ["Control Plane", "Availability"],
+			"color": "rgb(186, 211, 245)",
+			"createFlowForCategory": false,
+			"chatEnabled": false
+		},
+		{
+			"id": "Customer",
+			"name": "Customer",
+			"description": "List of published materials that may be helpful in resolving the issue.",
+			"keywords": ["Resources"],
+			"color": "rgb(249, 213, 180)",
+			"createFlowForCategory": true,
+			"chatEnabled": false
+		}
+	]
+}

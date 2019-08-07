@@ -1,6 +1,6 @@
 <div class="home-container">
   <div class="input-group input-group-lg search-input-group" (keyup.escape)="clearSearch()" role="search">
-    <input tabindex="0" type="search" class="form-control" placeholder="Search App Service Diagnostics"
+    <input tabindex="0" type="search" class="form-control" placeholder="{{searchPlaceHolder}}"
       [ngModel]="searchValue" (ngModelChange)="updateSearchValue($event)" (focus)="onSearchBoxFocus(event)"
       (focusout)="onSearchLostFocus()" aria-controls="search-results">
     <div class="input-group-btn" id="clear-search">
@@ -20,12 +20,8 @@
     </ng-container>
   </div>
   <div class="main-area">
-    <h2 tabindex="0">App Service Diagnostics</h2>
-    <p id="page-description" tabindex="0">
-      Use App Service Diagnostics to investigate how your app is performing, diagnose issues, and discover how to
-      improve your application. Select the problem category that best matches the information or tool that you're
-      interested in:
-    </p>
+    <h2 tabindex="0">{{homePageText.title}}</h2>
+    <p id="page-description" tabindex="0">{{homePageText.description}}</p>
     <div *ngIf="categories" class="category-container">
       <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
         <category-tile [category]="category"></category-tile>

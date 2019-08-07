@@ -1,0 +1,24 @@
+{
+	"homePageText": {
+		"title": "",
+		"description": "",
+		"searchBarPlaceHolder": ""
+	},
+	"matchRegEx": "/Microsoft.ContainerService/managedClusters/",
+	"searchSuffix": "",
+	"azureServiceName": "",
+	"armApiVersion": "",
+	"isSearchEnabled": true,
+	"isApplicableForLiveChat": false,
+	"categories": [{
+			"id": "",
+			"name": "",
+			"description": "",
+			"keywords": [],
+			"color": "",
+			"createFlowForCategory": true,
+			"overridePath": "",
+			"chatEnabled": false
+		}
+	]
+}

@@ -18,6 +18,18 @@ const ResourceRoutes = RouterModule.forChild([
   {
     path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/microsoft.web/hostingenvironments/:resourcename',
     loadChildren: './web-hosting-environments/web-hosting-environments.module#WebHostingEnvironmentsModule'
+  },
+
+  // Generic ARM Resource
+  {
+    path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/:providerName/:resourceTypeName/:resourcename',
+    loadChildren: './generic-arm-resources/generic-arm-resources.module#GenericArmResourcesModule'
+  },
+
+  //Generic ARM Resource with suffix
+  {
+    path: 'subscriptions/:subscriptionid/resourcegroups/:resourcegroup/providers/:providerName/:resourceTypeName/:resourcename/:armSuffix',
+    loadChildren: './generic-arm-resources/generic-arm-resources.module#GenericArmResourcesModule'
   }
 
 ]);

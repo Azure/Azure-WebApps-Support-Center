@@ -4,5 +4,5 @@ There is an issue with webpack dev server when you run with ssl enabled, the win
 
 - Navigate to this folder and run `node create-cert.js`
 - This will create `server.crt` and `server.key`
-- Open this folder in explorer and install certificate in the Trusted Root Certificate Store
+- Open this folder in explorer and install certificate in the Trusted Root Certificate Store of local machine
 - Close any open browser windows, reopen, and it should now not encounter the above error

@@ -34,7 +34,12 @@ export class ServerFarmDataService {
                     return this._armService.getResource<Site>(this.siteResourceId).pipe(
                         mergeMap((site: ResponseMessageEnvelope<Site>) => {
                             this.currentSite = site.properties;
-                            return this._rbacService.hasPermission(this.currentSite.serverFarmId, [this._rbacService.readScope]);
+                            if (!!this.currentSite.serverFarmId) {
+                                return this._rbacService.hasPermission(this.currentSite.serverFarmId, [this._rbacService.readScope]);
+                            }
+                            else {
+                                return this._rbacService.hasPermission(this.siteResourceId, [this._rbacService.readScope]);
+                            }
                         }),
                         mergeMap((hasPermission: boolean) => {
                             this.hasServerFarmAccess.next(hasPermission);
@@ -45,9 +50,9 @@ export class ServerFarmDataService {
                             this.siteServerFarm.next(serverFarm);
                             return this._armService.getResourceCollection<Site>(serverFarm.id + '/sites');
                         }))
-                    .subscribe((sites: ResponseMessageEnvelope<Site>[]) => {
-                        this.sitesInServerFarm.next(sites.map(env => env.properties));
-                    });
+                        .subscribe((sites: ResponseMessageEnvelope<Site>[]) => {
+                            this.sitesInServerFarm.next(sites.map(env => env.properties));
+                        });
                 }
             });
     }

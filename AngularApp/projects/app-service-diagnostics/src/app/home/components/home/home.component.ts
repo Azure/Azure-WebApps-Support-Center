@@ -8,6 +8,7 @@ import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
 import { NotificationService } from '../../../shared-v2/services/notification.service';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
+import { HomePageText } from '../../../shared/models/arm/armResourceConfig';
 import { ArmService } from '../../../shared/services/arm.service';
 import { AuthService } from '../../../startup/services/auth.service';
 
@@ -26,16 +27,43 @@ export class HomeComponent implements OnInit {
   event: any;
   subscriptionId: string;
   searchResultCount: number;
+  homePageText: HomePageText;
+  searchPlaceHolder: string;
   get inputAriaLabel(): string {
     return this.searchValue !== '' ?
-        `${this.searchResultCount} Result` + (this.searchResultCount !== 1 ? 's' : '') :
-        '';
+      `${this.searchResultCount} Result` + (this.searchResultCount !== 1 ? 's' : '') :
+      '';
   }
 
   constructor(private _resourceService: ResourceService, private _categoryService: CategoryService, private _notificationService: NotificationService, private _router: Router,
     private _detectorControlService: DetectorControlService, private _featureService: FeatureService, private _logger: LoggingV2Service, private _authService: AuthService,
     private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute, private armService: ArmService) {
+
+    if (_resourceService.armResourceConfig && _resourceService.armResourceConfig.homePageText
+      && _resourceService.armResourceConfig.homePageText.title && _resourceService.armResourceConfig.homePageText.title.length > 1
+      && _resourceService.armResourceConfig.homePageText.description && _resourceService.armResourceConfig.homePageText.description.length > 1
+      && _resourceService.armResourceConfig.homePageText.searchBarPlaceHolder && _resourceService.armResourceConfig.homePageText.searchBarPlaceHolder.length > 1) {
+      this.homePageText = _resourceService.armResourceConfig.homePageText;
+      this.searchPlaceHolder = this.homePageText.searchBarPlaceHolder;
+    }
+    else {
+      this.homePageText = {
+        title:'App Service Diagnostics',
+        description: 'App Service Diagnostics to investigate how your app is performing, diagnose issues, and discover how to\
+         improve your application. Select the problem category that best matches the information or tool that you\'re\
+         interested in:',
+         searchBarPlaceHolder: 'Search App Service Diagnostics'
+      };      
+    }
+
+
+    if (_resourceService.armResourceConfig) {
+      this._categoryService.initCategoriesForArmResource(_resourceService.resource.id);
+    }
+
     this._categoryService.categories.subscribe(categories => this.categories = categories);
+
+
     this._authService.getStartupInfo().subscribe(startupInfo => {
       if (startupInfo.additionalParameters && Object.keys(startupInfo.additionalParameters).length > 0) {
         let path = 'resource' + startupInfo.resourceId.toLowerCase();

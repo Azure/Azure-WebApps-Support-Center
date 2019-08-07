@@ -92,13 +92,13 @@ export class DetectorControlService {
         this.timeRangeErrorString = returnValue;
         return returnValue;
       }
-      if (moment.duration(moment.utc().diff(start)).asMinutes() < 0) {
-        returnValue = 'Start date time must be less than current date time';
+      if (moment.duration(moment.utc().diff(start)).asMinutes() < 30) {
+        returnValue = 'Start date time must be 30 minutes less than current date time';
         this.timeRangeErrorString = returnValue;
         return returnValue;
       }
-      if (moment.duration(moment.utc().diff(end)).asMinutes() < 0) {
-        returnValue = 'End date time must be less than current date time';
+      if (moment.duration(moment.utc().diff(end)).asMinutes() < 0) {        
+        returnValue = 'End date time must be 15 minutes less than current date time';
         this.timeRangeErrorString = returnValue;
         return returnValue;
       }
@@ -169,12 +169,32 @@ export class DetectorControlService {
     let startTime, endTime: momentNs.Moment;
     if (start && end) {
       startTime = moment.utc(start);
-      endTime = moment.utc(end);
+      if(moment.duration(moment.utc().diff(moment.utc(end))).asMinutes() < 16 ) {
+        //The supplied end time > now - 15 minutes. Adjust the end time so that it becomes now()-15 minutes.
+        endTime = moment.utc().subtract(16, 'minutes');
+      }
+      else {
+        endTime = moment.utc(end);
+      }
+      
     } else if (start) {
       startTime = moment.utc(start);
-      endTime = startTime.clone().add(1, 'days');
+      if (moment.duration(moment.utc().diff(startTime.clone().add(1, 'days'))).asMinutes() < 16) {
+        //No endtime was passed. If (start time + 1 day) > (now() - 15 minutes), adjust the end time so that it becomes less than now()-15 minutes.
+        endTime = moment.utc().subtract(16, 'minutes');
+      }
+      else {
+        endTime = startTime.clone().add(1, 'days');
+      }
     } else if (end) {
-      endTime = moment.utc(end);
+      if(moment.duration(moment.utc().diff(moment.utc(end))).asMinutes() < 16) {
+        //The supplied end time > now - 15 minutes. Adjust the end time so that it becomes now()-15 minutes.
+        endTime = moment.utc().subtract(16,'minutes');
+      }
+      else {
+        endTime = moment.utc(end);
+      }
+
       startTime = endTime.clone().subtract(1, 'days');
     } else {
       this.selectDuration(this.durationSelections[2]);
@@ -196,19 +216,25 @@ export class DetectorControlService {
       else {
         if (this.timeRangeErrorString === 'Empty End date time supplied.') {
           this._startTime = moment.utc(start);
-          if (moment.duration(moment.utc().diff(this._startTime)).asMinutes() < 15) {
-            this._startTime = moment.utc().subtract(15, 'minutes');
-            this._endTime = this._startTime.clone().add(1, 'days');
+          if (moment.duration(moment.utc().diff(this._startTime)).asMinutes() < 16) {
+            this._startTime = moment.utc().subtract(30, 'minutes');
+            this._endTime = this._startTime.clone().add(15, 'minutes');
             this.timeRangeErrorString += ' Auto adjusted Start and End date time.';
           }
           else {
-            this._endTime = this._startTime.clone().add(1, 'days');
+            if(moment.duration(moment.utc().diff(this._startTime.clone().add(1, 'days'))).asMinutes() < 16) {
+              this._endTime = moment.utc().subtract(16, 'minutes');
+            }
+            else {
+              this._endTime = this._startTime.clone().add(1, 'days');
+            }
+            
             this.timeRangeErrorString += ' Auto adjusted End date time.';
           }
         }
         else {
-          this.timeRangeErrorString = `Time range set to last 24 hrs. Start and End date time must not be more than ${(this.allowedDurationInDays * 24).toString()} hrs apart and Start date must be within the past 30 days.`;
-          this._endTime = moment.utc();
+          this.timeRangeErrorString =  `Time range set to last 24 hrs. Start and End date time must not be more than ${(this.allowedDurationInDays * 24).toString()} hrs apart, Start date must be within the past 30 days and end date must be 15 minutes less than the current time.`;
+          this._endTime = moment.utc().subtract(16, 'minutes');
           this._startTime = this._endTime.clone().subtract(1, 'days');
         }
       }

@@ -12,6 +12,8 @@ import { DetectorSummaryMessage } from '../detector-summary/detector-summary.com
 import { DocumentSearchMessage } from '../document-search/document-search.component';
 import { FeedbackMessage } from '../feedback/feedbackmessageflow';
 import { map } from 'rxjs/operators';
+import { GenericArmConfigService } from '../../../shared/services/generic-arm-config.service';
+import { ResourceService } from '../../../shared-v2/services/resource.service';
 
 
 @Injectable()
@@ -22,9 +24,8 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
 
   categoriesCreated: Category[] = [];
 
-  constructor(private _diagnosticApiService: DiagnosticService) {
+  constructor(private _diagnosticApiService: DiagnosticService, private _resourceService: ResourceService, private _genericArmConfigService?: GenericArmConfigService) {
     super();
-
     const needMoreHelp: MessageGroup = new MessageGroup('more-help', [], () => 'feedback');
     needMoreHelp.messages.push(new TextMessage('I need further assistance', MessageSender.User));
     needMoreHelp.messages.push(new TextMessage('Sorry to hear I could not help you solve your problem', MessageSender.System));
@@ -48,7 +49,6 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
   }
 
   createMessageFlowForCategory(category: Category): Observable<MessageGroup[]> {
-
     if (!category.createFlowForCategory || this.categoriesCreated.indexOf(category) >= 0) { return of([]); }
 
     this.categoriesCreated.push(category);
@@ -62,8 +62,17 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
       const showTiles: string = `show-all-tiles-${category.id}`;
       const feedback: string = `feedback-${category.id}`;
 
+      let serviceName: string = 'App Service Diagnostics';
+
+      if (this._resourceService.armResourceConfig
+        && this._resourceService.armResourceConfig.homePageText
+        && this._resourceService.armResourceConfig.homePageText.title
+        && this._resourceService.armResourceConfig.homePageText.title.length > 0) {
+        serviceName = this._resourceService.armResourceConfig.homePageText.title;
+      }
+
       const welcomeCategory: MessageGroup = new MessageGroup(`welcome-${category.id}`, [], () => mainMenuId);
-      welcomeCategory.messages.push(new TextMessage('Hello! Welcome to App Service Diagnostics! My name is Genie and I\'m here to help you diagnose and solve problems.'));
+      welcomeCategory.messages.push(new TextMessage(`Hello! Welcome to ${serviceName}! My name is Genie and I\'m here to help you diagnose and solve problems.`));
       welcomeCategory.messages.push(new TextMessage(`Here are some issues related to ${category.name} that I can help with. Please select the tile that best describes your issue.`, MessageSender.System, 500));
 
       const categoryMainMenu: MessageGroup = new MessageGroup(mainMenuId, [], () => feedback);

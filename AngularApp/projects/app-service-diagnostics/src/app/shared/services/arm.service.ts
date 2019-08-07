@@ -8,6 +8,7 @@ import { AuthService } from '../../startup/services/auth.service';
 import { CacheService } from './cache.service';
 import { catchError, retry, map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { GenericArmConfigService } from './generic-arm-config.service';
 
 
 @Injectable()
@@ -19,18 +20,37 @@ export class ArmService {
     public storageApiVersion = '2015-05-01-preview';
     public websiteApiVersion = '2015-08-01';
 
-    constructor(private _http: HttpClient, private _authService: AuthService, private _cache: CacheService) { }
+    constructor(private _http: HttpClient, private _authService: AuthService, private _cache: CacheService, private _genericArmConfigService?: GenericArmConfigService) {
+
+    }
+
+    getApiVersion(resourceUri: string, apiVersion?: string): string {
+        if (apiVersion) {
+            return apiVersion;
+        }
+        else {
+            if (this._genericArmConfigService) {
+                apiVersion = this._genericArmConfigService.getApiVersion(resourceUri);
+            }
+            if (!apiVersion || apiVersion == '') {
+                return this.websiteApiVersion;
+            }
+            else {
+                return apiVersion;
+            }
+        }
+    }
 
     createUrl(resourceUri: string, apiVersion?: string) {
         return `${this.armUrl}${resourceUri}${resourceUri.indexOf('?') >= 0 ? '&' : '?'}` +
-            `api-version=${!!apiVersion ? apiVersion : this.websiteApiVersion}`;
+            `api-version=${this.getApiVersion(resourceUri, apiVersion)}`;
     }
 
     getResource<T>(resourceUri: string, apiVersion?: string, invalidateCache: boolean = false): Observable<{} | ResponseMessageEnvelope<T>> {
         if (!resourceUri.startsWith('/')) {
             resourceUri = '/' + resourceUri;
         }
-        const url =  this.createUrl(resourceUri, apiVersion);
+        const url = this.createUrl(resourceUri, apiVersion);
 
         const request = this._http.get<ResponseMessageEnvelope<T>>(url, {
             headers: this.getHeaders()
@@ -46,7 +66,8 @@ export class ArmService {
         if (!resourceUri.startsWith('/')) {
             resourceUri = '/' + resourceUri;
         }
-        const url =  this.createUrl(resourceUri, apiVersion);
+
+        const url = this.createUrl(resourceUri, apiVersion);
 
         const request = this._http.get<T>(url, {
             headers: this.getHeaders()
@@ -59,7 +80,7 @@ export class ArmService {
     }
 
     getResourceWithoutEnvelope<T>(resourceUri: string, apiVersion?: string, invalidateCache: boolean = false): Observable<{} | T> {
-        const url =  this.createUrl(resourceUri, apiVersion);
+        const url = this.createUrl(resourceUri, apiVersion);
 
         const request = this._http.get<T>(url, {
             headers: this.getHeaders()
@@ -71,7 +92,7 @@ export class ArmService {
     }
 
     postResource<T, S>(resourceUri: string, body?: S, apiVersion?: string, invalidateCache: boolean = false, appendBodyToCacheKey: boolean = false): Observable<boolean | {} | ResponseMessageEnvelope<T>> {
-        const url =  this.createUrl(resourceUri, apiVersion);
+        const url = this.createUrl(resourceUri, apiVersion);
         let bodyString: string = '';
         if (body) {
             bodyString = JSON.stringify(body);
@@ -82,13 +103,13 @@ export class ArmService {
             catchError(this.handleError)
         );
 
-        let cacheKey: string = appendBodyToCacheKey ? url+bodyString : url;
+        let cacheKey: string = appendBodyToCacheKey ? url + bodyString : url;
 
         return this._cache.get(cacheKey, request, invalidateCache);
     }
 
     deleteResource<T>(resourceUri: string, apiVersion?: string, invalidateCache: boolean = false): Observable<any> {
-        const url =  this.createUrl(resourceUri, apiVersion);
+        const url = this.createUrl(resourceUri, apiVersion);
         return this._http.delete(url, { headers: this.getHeaders() }).pipe(
             // map((response: Response) => {
             //     let body = response.text();
@@ -99,7 +120,7 @@ export class ArmService {
     }
 
     postResourceWithoutEnvelope<T, S>(resourceUri: string, body?: S, apiVersion?: string, invalidateCache: boolean = false): Observable<boolean | {} | T> {
-        const url =  this.createUrl(resourceUri, apiVersion);
+        const url = this.createUrl(resourceUri, apiVersion);
         let bodyString: string = '';
         if (body) {
             bodyString = JSON.stringify(body);
@@ -113,7 +134,7 @@ export class ArmService {
     }
 
     putResource<T, S>(resourceUri: string, body?: S, apiVersion?: string, invalidateCache: boolean = false): Observable<boolean | {} | ResponseMessageEnvelope<T>> {
-        const url =  this.createUrl(resourceUri, apiVersion);
+        const url = this.createUrl(resourceUri, apiVersion);
         let bodyString: string = '';
         if (body) {
             bodyString = JSON.stringify(body);
@@ -127,7 +148,7 @@ export class ArmService {
     }
 
     patchResource<T, S>(resourceUri: string, body?: S, apiVersion?: string): Observable<boolean | {} | ResponseMessageEnvelope<T>> {
-        const url =  this.createUrl(resourceUri, apiVersion);
+        const url = this.createUrl(resourceUri, apiVersion);
         let bodyString: string = '';
         if (body) {
             bodyString = JSON.stringify(body);
@@ -143,7 +164,7 @@ export class ArmService {
     }
 
     putResourceWithoutEnvelope<T, S>(resourceUri: string, body?: S, apiVersion?: string, invalidateCache: boolean = false): Observable<boolean | {} | T> {
-        const url =  this.createUrl(resourceUri, apiVersion);
+        const url = this.createUrl(resourceUri, apiVersion);
         let bodyString: string = '';
         if (body) {
             bodyString = JSON.stringify(body);
@@ -157,8 +178,8 @@ export class ArmService {
     }
 
     postResourceFullResponse<T>(resourceUri: string, body: any, invalidateCache: boolean = false, apiVersion?: string):
-            Observable<HttpResponse<T>> {
-        const url =  this.createUrl(resourceUri, apiVersion);
+        Observable<HttpResponse<T>> {
+        const url = this.createUrl(resourceUri, apiVersion);
         const request = this._http.post<T>(url, body, {
             headers: this.getHeaders(),
             observe: 'response'
@@ -168,7 +189,7 @@ export class ArmService {
     }
 
     putResourceFullResponse<T>(resourceUri: string, body: any = null, invalidateCache = false, apiVersion?: string):
-            Observable<HttpResponse<T>> {
+        Observable<HttpResponse<T>> {
         const url = this.createUrl(resourceUri, apiVersion);
         const request = this._http.put<T>(url, body, {
             headers: this.getHeaders(),
@@ -179,7 +200,7 @@ export class ArmService {
     }
 
     patchResourceFullResponse<T>(resourceUri: string, body: any = null, invalidateCache = false, apiVersion?: string):
-            Observable<HttpResponse<T>> {
+        Observable<HttpResponse<T>> {
         const url = this.createUrl(resourceUri, apiVersion);
         const request = this._http.patch<T>(url, body, {
             headers: this.getHeaders(),
@@ -190,7 +211,7 @@ export class ArmService {
     }
 
     getResourceFullResponse<T>(resourceUri: string, invalidateCache = false, apiVersion?: string):
-            Observable<HttpResponse<T>> {
+        Observable<HttpResponse<T>> {
         const url = this.createUrl(resourceUri, apiVersion);
         const request = this._http.get<T>(url, {
             headers: this.getHeaders(),
@@ -221,7 +242,7 @@ export class ArmService {
     }
 
     getResourceCollection<T>(resourceId: string, apiVersion?: string, invalidateCache: boolean = false): Observable<{} | ResponseMessageCollectionEnvelope<T>> {
-        const url = `${this.armUrl}${resourceId}?api-version=${!!apiVersion ? apiVersion : this.websiteApiVersion}`;
+        const url = `${this.armUrl}${resourceId}?api-version=${this.getApiVersion(resourceId, apiVersion)}`;
         const request = this._http.get(url, { headers: this.getHeaders() }).pipe(
             map<ResponseMessageCollectionEnvelope<ResponseMessageEnvelope<T>>, ResponseMessageEnvelope<T>[]>(r => r.value),
             catchError(this.handleError)

@@ -6,7 +6,7 @@
       <section *ngIf="!isPublic">
         <div class="description">By
           <span style="padding:2px; color: #0066c0;">
-            <a *ngIf="authorInfo !== ''; else unknownAuthor" href="mailto:{{authorEmails}}?cc=applensdisc@microsoft.com&subject=Detector%20Feedback%20for%20{{feedbackDetector}}&body=Please%20provide%20your%20feedback%20here:%0D%0A%0D%0A%0D%0A%0D%0A{{currentSiteString}}">
+            <a *ngIf="authorInfo !== ''; else unknownAuthor" href="{{emailToAuthor}}">
               {{authorInfo}}
             </a>
             <ng-template #unknownAuthor>
@@ -21,11 +21,11 @@
             <span> {{feedbackButtonLabel}}</span>
           </button>
           <a *ngIf="!isPublic && authorInfo !== ''; else onlyToApplensTeam" class="custom-button detector-button-list"
-            href="mailto:{{authorEmails}}?cc=applensdisc@microsoft.com&subject=Detector%20Feedback%20for%20{{feedbackDetector}}&body=Please%20provide%20your%20feedback%20here:%0D%0A%0D%0A%0D%0A%0D%0A{{currentSiteString}}">
+            href="{{emailToAuthor}}">
             <span> Email Author</span>
           </a>
           <ng-template #onlyToApplensTeam>
-            <a *ngIf="!isPublic" class="custom-button-green detector-button-list" href="mailto:applensdisc@microsoft.com?subject=Detector%20Feedback%20for%20{{feedbackDetector}}&body=Please%20provide%20your%20feedback%20here:%0D%0A%0D%0A%0D%0A%0D%0A{{currentSiteString}}">
+            <a *ngIf="!isPublic" class="custom-button-green detector-button-list" href="{{emailToApplensTeam}}">
               <span> Email Author</span>
             </a>
           </ng-template>
@@ -44,7 +44,7 @@
   </div>
 
   <div *ngFor="let data of detectorDataLocalCopy.dataset" class="dynamic-data-container">
-    <dynamic-data [isAnalysisView]="isAnalysisView" [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime" [detectorEventProperties]="detectorEventProperties" 
+    <dynamic-data [isAnalysisView]="isAnalysisView" [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime" [detectorEventProperties]="detectorEventProperties"
     [developmentMode]="developmentMode" [executionScript]="script" [detector]="detector" [compilationPackage]="compilationPackage"></dynamic-data>
   </div>
 </div>

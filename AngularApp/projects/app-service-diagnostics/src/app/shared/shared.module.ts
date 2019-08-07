@@ -28,6 +28,7 @@ import { StepWizardComponent } from './components/step-wizard/step-wizard.compon
 import { DaasSessionsComponent, DateTimeDiffPipe } from './components/daas-sessions/daas-sessions.component';
 import { WindowService } from '../startup/services/window.service';
 import { ArmService } from './services/arm.service';
+import {GenericArmConfigService} from './services/generic-arm-config.service';
 import { UriElementsService } from './services/urielements.service';
 import { PortalActionService } from './services/portal-action.service';
 import { SiteService } from './services/site.service';
@@ -221,6 +222,7 @@ export class SharedModule {
             providers: [
                 WindowService,
                 ArmService,
+                GenericArmConfigService,
                 UriElementsService,
                 PortalActionService,
                 SiteService,
