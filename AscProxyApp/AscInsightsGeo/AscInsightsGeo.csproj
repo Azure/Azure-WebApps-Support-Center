@@ -133,6 +133,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="RequireHttpsAttribute.cs" />
     <Compile Include="Security\AuthenticationModule.cs" />
   </ItemGroup>
   <ItemGroup>

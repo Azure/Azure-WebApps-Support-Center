@@ -20,7 +20,7 @@ namespace AscInsightsGeo.Security
         {
             // read allowed certificates
             allowedCertThumbprints = Constants.AllowedCertThumbprints?.Split(',').ToList();
-            allowedCertSubjects = Constants.AllowedCertSubjects?.Split(',').ToList();
+            allowedCertSubjects = Constants.AllowedCertSubjects?.Split(';').Select(s => s.Replace(" ", string.Empty)).ToList();
         }
 
         private void OnAuthenticateRequest(object sender, EventArgs e)
@@ -32,7 +32,7 @@ namespace AscInsightsGeo.Security
             if (context.Request.ClientCertificate != null && context.Request.ClientCertificate.IsPresent)
             {
                 X509Certificate2 cert = new X509Certificate2(context.Request.ClientCertificate.Certificate);
-                isValid = allowedCertThumbprints.Any(s => s.Equals(cert.Thumbprint, StringComparison.OrdinalIgnoreCase)) || allowedCertSubjects.Any(s => s.Equals(cert.Subject, StringComparison.OrdinalIgnoreCase));
+                isValid = allowedCertThumbprints.Any(s => s.Equals(cert.Thumbprint, StringComparison.OrdinalIgnoreCase)) || allowedCertSubjects.Any(s => s.Equals(cert.Subject.Replace(" ", string.Empty), StringComparison.OrdinalIgnoreCase));
                 Trace.WriteLineIf(!isValid, $"Authorization failed for client certificate {cert.Subject}");
             }else
             {
