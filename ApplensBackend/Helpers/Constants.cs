@@ -48,4 +48,10 @@ namespace AppLensV3.Helpers
         internal const string RawFileHeaderMediaType = "application/vnd.github.VERSION.raw";
         internal const string ArticleTemplatePath = "https://api.github.com/repos/Azure/SelfHelpContent/contents/articles/{0}?ref=master&access_token={1}";
     }
+
+    internal static class InsightsConstants
+    {
+        internal const string SiteResourceTypeName = "sites";
+        internal const string HostingEnvironmentResourceTypeName = "hostingEnvironments";
+    }
 }
