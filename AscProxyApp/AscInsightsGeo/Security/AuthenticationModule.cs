@@ -25,7 +25,6 @@ namespace AscInsightsGeo.Security
 
         private void OnAuthenticateRequest(object sender, EventArgs e)
         {
-            Trace.WriteLine("Authenticating...");
             HttpContext context = HttpContext.Current;
             bool isValid = false;
 

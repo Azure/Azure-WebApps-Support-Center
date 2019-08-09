@@ -16,15 +16,11 @@ namespace AscInsightsGeo.Controllers
             var client = new AppLensService();
             var insights = await client.GetInsights(subscriptionId, resourceGroupName, provider, resourceType, resourceName, pesId, supportTopicId, startTime, endTime);
 
-            if (insights.IsSuccessStatusCode)
+            return ResponseMessage(new System.Net.Http.HttpResponseMessage
             {
-                var content = await insights.Content.ReadAsStringAsync();
-                var jsonContent = JsonConvert.DeserializeObject<JToken>(content);
-                return jsonContent;
-
-            }
-
-            return insights;
+                Content = insights.Content,
+                StatusCode = insights.StatusCode
+            });
         }
     }
 }
