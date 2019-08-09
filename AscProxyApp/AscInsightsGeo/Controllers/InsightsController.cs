@@ -5,7 +5,6 @@ using System.Web.Http;
 
 namespace AscInsightsGeo.Controllers
 {
-    [RequireHttps]
     [RoutePrefix("subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers")]
     public class InsightsController : ApiController
     {

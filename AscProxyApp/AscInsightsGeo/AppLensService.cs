@@ -32,7 +32,7 @@ namespace AscInsightsGeo
         public async Task<HttpResponseMessage> GetInsights(string subscriptionId, string resourceGroupName, string provider, string resourceType, string resourceName, string pesId, string supportTopicId, string startTime, string endTime)
         {
             //The AzureServiceTokenProvider class caches the token in memory and retrieves it from Azure AD just before expiration. 
-            var token = await tokenProvider.GetAccessTokenAsync("192bd8f2-c844-4977-aefd-77407619e80c");
+            var token = await tokenProvider.GetAccessTokenAsync(Constants.AscInsightsServiceAadResource);
             var path = $"api/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{provider}/{resourceType}/{resourceName}/insights?pesId={pesId}&supportTopicId={supportTopicId}&startTime={startTime}&endTime={endTime}";
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             return await _client.GetAsync(path);
