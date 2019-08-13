@@ -35,7 +35,7 @@ namespace AscInsightsGeo.Security
                 Trace.WriteLineIf(!isValid, $"Authorization failed for client certificate {cert.Subject}");
             }else
             {
-                Trace.WriteLine("Authorization failed because of empty client certiicate.");
+                Trace.WriteLine("Authorization failed because of empty client certificate.");
             }
 
             if (!isValid)
