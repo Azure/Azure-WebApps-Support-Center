@@ -100,18 +100,9 @@ namespace AppLensV3.Services.DiagnosticClientService
             try
             {
                 HttpResponseMessage response;
-
-                if (!IsLocalDevelopment)
+                // Sends request to DiagRole.
+                if (!IsLocalDevelopment && !IsRunTimeHostEnabled)
                 {
-                    if (IsRunTimeHostEnabled)
-                    {
-                        path = path.TrimStart('/');
-                        if (new Regex("^v[0-9]+/").Matches(path).Any())
-                        {
-                            path = path.Substring(path.IndexOf('/'));
-                        }
-                    }
-
                     if (!HitPassThroughApi(path))
                     {
                         var requestMessage = new HttpRequestMessage(method == "POST" ? HttpMethod.Post : HttpMethod.Get, path);
@@ -158,6 +149,7 @@ namespace AppLensV3.Services.DiagnosticClientService
                 }
                 else
                 {
+                    // If running locally or using App Service for Runtimehost, we can send requests directly.
                     path = path.TrimStart('/');
                     if (new Regex("^v[0-9]+/").Matches(path).Any())
                     {
