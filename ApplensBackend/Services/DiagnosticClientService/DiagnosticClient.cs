@@ -103,6 +103,15 @@ namespace AppLensV3.Services.DiagnosticClientService
 
                 if (!IsLocalDevelopment)
                 {
+                    if (IsRunTimeHostEnabled)
+                    {
+                        path = path.TrimStart('/');
+                        if (new Regex("^v[0-9]+/").Matches(path).Any())
+                        {
+                            path = path.Substring(path.IndexOf('/'));
+                        }
+                    }
+
                     if (!HitPassThroughApi(path))
                     {
                         var requestMessage = new HttpRequestMessage(method == "POST" ? HttpMethod.Post : HttpMethod.Get, path);
