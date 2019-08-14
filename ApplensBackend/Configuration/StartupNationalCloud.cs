@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using AppLensV3.Services;
 using AppLensV3.Services.DiagnosticClientService;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.IdentityModel.Tokens.Saml2;
 
@@ -60,7 +63,23 @@ namespace AppLensV3.Configuration
                     options.ClaimsIssuer = configuration["DatacenterFederationConfiguration:Issuer"];
                     options.SecurityTokenHandlers = new List<ISecurityTokenValidator> { new Saml2SecurityTokenHandler() };
                 })
-                .AddCookie();
+                .AddCookie(options =>
+                {
+                    options.ForwardDefaultSelector = context =>
+                    {
+                        string authScheme = null;
+                        if (context.Request.Headers.TryGetValue("Authorization", out StringValues authHeaders) && authHeaders[0].StartsWith("Bearer", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            authScheme = AzureADDefaults.BearerAuthenticationScheme;
+                        }
+
+                        return authScheme;
+                    };
+                })
+                .AddAzureADBearer(options =>
+                {
+                    configuration.Bind("AzureAd", options);
+                });
             }
             else
             {
