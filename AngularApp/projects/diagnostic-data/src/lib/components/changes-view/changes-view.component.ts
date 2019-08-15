@@ -96,6 +96,7 @@ export class ChangesViewComponent extends DataRenderBaseComponent implements OnI
                 });
             });
             this.tableItems.sort((i1, i2) => i1.level - i2.level);
+            this.expandedElement = this.tableItems[0];
             this.dataSource = new MatTableDataSource(this.tableItems);
         }
     }

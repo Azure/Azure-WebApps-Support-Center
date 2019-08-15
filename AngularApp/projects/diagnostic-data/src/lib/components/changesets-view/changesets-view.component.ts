@@ -151,9 +151,8 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             id: changeset[0],
             content: ' ',
             start: changeset[3],
-            group: ChangeAnalysisUtilities.findGroupBySource(changeset[2]),
-            className: ChangeAnalysisUtilities.findGroupBySource(changeset[2]) == 1 ? 'blue' : 'green'
-        })
+            group: ChangeAnalysisUtilities.findGroupBySource(changeset[2])
+        });
         });
         this.loadingChangesTimeline = false;
         // DOM element where the Timeline will be attached
@@ -171,6 +170,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
         // Create a Timeline
         this.changesTimeline = new Timeline(container, this.timeLineDataSet, this.sourceGroups, options);
         this.changesTimeline.on('select', this.triggerChangeEvent);
+        this.changesTimeline.setSelection(changeSets[0][0]);
     }
 
     private initializeChangesView(data: DataTableResponseObject) {

@@ -8,3 +8,6 @@
     border-color: blue;
 }
 
+.vis-item {
+    cursor: pointer;
+}

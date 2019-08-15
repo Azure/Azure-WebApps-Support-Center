@@ -7,3 +7,6 @@
     background-color: lightblue;
     border-color: blue;
 }
+.vis-item {
+    cursor: pointer;
+}
