@@ -133,8 +133,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
                 id: changeset[0],
                 content: ' ',
                 start: changeset[3],
-                group: ChangeAnalysisUtilities.findGroupBySource(changeset[2]),
-                className: ChangeAnalysisUtilities.findGroupBySource(changeset[2]) == 1 ? 'blue' : 'green'
+                group: ChangeAnalysisUtilities.findGroupBySource(changeset[2])
             })
         });
         this.timeLineDataSet.add(updatedTimelineItems);
@@ -490,8 +489,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
                     id: row[0],
                     content: ' ',
                     start: row[3],
-                    group: ChangeAnalysisUtilities.findGroupBySource(row[2]),
-                    className: ChangeAnalysisUtilities.findGroupBySource(row[2]) == 1 ? 'blue' : 'green'
+                    group: ChangeAnalysisUtilities.findGroupBySource(row[2])
                 });
                 }
             });
