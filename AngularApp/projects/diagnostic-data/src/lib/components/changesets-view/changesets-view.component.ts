@@ -137,6 +137,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             })
         });
         this.timeLineDataSet.add(updatedTimelineItems);
+        this.changesTimeline.setSelection(changeSets[0][0]);
     }
 
     private constructTimeline(data: DataTableResponseObject) {

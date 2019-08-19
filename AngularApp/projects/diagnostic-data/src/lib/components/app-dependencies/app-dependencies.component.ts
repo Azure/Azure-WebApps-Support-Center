@@ -78,9 +78,9 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
                 to: rows[i][columnIndex],
                 arrows: 'to',
                 color: {
-                    color: '#222222',
-                    hover: 'blue',
-                    highlight: 'blue'
+                    color: '#D3D3D3',
+                    hover: '#0072c6',
+                    highlight: '#0072c6'
                 }
             })
         }
@@ -99,7 +99,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
                 borderWidth: 2,
                 size: 30,
                 color: {
-                    border: '#222222',
+                    border: '#D3D3D3',
                     background: '#fcfcfc'
                   }
             },
@@ -112,6 +112,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
         };
         var network = new Network(container, networkData, networkOptions);
         network.on("selectNode", this.triggerTimelineRefresh);
+        network.selectNodes([this.primaryResourceId]);
         }
 
     }
