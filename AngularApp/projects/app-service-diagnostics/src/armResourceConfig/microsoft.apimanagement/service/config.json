@@ -1,0 +1,23 @@
+{
+	"homePageText": {
+		"title": "Azure API Management Service Diagnostics",
+		"description": "Use Azure API Management Service Diagnostics to investigate how your service is performing, diagnose issues, and discover how to improve its reliability. Select the problem category that best matches the information or tool that you're interested in:",
+		"searchBarPlaceHolder": "Search Azure API Management Services"
+	},
+	"matchRegEx": "/Microsoft.ApiManagement/service/",
+	"searchSuffix": "",
+	"azureServiceName": "Azure API Management Service",
+	"armApiVersion": "2018-06-01-preview",
+	"isSearchEnabled": true,
+	"isApplicableForLiveChat": false,
+	"categories": [{
+			"id": "Availability and Performance",
+			"name": "Availability and Performance",
+			"description": "Investigate issues with the API Management proxy responses, proxy policy errors and capacity. Find out the common causes and investigate in detail.",
+			"keywords": ["Proxy Error Responses", "Proxy Policy Errors", "Capacity"],
+			"color": "rgb(186, 211, 245)",
+			"createFlowForCategory": false,
+			"chatEnabled": false
+		}
+	]
+}
