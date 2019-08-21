@@ -5,7 +5,7 @@
 		"searchBarPlaceHolder": "Search Azure API Management Services"
 	},
 	"matchRegEx": "/Microsoft.ApiManagement/service/",
-	"searchSuffix": "",
+	"searchSuffix": "APIM",
 	"azureServiceName": "Azure API Management Service",
 	"armApiVersion": "2018-06-01-preview",
 	"isSearchEnabled": true,
@@ -16,7 +16,7 @@
 			"description": "Investigate issues with the API Management proxy responses, proxy policy errors and capacity. Find out the common causes and investigate in detail.",
 			"keywords": ["Proxy Error Responses", "Proxy Policy Errors", "Capacity"],
 			"color": "rgb(186, 211, 245)",
-			"createFlowForCategory": false,
+			"createFlowForCategory": true,
 			"chatEnabled": false
 		}
 	]
