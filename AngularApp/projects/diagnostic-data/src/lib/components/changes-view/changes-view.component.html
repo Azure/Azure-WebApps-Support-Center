@@ -76,6 +76,7 @@
   <ng-container matColumnDef="expandedDetail">
     <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length" class="detail-cell">
       <div [@changeRowExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <div *ngIf="element == expandedElement">
           <ngx-monaco-diff-editor class="diff-view" [options]="options" [(originalModel)]="element.originalModel"
             [(modifiedModel)]="element.modifiedModel"></ngx-monaco-diff-editor>
           <div class="feedback-view">
@@ -83,6 +84,7 @@
             <div [ngClass]="getFeedbackButtonClass(element, true)" (click)="sendFeedback(element, true)">Yes</div>
             <div [ngClass]="getFeedbackButtonClass(element, false)" (click)="sendFeedback(element, false)">No</div>
           </div>
+        </div>
       </div>
     </td>
   </ng-container>
