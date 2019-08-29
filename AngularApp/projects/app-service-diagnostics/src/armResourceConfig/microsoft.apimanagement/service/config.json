@@ -11,10 +11,10 @@
 	"isSearchEnabled": true,
 	"isApplicableForLiveChat": false,
 	"categories": [{
-			"id": "Availability and Performance",
-			"name": "Availability and Performance",
-			"description": "Investigate issues with the API Management proxy responses, proxy policy errors and capacity. Find out the common causes and investigate in detail.",
-			"keywords": ["Proxy Error Responses", "Proxy Policy Errors", "Capacity"],
+			"id": "Service Availability",
+			"name": "Service Availability",
+			"description": "Investigate issues with the API Management gateway requests, gateway policy errors and service uptime. Find out the common causes and investigate in detail.",
+			"keywords": ["Gateway requests", "Service Up"],
 			"color": "rgb(186, 211, 245)",
 			"createFlowForCategory": true,
 			"chatEnabled": false
