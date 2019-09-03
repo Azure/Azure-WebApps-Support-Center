@@ -193,7 +193,11 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
                     columns:[],
                     rows: data.rows[0][7]
                     },
-                renderingProperties: RenderingType.ChangesView
+                renderingProperties: {
+                    type: RenderingType.ChangesView,
+                    title: "",
+                    description: null
+                }
             }];
             this.initiatedBy = this.changeSetsLocalCopy.hasOwnProperty(data.rows[0][0]) ? this.getInitiatedByUsers(this.changeSetsLocalCopy[data.rows[0][0]]) : [];
             this.changeDetectorRef.detectChanges();
