@@ -15,10 +15,6 @@ export class RerouteResolver implements Resolve<Observable<boolean>> {
         const analysisId = route.data['analysisId'];
 
         const reroutePath = `/resource/subscriptions/${subscriptionId}/resourcegroups/${resourceGroup}/providers/microsoft.web/sites/${siteName}/analysis/${analysisId}`;
-
-        console.log('---------------Resolver------------------');
-        console.log(reroutePath);
-        console.log('------------------------------------------');
         
         this._router.navigateByUrl(reroutePath);
 
