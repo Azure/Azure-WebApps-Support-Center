@@ -38,6 +38,7 @@ import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalys
 import { ProblemSolutionComponent } from './problem-solution/problem-solution.component';
 import { DetectorLoaderComponent } from './detector-view/detector-loader/detector-loader.component';
 import { AutohealingDetectorComponent } from './detector-view/detectors/autohealing-detector/autohealing-detector.component';
+import { RerouteResolver } from './reroute/reroute.resolver';
 
 @NgModule({
     declarations: [
@@ -91,7 +92,8 @@ import { AutohealingDetectorComponent } from './detector-view/detectors/autoheal
         ProblemSolutionComponent,
         AutohealingDetectorComponent,
         DetectorLoaderComponent
-    ]
+    ],
+    providers:[RerouteResolver]
 })
 export class AvailabilityModule {
     constructor(

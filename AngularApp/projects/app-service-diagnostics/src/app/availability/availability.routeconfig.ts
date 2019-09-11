@@ -10,7 +10,7 @@ import { DetectorViewMainComponent } from './detector-view/detector-view-main/de
 import { SiteCpuAnalysisDetectorComponent } from './detector-view/detectors/site-cpu-analysis-detector/site-cpu-analysis-detector.component';
 import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalysis/tcp-connections-analysis.component';
 import { DetectorLoaderComponent } from './detector-view/detector-loader/detector-loader.component';
-
+import { RerouteResolver } from './reroute/reroute.resolver';
 const AvailabilityCommonRouteConfig: Route[] = [
     {
         path: '',
@@ -21,15 +21,29 @@ const AvailabilityCommonRouteConfig: Route[] = [
     },
     {
         path: 'detectors',
-        component: DetectorViewMainComponent,
-        children: DetectorViewRouteConfig
+        // component: DetectorViewMainComponent,
+        children: DetectorViewRouteConfig,
+        
+        resolve:{
+            reroute: RerouteResolver
+        },
+        data:{
+            analysisId:'appDownAnalysis'
+        },
     },
     {
         path: 'detectors/sitecpuanalysis/focus',
-        component: DetectorLoaderComponent,
-        data: {
-            navigationTitle: 'CPU Analysis',
-            detectorComponent: SiteCpuAnalysisDetectorComponent
+        // component: DetectorLoaderComponent,
+        // data: {
+        //     navigationTitle: 'CPU Analysis',
+        //     detectorComponent: SiteCpuAnalysisDetectorComponent
+        // }
+        
+        resolve:{
+            reroute: RerouteResolver
+        },
+        data:{
+            analysisId:'webappcpu'
         }
     }
 ];
@@ -37,15 +51,29 @@ const AvailabilityCommonRouteConfig: Route[] = [
 const PerformanceCommonRouteConfig: Route[] = [
     {
         path: 'detectors',
-        component: DetectorViewMainComponent,
-        children: DetectorViewRouteConfig
+        // component: DetectorViewMainComponent,
+        children: DetectorViewRouteConfig,
+
+        resolve:{
+            reroute: RerouteResolver
+        },
+        data:{
+            analysisId:'perfAnalysis'
+        },
     },
     {
         path: 'detectors/sitecpuanalysis/focus',
-        component: DetectorLoaderComponent,
-        data: {
-            navigationTitle: 'CPU Analysis',
-            detectorComponent: SiteCpuAnalysisDetectorComponent
+        // component: DetectorLoaderComponent,
+        // data: {
+        //     navigationTitle: 'CPU Analysis',
+        //     detectorComponent: SiteCpuAnalysisDetectorComponent
+        // }
+        
+        resolve:{
+            reroute: RerouteResolver
+        },
+        data:{
+            analysisId:'webappcpu'
         }
     }
 ];
@@ -60,40 +88,68 @@ export const AvailabilityAndPerformanceCategoryRouteConfig: Route[] = [
     // Web App Error Analysis
     {
         path: 'diagnostics/availability/analysis',
-        component: AppAnalysisComponent,
-        data: {
-            navigationTitle: 'App Error Analysis',
-            cacheComponent: true
-        }
+        // component: PerfAnalysisComponent,
+        // data: {
+        //     navigationTitle: 'App Performance Analysis',
+        //     cacheComponent: true
+        // }
+
+        resolve:{
+            reroute: RerouteResolver
+        },
+        data:{
+            analysisId:'appDownAnalysis'
+        }      
     },
 
     // Web App Performance Analysis
     {
         path: 'diagnostics/performance/analysis',
-        component: PerfAnalysisComponent,
-        data: {
-            navigationTitle: 'App Performance Analysis',
-            cacheComponent: true
-        }
+        // component: PerfAnalysisComponent,
+        // data: {
+        //     navigationTitle: 'App Performance Analysis',
+        //     cacheComponent: true
+        // }
+
+        resolve:{
+            reroute: RerouteResolver
+        },
+        data:{
+            analysisId:'perfAnalysis'
+        }  
     },
 
     // Web App Restart Analysis
     {
         path: 'diagnostics/availability/apprestartanalysis',
-        component: WebAppRestartComponent,
-        data: {
-            navigationTitle: 'App Restart Analysis',
-            cacheComponent: true
+        // component: WebAppRestartComponent,
+        // data: {
+        //     navigationTitle: 'App Restart Analysis',
+        //     cacheComponent: true
+        // }
+
+        resolve:{
+            reroute: RerouteResolver
+        },
+        data:{
+            analysisId:'webapprestart'
         }
     },
 
     // Memory Analysis
     {
         path: 'diagnostics/availability/memoryanalysis',
-        component: MemoryAnalysisComponent,
-        data: {
-            navigationTitle: 'Memory Analysis',
-            cacheComponent: true
+        // component: MemoryAnalysisComponent,
+        // data: {
+        //     navigationTitle: 'Memory Analysis',
+        //     cacheComponent: true
+        // }
+        
+        resolve:{
+            reroute: RerouteResolver
+        },
+        data:{
+            analysisId:'Memoryusage'
         }
     },
 

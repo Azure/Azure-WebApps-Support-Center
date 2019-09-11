@@ -54,6 +54,10 @@ export class SolutionComponent extends DataRenderBaseComponent {
             return ActionType.OpenTab;
         }
 
+        if (solution.OverrideOptions == undefined) {
+            return ActionType.Markdown;
+        }
+
         let overrideKeys = Object.keys(solution.OverrideOptions).map(key => key.toLowerCase());
         if (overrideKeys.indexOf('route') > -1) {
             return ActionType.ArmApi;
@@ -107,18 +111,6 @@ export class SolutionComponent extends DataRenderBaseComponent {
         this.renderedInternalMarkdown = markdownBuilder;
     }
 
-    performAction() {
-        this.actionStatus = "Running...";
-
-        this.chooseAction().subscribe(res => {
-            if (res.ok == undefined || res.ok) {
-                this.actionStatus = this.confirmationMessage;
-            } else {
-                this.actionStatus = `Error completing request. Status code: ${res.status}`;
-            }
-        });
-    }
-
     lowercaseFirst(target: string): string {
         return target.charAt(0).toLowerCase() + target.slice(1);
     }
@@ -130,6 +122,18 @@ export class SolutionComponent extends DataRenderBaseComponent {
         }
 
         this.overrideOptions = { ...overrideOptions, ...this.solution.OverrideOptions };
+    }
+
+    performAction() {
+        this.actionStatus = "Running...";
+
+        this.chooseAction().subscribe(res => {
+            if (res.ok == undefined || res.ok) {
+                this.actionStatus = this.confirmationMessage;
+            } else {
+                this.actionStatus = `Error completing request. Status code: ${res.status}`;
+            }
+        });
     }
 
     chooseAction(): Observable<any> {

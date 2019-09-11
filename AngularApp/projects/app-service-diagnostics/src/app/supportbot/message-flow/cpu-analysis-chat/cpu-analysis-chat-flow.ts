@@ -45,7 +45,7 @@ export class CpuAnalysisChatFlow extends IMessageFlowProvider {
             this._siteService.currentSiteMetaData.subscribe(siteInfo => {
                 if (siteInfo) {
                     this.siteInfoMetaData = siteInfo;
-                    this._getCpuDetectorResponse();
+                    // this._getCpuDetectorResponse();
                 }
             });
         }
