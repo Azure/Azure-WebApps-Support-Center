@@ -35,6 +35,8 @@ export class LinkInterceptorService {
       if (linkURL && !isAbsolute.test(linkURL)) {
         e.preventDefault();
         router.navigate([linkURL], navigationExtras);
+      } else {
+        el.setAttribute('target', '_blank');
       }
     }
   }
