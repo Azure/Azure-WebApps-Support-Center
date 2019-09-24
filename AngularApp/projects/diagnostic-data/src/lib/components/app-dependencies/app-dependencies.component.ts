@@ -43,6 +43,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
         if(rows && rows.length > 0) {
             this.primaryResourceId = rows[0][DataTableUtilities.getColumnIndexByName(this.datasetLocalCopy, 'PrimaryResource')];
             let columnIndex = DataTableUtilities.getColumnIndexByName(this.datasetLocalCopy, 'ResourceId');
+            let hostNameColumnIndex = DataTableUtilities.getColumnIndexByName(this.datasetLocalCopy, "Hostname");
             let networkDataSet = [];
             let provider = ChangeAnalysisUtilities.getResourceType(this.primaryResourceId);
             let resourceName = ChangeAnalysisUtilities.getResourceName(this.primaryResourceId, provider).split("/")[1];
@@ -59,8 +60,9 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
                 let resourceUri = row[columnIndex];
                 let resourceType = ChangeAnalysisUtilities.getResourceType(resourceUri);
                 let resourceName = ChangeAnalysisUtilities.getResourceName(resourceUri, resourceType).split("/")[1];
+                let hostname = row[hostNameColumnIndex];
                 networkDataSet.push({
-                    id: resourceUri,
+                    id: hostname,
                     image: ChangeAnalysisUtilities.getImgPathForResource(resourceType),
                     title: resourceUri,
                     shape: 'circularImage',
@@ -75,7 +77,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
         for(let i = 0; i< rows.length ; i++) {
             edgesDataSet.push({
                 from: this.primaryResourceId,
-                to: rows[i][columnIndex],
+                to: rows[i][hostNameColumnIndex],
                 arrows: 'to',
                 color: {
                     color: '#D3D3D3',
@@ -110,7 +112,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
                 dragView: false
             }
         };
-        var network = new Network(container, networkData, networkOptions);
+        let network = new Network(container, networkData, networkOptions);
         network.on("selectNode", this.triggerTimelineRefresh);
         network.selectNodes([this.primaryResourceId]);
         }
@@ -130,7 +132,13 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
         this.logGraphClick();
         let selectedResource = <HTMLInputElement> document.getElementById('resourceUri');
         if(selectedResource.value) {
-            this.selectedResourceId = selectedResource.value;
+            let hostnameIndex = DataTableUtilities.getColumnIndexByName(this.datasetLocalCopy, "Hostname");
+            let row = this.datasetLocalCopy.rows.find(row => row[hostnameIndex] === selectedResource.value);
+            if(row) {
+                this.selectedResourceId = row[DataTableUtilities.getColumnIndexByName(this.datasetLocalCopy, "ResourceId")];
+            } else {
+                this.selectedResourceId = selectedResource.value;
+            }
             this.loadChangesTimeLine();
         }
     }
