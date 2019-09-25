@@ -4,7 +4,7 @@ import { isBoolean, isString, isNumber, isObject } from 'util';
 export class ChangeAnalysisUtilities {
 
     static readonly basePath: string = '../../../assets/img/azure-icons/';
-    static readonly changeAnalysisSupportedResources = ['Microsoft.Sql', 'Microsoft.Storage', 'Microsoft.Cache', 'Microsoft.Network', 'Microsoft.Web'];
+    static readonly changeAnalysisSupportedResources = ['Microsoft.Sql', 'Microsoft.Storage', 'Microsoft.Web'];
     static readonly azureResourceList = [
         {
             "resourceType": "Microsoft.Web",
