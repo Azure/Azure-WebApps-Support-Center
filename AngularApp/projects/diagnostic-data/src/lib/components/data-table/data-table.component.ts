@@ -87,6 +87,10 @@ export class DataTableComponent extends DataRenderBaseComponent implements After
 
       this.rows.push(rowObject);
 
+      if (this.renderingProperties.descriptionColumnName && this.rows.length > 0) {
+        this.selected.push(this.rows[0]);
+      }
+
       this.rowsClone = Object.assign([], this.rows);
     });
   }

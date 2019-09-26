@@ -13,6 +13,8 @@ import { DaasMainComponent } from '../shared/components/daas-main/daas-main.comp
 import { Route } from '@angular/router';
 import { AutohealingDetectorComponent } from '../availability/detector-view/detectors/autohealing-detector/autohealing-detector.component';
 import { CpuMonitoringToolComponent } from '../shared/components/tools/cpu-monitoring-tool/cpu-monitoring-tool.component';
+import { EventViewerComponent } from '../shared/components/daas/event-viewer/event-viewer.component';
+import { FrebViewerComponent } from '../shared/components/daas/freb-viewer/freb-viewer.component';
 
 export const DiagnosticToolsRoutes: Route[] = [
     // CLR Profiling Tool
@@ -120,6 +122,24 @@ export const DiagnosticToolsRoutes: Route[] = [
         component: DaasMainComponent,
         data: {
             navigationTitle: ToolNames.Diagnostics,
+            cacheComponent: true
+        }
+    },
+    // Event Viewer
+    {
+        path: 'eventviewer',
+        component: EventViewerComponent,
+        data: {
+            navigationTitle: ToolNames.EventViewer,
+            cacheComponent: true
+        }
+    },
+    // Freb Viewer
+    {
+        path: 'frebviewer',
+        component: FrebViewerComponent,
+        data: {
+            navigationTitle: ToolNames.FrebViewer,
             cacheComponent: true
         }
     },

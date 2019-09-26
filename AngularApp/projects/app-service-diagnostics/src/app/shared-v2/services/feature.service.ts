@@ -24,28 +24,30 @@ export class FeatureService {
     this._authService.getStartupInfo().subscribe(startupInfo => {
       this._diagnosticApiService.getDetectors().subscribe(detectors => {
         detectors.forEach(detector => {
-          if (detector.type === DetectorType.Detector) {
-            this._features.push(<Feature>{
-              id: detector.id,
-              description: detector.description,
-              category: detector.category,
-              featureType: FeatureTypes.Detector,
-              name: detector.name,
-              clickAction: this._createFeatureAction(detector.name, detector.category, () => {
-                this._router.navigateByUrl(`resource${startupInfo.resourceId}/detectors/${detector.id}`);
-              })
-            });
-          } else {
-            this._features.push(<Feature>{
-              id: detector.id,
-              description: detector.description,
-              category: detector.category,
-              featureType: FeatureTypes.Detector,
-              name: detector.name,
-              clickAction: this._createFeatureAction(detector.name, detector.category, () => {
-                this._router.navigateByUrl(`resource${startupInfo.resourceId}/analysis/${detector.id}`);
-              })
-            });
+          if (detector.category || detector.description) {
+            if (detector.type === DetectorType.Detector) {
+              this._features.push(<Feature>{
+                id: detector.id,
+                description: detector.description,
+                category: detector.category,
+                featureType: FeatureTypes.Detector,
+                name: detector.name,
+                clickAction: this._createFeatureAction(detector.name, detector.category, () => {
+                  this._router.navigateByUrl(`resource${startupInfo.resourceId}/detectors/${detector.id}`);
+                })
+              });
+            } else {
+              this._features.push(<Feature>{
+                id: detector.id,
+                description: detector.description,
+                category: detector.category,
+                featureType: FeatureTypes.Detector,
+                name: detector.name,
+                clickAction: this._createFeatureAction(detector.name, detector.category, () => {
+                  this._router.navigateByUrl(`resource${startupInfo.resourceId}/analysis/${detector.id}`);
+                })
+              });
+            }
           }
         });
 

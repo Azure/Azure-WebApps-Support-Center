@@ -89,6 +89,8 @@ import { CpuMonitoringConfigurationComponent } from './components/daas/cpu-monit
 import { CpuMonitoringActivityComponent } from './components/daas/cpu-monitoring/cpu-monitoring-activity/cpu-monitoring-activity.component';
 import { CpuMonitoringSessionsComponent } from './components/daas/cpu-monitoring/cpu-monitoring-sessions/cpu-monitoring-sessions.component';
 import { GenericAnalysisComponent } from './components/generic-analysis/generic-analysis.component';
+import { EventViewerComponent } from './components/daas/event-viewer/event-viewer.component';
+import { FrebViewerComponent } from './components/daas/freb-viewer/freb-viewer.component';
 
 @NgModule({
     declarations: [
@@ -149,7 +151,9 @@ import { GenericAnalysisComponent } from './components/generic-analysis/generic-
         CpuMonitoringConfigurationComponent,
         CpuMonitoringActivityComponent,
         CpuMonitoringSessionsComponent,
-        GenericAnalysisComponent
+        GenericAnalysisComponent,
+        EventViewerComponent,
+        FrebViewerComponent
     ],
     imports: [
         HttpModule,

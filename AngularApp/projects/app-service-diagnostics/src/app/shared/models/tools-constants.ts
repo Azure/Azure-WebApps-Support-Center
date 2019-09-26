@@ -11,4 +11,6 @@ export class ToolNames {
     public static AutoHealing: string = 'Auto Healing';
     public static Diagnostics: string = 'Diagnostics';
     public static CpuMonitoring: string = "Proactive CPU Monitoring";
+    public static EventViewer: string = "Application Event Logs";
+    public static FrebViewer: string = "Failed Request Tracing Logs";
 }
