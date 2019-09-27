@@ -24,7 +24,8 @@ export class FeatureService {
     this._authService.getStartupInfo().subscribe(startupInfo => {
       this._diagnosticApiService.getDetectors().subscribe(detectors => {
         detectors.forEach(detector => {
-          if (detector.category || detector.description) {
+          if ((detector.category && detector.category.length > 0) ||
+            (detector.description && detector.description.length > 0)) {
             if (detector.type === DetectorType.Detector) {
               this._features.push(<Feature>{
                 id: detector.id,
