@@ -147,14 +147,14 @@
                 </div>
             </div>
         </div>
-        <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="error">
+        <div class="focus-box focus-box-warning" style="margin-top:20px;word-wrap: break-word;" *ngIf="error">
             <div *ngIf="error.code === 'GatewayTimeout'">
                 <strong>Error</strong> - Failed to fetch instances for the Web App. The instance may fail to respond to
                 any diagnostic
                 calls under high CPU situations. Please retry this investigation after some time.
             </div>
             <div *ngIf="error.code != 'GatewayTimeout'">
-                <strong>Error</strong> - {{ error.message }}
+                <strong>Error</strong> - {{ error }}
             </div>
         </div>
         <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="instancesChanged">

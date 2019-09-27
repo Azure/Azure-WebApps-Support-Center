@@ -230,9 +230,12 @@ export class ArmService {
     }
 
     private handleError(error: any): any {
-        let actualError;
+        let actualError = "";
         if (error) {
-            if (error.message) {
+            if (error.error) {
+                actualError = JSON.stringify(error.error);
+            }
+            else if (error.message) {
                 actualError = error.message;
             } else {
                 actualError = 'Server Error';
@@ -243,7 +246,7 @@ export class ArmService {
 
     getResourceCollection<T>(resourceId: string, apiVersion?: string, invalidateCache: boolean = false, queryParams: any[] = []): Observable<{} | ResponseMessageCollectionEnvelope<T>> {
         var url = `${this.armUrl}${resourceId}?api-version=${this.getApiVersion(resourceId, apiVersion)}`;
-        if (queryParams && queryParams.length>0){
+        if (queryParams && queryParams.length > 0) {
             queryParams.forEach(param => {
                 url = url + "&" + param["key"] + "=" + encodeURIComponent(param["value"]);
             });
