@@ -105,6 +105,16 @@
             "azureCommImpactedServicesList": "",
             "pesId": "",
             "staticSelfHelpContent": ""
-        }
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.ContainerRegistry",
+            "templateFileName": "ContainerRegistry",
+            "imgSrc": "assets/img/acr-logo.png",
+            "versionPrefix": "v2/",
+            "azureCommImpactedServicesList": "registries",
+            "pesId": "16533",
+            "staticSelfHelpContent": ""
+        },
     ]
 }
