@@ -111,7 +111,7 @@
             "resourceType": "Microsoft.ContainerRegistry",
             "templateFileName": "ContainerRegistry",
             "imgSrc": "assets/img/acr-logo.png",
-            "versionPrefix": "v2/",
+            "versionPrefix": "",
             "azureCommImpactedServicesList": "registries",
             "pesId": "16533",
             "staticSelfHelpContent": ""
