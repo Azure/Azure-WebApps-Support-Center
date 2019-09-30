@@ -21,7 +21,7 @@ export class DataTableComponent extends DataRenderBaseComponent implements After
     }
 
     if (this.renderingProperties.height != null && this.renderingProperties.height !== "") {
-      this.currentStyles = { 'height': this.renderingProperties.height };
+      this.currentStyles = { 'height': this.renderingProperties.height ,'overflow-y':'visible' };
     }
 
     if (this.renderingProperties.tableOptions != null) {
