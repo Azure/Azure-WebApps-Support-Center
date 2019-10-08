@@ -56,11 +56,9 @@ namespace AppLensV3
 
             services.AddMemoryCache();
             services.AddMvc();
-            services.AddHttpContextAccessor();
 
             GraphTokenService.Instance.Initialize(Configuration);
             KustoTokenRefreshService.Instance.Initialize(Configuration);
-            AuthorizationTokenService.Instance.Initialize(Configuration);
 
             // If we are using runtime host directly
             if (Configuration.GetValue<bool>("DiagnosticRole:UseAppService"))
@@ -76,6 +74,10 @@ namespace AppLensV3
             {
                 Configuration.Bind("AzureAd", options);
             });
+            if (Configuration["ServerMode"] != "internal"){
+                services.AddHttpContextAccessor();
+                AuthorizationTokenService.Instance.Initialize(Configuration);
+            }
             services.AddAuthorization(options => {
                 var applensAccess = new SecurityGroupConfig();
                 var applensTesters = new SecurityGroupConfig();
