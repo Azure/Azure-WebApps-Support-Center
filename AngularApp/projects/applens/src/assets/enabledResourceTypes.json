@@ -135,6 +135,16 @@
             "azureCommImpactedServicesList": "MachineLearningServices",
             "pesId": "",
             "staticSelfHelpContent": ""
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.ContainerInstance/containerGroups",
+            "templateFileName": "ContainerInstance",
+            "imgSrc": "assets/img/acilogo.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "containerGroups",
+            "pesId": "",
+            "staticSelfHelpContent": ""
         }
     ]
 }
