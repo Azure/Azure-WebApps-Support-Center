@@ -50,9 +50,6 @@ export class ChangesViewComponent extends DataRenderBaseComponent implements OnI
     }, {
         "imgSrc": "../../../assets/img/importanticon.png",
         "displayValue": "Important"
-    }, {
-        "imgSrc": "../../../assets/img/noiseicon.png",
-        "displayValue": "Noise"
     }];
 
     private _changeFeedbacks: Map<Change, boolean> = new Map<Change, boolean>();
@@ -81,7 +78,7 @@ export class ChangesViewComponent extends DataRenderBaseComponent implements OnI
                 let jsonPath    = this.getChangeProperty(row, "jsonPath", changesTable);
                 let initiatedBy = this.initiatedByList;
                 this.tableItems.push({
-                    "time":  moment(timestamp).format("MMM D YYYY, h:mm:ss a"),
+                    "time":  moment.utc(timestamp).format("YYYY-MM-DD HH:mm"),
                     "level": level,
                     "levelIcon": this.getIconForLevel(level),
                     "displayName":ChangeAnalysisUtilities.prepareDisplayValueForTable(displayName),
@@ -92,7 +89,7 @@ export class ChangesViewComponent extends DataRenderBaseComponent implements OnI
                     'jsonPath': jsonPath,
                     'originalModel': ChangeAnalysisUtilities.prepareValuesForDiffView(oldValue),
                     'modifiedModel': ChangeAnalysisUtilities.prepareValuesForDiffView(newValue),
-                    'initiatedByList' : this.initiatedByList
+                    'initiatedByList' : row['initiatedByList'] ? row['initiatedByList'] : this.initiatedByList
                 });
             });
             this.tableItems.sort((i1, i2) => i1.level - i2.level);

@@ -87,9 +87,9 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             }
             if(isAppService) {
                 // Convert UTC timestamp to user readable date
-                this.scanDate = rows[0][6] != '' ? 'Changes were last scanned on ' + moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a") : this.noScanMsg + ' Please enable Change Analysis using Change Analysis Settings.';
+                this.scanDate = rows[0][6] != '' ? 'Changes were last scanned on ' + moment.utc(rows[0][6]).format("YYYY-MM-DD HH:mm") : this.noScanMsg + ' Please enable Change Analysis using Change Analysis Settings.';
             } else {
-                this.scanDate = rows[0][6] != '' ? 'Changes were last scanned on ' + moment(rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a") : 'No recent scans were performed on this resource.';
+                this.scanDate = rows[0][6] != '' ? 'Changes were last scanned on ' + moment.utc(rows[0][6]).format("YYYY-MM-DD HH:mm") : 'No recent scans were performed on this resource.';
             }
 
             if(this.isPublic) {
@@ -137,7 +137,6 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             })
         });
         this.timeLineDataSet.add(updatedTimelineItems);
-        this.changesTimeline.setSelection(changeSets[0][0]);
     }
 
     private constructTimeline(data: DataTableResponseObject) {
@@ -164,13 +163,16 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
         let options = {
             maxHeight: 400,
             horizontalScroll: true,
-            verticalScroll: true
+            verticalScroll: true,
+            // Set the timeline to show dates in UTC.
+            moment: function (date) {
+                return moment.utc(date);
+              }
             };
 
         // Create a Timeline
         this.changesTimeline = new Timeline(container, this.timeLineDataSet, this.sourceGroups, options);
         this.changesTimeline.on('select', this.triggerChangeEvent);
-        this.changesTimeline.setSelection(changeSets[0][0]);
     }
 
     private initializeChangesView(data: DataTableResponseObject) {
@@ -184,14 +186,14 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
         let latestChangeSetId = data.rows[0][changeSetIdColumnIndex];
         let latestChangeSet = data.rows[0][inputsColumnIndex];
         this.selectedChangeSetId = latestChangeSetId;
-
+        // Send all changes row instead of latest row.
         if(latestChangeSet != null) {
             this.loadingChangesTable = true;
             this.changesTableError = '';
             this.changesDataSet = [{
                table:{
                     columns:[],
-                    rows: data.rows[0][7]
+                    rows: this.getBatchChanges(data)
                     },
                 renderingProperties: {
                     type: RenderingType.ChangesView,
@@ -564,5 +566,19 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             return ["N/A"];
         }
         return [changeSet[initiatedByIndex]];
+    }
+
+    getBatchChanges(data: DataTableResponseObject): any[][] {
+        if(data.rows.length < 1) {
+            return [];
+        }
+        let changeDetails = [];
+        let columnIndex = DataTableUtilities.getColumnIndexByName(data, "Inputs");
+        data.rows.forEach(row => {
+            if (row[columnIndex] != null || row[columnIndex].length > 0) {
+                changeDetails = changeDetails.concat(row[columnIndex]);
+            }
+        });
+        return changeDetails;
     }
 }
