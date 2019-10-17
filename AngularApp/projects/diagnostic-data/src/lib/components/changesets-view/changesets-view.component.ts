@@ -511,7 +511,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             let totalItems = this.timeLineDataSet.length;
             this.changeSetText = totalItems + ' change groups have been detected';
             // Convert UTC timestamp to user readable date
-            this.scanDate = 'Changes were last scanned on ' + moment(newChangeRows.rows[0][6]).format("ddd, MMM D YYYY, h:mm:ss a");
+            this.scanDate = 'Changes were last scanned on ' + moment.utc(newChangeRows.rows[0][6]).format("YYYY-MM-DD HH:mm");
             this.setDefaultScanStatus();
         }, (error: any) => {
             this.scanStatusMessage = "Unable to get scan results";
@@ -572,7 +572,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
         let changeDetails = [];
         let columnIndex = DataTableUtilities.getColumnIndexByName(data, "Inputs");
         data.rows.forEach(row => {
-            if (row[columnIndex] != null || row[columnIndex].length > 0) {
+            if (row[columnIndex] != null) {
                 changeDetails = changeDetails.concat(row[columnIndex]);
             }
         });
