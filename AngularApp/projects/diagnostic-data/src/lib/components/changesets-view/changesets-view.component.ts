@@ -572,7 +572,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
         let changeDetails = [];
         let columnIndex = DataTableUtilities.getColumnIndexByName(data, "Inputs");
         data.rows.forEach(row => {
-            if (row[columnIndex] != null) {
+            if (row[columnIndex] != null && row[columnIndex].length > 0) {
                 changeDetails = changeDetails.concat(row[columnIndex]);
             }
         });
