@@ -569,9 +569,6 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
     }
 
     getBatchChanges(data: DataTableResponseObject): any[][] {
-        if(data.rows.length < 1) {
-            return [];
-        }
         let changeDetails = [];
         let columnIndex = DataTableUtilities.getColumnIndexByName(data, "Inputs");
         data.rows.forEach(row => {
