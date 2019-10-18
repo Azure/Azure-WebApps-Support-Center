@@ -29,3 +29,34 @@
     </div>
   </div>
 </div>
+
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">NAME</th>
+      <th scope="col">TYPE</th>
+      <th scope="col">RESOURCE GROUP</th>
+      <th scope="col">STATUS</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        <th scope="row">{{servicePlan.name}}</th>
+        <td >{{servicePlan.type}}</td>
+        <td>{{servicePlan.properties.resourceGroup}}</td>
+        <toggle-button [selected] = "isEnabled"
+        (selectedChange)="togglePlanHandler($event)"
+        ></toggle-button>
+    </tr>
+    <tr *ngFor="let webApp of webApps;let i = index">
+      <th scope="row">{{webApp.name}}</th>
+      <td>{{webApp.type}}</td>
+      <td>{{webApp.properties.resourceGroup}}</td>
+      <toggle-button [selected]="enableButtonSelectedArray[i]"
+      (selectedChange)="toggleHandler($event,i)"
+      ></toggle-button>
+    </tr>
+  </tbody>
+</table>
+<button class="btn btn-primary" (click)="clickHandler()">Save</button>

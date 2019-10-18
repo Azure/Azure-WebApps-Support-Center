@@ -11,6 +11,7 @@ import { ResourceService } from '../../../shared-v2/services/resource.service';
 import { HomePageText } from '../../../shared/models/arm/armResourceConfig';
 import { ArmService } from '../../../shared/services/arm.service';
 import { AuthService } from '../../../startup/services/auth.service';
+import { PortalKustoTelemetryService } from '../../../shared/services/portal-kusto-telemetry.service';
 
 @Component({
   selector: 'home',
@@ -29,6 +30,7 @@ export class HomeComponent implements OnInit {
   searchResultCount: number;
   homePageText: HomePageText;
   searchPlaceHolder: string;
+  providerStatusUrl: string;
   get inputAriaLabel(): string {
     return this.searchValue !== '' ?
       `${this.searchResultCount} Result` + (this.searchResultCount !== 1 ? 's' : '') :
@@ -37,7 +39,7 @@ export class HomeComponent implements OnInit {
 
   constructor(private _resourceService: ResourceService, private _categoryService: CategoryService, private _notificationService: NotificationService, private _router: Router,
     private _detectorControlService: DetectorControlService, private _featureService: FeatureService, private _logger: LoggingV2Service, private _authService: AuthService,
-    private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute, private armService: ArmService) {
+    private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute, private armService: ArmService,private loggingService:PortalKustoTelemetryService) {
 
     if (_resourceService.armResourceConfig && _resourceService.armResourceConfig.homePageText
       && _resourceService.armResourceConfig.homePageText.title && _resourceService.armResourceConfig.homePageText.title.length > 1
@@ -78,10 +80,19 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.resourceName = this._resourceService.resource.name;
-
+    this.providerStatusUrl = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis`;
     if (!this._detectorControlService.startTime) {
       this._detectorControlService.setDefault();
     }
+
+    this.armService.getResourceFullResponse<any>(this.providerStatusUrl, true, '2018-05-01').subscribe(response => {
+      let eventProps = {
+        url: this.providerStatusUrl
+      };
+      this.loggingService.logEvent("Change Analysis Provider",eventProps)
+    }, (error: any) => {
+      this.logHTTPError(error, 'registerChangeAnalysisProvider');
+    });
   }
 
   onSearchBoxFocus(event: any): void {
@@ -137,4 +148,13 @@ export class HomeComponent implements OnInit {
   private _logSearch() {
     this._logger.LogSearch(this.searchValue);
   }
+
+  private logHTTPError(error: any, methodName: string): void {
+    let errorLoggingProps = {
+        errorMsg: error.message ? error.message : 'Server Error',
+        statusCode: error.status ? error.status : 500
+    };
+    this.loggingService.logTrace('HTTP error in ' + methodName, errorLoggingProps);
 }
+}
+
