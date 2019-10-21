@@ -89,7 +89,7 @@ export class ChangesViewComponent extends DataRenderBaseComponent implements OnI
                     'jsonPath': jsonPath,
                     'originalModel': ChangeAnalysisUtilities.prepareValuesForDiffView(oldValue),
                     'modifiedModel': ChangeAnalysisUtilities.prepareValuesForDiffView(newValue),
-                    'initiatedByList' : row['initiatedByList'] ? row['initiatedByList'] : this.initiatedByList
+                    'initiatedByList' : row['initiatedByList'] ? this.getInitiatedByUsers(row) : this.initiatedByList
                 });
             });
             this.tableItems.sort((i1, i2) => i1.level - i2.level);
@@ -176,6 +176,10 @@ export class ChangesViewComponent extends DataRenderBaseComponent implements OnI
         };
 
         return eventProps;
+    }
+
+    getInitiatedByUsers(row: any[]): any[] {
+        return row['initiatedByList'].length > 0 ? row['initiatedByList'] : ['Unable to Determine'];
     }
 }
 
