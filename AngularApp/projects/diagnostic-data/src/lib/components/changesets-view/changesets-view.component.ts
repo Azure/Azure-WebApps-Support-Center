@@ -79,7 +79,8 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
         let resourceName = this.changeAnalysisService.getCurrentResourceName();
         let isAppService = this.changeAnalysisService.getAppService();
         if (rows.length > 0 && rows[0].length > 0) {
-            this.changeSetText = rows.length === 1 ? `1 change group detected` : `${rows.length} change groups have been detected`;
+            let batchChanges = this.getBatchChanges(data);
+            this.changeSetText = batchChanges.length === 1 ? `1 change detected` : `${batchChanges.length} changes have been detected`;
             this.changeSetText = resourceName != '' ? this.changeSetText + ` for ${resourceName}` : this.changeSetText;
             this.constructOrUpdateTimeline(data);
             if(!this.developmentMode) {
@@ -101,7 +102,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             } else {
                 this.scanDate = '';
             }
-             this.changeSetText = `No change groups have been detected`;
+             this.changeSetText = `No changes have been detected`;
              this.changeSetText = resourceName != '' ? this.changeSetText + ` for ${resourceName}` : this.changeSetText;
              this.checkInitialScanState();
              if(this.changesTimeline) {
@@ -252,7 +253,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             }
 
             this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
-            this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
+            true, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
             this.changeSetsCache[changeSetId] = response.dataset;
             this.changesDataSet = this.changeSetsCache[changeSetId];
             this.initiatedBy = this.changeSetsLocalCopy.hasOwnProperty(changeSetId) ?  this.getInitiatedByUsers(this.changeSetsLocalCopy[changeSetId]) : [];
@@ -281,7 +282,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             queryParams += `&inpId=1&val=${encodeURIComponent(sub)}&inpId=2&val=${encodeURIComponent(resourceGroups)}&inpId=3&val=${encodeURIComponent(provider)}&inpId=4&val=${encodeURIComponent(resourceName)}`;
         }
         this.diagnosticService.getDetector(this.detector,  this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
-            this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) => {
+            true, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) => {
                 let dataset = response.dataset;
                 let table = dataset[0].table;
                 let rows = table.rows;
@@ -324,7 +325,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             queryParams += `&inpId=1&val=${encodeURIComponent(sub)}&inpId=2&val=${encodeURIComponent(resourceGroups)}&inpId=3&val=${encodeURIComponent(provider)}&inpId=4&val=${encodeURIComponent(resourceName)}`;
         }
         this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
-            this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) => {
+            true, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) => {
                 let dataset = response.dataset;
                 let table = dataset[0].table;
                 let rows = table.rows;
@@ -376,7 +377,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             queryParams += `&inpId=1&val=${encodeURIComponent(sub)}&inpId=2&val=${encodeURIComponent(resourceGroups)}&inpId=3&val=${encodeURIComponent(provider)}&inpId=4&val=${encodeURIComponent(resourceName)}`;
         }
         this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
-            this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) => {
+            true, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) => {
                 let dataset = response.dataset;
                 let table = dataset[0].table;
                 let rows = table.rows;
@@ -483,7 +484,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             queryParams += `&inpId=1&val=${encodeURIComponent(sub)}&inpId=2&val=${encodeURIComponent(resourceGroups)}&inpId=3&val=${encodeURIComponent(provider)}&inpId=4&val=${encodeURIComponent(resourceName)}`;
         }
         this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
-        this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
+        true, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
             // Reload timeline with latest changes
             let newChangeRows = response.dataset[0]['table'];
             let newTimelineItems = [];
@@ -508,10 +509,15 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
                 this.constructTimeline(newChangeRows);
                 this.initializeChangesView(newChangeRows);
             }
-            let totalItems = this.timeLineDataSet.length;
-            this.changeSetText = totalItems + ' change groups have been detected';
-            // Convert UTC timestamp to user readable date
-            this.scanDate = 'Changes were last scanned on ' + moment.utc(newChangeRows.rows[0][6]).format("YYYY-MM-DD HH:mm");
+            let totalItems = newChangeRows.rows.length;
+            if(totalItems > 0) {
+                let batchChanges = this.getBatchChanges(newChangeRows);
+                this.changeSetText = batchChanges.length + ' changes have been detected';
+                // Convert UTC timestamp to user readable date
+                this.scanDate = 'Changes were last scanned on ' + moment.utc(newChangeRows.rows[0][6]).format("YYYY-MM-DD HH:mm");
+            } else {
+                this.changeSetText = 'No changes detected';
+            }
             this.setDefaultScanStatus();
         }, (error: any) => {
             this.scanStatusMessage = "Unable to get scan results";
