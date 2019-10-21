@@ -10,6 +10,8 @@ import { PortalKustoTelemetryService } from '../../../shared/services/portal-kus
 import { HttpResponse } from '@angular/common/http';
 
 const scanTag = "hidden-related:diagnostics/changeAnalysisScanEnabled";
+//const baseImgPath = "../../../../../src/assets/img/azure-icons";
+const baseImgPath = "assets/img/azure-icons";
 
 @Component({
     selector: 'diagnostics-settings',
@@ -22,13 +24,14 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     showResourceProviderRegStatus: boolean = false;
     pollingResourceProviderRegProgress: boolean = false;
     isEnabled = false;
-    enableButtonSelectedValue: boolean | null = null;
+    //enableButtonSelectedValue: boolean | null = null;
     updatingProvider: boolean = false;
     updatingTag: boolean = false;
     resourceProviderRegState: string = '';
     showGeneralError: boolean = false;
     generalErrorMsg: string = '';
-
+    isSaveBtnEnable: boolean = false;
+    isExpanded:boolean = false;
     // Resource Properties
     private subscriptionId: string;
     private currentResource: ArmResource;
@@ -40,15 +43,17 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     enableButtonSelectedArray: boolean[];
     private isHiddenTagsArrayChanged: BehaviorSubject<boolean[]> = new BehaviorSubject<boolean[]>([]);
     private isPlanHiddenTagsChanged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private prevEnableAppServicePlan:boolean;
+    private prevEnableBtnSelectedArr: boolean[];
 
     // ARM Urls
     private providerStatusUrl: string = '';
-    private providerRegistrationUrl: string = '';
+    //private providerRegistrationUrl: string = '';
 
     // Registration Status
     private pollResourceProviderStatusSubscription: Subscription;
     private isRPRegistered: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private isHiddenTagAdded: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    //private isHiddenTagAdded: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     constructor(private armService: ArmService, private authService: AuthService,
         private activatedRoute: ActivatedRoute, private resourceService: ResourceService,
@@ -69,11 +74,14 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
                 this.servicePlan = <ArmResource>response.body;
                 const isHiddenTagsEnabled =  this.checkScanPlanEnabled(this.servicePlan);
                 this.isPlanHiddenTagsChanged.next(isHiddenTagsEnabled);
+                this.prevEnableAppServicePlan = isHiddenTagsEnabled;
                 console.log(this.servicePlan);
             },(error:any) => {
                 this.logHTTPError(error, 'Can not fetch App Service Plan,');
                 this.showGeneralError = true;
-                this.generalErrorMsg = this.getGeneralErrorMsg('Can not fetch App Service Plan,', error.status);
+                if (error.status === 403) {
+                    this.generalErrorMsg = this.getGeneralErrorMsg('You do not have authorization to perform this operation. Make sure you have the required permissions to this App Service Plan and try again later.');
+                }
             });
 
             //get all web app under this app service plan
@@ -83,6 +91,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
                 const updatedHiddenTagsArray = this.webApps.map(webapp => {
                     return this.checkScanPlanEnabled(webapp);
                 });
+                this.prevEnableBtnSelectedArr = updatedHiddenTagsArray; 
                 this.isHiddenTagsArrayChanged.next(updatedHiddenTagsArray);
                 console.log(this.webApps);
             });
@@ -99,7 +108,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         
 
         this.providerStatusUrl = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis`;
-        this.providerRegistrationUrl = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis/register`;
+        //this.providerRegistrationUrl = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis/register`;
         this.currentResource = this.resourceService.resource;
 
         //this.isRPRegistered.subscribe(_ => this.updateChangeAnalysisEnableStatus());
@@ -252,34 +261,34 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         }
     }
 
-    private getGeneralErrorMsg(baseMsg: string, errorStatus: number) {
+    private getGeneralErrorMsg(baseMsg: string, errorStatus?: number) {
         if (errorStatus === 403) {
             return baseMsg + 'You may not have sufficient permissions to perform this operation. Make sure you have required permissions for this subscription and try again.';
         } else if (errorStatus === 401) {
             return baseMsg + 'Your token may have expired. Please refresh and try again.';
+        } else if (errorStatus === 409) {
+            return baseMsg + 'Your request is being processed. Please check back later.';
+        } else if (errorStatus === null) { 
+            return baseMsg;
         } else {
             return baseMsg + 'Please try again later.';
         }
     }
 
     togglePlanHandler(event:boolean): void {
+        this.isSaveBtnEnable = true;
         this.isPlanHiddenTagsChanged.next(event);
         const enableButtonSelectedArray = this.enableButtonSelectedArray.map(_ => event);
         this.isHiddenTagsArrayChanged.next(enableButtonSelectedArray);
     }
 
     toggleHandler(event:boolean,index:number): void {
+        this.isSaveBtnEnable = true;
         const tempArray = [...this.enableButtonSelectedArray];
         tempArray[index] = event;
         this.isHiddenTagsArrayChanged.next(tempArray);
     }
-
-    clickHandler(): void {
-        this.checkDiff();
-        console.log(this.enableButtonSelectedArray);
-    }
-
-    checkDiff() {
+    saveSettings() {
         this.clearErrors();
         this.updateServicePlaTag(this.isEnabled);
     }
@@ -291,7 +300,6 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         this.servicePlan.tags[scanTag] = tagValue;
         this.armService.patchResourceFullResponse(this.servicePlan.id,this.servicePlan,true).subscribe((response: HttpResponse<{}>) => {
             const length = this.enableButtonSelectedArray.length;
-            const isPlanEnabled = this.isEnabled;
 
             let eventProps = {
                 tagName: scanTag,
@@ -307,10 +315,11 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             // }
             if (response.status < 300) {
                 this.isPlanHiddenTagsChanged.next(enable);
+                this.prevEnableAppServicePlan = enable;
             } 
             setTimeout(() => {
                 for (let i = 0;i < length;i++) {
-                    if (this.enableButtonSelectedArray[i] !== isPlanEnabled) {
+                    if (this.checkWebAppShouldUpdate(i)) {
                         this.updateWebAppTag(this.enableButtonSelectedArray[i],i);
                     }
                 }
@@ -320,7 +329,9 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             this.logHTTPError(error, 'updateServicePlaTag');
             this.updatingTag = false;
             this.showGeneralError = true;
-            this.generalErrorMsg = this.getGeneralErrorMsg('Error occurred when trying to update service plan tag. ', error.status);    
+            this.generalErrorMsg = this.getGeneralErrorMsg('Error occurred when trying to update service plan tag. ', error.status);  
+            //if patch app service plan failed,toggle button back to previous state  
+            this.isPlanHiddenTagsChanged.next(this.prevEnableAppServicePlan);
         })
     }
 
@@ -347,9 +358,9 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             this.loggingService.logEvent('updateServicePlaTag', eventProps);
 
             if (data && data.tags && data.tags[scanTag] == "true") {
-                this.checkAndDispatch(true,index);
+                this.checkWebAppSetting(true,index);
             } else {
-                this.checkAndDispatch(false,index);
+                this.checkWebAppSetting(false,index);
             }
 
         },(error:any) => {
@@ -361,10 +372,33 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
 
     }
 
-
-    private checkAndDispatch(enable:boolean,index:number):void {
+    private checkWebAppSetting(enable:boolean,index:number):void {
         const hiddenTagArray = this.enableButtonSelectedArray;
         hiddenTagArray[index] = enable;
+        this.prevEnableBtnSelectedArr = hiddenTagArray;
         this.isHiddenTagsArrayChanged.next(hiddenTagArray);
     }
+
+    private checkWebAppShouldUpdate(index:number):boolean {
+        const curEnableWebApp = this.enableButtonSelectedArray[index];
+        if (curEnableWebApp !== this.prevEnableBtnSelectedArr[index] || curEnableWebApp !== this.isEnabled) {
+            return true;
+        }
+        return false;
+    }
+
+    prettyTypeString(s:string):string{
+        if (s.includes('sites')) {
+            return `<img src=${baseImgPath}/AzureAppService.png} />Web App`;
+        } if (s.includes('serverfarms')) {
+            return 'App Service Plan';
+        } else {
+            return s;
+        }
+    }
+
+    hasContent():boolean {
+        return this.webApps && this.webApps.length > 0;
+    }
+
 }

@@ -7,7 +7,8 @@
   <loader-view *ngIf="updatingTag || updatingProvider " message="Saving settings..."></loader-view>
   <div class="row form-group" *ngIf="showResourceProviderRegStatus">
     <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
-    Change Analysis Resource Provider is {{resourceProviderRegState}}. This will take a few mins. Please check again later.
+    Change Analysis Resource Provider is {{resourceProviderRegState}}. This will take a few mins. Please check again
+    later.
   </div>
   <div *ngIf="!pollingResourceProviderRegProgress && !updatingProvider && !updatingTag">
     <div class="row form-group option-group">
@@ -42,21 +43,24 @@
   </thead>
   <tbody>
     <tr>
-        <th scope="row">{{servicePlan.name}}</th>
-        <td >{{servicePlan.type}}</td>
-        <td>{{servicePlan.properties.resourceGroup}}</td>
-        <toggle-button [selected] = "isEnabled"
-        (selectedChange)="togglePlanHandler($event)"
-        ></toggle-button>
+      <th scope="row">
+        <span class="fa insight-expand-icon" [class.fa-angle-right]="hasContent() && !isExpanded"
+          [class.fa-angle-down]="hasContent() && isExpanded" (click)="isExpanded = !isExpanded"></span>
+        {{servicePlan.name}}
+      </th>
+      <td [innerHtml]="prettyTypeString(servicePlan.type)"></td>
+      <td>{{servicePlan.properties.resourceGroup}}</td>
+      <toggle-button [selected]="isEnabled" (selectedChange)="togglePlanHandler($event)"></toggle-button>
     </tr>
-    <tr *ngFor="let webApp of webApps;let i = index">
-      <th scope="row">{{webApp.name}}</th>
-      <td>{{webApp.type}}</td>
-      <td>{{webApp.properties.resourceGroup}}</td>
-      <toggle-button [selected]="enableButtonSelectedArray[i]"
-      (selectedChange)="toggleHandler($event,i)"
-      ></toggle-button>
-    </tr>
+    <ng-container *ngIf="hasContent() && isExpanded">
+      <tr *ngFor="let webApp of webApps;let i = index">
+        <th scope="row">{{webApp.name}}</th>
+        <td [innerHtml]="prettyTypeString(webApp.type)"></td>
+        <td>{{webApp.properties.resourceGroup}}</td>
+        <toggle-button [selected]="enableButtonSelectedArray[i]" (selectedChange)="toggleHandler($event,i)">
+        </toggle-button>
+      </tr>
+    </ng-container>
   </tbody>
 </table>
-<button class="btn btn-primary" (click)="clickHandler()">Save</button>
+<button class="btn btn-primary" (click)="saveSettings()" [disabled]="!isSaveBtnEnable">Save</button>
