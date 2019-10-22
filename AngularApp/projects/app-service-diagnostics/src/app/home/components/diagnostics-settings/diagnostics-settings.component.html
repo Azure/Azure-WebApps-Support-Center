@@ -40,7 +40,7 @@
         </tr>
         <ng-container *ngIf="hasContent() && isExpanded">
           <tr *ngFor="let webApp of webApps;let i = index">
-            <th scope="row"> <span class="fa insight-expand-icon"></span> <i class="webapp-icon"></i>{{webApp.name}}</th>
+            <th scope="row"> <span class="fa insight-expand-icon webapp-icon-row"></span> <i class="webapp-icon"></i>{{webApp.name}}</th>
             <td>Web App</td>
             <td>{{webApp.properties.resourceGroup}}</td>
             <td>

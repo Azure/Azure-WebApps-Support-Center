@@ -85,15 +85,17 @@ export class HomeComponent implements OnInit {
       this._detectorControlService.setDefault();
     }
 
-    // Register Change Analysis Resource Provider.
-    this.armService.postResourceFullResponse(this.providerRegisterUrl, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
-    let eventProps = {
-        url: this.providerRegisterUrl
-        };
-        this.loggingService.logEvent("Change Analysis Resource Provider registered",eventProps);
-    }, (error: any) => {
-        this.logHTTPError(error, 'registerResourceProvider');
-    });
+    if(this._resourceService.resource.type === 'Microsoft.Web/sites') {
+        // Register Change Analysis Resource Provider.
+        this.armService.postResourceFullResponse(this.providerRegisterUrl, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
+            let eventProps = {
+                url: this.providerRegisterUrl
+                };
+                this.loggingService.logEvent("Change Analysis Resource Provider registered",eventProps);
+            }, (error: any) => {
+                this.logHTTPError(error, 'registerResourceProvider');
+            });
+    }
   }
 
   onSearchBoxFocus(event: any): void {
