@@ -210,6 +210,11 @@ export class GenericArmConfigService {
           currConfig.isSearchEnabled = this.getValue(this.resourceConfig.isSearchEnabled, this.overrideConfig.isSearchEnabled);
         }
 
+        //currConfig.pesId
+        if (this.getValue(this.resourceConfig.pesId, this.overrideConfig.pesId) != null) {
+          currConfig.pesId = this.getValue(this.resourceConfig.pesId, this.overrideConfig.pesId);
+        }
+
         //currConfig.isApplicableForLiveChat
         if (this.getValue(this.resourceConfig.isApplicableForLiveChat, this.overrideConfig.isApplicableForLiveChat) != null) {
           currConfig.isApplicableForLiveChat = this.getValue(this.resourceConfig.isApplicableForLiveChat, this.overrideConfig.isApplicableForLiveChat);

@@ -10,6 +10,7 @@ export class ArmResourceConfig {
 	isSearchEnabled?: boolean;
 	isApplicableForLiveChat?: boolean;
 	categories?: Array<Category>;
+	pesId?: string;
 }
 
 export interface GenieConfig {

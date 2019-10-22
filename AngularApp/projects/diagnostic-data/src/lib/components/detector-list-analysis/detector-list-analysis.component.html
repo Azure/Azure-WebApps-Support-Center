@@ -232,15 +232,16 @@
             </div>
         </div>
     </div>
-    <div class="list-wrapper" *ngIf="isSearchAnalysisView">
-        <div class="list-item-wrapper" *ngIf="isSearchAnalysisView" id='recommendedDocsSection'>
+    <div class="list-wrapper" *ngIf="supportDocumentRendered">
+        <div class="list-item-wrapper" *ngIf="supportDocumentRendered" id='recommendedDocsSection'>
             <div class="stepper-circle stepper-circle-dark-blue">
                 <i aria-hidden="true" class="fa fa-file-text-o"></i>
             </div>
             <div class="list-item">
                 <div class="list-title">Recommended Docs</div>
                 <div>Documents to aid in troubleshooting</div>
-                <div class="list-text" *ngIf="supportDocumentContent.length>0" [innerHTML]="supportDocumentContent">
+                <div class="support-doc-section">
+                    <markdown *ngIf="supportDocumentContent.length>0" [data]="supportDocumentContent"></markdown>
                 </div>
                 <div class="white-line" [ngClass]="{'remove-padding':withinDiagnoseAndSolve}"></div>
             </div>

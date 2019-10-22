@@ -75,7 +75,6 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
   supportDocumentRendered: boolean = false;
   searchTerm: string = "";
   searchId: string = null;
-  isSearchAnalysisView: boolean = false;
   showPreLoader: boolean = false;
   preLoadingErrorMessage: string = "Some error occurred while fetching diagnostics."
   showPreLoadingError: boolean = false;
@@ -177,35 +176,38 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     }
   }
 
+  populateSupportTopicDocument(){
+    if (!this.supportDocumentRendered){
+      this._supportTopicService.getSelfHelpContentDocument().subscribe(res => {
+        if (res && res.json() && res.json().length>0){
+          var htmlContent = res.json()[0]["htmlContent"];
+          // Custom javascript code to remove top header from support document html string
+          var tmp = document.createElement("DIV");
+          tmp.innerHTML = htmlContent;
+          var h2s = tmp.getElementsByTagName("h2");
+          if (h2s && h2s.length>0){
+            h2s[0].remove();
+          }
+
+          // Set the innter html for support document display
+          this.supportDocumentContent = tmp.innerHTML;
+          this.supportDocumentRendered = true;
+        }
+      });
+    }
+  }
+
   refresh() {
     this._activatedRoute.paramMap.subscribe(params => {
       this.analysisId = params.get('analysisId');
       this.detectorId = params.get(this.detectorParmName) === null ? "" : params.get(this.detectorParmName);
       this.resetGlobals();
+      this.populateSupportTopicDocument();
 
         if (this.analysisId === "searchResultsAnalysis"){
           this._activatedRoute.queryParamMap.subscribe(qParams => {
             this.resetGlobals();
             this.searchTerm = qParams.get('searchTerm') === null ? "" : qParams.get('searchTerm');
-            this.isSearchAnalysisView = true;
-            if (!this.supportDocumentRendered){
-              this._supportTopicService.getSelfHelpContentDocument().subscribe(res => {
-                if (res && res.json() && res.json().length>0){
-                  var htmlContent = res.json()[0]["htmlContent"];
-                  // Custom javascript code to remove top header from support document html string
-                  var tmp = document.createElement("DIV");
-                  tmp.innerHTML = htmlContent;
-                  var h2s = tmp.getElementsByTagName("h2");
-                  if (h2s && h2s.length>0){
-                    h2s[0].remove();
-                  }
-
-                  // Set the innter html for support document display
-                  this.supportDocumentContent = tmp.innerHTML;
-                  this.supportDocumentRendered = true;
-                }
-              });
-            }
             this.showAppInsightsSection = false;
             if (this.searchTerm && this.searchTerm.length>1) {
               this.searchId = uuid();

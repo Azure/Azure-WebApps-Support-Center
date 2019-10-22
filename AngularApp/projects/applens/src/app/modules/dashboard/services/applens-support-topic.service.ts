@@ -221,7 +221,7 @@ export class ApplensSupportTopicService {
     }
 
     getSelfHelpContentDocument(): Observable<any>{
-        return null;
+        return Observable.of(null);
     }
 
 

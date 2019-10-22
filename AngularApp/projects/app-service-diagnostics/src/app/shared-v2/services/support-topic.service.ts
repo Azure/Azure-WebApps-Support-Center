@@ -23,7 +23,7 @@ export class SupportTopicService {
   }
 
   public getSelfHelpContentDocument(): Observable<any>{
-    if (this.pesId && this.pesId.length>0){
+    if (this.pesId && this.pesId.length>0 && this.supportTopicId && this.supportTopicId.length>0){
       return this._authService.getStartupInfo().pipe(flatMap(res => {
         var selfHelpContentForSupportTopicUrl = this.selfHelpContentUrl + "&productId=" + encodeURIComponent(this.pesId) + "&topicId=" + encodeURIComponent(this.supportTopicId);
         const headers = new Headers();
