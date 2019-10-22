@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
   searchResultCount: number;
   homePageText: HomePageText;
   searchPlaceHolder: string;
-  providerStatusUrl: string;
+  providerRegisterUrl: string;
   get inputAriaLabel(): string {
     return this.searchValue !== '' ?
       `${this.searchResultCount} Result` + (this.searchResultCount !== 1 ? 's' : '') :
@@ -55,7 +55,7 @@ export class HomeComponent implements OnInit {
          improve your application. Select the problem category that best matches the information or tool that you\'re\
          interested in:',
          searchBarPlaceHolder: 'Search App Service Diagnostics'
-      };      
+      };
     }
 
 
@@ -80,18 +80,19 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.resourceName = this._resourceService.resource.name;
-    this.providerStatusUrl = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis`;
+    this.providerRegisterUrl = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis/register`;
     if (!this._detectorControlService.startTime) {
       this._detectorControlService.setDefault();
     }
 
-    this.armService.getResourceFullResponse<any>(this.providerStatusUrl, true, '2018-05-01').subscribe(response => {
-      let eventProps = {
-        url: this.providerStatusUrl
-      };
-      this.loggingService.logEvent("Change Analysis Provider",eventProps)
+    // Register Change Analysis Resource Provider.
+    this.armService.postResourceFullResponse(this.providerRegisterUrl, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
+    let eventProps = {
+        url: this.providerRegisterUrl
+        };
+        this.loggingService.logEvent("Change Analysis Resource Provider registered",eventProps);
     }, (error: any) => {
-      this.logHTTPError(error, 'registerChangeAnalysisProvider');
+        this.logHTTPError(error, 'registerResourceProvider');
     });
   }
 

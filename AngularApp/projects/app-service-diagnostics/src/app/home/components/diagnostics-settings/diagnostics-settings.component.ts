@@ -10,7 +10,6 @@ import { PortalKustoTelemetryService } from '../../../shared/services/portal-kus
 import { HttpResponse } from '@angular/common/http';
 
 const scanTag = "hidden-related:diagnostics/changeAnalysisScanEnabled";
-//const baseImgPath = "../../../../../src/assets/img/azure-icons";
 const baseImgPath = "assets/img/azure-icons";
 
 @Component({
@@ -24,14 +23,13 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
     showResourceProviderRegStatus: boolean = false;
     pollingResourceProviderRegProgress: boolean = false;
     isEnabled = false;
-    //enableButtonSelectedValue: boolean | null = null;
-    updatingProvider: boolean = false;
     updatingTag: boolean = false;
     resourceProviderRegState: string = '';
     showGeneralError: boolean = false;
     generalErrorMsg: string = '';
     isSaveBtnEnable: boolean = false;
     isExpanded:boolean = false;
+    loadingTable: boolean = false;
     // Resource Properties
     private subscriptionId: string;
     private currentResource: ArmResource;
@@ -48,12 +46,10 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
 
     // ARM Urls
     private providerStatusUrl: string = '';
-    //private providerRegistrationUrl: string = '';
 
     // Registration Status
     private pollResourceProviderStatusSubscription: Subscription;
     private isRPRegistered: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    //private isHiddenTagAdded: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     constructor(private armService: ArmService, private authService: AuthService,
         private activatedRoute: ActivatedRoute, private resourceService: ResourceService,
@@ -64,7 +60,9 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         this.authService.getStartupInfo().subscribe(data => {
             this.resourceId = data.resourceId;
         });
-        
+
+        this.loadingTable = true;
+        this.pollResourceProviderRegStatus();
         this.armService.getResourceFullResponse<any>(this.resourceId,true,'2016-08-01').subscribe(response => {
             let appServicePlanResponse = <ArmResource>response.body;
             this.servicePlanId = appServicePlanResponse.properties.serverFarmId;
@@ -75,47 +73,39 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
                 const isHiddenTagsEnabled =  this.checkScanPlanEnabled(this.servicePlan);
                 this.isPlanHiddenTagsChanged.next(isHiddenTagsEnabled);
                 this.prevEnableAppServicePlan = isHiddenTagsEnabled;
-                console.log(this.servicePlan);
+                //get all web app under this app service plan
+                this.armService.getResourceFullResponse<any>(`${this.servicePlanId}/sites`,true,'2016-09-01').subscribe(response => {
+                    this.webApps = <ArmResource[]>response.body.value;
+
+                    const updatedHiddenTagsArray = this.webApps.map(webapp => {
+                        return this.checkScanPlanEnabled(webapp);
+                    });
+                    this.prevEnableBtnSelectedArr = updatedHiddenTagsArray;
+                    this.isHiddenTagsArrayChanged.next(updatedHiddenTagsArray);
+                    this.loadingTable = false;
+                });
             },(error:any) => {
-                this.logHTTPError(error, 'Can not fetch App Service Plan,');
+                this.logHTTPError(error, 'Cannot fetch App Service Plan,');
+                this.loadingTable = false;
                 this.showGeneralError = true;
                 if (error.status === 403) {
                     this.generalErrorMsg = this.getGeneralErrorMsg('You do not have authorization to perform this operation. Make sure you have the required permissions to this App Service Plan and try again later.');
                 }
             });
-
-            //get all web app under this app service plan
-            this.armService.getResourceFullResponse<any>(`${this.servicePlanId}/sites`,true,'2016-09-01').subscribe(response => {
-                this.webApps = <ArmResource[]>response.body.value;
-
-                const updatedHiddenTagsArray = this.webApps.map(webapp => {
-                    return this.checkScanPlanEnabled(webapp);
-                });
-                this.prevEnableBtnSelectedArr = updatedHiddenTagsArray; 
-                this.isHiddenTagsArrayChanged.next(updatedHiddenTagsArray);
-                console.log(this.webApps);
-            });
         });
 
         this.isHiddenTagsArrayChanged.subscribe(data => {
-            //this.isEnabledArray = data;
             this.enableButtonSelectedArray = data;
         });
 
         this.isPlanHiddenTagsChanged.subscribe(data => {
             this.isEnabled = data;
         });
-        
+
 
         this.providerStatusUrl = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis`;
-        //this.providerRegistrationUrl = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis/register`;
         this.currentResource = this.resourceService.resource;
 
-        //this.isRPRegistered.subscribe(_ => this.updateChangeAnalysisEnableStatus());
-        //this.isHiddenTagAdded.subscribe(_ => this.updateChangeAnalysisEnableStatus());
-
-        this.pollResourceProviderRegStatus();
-        //this.checkIfCodeScanEnabled();
     }
 
     private pollResourceProviderRegStatus(): void {
@@ -130,7 +120,6 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             let providerRegistrationStateResponse = <ProviderRegistration>response.body;
             let state = providerRegistrationStateResponse.registrationState.toLowerCase();
             this.resourceProviderRegState = state;
-
             if (state === 'registered' || state === 'unregistered' || state === 'notregistered') {
                 this.pollingResourceProviderRegProgress = false;
                 this.showResourceProviderRegStatus = false;
@@ -155,15 +144,6 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         });
     }
 
-    // private checkIfCodeScanEnabled(): void {
-    //     let tags = this.currentResource.tags;
-    //     if (tags && tags[scanTag] === 'true') {
-    //         this.isHiddenTagAdded.next(true);
-    //     } else {
-    //         this.isHiddenTagAdded.next(false);
-    //     }
-    // }
-
     private checkScanPlanEnabled(resource:ArmResource): boolean {
         let tags = resource.tags;
         if (tags && tags[scanTag] === 'true') {
@@ -171,72 +151,6 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         }
         return false;
     }
-
-    // private updateChangeAnalysisEnableStatus(): void {
-    //     this.isEnabled = this.isRPRegistered.getValue() && this.isHiddenTagAdded.getValue();
-    // }
-
-    // private registerResourceProvider(): void {
-    //     this.updatingProvider = true;
-
-    //     let props = {
-    //         armUrl: this.providerRegistrationUrl,
-    //         resourceId: this.resourceId
-    //     };
-    //     this.loggingService.logEvent('RegisterChangeAnalysisResourceProvider', props);
-
-    //     this.armService.postResourceFullResponse(this.providerRegistrationUrl, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
-    //         this.updatingProvider = false;
-    //         this.pollResourceProviderRegStatus();
-    //     }, (error: any) => {
-    //         this.logHTTPError(error, 'registerResourceProvider');
-    //         this.updatingProvider = false;
-    //         this.showGeneralError = true;
-    //         this.generalErrorMsg = this.getGeneralErrorMsg('Unable to register Change Analysis Resource Provider. ', error.status);
-    //     });
-    // }
-
-    //update app web scan tag
-    // private updateScanTag(enable: boolean): void {
-    //     this.updatingTag = true;
-    //     let tagValue = enable ? 'true' : 'false';
-    //     this.currentResource.tags = this.currentResource.tags ? this.currentResource.tags : {}
-    //     this.currentResource.tags[scanTag] = tagValue;
-
-    //     let eventProps = {
-    //         tagName: scanTag,
-    //         tagValue: tagValue,
-    //         resourceId: this.resourceId
-    //     };
-    //     this.loggingService.logEvent('UpdateScanTag', eventProps);
-
-    //     this.armService.patchResourceFullResponse(this.currentResource.id, this.currentResource, true).subscribe((response: HttpResponse<{}>) => {
-    //         this.updatingTag = false;
-    //         let resource = <ArmResource>response.body;
-    //         if (resource && resource.tags && resource.tags[scanTag] === 'true') {
-    //             this.isHiddenTagAdded.next(true);
-    //         } else {
-    //             this.isHiddenTagAdded.next(false);
-    //         }
-    //     }, (error: any) => {
-    //         this.logHTTPError(error, 'updateScanTag');
-    //         this.updatingTag = false;
-    //         this.showGeneralError = true;
-    //         this.generalErrorMsg = this.getGeneralErrorMsg('Error occurred when trying to enable Change Analysis. ', error.status);
-    //     });
-    // }
-
-    //saveSettings(): void {
-        //this.clearErrors();
-
-        // Register the Resource Provider
-        // if (this.enableButtonSelectedValue && !this.isRPRegistered.getValue()) {
-        //     this.registerResourceProvider();
-        // }
-
-        // Update hidden tag
-        //this.updateScanTag(this.enableButtonSelectedValue);
-    //}
 
     private logHTTPError(error: any, methodName: string): void {
         let errorLoggingProps = {
@@ -268,7 +182,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             return baseMsg + 'Your token may have expired. Please refresh and try again.';
         } else if (errorStatus === 409) {
             return baseMsg + 'Your request is being processed. Please check back later.';
-        } else if (errorStatus === null) { 
+        } else if (errorStatus === null) {
             return baseMsg;
         } else {
             return baseMsg + 'Please try again later.';
@@ -288,6 +202,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         tempArray[index] = event;
         this.isHiddenTagsArrayChanged.next(tempArray);
     }
+
     saveSettings() {
         this.clearErrors();
         this.updateServicePlaTag(this.isEnabled);
@@ -307,30 +222,25 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
                 servicePlanId: this.servicePlanId
             };
             this.loggingService.logEvent('updateServicePlaTag', eventProps);
-
-            // if (data && data.tags && data.tags[scanTag] == "true") {
-            //     this.isPlanHiddenTagsChanged.next(true);
-            // } else {
-            //     this.isPlanHiddenTagsChanged.next(false);
-            // }
             if (response.status < 300) {
                 this.isPlanHiddenTagsChanged.next(enable);
                 this.prevEnableAppServicePlan = enable;
-            } 
+            }
             setTimeout(() => {
                 for (let i = 0;i < length;i++) {
                     if (this.checkWebAppShouldUpdate(i)) {
                         this.updateWebAppTag(this.enableButtonSelectedArray[i],i);
                     }
                 }
+                this.updatingTag = false;
             }, 1500);
-            
+
         },(error:any) => {
             this.logHTTPError(error, 'updateServicePlaTag');
             this.updatingTag = false;
             this.showGeneralError = true;
-            this.generalErrorMsg = this.getGeneralErrorMsg('Error occurred when trying to update service plan tag. ', error.status);  
-            //if patch app service plan failed,toggle button back to previous state  
+            this.generalErrorMsg = this.getGeneralErrorMsg('Error occurred when trying to update service plan tag. ', error.status);
+            //if patch app service plan failed,toggle button back to previous state
             this.isPlanHiddenTagsChanged.next(this.prevEnableAppServicePlan);
         })
     }
@@ -367,7 +277,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             this.logHTTPError(error, 'updateWebAppTag');
             this.updatingTag = false;
             this.showGeneralError = true;
-            this.generalErrorMsg = this.getGeneralErrorMsg(`Error occurred when trying to update ${webapp.name} tag. `, error.status);    
+            this.generalErrorMsg = this.getGeneralErrorMsg(`Error occurred when trying to update ${webapp.name} tag. `, error.status);
         })
 
     }
@@ -385,16 +295,6 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
             return true;
         }
         return false;
-    }
-
-    prettyTypeString(s:string):string{
-        if (s.includes('sites')) {
-            return `<img src=${baseImgPath}/AzureAppService.png} />Web App`;
-        } if (s.includes('serverfarms')) {
-            return 'App Service Plan';
-        } else {
-            return s;
-        }
     }
 
     hasContent():boolean {
