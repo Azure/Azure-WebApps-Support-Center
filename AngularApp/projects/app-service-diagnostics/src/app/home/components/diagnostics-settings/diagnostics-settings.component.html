@@ -4,10 +4,6 @@
       <p>{{generalErrorMsg}} </p>
     </div>
   </div>
-  <!-- <div class="row form-group" *ngIf="updatingTag">
-    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-    Saving settings...
-  </div> -->
   <loader-view *ngIf="updatingTag" message="Saving settings..."></loader-view>
   <div class="row form-group" *ngIf="showResourceProviderRegStatus">
     <span class="fa fa-circle-o-notch fa-spin spin-icon"></span>
