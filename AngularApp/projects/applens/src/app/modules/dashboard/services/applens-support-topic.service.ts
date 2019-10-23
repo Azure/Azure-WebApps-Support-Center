@@ -7,6 +7,7 @@ import { CacheService } from '../../../shared/services/cache.service';
 import { HttpClient } from '@angular/common/http';
 import { catchError, mergeMap, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
+import 'rxjs/add/observable/of';
 import { HttpMethod } from '../../../shared/models/http';
 
 
