@@ -78,7 +78,7 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
                     this.webApps = <ArmResource[]>response.body.value;
 
                     const updatedHiddenTagsArray = this.webApps.map(webapp => {
-                        return this.checkScanPlanEnabled(webapp);
+                        return this.checkWebAppEnabled(webapp);
                     });
                     this.prevEnableBtnSelectedArr = updatedHiddenTagsArray;
                     this.isHiddenTagsArrayChanged.next(updatedHiddenTagsArray);
@@ -151,6 +151,17 @@ export class DiagnosticsSettingsComponent implements OnInit, OnDestroy {
         }
         return false;
     }
+
+    private checkWebAppEnabled(resource: ArmResource): boolean {
+        // First check if WebApp has any tags set on it and return if its enabled.
+        let tags = resource.tags;
+        if(tags && tags[scanTag]) {
+            return tags[scanTag] === 'true';
+        }
+        // Otherwise return App Service Plan's setting.
+        return this.checkScanPlanEnabled(this.servicePlan);
+    }
+
 
     private logHTTPError(error: any, methodName: string): void {
         let errorLoggingProps = {

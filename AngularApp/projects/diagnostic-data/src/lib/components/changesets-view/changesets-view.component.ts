@@ -584,4 +584,10 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
         });
         return changeDetails;
     }
+
+    ngOnDestory() {
+        if(this.changesTimeline) {
+            this.changesTimeline.destroy();
+        }
+    }
 }
