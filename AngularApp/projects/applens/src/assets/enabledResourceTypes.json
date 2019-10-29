@@ -172,7 +172,7 @@
             "templateFileName": "Batch",
             "imgSrc": "assets/img/Azure-Batch-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": "Batch",
+            "azureCommImpactedServicesList": "BatchAccounts",
             "pesId": "",
             "staticSelfHelpContent": ""
         }
