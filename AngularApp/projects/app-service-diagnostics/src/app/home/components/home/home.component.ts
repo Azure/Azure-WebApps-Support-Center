@@ -66,7 +66,7 @@ export class HomeComponent implements OnInit {
       this.homePageText = {
         title:'Azure Kubernetes Service Diagnostics',
         description: 'Explore ways to diagnose and troubleshoot the common problems of your cluster from CRUD operations to connection problems. Click on any of the documents below to start troubleshooting.',
-         searchBarPlaceHolder: 'Search App Service Diagnostics'
+         searchBarPlaceHolder: 'Search a keyword that best describes your issue'
       };
     }
 
