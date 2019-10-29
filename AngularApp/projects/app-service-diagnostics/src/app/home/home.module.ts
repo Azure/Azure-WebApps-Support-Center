@@ -20,6 +20,7 @@ import { DiagnosticDataModule } from 'diagnostic-data';
 import { GenericAnalysisComponent } from '../shared/components/generic-analysis/generic-analysis.component';
 import { DiagnosticsSettingsComponent } from './components/diagnostics-settings/diagnostics-settings.component';
 import { SupportTopicService } from '../shared-v2/services/support-topic.service';
+import { MarkdownModule } from 'ngx-markdown';
 
 export const HomeRoutes = RouterModule.forChild([
   {
@@ -177,7 +178,8 @@ export const HomeRoutes = RouterModule.forChild([
     DiagnosticDataModule,
     HomeRoutes,
     SupportBotModule,
-    FormsModule
+    FormsModule,
+    MarkdownModule.forRoot()
   ],
   declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent],
   providers: [CategoryTabResolver, CategoryChatResolver, TimeControlResolver,

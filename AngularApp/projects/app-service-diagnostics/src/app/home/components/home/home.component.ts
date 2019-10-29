@@ -37,6 +37,10 @@ export class HomeComponent implements OnInit {
       '';
   }
 
+  get cloudLocation(): string {
+    return window.parent.location.hostname;
+  }
+
   constructor(private _resourceService: ResourceService, private _categoryService: CategoryService, private _notificationService: NotificationService, private _router: Router,
     private _detectorControlService: DetectorControlService, private _featureService: FeatureService, private _logger: LoggingV2Service, private _authService: AuthService,
     private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute, private armService: ArmService,private loggingService:PortalKustoTelemetryService) {
