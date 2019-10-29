@@ -15,13 +15,28 @@ import { GenericArmConfigService } from './generic-arm-config.service';
 export class ArmService {
     public subscriptions = new ReplaySubject<Subscription[]>(1);
 
-    public armUrl = 'https://management.azure.com';
     public armApiVersion = '2016-02-01';
     public storageApiVersion = '2015-05-01-preview';
     public websiteApiVersion = '2015-08-01';
+    private readonly publicAzureArmUrl = 'https://management.azure.com';
+    private readonly chinaAzureArmUrl = 'https://management.chinacloudapi.cn';
+    private readonly usGovernmentAzureArmUrl = 'https://management.usgovcloudapi.net';
 
     constructor(private _http: HttpClient, private _authService: AuthService, private _cache: CacheService, private _genericArmConfigService?: GenericArmConfigService) {
 
+    }
+
+    get armUrl(): string {
+        let armUrl = this.publicAzureArmUrl;
+        
+        if (window.parent.location.hostname.includes("azure.cn")){
+            armUrl = this.chinaAzureArmUrl;
+        }
+        else if(window.parent.location.hostname.includes("azure.us")){
+            armUrl = this.usGovernmentAzureArmUrl;
+        }
+
+        return armUrl;
     }
 
     getApiVersion(resourceUri: string, apiVersion?: string): string {
