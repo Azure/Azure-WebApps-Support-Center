@@ -27,12 +27,13 @@ export class ArmService {
     }
 
     get armUrl(): string {
+        let browserUrl = (window.location != window.parent.location) ? document.referrer : document.location.href;
         let armUrl = this.publicAzureArmUrl;
         
-        if (window.parent.location.hostname.includes("azure.cn")){
+        if (browserUrl.includes("azure.cn")){
             armUrl = this.chinaAzureArmUrl;
         }
-        else if(window.parent.location.hostname.includes("azure.us")){
+        else if(browserUrl.includes("azure.us")){
             armUrl = this.usGovernmentAzureArmUrl;
         }
 

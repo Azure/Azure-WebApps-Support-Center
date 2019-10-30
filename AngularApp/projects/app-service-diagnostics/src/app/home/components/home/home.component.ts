@@ -37,8 +37,8 @@ export class HomeComponent implements OnInit {
       '';
   }
 
-  get cloudLocation(): string {
-    return window.parent.location.hostname;
+  get isPublicAzure(): boolean {
+    return ((window.location != window.parent.location) ? document.referrer : document.location.href).includes("azure.com");
   }
 
   constructor(private _resourceService: ResourceService, private _categoryService: CategoryService, private _notificationService: NotificationService, private _router: Router,
@@ -62,7 +62,7 @@ export class HomeComponent implements OnInit {
       };
     }
 
-    if (this.cloudLocation == "portal.azure.cn"){
+    if (this.isPublicAzure == false){
       this.homePageText = {
         title:'Azure Kubernetes Service Diagnostics',
         description: 'Explore ways to diagnose and troubleshoot the common problems of your cluster from CRUD operations to connection problems. Click on any of the documents below to start troubleshooting.',
