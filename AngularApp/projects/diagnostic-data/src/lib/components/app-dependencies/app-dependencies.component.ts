@@ -155,7 +155,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
             this.changeAnalysisService.setAppService(provider);
             this.changeAnalysisService.setResourceUri(this.selectedResourceId);
             this.diagnosticService.getDetector(this.detector, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
-                this.detectorControlService.shouldRefresh, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
+                true, this.detectorControlService.isInternalView, queryParams).subscribe((response: DetectorResponse) =>{
                     let changeSets = response.dataset.filter(set => (<Rendering>set.renderingProperties).type === 16);
                     if(changeSets.length > 0) {
                         this.changeAnalysisService.loadResourceChangeGroups(JSON.stringify(changeSets[0]));
