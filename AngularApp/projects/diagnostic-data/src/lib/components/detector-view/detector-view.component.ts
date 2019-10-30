@@ -8,6 +8,7 @@ import { DetectorControlService } from '../../services/detector-control.service'
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { CompilationProperties} from '../../models/compilation-properties';
+import {GenericSupportTopicService} from '../../services/generic-support-topic.service';
 @Component({
   selector: 'detector-view',
   templateUrl: './detector-view.component.html',
@@ -28,6 +29,9 @@ export class DetectorViewComponent implements OnInit {
   isPublic: boolean;
 
   hideDetectorHeader: boolean = false;
+
+  supportDocumentContent: string = "";
+  supportDocumentRendered: boolean = false;
 
   buttonViewVisible: boolean = false;
   buttonViewActiveComponent: string;
@@ -73,7 +77,7 @@ export class DetectorViewComponent implements OnInit {
   feedbackButtonLabel: string = 'Send Feedback';
 
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private telemetryService: TelemetryService,
-    private detectorControlService: DetectorControlService) {
+    private detectorControlService: DetectorControlService, private _supportTopicService: GenericSupportTopicService) {
     this.isPublic = config && config.isPublic;
     this.feedbackButtonLabel = this.isPublic ? 'Send Feedback' : 'Rate Detector';
   }
@@ -101,6 +105,10 @@ export class DetectorViewComponent implements OnInit {
           'ParentDetectorId': this.parentDetectorId,
           'Url': window.location.href
         };
+
+        if (data.metadata.supportTopicList && data.metadata.supportTopicList.findIndex(supportTopic => supportTopic.id === this._supportTopicService.supportTopicId) >= 0){
+          this.populateSupportTopicDocument();
+        }
 
         this.ratingEventProperties = {
           'DetectorId': data.metadata.id,
@@ -238,6 +246,27 @@ export class DetectorViewComponent implements OnInit {
       }
     }
     this.telemetryService.logEvent(eventMessage, eventProperties, measurements);
+  }
+
+  populateSupportTopicDocument(){
+    if (!this.supportDocumentRendered){
+      this._supportTopicService.getSelfHelpContentDocument().subscribe(res => {
+        if (res && res.json() && res.json().length>0){
+          var htmlContent = res.json()[0]["htmlContent"];
+          // Custom javascript code to remove top header from support document html string
+          var tmp = document.createElement("DIV");
+          tmp.innerHTML = htmlContent;
+          var h2s = tmp.getElementsByTagName("h2");
+          if (h2s && h2s.length>0){
+            h2s[0].remove();
+          }
+
+          // Set the innter html for support document display
+          this.supportDocumentContent = tmp.innerHTML;
+          this.supportDocumentRendered = true;
+        }
+      });
+    }
   }
 
 }

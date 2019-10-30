@@ -49,6 +49,10 @@
   </div>
 </div>
 
+<data-container *ngIf="!isAnalysisView && supportDocumentRendered" [title]="'Recommended Docs'">
+  <markdown *ngIf="supportDocumentContent.length>0" #markdownDiv [data]="supportDocumentContent"></markdown>
+</data-container>
+
 <loader-view style="margin-top:300px" *ngIf="!detectorDataLocalCopy && !errorState" message="Loading Detector..."></loader-view>
 
 <ng-container *ngIf="!detectorDataLocalCopy && errorState">

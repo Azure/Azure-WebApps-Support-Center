@@ -161,6 +161,8 @@ export class ApplensSupportTopicService {
     constructor(private _diagnosticApiService: ApplensDiagnosticService, private _resourceService: ResourceService, private _http: HttpClient, private _cacheService: CacheService) {
     }
 
+    public supportTopicId: string;
+
     public getSupportTopics(): Observable<any> {
         let pesId = this._resourceService.pesId;
         return this._diagnosticApiService.getSupportTopics(pesId);
