@@ -95,7 +95,6 @@ export class HomeComponent implements OnInit {
         description: 'Explore ways to diagnose and troubleshoot the common problems of your cluster from CRUD operations to connection problems. Click on any of the documents below to start troubleshooting.',
         searchBarPlaceHolder: 'Search a keyword that best describes your issue'
       };
-      this.searchPlaceHolder = this.homePageText.searchBarPlaceHolder;
     }
 
     if (_resourceService.armResourceConfig) {
