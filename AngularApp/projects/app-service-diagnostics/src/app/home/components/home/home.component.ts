@@ -14,6 +14,7 @@ import { AuthService } from '../../../startup/services/auth.service';
 import { TelemetryService } from 'diagnostic-data';
 import { PortalKustoTelemetryService } from '../../../shared/services/portal-kusto-telemetry.service';
 import { FabDropdownComponent } from '@angular-react/fabric';
+import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
 import {
     ICalendarStrings,
     IContextualMenuProps,
@@ -24,7 +25,9 @@ import {
     ICheckboxProps,
     IPersonaProps,
     IPeoplePickerProps,
+    IIconProps
 } from 'office-ui-fabric-react';
+import { from } from 'rxjs';
 // import { FabPeoplePickerComponent } from '@angular-react/fabric/public-api';
 
 @Component({
@@ -239,6 +242,8 @@ export class HomeComponent implements OnInit {
 
         this.logService.logEvent("telemetry service logging", {});
         this.kustologgingService.logEvent("kusto telemetry service logging", {});
+
+        initializeIcons('https://static2.sharepointonline.com/files/fabric/assets/icons/');
     }
 
     onSearchBoxFocus(event: any): void {
@@ -252,7 +257,8 @@ export class HomeComponent implements OnInit {
     }
 
     updateSearchValue(searchValue) {
-        this.searchValue = searchValue;
+        console.log(searchValue);
+        this.searchValue = searchValue.newValue;
 
         if (this.searchLogTimout) {
             clearTimeout(this.searchLogTimout);

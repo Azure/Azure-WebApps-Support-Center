@@ -44,7 +44,7 @@ export class DetectorLoaderComponent implements OnInit, OnDestroy {
   componentFactory: ComponentFactory<{}>;
   componentRef: ComponentRef<{}>;
 
-  @ViewChild('dynamicDataContainer', { read: ViewContainerRef, static: false}) dynamicDetectorContainer: ViewContainerRef;
+  @ViewChild('dynamicDataContainer', { read: ViewContainerRef, static: true}) dynamicDetectorContainer: ViewContainerRef;
 
   constructor(private _activatedRoute: ActivatedRoute, private componentFactoryResolver: ComponentFactoryResolver, private _detectorControlService: DetectorControlService,
     private _appAnalysisService: AppAnalysisService) { }

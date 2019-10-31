@@ -55,6 +55,7 @@ export class DetectorContainerComponent implements OnInit {
     this._diagnosticService.getDetector(this.detectorName, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString,
       this.detectorControlService.shouldRefresh,  this.detectorControlService.isInternalView)
       .subscribe((response: DetectorResponse) => {
+        console.log(response);
         this.shouldHideTimePicker(response);
         this.detectorResponse = response;
       }, (error: any) => {

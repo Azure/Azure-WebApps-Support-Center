@@ -25,6 +25,9 @@ export class MainComponent implements OnInit {
   counter = 0;
 
   toggleDialog() {
+    console.log("--------------------------");
+    console.log("react");
+    console.log("--------------------------");
     this.dialogHidden = !this.dialogHidden;
   }
 
@@ -95,6 +98,7 @@ export class MainComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log("loading");
     this.selectedResourceType = this.resourceTypes[0];
   }
 

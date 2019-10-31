@@ -23,5 +23,8 @@
     "applicationinsights-js": "1.0.20",
     "copy-html-to-clipboard": "^4.0.1",
     "ngx-monaco-editor": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/vis": "^4.21.19"
   }
 }

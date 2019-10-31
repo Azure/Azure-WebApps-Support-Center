@@ -43,3 +43,26 @@
       margin: 40px 0 20px 0;
     }
   }
+
+  .search-box{
+      height: 23px;
+      width: 330px;
+      box-sizing: border-box;
+    //   border-radius: 2px;
+    //   border: 1px solid rgba(127, 127, 127, 0.7);
+  }
+
+  .home-title{
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .home-description{
+    font-size: 12px;
+    line-height: 22px;  
+  }
+  .home-content{
+    margin: 10px auto;
+    text-align: center;  
+    width: 875px;
+  }

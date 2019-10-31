@@ -6,6 +6,7 @@ import { BotLoggingService } from 'projects/app-service-diagnostics/src/app/shar
 import { SiteService } from 'projects/app-service-diagnostics/src/app/shared/services/site.service';
 import { HealthStatus, LoadingStatus, DiagnosticService, DetectorControlService, DetectorResponse, Insight, InsightUtils } from 'diagnostic-data';
 import { IChatMessageComponent } from '../../interfaces/ichatmessagecomponent';
+import { IChoiceGroupOption } from 'office-ui-fabric-react';
 
 @Component({
   selector: 'health-check-v3',
@@ -32,7 +33,7 @@ export class HealthCheckV3Component implements OnInit, AfterViewInit, IChatMessa
   healthCheckResultForLogging: string[] = [];
 
   currentSite: Site;
-
+  options:IChoiceGroupOption[] = [];
   constructor(private _route: ActivatedRoute, private _diagnosticService: DiagnosticService, public detectorControlService: DetectorControlService, private _logger: BotLoggingService, private _siteService: SiteService,
     private _router: Router) {
     this.showLoadingMessage = true;
@@ -84,6 +85,10 @@ export class HealthCheckV3Component implements OnInit, AfterViewInit, IChatMessa
       }
       this.healthCheckpoints = checkpoints;
       this.healthCheckpointsSubject.next(checkpoints);
+      this.healthCheckpoints.forEach((healthCheckPoint,index) => {
+        const optionItem:IChoiceGroupOption = {key:String(index),text:healthCheckPoint.title};
+        this.options.push(optionItem);
+      })
     });
   }
 
@@ -147,5 +152,8 @@ export class HealthCheckV3Component implements OnInit, AfterViewInit, IChatMessa
     this._router.navigateByUrl(`resource/subscriptions/${this.subscriptionId}/resourcegroups/${this.resourceGroup}/providers/microsoft.web/sites/${this.siteName}${slot}/${href}`);
     this.logFullReportClick(title);
   }
-
+  setCategoryIndex(event:any) {
+    const categoryIndex = event.option.key;
+    this.selectedCategoryIndex = categoryIndex;
+  }
 }

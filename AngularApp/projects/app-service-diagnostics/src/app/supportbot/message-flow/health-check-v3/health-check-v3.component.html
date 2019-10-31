@@ -11,6 +11,8 @@
           </a>
         </li>
       </ul>
+      <fab-icon iconName="Filter"></fab-icon>
+      <fab-choice-group [options]="options" (onChange)="setCategoryIndex($event)" defaultSelectedKey="0" ></fab-choice-group>
     </div>
     <div class="panel-body" style="background-color:rgba(226, 245, 255, 0.15)">
       <div *ngIf="healthCheckpoints[selectedCategoryIndex].loadingStatus === 0" class="loading-container">
