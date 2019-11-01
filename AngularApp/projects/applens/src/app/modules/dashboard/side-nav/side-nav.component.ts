@@ -45,6 +45,7 @@ export class SideNavComponent implements OnInit {
   documentation: CollapsibleMenuItem[] = [
     {
       label: 'Online Documentation',
+      id: "",
       onClick: () => { window.open('https://app-service-diagnostics-docs.azurewebsites.net/api/Diagnostics.ModelsAndUtils.Models.Response.html#extensionmethods', '_blank') },
       expanded: false,
       subItems: null,
@@ -56,6 +57,7 @@ export class SideNavComponent implements OnInit {
   createNew: CollapsibleMenuItem[] = [
     {
       label: 'Your Detectors',
+      id: "",
       onClick: () => {
         this.navigateToUserPage();
       },
@@ -66,6 +68,7 @@ export class SideNavComponent implements OnInit {
     },
     {
     label: 'New Detector',
+    id: "",
     onClick: () => {
       this.navigateTo('create');
     },
@@ -76,6 +79,7 @@ export class SideNavComponent implements OnInit {
   },
   {
     label: 'New Gist',
+    id: "",
     onClick: () => {
       this.navigateTo('createGist');
     },
@@ -129,11 +133,11 @@ export class SideNavComponent implements OnInit {
           };
 
           let category = element.category ? element.category : "Uncategorized";
-          let menuItem = new CollapsibleMenuItem(element.name, onClick, isSelected);
+          let menuItem = new CollapsibleMenuItem(element.name, element.id, onClick, isSelected);
 
           let categoryMenuItem = this.categories.find((cat: CollapsibleMenuItem) => cat.label === category);
           if (!categoryMenuItem) {
-            categoryMenuItem = new CollapsibleMenuItem(category, null, null, null, false);
+            categoryMenuItem = new CollapsibleMenuItem(category, "", null, null, null, false);
             this.categories.push(categoryMenuItem);
           }
 
@@ -148,7 +152,7 @@ export class SideNavComponent implements OnInit {
               return this.currentRoutePath && this.currentRoutePath.join('/') === `analysis/${element.id}`;
             }
 
-            let analysisMenuItem = new CollapsibleMenuItem(element.name, onClickAnalysisParent, isSelectedAnalysis, null, true);
+            let analysisMenuItem = new CollapsibleMenuItem(element.name, element.id , onClickAnalysisParent, isSelectedAnalysis, null, true);
             this.analysisTypes.push(analysisMenuItem);
 
           }
@@ -179,12 +183,12 @@ export class SideNavComponent implements OnInit {
           };
 
           let category = element.category ? element.category.split(",") : ["Uncategorized"];
-          let menuItem = new CollapsibleMenuItem(element.name, onClick, isSelected);
+          let menuItem = new CollapsibleMenuItem(element.name, element.id, onClick, isSelected);
 
           category.forEach(c => {
             let categoryMenuItem = this.gists.find((cat: CollapsibleMenuItem) => cat.label === c);
             if (!categoryMenuItem) {
-              categoryMenuItem = new CollapsibleMenuItem(c, null, null, null, true);
+              categoryMenuItem = new CollapsibleMenuItem(c, "", null, null, null, true);
               this.gists.push(categoryMenuItem);
             }
 

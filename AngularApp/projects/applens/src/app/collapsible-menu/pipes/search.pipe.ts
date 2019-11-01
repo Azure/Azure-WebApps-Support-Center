@@ -8,7 +8,7 @@ import { CollapsibleMenuItem } from '../components/collapsible-menu-item/collaps
 @Injectable()
 export class SearchPipe implements PipeTransform {
     transform(items: CollapsibleMenuItem[], searchString: string) {
-        return searchString && items ? items.filter(item => item.label.toLowerCase().indexOf(searchString.toLowerCase()) >= 0) : items;
+        return searchString && items ? items.filter(item => item.label.toLowerCase().indexOf(searchString.toLowerCase()) >= 0 || item.id.toLowerCase().indexOf(searchString.toLowerCase()) >= 0) : items;
     }
 }
 
