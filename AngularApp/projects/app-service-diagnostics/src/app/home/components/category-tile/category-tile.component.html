@@ -1,11 +1,11 @@
-<div class="category-container col-md-4" (click)="navigateToCategory()" (keyup.enter)="navigateToCategory()"
+<div class="category-container" (click)="navigateToCategory()" (keyup.enter)="navigateToCategory()"
   (keyup.space)="navigateToCategory()" tabindex="0" role="button">
   <!-- <div class="title-container" [style.background-color]="category.color">
     {{category.name}}
   </div> -->
   <!-- <div class="category-body"> -->
   <div>
-    <img src="" />
+    <div class="image-container"><img [src]="categoryImgPath" /></div>
     <h2 class="category-title">{{category.name}}</h2>
     <p class="category-description">{{category.description}}</p>
     <!-- <div> -->
@@ -17,5 +17,4 @@
         </div> -->
     <!-- </div> -->
   </div>
-
 </div>

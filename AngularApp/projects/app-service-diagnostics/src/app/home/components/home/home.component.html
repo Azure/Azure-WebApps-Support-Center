@@ -40,8 +40,8 @@
         </ng-container>
       </div>
     </div>
-    <div *ngIf="categories" class="category-container">
-      <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
+    <div *ngIf="categories" class="category-container row">
+      <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px" class="col-md-4">
         <category-tile [category]="category"></category-tile>
       </div>
     </div>
