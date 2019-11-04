@@ -39,7 +39,8 @@ import { HealthCheckV3Component } from '../message-flow/health-check-v3/health-c
 })
 export class DynamicComponent {
     currentComponent = null;
-    @ViewChild('dynamicComponentContainer', { read: ViewContainerRef,static:true }) dynamicComponentContainer: ViewContainerRef;
+
+    @ViewChild('dynamicComponentContainer', { read: ViewContainerRef, static: false }) dynamicComponentContainer: ViewContainerRef;
 
     @Output() onViewUpdate = new EventEmitter<any>();
     @Output() onComplete = new EventEmitter<any>();

@@ -1,14 +1,14 @@
 .category-container {
     width: 300px;
-    // width: 220px;
-    // box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     overflow: hidden;
     cursor: pointer;
     height: 100%;
-    // border: 1px solid rgba(204, 204, 204, 0.5);
+    border: 1px solid rgba(204, 204, 204, 0.5);
 }
 
+<<<<<<< HEAD
 // .category-container:hover {
 //     // box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.14);
 //     transition: box-shadow .28s cubic-bezier(.4,0,.2,1),-webkit-box-shadow .28s cubic-bezier(.4,0,.2,1);
@@ -19,6 +19,18 @@
 //     font-size: 16px;
 //     width: 100%;
 //     font-weight: 500;
+=======
+.category-container:hover {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.14);
+    transition: box-shadow .28s cubic-bezier(.4,0,.2,1),-webkit-box-shadow .28s cubic-bezier(.4,0,.2,1);
+}
+
+.title-container {
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    font-weight: 500;
+>>>>>>> parent of 84858cad... update to Angular8, add radio button
     
 // }
 
@@ -43,6 +55,7 @@
     padding: 2px 4px;
     margin: 0px 5px 5px 0px;
     border: 1px solid #cdd1d4;
+<<<<<<< HEAD
 }
 
 .category-title{
@@ -60,3 +73,6 @@
     width: 150px;
     height: 150px;
 }
+=======
+}
+>>>>>>> parent of 84858cad... update to Angular8, add radio button

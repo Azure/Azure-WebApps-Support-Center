@@ -1,7 +1,8 @@
 <div class="category-container" (click)="navigateToCategory()" (keyup.enter)="navigateToCategory()"
   (keyup.space)="navigateToCategory()" tabindex="0" role="button">
-  <!-- <div class="title-container" [style.background-color]="category.color">
+  <div class="title-container" [style.background-color]="category.color">
     {{category.name}}
+<<<<<<< HEAD
   </div> -->
   <!-- <div class="category-body"> -->
   <div>
@@ -11,10 +12,23 @@
     <!-- <div> -->
     <!-- <span class="keyword-label">Keywords</span> -->
     <!-- <div class="keywords">
+=======
+  </div>
+  <div class="category-body">
+    <p>{{category.description}}</p>
+    <div>
+        <span class="keyword-label">Keywords</span>
+        <div class="keywords">
+>>>>>>> parent of 84858cad... update to Angular8, add radio button
           <div class="keyword" [style.border-color]="category.color" *ngFor="let keyword of category.keywords">
             {{keyword}}
           </div>
-        </div> -->
-    <!-- </div> -->
+        </div>
+      </div>
   </div>
+<<<<<<< HEAD
 </div>
+=======
+
+</div>
+>>>>>>> parent of 84858cad... update to Angular8, add radio button

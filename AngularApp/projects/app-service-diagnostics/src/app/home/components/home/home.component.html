@@ -1,5 +1,5 @@
-<!-- <div class="home-container"> -->
-  <!-- <div class="input-group input-group-lg search-input-group" (keyup.escape)="clearSearch()" role="search">
+<div class="home-container">
+  <div class="input-group input-group-lg search-input-group" (keyup.escape)="clearSearch()" role="search">
     <input tabindex="0" type="search" class="form-control" placeholder="{{searchPlaceHolder}}"
       [ngModel]="searchValue" (ngModelChange)="updateSearchValue($event)" (focus)="onSearchBoxFocus(event)"
       (focusout)="onSearchLostFocus()" aria-controls="search-results">
@@ -9,19 +9,8 @@
         <i class="fa fa-close"></i>
       </button>
     </div>
-  </div> -->
-  <!-- <fab-search-box tabindex="0" type="search" [placeholder]=searchPlaceHolder
-    [ngModel]="searchValue" (ngModelChange)="updateSearchValue($event)" (focus)="onSearchBoxFocus(event)"
-    (focusout)="onSearchLostFocus()" aria-controls="search-results" [iconProps]="iconProps"></fab-search-box> -->
-
-
-<!-- </div> -->
-<div class="main-area">
-  <div class="home-content">
-      <h2 tabindex="0" class="home-title">{{homePageText.title}}</h2>
-      <p  tabindex="0" class="home-description">{{homePageText.description}}</p>
-      <p class="home-description">If you would like to look at the health check then <a>click here.</a>You can also ask chatbot <a>Genie</a> any questions you may have</p>
   </div>
+<<<<<<< HEAD
   <div class="home-container">
     <div style="margin:25px 0px;" (keyup.escape)="clearSearch()" role="search">
       <div class="search-box">
@@ -42,6 +31,22 @@
     </div>
     <div *ngIf="categories" class="category-container row">
       <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px" class="col-md-4">
+=======
+  <div role="status">
+    <p *ngIf="inputAriaLabel">{{inputAriaLabel}}</p>
+  </div>
+  <div id="search-results" role="region" aria-live="polite">
+    <ng-container *ngIf="searchBoxFocus">
+      <search-results [searchValue]="searchValue" (resultCount)="onResultCount($event)"
+        (keyup.escape)="clearSearch()"></search-results>
+    </ng-container>
+  </div>
+  <div class="main-area">
+    <h2 tabindex="0">{{homePageText.title}}</h2>
+    <p id="page-description" tabindex="0">{{homePageText.description}}</p>
+    <div *ngIf="categories" class="category-container">
+      <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
+>>>>>>> parent of 84858cad... update to Angular8, add radio button
         <category-tile [category]="category"></category-tile>
       </div>
     </div>
@@ -50,12 +55,15 @@
     </div>
   </div>
 </div>
-<!-- <h1>Microsoft Fabric [React] Components</h1>
+<h1>Microsoft Fabric [React] Components</h1>
 
 <h2>Button</h2>
 <fab-default-button text="Toggle Disabled" (onClick)="toggle()" contentStyle="margin-right: 10px;"></fab-default-button>
-<fab-default-button [disabled]="disabled" (onClick)="click()" text="Primary Button{{ disabled ? ' (0)' : ' (2)' }}">
-</fab-default-button>
+<fab-default-button
+  [disabled]="disabled"
+  (onClick)="click()"
+  text="Primary Button{{ disabled ? ' (0)' : ' (2)' }}"
+></fab-default-button>
 <fab-default-button [primary]="false" (onClick)="click()" text="Secondary Button"></fab-default-button>
 <h3 class="button-height">{{ sampleContent }}</h3>
 
@@ -63,8 +71,12 @@
 
 <h2>Dialog</h2>
 <fab-default-button text="Toggle Dialog" (onClick)="toggleDialog()"></fab-default-button>
-<fab-dialog [hidden]="dialogHidden" (onDismiss)="toggleDialog()" title="Fabric [React] Dialog"
-  subText="Use Fabric React components inside your Angular app!">
+<fab-dialog
+  [hidden]="dialogHidden"
+  (onDismiss)="toggleDialog()"
+  title="Fabric [React] Dialog"
+  subText="Use Fabric React components inside your Angular app!"
+>
   {{ sampleContent2 }} {{ sampleContent3 }}
   <fab-dialog-footer>
     <fab-default-button (onClick)="clickSave()" text='Save'></fab-default-button>
@@ -72,7 +84,7 @@
   </fab-dialog-footer>
 </fab-dialog>
 
-<hr /> -->
+<hr />
 
 <!-- <h2>Combo box</h2>
 <fab-combo-box contentStyle="width: 300px;" (onChange)="comboChange($event)">
@@ -112,15 +124,22 @@
 <!-- {{ selectedDate }} -->
 
 
-<!-- <fab-dropdown [label]="'test label'" [selectedKey]="selectedItem && selectedItem.key" [options]="options"
-  [placeholder]="'select one'" (onChange)="logEvent('dropdown change', $event)"
-  (onFocus)="logEvent('dropdown focus', $event)" (onBlur)="logEvent('dropdown blur', $event)"></fab-dropdown>
+<fab-dropdown
+  [label]="'test label'"
+  [selectedKey]="selectedItem && selectedItem.key"
+  [options]="options"
+  [placeholder]="'select one'"
+  (onChange)="logEvent('dropdown change', $event)"
+  (onFocus)="logEvent('dropdown focus', $event)"
+  (onBlur)="logEvent('dropdown blur', $event)"
+></fab-dropdown>
 
 
 <fab-calendar [strings]="strings" (onSelectDate)="onSelectDate($event)"></fab-calendar>
 
-<fab-calendar (onSelectDate)="onSelectDate($event)">
-  <fab-calendar-strings [months]="[
+  <fab-calendar (onSelectDate)="onSelectDate($event)">
+    <fab-calendar-strings
+      [months]="[
         'January',
         'Fabruary',
         'March',
@@ -133,9 +152,12 @@
         'October',
         'November',
         'December'
-      ]" [shortMonths]="['Jan', 'Fab', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']"
-    [days]="['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']"
-    [shortDays]="['S', 'M', 'T', 'W', 'T', 'F', 'S']" goToToday="Go to tomorrow"
-    weekNumberFormatString="Week number {0}"></fab-calendar-strings>
-</fab-calendar> -->
+      ]"
+      [shortMonths]="['Jan', 'Fab', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']"
+      [days]="['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']"
+      [shortDays]="['S', 'M', 'T', 'W', 'T', 'F', 'S']"
+      goToToday="Go to tomorrow"
+      weekNumberFormatString="Week number {0}"
+    ></fab-calendar-strings>
+  </fab-calendar>
 <!--  -->
