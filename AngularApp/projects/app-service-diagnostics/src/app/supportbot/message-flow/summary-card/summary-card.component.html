@@ -1,0 +1,13 @@
+<div class="card-container col-md-3">
+    <h3 class="card-title">{{summary.title}}</h3>
+    <p class="card-message">
+        <span class="fa status-icon" [class.fa-exclamation-circle]="summary.status === SummaryStatus.Critical"
+            [class.fa-exclamation-triangle]="summary.status === SummaryStatus.Warning"
+            [class.fa-check-circle]="summary.status === SummaryStatus.Success"
+            [class.fa-info-circle]="summary.status === SummaryStatus.Info"
+            style="margin-right: 7px;"
+        ></span>
+        <span>{{summary.message}}</span>
+    </p>
+    <p class="card-description">{{summary.description}}</p>
+</div>

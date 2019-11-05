@@ -1,0 +1,43 @@
+.card-container {
+    background: #ffffff;
+    border: 1px solid rgba(204, 204, 204, 0.5);
+    box-sizing: border-box;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    width: 168px;
+    height: 82px;
+    display: inline-block;
+    margin: 8px;
+    padding: 5px;
+}
+
+
+.fa-exclamation-circle {
+    color: #ff0000;
+}
+
+.fa-exclamation-triangle {
+    color: #ff9104;
+}
+
+.fa-check-circle {
+    color: #3da907;
+}
+
+.fa-info-circle {
+    color: #3a9bc7;
+}
+.card-title{
+    font-size: 13px;
+    line-height: 15px;
+    color: #646464;
+}
+.card-description {
+    font-size: 13px;
+    line-height: 15px;
+}
+
+.card-message{
+    font-size: 20px;
+    line-height: 23px;
+}

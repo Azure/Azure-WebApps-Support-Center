@@ -1,7 +1,7 @@
 <div class="animated fadeIn panel with-nav-tabs panel-info width-90">
-    <div class="panel-heading" style="padding:0">
-      <ul class="nav nav-tabs">
-        <li role="presentation" class="report-tab" *ngFor="let item of healthCheckpoints; let i = index"
+    <div class="panel-heading" style="padding:0;position: relative;">
+      <!-- <ul class="nav nav-tabs"> -->
+        <!-- <li role="presentation" class="report-tab" *ngFor="let item of healthCheckpoints; let i = index"
           [ngClass]="{'active': i === selectedCategoryIndex}" tabindex="0" (keyup.enter)="setCategory(i)">
           <a (click)="setCategory(i)">
             <div style="display: flex">
@@ -9,8 +9,20 @@
               <div style="padding-left: 10px">{{item.title}}</div>
             </div>
           </a>
-        </li>
-      </ul>
+        </li> -->
+      <!-- </ul> -->
+      <fab-icon iconName="Filter" style="float:right" (click)="showChoiceGroup = !showChoiceGroup"></fab-icon>
+      <fab-choice-group 
+        *ngIf = "showChoiceGroup"
+        style="position: absolute; 
+              top: 20px; 
+              right: 0px ; 
+              background: #FFFFFF; 
+              padding: 8px;
+              color: #323130;
+              font-size: 14px;"
+        label="Label" [options]="options" (onChange)="setCategoryIndex($event)" defaultSelectedKey="0" >
+      </fab-choice-group>
     </div>
     <div class="panel-body" style="background-color:rgba(226, 245, 255, 0.15)">
       <div *ngIf="healthCheckpoints[selectedCategoryIndex].loadingStatus === 0" class="loading-container">
