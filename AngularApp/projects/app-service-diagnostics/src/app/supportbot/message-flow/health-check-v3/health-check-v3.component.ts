@@ -93,14 +93,39 @@ export class HealthCheckV3Component implements OnInit, AfterViewInit, IChatMessa
         this.options.push(optionItem);
       })
     });
+
+    this.summaries.push(new Summary(
+      HealthStatus.Info,
+      "Request and errors",
+      "25",
+      "HTTP errors"
+    ));
+    this.summaries.push(new Summary(
+      HealthStatus.Critical,
+      "App performance",
+      "715.5 ms",
+      "Avg. response time"
+    ));
+    this.summaries.push(new Summary(
+      HealthStatus.Critical,
+      "High CPU Performance",
+      "65%",
+      "% CPU usage"
+    ));
+    this.summaries.push(new Summary(
+      HealthStatus.Success,
+      "Memory analysis",
+      "100 MB",
+      "Avg. private bytes"
+    ));
   }
 
   ngOnInit(): void {
 
-    this.subscriptionId = this._route.snapshot.params['subscriptionid'];
-    this.resourceGroup = this._route.snapshot.params['resourcegroup'];
-    this.siteName = this._route.snapshot.params['resourcename'];
-    this.slotName = this._route.snapshot.params['slot'] ? this._route.snapshot.params['slot'] : '';
+    this.subscriptionId = this._route.parent.snapshot.params['subscriptionid'];
+    this.resourceGroup = this._route.parent.snapshot.params['resourcegroup'];
+    this.siteName = this._route.parent.snapshot.params['resourcename'];
+    this.slotName = this._route.parent.snapshot.params['slot'] ? this._route.parent.snapshot.params['slot'] : '';
 
     this._loadData();
   }

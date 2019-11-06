@@ -5,11 +5,12 @@
   <div *ngFor="let insight of insights" class="insight-container" tabindex="0" attr.name="{{insight.title}}"
     attr.aria-label="{{insight.title}}" attr.aria-expanded="{{insight.isExpanded}}" role="button"
     (keyup.enter)="toggleInsightStatus(insight)">
-    <div class="panel panel-default insight-panel"
+    <!-- <div class="panel panel-default insight-panel"
       [class.critical-insight-panel]="insight.status === InsightStatus.Critical"
       [class.warning-insight-panel]="insight.status === InsightStatus.Warning"
       [class.success-insight-panel]="insight.status === InsightStatus.Success"
-      [class.info-insight-panel]="insight.status === InsightStatus.Info">
+      [class.info-insight-panel]="insight.status === InsightStatus.Info"
+      > --><div div class="panel insight-panel">
       <div class="panel-heading">
         <h5 class="panel-title" [class.clickable-header]="hasContent(insight)" (click)="toggleInsightStatus(insight)">
           <div style="display: table;">
@@ -27,7 +28,7 @@
               <div style="display: table-cell;width:100%">
                 {{insight.title}}
               </div>
-              <div style="display: table-cell">
+              <!-- <div style="display: table-cell">
                 <div class="pull-right" style="white-space: nowrap">
                   <div [ngClass]="{'con-tooltip bottom':!insight.isRated}"
                     class="insight-rating">
@@ -54,7 +55,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </h5>

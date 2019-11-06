@@ -1,7 +1,11 @@
-<div class="animated fadeIn panel with-nav-tabs panel-info width-90">
-    <div class="panel-heading" style="padding:0;position: relative;">
+<div>
+  <div class="animated fadeIn panel with-nav-tabs width-90">
+    <div style="margin-bottom: 20px; display: flex;justify-content: space-around;">
+      <summary-card *ngFor="let summary of summaries" [summary]="summary"></summary-card>
+    </div>
+    <div class="panel-heading" style="padding:0;position: relative;display: flex; justify-content: space-between; font-size: 15px;">
       <!-- <ul class="nav nav-tabs"> -->
-        <!-- <li role="presentation" class="report-tab" *ngFor="let item of healthCheckpoints; let i = index"
+      <!-- <li role="presentation" class="report-tab" *ngFor="let item of healthCheckpoints; let i = index"
           [ngClass]="{'active': i === selectedCategoryIndex}" tabindex="0" (keyup.enter)="setCategory(i)">
           <a (click)="setCategory(i)">
             <div style="display: flex">
@@ -11,17 +15,20 @@
           </a>
         </li> -->
       <!-- </ul> -->
-      <fab-icon iconName="Filter" style="float:right" (click)="showChoiceGroup = !showChoiceGroup"></fab-icon>
-      <fab-choice-group 
-        *ngIf = "showChoiceGroup"
-        style="position: absolute; 
+      <span>Chart Header</span>
+      <span (click)="showChoiceGroup = !showChoiceGroup">
+        <span style="margin-right: 5px;">Label: All</span>
+        <fab-icon iconName="Filter">
+        </fab-icon>
+      </span>
+      <fab-choice-group *ngIf="showChoiceGroup" style="position: absolute; 
               top: 20px; 
               right: 0px ; 
               background: #FFFFFF; 
               padding: 8px;
               color: #323130;
-              font-size: 14px;"
-        label="Label" [options]="options" (onChange)="setCategoryIndex($event)" defaultSelectedKey="0" >
+              font-size: 14px;" label="Label" [options]="options" (onChange)="setCategoryIndex($event)"
+        defaultSelectedKey="0">
       </fab-choice-group>
     </div>
     <div class="panel-body" style="background-color:rgba(226, 245, 255, 0.15)">
@@ -43,3 +50,4 @@
       </div>
     </div>
   </div>
+</div>

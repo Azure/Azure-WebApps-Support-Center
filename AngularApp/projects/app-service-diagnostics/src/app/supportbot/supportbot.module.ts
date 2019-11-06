@@ -67,7 +67,7 @@ import { SummaryCardComponent } from './message-flow/summary-card/summary-card.c
         SharedV2Module,
         DiagnosticDataModule,
         FabIconModule,
-        FabChoiceGroupModule,
+        FabChoiceGroupModule
     ],
     exports: [
         HomepageComponent,
