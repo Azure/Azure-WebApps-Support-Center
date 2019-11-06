@@ -15,6 +15,7 @@ export class ConfigureStorageAccountComponent implements OnInit {
   constructor(private _storageService: StorageService, private _daasService: DaasService, private _siteService: SiteService) { }
 
   @Input() siteToBeDiagnosed: SiteDaasInfo;
+  @Input() sessionInProgress: boolean;
   @Output() StorageAccountValidated: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   Options = [
@@ -125,9 +126,11 @@ export class ConfigureStorageAccountComponent implements OnInit {
   }
 
   enableEditMode() {
-    this.editMode = true;
-    this.setDefaultValues();
-    this.StorageAccountValidated.emit(false);
+    if (!this.sessionInProgress) {
+      this.editMode = true;
+      this.setDefaultValues();
+      this.StorageAccountValidated.emit(false);
+    }
   }
 
   cancel() {

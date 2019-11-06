@@ -62,6 +62,6 @@
 </div>
 
 <div class="col" *ngIf="storageAccountNeeded">
-  <configure-storage-account [siteToBeDiagnosed]="siteToBeDiagnosed"
+  <configure-storage-account [siteToBeDiagnosed]="siteToBeDiagnosed" [sessionInProgress]="sessionInProgress"
     (StorageAccountValidated)="onStorageAccountValidated($event)"></configure-storage-account>
 </div>

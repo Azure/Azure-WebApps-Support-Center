@@ -17,6 +17,7 @@ export class DaasValidatorComponent implements OnInit {
   @Input() siteToBeDiagnosed: SiteDaasInfo;
   @Input() diagnoserName: string;
   @Output() DaasValidated: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Input() sessionInProgress:boolean;
 
   supportedTier: boolean = false;
   checkingSkuSucceeded: boolean = false;

@@ -58,7 +58,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     cancellingSession: boolean = false;
     collectionMode: number = 0;
     showInstanceWarning: boolean = false;
-    blobSasUri:string = "";
+    sessionHasBlobSasUri:boolean = false;
 
     constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
     }
@@ -139,6 +139,7 @@ export class DaasComponent implements OnInit, OnDestroy {
                         const daasDiagnoser = sessions[index].DiagnoserSessions.find(x => x.Name.startsWith(this.diagnoserNameLookup));
                         if (daasDiagnoser) {
                             runningSession = sessions[index];
+                            this.sessionHasBlobSasUri = sessions[index].HasBlobSasUri;
                             break;
                         }
                     }
@@ -278,7 +279,6 @@ export class DaasComponent implements OnInit, OnDestroy {
     }
 
     collectDiagnoserData(consentRequired: boolean) {
-        this.blobSasUri = "";
         consentRequired = consentRequired && !this.diagnoserName.startsWith("CLR Profiler");
         if (consentRequired && this.validateInstancesToCollect()) {
             this.showInstanceWarning = true;
@@ -320,14 +320,15 @@ export class DaasComponent implements OnInit, OnDestroy {
                 }
 
                 this._daasService.getBlobSasUri(this.siteToBeDiagnosed).subscribe(settingsResponse => {
-                    this.blobSasUri = settingsResponse.BlobSasUri;
+                    let blobSasUri = settingsResponse.BlobSasUri;
+                    this.sessionHasBlobSasUri = blobSasUri.length > 0;
                     this.Reports = [];
                     this.Logs = [];
                     this.sessionInProgress = true;
                     this.sessionStatus = 1;
                     this.updateInstanceInformation();
 
-                    const submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.diagnoserName, this.instancesToDiagnose, this.collectionMode === 1, this.blobSasUri)
+                    const submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.diagnoserName, this.instancesToDiagnose, this.collectionMode === 1, blobSasUri)
                         .subscribe(result => {
                             this.sessionId = result;
                             this.subscription = interval(10000).subscribe(res => {

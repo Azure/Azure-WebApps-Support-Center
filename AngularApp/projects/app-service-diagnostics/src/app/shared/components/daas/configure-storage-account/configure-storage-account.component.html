@@ -6,7 +6,7 @@
   <div *ngIf="blobSasUri.length > 0">
     <div>
       Storage account: <span class="highlight-blue">{{ getBlobSasUriShort()}}</span>
-      (<a style="cursor: pointer" (click)="enableEditMode()">change</a>)
+      (<a style="cursor: pointer" [class.disabled]="sessionInProgress" (click)="enableEditMode()">change</a>)
     </div>
     <div style="font-size: smaller">Memory dumps captured via this tool will be stored in this storage account</div>
   </div>
