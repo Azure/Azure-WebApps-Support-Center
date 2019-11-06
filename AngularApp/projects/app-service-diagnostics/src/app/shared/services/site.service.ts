@@ -33,6 +33,7 @@ export class SiteService {
                     this.currentSiteStatic.id = site.id;
                     this.currentSiteStatic.tags = site.tags;
                     this.currentSiteStatic.appType = site.kind.toLowerCase().indexOf('functionapp') >= 0 ? AppType.FunctionApp : AppType.WebApp;
+                    this.currentSiteStatic.location = site.location;
                     this.currentSite.next(this.currentSiteStatic);
                 });
             }

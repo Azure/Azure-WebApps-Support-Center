@@ -163,7 +163,7 @@ export class ArmService {
         return this._cache.get(url, request, true);
     }
 
-    putResourceWithoutEnvelope<T, S>(resourceUri: string, body?: S, apiVersion?: string, invalidateCache: boolean = false): Observable<boolean | {} | T> {
+    putResourceWithoutEnvelope<T, S>(resourceUri: string, body?: S, apiVersion?: string, invalidateCache: boolean = true): Observable<boolean | {} | T> {
         const url = this.createUrl(resourceUri, apiVersion);
         let bodyString: string = '';
         if (body) {

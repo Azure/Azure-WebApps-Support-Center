@@ -91,6 +91,7 @@ import { CpuMonitoringSessionsComponent } from './components/daas/cpu-monitoring
 import { GenericAnalysisComponent } from './components/generic-analysis/generic-analysis.component';
 import { EventViewerComponent } from './components/daas/event-viewer/event-viewer.component';
 import { FrebViewerComponent } from './components/daas/freb-viewer/freb-viewer.component';
+import { ConfigureStorageAccountComponent } from './components/daas/configure-storage-account/configure-storage-account.component';
 
 @NgModule({
     declarations: [
@@ -153,7 +154,8 @@ import { FrebViewerComponent } from './components/daas/freb-viewer/freb-viewer.c
         CpuMonitoringSessionsComponent,
         GenericAnalysisComponent,
         EventViewerComponent,
-        FrebViewerComponent
+        FrebViewerComponent,
+        ConfigureStorageAccountComponent
     ],
     imports: [
         HttpModule,

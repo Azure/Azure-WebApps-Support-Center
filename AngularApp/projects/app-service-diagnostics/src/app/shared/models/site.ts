@@ -20,6 +20,7 @@ export interface Site {
     hostingEnvironmentId: string;
     resourceGroup: string;
     appType: AppType;
+    location: string;
 }
 
 export class SiteInfoMetaData {

@@ -58,36 +58,40 @@ export class DaasComponent implements OnInit, OnDestroy {
     cancellingSession: boolean = false;
     collectionMode: number = 0;
     showInstanceWarning: boolean = false;
+    blobSasUri:string = "";
 
     constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
     }
 
     onDaasValidated(validated: boolean) {
+        if (validated) {
+            if (this.diagnoserNameLookup === '') {
+                this.diagnoserNameLookup = this.diagnoserName;
+            }
 
-        if (this.diagnoserNameLookup === '') {
-            this.diagnoserNameLookup = this.diagnoserName;
-        }
+            this.daasValidated = true;
+            this.sessionCompleted = false;
+            this.operationInProgress = true;
+            this.operationStatus = 'Retrieving instances...';
 
-        this.daasValidated = true;
-        this.sessionCompleted = false;
-        this.operationInProgress = true;
-        this.operationStatus = 'Retrieving instances...';
-
-        this._daasService.getInstances(this.siteToBeDiagnosed).pipe(retry(2))
-            .subscribe(result => {
-                this.operationInProgress = false;
-                this.operationStatus = '';
-
-                this.instances = result;
-                this.checkRunningSessions();
-                this.populateinstancesToDiagnose();
-                this.initWizard();
-            },
-                error => {
-                    this.error = error;
+            this._daasService.getInstances(this.siteToBeDiagnosed).pipe(retry(2))
+                .subscribe(result => {
                     this.operationInProgress = false;
-                    this.retrievingInstancesFailed = true;
-                });
+                    this.operationStatus = '';
+
+                    this.instances = result;
+                    this.checkRunningSessions();
+                    this.populateinstancesToDiagnose();
+                    this.initWizard();
+                },
+                    error => {
+                        this.error = error;
+                        this.operationInProgress = false;
+                        this.retrievingInstancesFailed = true;
+                    });
+        } else {
+            this.daasValidated = false;
+        }
     }
 
     ngOnInit(): void {
@@ -274,6 +278,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     }
 
     collectDiagnoserData(consentRequired: boolean) {
+        this.blobSasUri = "";
         consentRequired = consentRequired && !this.diagnoserName.startsWith("CLR Profiler");
         if (consentRequired && this.validateInstancesToCollect()) {
             this.showInstanceWarning = true;
@@ -314,23 +319,27 @@ export class DaasComponent implements OnInit, OnDestroy {
                     return false;
                 }
 
-                this.Reports = [];
-                this.Logs = [];
-                this.sessionInProgress = true;
-                this.sessionStatus = 1;
-                this.updateInstanceInformation();
+                this._daasService.getBlobSasUri(this.siteToBeDiagnosed).subscribe(settingsResponse => {
+                    this.blobSasUri = settingsResponse.BlobSasUri;
+                    this.Reports = [];
+                    this.Logs = [];
+                    this.sessionInProgress = true;
+                    this.sessionStatus = 1;
+                    this.updateInstanceInformation();
 
-                const submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.diagnoserName, this.instancesToDiagnose, this.collectionMode === 1)
-                    .subscribe(result => {
-                        this.sessionId = result;
-                        this.subscription = interval(10000).subscribe(res => {
-                            this.pollRunningSession(this.sessionId);
-                        });
-                    },
-                        error => {
-                            this.error = error;
-                            this.sessionInProgress = false;
-                        });
+                    const submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.diagnoserName, this.instancesToDiagnose, this.collectionMode === 1, this.blobSasUri)
+                        .subscribe(result => {
+                            this.sessionId = result;
+                            this.subscription = interval(10000).subscribe(res => {
+                                this.pollRunningSession(this.sessionId);
+                            });
+                        },
+                            error => {
+                                this.error = error;
+                                this.sessionInProgress = false;
+                            });
+                });
+
             },
                 error => {
                     this.error = error;
@@ -347,6 +356,15 @@ export class DaasComponent implements OnInit, OnDestroy {
 
     openFile(url: string) {
         this._windowService.open(`https://${this.scmPath}/api/vfs/data/DaaS/${url}`);
+    }
+
+    openLog(log: Log, hasBlobSasUri: boolean) {
+        if (hasBlobSasUri) {
+            this._windowService.open(`${log.FullPermanentStoragePath}`);
+        } else {
+            this._windowService.open(`https://${this.scmPath}/api/vfs/data/DaaS/${log.RelativePath}`);
+        }
+
     }
 
     ngOnDestroy(): void {

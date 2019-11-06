@@ -1,5 +1,5 @@
 
-import {throwError as observableThrowError,  of ,  Observable, combineLatest } from 'rxjs';
+import { throwError as observableThrowError, of, Observable, combineLatest } from 'rxjs';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ServerFarmDataService } from '../../services/server-farm-data.service';
 import { DaasService } from '../../services/daas.service';
@@ -27,6 +27,8 @@ export class DaasValidatorComponent implements OnInit {
   foundDiagnoserWarnings: boolean = false;
   alwaysOnEnabled: boolean = true;
   error: string = '';
+  storageAccountNeeded: boolean = false;
+  diagnosersRequiringStorageAccount: string[] = ['Memory Dump'];
 
   constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService) {
   }
@@ -100,6 +102,13 @@ export class DaasValidatorComponent implements OnInit {
     this.validateDaasSettings();
   }
 
+  checkStorageRequirementForDiagnoser(): void {
+    this.storageAccountNeeded = this.diagnosersRequiringStorageAccount.findIndex(x => x === this.diagnoserName) >= 0;
+    if (!this.storageAccountNeeded) {
+      this.DaasValidated.emit(true);
+    }
+  }
+
   checkDaasWebjobState() {
     this.checkingDaasWebJobStatus = true;
     let retryCount: number = 0;
@@ -121,7 +130,7 @@ export class DaasValidatorComponent implements OnInit {
           this.daasRunnerJobRunning = false;
           return;
         } else {
-          this.DaasValidated.emit(true);
+          this.checkStorageRequirementForDiagnoser();
         }
       }, error => {
         // We come in this block if the ARM call to get webjob fails
@@ -129,5 +138,9 @@ export class DaasValidatorComponent implements OnInit {
         this.daasRunnerJobRunning = false;
         this.error = `Failed while retrieving DaaS webjob state `;
       });
+  }
+
+  onStorageAccountValidated(event: boolean) {
+    this.DaasValidated.emit(event);
   }
 }

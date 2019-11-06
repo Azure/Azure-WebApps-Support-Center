@@ -7,13 +7,15 @@ import { SiteDaasInfo } from '../models/solution-metadata';
 import { ArmService } from './arm.service';
 import { AuthService } from '../../startup/services/auth.service';
 import { UriElementsService } from './urielements.service';
-import { Session, DiagnoserDefinition, DatabaseTestConnectionResult, MonitoringSession, MonitoringLogsPerInstance, ActiveMonitoringSession, DaasAppInfo } from '../models/daas';
+import { Session, DiagnoserDefinition, DatabaseTestConnectionResult, MonitoringSession, MonitoringLogsPerInstance, ActiveMonitoringSession, DaasAppInfo, DaasSettings } from '../models/daas';
 import { SiteInfoMetaData } from '../models/site';
 
 @Injectable()
 export class DaasService {
 
     public currentSite: SiteDaasInfo;
+
+    private BlobContainerName:string = "memorydumps"; //CAUTION :- should always be lowercase
 
     constructor(private _armClient: ArmService, private _authService: AuthService, private _http: Http, private _uriElementsService: UriElementsService) {
     }
@@ -23,7 +25,7 @@ export class DaasService {
         return <Observable<Session[]>>(this._armClient.getResourceWithoutEnvelope<Session[]>(resourceUri, null, true));
     }
 
-    submitDaasSession(site: SiteDaasInfo, diagnoser: string, Instances: string[], collectLogsOnly:boolean ): Observable<string> {
+    submitDaasSession(site: SiteDaasInfo, diagnoser: string, Instances: string[], collectLogsOnly:boolean, blobSasUri:string): Observable<string> {
 
         const session = new Session();
         session.CollectLogsOnly = collectLogsOnly;
@@ -33,6 +35,7 @@ export class DaasService {
         session.Diagnosers = [];
         session.Diagnosers.push(diagnoser);
         session.TimeSpan = '00:02:00';
+        session.BlobSasUri = blobSasUri;
 
         const resourceUri: string = this._uriElementsService.getDiagnosticsSessionsUrl(site);
         return <Observable<string>>(this._armClient.postResource(resourceUri, session, null, true));
@@ -132,6 +135,22 @@ export class DaasService {
     deleteMonitoringSession(site: SiteDaasInfo, sessionId: string): Observable<string> {
         const resourceUri: string = this._uriElementsService.getMonitoringSessionUrl(site, sessionId);
         return <Observable<string>>(this._armClient.deleteResource(resourceUri, null, true));
+    }
+
+    setBlobSasUri(site: SiteDaasInfo, blobAccount:string, blobKey:string): Observable<boolean>{
+        const resourceUri: string = this._uriElementsService.getBlobSasUriUrl(site);
+        const settings = new DaasSettings();
+        settings.BlobSasUri = "";
+        settings.BlobContainer = this.BlobContainerName;
+        settings.BlobKey = blobKey;
+        settings.BlobAccount = blobAccount;
+
+        return <Observable<boolean>>(this._armClient.postResource(resourceUri, settings, null, true));
+    }
+
+    getBlobSasUri(site: SiteDaasInfo) : Observable<DaasSettings> {
+        const resourceUri: string = this._uriElementsService.getBlobSasUriUrl(site);
+        return <Observable<DaasSettings>>(this._armClient.getResourceWithoutEnvelope<DaasSettings>(resourceUri, null, true));
     }
 
     private _getHeaders(): Headers {

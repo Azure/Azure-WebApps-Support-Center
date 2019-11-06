@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, ViewChild } from '@angular/core';
 import { ServerFarmDataService } from '../../shared/services/server-farm-data.service';
 import { SiteService } from '../../shared/services/site.service';
 import { SiteInfoMetaData } from '../../shared/models/site';
 import { AutoHealCustomAction } from '../../shared/models/autohealing';
 import { DaasService } from '../../shared/services/daas.service';
+import { DaasValidatorComponent } from '../../shared/components/daas/daas-validator.component';
 
 @Component({
   selector: 'autohealing-custom-action',
@@ -15,18 +16,16 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService) {
   }
 
+  @ViewChild('daasValidatorRef') daasValidatorRef:DaasValidatorComponent;
+
   @Input() siteToBeDiagnosed: SiteInfoMetaData;
   @Input() customAction: AutoHealCustomAction;
   @Output() customActionChanged: EventEmitter<AutoHealCustomAction> = new EventEmitter<AutoHealCustomAction>();
 
-  checkingSupportedTier: boolean = true;
-  checkingSkuSucceeded: boolean = false;
-  supportedTier: boolean = false;
-  alwaysOnEnabled: boolean = false;
-
   diagnoser: any = null;
   diagnoserOption: any = null;
   showDiagnoserOptionWarning: boolean = false;
+  daasValidated: boolean = false;
 
   Diagnosers = [{ Name: 'Memory Dump', Description: 'Collects memory dumps of the process and the child processes hosting your app and analyzes them for errors' },
   { Name: 'CLR Profiler', Description: 'Profiles ASP.NET application code to identify exceptions and performance issues' },
@@ -47,34 +46,12 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
-      this.checkingSupportedTier = false;
-      if (serverFarm) {
-        this.checkingSkuSucceeded = true;
-        if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier.indexOf('Premium') > -1 || serverFarm.sku.tier === 'Isolated') {
-          this.supportedTier = true;
-
-        }
-      } else {
-        // serverFarm can be NULL for users with Website contributor access only
-        // In those cases, lets check if AlwaysOn is enabled or not
-        this.checkingSkuSucceeded = false;
-      }
-      this._siteService.getAlwaysOnSetting(this.siteToBeDiagnosed).subscribe(alwaysOnSetting => {
-        if (alwaysOnSetting) {
-          this.alwaysOnEnabled = true;
-        } else {
-          this.alwaysOnEnabled = false;
-        }
-      });
-
-      this.initComponent();
-      // This is required in case someone lands on Mitigate page
-      // without ever hitting DAAS endpoint. Browsing to any DAAS
-      // endpoint, will ensure that DaaSConsole is copied to the
-      // right folders and will allow autohealing to work correctly
-      this.makeDaasWarmupCall();
-    });
+    this.initComponent();
+    // This is required in case someone lands on Mitigate page
+    // without ever hitting DAAS endpoint. Browsing to any DAAS
+    // endpoint, will ensure that DaaSConsole is copied to the
+    // right folders and will allow autohealing to work correctly
+    this.makeDaasWarmupCall();
   }
 
   makeDaasWarmupCall(): any {
@@ -146,7 +123,8 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   chooseDiagnoser(val) {
     this.diagnoser = val;
-
+    this.daasValidatorRef.diagnoserName = this.diagnoser.Name;
+    this.daasValidatorRef.checkStorageRequirementForDiagnoser();
   }
 
   chooseDiagnoserAction(val) {
@@ -175,7 +153,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   }
 
   updateDaasAction() {
-    if (this.alwaysOnEnabled === true) {
+    if (this.daasValidated) {
       const autoHealDaasAction = new AutoHealCustomAction();
       autoHealDaasAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
       autoHealDaasAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
@@ -217,5 +195,9 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
       }
     }
     return invalidSetting;
+  }
+
+  onDaasValidated(event: boolean) {
+    this.daasValidated = event;
   }
 }
