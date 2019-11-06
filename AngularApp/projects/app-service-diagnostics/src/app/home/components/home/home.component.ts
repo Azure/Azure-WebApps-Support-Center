@@ -39,6 +39,10 @@ export class HomeComponent implements OnInit {
       '';
   }
 
+  get isIE_Browser(): boolean {
+    return  /msie\s|trident\//i.test(window.navigator.userAgent);
+  }
+
   get isPublicAzure(): boolean {
     return ((window.location != window.parent.location) ? document.referrer : document.location.href).includes("azure.com");
   }
@@ -89,7 +93,7 @@ export class HomeComponent implements OnInit {
       }      
     }
 
-    if (this.isPublicAzure == false){
+    if (this.isPublicAzure == false && this.isIE_Browser == false){
       this.homePageText = {
         title:'Azure Kubernetes Service Diagnostics',
         description: 'Explore ways to diagnose and troubleshoot the common problems of your cluster from CRUD operations to connection problems. Click on any of the documents below to start troubleshooting.',

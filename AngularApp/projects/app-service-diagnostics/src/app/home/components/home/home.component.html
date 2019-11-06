@@ -22,12 +22,12 @@
   <div class="main-area">
     <h2 tabindex="0">{{homePageText.title}}</h2>
     <p id="page-description" tabindex="0">{{homePageText.description}}</p>
-    <div *ngIf="categories && isPublicAzure" class="category-container">
+    <div *ngIf="categories && isPublicAzure && !this.isIE_Browser" class="category-container">
       <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
         <category-tile [category]="category"></category-tile>
       </div>
     </div>
-    <markdown ngPreserveWhitespaces *ngIf="isPublicAzure == false">
+    <markdown ngPreserveWhitespaces *ngIf="isPublicAzure == false && !this.isIE_Browser">
       ## Management
       Cannot stop, start, or edit my Kubernetes containers
 
