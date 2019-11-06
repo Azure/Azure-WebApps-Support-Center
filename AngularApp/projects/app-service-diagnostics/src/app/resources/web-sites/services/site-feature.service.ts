@@ -173,7 +173,7 @@ export class SiteFeatureService extends FeatureService {
           category: 'Proactive Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: this._createFeatureAction(ToolNames.AutoHealing, 'Diagnostic Tools', () => {
+          clickAction: this._createFeatureAction(ToolNames.AutoHealing, 'Proactive Tools', () => {
             this._router.navigateByUrl(`resource${resourceId}/tools/mitigate`);
           })
         }
@@ -189,7 +189,7 @@ export class SiteFeatureService extends FeatureService {
           category: 'Proactive Tools',
           description: '',
           featureType: FeatureTypes.Tool,
-          clickAction: this._createFeatureAction(ToolNames.AutoHealing, 'Diagnostic Tools', () => {
+          clickAction: this._createFeatureAction(ToolNames.CpuMonitoring, 'Proactive Tools', () => {
             this._router.navigateByUrl(`resource${resourceId}/tools/cpumonitoring`);
           })
         }
@@ -392,7 +392,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
-        hostingEnvironmentKind: HostingEnvironmentKind.NotILB,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
         item: {
           id: SupportBladeDefinitions.EventViewer.Identifier,
@@ -409,7 +409,7 @@ export class SiteFeatureService extends FeatureService {
         appType: AppType.WebApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
-        hostingEnvironmentKind: HostingEnvironmentKind.NotILB,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
         item: {
           id: SupportBladeDefinitions.FREBLogs.Identifier,

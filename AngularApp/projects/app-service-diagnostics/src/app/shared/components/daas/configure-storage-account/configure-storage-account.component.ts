@@ -18,8 +18,8 @@ export class ConfigureStorageAccountComponent implements OnInit {
   @Output() StorageAccountValidated: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   Options = [
-    { option: 'CreateNew', Text: 'Create New' },
-    { option: 'ChooseExisting', Text: 'Choose Existing' }
+    { option: 'CreateNew', Text: 'Create new' },
+    { option: 'ChooseExisting', Text: 'Choose existing' }
   ];
 
   chosenOption: any = this.Options[0];
@@ -112,7 +112,7 @@ export class ConfigureStorageAccountComponent implements OnInit {
 
   getBlobSasUriShort(): string {
     let u = new URL(this.blobSasUri);
-    return u.hostname + ' (' + u.pathname.replace('/', '') + ')';
+    return u.hostname + '/' + u.pathname.replace('/', '');
   }
 
   getLocations(): string[] {
@@ -130,7 +130,7 @@ export class ConfigureStorageAccountComponent implements OnInit {
     this.StorageAccountValidated.emit(false);
   }
 
-  cancel(){
+  cancel() {
     this.editMode = false;
     this.StorageAccountValidated.emit(true);
   }

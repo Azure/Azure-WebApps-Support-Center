@@ -6,26 +6,26 @@
   <div *ngIf="blobSasUri.length > 0">
     <div>
       Storage account: <span class="highlight-blue">{{ getBlobSasUriShort()}}</span>
-      <i aria-hidden="true" class="ml-3 fa fa-edit hotspot-clickable " (click)="enableEditMode()"></i>
+      (<a style="cursor: pointer" (click)="enableEditMode()">change</a>)
     </div>
+    <div style="font-size: smaller">Memory dumps captured via this tool will be stored in this storage account</div>
   </div>
-  <div *ngIf="(blobSasUri.length === 0 || editMode)">
+  <div class="mt-3" *ngIf="(blobSasUri.length === 0 || editMode)">
     <strong class="mt-3">Storage</strong>
     <div class="mt-1 mb-2">
-      Before you can collect a memory dump, you must specificy a storage account. This
+      Before you can collect a memory dump, you must specificy a storage account to store the dump files. This
       is required so that the dump files do not impact disk space of your app.
     </div>
     <div class="mt-4">
       <ng-container *ngFor="let option of Options">
-        <label class="mr-3">
+        <span class="mr-3">
           <input type="radio" name="optradio" [checked]="chosenOption.option === option.option" [value]="option.option"
-            (change)="chooseOption(option)"> {{ option.Text }}</label>
+            (change)="chooseOption(option)"> {{ option.Text }}</span>
       </ng-container>
 
       <div *ngIf="chosenOption.option === 'CreateNew'">
         <input class="mt-2 fixed-width" type="text" id="newStorageAccountName" aria-describedby="storageAccountHelp"
           (input)="updateStorageAccount($event.target.value)" [ngModel]="newStorageAccountName">
-
       </div>
 
       <div *ngIf="chosenOption.option === 'ChooseExisting'">
