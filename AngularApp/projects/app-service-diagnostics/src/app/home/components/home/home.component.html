@@ -1,5 +1,5 @@
 <div class="home-container">
-  <div class="input-group input-group-lg search-input-group" (keyup.escape)="clearSearch()" role="search">
+  <div class="input-group input-group-lg search-input-group" (keyup.escape)="clearSearch()" role="search" *ngIf="isPublicAzure || isIE_Browser">
     <input tabindex="0" type="search" class="form-control" placeholder="{{searchPlaceHolder}}"
       [ngModel]="searchValue" (ngModelChange)="updateSearchValue($event)" (focus)="onSearchBoxFocus(event)"
       (focusout)="onSearchLostFocus()" aria-controls="search-results">
@@ -22,11 +22,53 @@
   <div class="main-area">
     <h2 tabindex="0">{{homePageText.title}}</h2>
     <p id="page-description" tabindex="0">{{homePageText.description}}</p>
-    <div *ngIf="categories" class="category-container">
+    <div *ngIf="categories && (isPublicAzure || isIE_Browser)" class="category-container">
       <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
         <category-tile [category]="category"></category-tile>
       </div>
     </div>
+    <markdown ngPreserveWhitespaces *ngIf="isPublicAzure == false && !isIE_Browser">
+      ## Management
+      Cannot stop, start, or edit my Kubernetes containers
+
+      - <a href="https://docs.azure.cn/aks/troubleshooting" target="_blank">https://docs.azure.cn/aks/troubleshooting</a>
+      - <a href="https://docs.azure.cn/aks/kubernetes-dashboard" target="_blank">https://docs.azure.cn/aks/kubernetes-dashboard</a>
+      - <a href="https://docs.azure.cn/aks/scale-cluster" target="_blank">https://docs.azure.cn/aks/scale-cluster</a>
+      - <a href="https://docs.azure.cn/aks/upgrade-cluster" target="_blank">https://docs.azure.cn/aks/upgrade-cluster</a>
+      - <a href="https://docs.azure.cn/aks/configure-azure-cni" target="_blank">https://docs.azure.cn/aks/configure-azure-cni</a>
+      - <a href="https://docs.azure.cn/aks/kube-advisor-tool" target="_blank">https://docs.azure.cn/aks/kube-advisor-tool</a>
+      - <a href="https://stackoverflow.com/questions/tagged/azure-container-service" target="_blank">https://stackoverflow.com/questions/tagged/azure-container-service</a>
+      
+      ## Configuration and setup issues
+      Cannot create Azure Kubernetes service container cluster
+      
+      - <a href="https://docs.microsoft.com/azure/aks/create-cluster" target="_blank">https://docs.microsoft.com/azure/aks/create-cluster</a>
+      - <a href="https://docs.azure.cn/aks/scale-cluster" target="_blank">https://docs.azure.cn/aks/scale-cluster</a>
+      - <a href="https://docs.azure.cn/aks/upgrade-cluster" target="_blank">https://docs.azure.cn/aks/upgrade-cluster</a>
+      - <a href="https://docs.azure.cn/aks/azure-disks-dynamic-pv" target="_blank">https://docs.azure.cn/aks/azure-disks-dynamic-pv</a>
+      - <a href="https://docs.azure.cn/aks/ssh" target="_blank">https://docs.azure.cn/aks/ssh</a>
+      - <a href="https://docs.azure.cn/aks/concepts-identity" target="_blank">https://docs.azure.cn/aks/concepts-identity</a>
+      - <a href="https://docs.azure.cn/aks/troubleshooting" target="_blank">https://docs.azure.cn/aks/troubleshooting</a>
+      - <a href="https://docs.azure.cn/aks/kube-advisor-tool" target="_blank">https://docs.azure.cn/aks/kube-advisor-tool</a>
+      - <a href="https://docs.azure.cn/aks/kubernetes-dashboard" target="_blank">https://docs.azure.cn/aks/kubernetes-dashboard</a>
+      - <a href="https://stackoverflow.com/questions/tagged/azure-container-service" target="_blank">https://stackoverflow.com/questions/tagged/azure-container-service</a>
+      
+      ## Connectivity
+      Cannot connect to my Azure Kubernetes service container
+      - <a href="https://docs.azure.cn/aks/ssh" target="_blank">https://docs.azure.cn/aks/ssh</a>
+      - <a href="https://docs.azure.cn/aks/Kubernetes-dashboard" target="_blank">https://docs.azure.cn/aks/Kubernetes-dashboard</a>
+      - <a href="https://docs.azure.cn/aks/configure-azure-cni" target="_blank">https://docs.azure.cn/aks/configure-azure-cni</a>
+      - <a href="https://stackoverflow.com/questions/49560394/new-aks-cluster-unreachable-via-network-including-dashboard" target="_blank">https://stackoverflow.com/questions/49560394/new-aks-cluster-unreachable-via-network-including-dashboard</a>
+      - <a href="https://stackoverflow.com/questions/51531561/kubernetes-aks-unable-to-view-the-site" target="_blank">https://stackoverflow.com/questions/51531561/kubernetes-aks-unable-to-view-the-site</a>
+      - <a href="https://docs.azure.cn/aks/troubleshooting" target="_blank">https://docs.azure.cn/aks/troubleshooting</a>
+      - <a href="https://docs.azure.cn/aks/kube-advisor-tool" target="_blank">https://docs.azure.cn/aks/kube-advisor-tool</a>
+      - <a href="https://stackoverflow.com/questions/tagged/azure-container-service" target="_blank">https://stackoverflow.com/questions/tagged/azure-container-service</a>
+      
+      ## Connectivity
+      Certificate Management issue (SSH key)
+      
+      - <a href="https://docs.azure.cn/aks/ssh" target="_blank">https://docs.azure.cn/aks/ssh</a>
+    </markdown>
     <div class="privacy-statement" tabindex="0">
       <a href="https://azure.microsoft.com/en-us/support/legal/?amp%3Bclcid=0x9" target="_blank">Privacy</a>
     </div>

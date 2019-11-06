@@ -489,6 +489,7 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
             let newChangeRows = response.dataset[0]['table'];
             let newTimelineItems = [];
             if(this.changesTimeline) {
+            this.timeLineDataSet.clear();
             newChangeRows.rows.forEach(row => {
                 let existingItem = this.timeLineDataSet.get(row[0]);
                 // Add to timeline if it doesnt exist.
@@ -528,6 +529,9 @@ export class ChangesetsViewComponent extends DataRenderBaseComponent implements 
     ngOnDestroy(): void {
         if (this.subscription) {
             this.subscription.unsubscribe();
+        }
+        if(this.changesTimeline) {
+            this.changesTimeline.destroy();
         }
     }
 

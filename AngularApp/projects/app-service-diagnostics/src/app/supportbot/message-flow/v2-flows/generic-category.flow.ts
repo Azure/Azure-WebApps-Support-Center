@@ -14,6 +14,8 @@ import { FeedbackMessage } from '../feedback/feedbackmessageflow';
 import { map } from 'rxjs/operators';
 import { GenericArmConfigService } from '../../../shared/services/generic-arm-config.service';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
+import { WebSitesService } from '../../../resources/web-sites/services/web-sites.service';
+import { AppType } from '../../../shared/models/portal';
 
 
 @Injectable()
@@ -63,6 +65,14 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
       const feedback: string = `feedback-${category.id}`;
 
       let serviceName: string = 'App Service Diagnostics';
+      if(this._resourceService.resource.type === 'Microsoft.Web/hostingEnvironments') {
+        serviceName = 'App Service Environment Diagnostics';
+      }
+      else {
+        if(this._resourceService && this._resourceService instanceof WebSitesService && (this._resourceService as WebSitesService).appType === AppType.FunctionApp) {
+          serviceName = 'Azure Functions Diagnostics';
+        }
+      }
 
       if (this._resourceService.armResourceConfig
         && this._resourceService.armResourceConfig.homePageText

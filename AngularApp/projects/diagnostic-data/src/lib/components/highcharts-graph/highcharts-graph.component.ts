@@ -138,8 +138,18 @@ export class HighchartsGraphComponent implements OnInit {
                 keyboardNavigation: {
                     enabled: true,
                     mode: "normal",
-                    order: ["legend", "series", "zoom", "rangeSelector", "chartMenu"]
-                }
+                    order: ["legend", "series", "zoom", "rangeSelector", "chartMenu"],
+                    focusBorder: {
+                        style: {
+                            lineWidth: 3,
+                            color: '#aa1111',
+                            borderRadius: 5
+                        },
+                        margin: 4
+                    },
+                    wrapAround: true,
+                    skipNullPoints: true
+                },
             },
             caption: {
                 text: `${this.chartDescription}`,
@@ -147,14 +157,17 @@ export class HighchartsGraphComponent implements OnInit {
             chart: {
                 reflow: true,
                 height: 200,
+                display: 'block!important',
                 type: 'line',
                 zoomType: 'x',
+                panKey: 'shift',
+                panning: true,
                 resetZoomButton: {
                     position: {
                         x: 0,
                         y: -10
                     }
-                }
+                },
             },
             legend: {
                 enabled: true,
@@ -185,6 +198,7 @@ export class HighchartsGraphComponent implements OnInit {
                 }
             },
             tooltip: {
+                shared: true,
                 enabled: true,
                 valueDecimals: 2
             },
@@ -211,7 +225,7 @@ export class HighchartsGraphComponent implements OnInit {
                     height: 1
                 },
                 menuItemStyle: {
-                    padding: "0.2em 1em",
+                    padding: "0.1em 1em",
                 }
             },
             exporting: {
@@ -252,23 +266,41 @@ export class HighchartsGraphComponent implements OnInit {
                 crosshair: true,
                 tickFormat: function (d: any) { return moment(d).utc().format('MM/DD HH:mm'); },
                 dateTimeLabelFormats: {
-                    second: '%m-%d<br/>%H:%M:%S',
-                    minute: '%m-%d<br/>%H:%M',
-                    hour: '%m-%d<br/>%H:%M',
-                    day: '%Y<br/>%m-%d',
-                    week: '%Y<br/>%m-%d',
+                    second: '%m-%d %H:%M:%S',
+                    minute: '%m-%d %H:%M',
+                    hour: '%m-%d %H:%M',
+                    day: '%Y-%m-%d',
+                    week: '%Y-%m-%d',
                     month: '%Y-%m',
                     year: '%Y'
-                }
+                },
+                labels: {
+                    useHTML: true,
+                    style: {
+                        whiteSpace: 'nowrap'
+                    }
+                },
             },
             yAxis: {
+                tickAmount: 3,
+                softMin: 0,
+                crosshair: true,
+                accessibility: {
+                    description: `Y axis values`
+                },
                 title: {
-                    text: ''
+                    text: '',
+                    style: {
+                        whiteSpace: 'nowrap'
+                    }
                 },
                 endOnTick: false,
                 labels: {
-                    format: '{value:.2f}'
-                }
+                    format: '{value:.2f}',
+                    style: {
+                        whiteSpace: 'nowrap'
+                    }
+                },
             },
             series: this.HighchartData
         } as Highcharts.Options;
