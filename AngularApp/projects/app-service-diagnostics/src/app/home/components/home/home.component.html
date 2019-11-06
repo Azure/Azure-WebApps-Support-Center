@@ -7,8 +7,8 @@
     <div class="home-container">
       <div style="margin:25px 0px;" (keyup.escape)="clearSearch()" role="search">
         <div class="search-box">
-        <fab-search-box tabindex="0" type="search" placeholder="Search" [(ngModel)]="searchValue"
-          (onChange)="updateSearchValue($event)" (onFocus)="onSearchBoxFocus($event)" (onFocusout)="onSearchLostFocus()"
+        <fab-search-box tabindex="0" type="search" placeholder="Search" [value]="searchValue"
+          (onChange)="updateSearchValue($event)" (onFocus)="onSearchBoxFocus($event)" (onBlur)="clearSearch()"
           aria-controls="search-results"></fab-search-box>
         </div>
         <div role="status">

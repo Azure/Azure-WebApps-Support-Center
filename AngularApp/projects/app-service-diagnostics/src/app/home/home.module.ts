@@ -321,7 +321,7 @@ export const HomeRoutes = RouterModule.forChild([
     FabProgressIndicatorModule,
     FabNavModule
   ],
-  declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent],
+  declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent,CategoryOverviewComponent],
   providers: [CategoryTabResolver, CategoryChatResolver, TimeControlResolver,
     { provide: GenericSupportTopicService, useExisting: SupportTopicService}
   ]

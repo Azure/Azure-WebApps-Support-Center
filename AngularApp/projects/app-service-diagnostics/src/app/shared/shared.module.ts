@@ -92,6 +92,7 @@ import { GenericAnalysisComponent } from './components/generic-analysis/generic-
 import { EventViewerComponent } from './components/daas/event-viewer/event-viewer.component';
 import { FrebViewerComponent } from './components/daas/freb-viewer/freb-viewer.component';
 import { CategoryOverviewComponent } from './components/category-overview/category-overview.component';
+import { SupportBotModule } from '../supportbot/supportbot.module';
 
 @NgModule({
     declarations: [
@@ -155,7 +156,6 @@ import { CategoryOverviewComponent } from './components/category-overview/catego
         GenericAnalysisComponent,
         EventViewerComponent,
         FrebViewerComponent,
-        CategoryOverviewComponent
     ],
     imports: [
         HttpClientModule,

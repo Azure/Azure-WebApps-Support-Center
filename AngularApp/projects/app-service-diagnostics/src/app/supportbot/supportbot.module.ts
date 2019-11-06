@@ -67,13 +67,14 @@ import { SummaryCardComponent } from './message-flow/summary-card/summary-card.c
         SharedV2Module,
         DiagnosticDataModule,
         FabIconModule,
-        FabChoiceGroupModule
+        FabChoiceGroupModule,
     ],
     exports: [
         HomepageComponent,
         SupportBotComponent,
         CategoryMenuComponent,
-        DetectorSummaryComponent
+        DetectorSummaryComponent,
+        HealthCheckV3Component
     ],
     providers: [
         StartupMessages,
