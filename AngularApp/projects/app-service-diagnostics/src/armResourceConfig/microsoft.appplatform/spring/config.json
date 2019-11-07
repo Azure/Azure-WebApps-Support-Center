@@ -1,0 +1,24 @@
+{
+	"homePageText": {
+		"title": "Azure Spring Cloud Diagnostics",
+		"description": "Use Azure Spring Cloud Diagnostics to investigate how your service is performing, diagnose issues, and discover how to improve its reliability. Select the problem category that best matches the information or tool that you're interested in:",
+		"searchBarPlaceHolder": "Search for common problems, tools and more"
+	},
+	"matchRegEx": "/Microsoft.AppPlatform/Spring/",
+	"searchSuffix": "Spring",
+	"azureServiceName": "Azure Spring Cloud",
+	"armApiVersion": "2019-05-01-preview",
+	"isSearchEnabled": true,
+	"isApplicableForLiveChat": false,
+	"categories": [{
+			"id": "Troubleshooting",
+			"name": "Troubleshooting",
+			"description": "Explore the most common problems for your resource. Follow do-it-yourself troubleshooting steps, or explore a wide range of troubleshooting tools.",
+			"keywords": ["Failures", "Service Up"],
+			"color": "rgb(186, 211, 245)",
+			"createFlowForCategory": true,
+			"chatEnabled": false
+		}
+	],
+	"pesId": "16860"
+}
