@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { SiteDaasInfo } from '../../models/solution-metadata';
-import { Session, Diagnoser, Report, DiagnoserDefinition, Log } from '../../models/daas';
+import { Session, Diagnoser, Report, DiagnoserDefinition, Log, StorageAccountValidationResult } from '../../models/daas';
 import { Subscription, Observable, interval } from 'rxjs';
 import { StepWizardSingleStep } from '../../models/step-wizard-single-step';
 import { SiteService } from '../../services/site.service';
@@ -54,7 +54,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     retrievingInstancesFailed: boolean = false;
     instancesChanged: boolean = false;
 
-    daasValidated: boolean = false;
+    validationResult:StorageAccountValidationResult = new StorageAccountValidationResult();
     cancellingSession: boolean = false;
     collectionMode: number = 0;
     showInstanceWarning: boolean = false;
@@ -63,13 +63,13 @@ export class DaasComponent implements OnInit, OnDestroy {
     constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
     }
 
-    onDaasValidated(validated: boolean) {
-        if (validated) {
+    onDaasValidated(validation: StorageAccountValidationResult) {
+        this.validationResult = validation;
+        if (validation.Validated) {
             if (this.diagnoserNameLookup === '') {
                 this.diagnoserNameLookup = this.diagnoserName;
             }
 
-            this.daasValidated = true;
             this.sessionCompleted = false;
             this.operationInProgress = true;
             this.operationStatus = 'Retrieving instances...';
@@ -89,8 +89,6 @@ export class DaasComponent implements OnInit, OnDestroy {
                         this.operationInProgress = false;
                         this.retrievingInstancesFailed = true;
                     });
-        } else {
-            this.daasValidated = false;
         }
     }
 
@@ -99,7 +97,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     }
 
     initWizard(): void {
-
+        this.WizardSteps = [];
         this.WizardSteps.push({
             Caption: 'Step 1: Initializing Diagnostics ',
             IconType: 'fa-play',

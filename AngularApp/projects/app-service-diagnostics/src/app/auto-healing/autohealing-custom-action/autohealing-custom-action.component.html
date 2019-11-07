@@ -91,7 +91,7 @@
     </div>
 
     <div
-      *ngIf="customActionType == 'Custom' || daasValidated"
+      *ngIf="customActionType == 'Custom' || validationResult.Validated"
       style="margin-top:15px;margin-left:15px">
       Action chosen:
       <span *ngIf="customActionType === 'Diagnostics'" class="final-action">D:\home\data\DaaS\bin\DaasConsole.exe

@@ -1,7 +1,7 @@
 <daas-validator [siteToBeDiagnosed]="siteToBeDiagnosed" diagnoserName="CPU Monitoring"
   (DaasValidated)="onDaasValidated($event)"></daas-validator>
 
-<div *ngIf="daasValidated" style="margin-top:30px">
+<div *ngIf="validationResult.Validated" style="margin-top:30px">
   <div *ngIf="checkingActiveSessionOnComponentLoad">
     <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
     Checking Active monitoring session...

@@ -1,5 +1,5 @@
 <daas-validator [sessionInProgress] = "sessionInProgress" [siteToBeDiagnosed]="siteToBeDiagnosed" [diagnoserName]="diagnoserName" (DaasValidated)="onDaasValidated($event)"></daas-validator>
-<div *ngIf="daasValidated">
+<div *ngIf="validationResult.Validated">
     <div class="action-box" *ngIf="siteToBeDiagnosed">
         <div>
             <table style="border:none">

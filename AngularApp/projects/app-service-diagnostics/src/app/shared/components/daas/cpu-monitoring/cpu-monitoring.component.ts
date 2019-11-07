@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { SiteDaasInfo } from '../../../models/solution-metadata';
 import { SiteService } from '../../../services/site.service';
-import { MonitoringSession, MonitoringLogsPerInstance, ActiveMonitoringSession } from '../../../models/daas';
+import { MonitoringSession, MonitoringLogsPerInstance, ActiveMonitoringSession, StorageAccountValidationResult } from '../../../models/daas';
 import { interval, Subscription } from 'rxjs';
 import { DaasService } from '../../../services/daas.service';
 
@@ -22,7 +22,7 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
   @Input() siteToBeDiagnosed: SiteDaasInfo;
   @Input() scmPath: string;
 
-  daasValidated: boolean = false;
+  validationResult:StorageAccountValidationResult = new StorageAccountValidationResult();
   subscription: Subscription;
   inFlightSessionsSubscription: Subscription;
   inFlightActiveSessionSubscription: Subscription;
@@ -40,10 +40,8 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDaasValidated(validated: boolean) {
-    if (validated) {
-      this.daasValidated = true;
-    }
+  onDaasValidated(validated: StorageAccountValidationResult) {
+    this.validationResult = validated;
   }
 
   ngOnInit(): void {

@@ -1,6 +1,5 @@
 <daas-validator [siteToBeDiagnosed]="siteToBeDiagnosed" diagnoserName="CLR Profiler" (DaasValidated)="onDaasValidated($event)"></daas-validator>
-
-<div *ngIf="daasValidated">
+<div *ngIf="validationResult.Validated">
     <div class="col" *ngIf="siteToBeDiagnosed && checkingAppInfo">
         <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
         Checking ASP.NET version

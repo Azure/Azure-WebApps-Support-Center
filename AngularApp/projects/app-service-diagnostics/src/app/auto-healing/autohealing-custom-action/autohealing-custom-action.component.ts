@@ -5,6 +5,7 @@ import { SiteInfoMetaData } from '../../shared/models/site';
 import { AutoHealCustomAction } from '../../shared/models/autohealing';
 import { DaasService } from '../../shared/services/daas.service';
 import { DaasValidatorComponent } from '../../shared/components/daas/daas-validator.component';
+import { StorageAccountValidationResult } from '../../shared/models/daas';
 
 @Component({
   selector: 'autohealing-custom-action',
@@ -25,7 +26,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   diagnoser: any = null;
   diagnoserOption: any = null;
   showDiagnoserOptionWarning: boolean = false;
-  daasValidated: boolean = false;
+  validationResult:StorageAccountValidationResult = new StorageAccountValidationResult();
 
   Diagnosers = [{ Name: 'Memory Dump', Description: 'Collects memory dumps of the process and the child processes hosting your app and analyzes them for errors' },
   { Name: 'CLR Profiler', Description: 'Profiles ASP.NET application code to identify exceptions and performance issues' },
@@ -153,7 +154,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   }
 
   updateDaasAction() {
-    if (this.daasValidated) {
+    if (this.validationResult.Validated) {
       const autoHealDaasAction = new AutoHealCustomAction();
       autoHealDaasAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
       autoHealDaasAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
@@ -197,7 +198,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
     return invalidSetting;
   }
 
-  onDaasValidated(event: boolean) {
-    this.daasValidated = event;
+  onDaasValidated(event: StorageAccountValidationResult) {
+    this.validationResult = event;
   }
 }

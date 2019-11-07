@@ -4,7 +4,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ServerFarmDataService } from '../../services/server-farm-data.service';
 import { DaasService } from '../../services/daas.service';
 import { SiteDaasInfo } from '../../models/solution-metadata';
-import { DiagnoserDefinition } from '../../models/daas';
+import { DiagnoserDefinition, StorageAccountValidationResult } from '../../models/daas';
 import { SiteService } from '../../services/site.service';
 import { catchError, retry, map, retryWhen, delay, take, concat } from 'rxjs/operators';
 
@@ -16,7 +16,7 @@ export class DaasValidatorComponent implements OnInit {
 
   @Input() siteToBeDiagnosed: SiteDaasInfo;
   @Input() diagnoserName: string;
-  @Output() DaasValidated: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() DaasValidated: EventEmitter<StorageAccountValidationResult> = new EventEmitter<StorageAccountValidationResult>();
   @Input() sessionInProgress:boolean;
 
   supportedTier: boolean = false;
@@ -30,6 +30,7 @@ export class DaasValidatorComponent implements OnInit {
   error: string = '';
   storageAccountNeeded: boolean = false;
   diagnosersRequiringStorageAccount: string[] = ['Memory Dump'];
+  validationResult:StorageAccountValidationResult = new StorageAccountValidationResult();
 
   constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService) {
   }
@@ -106,7 +107,8 @@ export class DaasValidatorComponent implements OnInit {
   checkStorageRequirementForDiagnoser(): void {
     this.storageAccountNeeded = this.diagnosersRequiringStorageAccount.findIndex(x => x === this.diagnoserName) >= 0;
     if (!this.storageAccountNeeded) {
-      this.DaasValidated.emit(true);
+      this.validationResult.Validated = true;
+      this.DaasValidated.emit(this.validationResult);
     }
   }
 
@@ -141,7 +143,7 @@ export class DaasValidatorComponent implements OnInit {
       });
   }
 
-  onStorageAccountValidated(event: boolean) {
+  onStorageAccountValidated(event: StorageAccountValidationResult) {
     this.DaasValidated.emit(event);
   }
 }

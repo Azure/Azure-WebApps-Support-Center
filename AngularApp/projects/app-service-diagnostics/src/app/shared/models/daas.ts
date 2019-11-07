@@ -65,8 +65,8 @@ export class Session {
     Deleting: boolean = false;
     DeletingFailure: string = '';
     LogFilesSize: number;
-    BlobSasUri:string;
-    HasBlobSasUri:boolean = false;
+    BlobSasUri: string;
+    HasBlobSasUri: boolean = false;
 }
 
 export interface DiagnoserDefinition {
@@ -172,10 +172,15 @@ export interface DaasAppInfo {
 }
 
 export class DaasSettings {
-    Diagnosers: any[] =[];
-    TimeSpan:string;
+    Diagnosers: any[] = [];
+    TimeSpan: string;
     BlobSasUri: string;
     BlobContainer: string;
     BlobKey: string;
     BlobAccount: string;
+}
+
+export class StorageAccountValidationResult {
+    Validated: boolean = false;
+    BlobSasUri: string = "";
 }

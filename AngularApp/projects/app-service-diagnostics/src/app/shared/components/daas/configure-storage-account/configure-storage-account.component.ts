@@ -4,6 +4,7 @@ import { SiteDaasInfo } from '../../../models/solution-metadata';
 import { StorageAccount } from '../../../models/storage';
 import { DaasService } from '../../../services/daas.service';
 import { SiteService } from '../../../services/site.service';
+import { StorageAccountValidationResult } from '../../../models/daas';
 
 @Component({
   selector: 'configure-storage-account',
@@ -16,7 +17,7 @@ export class ConfigureStorageAccountComponent implements OnInit {
 
   @Input() siteToBeDiagnosed: SiteDaasInfo;
   @Input() sessionInProgress: boolean;
-  @Output() StorageAccountValidated: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() StorageAccountValidated: EventEmitter<StorageAccountValidationResult> = new EventEmitter<StorageAccountValidationResult>();
 
   Options = [
     { option: 'CreateNew', Text: 'Create new' },
@@ -27,12 +28,12 @@ export class ConfigureStorageAccountComponent implements OnInit {
   newStorageAccountName: string = '';
   storageAccounts: StorageAccount[] = [];
   chosenStorageAccount: StorageAccount;
-  blobSasUri: string = '';
   saveEnabled: boolean = false;
   checkingBlobSasUriConfigured: boolean = true;
   creatingStorageAccount: boolean = false;
   generatingSasUri: boolean = false;
   editMode: boolean = false;
+  validationResult: StorageAccountValidationResult = new StorageAccountValidationResult();
 
   ngOnInit() {
     this._storageService.getStorageAccounts(this.siteToBeDiagnosed.subscriptionId).subscribe(resp => {
@@ -42,8 +43,9 @@ export class ConfigureStorageAccountComponent implements OnInit {
         if (!resp.BlobSasUri) {
           this.setDefaultValues();
         } else {
-          this.blobSasUri = resp.BlobSasUri;
-          this.StorageAccountValidated.emit(true);
+          this.validationResult.BlobSasUri = resp.BlobSasUri;
+          this.validationResult.Validated = true;
+          this.StorageAccountValidated.emit(this.validationResult);
         }
       });
     });
@@ -98,9 +100,10 @@ export class ConfigureStorageAccountComponent implements OnInit {
             this._daasService.getBlobSasUri(this.siteToBeDiagnosed).subscribe(resp => {
               this.generatingSasUri = false;
               if (resp.BlobSasUri && resp.BlobSasUri.length > 0) {
-                this.blobSasUri = resp.BlobSasUri;
+                this.validationResult.BlobSasUri = resp.BlobSasUri;
+                this.validationResult.Validated = true;
                 this.editMode = false;
-                this.StorageAccountValidated.emit(true);
+                this.StorageAccountValidated.emit(this.validationResult);
               }
             });
           } else {
@@ -112,7 +115,7 @@ export class ConfigureStorageAccountComponent implements OnInit {
   }
 
   getBlobSasUriShort(): string {
-    let u = new URL(this.blobSasUri);
+    let u = new URL(this.validationResult.BlobSasUri);
     return u.hostname + '/' + u.pathname.replace('/', '');
   }
 
@@ -129,13 +132,15 @@ export class ConfigureStorageAccountComponent implements OnInit {
     if (!this.sessionInProgress) {
       this.editMode = true;
       this.setDefaultValues();
-      this.StorageAccountValidated.emit(false);
+      this.validationResult.Validated = false;
+      this.StorageAccountValidated.emit(this.validationResult);
     }
   }
 
   cancel() {
     this.editMode = false;
-    this.StorageAccountValidated.emit(true);
+    this.validationResult.Validated = true;
+    this.StorageAccountValidated.emit(this.validationResult);
   }
 
 }
