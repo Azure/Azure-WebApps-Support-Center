@@ -90,11 +90,21 @@ export class ConfigureStorageAccountComponent implements OnInit {
     } else {
       this.creatingStorageAccount = true;
       this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
-        .subscribe(storageAccountId => {
-          this.creatingStorageAccount = false;
-          if (storageAccountId !== "Invalid Response") {
-            this.setBlobSasUri(storageAccountId, this.newStorageAccountName);
+        .subscribe(storageAccount => {
+          if (!storageAccount) {
+            this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
+              .subscribe(storageAccount => {
+                this.creatingStorageAccount = false;
+                if (storageAccount != null && storageAccount.id) {
+                  this.setBlobSasUri(storageAccount.id, this.newStorageAccountName);
+                }
+              },
+                error => {
+                  this.creatingStorageAccount = false;
+                  this.error = error;
+                });
           }
+
         },
           error => {
             this.creatingStorageAccount = false;

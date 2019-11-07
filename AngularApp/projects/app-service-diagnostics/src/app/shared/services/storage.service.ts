@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ArmService } from './arm.service';
 import { UriElementsService } from './urielements.service';
-import { throwError as observableThrowError, of, Observable, combineLatest, concat } from 'rxjs';
-import { map, retryWhen, delay, take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map} from 'rxjs/operators';
 import { ResponseMessageCollectionEnvelope, ResponseMessageEnvelope } from '../models/responsemessageenvelope';
-import { StorageAccount, StorageKey, StorageKeys, NewStorageAccount } from '../models/storage';
+import { StorageAccount, StorageKeys, NewStorageAccount } from '../models/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -37,24 +37,15 @@ export class StorageService {
       }));
   }
 
-  createStorageAccount(subscriptionId: string, resourceGroupName: string, accountName: string, location: string): Observable<string> {
+  createStorageAccount(subscriptionId: string, resourceGroupName: string, accountName: string, location: string): Observable<any> {
     let url = this._uriElementsService.createStorageAccountsUrl(subscriptionId, resourceGroupName, accountName);
     let requestBody = new NewStorageAccount();
     requestBody.location = location;
     return this._armClient.putResourceWithoutEnvelope<any, NewStorageAccount>(url, requestBody, this.apiVersion)
       .pipe(map(response => {
-        if (response.toString().length === 0) {
-          throw "202 response"
-        } else {
-          if (response.id) {
-            return response.id.toString();
-          } else {
-            return "Invalid Response"
-          }
-        }
-      }), retryWhen(obs => {
-        return obs.pipe(delay(5000), take(10));
+        return response;
       }));
   }
+
 
 }
