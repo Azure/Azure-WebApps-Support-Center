@@ -4,7 +4,7 @@ import { SiteDaasInfo } from '../../../models/solution-metadata';
 import { StorageAccount } from '../../../models/storage';
 import { DaasService } from '../../../services/daas.service';
 import { SiteService } from '../../../services/site.service';
-import { StorageAccountValidationResult } from '../../../models/daas';
+import { DaasValidationResult } from '../../../models/daas';
 
 @Component({
   selector: 'configure-storage-account',
@@ -17,7 +17,7 @@ export class ConfigureStorageAccountComponent implements OnInit {
 
   @Input() siteToBeDiagnosed: SiteDaasInfo;
   @Input() sessionInProgress: boolean;
-  @Output() StorageAccountValidated: EventEmitter<StorageAccountValidationResult> = new EventEmitter<StorageAccountValidationResult>();
+  @Output() StorageAccountValidated: EventEmitter<DaasValidationResult> = new EventEmitter<DaasValidationResult>();
 
   Options = [
     { option: 'CreateNew', Text: 'Create new' },
@@ -33,7 +33,7 @@ export class ConfigureStorageAccountComponent implements OnInit {
   creatingStorageAccount: boolean = false;
   generatingSasUri: boolean = false;
   editMode: boolean = false;
-  validationResult: StorageAccountValidationResult = new StorageAccountValidationResult();
+  validationResult: DaasValidationResult = new DaasValidationResult();
   error: any;
 
   ngOnInit() {

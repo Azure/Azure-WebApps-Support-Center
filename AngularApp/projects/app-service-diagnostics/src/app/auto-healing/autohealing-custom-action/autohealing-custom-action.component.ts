@@ -5,7 +5,7 @@ import { SiteInfoMetaData } from '../../shared/models/site';
 import { AutoHealCustomAction } from '../../shared/models/autohealing';
 import { DaasService } from '../../shared/services/daas.service';
 import { DaasValidatorComponent } from '../../shared/components/daas/daas-validator.component';
-import { StorageAccountValidationResult } from '../../shared/models/daas';
+import { DaasValidationResult } from '../../shared/models/daas';
 
 const daasConsolePath: string = "D:\\home\\data\\DaaS\\bin\\DaasConsole.exe";
 
@@ -27,7 +27,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges, Afte
   diagnoser: any = null;
   diagnoserOption: any = null;
   showDiagnoserOptionWarning: boolean = false;
-  validationResult: StorageAccountValidationResult = new StorageAccountValidationResult();
+  validationResult: DaasValidationResult = new DaasValidationResult();
   updatedCustomAction: AutoHealCustomAction = new AutoHealCustomAction();
 
 
@@ -125,7 +125,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges, Afte
   chooseDiagnoser(val) {
     this.diagnoser = val;
     this.daasValidatorRef.diagnoserName = this.diagnoser.Name;
-    this.daasValidatorRef.checkStorageRequirementForDiagnoser();
+    this.daasValidatorRef.validateDiagnoser();
     this.updateDaasAction(false);
   }
 
@@ -208,7 +208,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges, Afte
     return invalidSetting;
   }
 
-  onDaasValidated(event: StorageAccountValidationResult) {
+  onDaasValidated(event: DaasValidationResult) {
     this.validationResult = event;
     this.updateDaasAction(false);
   }

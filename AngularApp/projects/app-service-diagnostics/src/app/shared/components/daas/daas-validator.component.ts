@@ -4,7 +4,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ServerFarmDataService } from '../../services/server-farm-data.service';
 import { DaasService } from '../../services/daas.service';
 import { SiteDaasInfo } from '../../models/solution-metadata';
-import { DiagnoserDefinition, StorageAccountValidationResult } from '../../models/daas';
+import { DiagnoserDefinition, DaasValidationResult } from '../../models/daas';
 import { SiteService } from '../../services/site.service';
 import { catchError, retry, map, retryWhen, delay, take, concat } from 'rxjs/operators';
 
@@ -16,7 +16,7 @@ export class DaasValidatorComponent implements OnInit {
 
   @Input() siteToBeDiagnosed: SiteDaasInfo;
   @Input() diagnoserName: string;
-  @Output() DaasValidated: EventEmitter<StorageAccountValidationResult> = new EventEmitter<StorageAccountValidationResult>();
+  @Output() DaasValidated: EventEmitter<DaasValidationResult> = new EventEmitter<DaasValidationResult>();
   @Input() sessionInProgress: boolean;
 
   supportedTier: boolean = false;
@@ -30,7 +30,7 @@ export class DaasValidatorComponent implements OnInit {
   error: string = '';
   storageAccountNeeded: boolean = false;
   diagnosersRequiringStorageAccount: string[] = ['Memory Dump'];
-  validationResult: StorageAccountValidationResult = new StorageAccountValidationResult();
+  validationResult: DaasValidationResult = new DaasValidationResult();
   diagnosers: DiagnoserDefinition[];
 
   constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService) {
@@ -112,7 +112,7 @@ export class DaasValidatorComponent implements OnInit {
     this.validateDaasSettings();
   }
 
-  checkStorageRequirementForDiagnoser(): void {
+  validateDiagnoser(): void {
     this.storageAccountNeeded = this.diagnosersRequiringStorageAccount.findIndex(x => x === this.diagnoserName) >= 0;
     if (this.checkDiagnoserWarnings()) {
       this.validationResult.Validated = false;
@@ -146,7 +146,7 @@ export class DaasValidatorComponent implements OnInit {
           this.daasRunnerJobRunning = false;
           return;
         } else {
-          this.checkStorageRequirementForDiagnoser();
+          this.validateDiagnoser();
         }
       }, error => {
         // We come in this block if the ARM call to get webjob fails
@@ -156,7 +156,7 @@ export class DaasValidatorComponent implements OnInit {
       });
   }
 
-  onStorageAccountValidated(event: StorageAccountValidationResult) {
+  onStorageAccountValidated(event: DaasValidationResult) {
     this.DaasValidated.emit(event);
   }
 }

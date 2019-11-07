@@ -180,7 +180,7 @@ export class DaasSettings {
     BlobAccount: string;
 }
 
-export class StorageAccountValidationResult {
+export class DaasValidationResult {
     Validated: boolean = false;
     BlobSasUri: string = "";
 }

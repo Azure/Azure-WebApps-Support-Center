@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { SiteDaasInfo } from '../../models/solution-metadata';
-import { Session, Diagnoser, Report, DiagnoserDefinition, Log, StorageAccountValidationResult } from '../../models/daas';
+import { Session, Diagnoser, Report, DiagnoserDefinition, Log, DaasValidationResult } from '../../models/daas';
 import { Subscription, Observable, interval } from 'rxjs';
 import { StepWizardSingleStep } from '../../models/step-wizard-single-step';
 import { SiteService } from '../../services/site.service';
@@ -54,7 +54,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     retrievingInstancesFailed: boolean = false;
     instancesChanged: boolean = false;
 
-    validationResult: StorageAccountValidationResult = new StorageAccountValidationResult();
+    validationResult: DaasValidationResult = new DaasValidationResult();
     cancellingSession: boolean = false;
     collectionMode: number = 0;
     showInstanceWarning: boolean = false;
@@ -63,7 +63,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
     }
 
-    onDaasValidated(validation: StorageAccountValidationResult) {
+    onDaasValidated(validation: DaasValidationResult) {
         this.validationResult = validation;
         if (validation.Validated) {
             if (this.diagnoserNameLookup === '') {
