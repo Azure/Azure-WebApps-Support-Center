@@ -103,7 +103,7 @@ export const DiagnosticToolsRoutes: Route[] = [
         path: 'mitigate',
         component: AutohealingComponent,
         data: {
-            navigationTitle: 'Mitigate',
+            navigationTitle: 'Auto-Heal',
             detectorComponent: AutohealingDetectorComponent
         }
     },

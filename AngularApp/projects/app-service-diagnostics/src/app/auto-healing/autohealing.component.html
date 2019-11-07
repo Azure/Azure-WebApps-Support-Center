@@ -1,6 +1,6 @@
 <div class="container" style="margin-bottom: 15px">
-  <div class="header1">Mitigate</div>
-  <div style="font-size:13px">Mitigation provides you with an easy way to take an action when your app is having an unexpected behavior. The triggers
+  <div class="header1">Auto-Heal</div>
+  <div style="font-size:13px">Auto-Heal provides you with an easy way to take an action when your app is having an unexpected behavior. The triggers
     and actions allow you to define various conditions based on request count, slow requests, memory limit on which you can
     take specific actions like restarting the process, logging an event, or starting another executable. Please note that
     these mitigations should only be considered a temporary workaround until you find the real cause for the issue causing
@@ -10,15 +10,15 @@
   <div style="margin-top:15px">
     <button type="button" class="btn btn-sm topmenu-button" [ngClass]="{'btn-primary':selectedTab === 'autoHealing'}"
       (click)="selectedTab = 'autoHealing'" [attr.aria-selected]="selectedTab === 'autoHealing'">
-      Configure Mitigation Rules
+      Custom Auto-Heal Rules
     </button>
     <button type="button" class="btn btn-sm topmenu-button" [ngClass]="{'btn-primary':selectedTab === 'proactiveAutoHealing'}"
       (click)="selectedTab = 'proactiveAutoHealing'" [attr.aria-selected]="selectedTab === 'proactiveAutoHealing'">
-      ProActive Auto-Healing
+      Proactive Auto-Heal
     </button>
     <button type="button" class="btn btn-sm topmenu-button" [ngClass]="{'btn-primary':selectedTab === 'autoHealingHistory'}"
       (click)="selectedTab = 'autoHealingHistory'" [attr.aria-selected]="selectedTab === 'autoHealingHistory'">
-      View Auto-Healing History
+      History
     </button>
   </div>
 
@@ -36,7 +36,7 @@
 
       <div *ngIf="!retrievingAutohealSettings && !errorMessage">
         <div style="margin-top: 15px;">
-          <toggle-button ToggleText="Auto-Healing Enabled" [selected]="autohealingSettings.autoHealEnabled"
+          <toggle-button ToggleText="Custom Auto-Heal Rules Enabled" [selected]="autohealingSettings.autoHealEnabled"
             (selectedChange)="autohealingSettings.autoHealEnabled = $event; checkForChanges()"></toggle-button>
         </div>
 
