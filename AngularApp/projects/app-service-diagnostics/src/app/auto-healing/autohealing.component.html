@@ -135,7 +135,7 @@
       <div *ngIf="!retrievingAutohealSettings  && !errorMessage" class="saveSection autohealtile-content">
         <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="saveChanges()">Save</button>
         <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="reset()">Cancel</button>
-        <div *ngIf="savingAutohealSettings" class="inline">
+        <div *ngIf="savingAutohealSettings" class="inline ml-3">
           <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
           Saving AutoHeal settings...
         </div>

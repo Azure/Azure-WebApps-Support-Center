@@ -15,7 +15,7 @@ export class DaasService {
 
     public currentSite: SiteDaasInfo;
 
-    private BlobContainerName:string = "memorydumps"; //CAUTION :- should always be lowercase
+    private BlobContainerName: string = "memorydumps"; //CAUTION :- should always be lowercase
 
     constructor(private _armClient: ArmService, private _authService: AuthService, private _http: Http, private _uriElementsService: UriElementsService) {
     }
@@ -25,7 +25,7 @@ export class DaasService {
         return <Observable<Session[]>>(this._armClient.getResourceWithoutEnvelope<Session[]>(resourceUri, null, true));
     }
 
-    submitDaasSession(site: SiteDaasInfo, diagnoser: string, Instances: string[], collectLogsOnly:boolean, blobSasUri:string): Observable<string> {
+    submitDaasSession(site: SiteDaasInfo, diagnoser: string, Instances: string[], collectLogsOnly: boolean, blobSasUri: string): Observable<string> {
 
         const session = new Session();
         session.CollectLogsOnly = collectLogsOnly;
@@ -137,7 +137,7 @@ export class DaasService {
         return <Observable<string>>(this._armClient.deleteResource(resourceUri, null, true));
     }
 
-    setBlobSasUri(site: SiteDaasInfo, blobAccount:string, blobKey:string): Observable<boolean>{
+    setBlobSasUri(site: SiteDaasInfo, blobAccount: string, blobKey: string): Observable<boolean> {
         const resourceUri: string = this._uriElementsService.getBlobSasUriUrl(site);
         const settings = new DaasSettings();
         settings.BlobSasUri = "";
@@ -148,7 +148,7 @@ export class DaasService {
         return <Observable<boolean>>(this._armClient.postResource(resourceUri, settings, null, true));
     }
 
-    getBlobSasUri(site: SiteDaasInfo) : Observable<DaasSettings> {
+    getBlobSasUri(site: SiteDaasInfo): Observable<DaasSettings> {
         const resourceUri: string = this._uriElementsService.getBlobSasUriUrl(site);
         return <Observable<DaasSettings>>(this._armClient.getResourceWithoutEnvelope<DaasSettings>(resourceUri, null, true));
     }

@@ -34,6 +34,7 @@ export class ConfigureStorageAccountComponent implements OnInit {
   generatingSasUri: boolean = false;
   editMode: boolean = false;
   validationResult: StorageAccountValidationResult = new StorageAccountValidationResult();
+  error: any;
 
   ngOnInit() {
     this._storageService.getStorageAccounts(this.siteToBeDiagnosed.subscriptionId).subscribe(resp => {
@@ -47,8 +48,16 @@ export class ConfigureStorageAccountComponent implements OnInit {
           this.validationResult.Validated = true;
           this.StorageAccountValidated.emit(this.validationResult);
         }
+      },
+        error => {
+          this.checkingBlobSasUriConfigured = false;
+          this.error = error;
+        });
+    },
+      error => {
+        this.checkingBlobSasUriConfigured = false;
+        this.error = error;
       });
-    });
   }
 
   setDefaultValues() {
@@ -80,12 +89,17 @@ export class ConfigureStorageAccountComponent implements OnInit {
       this.setBlobSasUri(this.chosenStorageAccount.id, this.chosenStorageAccount.name);
     } else {
       this.creatingStorageAccount = true;
-      this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location).subscribe(storageAccountId => {
-        this.creatingStorageAccount = false;
-        if (storageAccountId !== "Invalid Response") {
-          this.setBlobSasUri(storageAccountId, this.newStorageAccountName);
-        }
-      });
+      this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
+        .subscribe(storageAccountId => {
+          this.creatingStorageAccount = false;
+          if (storageAccountId !== "Invalid Response") {
+            this.setBlobSasUri(storageAccountId, this.newStorageAccountName);
+          }
+        },
+          error => {
+            this.creatingStorageAccount = false;
+            this.error = error;
+          });
     }
 
   }
@@ -105,13 +119,26 @@ export class ConfigureStorageAccountComponent implements OnInit {
                 this.editMode = false;
                 this.StorageAccountValidated.emit(this.validationResult);
               }
-            });
+            },
+              error => {
+                this.generatingSasUri = false;
+                this.error = error;
+              });
           } else {
-            //handle error
+            this.generatingSasUri = false;
+            this.error = "Failed to set BlobSasUri for the current app."
           }
-        })
+        },
+          error => {
+            this.generatingSasUri = false;
+            this.error = error;
+          });
       }
-    });
+    },
+      error => {
+        this.generatingSasUri = false;
+        this.error = error;
+      });
   }
 
   getBlobSasUriShort(): string {

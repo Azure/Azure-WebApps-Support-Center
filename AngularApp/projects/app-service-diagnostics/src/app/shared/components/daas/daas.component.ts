@@ -54,11 +54,11 @@ export class DaasComponent implements OnInit, OnDestroy {
     retrievingInstancesFailed: boolean = false;
     instancesChanged: boolean = false;
 
-    validationResult:StorageAccountValidationResult = new StorageAccountValidationResult();
+    validationResult: StorageAccountValidationResult = new StorageAccountValidationResult();
     cancellingSession: boolean = false;
     collectionMode: number = 0;
     showInstanceWarning: boolean = false;
-    sessionHasBlobSasUri:boolean = false;
+    sessionHasBlobSasUri: boolean = false;
 
     constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
     }
@@ -317,28 +317,24 @@ export class DaasComponent implements OnInit, OnDestroy {
                     return false;
                 }
 
-                this._daasService.getBlobSasUri(this.siteToBeDiagnosed).subscribe(settingsResponse => {
-                    let blobSasUri = settingsResponse.BlobSasUri;
-                    this.sessionHasBlobSasUri = blobSasUri.length > 0;
-                    this.Reports = [];
-                    this.Logs = [];
-                    this.sessionInProgress = true;
-                    this.sessionStatus = 1;
-                    this.updateInstanceInformation();
+                this.sessionHasBlobSasUri = this.validationResult.BlobSasUri.length > 0;
+                this.Reports = [];
+                this.Logs = [];
+                this.sessionInProgress = true;
+                this.sessionStatus = 1;
+                this.updateInstanceInformation();
 
-                    const submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.diagnoserName, this.instancesToDiagnose, this.collectionMode === 1, blobSasUri)
-                        .subscribe(result => {
-                            this.sessionId = result;
-                            this.subscription = interval(10000).subscribe(res => {
-                                this.pollRunningSession(this.sessionId);
-                            });
-                        },
-                            error => {
-                                this.error = error;
-                                this.sessionInProgress = false;
-                            });
-                });
-
+                const submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.diagnoserName, this.instancesToDiagnose, this.collectionMode === 1, this.validationResult.BlobSasUri)
+                    .subscribe(result => {
+                        this.sessionId = result;
+                        this.subscription = interval(10000).subscribe(res => {
+                            this.pollRunningSession(this.sessionId);
+                        });
+                    },
+                        error => {
+                            this.error = error;
+                            this.sessionInProgress = false;
+                        });
             },
                 error => {
                     this.error = error;

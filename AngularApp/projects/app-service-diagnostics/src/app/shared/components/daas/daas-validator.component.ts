@@ -17,7 +17,7 @@ export class DaasValidatorComponent implements OnInit {
   @Input() siteToBeDiagnosed: SiteDaasInfo;
   @Input() diagnoserName: string;
   @Output() DaasValidated: EventEmitter<StorageAccountValidationResult> = new EventEmitter<StorageAccountValidationResult>();
-  @Input() sessionInProgress:boolean;
+  @Input() sessionInProgress: boolean;
 
   supportedTier: boolean = false;
   checkingSkuSucceeded: boolean = false;
@@ -30,7 +30,8 @@ export class DaasValidatorComponent implements OnInit {
   error: string = '';
   storageAccountNeeded: boolean = false;
   diagnosersRequiringStorageAccount: string[] = ['Memory Dump'];
-  validationResult:StorageAccountValidationResult = new StorageAccountValidationResult();
+  validationResult: StorageAccountValidationResult = new StorageAccountValidationResult();
+  diagnosers: DiagnoserDefinition[];
 
   constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService) {
   }
@@ -65,7 +66,7 @@ export class DaasValidatorComponent implements OnInit {
       this.checkingSupportedTier = false;
       const serverFarm = results[0];
       this.alwaysOnEnabled = results[1];
-      const diagnosers: DiagnoserDefinition[] = results[2];
+      this.diagnosers = results[2];
 
       if (serverFarm != null) {
         this.checkingSkuSucceeded = true;
@@ -85,13 +86,8 @@ export class DaasValidatorComponent implements OnInit {
       }
 
       if (this.error === '') {
-        const thisDiagnoser = diagnosers.find(x => x.Name === this.diagnoserName);
-        if (thisDiagnoser) {
-          if (thisDiagnoser.Warnings.length > 0) {
-            this.diagnoserWarning = thisDiagnoser.Warnings.join(',');
-            this.foundDiagnoserWarnings = true;
-            return;
-          }
+        if (this.checkDiagnoserWarnings()) {
+          return;
         }
         if (!this.foundDiagnoserWarnings) {
           this.checkDaasWebjobState();
@@ -100,12 +96,29 @@ export class DaasValidatorComponent implements OnInit {
     });
   }
 
+  checkDiagnoserWarnings(): boolean {
+    const thisDiagnoser = this.diagnosers.find(x => x.Name === this.diagnoserName);
+    if (thisDiagnoser) {
+      if (thisDiagnoser.Warnings.length > 0) {
+        this.diagnoserWarning = thisDiagnoser.Warnings.join(',');
+        this.foundDiagnoserWarnings = true;
+      } else {
+        this.foundDiagnoserWarnings = false;
+      }
+    }
+    return this.foundDiagnoserWarnings;
+  }
   ngOnInit(): void {
     this.validateDaasSettings();
   }
 
   checkStorageRequirementForDiagnoser(): void {
     this.storageAccountNeeded = this.diagnosersRequiringStorageAccount.findIndex(x => x === this.diagnoserName) >= 0;
+    if (this.checkDiagnoserWarnings()) {
+      this.validationResult.Validated = false;
+      this.DaasValidated.emit(this.validationResult);
+      return;
+    }
     if (!this.storageAccountNeeded) {
       this.validationResult.Validated = true;
       this.DaasValidated.emit(this.validationResult);

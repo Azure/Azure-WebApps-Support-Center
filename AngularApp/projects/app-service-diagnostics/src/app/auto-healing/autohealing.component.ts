@@ -43,12 +43,7 @@ export class AutohealingComponent implements OnInit {
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, private _logger: AvailabilityLoggingService, protected _route: ActivatedRoute) {
   }
 
-
-
-
   ngOnInit() {
-
-
     this._siteService.currentSiteMetaData.subscribe(siteInfo => {
       if (siteInfo) {
         this.siteToBeDiagnosed = siteInfo;
