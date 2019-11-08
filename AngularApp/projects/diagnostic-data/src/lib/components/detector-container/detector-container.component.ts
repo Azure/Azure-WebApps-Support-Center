@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DiagnosticService } from '../../services/diagnostic.service';
 import { DetectorControlService } from '../../services/detector-control.service';
 import { ActivatedRoute } from '@angular/router';
@@ -26,7 +26,7 @@ export class DetectorContainerComponent implements OnInit {
 
   @Input() analysisMode:boolean = false;
   @Input() isAnalysisView:boolean = false;
-
+  @Output() onUpdateInsightCount:EventEmitter<number> = new EventEmitter<number>();
   constructor(private _route: ActivatedRoute, private _diagnosticService: DiagnosticService,
     public detectorControlService: DetectorControlService) { }
 
@@ -57,6 +57,7 @@ export class DetectorContainerComponent implements OnInit {
       .subscribe((response: DetectorResponse) => {
         this.shouldHideTimePicker(response);
         this.detectorResponse = response;
+        this.countInsight(response);
       }, (error: any) => {
         this.error = error;
       });
@@ -70,4 +71,16 @@ export class DetectorContainerComponent implements OnInit {
     }
   }
 
+  countInsight(detectorResponse:DetectorResponse):number {
+    let count = 0;
+    if (detectorResponse !== null) {
+      detectorResponse.dataset.forEach( diagData => {
+        if (diagData.renderingProperties.type === RenderingType.Insights) {
+          count++;
+        }
+      })
+    }
+    this.onUpdateInsightCount.emit(count);
+    return count;
+  }
 }

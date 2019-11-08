@@ -3,7 +3,8 @@
     <div style="margin-bottom: 20px; display: flex;justify-content: space-around;">
       <summary-card *ngFor="let summary of summaries" [summary]="summary"></summary-card>
     </div>
-    <div class="panel-heading" style="padding:0;position: relative;display: flex; justify-content: space-between; font-size: 15px;">
+    <div class="panel-heading"
+      style="padding:0;position: relative;display: flex; justify-content: space-between; font-size: 15px;">
       <!-- <ul class="nav nav-tabs"> -->
       <!-- <li role="presentation" class="report-tab" *ngFor="let item of healthCheckpoints; let i = index"
           [ngClass]="{'active': i === selectedCategoryIndex}" tabindex="0" (keyup.enter)="setCategory(i)">
@@ -18,10 +19,10 @@
       <span>Chart Header</span>
       <span (click)="showChoiceGroup = !showChoiceGroup">
         <span style="margin-right: 5px;">Label: All</span>
-        <fab-icon iconName="Filter">
-        </fab-icon>
+        <fab-icon iconName="Filter" style="color: #0078D7;"></fab-icon>
       </span>
-      <fab-choice-group *ngIf="showChoiceGroup" style="position: absolute; 
+      <fab-choice-group *ngIf="showChoiceGroup" 
+      style="position: absolute; 
               top: 20px; 
               right: 0px ; 
               background: #FFFFFF; 
@@ -31,6 +32,13 @@
         defaultSelectedKey="0">
       </fab-choice-group>
     </div>
+    <div *ngIf="showInsightNumber" style="height: 32px;">
+      <p style="background-color: #f0f6ff;font-size: 13px;margin:13px 0px">
+        <span class="fa fa-info-circle" style="color: #015CDA;margin: 0px 5px;"></span>
+        <span>You have {{ insightNumber }} new {{ insightNumber > 1 ? 'insights' : 'insight'}}</span>
+        <i class="fa fa-times pull-right" (click)="showInsightNumber = false" ></i>
+      </p>
+    </div>
     <div class="panel-body" style="background-color:rgba(226, 245, 255, 0.15)">
       <div *ngIf="healthCheckpoints[selectedCategoryIndex].loadingStatus === 0" class="loading-container">
         <status-icon [size]="30" [loading]="LoadingStatus.Loading"></status-icon>
@@ -38,7 +46,8 @@
       <div class="tab-content" *ngIf="healthCheckpoints[selectedCategoryIndex].loadingStatus !== 0">
         <div class="row">
           <detector-container [detector]="healthCheckpoints[selectedCategoryIndex].detector"
-            (onDetectorLoaded)="updateDetectorStatus(i, $event)" analysisMode="true">
+            (onDetectorLoaded)="updateDetectorStatus(i, $event)" analysisMode="true"
+            (onUpdateInsightCount)="updateInsightCount($event)">
           </detector-container>
         </div>
         <div class="row">

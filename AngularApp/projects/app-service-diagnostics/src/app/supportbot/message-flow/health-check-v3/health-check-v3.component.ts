@@ -37,6 +37,8 @@ export class HealthCheckV3Component implements OnInit, AfterViewInit, IChatMessa
   options:IChoiceGroupOption[] = [];
   showChoiceGroup: boolean = false;
   summaries: Summary[] = [];
+  showInsightNumber:boolean;
+  insightNumber:number = 0;
   constructor(private _route: ActivatedRoute, private _diagnosticService: DiagnosticService, public detectorControlService: DetectorControlService, private _logger: BotLoggingService, private _siteService: SiteService,
     private _router: Router) {
     this.showLoadingMessage = true;
@@ -183,5 +185,10 @@ export class HealthCheckV3Component implements OnInit, AfterViewInit, IChatMessa
   setCategoryIndex(event:any) {
     const categoryIndex = event.option.key;
     this.selectedCategoryIndex = categoryIndex;
+  }
+
+  updateInsightCount(count:number) {
+    this.showInsightNumber = count > 0;
+    this.insightNumber = count;
   }
 }
