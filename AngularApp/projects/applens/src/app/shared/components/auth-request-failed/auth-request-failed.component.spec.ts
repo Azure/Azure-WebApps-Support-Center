@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AuthRequestFailedComponent } from './auth-request-failed.component';
 
-describe('UnauthorizedComponent', () => {
+describe('AuthRequestFailedComponent', () => {
   let component: AuthRequestFailedComponent;
   let fixture: ComponentFixture<AuthRequestFailedComponent>;
 
