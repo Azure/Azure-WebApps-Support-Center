@@ -10,13 +10,12 @@ import { UriElementsService } from './urielements.service';
 import { Session, DiagnoserDefinition, DatabaseTestConnectionResult, MonitoringSession, MonitoringLogsPerInstance, ActiveMonitoringSession, DaasAppInfo, DaasSettings } from '../models/daas';
 import { SiteInfoMetaData } from '../models/site';
 
+const BlobContainerName: string = "memorydumps";
+
 @Injectable()
 export class DaasService {
 
     public currentSite: SiteDaasInfo;
-
-    private BlobContainerName: string = "memorydumps"; //CAUTION :- should always be lowercase
-
     constructor(private _armClient: ArmService, private _authService: AuthService, private _http: Http, private _uriElementsService: UriElementsService) {
     }
 
@@ -141,7 +140,7 @@ export class DaasService {
         const resourceUri: string = this._uriElementsService.getBlobSasUriUrl(site);
         const settings = new DaasSettings();
         settings.BlobSasUri = "";
-        settings.BlobContainer = this.BlobContainerName;
+        settings.BlobContainer = BlobContainerName.toLowerCase();
         settings.BlobKey = blobKey;
         settings.BlobAccount = blobAccount;
 

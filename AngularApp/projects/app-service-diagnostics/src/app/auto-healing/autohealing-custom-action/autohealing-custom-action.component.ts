@@ -141,6 +141,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges, Afte
   }
 
   resetCustomAction() {
+    this.customActionType = 'Custom';
     if (this.customAction == null || this.customAction.exe.toLowerCase() === daasConsolePath.toLowerCase()) {
       this.updatedCustomAction.exe = '';
       this.updatedCustomAction.parameters = '';
