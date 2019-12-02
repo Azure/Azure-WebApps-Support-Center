@@ -157,3 +157,16 @@ body {
   min-width: 70vw !important;
   min-height: 70vh !important;
 }
+
+/* highchart container configuration */
+.highcharts-container {
+    overflow: visible !important;
+  }
+
+.highcharts-container svg {
+    overflow: visible !important;
+}
+
+highcharts-chart {
+    overflow: visible!important;
+}

@@ -155,6 +155,26 @@
             "azureCommImpactedServicesList": "BatchAI",
             "pesId": "",
             "staticSelfHelpContent": ""
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.Logic/integrationServiceEnvironments",
+            "templateFileName": "ISE",
+            "imgSrc": "assets/img/Azure-LogicApps-Logo.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "ISE",
+            "pesId": "",
+            "staticSelfHelpContent": ""
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.Batch/batchAccounts",
+            "templateFileName": "Batch",
+            "imgSrc": "assets/img/Azure-Batch-Logo.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "BatchAccounts",
+            "pesId": "",
+            "staticSelfHelpContent": ""
         }
     ]
 }

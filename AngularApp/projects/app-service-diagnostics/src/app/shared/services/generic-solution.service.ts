@@ -15,7 +15,8 @@ export class GenericSolutionService {
   allowedRoutes = {
     'restart': ['post'],
     'config/web': ['get', 'put', 'patch'],
-    'config/appsettings/list': ['get', 'put']
+    'config/appsettings/list': ['get', 'put'],
+    'config/logs': ['put']
   }
 
   constructor(private armService: ArmService, private portalService: PortalService,

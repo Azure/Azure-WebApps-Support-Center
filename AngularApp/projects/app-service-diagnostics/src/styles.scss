@@ -87,3 +87,16 @@
 .bg-info {
     background-color: #3a9bc7;
 }
+
+/* highchart container configuration */
+.highcharts-container {
+    overflow: visible !important;
+  }
+
+.highcharts-container svg {
+    overflow: visible !important;
+}
+
+highcharts-chart {
+    overflow: visible!important;
+}

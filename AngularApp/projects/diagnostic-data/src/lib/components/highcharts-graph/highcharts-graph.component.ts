@@ -200,7 +200,8 @@ export class HighchartsGraphComponent implements OnInit {
             tooltip: {
                 shared: true,
                 enabled: true,
-                valueDecimals: 2
+                valueDecimals: 2,
+                useHTML: true,
             },
             navigation: {
                 buttonOptions: {

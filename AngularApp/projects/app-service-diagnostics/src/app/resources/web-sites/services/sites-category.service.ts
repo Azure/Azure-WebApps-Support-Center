@@ -41,7 +41,7 @@ export class SitesCategoryService extends CategoryService {
         description: 'Is your app experiencing downtime or slowness? Discover issues that may impact SLA, caused by your app itself or Azure.',
         keywords: ['Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory'],
         color: 'rgb(208, 175, 239)',
-        createFlowForCategory: true,
+        createFlowForCategory: false,
         chatEnabled: false
       }
     },
