@@ -51,11 +51,25 @@
               </div>
             </div>
             <div class="row" style="margin-bottom: 5px; margin-left: 5px">
-              <div class="alert-section alert-danger" *ngIf="showDiagnoserOptionWarning">
-                You have chosen a tool option that does not restart the process. This can cause
-                auto-healing actions to kick in multiple times thus generating a lot of data. It is
-                recommended to choose <strong>CollectKillAnalyze</strong> option to ensure that the process gets
-                restarted after collecting data.
+              <div *ngIf="showDiagnoserOptionWarning">
+                <table class="ml-4 mt-4 table table-bordered" style="width:90%">
+                  <th>
+                    <tr>
+                      <td>
+                        <div style="padding: 10px">
+                          <i class="fa health-icon fa-exclamation-triangle warning-icon-color"></i> Warning
+                        </div>
+                      </td>
+                    </tr>
+                  </th>
+                  <tr>
+                    <td> You have chosen a tool option that does not restart the process. This can cause
+                      auto-healing actions to kick in multiple times thus generating a lot of data. It is
+                      recommended to choose <strong>CollectKillAnalyze</strong> option to ensure that the process gets
+                      restarted after collecting data.</td>
+                  </tr>
+                </table>
+
               </div>
             </div>
           </div>
@@ -98,7 +112,8 @@
         met in the process
       </div>
       <div style="margin-top:10px;margin-bottom: 10px">
-        <button type="button" class="btn btn-primary btn-sm" [disabled]="updatedCustomAction.exe.length === 0" (click)="saveCustomAction()">Save</button>
+        <button type="button" class="btn btn-primary btn-sm" [disabled]="updatedCustomAction.exe.length === 0"
+          (click)="saveCustomAction()">Save</button>
       </div>
 
     </div>
