@@ -63,7 +63,7 @@ export class ConfigureStorageAccountComponent implements OnInit {
   setDefaultValues() {
     this.chosenStorageAccount = this.storageAccounts[0];
     this.saveEnabled = true;
-    this.newStorageAccountName = this._siteService.currentSiteStatic.name.substring(0, 6) + this.randomHash();
+    this.newStorageAccountName = (this._siteService.currentSiteStatic.name.substring(0, 6) + this.randomHash()).toLowerCase();
   }
 
   randomHash(): string {

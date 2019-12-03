@@ -38,7 +38,7 @@ export class StorageService {
   }
 
   createStorageAccount(subscriptionId: string, resourceGroupName: string, accountName: string, location: string): Observable<any> {
-    let url = this._uriElementsService.createStorageAccountsUrl(subscriptionId, resourceGroupName, accountName);
+    let url = this._uriElementsService.createStorageAccountsUrl(subscriptionId, resourceGroupName, accountName.toLowerCase());
     let requestBody = new NewStorageAccount();
     requestBody.location = location;
     return this._armClient.putResourceWithoutEnvelope<any, NewStorageAccount>(url, requestBody, this.apiVersion)
