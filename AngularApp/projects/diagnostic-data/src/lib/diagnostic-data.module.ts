@@ -79,6 +79,7 @@ import { DetectorListAnalysisComponent } from './components/detector-list-analys
 import { AppDependenciesComponent } from './components/app-dependencies/app-dependencies.component';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { HighchartsGraphComponent } from './components/highcharts-graph/highcharts-graph.component';
+import {DetectorSearchComponent} from './components/detector-search/detector-search.component';
 
 @NgModule({
   imports: [
@@ -96,7 +97,7 @@ import { HighchartsGraphComponent } from './components/highcharts-graph/highchar
   ],
   declarations: [
     Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent,
-    DataRenderBaseComponent, DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent,
+    DataRenderBaseComponent, DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DetectorSearchComponent,
     DataSummaryComponent, EmailComponent, InsightsComponent, LoaderViewComponent, DynamicInsightComponent,
     MarkdownViewComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent,
     DropdownComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe,
@@ -113,7 +114,7 @@ import { HighchartsGraphComponent } from './components/highcharts-graph/highchar
     HighchartsGraphComponent
   ],
   exports: [
-    FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent,
+    FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DetectorSearchComponent,
     DataSummaryComponent, LoaderViewComponent, StatusIconComponent, DetectorControlComponent,
     DetectorContainerComponent, InternalPipe, CommAlertComponent, GuageControlComponent, SolutionComponent,
     FormComponent, VerticalDisplayListComponent, VerticalDisplayListItemComponent, SolutionTypeTagComponent, DataContainerComponent,

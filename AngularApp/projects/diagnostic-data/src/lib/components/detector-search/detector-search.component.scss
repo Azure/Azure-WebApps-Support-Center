@@ -1,0 +1,47 @@
+.list-wrapper {
+    position: relative;
+    //margin-left: 30px;
+}
+
+.list-item-wrapper {
+    margin-top: 10px;
+    position: relative;
+}
+
+.list-item {
+    vertical-align: middle;
+    //margin-left: 50px;
+}
+
+.list-title {
+    font-weight: 700;
+}
+
+.list-text {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.success-msg{
+    background: #f9f9f9;
+    border: 1px solid #ebebeb;
+    width: 98%;
+    padding:10px;
+    margin-top:10px;
+}
+
+.detector-list {
+    background: #f9f9f9;
+    border: 1px solid #ebebeb;
+    width: 98%;
+}
+
+.analysis-content
+{
+    width:98%
+}
+
+.search-input-group {
+    width:90%;
+    height: 30px;
+}

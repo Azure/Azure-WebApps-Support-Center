@@ -26,6 +26,7 @@ import { CompilationProperties}  from '../../models/compilation-properties';
 import { ChangeAnalysisOnboardingComponent } from '../changeanalysis-onboarding/changeanalysis-onboarding.component';
 import { ChangesetsViewComponent } from '../changesets-view/changesets-view.component';
 import {AppDependenciesComponent} from '../app-dependencies/app-dependencies.component';
+import { DetectorSearchComponent } from '../detector-search/detector-search.component';
 @Component({
   selector: 'dynamic-data',
   templateUrl: './dynamic-data.component.html',
@@ -34,7 +35,7 @@ import {AppDependenciesComponent} from '../app-dependencies/app-dependencies.com
     TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent,
     InsightsComponent, TimeSeriesInstanceGraphComponent, DynamicInsightComponent, MarkdownViewComponent,
     DetectorListComponent, DropdownComponent, CardSelectionComponent, SolutionComponent, GuageControlComponent, FormComponent,
-    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent
+    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent, DetectorSearchComponent
   ]
 })
 export class DynamicDataComponent implements OnInit {
@@ -61,7 +62,7 @@ export class DynamicDataComponent implements OnInit {
     this.dataBehaviorSubject.subscribe((diagnosticData: DiagnosticData) => {
       const component = this._findInputComponent((<Rendering>diagnosticData.renderingProperties).type);
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
-
+      
       const viewContainerRef = this.dynamicDataContainer;
       viewContainerRef.clear();
 
@@ -117,6 +118,8 @@ export class DynamicDataComponent implements OnInit {
         return AppInsightsMarkdownComponent;
       case RenderingType.DependencyGraph:
         return AppDependenciesComponent;
+      case RenderingType.SearchComponent:
+        return DetectorSearchComponent;
       default:
         return null;
     }

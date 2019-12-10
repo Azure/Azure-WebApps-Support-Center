@@ -102,7 +102,8 @@ export enum RenderingType {
     ChangeAnalysisOnboarding,
     ChangesView,
     ApplicationInsightsView,
-    DependencyGraph
+    DependencyGraph,
+    SearchComponent=23
 }
 
 export enum TimeSeriesType {
