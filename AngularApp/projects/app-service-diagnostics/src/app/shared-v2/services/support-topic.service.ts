@@ -61,7 +61,7 @@ export class SupportTopicService {
                 }
               }
             }    
-            return {path: detectorPath, queryParams: {}};
+            return {path: detectorPath, queryParams: {"searchTerm": searchTerm}};
           }));
       }
     }));

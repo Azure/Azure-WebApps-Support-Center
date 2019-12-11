@@ -1,3 +1,6 @@
+<div style="display:block;margin-bottom:10px;">
+    <span class="span-h1">Use our deep search diagnostics</span>
+</div>
 <div class="input-group input-group-sm search-input-group" role="search" *ngIf="detectorId == ''">
   <input aria-controls="search-results" class="form-control" [(ngModel)]="searchTerm" tabindex="0" type="search" placeholder="Describe your problem here" (keyup.enter)="triggerSearch()">
   <div class="input-group-btn" id="clear-search">
@@ -46,7 +49,7 @@
                       <table class="table detector-list">
                           <tbody>
                               <tr *ngFor="let viewModel of issueDetectedViewModels">
-                                  <td>
+                                  <td class="col-sm-1">
                                       <div style="white-space: nowrap">
                                           <div style="display: inline-block">
                                               <status-icon [loading]="viewModel.model.loadingStatus"
@@ -55,7 +58,7 @@
                                           </div>
                                       </div>
                                   </td>
-                                  <td>
+                                  <td class="col-sm-11">
                                       <div style="margin-top: 5px;white-space: nowrap;">
                                           <a tabindex="0" role="button"
                                               attr.aria-label="More info for failed check - {{ viewModel.model.title }}"
@@ -96,6 +99,38 @@
                           <span style="margin-left:5px">Loading...</span>
                       </div>
                   </div>
+              </div>
+          </div>
+      </div>
+      <div class="list-item-wrapper"  *ngIf="successfulViewModels.length > 0">
+          <div class="list-item">
+              <div class="list-text">
+                  <table class="table detector-list">
+                      <tbody>
+                          <tr *ngFor="let viewModel of successfulViewModels">
+                              <td class="col-sm-1">
+                                  <div style="white-space: nowrap">
+                                      <div style="display: inline-block">
+                                          <status-icon [loading]="viewModel.model.loadingStatus"
+                                              [status]="viewModel.model.status" [size]="20">
+                                          </status-icon>
+                                      </div>
+                                  </div>
+                              </td>
+                              <td class="col-sm-11">
+                                  <div style="margin-top: 5px;white-space: nowrap;">
+                                      <a tabindex="0" role="button"
+                                          attr.aria-label="More info for successful check - {{ viewModel.model.title }}"
+                                          (keyup.enter)="selectDetector(viewModel)"
+                                          (click)="selectDetector(viewModel)">{{ viewModel.insightTitle }}
+                                          <i class="fa fa-arrow-circle-o-right"
+                                              style="margin-left:5px; font-size: 15px"></i>
+                                      </a>
+                                  </div>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
               </div>
           </div>
       </div>

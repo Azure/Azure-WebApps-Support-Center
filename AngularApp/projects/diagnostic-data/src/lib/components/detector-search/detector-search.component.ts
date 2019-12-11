@@ -70,6 +70,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
 
   @Input()
   withinDiagnoseAndSolve: boolean = false;
+  @Input() detector: string = '';
   
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private _diagnosticService: DiagnosticService, public telemetryService: TelemetryService,
     private detectorControlService: DetectorControlService, private _activatedRoute: ActivatedRoute, private _router: Router) {
@@ -107,7 +108,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
   }
 
   triggerSearch(){
-    if (!this.searchTerm || this.searchTerm.length==0){ return;}
+    if (!this.searchTerm || this.searchTerm.length<=1){ return;}
     this.resetGlobals();
     this.searchId = uuid();
     let searchTask = this._diagnosticService.getDetectorsSearch(this.searchTerm).pipe(map((res) => res), catchError(e => of([])));
@@ -121,16 +122,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
       var detectorList = results[1];
       if (detectorList){
         searchResults.forEach(result => {
-          if (result.type === DetectorType.Detector){
-            this.insertInDetectorArray({name: result.name, id: result.id, score: result.score});
-          }
-          else if (result.type === DetectorType.Analysis){
-            var childList = this.getChildrenOfAnalysis(result.id, detectorList);
-            if (childList && childList.length>0){
-              childList.forEach((child: DetectorMetaData) => {
-                this.insertInDetectorArray({name: child.name, id: child.id, score: result.score});
-              });
-            }
+          if ((result.id !== this.detector) && (result.type === DetectorType.Detector)){
             this.insertInDetectorArray({name: result.name, id: result.id, score: result.score});
           }
         });
