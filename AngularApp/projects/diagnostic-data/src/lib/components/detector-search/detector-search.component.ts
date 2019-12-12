@@ -6,13 +6,13 @@ import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import {DiagnosticService} from '../../services/diagnostic.service';
 import { forkJoin as observableForkJoin, Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { DetectorMetaData, DetectorResponse, DiagnosticData, DetectorType, HealthStatus } from '../../models/detector';
+import { DetectorMetaData, DetectorResponse, DiagnosticData, DetectorType, HealthStatus, RenderingType, DetectorListRendering } from '../../models/detector';
 import { Moment } from 'moment';
 import { v4 as uuid } from 'uuid';
 import { LoadingStatus } from '../../models/loading';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 import { Solution } from '../solution/solution';
 import { InsightUtils, Insight } from 'diagnostic-data';
 import { StatusStyles } from '../../models/styles';
@@ -109,20 +109,32 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
 
   triggerSearch(){
     if (!this.searchTerm || this.searchTerm.length<=1){ return;}
+    this.firstLoad = false;
+    const queryParams: Params = { searchTerm: this.searchTerm };
+    this._router.navigate(
+      [], 
+      {
+        relativeTo: this._activatedRoute,
+        queryParams: queryParams, 
+        queryParamsHandling: 'merge'
+      }
+    );
     this.resetGlobals();
     this.searchId = uuid();
     let searchTask = this._diagnosticService.getDetectorsSearch(this.searchTerm).pipe(map((res) => res), catchError(e => of([])));
     let detectorsTask = this._diagnosticService.getDetectors().pipe(map((res)=> res), catchError(e => of([])));
+    let childrenTask = this.getChildrenOfParentDetector(this.detector).pipe(map((res) => res), catchError(e => of([])));
     this.showPreLoader = true;
-    observableForkJoin([searchTask, detectorsTask]).subscribe(results => {
+    observableForkJoin([searchTask, detectorsTask, childrenTask]).subscribe(results => {
       this.showPreLoader = false;
       this.showPreLoadingError = false;
       var searchResults: DetectorMetaData[] = results[0];
       this.logEvent(TelemetryEventNames.SearchQueryResults, { searchId: this.searchId, query: this.searchTerm, results: JSON.stringify(searchResults.map((det: DetectorMetaData) => new Object({ id: det.id, score: det.score}))), ts: Math.floor((new Date()).getTime() / 1000).toString() });
       var detectorList = results[1];
+      var childrenOfParent = results[2];
       if (detectorList){
         searchResults.forEach(result => {
-          if ((result.id !== this.detector) && (result.type === DetectorType.Detector)){
+          if ((result.id !== this.detector) && (childrenOfParent.findIndex((x: string) => x.toLowerCase()==result.id.toLowerCase())<0) && (result.type === DetectorType.Detector)){
             this.insertInDetectorArray({name: result.name, id: result.id, score: result.score});
           }
         });
@@ -194,6 +206,18 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
 
   getChildrenOfAnalysis(analysisId, detectorList){
     return detectorList.filter(element => (element.analysisTypes!=null && element.analysisTypes.length>0 && element.analysisTypes.findIndex(x => x==analysisId)>=0)).map(element => {return {name: element.name, id: element.id};});
+  }
+
+  getChildrenOfParentDetector(parentDetectorId){
+    if (!parentDetectorId){ return Observable.of([]);}
+    return (<Observable<DetectorResponse>>this._diagnosticService.getDetector(parentDetectorId, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString)).pipe(map((response: DetectorResponse) =>{
+      let detectorList = [];
+      response.dataset.forEach((ds: DiagnosticData) => {
+        if (ds.renderingProperties.type === RenderingType.DetectorList)
+        detectorList = (<DetectorListRendering>ds.renderingProperties).detectorIds;
+      });
+      return detectorList;
+    }), catchError(e => of([])));
   }
 
   insertInDetectorArray(detectorItem){

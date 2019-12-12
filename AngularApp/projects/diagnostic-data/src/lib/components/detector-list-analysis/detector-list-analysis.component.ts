@@ -336,6 +336,9 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     // Log all the children detectors
     observableForkJoin(requests).subscribe(childDetectorData => {
       this.childDetectorsEventProperties['ChildDetectorsList'] = JSON.stringify(childDetectorData);
+      if (this.searchId && this.searchId.length>0) {
+        this.childDetectorsEventProperties['SearchId'] = this.searchId;
+      }
       this.logEvent(TelemetryEventNames.ChildDetectorsSummary, this.childDetectorsEventProperties);
     });
 }
