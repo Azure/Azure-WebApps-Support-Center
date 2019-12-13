@@ -186,6 +186,7 @@
                 <i aria-hidden="true" class="fa fa-check"></i>
             </div>
             <div class="list-item">
+                <div [ngClass]="{'remove-padding':withinDiagnoseAndSolve, 'white-line':withinDiagnoseAndSolve, 'gray-line':!withinDiagnoseAndSolve}"></div>
                 <div class="list-title">Successful Checks</div>
                 <div>Tests that succeeded for your app</div>
                 <div class="list-text">
@@ -231,6 +232,9 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div *ngIf="isSearchEmbedded && getPendingDetectorCount() === 0" style="margin-left:30px;">
+        <detector-search [detector]="analysisId"></detector-search>
     </div>
     <div class="list-wrapper" *ngIf="supportDocumentRendered">
         <div class="list-item-wrapper" *ngIf="supportDocumentRendered">

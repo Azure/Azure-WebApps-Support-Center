@@ -86,6 +86,17 @@
     z-index: 0;
 }
 
+.gray-line {
+    background: #F0F0F0;
+    top: 0px;
+    width: 6px;
+    height: 100%;
+    position: absolute;
+    left: 15px;
+    border: 0;
+    z-index: 0;
+}
+
 .list-text {
     margin-top: 10px;
     margin-bottom: 20px;

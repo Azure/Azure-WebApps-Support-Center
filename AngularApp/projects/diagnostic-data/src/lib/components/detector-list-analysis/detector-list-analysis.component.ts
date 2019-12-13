@@ -78,6 +78,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
   showPreLoader: boolean = false;
   preLoadingErrorMessage: string = "Some error occurred while fetching diagnostics."
   showPreLoadingError: boolean = false;
+  isSearchEmbedded: boolean = false;
 
   constructor(private _activatedRoute: ActivatedRoute, private _router: Router,
     private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService,
@@ -197,6 +198,15 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     }
   }
 
+  checkSearchEmbedded(response: DetectorResponse) {
+    response.dataset.forEach((ds: DiagnosticData) => {
+      if (ds.renderingProperties.type === RenderingType.SearchComponent)
+      {
+        this.isSearchEmbedded = true;
+      }
+    });
+  }
+
   refresh() {
     this._activatedRoute.paramMap.subscribe(params => {
       this.analysisId = params.get('analysisId');
@@ -251,6 +261,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
           // Add application insights analysis data
           this._diagnosticService.getDetector(this.analysisId, this._detectorControl.startTimeString, this._detectorControl.endTimeString)
             .subscribe((response: DetectorResponse) => {
+              this.checkSearchEmbedded(response);
               this.getApplicationInsightsData(response);
             });
           
