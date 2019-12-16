@@ -68,7 +68,7 @@ export class HomeComponent implements OnInit {
           searchBarPlaceHolder: 'Search App Service Environment Diagnostics'
         };
         this.searchPlaceHolder = this.homePageText.searchBarPlaceHolder;
-      } 
+      }
       else {
         if(this._resourceService && this._resourceService instanceof WebSitesService && (this._resourceService as WebSitesService).appType === AppType.FunctionApp) {
           this.homePageText = {
@@ -90,7 +90,7 @@ export class HomeComponent implements OnInit {
           };
           this.searchPlaceHolder = this.homePageText.searchBarPlaceHolder;
         }
-      }      
+      }
     }
 
     if (this.isPublicAzure == false && this.isIE_Browser == false){
@@ -128,15 +128,23 @@ export class HomeComponent implements OnInit {
     }
 
     if(this._resourceService.resource.type === 'Microsoft.Web/sites') {
-        // Register Change Analysis Resource Provider.
-        this.armService.postResourceFullResponse(this.providerRegisterUrl, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
-            let eventProps = {
-                url: this.providerRegisterUrl
-                };
-                this.loggingService.logEvent("Change Analysis Resource Provider registered",eventProps);
-            }, (error: any) => {
-                this.logHTTPError(error, 'registerResourceProvider');
-            });
+        let subscriptionUrl = `/subscriptions/${this.subscriptionId}`;
+        this.armService.getResourceFullResponse<any>(subscriptionUrl, true, '2019-06-01').subscribe((response: HttpResponse<{}> ) =>{
+            let subscriptionProperties = response.body['subscriptionPolicies'];
+            if(subscriptionProperties["locationPlacementId"].toLowerCase() !== 'geos_2020-01-01') {
+             // Register Change Analysis Resource Provider.
+             this.armService.postResourceFullResponse(this.providerRegisterUrl, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
+                let eventProps = {
+                    url: this.providerRegisterUrl
+                    };
+                    this.loggingService.logEvent("Change Analysis Resource Provider registered",eventProps);
+                }, (error: any) => {
+                    this.logHTTPError(error, 'registerResourceProvider');
+                });
+            } else {
+                this._categoryService.filterCategoriesForSub();
+            }
+        });
     }
   }
 
