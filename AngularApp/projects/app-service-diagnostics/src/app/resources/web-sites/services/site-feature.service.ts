@@ -15,7 +15,7 @@ import { WebSitesService } from './web-sites.service';
 import { WebSiteFilter } from '../pipes/site-filter.pipe';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
 import {ArmService} from '../../../shared/services/arm.service';
-
+import { SubscriptionPropertiesService} from '../../../shared/services/subscription-properties.service';
 
 @Injectable()
 export class SiteFeatureService extends FeatureService {
@@ -26,7 +26,8 @@ export class SiteFeatureService extends FeatureService {
   public premiumTools: SiteFilteredItem<Feature>[];
   public subscriptionId: string;
   constructor(protected _diagnosticApiService: DiagnosticService, protected _resourceService: WebSitesService, protected _contentService: ContentService, protected _router: Router,
-    protected _authService: AuthService, private _portalActionService: PortalActionService, private _websiteFilter: WebSiteFilter, protected _logger: LoggingV2Service, protected armService:ArmService) {
+    protected _authService: AuthService, private _portalActionService: PortalActionService, private _websiteFilter: WebSiteFilter, protected _logger: LoggingV2Service, protected armService:ArmService,
+    protected subscriptionPropertiesService: SubscriptionPropertiesService) {
 
     super(_diagnosticApiService, _contentService, _router, _authService, _logger);
 
@@ -53,7 +54,7 @@ export class SiteFeatureService extends FeatureService {
   sortFeatures() {
     let featureDisplayOrder = this._featureDisplayOrder;
     let locationPlacementId = '';
-     this.armService.getResourceFullResponse<any>( `/subscriptions/${this.subscriptionId}`, false, '2019-06-01').subscribe(response => {
+    this.subscriptionPropertiesService.getSubscriptionProperties(this.subscriptionId).subscribe(response => {
         locationPlacementId = response.body['subscriptionPolicies']['locationPlacementId'];
      });
 

@@ -71,8 +71,10 @@ export class ArmService {
         this.getSubscriptionLocation(resourceUri.split("subscriptions/")[1].split("/")[0]).subscribe(response => {
             subscriptionLocation = response.body['subscriptionPolicies']['locationPlacementId'];
         });
+        let additionalHeaders = new Map<string, string>();
+        additionalHeaders.set('x-ms-subscription-location-placementid', subscriptionLocation);
         const request = this._http.get<ResponseMessageEnvelope<T>>(url, {
-            headers: this.getHeaders(null, subscriptionLocation)
+            headers: this.getHeaders(null, additionalHeaders)
         }).pipe(
             retry(2),
             catchError(this.handleError)
@@ -282,7 +284,7 @@ export class ArmService {
         return this.getResourceFullResponse<any>(`/subscriptions/${subscriptionId}`, false, '2019-06-01');
     }
 
-    getHeaders(etag?: string, subscriptionLocation?: string): HttpHeaders {
+    getHeaders(etag?: string, additionalHeaders?: Map<string, string>): HttpHeaders {
         let headers = new HttpHeaders();
         headers = headers.set('Content-Type', 'application/json');
         headers = headers.set('Accept', 'application/json');
@@ -292,8 +294,12 @@ export class ArmService {
             headers = headers.set('If-None-Match', etag);
         }
 
-        if(subscriptionLocation) {
-            headers = headers.set('x-ms-subscription-location-placementid', subscriptionLocation);
+        if(additionalHeaders) {
+            additionalHeaders.forEach((headerVal: string, headerKey: string) => {
+                if(headerVal.length > 0 && headerKey.length > 0) {
+                    headers = headers.set(headerKey, headerVal);
+                }
+            });
         }
 
         return headers;
