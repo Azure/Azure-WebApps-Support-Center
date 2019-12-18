@@ -127,24 +127,31 @@ export class HomeComponent implements OnInit {
     if (!this._detectorControlService.startTime) {
       this._detectorControlService.setDefault();
     }
+    let locationPlacementId =  '';
+    this.subscriptionPropertiesService.getSubscriptionProperties(this.subscriptionId).subscribe((response : HttpResponse<{}>) => {
+        let subscriptionProperties = response.body['subscriptionPolicies'];
+        locationPlacementId = subscriptionProperties['locationPlacementId'];
+        let eventProps = {
+            subscriptionId: this.subscriptionId,
+            subscriptionLocationPlacementId: locationPlacementId
+        };
+        this.loggingService.logEvent('SubscriptionProperties', eventProps);
+    });
 
     if(this._resourceService.resource.type === 'Microsoft.Web/sites') {
-       this.subscriptionPropertiesService.getSubscriptionProperties(this.subscriptionId).subscribe((response: HttpResponse<{}> ) =>{
-            let subscriptionProperties = response.body['subscriptionPolicies'];
-            if(subscriptionProperties["locationPlacementId"].toLowerCase() !== 'geos_2020-01-01') {
-             // Register Change Analysis Resource Provider.
-             this.armService.postResourceFullResponse(this.providerRegisterUrl, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
-                let eventProps = {
-                    url: this.providerRegisterUrl
-                    };
-                    this.loggingService.logEvent("Change Analysis Resource Provider registered",eventProps);
-                }, (error: any) => {
-                    this.logHTTPError(error, 'registerResourceProvider');
-                });
-            } else {
-                this._categoryService.filterCategoriesForSub();
-            }
-        });
+        if(locationPlacementId.toLowerCase() !== 'geos_2020-01-01') {
+            // Register Change Analysis Resource Provider.
+            this.armService.postResourceFullResponse(this.providerRegisterUrl, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
+            let eventProps = {
+                url: this.providerRegisterUrl
+                };
+                this.loggingService.logEvent("Change Analysis Resource Provider registered",eventProps);
+            }, (error: any) => {
+                this.logHTTPError(error, 'registerResourceProvider');
+            });
+        } else {
+            this._categoryService.filterCategoriesForSub();
+        }
     }
   }
 
