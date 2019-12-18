@@ -13,7 +13,7 @@ import { SubscriptionPropertiesService} from '../../../shared/services/subscript
 export class SupportTopicRedirectComponent implements OnInit {
 
   constructor(private _activatedRoute: ActivatedRoute, private _router: Router, private _supportTopicService: GenericSupportTopicService, private _authService: AuthService,
-    private _notificationService: NotificationService, , private portalKustoLogging: PortalKustoTelemetryService, private subscriptionPropertiesService: SubscriptionPropertiesService) { }
+    private _notificationService: NotificationService, private portalKustoLogging: PortalKustoTelemetryService, private subscriptionPropertiesService: SubscriptionPropertiesService) { }
 
   ngOnInit() {
     this._supportTopicService.getPathForSupportTopic(this._activatedRoute.snapshot.queryParams.supportTopicId, this._activatedRoute.snapshot.queryParams.pesId, this._activatedRoute.snapshot.queryParams.caseSubject).subscribe(res => {
@@ -33,10 +33,12 @@ export class SupportTopicRedirectComponent implements OnInit {
     let subscriptionid = this._activatedRoute.snapshot.params['subscriptionid'];
 
     this.subscriptionPropertiesService.getSubscriptionProperties(subscriptionid).subscribe(response => {
-        this.portalKustoLogging.logEvent("SubscriptionProperties", {
-            subscriptionid: subscriptionid,
-            subscriptionLocationPLacementId: response.body["subscriptionPolicies"]["locationPlacementId"]
-        });
+        if(response.body["subscriptionPolicies"]) {
+            this.portalKustoLogging.logEvent("SubscriptionProperties", {
+                subscriptionid: subscriptionid,
+                subscriptionLocationPLacementId: response.body["subscriptionPolicies"]["locationPlacementId"]
+            });
+        }
     });
 
   }

@@ -130,12 +130,14 @@ export class HomeComponent implements OnInit {
     let locationPlacementId =  '';
     this.subscriptionPropertiesService.getSubscriptionProperties(this.subscriptionId).subscribe((response : HttpResponse<{}>) => {
         let subscriptionProperties = response.body['subscriptionPolicies'];
-        locationPlacementId = subscriptionProperties['locationPlacementId'];
-        let eventProps = {
-            subscriptionId: this.subscriptionId,
-            subscriptionLocationPlacementId: locationPlacementId
-        };
-        this.loggingService.logEvent('SubscriptionProperties', eventProps);
+        if(subscriptionProperties) {
+            locationPlacementId = subscriptionProperties['locationPlacementId'];
+            let eventProps = {
+                subscriptionId: this.subscriptionId,
+                subscriptionLocationPlacementId: locationPlacementId
+            };
+            this.loggingService.logEvent('SubscriptionProperties', eventProps);
+        }
     });
 
     if(this._resourceService.resource.type === 'Microsoft.Web/sites') {
