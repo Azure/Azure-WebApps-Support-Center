@@ -183,7 +183,7 @@
             "imgSrc": "assets/img/StorageAccount.png",
             "versionPrefix": "",
             "azureCommImpactedServicesList": "StorageAccounts",	
-            "pesId": "15127",
+            "pesId": "15629",
             "staticSelfHelpContent": ""
         }
         {
@@ -193,7 +193,7 @@
             "imgSrc": "assets/img/ClassicStorageAccount.png",
             "versionPrefix": "",
             "azureCommImpactedServicesList": "ClassicStorageAccounts",
-            "pesId": "15128",
+            "pesId": "15629",
             "staticSelfHelpContent": ""
         }
     ]
