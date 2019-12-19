@@ -36,7 +36,7 @@ export class SupportTopicRedirectComponent implements OnInit {
         if(response.body["subscriptionPolicies"]) {
             this.portalKustoLogging.logEvent("SubscriptionProperties", {
                 subscriptionid: subscriptionid,
-                subscriptionLocationPLacementId: response.body["subscriptionPolicies"]["locationPlacementId"]
+                subscriptionLocationPlacementId: response.body["subscriptionPolicies"]["locationPlacementId"]
             });
         }
     });
