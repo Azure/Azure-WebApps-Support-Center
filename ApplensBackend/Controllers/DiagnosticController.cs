@@ -104,7 +104,7 @@ namespace AppLensV3.Controllers
             HttpRequestHeaders headers = new HttpRequestMessage().Headers;
             foreach (var header in Request.Headers)
             {
-                if (header.Key.Equals("diag-georegion", StringComparison.CurrentCultureIgnoreCase) && blackListedAscRegions.Any(region => header.Value.FirstOrDefault()?.Contains(region) == true))
+                if (header.Key.Equals("x-ms-location", StringComparison.CurrentCultureIgnoreCase) && blackListedAscRegions.Any(region => header.Value.FirstOrDefault()?.Contains(region) == true))
                 {
                     headers.Add("x-ms-subscription-location-placementid", diagAscHeaderValue);
                 }
