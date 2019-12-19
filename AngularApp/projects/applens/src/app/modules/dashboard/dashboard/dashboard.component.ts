@@ -104,6 +104,7 @@ export class DashboardComponent implements OnDestroy {
         else if (serviceInputs.resourceType.toString() === 'Microsoft.Web/sites')
         {
             this._diagnosticApiService.GeomasterServiceAddress = this.resource["GeomasterServiceAddress"];
+            this._diagnosticApiService.GeoRegion = this.resource["WebSpace"];
             this.observerLink = "https://wawsobserver.azurewebsites.windows.net/sites/"+ this.resource.SiteName;
         }
 

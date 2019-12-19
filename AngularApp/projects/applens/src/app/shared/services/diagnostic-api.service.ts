@@ -16,6 +16,7 @@ export class DiagnosticApiService {
 
   public readonly localDiagnosticApi = "http://localhost:5000/";
   public GeomasterServiceAddress: string = null;
+  public GeoRegion: string = null;
 
   constructor(private _httpClient: HttpClient, private _cacheService: CacheService,
     private _adalService: AdalService) { }
@@ -265,6 +266,10 @@ export class DiagnosticApiService {
 
     if (additionalParams && additionalParams.assemblyName) {
       headers = headers.set('diag-assembly-name', encodeURI(additionalParams.assemblyName));
+    }
+
+    if(this.GeoRegion){
+      headers = headers.set('diag-georegion', this.GeoRegion);
     }
 
     return headers;
