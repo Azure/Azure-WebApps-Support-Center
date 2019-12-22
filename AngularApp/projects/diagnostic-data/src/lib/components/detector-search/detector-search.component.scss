@@ -19,7 +19,7 @@
 
 .list-text {
     margin-top: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .success-msg{
@@ -34,6 +34,7 @@
     background: #f9f9f9;
     border: 1px solid #ebebeb;
     width: 98%;
+    margin-bottom: 0px!important;
 }
 
 .analysis-content
@@ -44,4 +45,39 @@
 .search-input-group {
     width:98%;
     height: 30px;
+}
+
+.successful-section-title {
+    cursor:pointer;
+    color:#1074fe;
+    text-decoration:underline;
+}
+
+.up-down-caret{
+    vertical-align: bottom;
+    font-size: 21px;
+    color: #1074fe;
+}
+
+.icon-err{
+    color: #bf0000;
+}
+
+.no-results-section{
+    margin-top: 10px;
+}
+
+.no-results-header{
+    display: block;
+    font-weight: 500;
+    font-size: 16px;
+  }
+  
+.no-results-content{
+    display:block;
+    font-size: 14px;
+}
+
+.form-control{
+    font-size: 16px;
 }

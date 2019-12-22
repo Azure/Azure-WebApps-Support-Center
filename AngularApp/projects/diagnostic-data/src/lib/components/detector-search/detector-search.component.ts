@@ -32,7 +32,13 @@ import { StatusStyles } from '../../models/styles';
         })),
         transition('* => *', animate('.3s'))
       ]
-    )
+    ),
+    trigger('expand', [
+      state('hidden', style({ display: 'none' })),
+      state('shown', style({ display: 'block' })),
+      transition('* => *', animate(0)),
+      transition('void => *', animate('0.75s'))
+    ])
   ]
 })
 export class DetectorSearchComponent extends DataRenderBaseComponent implements OnInit {
@@ -43,10 +49,12 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
   searchDataset: DiagnosticData[] = [];
   detectorEventProperties: { [name: string]: string };
   searchTerm: string = '';
+  searchTermDisplay: string = '';
   searchId: string = '';
   showPreLoader: boolean = false;
   preLoadingErrorMessage: string = "Some error occurred while fetching diagnostics."
   showPreLoadingError: boolean = false;
+  showSearchTermPractices: boolean = false;
 
   detectors: any[] = [];
   detectorViewModels: any[];
@@ -65,6 +73,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
   loadingMessageIndex: number = 0;
   loadingMessageTimer: any;
   showLoadingMessage: boolean = false;
+  showSuccessfulChecks: boolean = false;
 
   firstLoad: boolean = true;
 
@@ -107,6 +116,11 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
     }
   }
 
+  handleRequestFailure(){
+    this.showPreLoadingError = true;
+    this.showSearchTermPractices = false;
+  }
+
   triggerSearch(){
     if (!this.searchTerm || this.searchTerm.length<=1){ return;}
     this.firstLoad = false;
@@ -121,15 +135,26 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
     );
     this.resetGlobals();
     this.searchId = uuid();
-    let searchTask = this._diagnosticService.getDetectorsSearch(this.searchTerm).pipe(map((res) => res), catchError(e => of([])));
-    let detectorsTask = this._diagnosticService.getDetectors().pipe(map((res)=> res), catchError(e => of([])));
-    let childrenTask = this.getChildrenOfParentDetector(this.detector).pipe(map((res) => res), catchError(e => of([])));
+    let searchTask = this._diagnosticService.getDetectorsSearch(this.searchTerm).pipe(map((res) => res), catchError(e => {
+      this.handleRequestFailure();
+      return of([]);
+    }));
+    let detectorsTask = this._diagnosticService.getDetectors().pipe(map((res)=> res), catchError(e => {
+      this.handleRequestFailure();
+      return of([]);
+    }));
+    let childrenTask = this.getChildrenOfParentDetector(this.detector).pipe(map((res) => res), catchError(e => {
+      this.handleRequestFailure();
+      return of([]);
+    }));
     this.showPreLoader = true;
     observableForkJoin([searchTask, detectorsTask, childrenTask]).subscribe(results => {
       this.showPreLoader = false;
       this.showPreLoadingError = false;
       var searchResults: DetectorMetaData[] = results[0];
-      this.logEvent(TelemetryEventNames.SearchQueryResults, { searchId: this.searchId, query: this.searchTerm, results: JSON.stringify(searchResults.map((det: DetectorMetaData) => new Object({ id: det.id, score: det.score}))), ts: Math.floor((new Date()).getTime() / 1000).toString() });
+      if (searchResults.length===0){ this.showSearchTermPractices = true; this.searchTermDisplay = this.searchTerm.valueOf();}
+      else {this.showSearchTermPractices = false;}
+      this.logEvent(TelemetryEventNames.SearchQueryResults, { parentDetectorId: this.detector, searchId: this.searchId, query: this.searchTerm, results: JSON.stringify(searchResults.map((det: DetectorMetaData) => new Object({ id: det.id, score: det.score}))), ts: Math.floor((new Date()).getTime() / 1000).toString() });
       var detectorList = results[1];
       var childrenOfParent = results[2];
       if (detectorList){
@@ -143,7 +168,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
     },
     (err) => {
       this.showPreLoader = false;
-      this.showPreLoadingError = true;
+      this.handleRequestFailure();
     });
   }
 
@@ -194,12 +219,17 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
     observableForkJoin(requests).subscribe(childDetectorData => {
       this.childDetectorsEventProperties['ChildDetectorsList'] = JSON.stringify(childDetectorData);
       this.childDetectorsEventProperties['SearchId'] = this.searchId;
+      this.childDetectorsEventProperties['ParentDetectorId'] = this.detector;
       this.logEvent(TelemetryEventNames.ChildDetectorsSummary, this.childDetectorsEventProperties);
     });
   }
 
 
   //Helper Functions
+  toggleSuccessfulChecks(){
+    this.showSuccessfulChecks = !this.showSuccessfulChecks;
+  }
+
   clearSearchTerm(){
     this.searchTerm = "";
   }
@@ -250,6 +280,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
     this.detectorId = "";
     this.detectorName = "";
     this.detectorResponse = null;
+    this.showSuccessfulChecks = false;
   }
 
   getDetectorInsight(viewModel: any): any {
@@ -315,7 +346,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
           'Status': viewModel.model.status
         };
 
-        this.logEvent(TelemetryEventNames.SearchResultClicked, { searchId: this.searchId, detectorId: detectorId, rank: 0, title: clickDetectorEventProperties.ChildDetectorName, status: clickDetectorEventProperties.Status, ts: Math.floor((new Date()).getTime() / 1000).toString() });
+        this.logEvent(TelemetryEventNames.SearchResultClicked, { parentDetectorId: this.detector, searchId: this.searchId, detectorId: detectorId, rank: 0, title: clickDetectorEventProperties.ChildDetectorName, status: clickDetectorEventProperties.Status, ts: Math.floor((new Date()).getTime() / 1000).toString() });
         this.detectorId = detectorId;
         this.detectorName =
         this.detectorResponse = viewModel.detectorResponse;
