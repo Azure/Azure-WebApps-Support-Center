@@ -32,22 +32,13 @@ import { StatusStyles } from '../../models/styles';
         })),
         transition('* => *', animate('.3s'))
       ]
-    ),
-    trigger('expand', [
-      state('hidden', style({ display: 'none' })),
-      state('shown', style({ display: 'block' })),
-      transition('* => *', animate(0)),
-      transition('void => *', animate('0.75s'))
-    ])
+    )
   ]
 })
 export class DetectorSearchComponent extends DataRenderBaseComponent implements OnInit {
   startTime: Moment;
   endTime: Moment;
   isPublic: boolean = false;
-  isAnalysisView: boolean = false;
-  searchDataset: DiagnosticData[] = [];
-  detectorEventProperties: { [name: string]: string };
   searchTerm: string = '';
   searchTermDisplay: string = '';
   searchId: string = '';
@@ -65,7 +56,6 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
   private childDetectorsEventProperties = {};
 
   detectorId: string = "";
-  detectorName: string = "";
   detectorResponse: DetectorResponse;
 
   loadingChildDetectors: boolean = false;
@@ -73,6 +63,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
   loadingMessageIndex: number = 0;
   loadingMessageTimer: any;
   showLoadingMessage: boolean = false;
+  
   showSuccessfulChecks: boolean = false;
 
   firstLoad: boolean = true;
@@ -100,10 +91,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
         return;
       }
       this.searchTerm = qParams.get('searchTerm') === null ? "" || this.searchTerm : qParams.get('searchTerm');
-      if (!this.detectorId && this.searchTerm && this.searchTerm.length>1) {
-        this.firstLoad = false;
-        this.refresh();
-      }
+      this.refresh();
     });
 
     this.startTime = this.detectorControlService.startTime;
@@ -122,7 +110,6 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
   }
 
   triggerSearch(){
-    if (!this.searchTerm || this.searchTerm.length<=1){ return;}
     this.firstLoad = false;
     const queryParams: Params = { searchTerm: this.searchTerm };
     this._router.navigate(
@@ -253,6 +240,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
   insertInDetectorArray(detectorItem){
     if (this.detectors.findIndex(x => x.id === detectorItem.id) < 0){
       this.detectors.push(detectorItem);
+      this.loadingMessages.push("Checking " + detectorItem.name);
     }
   }
 
@@ -278,7 +266,6 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
     this.loadingMessages = [];
     this.successfulViewModels = [];
     this.detectorId = "";
-    this.detectorName = "";
     this.detectorResponse = null;
     this.showSuccessfulChecks = false;
   }
@@ -348,7 +335,6 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
 
         this.logEvent(TelemetryEventNames.SearchResultClicked, { parentDetectorId: this.detector, searchId: this.searchId, detectorId: detectorId, rank: 0, title: clickDetectorEventProperties.ChildDetectorName, status: clickDetectorEventProperties.Status, ts: Math.floor((new Date()).getTime() / 1000).toString() });
         this.detectorId = detectorId;
-        this.detectorName =
         this.detectorResponse = viewModel.detectorResponse;
       }
     }
@@ -356,7 +342,6 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
 
   goBackToSearch(){
     this.detectorId = "";
-    this.detectorName = "";
     this.detectorResponse = null;
   }
 

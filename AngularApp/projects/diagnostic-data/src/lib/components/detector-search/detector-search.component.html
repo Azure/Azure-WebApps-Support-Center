@@ -2,7 +2,7 @@
     <span class="span-h1">Find solutions for your problem</span>
 </div>
 <div class="input-group input-group-sm search-input-group" role="search" *ngIf="detectorId == ''">
-  <input aria-controls="search-results" class="form-control" [(ngModel)]="searchTerm" tabindex="0" type="search" placeholder="Describe your problem here" (keyup.enter)="triggerSearch()" maxlength="140">
+  <input aria-controls="search-results" class="form-control" [(ngModel)]="searchTerm" tabindex="0" type="search" placeholder="Describe your problem here" (keyup.enter)="refresh()" maxlength="140">
   <div class="input-group-btn" id="clear-search">
     <button aria-label="At least 2 characters" [style.display]="searchTerm?.trim().length>0 && searchTerm?.trim().length<2? '': 'none'" class="btn btn-default" style="padding-top:1px;" tabindex="0" title="At least 2 characters" type="button">
         <i class="fa fa-exclamation icon-err"></i>
@@ -21,7 +21,7 @@
   </div>
 </div>
 <span *ngIf="showPreLoadingError" style="margin-left:10px;margin-top:10px;">{{preLoadingErrorMessage}}</span>
-<span *ngIf="showPreLoader">
+<span *ngIf="showPreLoader" style="margin-top:10px;">
     <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
     <span style="margin-left:5px">Fetching diagnostics...</span>
 </span>
