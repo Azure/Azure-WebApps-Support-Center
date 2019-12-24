@@ -175,7 +175,7 @@
             "azureCommImpactedServicesList": "BatchAccounts",
             "pesId": "15614",
             "staticSelfHelpContent": ""
-        }
+        },
         {
             "service": "ResourceService",
             "resourceType": "Microsoft.Storage/storageAccounts",
@@ -185,7 +185,7 @@
             "azureCommImpactedServicesList": "StorageAccounts",	
             "pesId": "15629",
             "staticSelfHelpContent": ""
-        }
+        },
         {
             "service": "ResourceService",
             "resourceType": "Microsoft.ClassicStorage/storageAccounts",
