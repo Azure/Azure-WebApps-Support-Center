@@ -31,15 +31,4 @@
         public string ApiKey { get; set; }
     }
 
-    public class Value
-    {
-        public string id { get; set; }
-        public string name { get; set; }
-        public string[] linkedReadProperties { get; set; }
-        public object[] linkedWriteProperties { get; set; }
-        public string createdDate { get; set; }
-        public object integrationType { get; set; }
-        public object integrationProperty { get; set; }
-    }
-
 }
