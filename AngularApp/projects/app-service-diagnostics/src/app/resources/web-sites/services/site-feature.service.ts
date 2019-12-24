@@ -14,6 +14,8 @@ import { PortalActionService } from '../../../shared/services/portal-action.serv
 import { WebSitesService } from './web-sites.service';
 import { WebSiteFilter } from '../pipes/site-filter.pipe';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
+import {ArmService} from '../../../shared/services/arm.service';
+import { SubscriptionPropertiesService} from '../../../shared/services/subscription-properties.service';
 
 @Injectable()
 export class SiteFeatureService extends FeatureService {
@@ -22,9 +24,10 @@ export class SiteFeatureService extends FeatureService {
   public proactiveTools: SiteFilteredItem<Feature>[];
   public supportTools: SiteFilteredItem<Feature>[];
   public premiumTools: SiteFilteredItem<Feature>[];
-
+  public subscriptionId: string;
   constructor(protected _diagnosticApiService: DiagnosticService, protected _resourceService: WebSitesService, protected _contentService: ContentService, protected _router: Router,
-    protected _authService: AuthService, private _portalActionService: PortalActionService, private _websiteFilter: WebSiteFilter, protected _logger: LoggingV2Service) {
+    protected _authService: AuthService, private _portalActionService: PortalActionService, private _websiteFilter: WebSiteFilter, protected _logger: LoggingV2Service, protected armService:ArmService,
+    protected subscriptionPropertiesService: SubscriptionPropertiesService) {
 
     super(_diagnosticApiService, _contentService, _router, _authService, _logger);
 
@@ -44,11 +47,23 @@ export class SiteFeatureService extends FeatureService {
       this.addDiagnosticTools(startupInfo.resourceId);
       this.addProactiveTools(startupInfo.resourceId);
       this.addPremiumTools();
+      this.subscriptionId = startupInfo.resourceId.split("subscriptions/")[1].split("/")[0];
     });
   }
 
   sortFeatures() {
     let featureDisplayOrder = this._featureDisplayOrder;
+    let locationPlacementId = '';
+    this.subscriptionPropertiesService.getSubscriptionProperties(this.subscriptionId).subscribe(response => {
+        locationPlacementId = response.body['subscriptionPolicies']['locationPlacementId'];
+     });
+
+    // remove features not applicable
+    if(locationPlacementId && locationPlacementId.toLowerCase() === 'geos_2020-01-01') {
+        this._features = this._features.filter( x => {
+            return x.id !== 'appchanges';
+        })
+    }
 
     featureDisplayOrder.forEach(feature => {
 

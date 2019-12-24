@@ -29,7 +29,7 @@ export class ArmService {
     get armUrl(): string {
         let browserUrl = (window.location != window.parent.location) ? document.referrer : document.location.href;
         let armUrl = this.publicAzureArmUrl;
-        
+
         if (browserUrl.includes("azure.cn")){
             armUrl = this.chinaAzureArmUrl;
         }
@@ -67,9 +67,14 @@ export class ArmService {
             resourceUri = '/' + resourceUri;
         }
         const url = this.createUrl(resourceUri, apiVersion);
-
+        let subscriptionLocation = '';
+        this.getSubscriptionLocation(resourceUri.split("subscriptions/")[1].split("/")[0]).subscribe(response => {
+            subscriptionLocation = response.body['subscriptionPolicies']['locationPlacementId'];
+        });
+        let additionalHeaders = new Map<string, string>();
+        additionalHeaders.set('x-ms-subscription-location-placementid', subscriptionLocation);
         const request = this._http.get<ResponseMessageEnvelope<T>>(url, {
-            headers: this.getHeaders()
+            headers: this.getHeaders(null, additionalHeaders)
         }).pipe(
             retry(2),
             catchError(this.handleError)
@@ -275,7 +280,11 @@ export class ArmService {
         return this._cache.get(url, request, invalidateCache);
     }
 
-    getHeaders(etag?: string): HttpHeaders {
+    getSubscriptionLocation(subscriptionId: string): Observable<HttpResponse<any>> {
+        return this.getResourceFullResponse<any>(`/subscriptions/${subscriptionId}`, false, '2019-06-01');
+    }
+
+    getHeaders(etag?: string, additionalHeaders?: Map<string, string>): HttpHeaders {
         let headers = new HttpHeaders();
         headers = headers.set('Content-Type', 'application/json');
         headers = headers.set('Accept', 'application/json');
@@ -283,6 +292,14 @@ export class ArmService {
 
         if (etag) {
             headers = headers.set('If-None-Match', etag);
+        }
+
+        if(additionalHeaders) {
+            additionalHeaders.forEach((headerVal: string, headerKey: string) => {
+                if(headerVal.length > 0 && headerKey.length > 0) {
+                    headers = headers.set(headerKey, headerVal);
+                }
+            });
         }
 
         return headers;

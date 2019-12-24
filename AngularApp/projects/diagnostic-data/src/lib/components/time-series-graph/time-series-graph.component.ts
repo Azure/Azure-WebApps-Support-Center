@@ -130,7 +130,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
                 lastTimeStamp = timestamp;
 
-                if (row[columnIndex]) {
+                if (columnIndex > -1 && row[columnIndex] != null) {
                     const point: TablePoint = <TablePoint>{
                         timestamp: timestamp,
                         value: parseFloat(row[columnIndex]),
@@ -230,7 +230,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
             return moment.duration(1, 'months');
         }
          // 7 days -> 1 month: 1 day
-         if (rangeInHours >= 168) {
+         if (rangeInHours > 168) {
             return moment.duration(1, 'days');
         }
 

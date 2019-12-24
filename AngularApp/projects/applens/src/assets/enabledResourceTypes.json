@@ -182,7 +182,7 @@
             "templateFileName": "StorageAccount",
             "imgSrc": "assets/img/StorageAccount.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": "StorageAccounts",	
+            "azureCommImpactedServicesList": "StorageAccounts",
             "pesId": "15629",
             "staticSelfHelpContent": ""
         },

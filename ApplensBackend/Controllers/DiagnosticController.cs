@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SendGrid.Helpers.Mail;
@@ -29,6 +30,9 @@ namespace AppLensV3.Controllers
     [Authorize(Policy = "ApplensAccess")]
     public class DiagnosticController : Controller
     {
+        private readonly string[] blackListedAscRegions;
+        private readonly string diagAscHeaderValue;
+
         private class InvokeHeaders
         {
             public string Path { get; set; }
@@ -44,11 +48,13 @@ namespace AppLensV3.Controllers
         /// <param name="env">The environment.</param>
         /// <param name="diagnosticClient">Diagnostic client.</param>
         /// <param name="emailNotificationService">Email notification service.</param>
-        public DiagnosticController(IHostingEnvironment env, IDiagnosticClientService diagnosticClient, IEmailNotificationService emailNotificationService)
+        public DiagnosticController(IHostingEnvironment env, IDiagnosticClientService diagnosticClient, IEmailNotificationService emailNotificationService, IConfiguration configuration)
         {
             Env = env;
             DiagnosticClient = diagnosticClient;
             EmailNotificationService = emailNotificationService;
+            blackListedAscRegions = configuration.GetValue<string>("BlackListedAscRegions", string.Empty).Replace(" ", string.Empty).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            diagAscHeaderValue = configuration.GetValue<string>("DiagAscHeaderValue");
         }
 
         private IDiagnosticClientService DiagnosticClient { get; }
@@ -98,7 +104,11 @@ namespace AppLensV3.Controllers
             HttpRequestHeaders headers = new HttpRequestMessage().Headers;
             foreach (var header in Request.Headers)
             {
-                if ((header.Key.StartsWith("x-ms-") || header.Key.StartsWith("diag-")) && !headers.Contains(header.Key))
+                if (header.Key.Equals("x-ms-location", StringComparison.CurrentCultureIgnoreCase) && blackListedAscRegions.Any(region => header.Value.FirstOrDefault()?.Contains(region) == true))
+                {
+                    headers.Add("x-ms-subscription-location-placementid", diagAscHeaderValue);
+                }
+                else if ((header.Key.StartsWith("x-ms-") || header.Key.StartsWith("diag-")) && !headers.Contains(header.Key))
                 {
                     headers.Add(header.Key, header.Value.ToString());
                 }
