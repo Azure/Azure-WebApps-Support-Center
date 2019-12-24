@@ -79,6 +79,8 @@ import { DetectorListAnalysisComponent } from './components/detector-list-analys
 import { AppDependenciesComponent } from './components/app-dependencies/app-dependencies.component';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { HighchartsGraphComponent } from './components/highcharts-graph/highcharts-graph.component';
+import { AppInsightsEnablementComponent } from './components/app-insights-enablement/app-insights-enablement.component';
+import { ConnectAppInsightsComponent } from './components/connect-app-insights/connect-app-insights.component';
 
 @NgModule({
   imports: [
@@ -110,7 +112,9 @@ import { HighchartsGraphComponent } from './components/highcharts-graph/highchar
     DetectorListAnalysisComponent,
     AppDependenciesComponent,
     AppInsightsMarkdownComponent,
-    HighchartsGraphComponent
+    HighchartsGraphComponent,
+    AppInsightsEnablementComponent,
+    ConnectAppInsightsComponent
   ],
   exports: [
     FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent,
@@ -121,7 +125,9 @@ import { HighchartsGraphComponent } from './components/highcharts-graph/highchar
     ChangesetsViewComponent,
     ChangesViewComponent,
     DetectorListAnalysisComponent,
-    AppInsightsMarkdownComponent
+    AppInsightsMarkdownComponent,
+    AppInsightsEnablementComponent,
+    ConnectAppInsightsComponent
   ],
 })
 export class DiagnosticDataModule {

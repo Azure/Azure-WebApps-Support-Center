@@ -82,7 +82,6 @@ export class AppInsightsService {
 
                 // Do a get on the resource to fill the app id and name.
                 this.armService.getResourceWithoutEnvelope(aiResource, '2015-05-01').subscribe((armResponse: any) => {
-                    this.loadAppInsightsResourceObservable.next(true);
                     if (armResponse && armResponse.properties) {
                         if (this.isNotNullOrEmpty(armResponse.properties['AppId'])) {
                             this.appInsightsSettings.appId = armResponse.properties['AppId'];
@@ -92,6 +91,7 @@ export class AppInsightsService {
                             this.appInsightsSettings.name = armResponse.properties['Name'];
                         }
                     }
+                    this.loadAppInsightsResourceObservable.next(true);
                 });
             } else {
                 this.appInsightsSettings.enabledForWebApp = false;

@@ -102,7 +102,11 @@ export enum RenderingType {
     ChangeAnalysisOnboarding,
     ChangesView,
     ApplicationInsightsView,
-    DependencyGraph
+    DependencyGraph,
+    DownTime,
+    SummaryCard,
+    SearchComponent,
+    AppInsightEnablement
 }
 
 export enum TimeSeriesType {

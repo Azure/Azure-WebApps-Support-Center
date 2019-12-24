@@ -8,6 +8,15 @@ export class AppInsightsQueryService {
 
     public loadAppInsightsResourceObservable: BehaviorSubject<boolean>;
 
+    public appInsightsSettings: any = {
+        validForStack: undefined,
+        enabledForWebApp: undefined,
+        connectedWithSupportCenter: undefined,
+        resourceUri: undefined,
+        name: undefined,
+        appId: undefined
+      };
+
     CheckIfAppInsightsEnabled(): Observable<boolean>
     {
         return null;

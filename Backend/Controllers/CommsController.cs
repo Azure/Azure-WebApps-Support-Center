@@ -18,41 +18,35 @@ namespace Backend.Controllers
     {
         private readonly IOutageCommunicationService _outageService;
         private readonly IArmService _armService;
+        private readonly ICommonService _commonService;
 
-        public CommsController(IOutageCommunicationService outageService, IArmService armService)
+        public CommsController(IOutageCommunicationService outageService, IArmService armService, ICommonService commonService)
         {
             this._outageService = outageService;
             this._armService = armService;
+            this._commonService = commonService;
         }
 
         [HttpGet]
         [HttpOptions]
         public async Task<IActionResult> Invoke(string startTime = null, string endTime = null)
         {
-            string resourceHeaderName = Request.Headers.Keys.FirstOrDefault(p => p.Equals("resource-uri", StringComparison.OrdinalIgnoreCase));
-            if (string.IsNullOrWhiteSpace(resourceHeaderName) || !Request.Headers.TryGetValue(resourceHeaderName, out StringValues val))
+            if (!_commonService.GetHeaderValue(Request.Headers, "resource-uri", out string resourceId))
             {
-                return BadRequest("Missing resource-uri");
+                return BadRequest("Missing resource-uri header");
             }
+            resourceId = resourceId.ToLower();
 
-            string authHeaderName = Request.Headers.Keys.FirstOrDefault(p => p.Equals("authorization", StringComparison.OrdinalIgnoreCase));
-            if(string.IsNullOrWhiteSpace(authHeaderName) || !Request.Headers.TryGetValue(authHeaderName, out StringValues authHeader))
+            if (!_commonService.GetHeaderValue(Request.Headers, "authorization", out string authToken))
             {
-                return BadRequest("Missing Authorization Header");
+                return BadRequest("Missing authorization header");
             }
-
-            string resource = val.First().ToLower();
-            Regex resourceRegEx = new Regex("/subscriptions/(.*)/resourcegroups/(.*)/providers/(.*)/(.*)/(.*)");
-            Match match = resourceRegEx.Match(resource);
-            if (!match.Success)
+            if (!_commonService.ValidateResourceUri(resourceId, out string subscriptionId))
             {
                 return BadRequest("resource uri not in correct format.");
             }
 
-            string subscriptionId = match.Groups[1].Value;
-            string authToken = authHeader.First();
-
-            if(!(await this._armService.CheckSubscriptionAccessAsync(subscriptionId, authToken)))
+            if (!(await this._armService.CheckSubscriptionAccessAsync(subscriptionId, authToken)))
             {
                 return Unauthorized();
             }

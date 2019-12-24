@@ -14,4 +14,8 @@ export class SettingsService {
    public getScanEnabled(): Observable<boolean>  {
        return null;
    }
+
+   public getAppInsightsConnected():Observable<boolean>{
+     return null;
+   }
 }
