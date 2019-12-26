@@ -11,16 +11,25 @@
             <div *ngIf="!isAppInsightsConnected">
               <i class="fa fa-exclamation-triangle warning-icon-color"></i>
               Connect Application Insights with App Service Diagnostics to allow App Service Diagnostics to access App
-              Insights
-              information.
+              Insights information.
               <button class="ms-Button ms-Button--primary" (click)="connect()">
                 <span class="ms-Button-label">Connect</span>
               </button>
             </div>
             <div *ngIf="isAppInsightsConnected">
-              <i class="fa fa-check-circle healthy-icon-color"></i>
-              <span class="ml-3">App Insights is enabled
-                and connected with App Service Diagnostics</span>
+              <ng-container *ngIf="!appInsightsValidated">
+                <i class="fa fa-exclamation-triangle warning-icon-color"></i>
+                Application Insights was connected with App Service Diagnostics but the saved configuration is no more
+                valid. Please connect again.
+                <button class="ms-Button ms-Button--primary" (click)="connect()">
+                  <span class="ms-Button-label">Connect</span>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="appInsightsValidated">
+                <i class="fa fa-check-circle healthy-icon-color"></i>
+                <span class="ml-3">App Insights is enabled
+                  and connected with App Service Diagnostics</span>
+              </ng-container>
             </div>
           </div>
           <div *ngIf="!isAppInsightsEnabled">

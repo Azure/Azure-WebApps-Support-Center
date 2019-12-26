@@ -18,8 +18,9 @@ export class AppInsightsEnablementComponent implements OnInit {
   }
 
   loadingSettings: boolean = true;
-  isAppInsightsEnabled = false;
-  isAppInsightsConnected = false;
+  isAppInsightsEnabled: boolean = false;
+  isAppInsightsConnected: boolean = false;
+  appInsightsValidated: boolean = false;
   appInsightsResourceUri: string = "";
   appId: string = "";
   connecting: boolean = false;
@@ -43,8 +44,18 @@ export class AppInsightsEnablementComponent implements OnInit {
             this._settingsService.getAppInsightsConnected().subscribe(connected => {
               if (connected) {
                 this.isAppInsightsConnected = true;
+                const additionalHeaders = new HttpHeaders({ 'resource-uri': this.resourceId });
+                this._backendCtrlService.get<any>(`api/appinsights/validate`, additionalHeaders).subscribe(resp => {                  
+                  if (resp === true) {
+                    this.appInsightsValidated = true;
+                  }
+                  this.loadingSettings = false;
+                }, error => {
+                  this.loadingSettings = false;
+                });
+              } else {
+                this.loadingSettings = false;
               }
-              this.loadingSettings = false;
             });
           } else {
             this.loadingSettings = false;
@@ -67,6 +78,7 @@ export class AppInsightsEnablementComponent implements OnInit {
       this.connecting = false;
       if (resp === true) {
         this.isAppInsightsConnected = true;
+        this.appInsightsValidated = true;
       }
     }, error => {
       this.connecting = false;

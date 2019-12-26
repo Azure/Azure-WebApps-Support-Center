@@ -1,15 +1,15 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.IO;
+﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Cryptography;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Backend.Models;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System.Linq;
+using Newtonsoft.Json.Linq;
+using Backend.Models;
+
 
 namespace Backend.Services
 {
@@ -125,19 +125,7 @@ namespace Backend.Services
 
         private async Task<string> GetUpdatedTagsAsync(string resourceId, string apiKey, string appId, string bearerToken)
         {
-            HttpRequestMessage request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://{_armEndpoint}{resourceId}?api-version=2018-02-01"),
-            };
-            request.Headers.Add("Authorization", bearerToken ?? string.Empty);
-
-            var response = await this._httpClient.SendAsync(request);
-
-            response.EnsureSuccessStatusCode();
-
-            var site = JObject.Parse(await response.Content.ReadAsStringAsync());
-            JObject tagsObject = JObject.Parse(site["tags"].ToString());
+            JObject tagsObject = await GetExistingTagsAsync(resourceId, bearerToken);
 
             var tagValue = new AppInsightsTagValue
             {
@@ -154,5 +142,59 @@ namespace Backend.Services
             return JsonConvert.SerializeObject(tagsContent);
         }
 
+        private async Task<JObject> GetExistingTagsAsync(string resourceId, string bearerToken)
+        {
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://{_armEndpoint}{resourceId}?api-version=2018-02-01"),
+            };
+            request.Headers.Add("Authorization", bearerToken ?? string.Empty);
+
+            var response = await this._httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            var site = JObject.Parse(await response.Content.ReadAsStringAsync());
+            JObject tagsObject = JObject.Parse(site["tags"].ToString());
+
+            return tagsObject;
+        }
+
+        public async Task<bool> Validate(string resourceId, string bearerToken)
+        {
+            JObject tagsObject = await GetExistingTagsAsync(resourceId, bearerToken);
+            if (tagsObject[AppInsightsTagName] != null)
+            {
+                var jsonString = tagsObject[AppInsightsTagName].ToString();
+                var appInsightsTag = JsonConvert.DeserializeObject<AppInsightsTagValue>(jsonString);
+
+                if (appInsightsTag != null && !string.IsNullOrWhiteSpace(appInsightsTag.AppId) && !string.IsNullOrWhiteSpace(appInsightsTag.ApiKey))
+                {
+                    var query = WebUtility.UrlEncode("requests|take 1"); 
+                    HttpRequestMessage request = new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Get,
+                        RequestUri = new Uri($"https://api.applicationinsights.io/v1/apps/{appInsightsTag.AppId}/query?timespan=1H&query={query}")
+                    };
+                    var apiKey = _encryptionService.DecryptString(appInsightsTag.ApiKey);
+                    request.Headers.Add("x-api-key", apiKey ?? string.Empty);
+
+                    var response = await this._httpClient.SendAsync(request);
+                    response.EnsureSuccessStatusCode();
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+
+        }
     }
 }

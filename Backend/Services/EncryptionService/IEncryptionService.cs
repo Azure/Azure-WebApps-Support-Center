@@ -8,5 +8,6 @@ namespace Backend.Services
     public interface IEncryptionService
     {
         string EncryptString(string jsonPayload);
+        string DecryptString(string encryptedString);
     }
 }

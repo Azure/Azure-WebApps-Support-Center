@@ -17,6 +17,31 @@ namespace Backend.Services
         {
             _encryptionKey = configuration["AppInsights:EncryptionKey"];
         }
+
+        public string DecryptString(string encryptedString)
+        {
+            byte[] iv = new byte[16];
+            byte[] buffer = Convert.FromBase64String(encryptedString);
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(_encryptionKey);
+                aes.IV = iv;
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new MemoryStream(buffer))
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader streamReader = new StreamReader((Stream)cryptoStream))
+                        {
+                            return streamReader.ReadToEnd();
+                        }
+                    }
+                }
+            }
+        }
+
         public string EncryptString(string jsonPayload)
         {
             byte[] iv = new byte[16];
