@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 
-namespace Backend.Services
+namespace Backend.Helpers
 {
-    public class CommonService : ICommonService
+    public class Utility
     {
-        public bool GetHeaderValue(IHeaderDictionary headers, string headerName, out string headerValue)
+        public static bool TryGetHeaderValue(IHeaderDictionary headers, string headerName, out string headerValue)
         {
             headerValue = "";
             string actualHeaderName = headers.Keys.FirstOrDefault(p => p.Equals(headerName, StringComparison.OrdinalIgnoreCase));
@@ -22,7 +20,7 @@ namespace Backend.Services
             return true;
         }
 
-        public bool ValidateResourceUri(string resourceId, out string subscriptionId)
+        public static bool ValidateResourceUri(string resourceId, out string subscriptionId)
         {
             subscriptionId = string.Empty;
             Regex resourceRegEx = new Regex("/subscriptions/(.*)/resourcegroups/(.*)/providers/(.*)/(.*)/(.*)");

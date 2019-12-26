@@ -3,6 +3,7 @@ import { AppInsightsQueryService } from '../../services/appinsights.service';
 import { HttpHeaders } from '@angular/common/http';
 import { SettingsService } from '../../services/settings.service';
 import { BackendCtrlQueryService } from '../../services/backend-ctrl-query.service';
+import { LoadingStatus } from 'dist/diagnostic-data/public_api';
 
 
 @Component({
@@ -19,7 +20,6 @@ export class AppInsightsEnablementComponent implements OnInit {
   }
 
   loadingSettings: boolean = true;
-  loadingMessage: string = "Checking Application Insights...";
   isAppInsightsEnabled = false;
   isAppInsightsConnected = false;
   appInsightsResourceUri: string = "";
@@ -43,17 +43,16 @@ export class AppInsightsEnablementComponent implements OnInit {
 
           if (this.isAppInsightsEnabled) {
             this._settingsService.getAppInsightsConnected().subscribe(connected => {
-              this.loadingSettings = false;
               if (connected) {
                 this.isAppInsightsConnected = true;
               }
+              this.loadingSettings = false;
             });
           } else {
             this.loadingSettings = false;
           }
-        } else {
+        } else if (loadStatus === false) {
           this.loadingSettings = false;
-          this.isAppInsightsEnabled = false;
         }
       });
     }
@@ -66,7 +65,7 @@ export class AppInsightsEnablementComponent implements OnInit {
   connect() {
     this.connecting = true;
     const additionalHeaders = new HttpHeaders({ 'resource-uri': this.resourceId, 'appinsights-resource-uri': this.appInsightsResourceUri, 'appinsights-app-id': this.appId });
-    this._backendCtrlService.get<any>(`api/appinsights`, additionalHeaders, true).subscribe(resp => {
+    this._backendCtrlService.put<any, null>(`api/appinsights`, null, additionalHeaders).subscribe(resp => {
       this.connecting = false;
       if (resp === true) {
         this.isAppInsightsConnected = true;

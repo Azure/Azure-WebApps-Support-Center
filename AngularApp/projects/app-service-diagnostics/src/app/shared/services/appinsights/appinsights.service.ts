@@ -95,6 +95,7 @@ export class AppInsightsService {
                 });
             } else {
                 this.appInsightsSettings.enabledForWebApp = false;
+                this.loadAppInsightsResourceObservable.next(false);
             }
 
             this.logger.LogAppInsightsSettings(this.appInsightsSettings.enabledForWebApp);

@@ -53,7 +53,6 @@ namespace Backend
             services.AddSingleton<IOutageCommunicationService, OutageCommunicationService>();
             services.AddSingleton<IArmService, ArmService>();
             services.AddSingleton<IChatService, ChatService>();
-            services.AddSingleton<ICommonService, CommonService>();
             services.AddSingleton<IEncryptionService, EncryptionService>();
             services.AddSingleton<IAppInsightsService, AppInsightsService>();
         }

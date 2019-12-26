@@ -18,6 +18,7 @@ namespace Backend.Services
         const string ApiKeyName = "APPSERVICEDIAGNOSTICS_READONLYKEY";
         const string AppInsightsTagName = "hidden-related:diagnostics/applicationInsightsSettings";
         private readonly IEncryptionService _encryptionService;
+        private readonly string _armEndpoint = "";
 
         private readonly Lazy<HttpClient> _client = new Lazy<HttpClient>(() =>
         {
@@ -37,9 +38,10 @@ namespace Backend.Services
             }
         }
 
-        public AppInsightsService(IEncryptionService encryptionService)
+        public AppInsightsService(IEncryptionService encryptionService, IConfiguration configuration)
         {
             _encryptionService = encryptionService;
+            _armEndpoint = configuration["Arm:Endpoint"];
         }
 
         private async Task CheckAndRemoveExistingApiKeysAsync(string appInsightsResourceId, string bearerToken)
@@ -47,7 +49,7 @@ namespace Backend.Services
             HttpRequestMessage request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://management.azure.com{appInsightsResourceId}/ApiKeys?api-version=2015-05-01"),
+                RequestUri = new Uri($"https://{_armEndpoint}{appInsightsResourceId}/ApiKeys?api-version=2015-05-01"),
             };
             request.Headers.Add("Authorization", bearerToken ?? string.Empty);
             var response = await _httpClient.SendAsync(request);
@@ -74,7 +76,7 @@ namespace Backend.Services
             HttpRequestMessage request = new HttpRequestMessage
             {
                 Method = new HttpMethod("PATCH"),
-                RequestUri = new Uri($"https://management.azure.com{resourceId}?api-version=2018-02-01"),
+                RequestUri = new Uri($"https://{_armEndpoint}{resourceId}?api-version=2018-02-01"),
                 Content = new StringContent(tagsContent, Encoding.UTF8, "application/json")
             };
 
@@ -96,7 +98,7 @@ namespace Backend.Services
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri($"https://management.azure.com{appInsightsResourceId}/ApiKeys?api-version=2015-05-01"),
+                RequestUri = new Uri($"https://{_armEndpoint}{appInsightsResourceId}/ApiKeys?api-version=2015-05-01"),
                 Content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json")
             };
 
@@ -113,7 +115,7 @@ namespace Backend.Services
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Delete,
-                RequestUri = new Uri($"https://management.azure.com{appKeyResourceId}?api-version=2015-05-01"),
+                RequestUri = new Uri($"https://{_armEndpoint}{appKeyResourceId}?api-version=2015-05-01"),
             };
             request.Headers.Add("Authorization", bearerToken ?? string.Empty);
 
@@ -126,7 +128,7 @@ namespace Backend.Services
             HttpRequestMessage request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://management.azure.com{resourceId}?api-version=2018-02-01"),
+                RequestUri = new Uri($"https://{_armEndpoint}{resourceId}?api-version=2018-02-01"),
             };
             request.Headers.Add("Authorization", bearerToken ?? string.Empty);
 

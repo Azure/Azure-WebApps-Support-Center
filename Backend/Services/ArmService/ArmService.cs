@@ -4,11 +4,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace Backend.Services
 {
     public class ArmService : IArmService
     {
+        private readonly string _armEndpoint = "management.azure.com";
         private readonly Lazy<HttpClient> _client = new Lazy<HttpClient>(() =>
         {
             var client = new HttpClient();
@@ -27,6 +29,11 @@ namespace Backend.Services
             }
         }
 
+        public ArmService(IConfiguration configuration)
+        {
+            _armEndpoint = configuration["Arm:Endpoint"];
+        }
+
         public async Task<bool> CheckSubscriptionAccessAsync(string subscriptionId, string bearerToken)
         {
             if (string.IsNullOrWhiteSpace(subscriptionId))
@@ -34,7 +41,7 @@ namespace Backend.Services
                 throw new ArgumentNullException("subscriptionId");
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"https://management.azure.com/subscriptions/{subscriptionId}?api-version=2014-04-01");
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"https://{_armEndpoint}/subscriptions/{subscriptionId}?api-version=2014-04-01");
             request.Headers.Add("Authorization", bearerToken ?? string.Empty);
 
             var response = await this._httpClient.SendAsync(request);

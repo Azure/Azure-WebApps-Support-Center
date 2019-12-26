@@ -18,30 +18,28 @@ namespace Backend.Controllers
     {
         private readonly IOutageCommunicationService _outageService;
         private readonly IArmService _armService;
-        private readonly ICommonService _commonService;
 
-        public CommsController(IOutageCommunicationService outageService, IArmService armService, ICommonService commonService)
+        public CommsController(IOutageCommunicationService outageService, IArmService armService)
         {
             this._outageService = outageService;
             this._armService = armService;
-            this._commonService = commonService;
         }
 
         [HttpGet]
         [HttpOptions]
         public async Task<IActionResult> Invoke(string startTime = null, string endTime = null)
         {
-            if (!_commonService.GetHeaderValue(Request.Headers, "resource-uri", out string resourceId))
+            if (!Utility.TryGetHeaderValue(Request.Headers, "resource-uri", out string resourceId))
             {
                 return BadRequest("Missing resource-uri header");
             }
             resourceId = resourceId.ToLower();
 
-            if (!_commonService.GetHeaderValue(Request.Headers, "authorization", out string authToken))
+            if (!Utility.TryGetHeaderValue(Request.Headers, "authorization", out string authToken))
             {
                 return BadRequest("Missing authorization header");
             }
-            if (!_commonService.ValidateResourceUri(resourceId, out string subscriptionId))
+            if (!Utility.ValidateResourceUri(resourceId, out string subscriptionId))
             {
                 return BadRequest("resource uri not in correct format.");
             }
