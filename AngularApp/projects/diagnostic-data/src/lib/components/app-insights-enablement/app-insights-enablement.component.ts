@@ -3,8 +3,6 @@ import { AppInsightsQueryService } from '../../services/appinsights.service';
 import { HttpHeaders } from '@angular/common/http';
 import { SettingsService } from '../../services/settings.service';
 import { BackendCtrlQueryService } from '../../services/backend-ctrl-query.service';
-import { LoadingStatus } from 'dist/diagnostic-data/public_api';
-
 
 @Component({
   selector: 'app-insights-enablement',
