@@ -226,7 +226,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
   }
 
   getChildrenOfParentDetector(parentDetectorId){
-    if (!parentDetectorId){ return Observable.of([]);}
+    if (!parentDetectorId){ return of([]);}
     return (<Observable<DetectorResponse>>this._diagnosticService.getDetector(parentDetectorId, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString)).pipe(map((response: DetectorResponse) =>{
       let detectorList = [];
       response.dataset.forEach((ds: DiagnosticData) => {
