@@ -14,7 +14,7 @@ import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { Solution } from '../solution/solution';
-import { InsightUtils, Insight } from 'diagnostic-data';
+import { InsightUtils, Insight } from '../../models/insight';
 import { StatusStyles } from '../../models/styles';
 @Component({
   selector: 'detector-search',
