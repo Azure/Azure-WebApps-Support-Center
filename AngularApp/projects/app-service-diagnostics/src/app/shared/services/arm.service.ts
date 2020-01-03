@@ -21,7 +21,7 @@ export class ArmService {
     private readonly publicAzureArmUrl = 'https://management.azure.com';
     private readonly chinaAzureArmUrl = 'https://management.chinacloudapi.cn';
     private readonly usGovernmentAzureArmUrl = 'https://management.usgovcloudapi.net';
-
+    private readonly diagRoleVersion = '1';
     constructor(private _http: HttpClient, private _authService: AuthService, private _cache: CacheService, private _genericArmConfigService?: GenericArmConfigService) {
 
     }
@@ -73,7 +73,9 @@ export class ArmService {
         });
         let additionalHeaders = new Map<string, string>();
         additionalHeaders.set('x-ms-subscription-location-placementid', subscriptionLocation);
-        additionalHeaders.set('x-ms-diagversion', '1');
+        // When x-ms-diagversion is set to 1, the requests will be sent to DiagnosticRole.
+        //If the value is set to other than 1 or if the header is not present at all, requests will go to runtimehost
+        additionalHeaders.set('x-ms-diagversion', this.diagRoleVersion);
         const request = this._http.get<ResponseMessageEnvelope<T>>(url, {
             headers: this.getHeaders(null, additionalHeaders)
         }).pipe(
@@ -275,7 +277,9 @@ export class ArmService {
         }
 
         let additionalHeaders = new Map<string, string>();
-        additionalHeaders.set('x-ms-diagversion', '1');
+        // When x-ms-diagversion is set to 1, the requests will be sent to DiagnosticRole.
+        //If the value is set to other than 1 or if the header is not present at all, requests will go to runtimehost
+        additionalHeaders.set('x-ms-diagversion', this.diagRoleVersion);
         const request = this._http.get(url, { headers: this.getHeaders(null, additionalHeaders) }).pipe(
             map<ResponseMessageCollectionEnvelope<ResponseMessageEnvelope<T>>, ResponseMessageEnvelope<T>[]>(r => r.value),
             catchError(this.handleError)
