@@ -73,6 +73,7 @@ export class ArmService {
         });
         let additionalHeaders = new Map<string, string>();
         additionalHeaders.set('x-ms-subscription-location-placementid', subscriptionLocation);
+        additionalHeaders.set('x-ms-diagversion', '1');
         const request = this._http.get<ResponseMessageEnvelope<T>>(url, {
             headers: this.getHeaders(null, additionalHeaders)
         }).pipe(
@@ -272,7 +273,10 @@ export class ArmService {
                 url = url + "&" + param["key"] + "=" + encodeURIComponent(param["value"]);
             });
         }
-        const request = this._http.get(url, { headers: this.getHeaders() }).pipe(
+
+        let additionalHeaders = new Map<string, string>();
+        additionalHeaders.set('x-ms-diagversion', '1');
+        const request = this._http.get(url, { headers: this.getHeaders(null, additionalHeaders) }).pipe(
             map<ResponseMessageCollectionEnvelope<ResponseMessageEnvelope<T>>, ResponseMessageEnvelope<T>[]>(r => r.value),
             catchError(this.handleError)
         );
