@@ -8,6 +8,12 @@ export class UriElementsService {
     private _siteResource = this._resourceProviderPrefix + 'sites/{siteName}';
     private _hostingEnvironmentResource = this._resourceProviderPrefix + 'hostingEnvironments/{name}';
     private _slotResource = '/slots/{slot}';
+    private _storageAccountsProviderPrefix: string = '/subscriptions/{subscriptionId}/providers/Microsoft.Storage';
+    private _storageAccountResourceProviderPrefix: string = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.Storage';
+
+    private _listStorageAccounts: string = '/storageAccounts';
+    private _listStorageKeys: string = '/listKeys';
+    private _createStorageAccountFormatUrl: string = '/storageAccounts/{accountName}';
 
     private _siteRestartUrlFormat: string = '/restart';
     private _listAppSettingsUrlFormat: string = '/config/appsettings/list';
@@ -52,6 +58,7 @@ export class UriElementsService {
     private _diagnosticsMonitoringAllSessions = this._diagnosticsMonitoringPath;
     private _diagnosticsMonitoringSingleSession = this._diagnosticsMonitoringPath + "/{sessionId}";
     private _diagnosticsMonitoringAnalyzeSession = this._diagnosticsMonitoringPath + "/analyze?sessionId={sessionId}";
+    private _diagnosticsSettingsPath = this._diagnosticsPath + 'settings';
     private _networkTraceStartPath = '/networkTrace/start';
     private _webjobsPath: string = '/webjobs';
 
@@ -99,7 +106,7 @@ export class UriElementsService {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsDatabaseTestPath;
     }
 
-    getAppInfoUrl(site:SiteInfoMetaData){
+    getAppInfoUrl(site: SiteInfoMetaData) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsAppInfo;
     }
 
@@ -126,6 +133,10 @@ export class UriElementsService {
     getAnalyzeMonitoringSessionUrl(site: SiteDaasInfo, sessionId: string) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsMonitoringAnalyzeSession
             .replace('{sessionId}', sessionId);
+    }
+
+    getBlobSasUriUrl(site: SiteDaasInfo) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSettingsPath;
     }
 
     getWebJobs(site: SiteInfoMetaData) {
@@ -205,6 +216,19 @@ export class UriElementsService {
 
     getConfigWebUrl(site: SiteInfoMetaData): string {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._configWebUrlFormat;
+    }
+
+    getStorageAccountsUrl(subscriptionId: string): string {
+        return this._storageAccountsProviderPrefix.replace('{subscriptionId}', subscriptionId) + this._listStorageAccounts;
+    }
+
+    createStorageAccountsUrl(subscriptionId: string, resourceGroup: string, accountName: string): string {
+        return this._storageAccountResourceProviderPrefix.replace('{subscriptionId}', subscriptionId)
+            .replace('{resourceGroup}', resourceGroup) + this._createStorageAccountFormatUrl.replace('{accountName}', accountName);
+    }
+
+    getStorageAccountKeyUrl(storageAccountId: string): string {
+        return storageAccountId + this._listStorageKeys;
     }
 
     private _getSiteResourceUrl(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '') {

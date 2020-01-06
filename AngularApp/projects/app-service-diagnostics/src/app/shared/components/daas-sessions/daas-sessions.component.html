@@ -109,7 +109,7 @@
                                         <td>
                                             <ul *ngIf="diagnoser.Logs.length > 0" style="list-style: none;padding:0">
                                                 <li *ngFor="let log of diagnoser.Logs">
-                                                    <a (click)="openReport(log.RelativePath)" style="cursor: pointer">
+                                                    <a (click)="openLog(log, session.HasBlobSasUri)" style="cursor: pointer">
                                                         {{ log.FileName }}
                                                     </a>
                                                 </li>

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, SimpleChanges, OnChanges, Pipe, PipeTransform, OnDestroy } from '@angular/core';
-import { Session, SessionStatus } from '../../models/daas';
+import { Session, SessionStatus, Log } from '../../models/daas';
 import { WindowService } from '../../../startup/services/window.service';
 import { ServerFarmDataService } from '../../services/server-farm-data.service';
 import { DaasService } from '../../services/daas.service';
@@ -135,6 +135,15 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
         }
     }
 
+    openLog(log: Log, hasBlobSasUri: boolean) {
+        if (hasBlobSasUri) {
+            this._windowService.open(`${log.FullPermanentStoragePath}`);
+        } else {
+            this._windowService.open(`https://${this.scmPath}/api/vfs/data/DaaS/${log.RelativePath}`);
+        }
+
+    }
+
     openReport(url: string) {
         this._windowService.open(`https://${this.scmPath}/api/vfs/data/DaaS/${url}`);
     }
@@ -190,7 +199,7 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
         }
     }
 
-    convertUtcIfNeeded(datestring:string):string{
+    convertUtcIfNeeded(datestring: string): string {
         return datestring.toUpperCase().endsWith('Z') ? datestring : datestring += 'Z';;
     }
 

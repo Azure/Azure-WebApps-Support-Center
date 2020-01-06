@@ -6,7 +6,7 @@
       Run Diagnostics
     </button>
     <button type="button" class="btn btn-default btn-xs" [ngClass]="{'btn-primary':customActionType==='Custom'}"
-      (click)="customActionType='Custom'">
+      (click)="resetCustomAction()">
       Run Any Executable
     </button>
   </div>
@@ -14,37 +14,13 @@
   <div class="panel panel-default">
     <div class="panel-body">
       <div *ngIf="customActionType == 'Diagnostics'">
-        <div *ngIf="!checkingSupportedTier && !supportedTier && checkingSkuSucceeded">
-          <div class="focus-box focus-box-warning">
-            <div>
-              <strong>Error</strong> - This tool is supported only in <strong>Standard, Premium</strong> or <strong>Isolated</strong>
-              tiers because the diagnostic
-              tools require the Always-On setting to be enabled to collect data.
-            </div>
-          </div>
-          <daas-scaleup></daas-scaleup>
-        </div>
-        <div class="col" *ngIf="checkingSupportedTier">
-          <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-          Checking if the WebApp is running in a supported Tier
-        </div>
-        <div *ngIf="!checkingSupportedTier && (supportedTier || !checkingSkuSucceeded) && !alwaysOnEnabled">
-          <div class="focus-box focus-box-warning">
-            <div>
-              <strong>Error</strong> - We determined that the web app does not have Always-On enabled and due to these
-              the diagnostic
-              tools will not work reliably with AutoHeal. Please turn on the Always-On setting by going to the
-              properties
-              of the web app and then configure mitigation tools.
-            </div>
-          </div>
-        </div>
 
-        <div *ngIf="alwaysOnEnabled && (supportedTier || !checkingSkuSucceeded) && !checkingSupportedTier && customAction != null">
+        <div>
           <div class="row">
             <div class="detail-cards">
               <ng-container *ngFor="let item of Diagnosers;let i = index">
-                <button class="detail-card" (click)="chooseDiagnoser(item)" [ngClass]="{'detail-card-active': item.Name === diagnoser.Name}">
+                <button class="detail-card" (click)="chooseDiagnoser(item)"
+                  [ngClass]="{'detail-card-active': item.Name === diagnoser.Name}">
                   <h4>{{item.Name}}</h4>
                   <p>{{ item.Description }}</p>
                 </button>
@@ -64,8 +40,8 @@
                 <ng-container *ngFor="let option of DiagnoserOptions">
                   <div class="radio">
                     <label>
-                      <input type="radio" name="optradio" [checked]="diagnoserOption.option === option.option" [value]="option.option"
-                        (change)="chooseDiagnoserAction(option)"> {{ option.option }}
+                      <input type="radio" name="optradio" [checked]="diagnoserOption.option === option.option"
+                        [value]="option.option" (change)="chooseDiagnoserAction(option)"> {{ option.option }}
                     </label>
                   </div>
                 </ng-container>
@@ -75,23 +51,43 @@
               </div>
             </div>
             <div class="row" style="margin-bottom: 5px; margin-left: 5px">
-              <div class="alert-section alert-danger" *ngIf="showDiagnoserOptionWarning">
-                You have chosen a tool option that does not restart the process. This can cause
-                auto-healing actions to kick in multiple times thus generating a lot of data. It is
-                recommended to choose <strong>CollectKillAnalyze</strong> option to ensure that the process gets
-                restarted after collecting data.
+              <div *ngIf="showDiagnoserOptionWarning">
+                <table class="ml-4 mt-4 table table-bordered" style="width:90%">
+                  <th>
+                    <tr>
+                      <td>
+                        <div style="padding: 10px">
+                          <i class="fa health-icon fa-exclamation-triangle warning-icon-color"></i> Warning
+                        </div>
+                      </td>
+                    </tr>
+                  </th>
+                  <tr>
+                    <td> You have chosen a tool option that does not restart the process. This can cause
+                      auto-healing actions to kick in multiple times thus generating a lot of data. It is
+                      recommended to choose <strong>CollectKillAnalyze</strong> option to ensure that the process gets
+                      restarted after collecting data.</td>
+                  </tr>
+                </table>
+
               </div>
             </div>
           </div>
         </div>
+        <div class="mt-3">
+          <daas-validator #daasValidatorRef [siteToBeDiagnosed]="siteToBeDiagnosed" [diagnoserName]="diagnoser.Name"
+            (DaasValidated)="onDaasValidated($event)"></daas-validator>
+        </div>
+
       </div>
 
       <div *ngIf="customActionType == 'Custom'">
         <div *ngIf="customActionType == 'Custom'" class="form-group">
           <label for="executable">Specify the executable to be launched :</label>
           <div>
-            <input style="width:400px" type="text" id="executable" aria-describedby="executableHelp" (input)="updateCustomActionExe($event.target.value)"
-              [ngModel]="customActionExe" placeholder="for e.g. d:\home\data\anycustomexe.exe">
+            <input style="width:400px" type="text" id="executable" aria-describedby="executableHelp"
+              (input)="updateCustomActionExe($event.target.value)" [ngModel]="updatedCustomAction.exe"
+              placeholder="for e.g. d:\home\data\anycustomexe.exe">
             <div>
               <small id="executableHelp" class="form-text text-muted">This process will be launched when the above
                 mentioned triggers are met</small>
@@ -101,24 +97,23 @@
         <div class="form-group">
           <label for="exeParams">Additional Parameters :</label>
           <div>
-            <input style="width:400px" type="text" id="exeParams" placeholder="e.g. -customparamer" (input)="updateCustomActionParams($event.target.value)"
-              [ngModel]="customActionParams">
+            <input style="width:400px" type="text" id="exeParams" placeholder="e.g. -customparamer"
+              (input)="updateCustomActionParams($event.target.value)" [ngModel]="updatedCustomAction.parameters">
           </div>
         </div>
       </div>
     </div>
 
-    <div *ngIf="customActionType == 'Custom' || ( alwaysOnEnabled && (supportedTier || !checkingSkuSucceeded) && !checkingSupportedTier)" style="margin-top:15px;margin-left:15px">
+    <div *ngIf="customActionType == 'Custom' || validationResult.Validated" class="ml-4">
       Action chosen:
-      <span *ngIf="customActionType === 'Diagnostics'" class="final-action">D:\home\data\DaaS\bin\DaasConsole.exe
-        -{{diagnoserOption.option}} "{{diagnoser.Name}}" 60</span>
-      <span *ngIf="customActionType === 'Custom'" class="final-action">{{this.customActionExe}}
-        {{this.customActionParams}} </span>
+      <span class="final-action">{{ updatedCustomAction.exe + ' ' + updatedCustomAction.parameters }}</span>
       <div class="custom-action-note">
-        <strong>Note:</strong> The custom action is executed <strong>each time</strong> the auto-healing condition is met in the process
+        <strong>Note:</strong> The custom action is executed <strong>each time</strong> the auto-healing condition is
+        met in the process
       </div>
       <div style="margin-top:10px;margin-bottom: 10px">
-        <button type="button" class="btn btn-primary btn-sm" (click)="saveCustomAction()">Save</button>
+        <button type="button" class="btn btn-primary btn-sm" [disabled]="updatedCustomAction.exe.length === 0"
+          (click)="saveCustomAction()">Save</button>
       </div>
 
     </div>

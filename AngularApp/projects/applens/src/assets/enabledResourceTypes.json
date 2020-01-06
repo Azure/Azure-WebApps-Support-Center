@@ -165,6 +165,36 @@
             "azureCommImpactedServicesList": "ISE",
             "pesId": "",
             "staticSelfHelpContent": ""
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.Batch/batchAccounts",
+            "templateFileName": "Batch",
+            "imgSrc": "assets/img/Azure-Batch-Logo.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "BatchAccounts",
+            "pesId": "15614",
+            "staticSelfHelpContent": ""
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.Storage/storageAccounts",
+            "templateFileName": "StorageAccount",
+            "imgSrc": "assets/img/StorageAccount.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "StorageAccounts",
+            "pesId": "15629",
+            "staticSelfHelpContent": ""
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.ClassicStorage/storageAccounts",
+            "templateFileName": "ClassicStorageAccount",
+            "imgSrc": "assets/img/ClassicStorageAccount.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "ClassicStorageAccounts",
+            "pesId": "15629",
+            "staticSelfHelpContent": ""
         }
     ]
 }

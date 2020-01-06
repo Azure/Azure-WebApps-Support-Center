@@ -1,0 +1,59 @@
+<div *ngIf="checkingBlobSasUriConfigured">
+  <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+  Checking for configured blob storage...
+</div>
+<div class="outline-box" *ngIf="!checkingBlobSasUriConfigured && !error">
+  <div *ngIf="validationResult.BlobSasUri.length > 0">
+    <div>
+      Storage account: <span class="highlight-blue">{{ getBlobSasUriShort()}}</span>
+      (<a style="cursor: pointer" [class.disabled]="sessionInProgress" (click)="enableEditMode()">change</a>)
+    </div>
+    <div style="font-size: smaller">Memory dumps captured via this tool will be stored in this storage account</div>
+  </div>
+  <div class="mt-3" *ngIf="(validationResult.BlobSasUri.length === 0 || editMode) && !error">
+    <strong class="mt-3">Storage</strong>
+    <div class="mt-1 mb-2">
+      Before you can collect a memory dump, you must specificy a storage account to store the dump files. This
+      is required so that the dump files do not impact disk space of your app.
+    </div>
+    <div class="mt-4">
+      <ng-container *ngFor="let option of Options">
+        <span class="mr-3">
+          <input type="radio" name="optradio" [checked]="chosenOption.option === option.option" [value]="option.option"
+            (change)="chooseOption(option)"> {{ option.Text }}</span>
+      </ng-container>
+
+      <div *ngIf="chosenOption.option === 'CreateNew'">
+        <input class="mt-2 fixed-width" type="text" id="newStorageAccountName" aria-describedby="storageAccountHelp"
+          (input)="updateStorageAccount($event.target.value)" [ngModel]="newStorageAccountName">
+      </div>
+
+      <div *ngIf="chosenOption.option === 'ChooseExisting'">
+        <select class="mt-2 fixed-width" id="storageAccountsList" [(ngModel)]="chosenStorageAccount">
+          <optgroup *ngFor="let location of getLocations()" [label]="location">
+            <option *ngFor="let account of getStorageAccountsForLocation(location)" [ngValue]="account"
+              [selected]="account === chosenStorageAccount">{{account.name}}
+            </option>
+          </optgroup>
+        </select>
+      </div>
+
+      <button type="button" class="btn btn-primary mt-3 mb-2"
+        [disabled]="!saveEnabled || generatingSasUri || creatingStorageAccount" (click)="saveChanges()">Save</button>
+      <button type="button" class="btn btn-primary mt-3 mb-2"
+        [disabled]="!saveEnabled || generatingSasUri || creatingStorageAccount || !editMode"
+        (click)="cancel()">Cancel</button>
+      <div *ngIf="creatingStorageAccount">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Creating storage account...
+      </div>
+      <div *ngIf="generatingSasUri">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Generating SAS Uri...
+      </div>
+    </div>
+  </div>
+</div>
+<div class="focus-box focus-box-warning" style="margin-top:20px;word-wrap: break-word" *ngIf="error">
+  <strong>Error</strong> - {{ error }}
+</div>

@@ -156,7 +156,7 @@ export class HighchartsGraphComponent implements OnInit {
             },
             chart: {
                 reflow: true,
-                height: 200,
+                height: 300,
                 display: 'block!important',
                 type: 'line',
                 zoomType: 'x',
@@ -202,6 +202,8 @@ export class HighchartsGraphComponent implements OnInit {
                 enabled: true,
                 valueDecimals: 2,
                 useHTML: true,
+                outside: true,
+                backgroundColor: "white",
             },
             navigation: {
                 buttonOptions: {
@@ -239,7 +241,7 @@ export class HighchartsGraphComponent implements OnInit {
                         onclick: function () {
                             var series = this.series;
                             for (var i = 0; i < series.length; i++) {
-                                series[i].hide();
+                                series[i].setVisible(false, false);
                             }
                         }
                     },
@@ -248,7 +250,7 @@ export class HighchartsGraphComponent implements OnInit {
                         onclick: function () {
                             var series = this.series;
                             for (var i = 0; i < series.length; i++) {
-                                series[i].show();
+                                series[i].setVisible(true, false);
                             }
                         }
                     }
@@ -276,7 +278,6 @@ export class HighchartsGraphComponent implements OnInit {
                     year: '%Y'
                 },
                 labels: {
-                    useHTML: true,
                     style: {
                         whiteSpace: 'nowrap'
                     }

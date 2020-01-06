@@ -8,6 +8,8 @@ import { Sku } from '../../../shared/models/server-farm';
 import { IDiagnosticProperties } from '../../../shared/models/diagnosticproperties';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
+import { PortalReferrerMap } from '../../../shared/models/portal-referrer-map';
+import { DetectorType } from 'diagnostic-data';
 
 @Injectable()
 export class WebSitesService extends ResourceService {
@@ -24,6 +26,39 @@ export class WebSitesService extends ResourceService {
 
     constructor(protected _armService: ArmService, private _appAnalysisService: AppAnalysisService) {
         super(_armService);
+    }
+
+    public getIbizaBladeToDetectorMapings():Observable<PortalReferrerMap[]> {
+        return this.warmUpCallFinished.pipe(flatMap( ()=>{
+            let bladeToDetectorMap:PortalReferrerMap[]; 
+            
+            bladeToDetectorMap = [{
+                ReferrerExtensionName: 'Websites',
+                ReferrerBladeName: 'CertificatesBlade',
+                ReferrerTabName: 'Bindings',
+                DetectorType: DetectorType.Detector,
+                DetectorId: 'configuringsslandcustomdomains'
+            },
+            {
+                ReferrerExtensionName: 'Websites',
+                ReferrerBladeName: 'CustomDomainsAndSSL',
+                ReferrerTabName: '',
+                DetectorType: DetectorType.Detector,
+                DetectorId: 'configuringsslandcustomdomains'
+            }];
+            
+
+            if(this.appType == AppType.WebApp) {
+                bladeToDetectorMap.push({
+                    ReferrerExtensionName: 'Websites',
+                    ReferrerBladeName: 'BackupSummaryBlade',
+                    ReferrerTabName: '',
+                    DetectorType: DetectorType.Detector,
+                    DetectorId: 'backupFailures'
+                });
+            }
+            return Observable.of(bladeToDetectorMap);            
+        }  ));
     }
 
     public getPesId(): Observable<string> {

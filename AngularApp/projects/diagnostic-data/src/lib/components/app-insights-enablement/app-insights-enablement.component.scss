@@ -1,0 +1,58 @@
+.banner {
+  background-color: #eff6fc;
+  height: 48px;
+  text-align: center;
+  color: #333;
+  position: relative;
+}
+
+.ms-Button {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    font-family: Segoe UI WestEuropean,Segoe UI,-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: #333;
+    font-size: 14px;
+    font-weight: 400;
+    background-color: #f4f4f4;
+    border: 1px solid #f4f4f4;
+    cursor: pointer;
+    display: inline-block;
+    height: 32px;
+    min-width: 80px;
+    padding: 4px 20px 6px;
+}
+
+.ms-Button.ms-Button--primary:hover {
+    background-color: #005a9e;
+    border-color: #005a9e;
+}
+
+.ms-Button.ms-Button--primary {
+    background-color: #0078d7;
+    border-color: #0078d7;
+}
+.ms-Button.ms-Button--primary .ms-Button-label {
+  color: #fff;
+}
+
+.ms-Button:hover .ms-Button-label {
+  color: #fff;
+}
+
+.ms-Button-label {
+  color: #333;
+  font-weight: 600;
+  font-size: 14px;
+}
+.vertical-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    margin-left: 10px;
+    font-size: larger;
+  }

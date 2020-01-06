@@ -30,6 +30,7 @@ export class HealthCheckV3Component implements OnInit, AfterViewInit, IChatMessa
   healthCheckpoints: any[];
   selectedCategoryIndex: number = 0;
   healthCheckResultForLogging: string[] = [];
+  resourceId:string = "";
 
   currentSite: Site;
 
@@ -40,6 +41,7 @@ export class HealthCheckV3Component implements OnInit, AfterViewInit, IChatMessa
 
     this._siteService.currentSite.subscribe(site => {
       const checkpoints: any[] = [];
+      this.resourceId = site.id;
 
       checkpoints.push({
         category: 'availability',

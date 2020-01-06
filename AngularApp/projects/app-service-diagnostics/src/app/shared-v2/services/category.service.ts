@@ -30,4 +30,11 @@ export class CategoryService {
     this._categories = this._categories.concat(categories);
     this.categories.next(this._categories);
   }
+
+  public filterCategoriesForSub() {
+    this._categories = this._categories.filter( function(category) {
+        return category.id !== 'navigator';
+    });
+    this.categories.next(this._categories);
+  }
 }

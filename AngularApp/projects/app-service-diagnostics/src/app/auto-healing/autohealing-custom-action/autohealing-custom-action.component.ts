@@ -1,32 +1,35 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, ViewChild, AfterViewInit } from '@angular/core';
 import { ServerFarmDataService } from '../../shared/services/server-farm-data.service';
 import { SiteService } from '../../shared/services/site.service';
 import { SiteInfoMetaData } from '../../shared/models/site';
 import { AutoHealCustomAction } from '../../shared/models/autohealing';
 import { DaasService } from '../../shared/services/daas.service';
+import { DaasValidatorComponent } from '../../shared/components/daas/daas-validator.component';
+import { DaasValidationResult } from '../../shared/models/daas';
+
+const daasConsolePath: string = "D:\\home\\data\\DaaS\\bin\\DaasConsole.exe";
 
 @Component({
   selector: 'autohealing-custom-action',
   templateUrl: './autohealing-custom-action.component.html',
   styleUrls: ['./autohealing-custom-action.component.scss', '../autohealing.component.scss']
 })
-export class AutohealingCustomActionComponent implements OnInit, OnChanges {
-
+export class AutohealingCustomActionComponent implements OnInit, OnChanges, AfterViewInit {
   constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService) {
   }
+
+  @ViewChild('daasValidatorRef') daasValidatorRef: DaasValidatorComponent;
 
   @Input() siteToBeDiagnosed: SiteInfoMetaData;
   @Input() customAction: AutoHealCustomAction;
   @Output() customActionChanged: EventEmitter<AutoHealCustomAction> = new EventEmitter<AutoHealCustomAction>();
 
-  checkingSupportedTier: boolean = true;
-  checkingSkuSucceeded: boolean = false;
-  supportedTier: boolean = false;
-  alwaysOnEnabled: boolean = false;
-
   diagnoser: any = null;
   diagnoserOption: any = null;
   showDiagnoserOptionWarning: boolean = false;
+  validationResult: DaasValidationResult = new DaasValidationResult();
+  updatedCustomAction: AutoHealCustomAction = new AutoHealCustomAction();
+
 
   Diagnosers = [{ Name: 'Memory Dump', Description: 'Collects memory dumps of the process and the child processes hosting your app and analyzes them for errors' },
   { Name: 'CLR Profiler', Description: 'Profiles ASP.NET application code to identify exceptions and performance issues' },
@@ -39,42 +42,22 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
     { option: 'Troubleshoot', Description: 'With this option, the above selected tool\'s data will collected and then analyzed. This will not cause the process to restart. ' }
   ];
   customActionType: string = 'Diagnostics';
-  customActionParams: string = '';
-  customActionExe: string = '';
 
   ngOnChanges() {
     this.initComponent();
   }
 
   ngOnInit() {
-    this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
-      this.checkingSupportedTier = false;
-      if (serverFarm) {
-        this.checkingSkuSucceeded = true;
-        if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier.indexOf('Premium') > -1 || serverFarm.sku.tier === 'Isolated') {
-          this.supportedTier = true;
+    this.initComponent();
+    // This is required in case someone lands on Mitigate page
+    // without ever hitting DAAS endpoint. Browsing to any DAAS
+    // endpoint, will ensure that DaaSConsole is copied to the
+    // right folders and will allow autohealing to work correctly
+    this.makeDaasWarmupCall();
+  }
 
-        }
-      } else {
-        // serverFarm can be NULL for users with Website contributor access only
-        // In those cases, lets check if AlwaysOn is enabled or not
-        this.checkingSkuSucceeded = false;
-      }
-      this._siteService.getAlwaysOnSetting(this.siteToBeDiagnosed).subscribe(alwaysOnSetting => {
-        if (alwaysOnSetting) {
-          this.alwaysOnEnabled = true;
-        } else {
-          this.alwaysOnEnabled = false;
-        }
-      });
-
-      this.initComponent();
-      // This is required in case someone lands on Mitigate page
-      // without ever hitting DAAS endpoint. Browsing to any DAAS
-      // endpoint, will ensure that DaaSConsole is copied to the
-      // right folders and will allow autohealing to work correctly
-      this.makeDaasWarmupCall();
-    });
+  ngAfterViewInit() {
+    this.chooseDiagnoser(this.diagnoser);
   }
 
   makeDaasWarmupCall(): any {
@@ -87,26 +70,21 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   }
   initComponent() {
     if (this.customAction == null) {
-      this.customAction = new AutoHealCustomAction();
-      this.customAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
       this.diagnoserOption = this.DiagnoserOptions[0];
       this.diagnoser = this.Diagnosers[0];
-      this.customAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
-      return;
-    }
 
-    if (this.customActionType === 'Diagnostics') {
+      return;
+    } else {
       const diagnosticsConfiguredCorrectly = this.isDiagnosticsConfigured();
       if (!diagnosticsConfiguredCorrectly) {
         this.initDiagnosticsIfRequired();
       }
     }
-
   }
 
   saveCustomAction() {
     if (this.customActionType === 'Diagnostics') {
-      this.updateDaasAction();
+      this.updateDaasAction(true);
     } else {
       this.updateCustomAction();
     }
@@ -125,7 +103,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
   isDiagnosticsConfigured(): boolean {
     let invalidSetting = false;
     if (this.customAction != null) {
-      if (this.customAction.exe.toLowerCase() === 'd:\\home\\data\\daas\\bin\\daasconsole.exe') {
+      if (this.customAction.exe.toLowerCase() === daasConsolePath.toLowerCase()) {
         this.customActionType = 'Diagnostics';
         if (this.customAction.parameters !== '') {
           invalidSetting = this.getDiagnoserNameAndOptionFromParameter(this.customAction.parameters);
@@ -135,8 +113,8 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
         }
       } else {
         this.customActionType = 'Custom';
-        this.customActionExe = this.customAction.exe;
-        this.customActionParams = this.customAction.parameters;
+        this.updatedCustomAction.exe = this.customAction.exe;
+        this.updatedCustomAction.parameters = this.customAction.parameters;
       }
       return true;
     } else {
@@ -146,7 +124,9 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
 
   chooseDiagnoser(val) {
     this.diagnoser = val;
-
+    this.daasValidatorRef.diagnoserName = this.diagnoser.Name;
+    this.daasValidatorRef.validateDiagnoser();
+    this.updateDaasAction(false);
   }
 
   chooseDiagnoserAction(val) {
@@ -156,36 +136,46 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
     } else {
       this.showDiagnoserOptionWarning = false;
     }
+    this.updateDaasAction(false);
 
+  }
+
+  resetCustomAction() {
+    this.customActionType = 'Custom';
+    if (this.customAction == null || this.customAction.exe.toLowerCase() === daasConsolePath.toLowerCase()) {
+      this.updatedCustomAction.exe = '';
+      this.updatedCustomAction.parameters = '';
+    } else {
+      this.updatedCustomAction.exe = this.customAction.exe;
+      this.updatedCustomAction.parameters = this.customAction.parameters;
+    }
   }
 
   updateCustomActionExe(exe: string) {
-    this.customActionExe = exe;
+    this.updatedCustomAction.exe = exe;
 
   }
   updateCustomActionParams(params: string) {
-    this.customActionParams = params;
+    this.updatedCustomAction.parameters = params;
 
   }
   updateCustomAction() {
-    const autoHealCustomAction = new AutoHealCustomAction();
-    autoHealCustomAction.exe = this.customActionExe;
-    autoHealCustomAction.parameters = this.customActionParams;
-    this.customActionChanged.emit(autoHealCustomAction);
+    this.customActionChanged.emit(this.updatedCustomAction);
   }
 
-  updateDaasAction() {
-    if (this.alwaysOnEnabled === true) {
-      const autoHealDaasAction = new AutoHealCustomAction();
-      autoHealDaasAction.exe = 'D:\\home\\data\\DaaS\\bin\\DaasConsole.exe';
-      autoHealDaasAction.parameters = `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
-      this.customActionChanged.emit(autoHealDaasAction);
+  updateDaasAction(emitEvent: boolean) {
+    if (this.validationResult.Validated) {
+      this.updatedCustomAction.exe = daasConsolePath;
+      this.updatedCustomAction.parameters = this.validationResult.BlobSasUri.length > 0 ? `-${this.diagnoserOption.option} "${this.diagnoser.Name}" -BlobSasUri:"${this.validationResult.BlobSasUri}" 60` : `-${this.diagnoserOption.option} "${this.diagnoser.Name}"  60`;
     } else {
-      const emptyAction = new AutoHealCustomAction();
-      emptyAction.exe = '';
-      emptyAction.parameters = '';
-      this.customActionChanged.emit(emptyAction);
+      this.updatedCustomAction.exe = '';
+      this.updatedCustomAction.parameters = '';
     }
+
+    if (emitEvent) {
+      this.customActionChanged.emit(this.updatedCustomAction);
+    }
+
   }
 
   getDiagnoserNameAndOptionFromParameter(param: string): boolean {
@@ -217,5 +207,10 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges {
       }
     }
     return invalidSetting;
+  }
+
+  onDaasValidated(event: DaasValidationResult) {
+    this.validationResult = event;
+    this.updateDaasAction(false);
   }
 }

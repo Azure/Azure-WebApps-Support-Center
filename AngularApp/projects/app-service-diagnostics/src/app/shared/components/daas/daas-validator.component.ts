@@ -1,10 +1,10 @@
 
-import {throwError as observableThrowError,  of ,  Observable, combineLatest } from 'rxjs';
+import { throwError as observableThrowError, of, Observable, combineLatest } from 'rxjs';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ServerFarmDataService } from '../../services/server-farm-data.service';
 import { DaasService } from '../../services/daas.service';
 import { SiteDaasInfo } from '../../models/solution-metadata';
-import { DiagnoserDefinition } from '../../models/daas';
+import { DiagnoserDefinition, DaasValidationResult } from '../../models/daas';
 import { SiteService } from '../../services/site.service';
 import { catchError, retry, map, retryWhen, delay, take, concat } from 'rxjs/operators';
 
@@ -16,7 +16,8 @@ export class DaasValidatorComponent implements OnInit {
 
   @Input() siteToBeDiagnosed: SiteDaasInfo;
   @Input() diagnoserName: string;
-  @Output() DaasValidated: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() DaasValidated: EventEmitter<DaasValidationResult> = new EventEmitter<DaasValidationResult>();
+  @Input() sessionInProgress: boolean;
 
   supportedTier: boolean = false;
   checkingSkuSucceeded: boolean = false;
@@ -27,6 +28,10 @@ export class DaasValidatorComponent implements OnInit {
   foundDiagnoserWarnings: boolean = false;
   alwaysOnEnabled: boolean = true;
   error: string = '';
+  storageAccountNeeded: boolean = false;
+  diagnosersRequiringStorageAccount: string[] = ['Memory Dump'];
+  validationResult: DaasValidationResult = new DaasValidationResult();
+  diagnosers: DiagnoserDefinition[];
 
   constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService) {
   }
@@ -61,7 +66,7 @@ export class DaasValidatorComponent implements OnInit {
       this.checkingSupportedTier = false;
       const serverFarm = results[0];
       this.alwaysOnEnabled = results[1];
-      const diagnosers: DiagnoserDefinition[] = results[2];
+      this.diagnosers = results[2];
 
       if (serverFarm != null) {
         this.checkingSkuSucceeded = true;
@@ -81,13 +86,8 @@ export class DaasValidatorComponent implements OnInit {
       }
 
       if (this.error === '') {
-        const thisDiagnoser = diagnosers.find(x => x.Name === this.diagnoserName);
-        if (thisDiagnoser) {
-          if (thisDiagnoser.Warnings.length > 0) {
-            this.diagnoserWarning = thisDiagnoser.Warnings.join(',');
-            this.foundDiagnoserWarnings = true;
-            return;
-          }
+        if (this.checkDiagnoserWarnings()) {
+          return;
         }
         if (!this.foundDiagnoserWarnings) {
           this.checkDaasWebjobState();
@@ -96,8 +96,33 @@ export class DaasValidatorComponent implements OnInit {
     });
   }
 
+  checkDiagnoserWarnings(): boolean {
+    const thisDiagnoser = this.diagnosers.find(x => x.Name === this.diagnoserName);
+    if (thisDiagnoser) {
+      if (thisDiagnoser.Warnings.length > 0) {
+        this.diagnoserWarning = thisDiagnoser.Warnings.join(',');
+        this.foundDiagnoserWarnings = true;
+      } else {
+        this.foundDiagnoserWarnings = false;
+      }
+    }
+    return this.foundDiagnoserWarnings;
+  }
   ngOnInit(): void {
     this.validateDaasSettings();
+  }
+
+  validateDiagnoser(): void {
+    this.storageAccountNeeded = this.diagnosersRequiringStorageAccount.findIndex(x => x === this.diagnoserName) >= 0;
+    if (this.checkDiagnoserWarnings()) {
+      this.validationResult.Validated = false;
+      this.DaasValidated.emit(this.validationResult);
+      return;
+    }
+    if (!this.storageAccountNeeded) {
+      this.validationResult.Validated = true;
+      this.DaasValidated.emit(this.validationResult);
+    }
   }
 
   checkDaasWebjobState() {
@@ -121,7 +146,7 @@ export class DaasValidatorComponent implements OnInit {
           this.daasRunnerJobRunning = false;
           return;
         } else {
-          this.DaasValidated.emit(true);
+          this.validateDiagnoser();
         }
       }, error => {
         // We come in this block if the ARM call to get webjob fails
@@ -129,5 +154,9 @@ export class DaasValidatorComponent implements OnInit {
         this.daasRunnerJobRunning = false;
         this.error = `Failed while retrieving DaaS webjob state `;
       });
+  }
+
+  onStorageAccountValidated(event: DaasValidationResult) {
+    this.DaasValidated.emit(event);
   }
 }

@@ -66,7 +66,7 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
     }
 
     initWizard(): void {
-
+        this.WizardSteps = [];
         this.WizardSteps.push({
             Caption: 'Step 1: Starting Profiler',
             IconType: 'fa-play',

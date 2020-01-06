@@ -47,12 +47,14 @@ namespace Backend
             //var config = new ChatConfiguration();
             var config = Configuration.GetSection("Chat").Get<ChatConfiguration>();
             services.AddSingleton(config);
-
+            
             services.AddSingleton<IKustoQueryService, KustoQueryService>();
             services.AddSingleton<IKustoTokenRefreshService, KustoTokenRefreshService>();
             services.AddSingleton<IOutageCommunicationService, OutageCommunicationService>();
             services.AddSingleton<IArmService, ArmService>();
             services.AddSingleton<IChatService, ChatService>();
+            services.AddSingleton<IEncryptionService, EncryptionService>();
+            services.AddSingleton<IAppInsightsService, AppInsightsService>();
         }
 
         

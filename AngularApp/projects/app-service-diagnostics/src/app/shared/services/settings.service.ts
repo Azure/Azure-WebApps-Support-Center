@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../../startup/services/auth.service';
-import { ArmService} from '../../shared/services/arm.service';
-import { Observable, pipe} from 'rxjs';
+import { ArmService } from '../../shared/services/arm.service';
+import { Observable, pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ResponseMessageEnvelope } from '../models/responsemessageenvelope';
 @Injectable({
@@ -15,26 +15,38 @@ export class PortalSettingsService {
   scanEnabled: boolean = false;
   constructor(private authService: AuthService, private armService: ArmService) {
     this.authService.getStartupInfo().subscribe(data => {
-        this.resourceId = data.resourceId;
-        this.settingsUrl = `/resource${data.resourceId}/settings`;
+      this.resourceId = data.resourceId;
+      this.settingsUrl = `/resource${data.resourceId}/settings`;
     });
-   }
+  }
 
   public getUrlToNavigate(): string {
     return this.settingsUrl;
-   }
+  }
 
-   public getScanEnabled(): Observable<boolean> {
-       let url = this.resourceId;
+  public getScanEnabled(): Observable<boolean> {
+    let url = this.resourceId;
     return this.armService.getResource<ResponseMessageEnvelope<any>>(url, '2018-02-01', true).pipe(map((data: ResponseMessageEnvelope<any>) => {
-            let resource = data;
-            let scanEnabled = false;
-            if(resource.tags && resource.tags['hidden-related:diagnostics/changeAnalysisScanEnabled']) {
-                scanEnabled = resource.tags['hidden-related:diagnostics/changeAnalysisScanEnabled']  == 'true' ? true : false;
-            } else {
-                scanEnabled = false;
-            }
-            return scanEnabled;
-        }));
-   }
+      let resource = data;
+      let scanEnabled = false;
+      if (resource.tags && resource.tags['hidden-related:diagnostics/changeAnalysisScanEnabled']) {
+        scanEnabled = resource.tags['hidden-related:diagnostics/changeAnalysisScanEnabled'] == 'true' ? true : false;
+      } else {
+        scanEnabled = false;
+      }
+      return scanEnabled;
+    }));
+  }
+
+  public getAppInsightsConnected(): Observable<boolean> {
+    let url = this.resourceId;
+    return this.armService.getResource<ResponseMessageEnvelope<any>>(url, '2018-02-01', true).pipe(map((data: ResponseMessageEnvelope<any>) => {
+      let resource = data;
+      let appInsightsConnected = false;
+      if (resource.tags && resource.tags['hidden-related:diagnostics/applicationInsightsSettings']) {
+        appInsightsConnected = true;
+      }
+      return appInsightsConnected;
+    }));
+  }
 }

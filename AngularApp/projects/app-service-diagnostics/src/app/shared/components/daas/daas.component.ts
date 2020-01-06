@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { SiteDaasInfo } from '../../models/solution-metadata';
-import { Session, Diagnoser, Report, DiagnoserDefinition, Log } from '../../models/daas';
+import { Session, Diagnoser, Report, DiagnoserDefinition, Log, DaasValidationResult } from '../../models/daas';
 import { Subscription, Observable, interval } from 'rxjs';
 import { StepWizardSingleStep } from '../../models/step-wizard-single-step';
 import { SiteService } from '../../services/site.service';
@@ -54,40 +54,42 @@ export class DaasComponent implements OnInit, OnDestroy {
     retrievingInstancesFailed: boolean = false;
     instancesChanged: boolean = false;
 
-    daasValidated: boolean = false;
+    validationResult: DaasValidationResult = new DaasValidationResult();
     cancellingSession: boolean = false;
     collectionMode: number = 0;
     showInstanceWarning: boolean = false;
+    sessionHasBlobSasUri: boolean = false;
 
     constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
     }
 
-    onDaasValidated(validated: boolean) {
+    onDaasValidated(validation: DaasValidationResult) {
+        this.validationResult = validation;
+        if (validation.Validated) {
+            if (this.diagnoserNameLookup === '') {
+                this.diagnoserNameLookup = this.diagnoserName;
+            }
 
-        if (this.diagnoserNameLookup === '') {
-            this.diagnoserNameLookup = this.diagnoserName;
-        }
+            this.sessionCompleted = false;
+            this.operationInProgress = true;
+            this.operationStatus = 'Retrieving instances...';
 
-        this.daasValidated = true;
-        this.sessionCompleted = false;
-        this.operationInProgress = true;
-        this.operationStatus = 'Retrieving instances...';
-
-        this._daasService.getInstances(this.siteToBeDiagnosed).pipe(retry(2))
-            .subscribe(result => {
-                this.operationInProgress = false;
-                this.operationStatus = '';
-
-                this.instances = result;
-                this.checkRunningSessions();
-                this.populateinstancesToDiagnose();
-                this.initWizard();
-            },
-                error => {
-                    this.error = error;
+            this._daasService.getInstances(this.siteToBeDiagnosed).pipe(retry(2))
+                .subscribe(result => {
                     this.operationInProgress = false;
-                    this.retrievingInstancesFailed = true;
-                });
+                    this.operationStatus = '';
+
+                    this.instances = result;
+                    this.checkRunningSessions();
+                    this.populateinstancesToDiagnose();
+                    this.initWizard();
+                },
+                    error => {
+                        this.error = error;
+                        this.operationInProgress = false;
+                        this.retrievingInstancesFailed = true;
+                    });
+        }
     }
 
     ngOnInit(): void {
@@ -95,7 +97,7 @@ export class DaasComponent implements OnInit, OnDestroy {
     }
 
     initWizard(): void {
-
+        this.WizardSteps = [];
         this.WizardSteps.push({
             Caption: 'Step 1: Initializing Diagnostics ',
             IconType: 'fa-play',
@@ -135,6 +137,7 @@ export class DaasComponent implements OnInit, OnDestroy {
                         const daasDiagnoser = sessions[index].DiagnoserSessions.find(x => x.Name.startsWith(this.diagnoserNameLookup));
                         if (daasDiagnoser) {
                             runningSession = sessions[index];
+                            this.sessionHasBlobSasUri = sessions[index].HasBlobSasUri;
                             break;
                         }
                     }
@@ -314,13 +317,14 @@ export class DaasComponent implements OnInit, OnDestroy {
                     return false;
                 }
 
+                this.sessionHasBlobSasUri = this.validationResult.BlobSasUri.length > 0;
                 this.Reports = [];
                 this.Logs = [];
                 this.sessionInProgress = true;
                 this.sessionStatus = 1;
                 this.updateInstanceInformation();
 
-                const submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.diagnoserName, this.instancesToDiagnose, this.collectionMode === 1)
+                const submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.diagnoserName, this.instancesToDiagnose, this.collectionMode === 1, this.validationResult.BlobSasUri)
                     .subscribe(result => {
                         this.sessionId = result;
                         this.subscription = interval(10000).subscribe(res => {
@@ -347,6 +351,15 @@ export class DaasComponent implements OnInit, OnDestroy {
 
     openFile(url: string) {
         this._windowService.open(`https://${this.scmPath}/api/vfs/data/DaaS/${url}`);
+    }
+
+    openLog(log: Log, hasBlobSasUri: boolean) {
+        if (hasBlobSasUri) {
+            this._windowService.open(`${log.FullPermanentStoragePath}`);
+        } else {
+            this._windowService.open(`https://${this.scmPath}/api/vfs/data/DaaS/${log.RelativePath}`);
+        }
+
     }
 
     ngOnDestroy(): void {

@@ -68,7 +68,7 @@ export class OnboardingFlowComponent implements OnInit {
   allUtterances: any[] = [];
   recommendedUtterances: RecommendedUtterance[] = [];
   utteranceInput: string = "";
-  
+
   modalPublishingButtonText: string;
   modalPublishingButtonDisabled: boolean;
 
@@ -267,7 +267,7 @@ export class OnboardingFlowComponent implements OnInit {
       })
       .subscribe((response: any) => {
         this.queryResponse = response.body;
-        if (this.queryResponse.invocationOutput && this.queryResponse.invocationOutput.metadata){
+        if (this.queryResponse.invocationOutput && this.queryResponse.invocationOutput.metadata && !isSystemInvoker){
           this.id = this.queryResponse.invocationOutput.metadata.id;
         }
         if (this.queryResponse.invocationOutput.suggestedUtterances && this.queryResponse.invocationOutput.suggestedUtterances.results) {
@@ -327,7 +327,7 @@ export class OnboardingFlowComponent implements OnInit {
       this.ngxSmartModalService.getModal('publishModal').open();
     }
   }
-  
+
   prepareMetadata() {
     this.publishingPackage.metadata = JSON.stringify({ "utterances": this.allUtterances });
   }
@@ -339,7 +339,7 @@ export class OnboardingFlowComponent implements OnInit {
       this.publishingPackage.dllBytes === '') {
       return;
     }
-    
+
     this.prepareMetadata();
     this.publishButtonDisabled = true;
     this.runButtonDisabled = true;

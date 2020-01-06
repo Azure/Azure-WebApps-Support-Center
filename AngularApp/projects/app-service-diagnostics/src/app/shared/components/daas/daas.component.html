@@ -1,6 +1,5 @@
-<daas-validator [siteToBeDiagnosed]="siteToBeDiagnosed" [diagnoserName]="diagnoserName" (DaasValidated)="onDaasValidated($event)"></daas-validator>
-
-<div *ngIf="daasValidated">
+<daas-validator [sessionInProgress] = "sessionInProgress" [siteToBeDiagnosed]="siteToBeDiagnosed" [diagnoserName]="diagnoserName" (DaasValidated)="onDaasValidated($event)"></daas-validator>
+<div *ngIf="validationResult.Validated">
     <div class="action-box" *ngIf="siteToBeDiagnosed">
         <div>
             <table style="border:none">
@@ -117,7 +116,7 @@
                     <td>
                         <ul *ngIf="Logs.length > 0" style="list-style: none;padding:0">
                             <li *ngFor="let log of Logs">
-                                <a (click)="openFile(log.RelativePath)" style="cursor: pointer">
+                                <a (click)="openLog(log, sessionHasBlobSasUri)" style="cursor: pointer">
                                     {{ log.FileName }}
                                 </a>
                             </li>

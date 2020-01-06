@@ -1,10 +1,11 @@
 <div *ngIf="!checkingSupportedTier && checkingSkuSucceeded && !supportedTier">
   <div class="focus-box focus-box-warning" style="margin-top:20px;margin-left:10px">
     <div>
-      <strong>Error</strong> - This tool is supported only on <b>Standard, Premium </b> and <b>Isolated</b> SKU's only with <strong>AlwaysOn</strong> setting enabled to TRUE
+      <strong>Error</strong> - This tool is supported only on <b>Standard, Premium </b> and <b>Isolated</b> SKU's only
+      with <strong>AlwaysOn</strong> setting enabled to TRUE
     </div>
   </div>
-  <div  style="margin-left:10px">
+  <div style="margin-left:10px">
     <daas-scaleup></daas-scaleup>
   </div>
 </div>
@@ -20,8 +21,10 @@
 <div *ngIf="!checkingSupportedTier && (supportedTier || !checkingSkuSucceeded) && !alwaysOnEnabled">
   <div class="focus-box focus-box-warning">
     <div>
-      <strong>Error</strong> - We determined that the web app does not have Always-On enabled and due to these the diagnostic
-      tools will not work reliably with AutoHeal. Please turn on the Always-On setting by going to the Application Settings
+      <strong>Error</strong> - We determined that the web app does not have Always-On enabled and due to these the
+      diagnostic
+      tools will not work reliably with AutoHeal. Please turn on the Always-On setting by going to the Application
+      Settings
       for the web app and then run these tools.
     </div>
   </div>
@@ -29,8 +32,10 @@
 
 <div *ngIf="!daasRunnerJobRunning" class="focus-box focus-box-warning" style="margin-top:20px">
   <div>
-    <strong>Error</strong> - We found that the DAAS Web job is in a stopped state. Please go to WebJobs under this Web App and start
-    the DAAS Web job manually and re-run this tool. If this is the first time you are running these tools, try hitting the refresh button
+    <strong>Error</strong> - We found that the DAAS Web job is in a stopped state. Please go to WebJobs under this Web
+    App and start
+    the DAAS Web job manually and re-run this tool. If this is the first time you are running these tools, try hitting
+    the refresh button
     after a few minutes
   </div>
 </div>
@@ -50,6 +55,13 @@
   Checking suppported tier and retrieving daas settings
 </div>
 
-<div style="margin-top:15px" *ngIf="(!supportedTier || !daasRunnerJobRunning || foundDiagnoserWarnings) && (!checkingDaasWebJobStatus && !checkingSupportedTier)">
-  <button class="btn btn-link pull-right" (click)="validateDaasSettings()"><i class="fa fa-refresh refresh-icon"></i> Refresh</button>  
+<div style="margin-top:15px"
+  *ngIf="(!supportedTier || !daasRunnerJobRunning || foundDiagnoserWarnings) && (!checkingDaasWebJobStatus && !checkingSupportedTier)">
+  <button class="btn btn-link pull-right" (click)="validateDaasSettings()"><i class="fa fa-refresh refresh-icon"></i>
+    Refresh</button>
+</div>
+
+<div class="col" *ngIf="storageAccountNeeded">
+  <configure-storage-account [siteToBeDiagnosed]="siteToBeDiagnosed" [sessionInProgress]="sessionInProgress"
+    (StorageAccountValidated)="onStorageAccountValidated($event)"></configure-storage-account>
 </div>

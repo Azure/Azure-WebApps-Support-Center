@@ -65,6 +65,8 @@ export class Session {
     Deleting: boolean = false;
     DeletingFailure: string = '';
     LogFilesSize: number;
+    BlobSasUri: string;
+    HasBlobSasUri: boolean = false;
 }
 
 export interface DiagnoserDefinition {
@@ -139,8 +141,8 @@ export class MonitoringSession {
     MaximumNumberOfHours: number;
     FilesCollected: MonitoringFile[];
     AnalysisStatus: AnalysisStatus;
-    AnalysisSubmitted:boolean = false;
-    ErrorSubmittingAnalysis:string = "";
+    AnalysisSubmitted: boolean = false;
+    ErrorSubmittingAnalysis: string = "";
 }
 
 export interface MonitoringFile {
@@ -161,10 +163,24 @@ export interface MonitoringLogsPerInstance {
     Logs: string
 }
 
-export interface DaasAppInfo{
-    Framework:string;
+export interface DaasAppInfo {
+    Framework: string;
     FrameworkVersion: string;
     AspNetCoreVersion: string;
-    CoreProcessName:string;
-    LoggingLevel:string;
+    CoreProcessName: string;
+    LoggingLevel: string;
+}
+
+export class DaasSettings {
+    Diagnosers: any[] = [];
+    TimeSpan: string;
+    BlobSasUri: string;
+    BlobContainer: string;
+    BlobKey: string;
+    BlobAccount: string;
+}
+
+export class DaasValidationResult {
+    Validated: boolean = false;
+    BlobSasUri: string = "";
 }

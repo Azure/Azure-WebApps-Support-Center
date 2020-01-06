@@ -21,13 +21,31 @@ export class BackendCtrlService {
 
     return this._authService.getStartupInfo().pipe(
       mergeMap((startupInfo: StartupInfo) => {
-        const url =  `${this.apiEndpoint}${path}`;
+        const url = `${this.apiEndpoint}${path}`;
 
         const request = this._http.get(url, {
           headers: this._getHeaders(startupInfo, headers)
         });
 
         return this._cacheService.get(path, request, invalidateCache);
+      }));
+  }
+
+  public put<T, S>(path: string, body?: S, headers: HttpHeaders = null): Observable<T> {
+
+    return this._authService.getStartupInfo().pipe(
+      mergeMap((startupInfo: StartupInfo) => {
+        const url = `${this.apiEndpoint}${path}`;
+        let bodyString: string = '';
+        if (body) {
+            bodyString = JSON.stringify(body);
+        }
+
+        const request = this._http.put(url, bodyString, {
+          headers: this._getHeaders(startupInfo, headers)
+        });
+
+        return this._cacheService.get(path, request, true);
       }));
   }
 

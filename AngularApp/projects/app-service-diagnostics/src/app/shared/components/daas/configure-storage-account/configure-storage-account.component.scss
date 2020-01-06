@@ -1,0 +1,23 @@
+.outline-box {
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+.highlight-blue {
+  color: #286090;
+  font-weight: bold;
+}
+.fixed-width {
+  width: 180px;
+}
+
+span input[type="radio"] {
+  vertical-align: text-bottom;
+}
+
+a.disabled {
+    color: gray;
+    cursor: not-allowed;
+    text-decoration: underline;
+    pointer-events: none; 
+}

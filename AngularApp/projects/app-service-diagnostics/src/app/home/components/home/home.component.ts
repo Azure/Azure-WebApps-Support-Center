@@ -14,7 +14,7 @@ import { AuthService } from '../../../startup/services/auth.service';
 import { PortalKustoTelemetryService } from '../../../shared/services/portal-kusto-telemetry.service';
 import { WebSitesService } from '../../../resources/web-sites/services/web-sites.service';
 import { AppType } from '../../../shared/models/portal';
-
+import { SubscriptionPropertiesService} from '../../../shared/services/subscription-properties.service';
 @Component({
   selector: 'home',
   templateUrl: './home.component.html',
@@ -49,7 +49,8 @@ export class HomeComponent implements OnInit {
 
   constructor(private _resourceService: ResourceService, private _categoryService: CategoryService, private _notificationService: NotificationService, private _router: Router,
     private _detectorControlService: DetectorControlService, private _featureService: FeatureService, private _logger: LoggingV2Service, private _authService: AuthService,
-    private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute, private armService: ArmService,private loggingService:PortalKustoTelemetryService) {
+    private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute, private armService: ArmService,private loggingService:PortalKustoTelemetryService,
+    private subscriptionPropertiesService: SubscriptionPropertiesService) {
 
     if (_resourceService.armResourceConfig && _resourceService.armResourceConfig.homePageText
       && _resourceService.armResourceConfig.homePageText.title && _resourceService.armResourceConfig.homePageText.title.length > 1
@@ -68,7 +69,7 @@ export class HomeComponent implements OnInit {
           searchBarPlaceHolder: 'Search App Service Environment Diagnostics'
         };
         this.searchPlaceHolder = this.homePageText.searchBarPlaceHolder;
-      } 
+      }
       else {
         if(this._resourceService && this._resourceService instanceof WebSitesService && (this._resourceService as WebSitesService).appType === AppType.FunctionApp) {
           this.homePageText = {
@@ -90,7 +91,7 @@ export class HomeComponent implements OnInit {
           };
           this.searchPlaceHolder = this.homePageText.searchBarPlaceHolder;
         }
-      }      
+      }
     }
 
     if (this.isPublicAzure == false && this.isIE_Browser == false){
@@ -126,10 +127,23 @@ export class HomeComponent implements OnInit {
     if (!this._detectorControlService.startTime) {
       this._detectorControlService.setDefault();
     }
+    let locationPlacementId =  '';
+    this.subscriptionPropertiesService.getSubscriptionProperties(this.subscriptionId).subscribe((response : HttpResponse<{}>) => {
+        let subscriptionProperties = response.body['subscriptionPolicies'];
+        if(subscriptionProperties) {
+            locationPlacementId = subscriptionProperties['locationPlacementId'];
+            let eventProps = {
+                subscriptionId: this.subscriptionId,
+                subscriptionLocationPlacementId: locationPlacementId
+            };
+            this.loggingService.logEvent('SubscriptionProperties', eventProps);
+        }
+    });
 
     if(this._resourceService.resource.type === 'Microsoft.Web/sites') {
-        // Register Change Analysis Resource Provider.
-        this.armService.postResourceFullResponse(this.providerRegisterUrl, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
+        if(locationPlacementId.toLowerCase() !== 'geos_2020-01-01') {
+            // Register Change Analysis Resource Provider.
+            this.armService.postResourceFullResponse(this.providerRegisterUrl, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {
             let eventProps = {
                 url: this.providerRegisterUrl
                 };
@@ -137,6 +151,9 @@ export class HomeComponent implements OnInit {
             }, (error: any) => {
                 this.logHTTPError(error, 'registerResourceProvider');
             });
+        } else {
+            this._categoryService.filterCategoriesForSub();
+        }
     }
   }
 

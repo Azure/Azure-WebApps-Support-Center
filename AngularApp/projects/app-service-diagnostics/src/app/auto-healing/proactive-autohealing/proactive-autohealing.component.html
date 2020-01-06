@@ -1,7 +1,7 @@
 <div style="margin-top:30px;margin-bottom: 20px">
-  <strong>ProActive Auto-Healing </strong> is an extension to the auto healing feature of Azure App Service. It will
+  <strong>Proactive Auto-Heal</strong> is an extension to the auto healing feature of Azure App Service. It will
   only take corrective actions for the sites that we have deemed to be in a bad state for which the best way to recover
-  is to simply restart them. <a href="https://azure.github.io/AppService/2017/08/17/Introducing-Proactive-Auto-Heal.html" target="_blank">Proactive autohealing</a> monitors for high memory and slow response situations and recycles the
+  is to simply restart them. <a href="https://azure.github.io/AppService/2017/08/17/Introducing-Proactive-Auto-Heal.html" target="_blank">Proactive Auto-Heal</a> monitors for high memory and slow response situations and recycles the
   app when one of these conditions is met.
 </div>
 
@@ -14,7 +14,7 @@
     {{ errorMessage }}
   </div>
   <div *ngIf="!retrievingProactiveSettings">
-    <toggle-button ToggleText="ProActive Auto-Healing" [selected]="proactiveAutoHealEnabled"
+    <toggle-button ToggleText="Proactive Auto-Heal" [selected]="proactiveAutoHealEnabled"
       (selectedChange)="proactiveAutoHealEnabled = $event;checkForChanges()"></toggle-button>
 
     <div *ngIf="!retrievingProactiveSettings  && !errorMessage && saveEnabled" class="alert alert-danger alert-section">

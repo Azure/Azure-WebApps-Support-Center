@@ -1,24 +1,30 @@
 <div class="container" style="margin-bottom: 15px">
-  <div class="header1">Mitigate</div>
-  <div style="font-size:13px">Mitigation provides you with an easy way to take an action when your app is having an unexpected behavior. The triggers
-    and actions allow you to define various conditions based on request count, slow requests, memory limit on which you can
-    take specific actions like restarting the process, logging an event, or starting another executable. Please note that
-    these mitigations should only be considered a temporary workaround until you find the real cause for the issue causing
+  <div class="header1">Auto-Heal</div>
+  <div style="font-size:13px">Auto-Heal provides you with an easy way to take an action when your app is having an
+    unexpected behavior. The triggers
+    and actions allow you to define various conditions based on request count, slow requests, memory limit on which you
+    can
+    take specific actions like restarting the process, logging an event, or starting another executable. Please note
+    that
+    these mitigations should only be considered a temporary workaround until you find the real cause for the issue
+    causing
     the unexpected behavior.
   </div>
 
   <div style="margin-top:15px">
     <button type="button" class="btn btn-sm topmenu-button" [ngClass]="{'btn-primary':selectedTab === 'autoHealing'}"
       (click)="selectedTab = 'autoHealing'" [attr.aria-selected]="selectedTab === 'autoHealing'">
-      Configure Mitigation Rules
+      Custom Auto-Heal Rules
     </button>
-    <button type="button" class="btn btn-sm topmenu-button" [ngClass]="{'btn-primary':selectedTab === 'proactiveAutoHealing'}"
-      (click)="selectedTab = 'proactiveAutoHealing'" [attr.aria-selected]="selectedTab === 'proactiveAutoHealing'">
-      ProActive Auto-Healing
+    <button type="button" class="btn btn-sm topmenu-button"
+      [ngClass]="{'btn-primary':selectedTab === 'proactiveAutoHealing'}" (click)="selectedTab = 'proactiveAutoHealing'"
+      [attr.aria-selected]="selectedTab === 'proactiveAutoHealing'">
+      Proactive Auto-Heal
     </button>
-    <button type="button" class="btn btn-sm topmenu-button" [ngClass]="{'btn-primary':selectedTab === 'autoHealingHistory'}"
-      (click)="selectedTab = 'autoHealingHistory'" [attr.aria-selected]="selectedTab === 'autoHealingHistory'">
-      View Auto-Healing History
+    <button type="button" class="btn btn-sm topmenu-button"
+      [ngClass]="{'btn-primary':selectedTab === 'autoHealingHistory'}" (click)="selectedTab = 'autoHealingHistory'"
+      [attr.aria-selected]="selectedTab === 'autoHealingHistory'">
+      History
     </button>
   </div>
 
@@ -36,7 +42,7 @@
 
       <div *ngIf="!retrievingAutohealSettings && !errorMessage">
         <div style="margin-top: 15px;">
-          <toggle-button ToggleText="Auto-Healing Enabled" [selected]="autohealingSettings.autoHealEnabled"
+          <toggle-button ToggleText="Custom Auto-Heal Rules Enabled" [selected]="autohealingSettings.autoHealEnabled"
             (selectedChange)="autohealingSettings.autoHealEnabled = $event; checkForChanges()"></toggle-button>
         </div>
 
@@ -44,8 +50,8 @@
           <div class="header2">1. Define Conditions</div>
           <div class="autohealtile-content">
             <ng-container *ngFor="let trigger of triggers; let i = index;">
-              <div class="autohealtile" tabindex="0" (click)="updateTriggerStatus(i)" [class.active]="triggerSelected ===  i"
-                [class.activeAction]="triggers[i].IsConfigured">
+              <div class="autohealtile" tabindex="0" (click)="updateTriggerStatus(i)"
+                [class.active]="triggerSelected ===  i" [class.activeAction]="triggers[i].IsConfigured">
                 <div class="autohealtile-icon">
                   <div class="icon-template">
                     <i [class]="trigger.Icon"></i>
@@ -56,13 +62,17 @@
             </ng-container>
 
             <div class="forminput" *ngIf="triggerSelected >= 0">
-              <autohealing-slowrequests-rule *ngIf="triggerSelected === 0" [rule]="autohealingSettings.autoHealRules.triggers.slowRequests"
+              <autohealing-slowrequests-rule *ngIf="triggerSelected === 0"
+                [rule]="autohealingSettings.autoHealRules.triggers.slowRequests"
                 (ruleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-slowrequests-rule>
-              <autohealing-memory-rule *ngIf="triggerSelected === 1" [rule]="autohealingSettings.autoHealRules.triggers.privateBytesInKB"
+              <autohealing-memory-rule *ngIf="triggerSelected === 1"
+                [rule]="autohealingSettings.autoHealRules.triggers.privateBytesInKB"
                 (ruleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-memory-rule>
-              <autohealing-requests-rule *ngIf="triggerSelected === 2" [rule]="autohealingSettings.autoHealRules.triggers.requests"
+              <autohealing-requests-rule *ngIf="triggerSelected === 2"
+                [rule]="autohealingSettings.autoHealRules.triggers.requests"
                 (ruleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-requests-rule>
-              <autohealing-statuscodes-rule *ngIf="triggerSelected === 3" [rule]="autohealingSettings.autoHealRules.triggers.statusCodes"
+              <autohealing-statuscodes-rule *ngIf="triggerSelected === 3"
+                [rule]="autohealingSettings.autoHealRules.triggers.statusCodes"
                 (ruleChange)="triggerRuleUpdated($event, triggerSelected)"></autohealing-statuscodes-rule>
             </div>
           </div>
@@ -92,7 +102,8 @@
 
           <div class="header2">3. Override when Action executes (Optional)</div>
           <div class="autohealtile-content">
-            <div class="autohealtile" [class.activeAction]="minProcessExecutionTime > 0" (click)="minProcessExecutionTimeExpanded = !minProcessExecutionTimeExpanded">
+            <div class="autohealtile" [class.activeAction]="minProcessExecutionTime > 0"
+              (click)="minProcessExecutionTimeExpanded = !minProcessExecutionTimeExpanded">
               <div class="autohealtile-icon">
                 <div class="icon-template">
                   <i class="fa fa-clock-o" aria-hidden="true"></i>
@@ -124,18 +135,26 @@
           </div>
         </div>
       </div>
-      <div *ngIf="!retrievingAutohealSettings  && !errorMessage && saveEnabled && validationWarning.length > 0" class="autohealtile-content alert alert-danger alert-section">
-        <strong>CAUTION</strong>
-        <ul style="margin-top:5px">
-          <li *ngFor="let warning of validationWarning">
-            {{ warning }}
-          </li>
-        </ul>
+      <div *ngIf="!retrievingAutohealSettings  && !errorMessage && saveEnabled && validationWarning.length > 0">
+        <table class="ml-4 mt-4 table table-bordered" style="width:90%">
+          <th>
+            <tr>
+              <td>
+                <div style="padding: 10px">
+                  <i class="fa health-icon fa-exclamation-triangle warning-icon-color"></i> Warning
+                </div>
+              </td>
+            </tr>
+          </th>
+          <tr *ngFor="let warning of validationWarning">
+            <td>{{ warning }}</td>
+          </tr>
+        </table>
       </div>
       <div *ngIf="!retrievingAutohealSettings  && !errorMessage" class="saveSection autohealtile-content">
         <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="saveChanges()">Save</button>
         <button type="button" class="btn btn-primary" [disabled]="!saveEnabled" (click)="reset()">Cancel</button>
-        <div *ngIf="savingAutohealSettings" class="inline">
+        <div *ngIf="savingAutohealSettings" class="inline ml-3">
           <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
           Saving AutoHeal settings...
         </div>

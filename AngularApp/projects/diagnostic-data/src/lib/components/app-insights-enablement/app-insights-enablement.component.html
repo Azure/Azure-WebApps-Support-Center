@@ -1,0 +1,53 @@
+<div *ngIf="isEnabledInProd" class="animated fadeIn panel panel-info width-90">
+  <div class="banner">
+    <div class="vertical-center">
+      <div *ngIf="loadingSettings">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Checking AppInsights...
+      </div>
+      <div *ngIf="!loadingSettings">
+        <div *ngIf="!connecting && !error">
+          <div *ngIf="isAppInsightsEnabled">
+            <div *ngIf="!isAppInsightsConnected">
+              <i class="fa fa-exclamation-triangle warning-icon-color"></i>
+              Connect Application Insights with App Service Diagnostics to allow App Service Diagnostics to access App
+              Insights information.
+              <button class="ms-Button ms-Button--primary" (click)="connect()">
+                <span class="ms-Button-label">Connect</span>
+              </button>
+            </div>
+            <div *ngIf="isAppInsightsConnected">
+              <ng-container *ngIf="!appInsightsValidated">
+                <i class="fa fa-exclamation-triangle warning-icon-color"></i>
+                Application Insights was connected with App Service Diagnostics but the saved configuration is no more
+                valid. Please connect again.
+                <button class="ms-Button ms-Button--primary" (click)="connect()">
+                  <span class="ms-Button-label">Connect</span>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="appInsightsValidated">
+                <i class="fa fa-check-circle healthy-icon-color"></i>
+                <span class="ml-3">App Insights is enabled
+                  and connected with App Service Diagnostics</span>
+              </ng-container>
+            </div>
+          </div>
+          <div *ngIf="!isAppInsightsEnabled">
+            <i class="fa fa-exclamation-triangle warning-icon-color"></i>
+            Enable Application insights for your app to collect application level monitoring data
+            <button class="ms-Button ms-Button--primary" (click)="enable()">
+              <span class="ms-Button-label">Enable</span>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="connecting">
+          <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+          Connecting AppInsights with App Service Diagnostics...
+        </div>
+        <div *ngIf="error" class="focus-box focus-box-warning">
+          {{ error }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

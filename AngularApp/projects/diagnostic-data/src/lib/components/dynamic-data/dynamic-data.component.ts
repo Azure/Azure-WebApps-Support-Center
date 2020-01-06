@@ -26,6 +26,7 @@ import { CompilationProperties}  from '../../models/compilation-properties';
 import { ChangeAnalysisOnboardingComponent } from '../changeanalysis-onboarding/changeanalysis-onboarding.component';
 import { ChangesetsViewComponent } from '../changesets-view/changesets-view.component';
 import {AppDependenciesComponent} from '../app-dependencies/app-dependencies.component';
+import { ConnectAppInsightsComponent } from '../connect-app-insights/connect-app-insights.component';
 import { DetectorSearchComponent } from '../detector-search/detector-search.component';
 @Component({
   selector: 'dynamic-data',
@@ -35,7 +36,7 @@ import { DetectorSearchComponent } from '../detector-search/detector-search.comp
     TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent,
     InsightsComponent, TimeSeriesInstanceGraphComponent, DynamicInsightComponent, MarkdownViewComponent,
     DetectorListComponent, DropdownComponent, CardSelectionComponent, SolutionComponent, GuageControlComponent, FormComponent,
-    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent, DetectorSearchComponent
+      ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent, ConnectAppInsightsComponent, DetectorSearchComponent
   ]
 })
 export class DynamicDataComponent implements OnInit {
@@ -120,6 +121,8 @@ export class DynamicDataComponent implements OnInit {
         return AppDependenciesComponent;
       case RenderingType.SearchComponent:
         return DetectorSearchComponent;
+      case RenderingType.AppInsightEnablement:
+        return ConnectAppInsightsComponent;
       default:
         return null;
     }

@@ -6,6 +6,7 @@ import { environment } from '../../../../environments/environment';
 import { StartupInfo } from '../../models/portal';
 import { DemoSubscriptions } from '../../../betaSubscriptions';
 
+
 @Component({
   selector: 'resource-redirect',
   templateUrl: './resource-redirect.component.html',
@@ -39,6 +40,14 @@ export class ResourceRedirectComponent implements OnInit {
             var caseSubjectParam = info.optionalParameters.find(param => param.key === "caseSubject");
             if (caseSubjectParam){
               caseSubject = caseSubjectParam.value;
+            }
+
+            var referrerParam = info.optionalParameters.find(param => param.key.toLowerCase() === "referrer");
+            if (referrerParam){
+              path += `/portalReferrerResolver`;
+              this._router.navigateByUrl(
+                this._router.createUrlTree([path])
+                );
             }
           }
           if (info.supportTopicId) {
