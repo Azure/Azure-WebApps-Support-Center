@@ -139,8 +139,6 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
             this.showPreLoader = false;
             this.showPreLoadingError = false;
             var searchResults: DetectorMetaData[] = results[0];
-            if (searchResults.length === 0) { this.showSearchTermPractices = true; this.searchTermDisplay = this.searchTerm.valueOf(); }
-            else { this.showSearchTermPractices = false; }
             this.logEvent(TelemetryEventNames.SearchQueryResults, { parentDetectorId: this.detector, searchId: this.searchId, query: this.searchTerm, results: JSON.stringify(searchResults.map((det: DetectorMetaData) => new Object({ id: det.id, score: det.score }))), ts: Math.floor((new Date()).getTime() / 1000).toString() });
             var detectorList = results[1];
             var childrenOfParent = results[2];
@@ -161,6 +159,8 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
 
     startDetectorRendering(detectorList) {
         this.detectorMetaData = detectorList.filter(detector => this.detectors.findIndex(d => d.id === detector.id) >= 0);
+        if (this.detectorMetaData.length === 0) { this.showSearchTermPractices = true; this.searchTermDisplay = this.searchTerm.valueOf(); }
+        else { this.showSearchTermPractices = false; }
         this.detectorViewModels = this.detectorMetaData.map(detector => this.getDetectorViewModel(detector));
         this.issueDetectedViewModels = [];
 
