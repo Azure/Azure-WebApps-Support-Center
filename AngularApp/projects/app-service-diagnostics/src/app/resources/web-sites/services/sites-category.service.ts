@@ -121,7 +121,7 @@ export class SitesCategoryService extends CategoryService {
         hostingEnvironmentKind: HostingEnvironmentKind.All,
         item: {
             id: 'navigator',
-            name: 'Navigator',
+            name: 'Navigator (Preview)',
             description: 'Are you having issues after making changes on your app and its dependencies? Review Navigator to investigate the recent changes in your app and dependencies.',
             keywords: ['Dependency Map', 'Changes', 'Dependency', 'Change Analysis'],
             color: 'rgb(255, 217, 119)',
