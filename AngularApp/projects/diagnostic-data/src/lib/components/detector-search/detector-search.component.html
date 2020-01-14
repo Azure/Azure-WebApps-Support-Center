@@ -117,7 +117,7 @@
         </div>
         <div class="list-item-wrapper"  *ngIf="successfulViewModels.length > 0">
             <div style="display:block"><span (click)="toggleSuccessfulChecks()" class="successful-section-title">{{successfulViewModels.length}} check(s) succeeded</span></div>
-            <div class="list-item" [ngClass]="{'shown' : showSuccessfulChecks, 'hidden': !showSuccessfulChecks}">
+            <div class="list-item" [ngClass]="{'shown' : showSuccessfulChecks || (getPendingDetectorCount() === 0 && issueDetectedViewModels.length === 0), 'hidden': !showSuccessfulChecks && !(getPendingDetectorCount() === 0 && issueDetectedViewModels.length === 0)}">
                 <div class="list-text">
                     <table class="table detector-list">
                         <tbody>

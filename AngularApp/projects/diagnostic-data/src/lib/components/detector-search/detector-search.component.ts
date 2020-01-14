@@ -147,6 +147,15 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
                     if ((result.id !== this.detector) && (childrenOfParent.findIndex((x: string) => x.toLowerCase() == result.id.toLowerCase()) < 0) && (result.type === DetectorType.Detector)) {
                         this.insertInDetectorArray({ name: result.name, id: result.id, score: result.score });
                     }
+                    else if (result.type === DetectorType.Analysis) {
+                        var childList = this.getChildrenOfAnalysis(result.id, detectorList);
+                        if (childList && childList.length > 0) {
+                            childList.forEach((child: DetectorMetaData) => {
+                                this.insertInDetectorArray({ name: child.name, id: child.id, score: result.score });
+                            });
+                        }
+                        this.insertInDetectorArray({ name: result.name, id: result.id, score: result.score });
+                    }
                 });
                 this.startDetectorRendering(detectorList);
             }
