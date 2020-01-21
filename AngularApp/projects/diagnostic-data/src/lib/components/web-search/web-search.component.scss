@@ -1,0 +1,53 @@
+.search-input-group {
+    width:98%;
+    height: 30px;
+}
+
+.icon-err{
+    color: #bf0000;
+}
+
+.no-results-section{
+    margin-top: 10px;
+}
+
+.no-results-header{
+    display: block;
+    font-weight: 500;
+    font-size: 16px;
+  }
+  
+.no-results-content{
+    display:block;
+    font-size: 14px;
+}
+
+.form-control{
+    font-size: 16px;
+}
+
+.article-container {
+    max-width: 80%;
+    //margin-bottom: 100px;
+}
+
+.article {
+    border: 1px solid #dddddd;
+    cursor: pointer;
+    padding:10px;
+    margin-right: 10px;
+}
+
+.article > h5 {
+    color: blue;
+}
+
+.article-link {
+    color:  #949494
+}
+
+.article-heading {
+    color:black;
+    font-weight: bold;
+    margin-bottom:5px;
+}

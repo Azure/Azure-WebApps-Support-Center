@@ -3,6 +3,7 @@ import 'nvd3';
 import { DetectorControlService } from './services/detector-control.service';
 import { DiagnosticService } from './services/diagnostic.service';
 import { GenericSupportTopicService } from './services/generic-support-topic.service';
+import { GenericContentService } from './services/generic-content.service';
 import { TelemetryService } from './services/telemetry/telemetry.service';
 import { NvD3Module } from 'ng2-nvd3';
 import { MarkdownModule } from 'ngx-markdown';
@@ -84,6 +85,7 @@ import { CxpChatLauncherComponent } from './components/cxp-chat-launcher/cxp-cha
 import { AppInsightsEnablementComponent } from './components/app-insights-enablement/app-insights-enablement.component';
 import { ConnectAppInsightsComponent } from './components/connect-app-insights/connect-app-insights.component';
 import {DetectorSearchComponent} from './components/detector-search/detector-search.component';
+import {WebSearchComponent} from './components/web-search/web-search.component';
 
 @NgModule({
   imports: [
@@ -118,7 +120,8 @@ import {DetectorSearchComponent} from './components/detector-search/detector-sea
     HighchartsGraphComponent,
     CxpChatLauncherComponent,
     AppInsightsEnablementComponent,
-    ConnectAppInsightsComponent
+    ConnectAppInsightsComponent,
+    WebSearchComponent
   ],
   exports: [
     FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DetectorSearchComponent,
@@ -132,7 +135,8 @@ import {DetectorSearchComponent} from './components/detector-search/detector-sea
     AppInsightsMarkdownComponent,
     CxpChatLauncherComponent,
     AppInsightsEnablementComponent,
-    ConnectAppInsightsComponent
+    ConnectAppInsightsComponent,
+    WebSearchComponent
   ],
 })
 export class DiagnosticDataModule {
@@ -142,6 +146,7 @@ export class DiagnosticDataModule {
       providers: [
         DiagnosticService,
         GenericSupportTopicService,
+        GenericContentService,
         { provide: DIAGNOSTIC_DATA_CONFIG, useValue: config },
         CXPChatService,
         KustoTelemetryService,

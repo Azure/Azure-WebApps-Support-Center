@@ -68,6 +68,8 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
 
     firstLoad: boolean = true;
 
+    webSearchResults: any[] = [];
+
     @Input()
     withinDiagnoseAndSolve: boolean = false;
     @Input() detector: string = '';
@@ -277,6 +279,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
         this.detectorId = "";
         this.detectorResponse = null;
         this.showSuccessfulChecks = false;
+        this.showSearchTermPractices = false;
     }
 
     getDetectorInsight(viewModel: any): any {

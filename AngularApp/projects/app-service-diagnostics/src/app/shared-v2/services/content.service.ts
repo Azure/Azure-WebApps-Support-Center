@@ -1,11 +1,9 @@
-
-import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Observable, of, BehaviorSubject } from 'rxjs';
-import { Http, Headers } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { ResourceService } from './resource.service';
 import { BackendCtrlService } from '../../shared/services/backend-ctrl.service';
-import { mergeMap, tap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 
 @Injectable()
 export class ContentService {
@@ -26,7 +24,7 @@ export class ContentService {
   private ocpApimKeyBehaviorSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
   private ocpApimKey: string = '';
 
-  constructor(private _http: Http, private _resourceService: ResourceService, private _backendApi: BackendCtrlService) { 
+  constructor(private _http: HttpClient, private _resourceService: ResourceService, private _backendApi: BackendCtrlService) { 
 
     this._backendApi.get<string>(`api/appsettings/ContentSearch:Ocp-Apim-Subscription-Key`).subscribe((value: string) =>{
       this.ocpApimKeyBehaviorSubject.next(value);
@@ -49,22 +47,16 @@ export class ContentService {
     const query = encodeURIComponent(`${questionString} AND ${searchSuffix}`);
     const url = `https://api.cognitive.microsoft.com/bing/v7.0/search?q='${query}'&count=${resultsCount}`;
 
-    return this.ocpApimKeyBehaviorSubject.pipe(
-      mergeMap((key:string)=>{
-        return this._http.get(url, { headers: this.getWebSearchHeaders() }).pipe(map(response => response.json()));
+    return this.ocpApimKeyBehaviorSubject.pipe(mergeMap((key:string)=>{
+      return this._http.get(url, {
+          headers: {
+            "Content-Type": "application/json",
+            "Ocp-Apim-Subscription-Key": this.ocpApimKey
+          }
+        })
       })
     );
   }
-  
-
-  private getWebSearchHeaders(): Headers {
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Ocp-Apim-Subscription-Key', this.ocpApimKey);
-
-    return headers;
-  }
-
 }
 
 export interface SearchResults {

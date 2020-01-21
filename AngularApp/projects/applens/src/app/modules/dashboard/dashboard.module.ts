@@ -23,7 +23,8 @@ import { TabDevelopComponent } from './tabs/tab-develop/tab-develop.component';
 import { ApplensDiagnosticService } from './services/applens-diagnostic.service';
 import { ApplensCommsService } from './services/applens-comms.service';
 import { ApplensSupportTopicService } from './services/applens-support-topic.service';
-import { DiagnosticService, DiagnosticDataModule, CommsService, DetectorControlService, GenericSupportTopicService } from 'diagnostic-data';
+import { ApplensContentService } from './services/applens-content.service';
+import { DiagnosticService, DiagnosticDataModule, CommsService, DetectorControlService, GenericSupportTopicService, GenericContentService } from 'diagnostic-data';
 import { CollapsibleMenuModule } from '../../collapsible-menu/collapsible-menu.module';
 import { ObserverService } from '../../shared/services/observer.service';
 import { TabDataSourcesComponent } from './tabs/tab-data-sources/tab-data-sources.component';
@@ -248,6 +249,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
         SearchService,
         ApplensCommsService,
         ApplensSupportTopicService,
+        ApplensContentService,
         InitResolver,
         {
             provide: ResourceService,
@@ -256,6 +258,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
         },
         { provide: DiagnosticService, useExisting: ApplensDiagnosticService },
         { provide: GenericSupportTopicService, useExisting: ApplensSupportTopicService},
+        { provide: GenericContentService, useExisting: ApplensContentService},
         { provide: CommsService, useExisting: ApplensCommsService },
         { provide: DiagnosticSiteService, useExisting: ResourceService },
         { provide: SolutionService, useExisting: GenericSolutionService }

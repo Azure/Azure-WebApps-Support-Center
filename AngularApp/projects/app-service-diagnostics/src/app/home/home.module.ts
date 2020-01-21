@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { SharedV2Module } from '../shared-v2/shared-v2.module';
-import { GenericSupportTopicService} from 'diagnostic-data';
+import { GenericSupportTopicService, GenericContentService} from 'diagnostic-data';
 import { HomeComponent } from './components/home/home.component';
 import { CategoryChatComponent } from './components/category-chat/category-chat.component';
 import { CategoryTileComponent } from './components/category-tile/category-tile.component';
@@ -195,8 +195,9 @@ export const HomeRoutes = RouterModule.forChild([
     MarkdownModule.forRoot()
   ],
   declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent],
-  providers: [CategoryTabResolver, CategoryChatResolver, TimeControlResolver,
-    { provide: GenericSupportTopicService, useExisting: SupportTopicService}, 
+  providers: [CategoryTabResolver, CategoryChatResolver, TimeControlResolver, ContentService
+    { provide: GenericSupportTopicService, useExisting: SupportTopicService},
+    { provide: GenericContentService, useExisting: ContentService}, 
     { provide: CXPChatService, useExisting: CXPChatCallerService},
   ]
 })
