@@ -50,6 +50,10 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
         }
     }
 
+    clearSearchTerm() {
+        this.searchTerm = "";
+    }
+
     handleRequestFailure() {
         this.showPreLoadingError = true;
         this.showPreLoader = false;
