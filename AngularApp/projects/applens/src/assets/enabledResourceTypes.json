@@ -8,7 +8,8 @@
             "versionPrefix": "v4/",
             "azureCommImpactedServicesList": "appservice",
             "pesId": "14748",
-            "staticSelfHelpContent": "microsoft.web"
+            "staticSelfHelpContent": "microsoft.web",
+            "searchSuffix": "AZURE WEB APP"
         },
         {
             "service": "AseService",
@@ -18,7 +19,8 @@
             "versionPrefix": "v2/",
             "azureCommImpactedServicesList": "appservice",
             "pesId": "16533",
-            "staticSelfHelpContent": "microsoft.ase"
+            "staticSelfHelpContent": "microsoft.ase",
+            "searchSuffix": ""
         },
         {
             "service": "ResourceService",
@@ -28,7 +30,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "logicapp",
             "pesId": "15791",
-            "staticSelfHelpContent": "microsoft.logicapps"
+            "staticSelfHelpContent": "microsoft.logicapps",
+            "searchSuffix": "AZURE LOGIC APP"
         },
         {
             "service": "ResourceService",
@@ -38,7 +41,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "kubernetesservice",
             "pesId": "16450",
-            "staticSelfHelpContent": "microsoft.containerservice"
+            "staticSelfHelpContent": "microsoft.containerservice",
+            "searchSuffix": "AZURE KUBERNETES CLUSTER"
         },
         {
             "service": "ResourceService",
@@ -48,7 +52,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "openShiftManagedClusters",
             "pesId": "",
-            "staticSelfHelpContent": ""
+            "staticSelfHelpContent": "",
+            "searchSuffix": "AZURE KUBERNETES CLUSTER"
         },
         {
             "service": "ResourceService",
@@ -56,7 +61,8 @@
             "templateFileName": "BotService",
             "imgSrc": "assets/img/BotService-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": "botServices"
+            "azureCommImpactedServicesList": "botServices",
+            "searchSuffix": "AZURE BOT SERVICE"
         },
         {
             "service": "ResourceService",
@@ -64,7 +70,8 @@
             "templateFileName": "ServiceFabric",
             "imgSrc": "assets/img/Azure-Service-Fabric-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": "serviceFabric"
+            "azureCommImpactedServicesList": "serviceFabric",
+            "searchSuffix": "AZURE SERVICE FABRIC"
         },
         {
             "service": "ResourceService",
@@ -74,7 +81,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "",
             "pesId": "15551",
-            "staticSelfHelpContent": "microsoft.apim"
+            "staticSelfHelpContent": "microsoft.apim",
+            "searchSuffix": "AZURE API MANAGEMENT SERVICE"
         },
         {
             "service": "ResourceService",
@@ -84,7 +92,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "",
             "pesId": "16512",
-            "staticSelfHelpContent": "microsoft.asc"
+            "staticSelfHelpContent": "microsoft.asc",
+            "searchSuffix": "AZURE APP SERVICE CERTIFICATE"
         },
         {
             "service": "ResourceService",
@@ -94,7 +103,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "",
             "pesId": "16513",
-            "staticSelfHelpContent": "microsoft.asd"
+            "staticSelfHelpContent": "microsoft.asd",
+            "searchSuffix": "AZURE APP SERVICE DOMAIN"
         },
         {
             "service": "ResourceService",
@@ -104,7 +114,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "",
             "pesId": "",
-            "staticSelfHelpContent": ""
+            "staticSelfHelpContent": "",
+            "searchSuffix": "AZURE SPRING CLOUD SERVICE"
         },
         {
             "service": "ResourceService",
@@ -114,7 +125,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "registries",
             "pesId": "16533",
-            "staticSelfHelpContent": ""
+            "staticSelfHelpContent": "",
+            "searchSuffix": "AZURE CONTAINER REGISTRY"
         },
 		{
             "service": "ResourceService",
@@ -124,7 +136,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "AzureAutomation",
             "pesId": "15607",
-            "staticSelfHelpContent": ""
+            "staticSelfHelpContent": "",
+            "searchSuffix": "AZURE AUTOMATION ACCOUNT"
         },
 		{
             "service": "ResourceService",
@@ -134,7 +147,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "MachineLearningServices",
             "pesId": "",
-            "staticSelfHelpContent": ""
+            "staticSelfHelpContent": "",
+            "searchSuffix": "AZURE MACHINE LEARNING SERVICE"
         },
         {
             "service": "ResourceService",
@@ -144,7 +158,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "containerGroups",
             "pesId": "",
-            "staticSelfHelpContent": ""
+            "staticSelfHelpContent": "",
+            "searchSuffix": "AZURE CONTAINER INSTANCE"
         },
         {
             "service": "ResourceService",
@@ -154,7 +169,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "BatchAI",
             "pesId": "",
-            "staticSelfHelpContent": ""
+            "staticSelfHelpContent": "",
+            "searchSuffix": "AZURE BATCH AI SERVICE"
         },
         {
             "service": "ResourceService",
@@ -164,7 +180,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "ISE",
             "pesId": "",
-            "staticSelfHelpContent": ""
+            "staticSelfHelpContent": "",
+            "searchSuffix": ""
         },
         {
             "service": "ResourceService",
@@ -174,7 +191,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "BatchAccounts",
             "pesId": "15614",
-            "staticSelfHelpContent": ""
+            "staticSelfHelpContent": "",
+            "searchSuffix": ""
         },
         {
             "service": "ResourceService",
@@ -184,7 +202,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "StorageAccounts",
             "pesId": "15629",
-            "staticSelfHelpContent": ""
+            "staticSelfHelpContent": "",
+            "searchSuffix": "AZURE STORAGE ACCOUNT"
         },
         {
             "service": "ResourceService",
@@ -194,7 +213,8 @@
             "versionPrefix": "",
             "azureCommImpactedServicesList": "ClassicStorageAccounts",
             "pesId": "15629",
-            "staticSelfHelpContent": ""
+            "staticSelfHelpContent": "",
+            "searchSuffix": "AZURE CLASSIC STORAGE ACCOUNT"
         }
     ]
 }

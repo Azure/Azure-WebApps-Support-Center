@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, of, Subject, ReplaySubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ResourceService } from './resource.service';
+import { WebSitesService } from '../../resources/web-sites/services/web-sites.service';
 import { BackendCtrlService } from '../../shared/services/backend-ctrl.service';
 import { mergeMap } from 'rxjs/operators';
 
@@ -21,14 +22,14 @@ export class ContentService {
     // }
   ];
 
-  private ocpApimKeyBehaviorSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  private ocpApimKeySubject: Subject<string> = new ReplaySubject<string>(1);
   private ocpApimKey: string = '';
 
-  constructor(private _http: HttpClient, private _resourceService: ResourceService, private _backendApi: BackendCtrlService) { 
+  constructor(private _http: HttpClient, private _resourceService: ResourceService, private _webSiteService: WebSitesService, private _backendApi: BackendCtrlService) { 
 
     this._backendApi.get<string>(`api/appsettings/ContentSearch:Ocp-Apim-Subscription-Key`).subscribe((value: string) =>{
-      this.ocpApimKeyBehaviorSubject.next(value);
       this.ocpApimKey = value;
+      this.ocpApimKeySubject.next(value);
     });
   }
 
@@ -44,10 +45,11 @@ export class ContentService {
   searchWeb(questionString: string, resultsCount: string = '3'): Observable<any> {
 
     const searchSuffix = this._resourceService.searchSuffix;
-    const query = encodeURIComponent(`${questionString} AND ${searchSuffix}`);
+    var stackTypeSuffix = this._webSiteService["appStack"]? ` ${this._webSiteService["appStack"]}`: "";
+    const query = encodeURIComponent(`${questionString}${stackTypeSuffix} AND ${searchSuffix}`);
     const url = `https://api.cognitive.microsoft.com/bing/v7.0/search?q='${query}'&count=${resultsCount}`;
 
-    return this.ocpApimKeyBehaviorSubject.pipe(mergeMap((key:string)=>{
+    return this.ocpApimKeySubject.pipe(mergeMap((key:string)=>{
       return this._http.get(url, {
           headers: {
             "Content-Type": "application/json",

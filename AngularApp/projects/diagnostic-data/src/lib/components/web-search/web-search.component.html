@@ -10,12 +10,12 @@
             </button>
         </div>
     </div>
-    <span *ngIf="showPreLoadingError" style="margin-left:10px;margin-top:10px;">{{preLoadingErrorMessage}}</span>
+    <span *ngIf="showPreLoadingError" style="margin-top:10px;">{{preLoadingErrorMessage}}</span>
     <span *ngIf="showPreLoader" style="margin-top:10px;">
         <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
         <span style="margin-left:5px">Fetching results from web...</span>
     </span>
-    <div *ngIf="showSearchTermPractices" class="no-results-section">
+    <div *ngIf="!isChildComponent && showSearchTermPractices" class="no-results-section">
         <span class="no-results-header">Your search "{{searchTermDisplay}}" did not yield any results from the web.</span>
         <span class="no-results-content">Suggestions:</span>
         <ul class="no-results-content">

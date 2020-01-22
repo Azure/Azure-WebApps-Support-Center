@@ -139,7 +139,6 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
         this.showPreLoader = true;
         observableForkJoin([searchTask, detectorsTask, childrenTask]).subscribe(results => {
             this.showPreLoader = false;
-            this.showPreLoadingError = false;
             var searchResults: DetectorMetaData[] = results[0];
             this.logEvent(TelemetryEventNames.SearchQueryResults, { parentDetectorId: this.detector, searchId: this.searchId, query: this.searchTerm, results: JSON.stringify(searchResults.map((det: DetectorMetaData) => new Object({ id: det.id, score: det.score }))), ts: Math.floor((new Date()).getTime() / 1000).toString() });
             var detectorList = results[1];
@@ -280,6 +279,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
         this.detectorResponse = null;
         this.showSuccessfulChecks = false;
         this.showSearchTermPractices = false;
+        this.showPreLoadingError = false;
     }
 
     getDetectorInsight(viewModel: any): any {

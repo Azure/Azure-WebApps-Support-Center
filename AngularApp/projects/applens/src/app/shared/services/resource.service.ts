@@ -12,6 +12,7 @@ export class ResourceService {
   public azureCommImpactedServicesList: string;
   public pesId: string;
   public staticSelfHelpContent: string;
+  public searchSuffix: string;
 
   protected _observerResource: any = null;
   protected _armResource: ArmResource;
@@ -25,6 +26,7 @@ export class ResourceService {
     this.azureCommImpactedServicesList = inputs.azureCommImpactedServicesList;
     this.pesId = inputs.pesId;
     this.staticSelfHelpContent = inputs.staticSelfHelpContent;
+    this.searchSuffix = inputs.searchSuffix;
   }
 
   public startInitializationObservable() {

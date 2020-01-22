@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, of, Subject, ReplaySubject } from 'rxjs';
 import 'rxjs/add/observable/of';
 import { HttpClient } from '@angular/common/http';
 import { mergeMap } from 'rxjs/operators';
+import { ResourceService } from '../../../shared/services/resource.service';
 
 @Injectable()
 export class ApplensContentService {
@@ -20,13 +21,13 @@ export class ApplensContentService {
         // }
       ];
     
-    private ocpApimKeyBehaviorSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+    private ocpApimKeySubject: Subject<string> = new ReplaySubject<string>(1);
     private ocpApimKey: string = '';
 
-    constructor(private _http: HttpClient, private _backendApi: DiagnosticApiService) { 
+    constructor(private _http: HttpClient, private _backendApi: DiagnosticApiService, private _resourceService: ResourceService,) { 
         this._backendApi.get<string>(`api/appsettings/ContentSearch:Ocp-Apim-Subscription-Key`).subscribe((value: string) =>{
-            this.ocpApimKeyBehaviorSubject.next(value);
             this.ocpApimKey = value;
+            this.ocpApimKeySubject.next(value);
         });
     }
 
@@ -41,17 +42,17 @@ export class ApplensContentService {
 
     public searchWeb(questionString: string, resultsCount: string = '3'): Observable<any> {
 
-        const searchSuffix = "AZURE WEB APP";
+        const searchSuffix = this._resourceService.searchSuffix;
         const query = encodeURIComponent(`${questionString} AND ${searchSuffix}`);
         const url = `https://api.cognitive.microsoft.com/bing/v7.0/search?q='${query}'&count=${resultsCount}`;
 
-        return this.ocpApimKeyBehaviorSubject.pipe(mergeMap((key: string) => {
+        return this.ocpApimKeySubject.pipe(mergeMap((key: string) => {
             return this._http.get(url, { 
                 headers: {
                     "Content-Type": "application/json",
                     "Ocp-Apim-Subscription-Key": this.ocpApimKey
                 }
-            })
+            });
         }));
     }
 }

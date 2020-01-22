@@ -7,6 +7,7 @@ import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { GenericContentService } from '../../services/generic-content.service';
+import { of, Observable } from 'rxjs';
 @Component({
     selector: 'web-search',
     templateUrl: './web-search.component.html',
@@ -17,6 +18,7 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
     @Input() searchTerm: string = '';
     @Input() searchId: string = '';
     @Input() isChildComponent: boolean = true;
+    @Input() maxResults: number = 5;
     @Input() searchResults: any[] = [];
     @Output() searchResultsChange: EventEmitter<any[]> = new EventEmitter<any[]>();
     searchTermDisplay: string = '';
@@ -24,25 +26,22 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
     showPreLoader: boolean = false;
     showPreLoadingError: boolean = false;
     preLoadingErrorMessage: string = "Some error occurred while fetching web results."
-    timeout: any = null;
-
+    
     constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, public telemetryService: TelemetryService,
         private _activatedRoute: ActivatedRoute, private _router: Router, private _contentService: GenericContentService) {
         super(telemetryService);
         this.isPublic = config && config.isPublic;
         this._activatedRoute.queryParamMap.subscribe(qParams => {
             this.searchTerm = qParams.get('searchTerm') === null ? "" || this.searchTerm : qParams.get('searchTerm');
-            if (this.timeout){
-                clearTimeout(this.timeout);
-            }
-            this.timeout = setTimeout(() =>{
-                this.refresh();
-            }, 200);
+            this.refresh();
         });
     }
     
     ngOnInit() {
-        this.refresh();
+        if(!this.isChildComponent)
+        {
+            this.refresh();
+        }
     }
 
     refresh() {
@@ -70,10 +69,18 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
             );
         }
         this.resetGlobals();
-        if (!this.searchId || this.searchId.length===0) this.searchId = uuid();
-        let searchTask = this._contentService.searchWeb(this.searchTerm).pipe(map((res) => res), retryWhen(errors => errors.pipe(delay(2000), take(3))), catchError(e => {
+        if (!this.isChildComponent) this.searchId = uuid();
+        let searchTask = this._contentService.searchWeb(this.searchTerm, this.maxResults.toString()).pipe(map((res) => res), retryWhen(errors => {
+            let numRetries = 0;
+            return errors.pipe(delay(1000), map(err => {
+                if(numRetries++ === 3){
+                    throw err;
+                }
+                return err;
+            }));
+        }), catchError(e => {
             this.handleRequestFailure();
-            return null;
+            return Observable.throw(e);
         }));
         this.showPreLoader = true;
         searchTask.subscribe(results => {
@@ -89,12 +96,12 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
                 this.searchResultsChange.emit(this.searchResults);
             }
             else {
+                this.searchTermDisplay = this.searchTerm.valueOf();
                 this.showSearchTermPractices = true;
             }
             this.logEvent(TelemetryEventNames.WebQueryResults, { searchId: this.searchId, query: this.searchTerm, results: JSON.stringify(this.searchResults), ts: Math.floor((new Date()).getTime() / 1000).toString() });
         },
         (err) => {
-            this.showPreLoader = false;
             this.handleRequestFailure();
         });
     }
@@ -113,5 +120,6 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
         this.showPreLoader = false;
         this.showPreLoadingError = false;
         this.showSearchTermPractices = false;
+        this.searchTermDisplay = "";
     }
 }
