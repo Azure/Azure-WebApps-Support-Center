@@ -195,7 +195,7 @@ export const HomeRoutes = RouterModule.forChild([
     MarkdownModule.forRoot()
   ],
   declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent],
-  providers: [CategoryTabResolver, CategoryChatResolver, TimeControlResolver, ContentService
+  providers: [CategoryTabResolver, CategoryChatResolver, TimeControlResolver, ContentService,
     { provide: GenericSupportTopicService, useExisting: SupportTopicService},
     { provide: GenericContentService, useExisting: ContentService}, 
     { provide: CXPChatService, useExisting: CXPChatCallerService},
