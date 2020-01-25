@@ -204,3 +204,19 @@
 {
     width:98%
 }
+
+.list-text {
+    transition: all .2s;
+}
+
+.expand-section {
+    display: inline;
+    font-size: 15px;
+    vertical-align: middle;
+    margin-left: 1px
+}
+
+.expand-icon{
+    background-color: white;
+    color: black;   
+}

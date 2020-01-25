@@ -20,7 +20,7 @@
             "azureCommImpactedServicesList": "appservice",
             "pesId": "16533",
             "staticSelfHelpContent": "microsoft.ase",
-            "searchSuffix": ""
+            "searchSuffix": "AZURE APP SERVICE ENVIRONMENT"
         },
         {
             "service": "ResourceService",
@@ -181,7 +181,7 @@
             "azureCommImpactedServicesList": "ISE",
             "pesId": "",
             "staticSelfHelpContent": "",
-            "searchSuffix": ""
+            "searchSuffix": "AZURE INTEGRATION SERVICE ENVIRONMENT"
         },
         {
             "service": "ResourceService",
@@ -192,7 +192,7 @@
             "azureCommImpactedServicesList": "BatchAccounts",
             "pesId": "15614",
             "staticSelfHelpContent": "",
-            "searchSuffix": ""
+            "searchSuffix": "AZURE BATCH ACCOUNT"
         },
         {
             "service": "ResourceService",

@@ -74,12 +74,15 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     loadingAppInsightsQueryData: boolean = true;
     supportDocumentContent: string = "";
     supportDocumentRendered: boolean = false;
+
+    isDynamicAnalysis: boolean = false;
     searchTerm: string = "";
     searchId: string = null;
     showPreLoader: boolean = false;
     preLoadingErrorMessage: string = "Some error occurred while fetching diagnostics."
     showPreLoadingError: boolean = false;
     isSearchEmbedded: boolean = false;
+    showSuccessfulChecks: boolean = true;
 
     constructor(private _activatedRoute: ActivatedRoute, private _router: Router,
         private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService,
@@ -111,6 +114,10 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
 
         this.startTime = this._detectorControl.startTime;
         this.endTime = this._detectorControl.endTime;
+    }
+
+    toggleSuccessful(){
+        this.showSuccessfulChecks = !this.showSuccessfulChecks;
     }
 
     public getMetaDataMarkdown(metaData: AppInsightQueryMetadata) {
@@ -203,6 +210,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
         response.dataset.forEach((ds: DiagnosticData) => {
             if (ds.renderingProperties.type === RenderingType.SearchComponent) {
                 this.isSearchEmbedded = true;
+                this.showSuccessfulChecks = false;
             }
         });
     }
@@ -220,6 +228,8 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
                     this.searchTerm = qParams.get('searchTerm') === null ? "" : qParams.get('searchTerm');
                     this.showAppInsightsSection = false;
                     if (this.searchTerm && this.searchTerm.length > 1) {
+                        this.isDynamicAnalysis = true;
+                        this.showSuccessfulChecks = false;
                         this.searchId = uuid();
                         let searchTask = this._diagnosticService.getDetectorsSearch(this.searchTerm).pipe(map((res) => res), catchError(e => of([])));
                         let detectorsTask = this._diagnosticService.getDetectors().pipe(map((res) => res), catchError(e => of([])));
@@ -361,6 +371,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     insertInDetectorArray(detectorItem) {
         if (this.detectors.findIndex(x => x.id === detectorItem.id) < 0) {
             this.detectors.push(detectorItem);
+            this.loadingMessages.push("Checking " + detectorItem.name);
         }
     }
     getPendingDetectorCount(): number {
