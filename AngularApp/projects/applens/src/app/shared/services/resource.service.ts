@@ -12,6 +12,7 @@ export class ResourceService {
   public azureCommImpactedServicesList: string;
   public pesId: string;
   public staticSelfHelpContent: string;
+  public altIcons: { [path: string]: string };
   public searchSuffix: string;
 
   protected _observerResource: any = null;
@@ -26,6 +27,7 @@ export class ResourceService {
     this.azureCommImpactedServicesList = inputs.azureCommImpactedServicesList;
     this.pesId = inputs.pesId;
     this.staticSelfHelpContent = inputs.staticSelfHelpContent;
+    this.altIcons = inputs.altIcons;
     this.searchSuffix = inputs.searchSuffix;
   }
 

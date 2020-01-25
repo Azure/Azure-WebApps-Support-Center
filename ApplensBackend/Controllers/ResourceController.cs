@@ -29,6 +29,13 @@ namespace AppLensV3
         }
 
         [HttpGet]
+        [Route("api/stamps/{stamp}/sites/{siteName}/details")]
+        public async Task<IActionResult> GetSiteDetails(string stamp, string siteName)
+        {
+            return await GetSiteInternal(stamp, siteName, details: true);
+        }
+
+        [HttpGet]
         [Route("api/stamps/{stamp}/sites/{siteName}/postBody")]
         public async Task<IActionResult> GetSiteRequestBody(string stamp, string siteName)
         {
@@ -62,12 +69,12 @@ namespace AppLensV3
             return Ok(details);
         }
 
-        private async Task<IActionResult> GetSiteInternal(string stamp, string siteName)
+        private async Task<IActionResult> GetSiteInternal(string stamp, string siteName, bool details = false)
         {
-            var siteDetailsTask = stamp == null ? _observerService.GetSite(siteName) : _observerService.GetSite(stamp, siteName);
+            var siteDetailsTask = stamp == null ? _observerService.GetSite(siteName) : _observerService.GetSite(stamp, siteName, details);
             var siteDetailsResponse = await siteDetailsTask;
 
-            var details = new
+            var response = new
             {
                 SiteName = siteName,
                 Details = siteDetailsResponse.Content
@@ -75,10 +82,10 @@ namespace AppLensV3
 
             if (siteDetailsResponse.StatusCode == HttpStatusCode.NotFound)
             {
-                return NotFound(details);
+                return NotFound(response);
             }
 
-            return Ok(details);
+            return Ok(response);
         }
     }
 }

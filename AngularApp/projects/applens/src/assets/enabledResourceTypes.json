@@ -9,6 +9,9 @@
             "azureCommImpactedServicesList": "appservice",
             "pesId": "14748",
             "staticSelfHelpContent": "microsoft.web",
+            "altIcons": {
+                "Xenon": "assets/img/WebAppForContainers.svg"
+            },
             "searchSuffix": "AZURE WEB APP"
         },
         {

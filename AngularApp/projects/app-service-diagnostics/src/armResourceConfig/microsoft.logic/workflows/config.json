@@ -21,6 +21,15 @@
 			"color": "rgb(186, 211, 245)",
 			"createFlowForCategory": true,
 			"chatEnabled": false
+		},
+		{
+			"id": "Connector Actions Health",
+			"name": "Connector Actions Health",
+			"description": "Are you seeing any action failures in your logic app? Review connector actions health to get the details on connector errors, timeouts, or any other unexpected behavior.",
+			"keywords": ["Actions", "Timeouts", "Connector", "4xx Errors", "5xx Errors", "SQL, Storage, and more"],
+			"color": "rgb(249, 213, 180)",
+			"createFlowForCategory": true,
+			"chatEnabled": false
 		}
 	],
 	"pesId": "15791"

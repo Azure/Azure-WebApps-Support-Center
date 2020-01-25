@@ -54,7 +54,7 @@ namespace AppLensV3
             return GetSiteInternal(null, siteName);
         }
 
-        public Task<ObserverResponse> GetSite(string stamp, string siteName)
+        public Task<ObserverResponse> GetSite(string stamp, string siteName, bool details = false)
         {
             return GetSiteInternal(stamp, siteName);
         }

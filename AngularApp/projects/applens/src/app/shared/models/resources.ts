@@ -42,6 +42,7 @@ export interface ResourceServiceInputs {
     azureCommImpactedServicesList: string;
     pesId: string;
     staticSelfHelpContent: string;
+    altIcons?: { [path: string]: string };
     searchSuffix: string;
 }
 

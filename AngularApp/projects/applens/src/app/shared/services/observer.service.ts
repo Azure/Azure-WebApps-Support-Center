@@ -31,6 +31,10 @@ export class ObserverService {
     return this._diagnosticApiService.get<Observer.ObserverSiteResponse>(`api/stamps/${stamp}/sites/${site}/postBody`);
   }
 
+  public getSiteRequestDetails(site: string, stamp: string) {
+    return this._diagnosticApiService.get<Observer.ObserverSiteDetailsResponse>(`api/stamps/${stamp}/sites/${site}/details`);
+  }
+
   public getAseRequestBody(name: string) {
     return this._diagnosticApiService.get<Observer.ObserverSiteResponse>(`api/hostingEnvironments/${name}/postBody`);
   }

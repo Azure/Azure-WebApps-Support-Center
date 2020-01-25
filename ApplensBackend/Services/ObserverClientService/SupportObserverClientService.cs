@@ -134,9 +134,10 @@ namespace AppLensV3
         /// </summary>
         /// <param name="stamp">Stamp</param>
         /// <param name="siteName">Site Name</param>
-        public async Task<ObserverResponse> GetSite(string stamp, string siteName)
+        /// <param name="details">True if additional properties are requested</param>
+        public async Task<ObserverResponse> GetSite(string stamp, string siteName, bool details = false)
         {
-            return await GetSiteInternal(SupportObserverApiEndpoint + "stamps/" + stamp + "/sites/" + siteName + "/adminsites");
+            return await GetSiteInternal(SupportObserverApiEndpoint + "stamps/" + stamp + "/sites/" + siteName + (details ? "/details" : "/adminsites"));
         }
 
         private async Task<ObserverResponse> GetSiteInternal(string endpoint)

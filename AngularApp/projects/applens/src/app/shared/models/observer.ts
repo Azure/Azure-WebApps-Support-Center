@@ -16,8 +16,32 @@ namespace Observer {
         GeomasterServiceAddress: string;
         Kind: string,
         IsLinux?: boolean;
+        VnetName: string;
+        LinuxFxVersion: string;
+        WindowsFxVersion: string;
     }
-  
+
+    export interface ObserverSiteDetailsResponse {
+        siteName: string;
+        details: ObserverSiteDetailsInfo;
+    }
+
+    export interface ObserverSiteDetailsInfo {
+        name: string;
+        tags: string;
+        kind: string;
+        namespacedescriptor: string;
+        islinux: boolean;
+        defaulthostname: string;
+        scmsitehostname: string;
+        webspace: string;
+        hostnames: any;
+        resourcegroup: string;
+        vnetname: string;
+        linuxfxversion: string;
+        stamp: any;
+    }
+
     export interface ObserverAseResponse {
         details: ObserverAseInfo;
     }
