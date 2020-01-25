@@ -13,6 +13,8 @@ using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Hosting;
+using AppLensV3.Services.CosmosDBHandler;
+using AppLensV3.Models;
 
 namespace AppLensV3.Authorization
 {
@@ -58,6 +60,17 @@ namespace AppLensV3.Authorization
         }
     }
 
+    class DefaultAuthorizationRequirement : IAuthorizationRequirement{}
+
+    class DefaultAuthorizationHandler : AuthorizationHandler<DefaultAuthorizationRequirement>
+    {
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, DefaultAuthorizationRequirement requirement)
+        {
+            context.Succeed(requirement);
+            return;
+        }
+    }
+
     /// <summary>
     /// Security Group Authorization Handler.
     /// </summary>
@@ -66,8 +79,10 @@ namespace AppLensV3.Authorization
         private readonly string graphUrl = "https://graph.microsoft.com/v1.0/users/{0}/checkMemberGroups";
         private readonly int loggedInUserCacheClearIntervalInMs = 60 * 60 * 1000; // 1 hour
         private readonly int loggedInUserExpiryIntervalInSeconds = 6 * 60 * 60; // 6 hours
+        private ICosmosDBHandler<TemporaryAccessUser> _cosmosDBHandler;
+        private readonly long temporaryAccessExpiryInSeconds;
 
-        public SecurityGroupHandler(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        public SecurityGroupHandler(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, ICosmosDBHandler<TemporaryAccessUser> cosmosDBHandler)
         {
             loggedInUsersCache = new Dictionary<string, Dictionary<string, long>>();
             var applensAccess = new SecurityGroupConfig();
@@ -79,6 +94,13 @@ namespace AppLensV3.Authorization
 
             ClearLoggedInUserCache();
             _httpContextAccessor = httpContextAccessor;
+            
+            int temporaryAccessDays = 7;
+            var accessDurationInDays = configuration["ApplensTemporaryAccess:AccessDurationInDays"];
+            int.TryParse(accessDurationInDays.ToString(), out temporaryAccessDays);
+            temporaryAccessExpiryInSeconds = temporaryAccessDays * 24 * 60* 60;
+            _cosmosDBHandler = cosmosDBHandler;
+
         }
 
         private IHttpContextAccessor _httpContextAccessor = null;
@@ -169,6 +191,17 @@ namespace AppLensV3.Authorization
             return false;
         }
 
+        private async Task<Boolean> CheckTemporaryAccess(string userId)
+        {
+            var result = await _cosmosDBHandler.GetItemAsync(userId);
+            if (result != null && ((long)DateTime.UtcNow.Subtract(result.AccessStartDate).TotalSeconds) < temporaryAccessExpiryInSeconds)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Checks if a user is part of a security group
         /// </summary>
@@ -190,12 +223,12 @@ namespace AppLensV3.Authorization
             var res = await responseMsg.Content.ReadAsStringAsync();
             dynamic groupIdsResponse = JsonConvert.DeserializeObject(res);
             string[] groupIdsReturned = groupIdsResponse.value.ToObject<string[]>();
-            if (groupIdsReturned.Length>0)
+            if (groupIdsReturned.Length > 0)
             {
                 return true;
             }
 
-            return false;
+            return await CheckTemporaryAccess(userId);
         }
 
         /// <summary>

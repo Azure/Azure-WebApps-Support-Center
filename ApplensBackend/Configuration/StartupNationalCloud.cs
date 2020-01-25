@@ -54,8 +54,11 @@ namespace AppLensV3.Configuration
             services.AddMemoryCache();
             // Add auth policies as they are applied on controllers
             services.AddAuthorization(options => {
+                options.AddPolicy("DefaultAccess", policy => {
+                    policy.Requirements.Add(new DefaultAuthorizationRequirement());
+                });
                 options.AddPolicy("ApplensAccess", policy => {
-                policy.Requirements.Add(new SecurityGroupRequirement("ApplensAccess", string.Empty));
+                    policy.Requirements.Add(new SecurityGroupRequirement("ApplensAccess", string.Empty));
                 });
                 options.AddPolicy("ApplensTesters", policy => {
                     policy.Requirements.Add(new SecurityGroupRequirement("ApplensTesters", string.Empty));

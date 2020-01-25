@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
 using AppLensV3.Authorization;
 using System.Collections.Generic;
+using AppLensV3.Services.CosmosDBHandler;
+using AppLensV3.Models;
 
 namespace AppLensV3
 {
@@ -53,6 +55,7 @@ namespace AppLensV3
             services.AddSingleton<ISupportTopicService, SupportTopicService>();
             services.AddSingleton<ISelfHelpContentService, SelfHelpContentService>();
             services.AddSingleton<IFreshChatClientService, FreshChatClientService>();
+            services.AddSingleton<ICosmosDBHandler<TemporaryAccessUser>, CosmosDBHandler<TemporaryAccessUser>>();
 
             services.AddMemoryCache();
             services.AddMvc();
@@ -84,6 +87,9 @@ namespace AppLensV3
                 Configuration.Bind("ApplensAccess", applensAccess);
                 Configuration.Bind("ApplensTesters", applensTesters);
 
+                options.AddPolicy("DefaultAccess", policy => {
+                    policy.Requirements.Add(new DefaultAuthorizationRequirement());
+                });
                 options.AddPolicy(applensAccess.GroupName, policy => {
                    policy.Requirements.Add(new SecurityGroupRequirement(applensAccess.GroupName, applensAccess.GroupId));
                 });
@@ -93,6 +99,7 @@ namespace AppLensV3
             });
 
             services.AddSingleton<IAuthorizationHandler, SecurityGroupHandler>();
+            services.AddSingleton<IAuthorizationHandler, DefaultAuthorizationHandler>();
 
             if (Configuration["ServerMode"] == "internal")
             {

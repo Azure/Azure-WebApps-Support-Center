@@ -9,5 +9,11 @@
             <li>Click <strong>Next</strong> and move to Review and Submit</li>
             <li>Make sure <strong>AppLens Access</strong> is selected and click <strong>Submit</strong></li>
         </ol>
+        <div style="border-bottom: 3px solid black;"></div>
+        <div style="margin-top:20px;">
+            <div *ngIf="!temporaryAccessFailed && !temporaryAccessSucceeded" class="temporary-access-link" (click)="requestTemporaryAccess()">Click here to request <strong>one time</strong> temporary access for 7 days</div>
+            <div *ngIf="temporaryAccessFailed">{{accessFailedReason}}</div>
+            <div *ngIf="temporaryAccessSucceeded">{{temporaryAccessSuccessMessage}} Redirecting to home....</div>
+        </div>
     </div>
 </div>
