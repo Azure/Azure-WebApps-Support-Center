@@ -46,6 +46,9 @@ export class ContentService {
 
     const searchSuffix = this._resourceService.searchSuffix;
     var stackTypeSuffix = this._webSiteService["appStack"]? ` ${this._webSiteService["appStack"]}`: "";
+    if (stackTypeSuffix && stackTypeSuffix.length>0 && stackTypeSuffix.toLowerCase() == "static only"){
+      stackTypeSuffix = "Static content";
+    }
     const query = encodeURIComponent(`${questionString}${stackTypeSuffix} AND ${searchSuffix}`);
     const url = `https://api.cognitive.microsoft.com/bing/v7.0/search?q='${query}'&count=${resultsCount}`;
 
