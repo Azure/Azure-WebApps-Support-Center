@@ -43,6 +43,12 @@ namespace AppLensV3.Services.CosmosDBHandler
             {
                 if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
+                    if (e.Message.Contains("Resource Not Found"))
+                    {
+                        CreateDatabaseIfNotExistsAsync().Wait();
+                        CreateCollectionIfNotExistsAsync().Wait();
+                        return await GetItemAsync(id);
+                    }
                     return null;
                 }
                 else
