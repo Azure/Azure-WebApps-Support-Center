@@ -25,7 +25,7 @@ export class ContentService {
   private ocpApimKeySubject: Subject<string> = new ReplaySubject<string>(1);
   private ocpApimKey: string = '';
 
-  constructor(private _http: HttpClient, private _resourceService: ResourceService, private _webSiteService: WebSitesService, private _backendApi: BackendCtrlService) { 
+  constructor(private _http: HttpClient, private _resourceService: ResourceService, private _backendApi: BackendCtrlService) { 
 
     this._backendApi.get<string>(`api/appsettings/ContentSearch:Ocp-Apim-Subscription-Key`).subscribe((value: string) =>{
       this.ocpApimKey = value;
@@ -45,7 +45,7 @@ export class ContentService {
   searchWeb(questionString: string, resultsCount: string = '3'): Observable<any> {
 
     const searchSuffix = this._resourceService.searchSuffix;
-    var stackTypeSuffix = this._webSiteService["appStack"]? ` ${this._webSiteService["appStack"]}`: "";
+    var stackTypeSuffix = this._resourceService["appStack"]? ` ${this._resourceService["appStack"]}`: "";
     if (stackTypeSuffix && stackTypeSuffix.length>0 && stackTypeSuffix.toLowerCase() == "static only"){
       stackTypeSuffix = "Static content";
     }
