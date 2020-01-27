@@ -45,7 +45,7 @@ namespace AppLensV3.Controllers
                         {
                             Id = userId,
                             AccessStartDate = DateTime.UtcNow,
-                            UserPrincipalName = userId
+                            PartitionKey = "TemporaryAccessUser"
                         };
                         await _cosmosDBHandler.CreateItemAsync(newUser);
                         return Ok("Temporary access approved!");

@@ -16,7 +16,7 @@ namespace AppLensV3.Services.CosmosDBHandler
         private string Key;
         private string DatabaseId;
         private string CollectionId;
-        private string PartitionKey = "/UserPrincipalName";
+        private string PartitionKey = "/PartitionKey";
         private DocumentClient client;
 
         public CosmosDBHandler(IConfiguration configuration)
@@ -36,7 +36,7 @@ namespace AppLensV3.Services.CosmosDBHandler
             {
                 Document document = await client.ReadDocumentAsync(
                     UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id),
-                    new RequestOptions {PartitionKey = new PartitionKey(id)});
+                    new RequestOptions {PartitionKey = new PartitionKey("TemporaryAccessUser")});
                 return (T)(dynamic)document;
             }
             catch (DocumentClientException e)

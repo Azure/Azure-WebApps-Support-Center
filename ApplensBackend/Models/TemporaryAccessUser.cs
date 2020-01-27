@@ -11,7 +11,7 @@ namespace AppLensV3.Models
         [JsonProperty(PropertyName = "accessStartDate")]
         public DateTime AccessStartDate { get; set; }
 
-        [JsonProperty(PropertyName = "UserPrincipalName")]
-        public string UserPrincipalName { get; set; }
+        [JsonProperty(PropertyName = "PartitionKey")]
+        public string PartitionKey { get; set; }
     }
 }
