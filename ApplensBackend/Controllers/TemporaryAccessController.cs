@@ -14,13 +14,15 @@ namespace AppLensV3.Controllers
     public class TemporaryAccessController : Controller
     {
         ICosmosDBHandler<TemporaryAccessUser> _cosmosDBHandler;
-        int temporaryAccessDays = 7;
+        long temporaryAccessDurationInSeconds = 7 * 24 * 60 * 60;
 
         public TemporaryAccessController(ICosmosDBHandler<TemporaryAccessUser> cosmosDBHandler, IConfiguration configuration)
         {
             _cosmosDBHandler = cosmosDBHandler;
             var accessDurationInDays = configuration["ApplensTemporaryAccess:AccessDurationInDays"];
+            int temporaryAccessDays = 7;
             int.TryParse(accessDurationInDays.ToString(), out temporaryAccessDays);
+            temporaryAccessDurationInSeconds = temporaryAccessDays * 24 * 60 * 60;
         }
 
         [HttpGet("requestAccess")]
@@ -50,7 +52,7 @@ namespace AppLensV3.Controllers
                     }
                     else
                     {
-                        if ((long)DateTime.UtcNow.Subtract(result.AccessStartDate).TotalSeconds >= temporaryAccessDays * 24 * 60 * 60)
+                        if ((long)DateTime.UtcNow.Subtract(result.AccessStartDate).TotalSeconds >= temporaryAccessDurationInSeconds)
                         {
                             return BadRequest("One-time temporary access already used! Please request for AppLens Access on MyAccess.");
                         }
