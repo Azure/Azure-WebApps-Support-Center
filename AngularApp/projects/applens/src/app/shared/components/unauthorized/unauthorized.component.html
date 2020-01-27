@@ -1,7 +1,8 @@
 <div class="unauthorized-container">
     <div class="unauthorized-div">
         <img src="assets/img/unauthorized.svg" class="unauthorized-icon"/>
-        <p class="unauthorized-header">Unauthorized - You do not have valid permissions to access AppLens. Please follow these steps in order to gain access:</p>
+        <p class="unauthorized-header">Unauthorized - You do not have valid permissions to access AppLens. Please request for <a href="https://myaccess/identityiq/ui/rest/redirect?rp1=/accessRequest/accessRequest.jsf&rp2=accessRequest/review?role=AppLens+Access&autoSubmit=true" target="_blank" rel="noopener noreferrer">AppLens Access here</a>.</p>
+        <p><u>If the above direct link does not work</u>, please follow the below steps to apply for access.</p>
         <ol>
             <li>Go to <a href="https://myaccess" target="_blank" rel="noopener noreferrer">MyAccess</a></li>
             <li>Click on <strong>Request Access</strong></li>
@@ -11,9 +12,10 @@
         </ol>
         <div style="border-bottom: 3px solid black;"></div>
         <div style="margin-top:20px;">
-            <div *ngIf="!temporaryAccessFailed && !temporaryAccessSucceeded" class="temporary-access-link" (click)="requestTemporaryAccess()">Click here to request <strong>one time</strong> temporary access for 7 days</div>
+            Need Urgent Access?&nbsp;&nbsp;<div *ngIf="!temporaryAccessFailed && !temporaryAccessSucceeded" class="temporary-access-link" (click)="requestTemporaryAccess()">Click here to request <strong>one time</strong> temporary access for 7 days</div>
             <div *ngIf="temporaryAccessFailed">{{accessFailedReason}}</div>
             <div *ngIf="temporaryAccessSucceeded">{{temporaryAccessSuccessMessage}} Redirecting to home....</div>
+            <div *ngIf="!temporaryAccessFailed"><strong>Disclaimer:</strong> This is temporary access only. <u>Please make sure to apply for AppLens Access</u> as mentioned above.</div>
         </div>
     </div>
 </div>
