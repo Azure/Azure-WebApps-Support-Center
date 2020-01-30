@@ -196,6 +196,9 @@ namespace AppLensV3.Authorization
             var result = await _cosmosDBHandler.GetItemAsync(userId);
             if (result != null && ((long)DateTime.UtcNow.Subtract(result.AccessStartDate).TotalSeconds) < temporaryAccessExpiryInSeconds)
             {
+                HttpContext context = _httpContextAccessor.HttpContext;
+                context.Response.Headers.Add("IsTemporaryAccess", "true");
+                AddUserToCache("TemporaryAccess", userId);
                 return true;
             }
 
@@ -225,6 +228,7 @@ namespace AppLensV3.Authorization
             string[] groupIdsReturned = groupIdsResponse.value.ToObject<string[]>();
             if (groupIdsReturned.Length > 0)
             {
+                AddUserToCache(securityGroupObjectId, userId);
                 return true;
             }
 
@@ -257,13 +261,13 @@ namespace AppLensV3.Authorization
                         {
                             isMember = true;
                         }
+                        else if (IsUserInCache("TemporaryAccess", userId)) {
+                            httpContext.Response.Headers.Add("IsTemporaryAccess", "true");
+                            isMember = true;
+                        }
                         else
                         {
                             isMember = await CheckSecurityGroupMembership(userId, requirement.SecurityGroupObjectId);
-                            if (isMember)
-                            {
-                                AddUserToCache(requirement.SecurityGroupObjectId, userId);
-                            }
                         }
                     }
                 }

@@ -25,7 +25,7 @@ namespace AppLensV3.Controllers
             temporaryAccessDurationInSeconds = temporaryAccessDays * 24 * 60 * 60;
         }
 
-        [HttpGet("requestAccess")]
+        [HttpPost("requestAccess")]
         public async Task<IActionResult> RequestAccess()
         {
             string userId = null;
