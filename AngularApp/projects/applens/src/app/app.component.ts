@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AdalService } from 'adal-angular4';
+import {AadAuthGuard} from './shared/auth/aad-auth-guard.service';
 import { environment } from '../environments/environment';
 import * as Highcharts from 'highcharts';
 
@@ -10,7 +11,8 @@ import * as Highcharts from 'highcharts';
 })
 export class AppComponent {
   env = environment;
-  constructor(private _adalService: AdalService) {
+  showBanner = true;
+  constructor(private _adalService: AdalService, private _authGuardService: AadAuthGuard) {
     if (environment.adal.enabled){
       this._adalService.init({
         clientId: environment.adal.clientId,
@@ -20,5 +22,9 @@ export class AppComponent {
         cacheLocation: 'localStorage'
        });
     }
+  }
+
+  hideBanner(){
+    this.showBanner = false;
   }
 }

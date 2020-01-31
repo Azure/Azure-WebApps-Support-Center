@@ -11,6 +11,8 @@ const loginRedirectKey = 'login_redirect';
 @Injectable()
 export class AadAuthGuard implements CanActivate {
     isAuthorized: Boolean = false;
+    public isTemporaryAccess: Boolean = false;
+    public temporaryAccessExpiryDays: number = 0;
 
     constructor(private _router: Router, private _adalService: AdalService, private _diagnosticApiService: DiagnosticApiService) { }
 
@@ -33,8 +35,12 @@ export class AadAuthGuard implements CanActivate {
             if (this.isAuthorized){
                 return true;
             }
-            return this._diagnosticApiService.get("api/ping", true).map(res => 
+            return this._diagnosticApiService.hasApplensAccess().map(res => 
                 {
+                    this.isTemporaryAccess = (res.headers.get("IsTemporaryAccess") == "true");
+                    if (this.isTemporaryAccess){
+                        this.temporaryAccessExpiryDays = res.headers.get("TemporaryAccessExpires");
+                    }
                     this.isAuthorized = true;
                     return true;
                 })

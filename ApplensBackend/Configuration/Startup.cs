@@ -120,7 +120,7 @@ namespace AppLensV3
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowAnyOrigin()
-                .WithExposedHeaders(new string[] { HeaderConstants.ScriptEtagHeader })
+                .WithExposedHeaders(new string[] { HeaderConstants.ScriptEtagHeader, HeaderConstants.IsTemporaryAccessHeader, HeaderConstants.TemporaryAccessExpiresHeader })
             );
 
             app.UseAuthentication();

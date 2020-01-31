@@ -28,7 +28,7 @@ namespace AppLensV3.Configuration
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowAnyOrigin()
-                .WithExposedHeaders(new string[] { HeaderConstants.ScriptEtagHeader }));
+                .WithExposedHeaders(new string[] { HeaderConstants.ScriptEtagHeader, HeaderConstants.IsTemporaryAccessHeader, HeaderConstants.TemporaryAccessExpiresHeader  }));
 
             app.Use(async (context, next) =>
             {

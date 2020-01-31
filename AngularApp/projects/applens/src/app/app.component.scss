@@ -1,0 +1,30 @@
+.top-banner{
+    position:fixed;
+    z-index: 10000;
+    margin-top: 5px;
+    margin-left: 15%;
+    width: 70%;
+    background: #f0f0f0;
+    border-radius: 3px;
+}
+
+.banner-text {
+    padding-top: 6px;
+    font-size: 21px;
+    text-align: center;
+    line-height: 12px;
+    color: #e52727;
+}
+
+.close-icon {
+  font-size: 29px;
+  color: #e52727;
+  margin-top: -9px;
+  cursor: pointer;
+  float: right;
+  margin-right: 11px;
+}
+
+.fa-times-thin:before {
+	content: '\00d7';
+}
