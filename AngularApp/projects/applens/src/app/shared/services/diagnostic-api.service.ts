@@ -264,8 +264,8 @@ export class DiagnosticApiService {
       headers = headers.set('x-ms-method', HttpMethod[method]);
     }
 
-    if (this.Location) { 
-     headers = headers.set('x-ms-location', encodeURI(this.Location));
+    if (this.Location) {
+      headers = headers.set('x-ms-location', encodeURI(this.Location));
     }
 
     if (additionalHeaders) {
