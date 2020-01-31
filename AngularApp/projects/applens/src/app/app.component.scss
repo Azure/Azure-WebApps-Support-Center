@@ -1,30 +1,35 @@
 .top-banner{
-    position:fixed;
+    position: fixed;
     z-index: 10000;
-    margin-top: 5px;
-    margin-left: 15%;
-    width: 70%;
-    background: #f0f0f0;
-    border-radius: 3px;
+    left: 28%;
+    right: 25%;
+    background: rgb(228, 188, 137);
+    border-radius: 1px;
+    height: 50px;
 }
 
 .banner-text {
-    padding-top: 6px;
+    padding-top: 13px;
     font-size: 21px;
     text-align: center;
     line-height: 12px;
-    color: #e52727;
+    color: #363535;
 }
 
 .close-icon {
-  font-size: 29px;
-  color: #e52727;
-  margin-top: -9px;
-  cursor: pointer;
-  float: right;
-  margin-right: 11px;
+    font-size: 29px;
+    color: #e52727;
+    margin-top: -5px;
+    cursor: pointer;
+    float: right;
+    margin-right: 11px;
 }
 
 .fa-times-thin:before {
 	content: '\00d7';
+}
+
+.warning-icon {
+    margin-right: 11px;
+    color: #b57500;
 }
