@@ -257,15 +257,15 @@ export class DiagnosticApiService {
       headers = headers.set("x-ms-geomaster-hostname", this.GeomasterServiceAddress);
 
     if (path) {
-      headers = headers.set('x-ms-path-query', path);
+      headers = headers.set('x-ms-path-query', encodeURI(path));
     }
 
     if (method) {
       headers = headers.set('x-ms-method', HttpMethod[method]);
     }
 
-    if (this.Location) {
-      headers = headers.set('x-ms-location', this.Location);
+    if (this.Location) { 
+     headers = headers.set('x-ms-location', encodeURI(this.Location));
     }
 
     if (additionalHeaders) {
