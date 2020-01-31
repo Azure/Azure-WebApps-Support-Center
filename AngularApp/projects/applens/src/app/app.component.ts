@@ -12,7 +12,7 @@ import * as Highcharts from 'highcharts';
 export class AppComponent {
   env = environment;
   showBanner = true;
-  constructor(private _adalService: AdalService, private _authGuardService: AadAuthGuard) {
+  constructor(private _adalService: AdalService, public _authGuardService: AadAuthGuard) {
     if (environment.adal.enabled){
       this._adalService.init({
         clientId: environment.adal.clientId,
