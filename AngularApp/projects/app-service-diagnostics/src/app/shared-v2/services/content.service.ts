@@ -23,7 +23,8 @@ export class ContentService {
 
   private ocpApimKeySubject: Subject<string> = new ReplaySubject<string>(1);
   private ocpApimKey: string = '';
-
+  private whitelistedStacks: string[] = ["net", "net core", "asp", "php", "python", "node", "docker", "java", "tomcat", "kube", "ruby", "dotnet", "static"];
+  
   constructor(private _http: HttpClient, private _resourceService: ResourceService, private _backendApi: BackendCtrlService) { 
 
     this._backendApi.get<string>(`api/appsettings/ContentSearch:Ocp-Apim-Subscription-Key`).subscribe((value: string) =>{
@@ -44,10 +45,17 @@ export class ContentService {
   searchWeb(questionString: string, resultsCount: string = '3'): Observable<any> {
 
     const searchSuffix = this._resourceService.searchSuffix;
+
+    //Decide the stack type to use with query
     var stackTypeSuffix = this._resourceService["appStack"]? ` ${this._resourceService["appStack"]}`: "";
-    if (stackTypeSuffix && stackTypeSuffix.length>0 && stackTypeSuffix.toLowerCase() == "static only"){
-      stackTypeSuffix = "Static content";
+    stackTypeSuffix = stackTypeSuffix.toLowerCase();
+    if (stackTypeSuffix && stackTypeSuffix.length>0 && stackTypeSuffix == "static only") {
+      stackTypeSuffix = "static content";
     }
+    if(!this.whitelistedStacks.some(stack => stackTypeSuffix.includes(stack))){
+      stackTypeSuffix = "";
+    }
+    
     const query = encodeURIComponent(`${questionString}${stackTypeSuffix} AND ${searchSuffix}`);
     const url = `https://api.cognitive.microsoft.com/bing/v7.0/search?q='${query}'&count=${resultsCount}`;
 

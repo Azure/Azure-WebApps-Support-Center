@@ -31,7 +31,7 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
         private _activatedRoute: ActivatedRoute, private _router: Router, private _contentService: GenericContentService) {
         super(telemetryService);
         this.isPublic = config && config.isPublic;
-        this._activatedRoute.queryParamMap.subscribe(qParams => {
+        this._activatedRoute.queryParamMap.pipe(take(1)).subscribe(qParams => {
             this.searchTerm = qParams.get('searchTerm') === null ? "" || this.searchTerm : qParams.get('searchTerm');
             this.refresh();
         });

@@ -5,7 +5,7 @@ import { DetectorControlService } from '../../services/detector-control.service'
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { DiagnosticService } from '../../services/diagnostic.service';
 import { forkJoin as observableForkJoin, Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, flatMap, take } from 'rxjs/operators';
 import { DetectorMetaData, DetectorResponse, DiagnosticData, DetectorType, HealthStatus, RenderingType, DetectorListRendering } from '../../models/detector';
 import { Moment } from 'moment';
 import { v4 as uuid } from 'uuid';
@@ -88,7 +88,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
             }
         });
 
-        this._activatedRoute.queryParamMap.subscribe(qParams => {
+        this._activatedRoute.queryParamMap.pipe(take(1)).subscribe(qParams => {
             if (!this.firstLoad) {
                 return;
             }
@@ -237,13 +237,21 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
 
     getChildrenOfParentDetector(parentDetectorId) {
         if (!parentDetectorId) { return of([]); }
-        return (<Observable<DetectorResponse>>this._diagnosticService.getDetector(parentDetectorId, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString)).pipe(map((response: DetectorResponse) => {
-            let detectorList = [];
-            response.dataset.forEach((ds: DiagnosticData) => {
+        return (<Observable<DetectorResponse>>this._diagnosticService.getDetector(parentDetectorId, this.detectorControlService.startTimeString, this.detectorControlService.endTimeString))
+        .pipe(flatMap((response: DetectorResponse) => {
+            if (response.metadata.type == DetectorType.Analysis) {
+                return this._diagnosticService.getDetectors().pipe(map(detectorList => {
+                    return detectorList.filter(element => (element.analysisTypes != null && element.analysisTypes.length > 0 && element.analysisTypes.findIndex(x => x == parentDetectorId) >= 0)).map(element => { return { name: element.name, id: element.id }; });
+                }), catchError(e => of([])));
+            }
+            else{
+                let detectorList = [];
+                response.dataset.forEach((ds: DiagnosticData) => {
                 if (ds.renderingProperties.type === RenderingType.DetectorList)
                     detectorList = (<DetectorListRendering>ds.renderingProperties).detectorIds;
-            });
-            return detectorList;
+                });
+                return of(detectorList);
+            }
         }), catchError(e => of([])));
     }
 
