@@ -169,6 +169,23 @@ export class DashboardComponent implements OnDestroy {
     this.ngxSmartModalService.getModal('resourceInfoModal').open();
   }
 
+  copyToClipboard(item, event) {
+    //console.log(event.target);
+    let listener = (e: ClipboardEvent) => {
+      e.clipboardData.setData('text/plain', (item));
+      e.preventDefault();
+    };
+
+    document.addEventListener('copy', listener);
+    document.execCommand('copy');
+    document.removeEventListener('copy', listener);
+
+    event.target.src = "/assets/img/copy-icon-copied.png";
+    setTimeout(() => {
+      event.target.src = "/assets/img/copy-icon.png";
+    }, 3000);
+  }
+
   ngOnDestroy() {
     this.navigateSub.unsubscribe();
   }

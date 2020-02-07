@@ -58,7 +58,7 @@
             </a>
           </div>
           <div *ngFor="let key of keys">
-            <b>{{key}}:</b> {{resource[key]}}
+            <b>{{key}}:</b> {{resource[key]}}&nbsp;<span *ngIf="resource[key] !== ''"><img src="/assets/img/copy-icon.png" style="height: 12px;" (click)="copyToClipboard(resource[key], $event)" alt="Copy to clipboard" /></span>
           </div>
         </div>
       </div>
