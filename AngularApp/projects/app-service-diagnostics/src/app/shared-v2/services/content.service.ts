@@ -23,7 +23,7 @@ export class ContentService {
 
   private ocpApimKeySubject: Subject<string> = new ReplaySubject<string>(1);
   private ocpApimKey: string = '';
-  private whitelistedStacks: string[] = ["net", "net core", "asp", "php", "python", "node", "docker", "java", "tomcat", "kube", "ruby", "dotnet", "static"];
+  private allowedStacks: string[] = ["net", "net core", "asp", "php", "python", "node", "docker", "java", "tomcat", "kube", "ruby", "dotnet", "static"];
   
   constructor(private _http: HttpClient, private _resourceService: ResourceService, private _backendApi: BackendCtrlService) { 
 
@@ -52,7 +52,7 @@ export class ContentService {
     if (stackTypeSuffix && stackTypeSuffix.length>0 && stackTypeSuffix == "static only") {
       stackTypeSuffix = "static content";
     }
-    if(!this.whitelistedStacks.some(stack => stackTypeSuffix.includes(stack))){
+    if(!this.allowedStacks.some(stack => stackTypeSuffix.includes(stack))){
       stackTypeSuffix = "";
     }
     
