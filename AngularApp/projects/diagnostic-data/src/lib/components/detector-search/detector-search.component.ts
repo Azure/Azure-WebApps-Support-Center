@@ -69,6 +69,8 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
     firstLoad: boolean = true;
 
     webSearchResults: any[] = [];
+    showWebSearch: boolean = false;
+    webSearchShowTimeout: any = null;
 
     @Input()
     withinDiagnoseAndSolve: boolean = false;
@@ -109,6 +111,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
     handleRequestFailure() {
         this.showPreLoadingError = true;
         this.showSearchTermPractices = false;
+        this.showWebSearch = true;
     }
 
     triggerSearch() {
@@ -152,12 +155,19 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
                         var childList = this.getChildrenOfAnalysis(result.id, detectorList);
                         if (childList && childList.length > 0) {
                             childList.forEach((child: DetectorMetaData) => {
-                                this.insertInDetectorArray({ name: child.name, id: child.id, score: result.score });
+                                if ((child.id !== this.detector) && (childrenOfParent.findIndex((x: string) => x.toLowerCase() == child.id.toLowerCase()) < 0) && (child.type === DetectorType.Detector)){
+                                    this.insertInDetectorArray({ name: child.name, id: child.id, score: result.score });
+                                }
                             });
                         }
                         this.insertInDetectorArray({ name: result.name, id: result.id, score: result.score });
                     }
                 });
+                // Start the web search after 10 seconds if detectors take long to run
+                if(this.webSearchShowTimeout){
+                    clearTimeout(this.webSearchShowTimeout);
+                }
+                this.webSearchShowTimeout = setTimeout(() => {this.showWebSearch = true;}, 10000);
                 this.startDetectorRendering(detectorList);
             }
         },
@@ -169,8 +179,14 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
 
     startDetectorRendering(detectorList) {
         this.detectorMetaData = detectorList.filter(detector => this.detectors.findIndex(d => d.id === detector.id) >= 0);
-        if (this.detectorMetaData.length === 0) { this.showSearchTermPractices = true; this.searchTermDisplay = this.searchTerm.valueOf(); }
-        else { this.showSearchTermPractices = false; }
+        if (this.detectorMetaData.length === 0) {
+            this.searchTermDisplay = this.searchTerm.valueOf();
+            this.showSearchTermPractices = true;
+            this.showWebSearch = true;
+        }
+        else {
+            this.showSearchTermPractices = false;
+        }
         this.detectorViewModels = this.detectorMetaData.map(detector => this.getDetectorViewModel(detector));
         this.issueDetectedViewModels = [];
 
@@ -241,7 +257,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
         .pipe(flatMap((response: DetectorResponse) => {
             if (response.metadata.type == DetectorType.Analysis) {
                 return this._diagnosticService.getDetectors().pipe(map(detectorList => {
-                    return detectorList.filter(element => (element.analysisTypes != null && element.analysisTypes.length > 0 && element.analysisTypes.findIndex(x => x == parentDetectorId) >= 0)).map(element => { return { name: element.name, id: element.id }; });
+                    return detectorList.filter(element => (element.analysisTypes != null && element.analysisTypes.length > 0 && element.analysisTypes.findIndex(x => x == parentDetectorId) >= 0)).map(element => element.id);
                 }), catchError(e => of([])));
             }
             else{
@@ -288,6 +304,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
         this.showSuccessfulChecks = false;
         this.showSearchTermPractices = false;
         this.showPreLoadingError = false;
+        this.showWebSearch = false;
     }
 
     getDetectorInsight(viewModel: any): any {

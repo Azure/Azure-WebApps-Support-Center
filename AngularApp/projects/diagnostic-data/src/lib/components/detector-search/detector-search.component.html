@@ -150,7 +150,7 @@
                 </div>
             </div>
         </div>
-        <div style="margin-top: 20px;" *ngIf="showSearchTermPractices || showPreLoadingError || (detectors.length>0 && getPendingDetectorCount() == 0)">
+        <div style="margin-top: 20px;" *ngIf="(detectors.length>0 && getPendingDetectorCount() == 0) || showWebSearch">
             <web-search [searchTerm]="searchTerm" [searchId]="searchId" [isChildComponent]="true" [(searchResults)]="webSearchResults" [maxResults]="5"></web-search>
         </div>
     </div>

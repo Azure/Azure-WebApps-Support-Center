@@ -83,6 +83,8 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     showPreLoadingError: boolean = false;
     isSearchEmbedded: boolean = false;
     showSuccessfulChecks: boolean = true;
+    showWebSearch: boolean = false;
+    showWebSearchTimeout: any = null;
 
     constructor(private _activatedRoute: ActivatedRoute, private _router: Router,
         private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService,
@@ -312,6 +314,10 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     }
 
     startDetectorRendering(detectorList) {
+        if (this.showWebSearchTimeout){
+            clearTimeout(this.showWebSearchTimeout);
+        }
+        this.showWebSearchTimeout = setTimeout(() => {this.showWebSearch = true;}, 10000);
         this.detectorMetaData = detectorList.filter(detector => this.detectors.findIndex(d => d.id === detector.id) >= 0);
         this.detectorViewModels = this.detectorMetaData.map(detector => this.getDetectorViewModel(detector));
         this.issueDetectedViewModels = [];
@@ -392,6 +398,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
         this.allSolutions = [];
         this.loadingMessages = [];
         this.successfulViewModels = [];
+        this.showWebSearch = false;
 
     }
 
