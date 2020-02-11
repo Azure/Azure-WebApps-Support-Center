@@ -1,7 +1,7 @@
 <div *ngIf="supportedTier && !showDetailedView" class="header2">Last 5 {{DiagnoserHeading}}
     <div *ngIf="showDetailsLink" style="display:inline">
         <div style="display:inline" [routerLink]="allSessions">
-            (<a aria-label="View all sessions">View all sessions</a>)</div>
+            (<a tabindex="0" aria-label="View all sessions">View all sessions</a>)</div>
     </div>
 </div>
 <div>
@@ -23,14 +23,14 @@
             </thead>
             <tbody>
                 <tr *ngFor="let session of sessions">
-                    <td>{{ session.StartTime }} (UTC)</td>
+                    <td tabindex="0" >{{ session.StartTime }} (UTC)</td>
                     <td>
                         <div *ngFor="let diagnoser of session.DiagnoserSessions">
                             <div *ngIf="diagnoser.Name.startsWith(diagnoserNameLookup)">
                                 <ul *ngIf="diagnoser.Reports.length > 0" style="list-style: none;">
                                     <li *ngFor="let report of diagnoser.Reports">
                                         {{ getInstanceNameFromReport(report.FileName) }}
-                                        <a (click)="openReport(report.RelativePath)" style="cursor: pointer">
+                                        <a tabindex="0" (click)="openReport(report.RelativePath)" (keypress)="openReport(report.RelativePath)" style="cursor: pointer">
                                             <i class="fa fa-external-link" aria-hidden="true"></i>
                                         </a>
                                     </li>
@@ -40,11 +40,11 @@
                                 </div>
                                 <div *ngIf="diagnoser.CollectorErrors.length > 0" class="tool-tip">
                                     <i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
-                                    <span class="tool-tip-text">{{diagnoser.CollectorErrors[0]}}</span>
+                                    <span tabindex="0" class="tool-tip-text">{{diagnoser.CollectorErrors[0]}}</span>
                                 </div>
                                 <div *ngIf="diagnoser.AnalyzerErrors.length > 0" class="tool-tip">
                                     <i class="fa fa-exclamation-triangle" style="color:rgb(180, 10, 10)"></i>
-                                    <span class="tool-tip-text">{{diagnoser.AnalyzerErrors[0]}}</span>
+                                    <span tabindex="0" class="tool-tip-text">{{diagnoser.AnalyzerErrors[0]}}</span>
                                 </div>
                             </div>
                         </div>
@@ -77,14 +77,14 @@
                         <div class="inline tool-tip hotspot-clickable" style="font-size:medium">
                             <span style="margin-left:30px;width:250px;margin-top:30px" class="tool-tip-text">Click here
                                 to delete this session and any collected logs and reports generated for this session</span>
-                            <i class="fa fa-trash" aria-hidden="true" (click)="deleteSession(i)"></i>
+                            <i tabindex="0" class="fa fa-trash" aria-hidden="true" (click)="deleteSession(i)" (keypress)="deleteSession(i)"></i>
                         </div>
                         <span *ngIf="session.Deleting">
                             <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
                             Deleting...
                         </span>
                     </div>
-                    <span class="pull-right" (click)="toggleExpanded(i)">
+                    <span tabindex="0" class="pull-right" (click)="toggleExpanded(i)" (keypress)="toggleExpanded(i)">
                         <i class="fa fa-plus" *ngIf="!session.Expanded" aria-hidden="true"></i>
                         <i class="fa fa-minus" *ngIf="session.Expanded" aria-hidden="true"></i>
                     </span>
@@ -105,11 +105,11 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let diagnoser of session.DiagnoserSessions">
-                                        <td>{{ diagnoser.Name }}</td>
+                                        <td tabindex="0">{{ diagnoser.Name }}</td>
                                         <td>
                                             <ul *ngIf="diagnoser.Logs.length > 0" style="list-style: none;padding:0">
                                                 <li *ngFor="let log of diagnoser.Logs">
-                                                    <a (click)="openLog(log, session.HasBlobSasUri)" style="cursor: pointer">
+                                                    <a tabindex="0" (keypress)="openLog(log, session.HasBlobSasUri)" (click)="openLog(log, session.HasBlobSasUri)" style="cursor: pointer">
                                                         {{ log.FileName }}
                                                     </a>
                                                 </li>
@@ -127,7 +127,7 @@
                                         <td>
                                             <ul *ngIf="diagnoser.Reports.length > 0" style="list-style: none;padding:0">
                                                 <li *ngFor="let report of diagnoser.Reports">
-                                                    <a (click)="openReport(report.RelativePath)" style="cursor: pointer">
+                                                    <a tabindex="0" (click)="openReport(report.RelativePath)" (keypress)="openReport(report.RelativePath)" style="cursor: pointer">
                                                         {{ report.FileName }}
                                                     </a>
                                                 </li>
