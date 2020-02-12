@@ -39,7 +39,9 @@ export const TelemetryEventNames = {
     BuildCXPChatUrl: 'BuildCXPChatUrl',
     GetCXPChatURL: 'GetCXPChatURL',
     CXPChatUserAction: 'CXPChatUserAction',
-    CXPChatEligibilityCheck: 'CXPChatEligibilityCheck'
+    CXPChatEligibilityCheck: 'CXPChatEligibilityCheck',
+    AppInsightsConnectionError: 'AppInsightsConnectionError',
+    AppInsightsConnected: 'AppInsightsConnected'
 };
 
 export interface ITelemetryProvider {

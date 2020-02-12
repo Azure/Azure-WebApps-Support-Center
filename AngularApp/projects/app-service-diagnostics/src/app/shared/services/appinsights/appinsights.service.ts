@@ -11,6 +11,7 @@ import { PortalService } from '../../../startup/services/portal.service';
 import { PortalActionService } from '../portal-action.service';
 import { AvailabilityLoggingService } from '../logging/availability.logging.service';
 import { tap, map } from 'rxjs/operators';
+import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
 
 @Injectable()
 export class AppInsightsService {
@@ -36,7 +37,7 @@ export class AppInsightsService {
         appId: undefined
     };
 
-    constructor(private http: Http, private authService: AuthService, private armService: ArmService, private siteService: SiteService, private appAnalysisService: AppAnalysisService, private portalService: PortalService, private portalActionService: PortalActionService, private logger: AvailabilityLoggingService) {
+    constructor(private http: Http, private authService: AuthService, private armService: ArmService, private siteService: SiteService, private appAnalysisService: AppAnalysisService, private portalService: PortalService, private portalActionService: PortalActionService, private logger: AvailabilityLoggingService, private _telmetryService:TelemetryService) {
 
         this.loadAppInsightsResourceObservable = new BehaviorSubject<boolean>(null);
         this.loadAppDiagnosticPropertiesObservable = new BehaviorSubject<boolean>(null);
@@ -189,4 +190,18 @@ export class AppInsightsService {
     private isNotNullOrEmpty(item: any): boolean {
         return (item != undefined && item != '');
     }
+
+    public logAppInsightsConnectionError(resourceUri: string, error: any) {
+        this._telmetryService.logEvent(TelemetryEventNames.AppInsightsConnectionError, {
+            'resourceUri' : resourceUri,
+            'error':error
+        });
+    }
+
+    public logAppInsightsConnected(resourceUri:string) {
+        this._telmetryService.logEvent(TelemetryEventNames.AppInsightsConnected,
+            {
+                'resouceUri' : resourceUri
+            });
+        }
 }

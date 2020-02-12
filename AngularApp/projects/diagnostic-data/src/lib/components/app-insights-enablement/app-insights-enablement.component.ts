@@ -79,11 +79,13 @@ export class AppInsightsEnablementComponent implements OnInit {
       if (resp === true) {
         this.isAppInsightsConnected = true;
         this.appInsightsValidated = true;
+        this._appInsightsService.logAppInsightsConnected(this.resourceId);
       }
     }, error => {
       this.connecting = false;
       this.error = error.error ? error.error : JSON.stringify(error);
       this.error = "Failed while connecting App Insights with App Service Diagnostics. Error - " + this.error;
+      this._appInsightsService.logAppInsightsConnectionError(this.resourceId, this.error);
     });
   }
 
