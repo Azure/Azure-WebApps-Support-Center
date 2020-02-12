@@ -79,6 +79,7 @@ export class OnboardingFlowComponent implements OnInit {
   compilationPackage: CompilationProperties;
 
   initialized = false;
+  codeLoaded: boolean = false;
 
   private publishingPackage: Package;
   private userName: string;
@@ -215,6 +216,7 @@ export class OnboardingFlowComponent implements OnInit {
     this.diagnosticApiService.prepareLocalDevelopment(body, this.id, this._detectorControlService.startTimeString,
       this._detectorControlService.endTimeString, this.dataSource, this.timeRange)
       .subscribe((response: string) => {
+        this.codeLoaded = true;
         this.localDevButtonDisabled = false;
         this.localDevUrl = response;
         this.localDevText = "Download Local Development Package";
