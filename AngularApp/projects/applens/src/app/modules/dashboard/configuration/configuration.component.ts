@@ -14,6 +14,7 @@ export class ConfigurationComponent implements OnInit {
     showAlert:boolean;
     alertClass: string;
     alertMessage: string;
+    codeLoaded: boolean = false;
 
   constructor(public ngxSmartModalService: NgxSmartModalService, private _diagnosticService: ApplensDiagnosticService, private githubService: GithubApiService) {
     this.editorOptions = {
@@ -32,6 +33,7 @@ export class ConfigurationComponent implements OnInit {
 
   ngOnInit() {
       this._diagnosticService.getKustoMappings().subscribe(resp => {
+        this.codeLoaded = true;
         this.code = JSON.stringify(resp, null, 2);
       }, (error: any) => {
         console.log(error);
