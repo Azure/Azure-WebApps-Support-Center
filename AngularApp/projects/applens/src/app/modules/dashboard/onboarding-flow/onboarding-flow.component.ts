@@ -216,7 +216,6 @@ export class OnboardingFlowComponent implements OnInit {
     this.diagnosticApiService.prepareLocalDevelopment(body, this.id, this._detectorControlService.startTimeString,
       this._detectorControlService.endTimeString, this.dataSource, this.timeRange)
       .subscribe((response: string) => {
-        this.codeLoaded = true;
         this.localDevButtonDisabled = false;
         this.localDevUrl = response;
         this.localDevText = "Download Local Development Package";
@@ -493,6 +492,7 @@ export class OnboardingFlowComponent implements OnInit {
     }
 
     forkJoin(detectorFile, configuration, this.diagnosticApiService.getGists()).subscribe(res => {
+      this.codeLoaded = true;
       this.code = res[0];
       if (res[1] !== null) {
         this.gists = Object.keys(this.configuration['dependencies']);
