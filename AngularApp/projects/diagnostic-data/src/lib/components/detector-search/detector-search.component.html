@@ -160,5 +160,5 @@
     </div>
 </div>
 <div style="margin-left:20px;margin-top:20px;" *ngIf="searchConfiguration.WebSearchEnabled">
-    <web-search [searchTerm]="searchTerm" [searchId]="searchId" [isChildComponent]="true" [(searchResults)]="webSearchResults" [maxResults]="searchConfiguration.WebSearchConfiguration.MaxResults" [useStack]="searchConfiguration.WebSearchConfiguration.UseStack" [preferredSites]="searchConfiguration.WebSearchConfiguration.PreferredSites"></web-search>
+    <web-search [searchTerm]="searchTerm" [searchId]="searchId" [isChildComponent]="true" [(searchResults)]="webSearchResults" [webSearchConfig]="searchConfiguration.WebSearchConfiguration"></web-search>
 </div>

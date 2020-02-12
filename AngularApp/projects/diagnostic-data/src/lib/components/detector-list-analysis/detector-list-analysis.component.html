@@ -242,7 +242,7 @@
         <detector-search [detector]="analysisId" [diagnosticData]="searchDiagnosticData"></detector-search>
     </div>
     <div *ngIf="isDynamicAnalysis && ((!showPreLoader && getPendingDetectorCount() === 0) || showWebSearch)" style="margin-left:80px;margin-top:20px;">
-        <web-search [searchTerm]="searchTerm" [searchId]="searchId" [isChildComponent]="true" [maxResults]="5"></web-search>
+        <web-search [searchTerm]="searchTerm" [searchId]="searchId" [isChildComponent]="true"></web-search>
     </div>
     <div class="list-wrapper" *ngIf="supportDocumentRendered">
         <div class="list-item-wrapper" *ngIf="supportDocumentRendered">

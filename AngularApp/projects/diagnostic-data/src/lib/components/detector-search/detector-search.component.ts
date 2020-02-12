@@ -85,7 +85,8 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
 
     ngOnInit() {
         super.ngOnInit();
-        this.searchConfiguration = new SearchConfiguration(this.diagnosticData.table);
+        var searchConf = new SearchConfiguration(this.diagnosticData.table);
+        this.searchConfiguration = searchConf;
         this.detectorControlService.update.subscribe(isValidUpdate => {
             if (isValidUpdate) {
                 this.refresh();

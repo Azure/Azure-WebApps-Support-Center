@@ -9,6 +9,7 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 import { GenericContentService } from '../../services/generic-content.service';
 import { of, Observable } from 'rxjs';
 import { ISubscription } from "rxjs/Subscription";
+import { WebSearchConfiguration } from '../../models/search';
 @Component({
     selector: 'web-search',
     templateUrl: './web-search.component.html',
@@ -19,9 +20,7 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
     @Input() searchTerm: string = '';
     @Input() searchId: string = '';
     @Input() isChildComponent: boolean = true;
-    @Input() maxResults: number = 5;
-    @Input() useStack: boolean = true;
-    @Input() preferredSites: string[] = [];
+    @Input('webSearchConfig') webSearchConfig: WebSearchConfiguration = new WebSearchConfiguration();
     @Input() searchResults: any[] = [];
     @Output() searchResultsChange: EventEmitter<any[]> = new EventEmitter<any[]>();
     searchTermDisplay: string = '';
@@ -55,7 +54,7 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
 
     refresh() {
         if (this.searchTerm && this.searchTerm.length > 1) {
-            this.triggerSearch();
+            setTimeout(()=> {this.triggerSearch();}, 500);
         }
     }
 
@@ -83,7 +82,7 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
         }
         this.resetGlobals();
         if (!this.isChildComponent) this.searchId = uuid();
-        let searchTask = this._contentService.searchWeb(this.searchTerm, this.maxResults.toString(), this.useStack, this.preferredSites).pipe(map((res) => res), retryWhen(errors => {
+        let searchTask = this._contentService.searchWeb(this.searchTerm, this.webSearchConfig.MaxResults.toString(), this.webSearchConfig.UseStack, this.webSearchConfig.PreferredSites).pipe(map((res) => res), retryWhen(errors => {
             let numRetries = 0;
             return errors.pipe(delay(1000), map(err => {
                 if(numRetries++ === 3){
