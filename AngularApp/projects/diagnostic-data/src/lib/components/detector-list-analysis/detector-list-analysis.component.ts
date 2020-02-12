@@ -85,6 +85,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     showSuccessfulChecks: boolean = true;
     showWebSearch: boolean = false;
     showWebSearchTimeout: any = null;
+    searchDiagnosticData: DiagnosticData;
 
     constructor(private _activatedRoute: ActivatedRoute, private _router: Router,
         private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService,
@@ -211,6 +212,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     checkSearchEmbedded(response: DetectorResponse) {
         response.dataset.forEach((ds: DiagnosticData) => {
             if (ds.renderingProperties.type === RenderingType.SearchComponent) {
+                this.searchDiagnosticData = ds;
                 this.isSearchEmbedded = true;
                 this.showSuccessfulChecks = false;
             }

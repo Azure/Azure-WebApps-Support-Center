@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Inject, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { map, catchError, delay, retryWhen, take } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import { DataRenderBaseComponent } from '../data-render-base/data-render-base.co
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { GenericContentService } from '../../services/generic-content.service';
 import { of, Observable } from 'rxjs';
+import { ISubscription } from "rxjs/Subscription";
 @Component({
     selector: 'web-search',
     templateUrl: './web-search.component.html',
@@ -19,6 +20,8 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
     @Input() searchId: string = '';
     @Input() isChildComponent: boolean = true;
     @Input() maxResults: number = 5;
+    @Input() useStack: boolean = true;
+    @Input() preferredSites: string[] = [];
     @Input() searchResults: any[] = [];
     @Output() searchResultsChange: EventEmitter<any[]> = new EventEmitter<any[]>();
     searchTermDisplay: string = '';
@@ -26,15 +29,21 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
     showPreLoader: boolean = false;
     showPreLoadingError: boolean = false;
     preLoadingErrorMessage: string = "Some error occurred while fetching web results."
+    subscription: ISubscription;
     
     constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, public telemetryService: TelemetryService,
         private _activatedRoute: ActivatedRoute, private _router: Router, private _contentService: GenericContentService) {
         super(telemetryService);
         this.isPublic = config && config.isPublic;
-        this._activatedRoute.queryParamMap.pipe(take(1)).subscribe(qParams => {
+        const subscription = this._activatedRoute.queryParamMap.subscribe(qParams => {
             this.searchTerm = qParams.get('searchTerm') === null ? "" || this.searchTerm : qParams.get('searchTerm');
             this.refresh();
         });
+        this.subscription = subscription;
+    }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
     
     ngOnInit() {
@@ -74,7 +83,7 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
         }
         this.resetGlobals();
         if (!this.isChildComponent) this.searchId = uuid();
-        let searchTask = this._contentService.searchWeb(this.searchTerm, this.maxResults.toString()).pipe(map((res) => res), retryWhen(errors => {
+        let searchTask = this._contentService.searchWeb(this.searchTerm, this.maxResults.toString(), this.useStack, this.preferredSites).pipe(map((res) => res), retryWhen(errors => {
             let numRetries = 0;
             return errors.pipe(delay(1000), map(err => {
                 if(numRetries++ === 3){
@@ -103,7 +112,7 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
                 this.searchTermDisplay = this.searchTerm.valueOf();
                 this.showSearchTermPractices = true;
             }
-            this.logEvent(TelemetryEventNames.WebQueryResults, { searchId: this.searchId, query: this.searchTerm, results: JSON.stringify(this.searchResults), ts: Math.floor((new Date()).getTime() / 1000).toString() });
+            this.logEvent(TelemetryEventNames.WebQueryResults, { searchId: this.searchId, query: this.searchTerm, results: JSON.stringify(this.searchResults).replace(":", ""), ts: Math.floor((new Date()).getTime() / 1000).toString() });
         },
         (err) => {
             this.handleRequestFailure();

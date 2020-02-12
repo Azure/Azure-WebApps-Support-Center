@@ -40,10 +40,14 @@ export class ApplensContentService {
         return of(searchResults);
     }
 
-    public searchWeb(questionString: string, resultsCount: string = '3'): Observable<any> {
+    public searchWeb(questionString: string, resultsCount: string = '3', useStack: boolean = true, preferredSites: string[] = []): Observable<any> {
 
         const searchSuffix = this._resourceService.searchSuffix;
-        const query = encodeURIComponent(`${questionString} AND ${searchSuffix}`);
+        var preferredSitesSuffix = preferredSites.map(site => `site:${site}`).join(" OR ");
+        if (preferredSitesSuffix && preferredSitesSuffix.length>0){
+            preferredSitesSuffix = ` AND (${preferredSitesSuffix})`;
+        }
+        const query = encodeURIComponent(`${questionString} AND ${searchSuffix}${preferredSitesSuffix}`);
         const url = `https://api.cognitive.microsoft.com/bing/v7.0/search?q='${query}'&count=${resultsCount}`;
 
         return this.ocpApimKeySubject.pipe(mergeMap((key: string) => {

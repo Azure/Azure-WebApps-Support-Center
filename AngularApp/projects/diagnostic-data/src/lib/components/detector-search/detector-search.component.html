@@ -1,18 +1,22 @@
-<div style="display:block;margin-bottom:10px;margin-top:10px;">
-    <span class="span-h1">Didn’t find what you’re looking for? Tell us about your problem below, and we may be able to provide some additional diagnostics:</span>
-</div>
-<div style="margin-left:20px;">
-    <div class="input-group input-group-sm search-input-group" role="search" *ngIf="detectorId == ''">
-        <input aria-controls="search-results" class="form-control" [(ngModel)]="searchTerm" tabindex="0" type="search" placeholder="Describe your problem here" (keyup.enter)="refresh()" maxlength="140">
-        <div class="input-group-btn" id="clear-search">
-            <button aria-label="At least 2 characters" [style.display]="searchTerm?.trim().length>0 && searchTerm?.trim().length<2? '': 'none'" class="btn btn-default" style="padding-top:1px;" tabindex="0" title="At least 2 characters" type="button">
-                <i class="fa fa-exclamation icon-err"></i>
-            </button>
-            <button aria-label="Clear" class="btn btn-default" style="padding-top:1px;" tabindex="0" title="Clear" type="button" (click)="clearSearchTerm()">
-            <i class="fa fa-close"></i>
-            </button>
+<div *ngIf="searchConfiguration.DetectorSearchEnabled || searchConfiguration.WebSearchEnabled">
+    <div style="display:block;margin-bottom:10px;margin-top:10px;">
+        <span class="span-h1">Didn’t find what you’re looking for? Tell us about your problem below, and we may be able to provide some additional diagnostics:</span>
+    </div>
+    <div style="margin-left:20px;">
+        <div class="input-group input-group-sm search-input-group" role="search" *ngIf="!searchConfiguration.DetectorSearchEnabled || detectorId == ''">
+            <input aria-controls="search-results" class="form-control" [(ngModel)]="searchTerm" tabindex="0" type="search" placeholder="Describe your problem here" (keyup.enter)="hitSearch()" maxlength="140">
+            <div class="input-group-btn" id="clear-search">
+                <button aria-label="At least 2 characters" [style.display]="searchTerm?.trim().length>0 && searchTerm?.trim().length<2? '': 'none'" class="btn btn-default" style="padding-top:1px;" tabindex="0" title="At least 2 characters" type="button">
+                    <i class="fa fa-exclamation icon-err"></i>
+                </button>
+                <button aria-label="Clear" class="btn btn-default" style="padding-top:1px;" tabindex="0" title="Clear" type="button" (click)="clearSearchTerm()">
+                <i class="fa fa-close"></i>
+                </button>
+            </div>
         </div>
     </div>
+</div>
+<div style="margin-left:20px;" *ngIf="searchConfiguration.DetectorSearchEnabled">
     <div [hidden]="detectorId === ''">
     <div>
         <div style="display: inline-block;margin-top: 10px">
@@ -150,11 +154,11 @@
                 </div>
             </div>
         </div>
-        <div style="margin-top: 20px;" *ngIf="(detectors.length>0 && getPendingDetectorCount() == 0) || showWebSearch">
-            <web-search [searchTerm]="searchTerm" [searchId]="searchId" [isChildComponent]="true" [(searchResults)]="webSearchResults" [maxResults]="5"></web-search>
-        </div>
     </div>
     <div *ngIf="detectorId !== ''">
         <detector-view [detector]="detectorId" [startTime]="startTime" [endTime]="endTime" [detectorResponse]="detectorResponse"></detector-view>
     </div>
+</div>
+<div style="margin-left:20px;margin-top:20px;" *ngIf="searchConfiguration.WebSearchEnabled">
+    <web-search [searchTerm]="searchTerm" [searchId]="searchId" [isChildComponent]="true" [(searchResults)]="webSearchResults" [maxResults]="searchConfiguration.WebSearchConfiguration.MaxResults" [useStack]="searchConfiguration.WebSearchConfiguration.UseStack" [preferredSites]="searchConfiguration.WebSearchConfiguration.PreferredSites"></web-search>
 </div>
