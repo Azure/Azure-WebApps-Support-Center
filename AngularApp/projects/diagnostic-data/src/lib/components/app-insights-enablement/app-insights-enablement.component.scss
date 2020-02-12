@@ -1,6 +1,6 @@
 .banner {
   background-color: #eff6fc;
-  height: 48px;
+  min-height: 48px;
   text-align: center;
   color: #333;
   position: relative;
@@ -54,5 +54,4 @@
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
     margin-left: 10px;
-    font-size: larger;
   }

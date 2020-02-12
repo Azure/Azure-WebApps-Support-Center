@@ -9,7 +9,7 @@
         <div *ngIf="!connecting && !error">
           <div *ngIf="isAppInsightsEnabled">
             <div *ngIf="!isAppInsightsConnected">
-              <i class="fa fa-exclamation-triangle warning-icon-color"></i>
+              <i class="fa fa-exclamation-triangle warning-icon-color mr-2 "></i>
               Connect Application Insights with App Service Diagnostics to allow App Service Diagnostics to access App
               Insights information.
               <button class="ms-Button ms-Button--primary" (click)="connect()">
