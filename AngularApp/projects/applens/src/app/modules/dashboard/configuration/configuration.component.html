@@ -18,8 +18,8 @@
   {{alertMessage}}
 </div>
 
-<loader-view *ngIf="!code" message="Loading Kusto Mapping.."></loader-view>
-<div class="flow-container" *ngIf="code">
+<loader-view *ngIf="!codeLoaded" message="Loading Kusto Mapping.."></loader-view>
+<div class="flow-container" *ngIf="codeLoaded">
   <div class="onboarding-container">
     <split direction="vertical" gutterSize="8">
     <split-area size="85">
