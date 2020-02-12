@@ -97,9 +97,9 @@
   <div *ngIf="showAlert" class="alert alert-container" [ngClass]="alertClass" role="alert">
     {{alertMessage}}
   </div>
-  <loader-view *ngIf="!code" message="Starting onboarding flow ..."></loader-view>
+  <loader-view *ngIf="!codeLoaded" message="Starting onboarding flow ..."></loader-view>
 
-  <div *ngIf="code" class="onboarding-container">
+  <div *ngIf="codeLoaded" class="onboarding-container">
     <split [direction]="horizontal" gutterSize="8" gutterColor="#dff0ff">
       <split-area size="60">
         <split direction="vertical" gutterSize="8" gutterColor="rgb(249, 233, 212)">
