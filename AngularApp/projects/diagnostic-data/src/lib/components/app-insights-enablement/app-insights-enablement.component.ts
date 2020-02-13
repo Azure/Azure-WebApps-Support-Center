@@ -26,7 +26,7 @@ export class AppInsightsEnablementComponent implements OnInit {
   connecting: boolean = false;
   error: any;
 
-  isEnabledInProd: boolean = true;
+  isEnabledInProd: boolean = false;
 
   @Input()
   resourceId: string = "";
