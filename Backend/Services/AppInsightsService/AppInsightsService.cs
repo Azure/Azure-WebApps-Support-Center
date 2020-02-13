@@ -156,7 +156,12 @@ namespace Backend.Services
             response.EnsureSuccessStatusCode();
 
             var site = JObject.Parse(await response.Content.ReadAsStringAsync());
-            JObject tagsObject = JObject.Parse(site["tags"].ToString());
+
+            JObject tagsObject = new JObject();
+            if (site["tags"] != null)
+            {
+                tagsObject = JObject.Parse(site["tags"].ToString());
+            }
 
             return tagsObject;
         }
