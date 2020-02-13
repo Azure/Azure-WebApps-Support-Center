@@ -229,6 +229,50 @@
             "pesId": "15922",
             "staticSelfHelpContent": "",
             "searchSuffix": "AZURE APPLICATION GATEWAY"
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.ServiceBus/namespaces",
+            "templateFileName": "namespaces",
+            "imgSrc": "assets/img/servicebus-logo.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "ServiceBus",
+            "pesId": "13186",
+            "staticSelfHelpContent": "Microsoft.ServiceBus",
+            "searchSuffix": "AZURE SERVICE BUS"
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.EventHub/namespaces",
+            "templateFileName": "namespaces",
+            "imgSrc": "assets/img/eventhub-logo.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "EventHub",
+            "pesId": "16125",
+            "staticSelfHelpContent": "Microsoft.EventHub",
+            "searchSuffix": "AZURE EVENT HUB"
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.EventGrid/namespaces",
+            "templateFileName": "namespaces",
+            "imgSrc": "assets/img/eventgrid-logo.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "EventGrid",
+            "pesId": "16263",
+            "staticSelfHelpContent": "Microsoft.EventGrid",
+            "searchSuffix": "AZURE EVENT GRID"
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.Relay/namespaces",
+            "templateFileName": "namespaces",
+            "imgSrc": "assets/img/relay-logo.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "Relay",
+            "pesId": "16123",
+            "staticSelfHelpContent": "Microsoft.Relay",
+            "searchSuffix": "AZURE RELAY"
         }
     ]
 }
