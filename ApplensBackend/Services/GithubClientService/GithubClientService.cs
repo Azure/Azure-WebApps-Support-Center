@@ -109,7 +109,7 @@ namespace AppLensV3
 
             return await GetRawFile(gistFileUrl);
         }
-        
+
         /// <summary>
         /// Get metadata file.
         /// </summary>
@@ -133,16 +133,17 @@ namespace AppLensV3
         }
 
         /// <summary>
-        /// Get Resource configuration for search
+        /// Get Resource configuration for search.
         /// </summary>
-        /// <returns>Resource Configuration JSON for search api</returns>
-        public async Task<string> GetResourceConfigFile(){
+        /// <returns>Resource Configuration JSON for search api.</returns>
+        public async Task<string> GetResourceConfigFile()
+        {
             var resourceConfigFileUrl = string.Format(
                 GithubConstants.ResourceConfigFormat,
                 UserName,
                 RepoName,
                 Branch);
-            
+
             return await GetRawFile(resourceConfigFileUrl);
         }
 
@@ -215,7 +216,13 @@ namespace AppLensV3
                 Sha = Branch
             };
 
-            var allCommits = await OctokitClient.Repository.Commit.GetAll(UserName, RepoName, request);
+            var options = new ApiOptions()
+            {
+                PageSize = 2,
+                PageCount = 30
+            };
+
+            var allCommits = await OctokitClient.Repository.Commit.GetAll(UserName, RepoName, request, options);
             var res = new List<Models.Commit>();
 
             var commits = allCommits
