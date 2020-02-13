@@ -95,7 +95,15 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
 
         this._activatedRoute.queryParamMap.pipe(take(1)).subscribe(qParams => {
             this.searchTerm = qParams.get('searchTerm') === null ? "" || this.searchTerm : qParams.get('searchTerm');
-            this.refresh();
+            if (!this.searchTerm || this.searchTerm.length==0){
+                if (this.searchConfiguration.CustomQueryString && this.searchConfiguration.CustomQueryString.length > 1) {
+                    this.searchTerm = this.searchConfiguration.CustomQueryString;
+                    this.hitSearch();
+                }
+            }
+            else {
+                this.refresh();
+            }
         });
 
         this.startTime = this.detectorControlService.startTime;
