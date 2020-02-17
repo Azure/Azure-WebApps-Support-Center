@@ -10,8 +10,9 @@ import { AppAnalysisService } from '../appanalysis.service';
 import { PortalService } from '../../../startup/services/portal.service';
 import { PortalActionService } from '../portal-action.service';
 import { AvailabilityLoggingService } from '../logging/availability.logging.service';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, mergeMap } from 'rxjs/operators';
 import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
+import { ResponseMessageCollectionEnvelope, ResponseMessageEnvelope } from '../../models/responsemessageenvelope';
 
 @Injectable()
 export class AppInsightsService {
@@ -19,6 +20,7 @@ export class AppInsightsService {
     private appInsightsExtension = 'AppInsightsExtension';
     private appInsights_KeyStr: string = 'WEBAPP_SUPPORTCNTR_READONLYKEY';
     private appInsightsApiEndpoint: string = 'https://api.applicationinsights.io/v1/apps/';
+    private appInsightsAppSettingName: string = 'APPINSIGHTS_INSTRUMENTATIONKEY';
 
     public appId_AppSettingStr: string = 'SUPPORTCNTR_APPINSIGHTS_APPID';
     public appKey_AppSettingStr: string = 'SUPPORTCNTR_APPINSIGHTS_APPKEY';
@@ -37,7 +39,12 @@ export class AppInsightsService {
         appId: undefined
     };
 
-    constructor(private http: Http, private authService: AuthService, private armService: ArmService, private siteService: SiteService, private appAnalysisService: AppAnalysisService, private portalService: PortalService, private portalActionService: PortalActionService, private logger: AvailabilityLoggingService, private _telmetryService:TelemetryService) {
+    subscriptionId:string;
+    resourceGroup:string;
+    siteName:string;
+    slotName:string;
+
+    constructor(private http: Http, private authService: AuthService, private armService: ArmService, private siteService: SiteService, private appAnalysisService: AppAnalysisService, private portalService: PortalService, private portalActionService: PortalActionService, private logger: AvailabilityLoggingService, private _telmetryService: TelemetryService) {
 
         this.loadAppInsightsResourceObservable = new BehaviorSubject<boolean>(null);
         this.loadAppDiagnosticPropertiesObservable = new BehaviorSubject<boolean>(null);
@@ -48,15 +55,20 @@ export class AppInsightsService {
                 this.postCommandToGetAIResource(startupInfo.resourceId);
 
                 const resourceUriParts = siteService.parseResourceUri(startupInfo.resourceId);
+                this.subscriptionId = resourceUriParts.subscriptionId;
+                this.resourceGroup = resourceUriParts.resourceGroup;
+                this.siteName = resourceUriParts.siteName;
+                this.slotName = resourceUriParts.slotName;
+
                 this.loadAppInsightsSettings(resourceUriParts.subscriptionId, resourceUriParts.resourceGroup, resourceUriParts.siteName, resourceUriParts.slotName);
             }
         });
     }
 
-    private loadAppInsightsSettings(subscription: string, resourceGroup: string, siteName: string, slotName: string = ''): void {
+    private loadAppInsightsSettings(subscriptionId: string, resourceGroup: string, siteName: string, slotName: string = ''): void {
 
         // Check the stack of the web app to determine whether App Insights can be shown as an option
-        this.appAnalysisService.getDiagnosticProperties(subscription, resourceGroup, siteName, slotName).subscribe(data => {
+        this.appAnalysisService.getDiagnosticProperties(subscriptionId, resourceGroup, siteName, slotName).subscribe(data => {
 
             if (data && data.appStack && data.appStack.toLowerCase().indexOf('asp.net') > -1) {
                 this.appInsightsSettings.validForStack = true;
@@ -73,7 +85,7 @@ export class AppInsightsService {
         });
 
         // Check if App insights is already enabled for the web app.
-        this.portalService.getAppInsightsResourceInfo().subscribe((aiResource: string) => {
+        this.getAppInsightsResourceForWebApp().subscribe((aiResource: string) => {
             if (aiResource && aiResource !== '') {
                 this.appInsightsSettings.validForStack = true;
                 this.appInsightsSettings.enabledForWebApp = true;
@@ -112,11 +124,55 @@ export class AppInsightsService {
 
     CheckIfAppInsightsEnabled(): Observable<boolean> {
         let appInsightsEnabled: boolean = false;
+        return this.getAppInsightsResourceForWebApp().pipe(map(resp => {
+            appInsightsEnabled = this.isNotNullOrEmpty(resp);
+            return appInsightsEnabled;
+        }));
+    }
+
+    getAppInsightsResourceForWebApp(): Observable<string> {
+
         return this.portalService.getAppInsightsResourceInfo().pipe(
             map((aiResource: string) => {
-                appInsightsEnabled = this.isNotNullOrEmpty(aiResource);
-                return this.isNotNullOrEmpty(aiResource);
+                if (this.isNotNullOrEmpty(aiResource)) {
+                    return aiResource;
+                }
+            }),
+            mergeMap(aiResource => {
+                if (!this.isNotNullOrEmpty(aiResource)) {
+                    return this.getAppInsightsResourceFromAppSettings();
+                } else {
+                    return Observable.of(aiResource);
+                }
             }));
+    }
+
+    getAppInsightsResourceFromAppSettings(): Observable<string> {
+        return this.siteService.getSiteAppSettings(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName).pipe(
+            map((settingsResponse) => {
+                if (settingsResponse && settingsResponse.properties) {
+                    if (settingsResponse.properties[this.appInsightsAppSettingName] != null) {
+                        let instrumentationKey = settingsResponse.properties[this.appInsightsAppSettingName];
+                        return instrumentationKey;
+                    }
+                }
+            }),
+            mergeMap(instrumentationKey => {
+                if (this.isNotNullOrEmpty(instrumentationKey)) {
+                    return this.getAppInsightsResourceForInstrumentationKey(instrumentationKey, this.subscriptionId);
+                } else {
+                    return Observable.of('');
+                }
+            })
+        );
+    }
+
+    getAppInsightsResourceForInstrumentationKey(instrumentationKey: string, subscriptionId: string): Observable<string> {
+        const url = `/subscriptions/${subscriptionId}/providers/microsoft.insights/components`;
+        return this.armService.getResourceCollection<ResponseMessageCollectionEnvelope<ResponseMessageEnvelope<AppInsightsResponse>[]>>(url, "2015-05-01", true).pipe(map((response: ResponseMessageEnvelope<AppInsightsResponse>[]) => {
+            let appInsightsUri = response.find(i => i.properties.InstrumentationKey === instrumentationKey)
+            return appInsightsUri.id;
+        }));
     }
 
     DeleteAppInsightsAccessKeyIfExists(): Observable<any> {
@@ -193,15 +249,20 @@ export class AppInsightsService {
 
     public logAppInsightsConnectionError(resourceUri: string, error: any) {
         this._telmetryService.logEvent(TelemetryEventNames.AppInsightsConnectionError, {
-            'resourceUri' : resourceUri,
-            'error':error
+            'resourceUri': resourceUri,
+            'error': error
         });
     }
 
-    public logAppInsightsConnected(resourceUri:string) {
+    public logAppInsightsConnected(resourceUri: string) {
         this._telmetryService.logEvent(TelemetryEventNames.AppInsightsConnected,
             {
-                'resouceUri' : resourceUri
+                'resouceUri': resourceUri
             });
-        }
+    }
+}
+
+export interface AppInsightsResponse {
+    ApplicationId: string;
+    InstrumentationKey: string;
 }
