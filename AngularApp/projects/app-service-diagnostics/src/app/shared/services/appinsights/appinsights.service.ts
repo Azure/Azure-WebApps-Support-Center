@@ -13,6 +13,7 @@ import { AvailabilityLoggingService } from '../logging/availability.logging.serv
 import { tap, map, mergeMap } from 'rxjs/operators';
 import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
 import { ResponseMessageCollectionEnvelope, ResponseMessageEnvelope } from '../../models/responsemessageenvelope';
+import { AppInsightsResponse } from '../../models/appinsights';
 
 @Injectable()
 export class AppInsightsService {
@@ -262,7 +263,3 @@ export class AppInsightsService {
     }
 }
 
-export interface AppInsightsResponse {
-    ApplicationId: string;
-    InstrumentationKey: string;
-}
