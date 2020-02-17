@@ -171,7 +171,7 @@ export class AppInsightsService {
     getAppInsightsResourceForInstrumentationKey(instrumentationKey: string, subscriptionId: string): Observable<string> {
         const url = `/subscriptions/${subscriptionId}/providers/microsoft.insights/components`;
         return this.armService.getResourceCollection<ResponseMessageCollectionEnvelope<ResponseMessageEnvelope<AppInsightsResponse>[]>>(url, "2015-05-01", true).pipe(map((response: ResponseMessageEnvelope<AppInsightsResponse>[]) => {
-            let appInsightsUri = response.find(i => i.properties.InstrumentationKey === instrumentationKey)
+            let appInsightsUri = response.find(i => i.properties && i.properties.InstrumentationKey && i.properties.InstrumentationKey === instrumentationKey)
             return appInsightsUri.id;
         }));
     }
