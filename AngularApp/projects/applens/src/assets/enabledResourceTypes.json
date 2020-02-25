@@ -233,7 +233,7 @@
         {
             "service": "ResourceService",
             "resourceType": "Microsoft.ServiceBus/namespaces",
-            "templateFileName": "namespaces",
+            "templateFileName": "ServiceBus",
             "imgSrc": "assets/img/servicebus-logo.png",
             "versionPrefix": "",
             "azureCommImpactedServicesList": "ServiceBus",
@@ -244,7 +244,7 @@
         {
             "service": "ResourceService",
             "resourceType": "Microsoft.EventHub/namespaces",
-            "templateFileName": "namespaces",
+            "templateFileName": "EventHub",
             "imgSrc": "assets/img/eventhub-logo.png",
             "versionPrefix": "",
             "azureCommImpactedServicesList": "EventHub",
@@ -254,8 +254,19 @@
         },
         {
             "service": "ResourceService",
-            "resourceType": "Microsoft.EventGrid/namespaces",
-            "templateFileName": "namespaces",
+            "resourceType": "Microsoft.EventGrid/topics",
+            "templateFileName": "EventGridTopics",
+            "imgSrc": "assets/img/eventgrid-logo.png",
+            "versionPrefix": "",
+            "azureCommImpactedServicesList": "EventGrid",
+            "pesId": "16263",
+            "staticSelfHelpContent": "Microsoft.EventGrid",
+            "searchSuffix": "AZURE EVENT GRID"
+        },
+ {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.EventGrid/domians",
+            "templateFileName": "EventGridDomains",
             "imgSrc": "assets/img/eventgrid-logo.png",
             "versionPrefix": "",
             "azureCommImpactedServicesList": "EventGrid",
@@ -266,7 +277,7 @@
         {
             "service": "ResourceService",
             "resourceType": "Microsoft.Relay/namespaces",
-            "templateFileName": "namespaces",
+            "templateFileName": "Relay",
             "imgSrc": "assets/img/relay-logo.png",
             "versionPrefix": "",
             "azureCommImpactedServicesList": "Relay",
