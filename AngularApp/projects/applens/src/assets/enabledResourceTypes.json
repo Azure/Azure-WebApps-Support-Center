@@ -131,7 +131,7 @@
             "staticSelfHelpContent": "",
             "searchSuffix": "AZURE CONTAINER REGISTRY"
         },
-		{
+        {
             "service": "ResourceService",
             "resourceType": "Microsoft.Automation/automationAccounts",
             "templateFileName": "AzureAutomation",
@@ -142,7 +142,7 @@
             "staticSelfHelpContent": "",
             "searchSuffix": "AZURE AUTOMATION ACCOUNT"
         },
-		{
+        {
             "service": "ResourceService",
             "resourceType": "Microsoft.MachineLearningServices/workspaces",
             "templateFileName": "MachineLearningServices",
@@ -263,9 +263,9 @@
             "staticSelfHelpContent": "Microsoft.EventGrid",
             "searchSuffix": "AZURE EVENT GRID"
         },
- {
+        {
             "service": "ResourceService",
-            "resourceType": "Microsoft.EventGrid/domians",
+            "resourceType": "Microsoft.EventGrid/domains",
             "templateFileName": "EventGridDomains",
             "imgSrc": "assets/img/eventgrid-logo.png",
             "versionPrefix": "",
