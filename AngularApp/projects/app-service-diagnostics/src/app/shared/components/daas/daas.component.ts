@@ -100,7 +100,7 @@ export class DaasComponent implements OnInit, OnDestroy {
         this.WizardSteps = [];
         this.WizardSteps.push({
             Caption: 'Step 1: Initializing Diagnostics ',
-            IconType: 'fa-play',
+            IconType: 'fa-clock-o',
             AdditionalText: ''
         });
 

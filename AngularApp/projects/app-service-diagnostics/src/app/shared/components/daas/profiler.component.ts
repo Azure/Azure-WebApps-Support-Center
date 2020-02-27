@@ -69,13 +69,13 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
         this.WizardSteps = [];
         this.WizardSteps.push({
             Caption: 'Step 1: Starting Profiler',
-            IconType: 'fa-play',
+            IconType: 'fa-clock-o',
             AdditionalText: ''
         });
 
         this.WizardSteps.push({
             Caption: 'Step 2: Reproduce the issue now',
-            IconType: 'fa-clock-o',
+            IconType: 'fa-user',
             AdditionalText: 'Profiler trace will stop automatically after 60 seconds unless overriden explicitly'
         });
 
