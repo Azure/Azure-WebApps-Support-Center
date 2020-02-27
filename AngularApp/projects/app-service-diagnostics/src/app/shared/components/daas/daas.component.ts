@@ -101,19 +101,22 @@ export class DaasComponent implements OnInit, OnDestroy {
         this.WizardSteps.push({
             Caption: 'Step 1: Initializing Diagnostics ',
             IconType: 'fa-clock-o',
-            AdditionalText: ''
+            AdditionalText: '',
+            CaptionCompleted : 'Step 1: Initialized Diagnostics'
         });
 
         this.WizardSteps.push({
             Caption: 'Step 2: Collecting ' + this.diagnoserName,
             IconType: 'fa-clone',
-            AdditionalText: ''
+            AdditionalText: '',
+            CaptionCompleted : 'Step 2: ' + this.diagnoserName + ' Collected'
         });
 
         this.WizardSteps.push({
             Caption: 'Step 3: Analyzing ' + this.diagnoserName,
             IconType: 'fa-cog',
-            AdditionalText: ''
+            AdditionalText: '',
+            CaptionCompleted : 'Step 3: ' + this.diagnoserName + ' Analyzed'
         });
 
     }
