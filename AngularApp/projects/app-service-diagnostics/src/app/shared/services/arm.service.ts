@@ -10,7 +10,7 @@ import { catchError, retry, map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { GenericArmConfigService } from './generic-arm-config.service';
 import { StartupInfo } from '../models/portal';
-
+import { DemoSubscriptions } from '../../betaSubscriptions';
 
 @Injectable()
 export class ArmService {
@@ -23,7 +23,7 @@ export class ArmService {
     private readonly chinaAzureArmUrl = 'https://management.chinacloudapi.cn';
     private readonly usGovernmentAzureArmUrl = 'https://management.usgovcloudapi.net';
     private readonly blackforestAzureArmUrl = 'https://management.microsoftazure.de';
-    private readonly usnatAzureArmUrl = 'https://management.azure.eaglex.ic.gov';    
+    private readonly usnatAzureArmUrl = 'https://management.azure.eaglex.ic.gov';
     private diagRoleVersion: string = '';
     private readonly routeToLiberation = '2';
     private readonly routeToDiagnosticRole = '1';
@@ -33,8 +33,10 @@ export class ArmService {
             if(!!startupInfo.armEndpoint && startupInfo.armEndpoint !='' && startupInfo.armEndpoint.length > 1) {
                 this.armEndpoint = startupInfo.armEndpoint ;
             }
-            
-            if(this.isNationalCloud) {
+            let resourceId = startupInfo.resourceId;
+            let subscriptionId = resourceId.split('/')[2];
+            let isInternalSub = DemoSubscriptions.betaSubscriptions.findIndex(sub => sub.toLocaleLowerCase() === subscriptionId.toLocaleLowerCase()) >= 0;
+            if(this.isNationalCloud || isInternalSub) {
                 this.diagRoleVersion = this.routeToLiberation;
             }
             else {
@@ -85,7 +87,7 @@ export class ArmService {
             }
 
             return armUrl;
-        }        
+        }
     }
 
     getApiVersion(resourceUri: string, apiVersion?: string): string {
@@ -124,7 +126,7 @@ export class ArmService {
         // When x-ms-diagversion is set to 1, the requests will be sent to DiagnosticRole.
         //If the value is set to other than 1 or if the header is not present at all, requests will go to runtimehost
         additionalHeaders.set('x-ms-diagversion', this.diagRoleVersion);
-        
+
         const request = this._http.get<ResponseMessageEnvelope<T>>(url, {
             headers: this.getHeaders(null, additionalHeaders)
         }).pipe(
