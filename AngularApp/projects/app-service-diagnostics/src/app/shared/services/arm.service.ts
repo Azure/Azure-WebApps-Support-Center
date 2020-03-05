@@ -126,7 +126,10 @@ export class ArmService {
         // When x-ms-diagversion is set to 1, the requests will be sent to DiagnosticRole.
         //If the value is set to other than 1 or if the header is not present at all, requests will go to runtimehost
         additionalHeaders.set('x-ms-diagversion', this.diagRoleVersion);
-
+        // This is just for logs so that we know requests are coming from Portal.
+        if(this.diagRoleVersion === this.routeToLiberation) {
+            additionalHeaders.set('x-ms-azureportal', 'true');
+        }
         const request = this._http.get<ResponseMessageEnvelope<T>>(url, {
             headers: this.getHeaders(null, additionalHeaders)
         }).pipe(
@@ -331,7 +334,10 @@ export class ArmService {
         // When x-ms-diagversion is set to 1, the requests will be sent to DiagnosticRole.
         //If the value is set to other than 1 or if the header is not present at all, requests will go to runtimehost
         additionalHeaders.set('x-ms-diagversion', this.diagRoleVersion);
-
+         // This is just for logs so that we know requests are coming from Portal.
+         if(this.diagRoleVersion === this.routeToLiberation) {
+            additionalHeaders.set('x-ms-azureportal', 'true');
+        }
         const request = this._http.get(url, { headers: this.getHeaders(null, additionalHeaders) }).pipe(
             map<ResponseMessageCollectionEnvelope<ResponseMessageEnvelope<T>>, ResponseMessageEnvelope<T>[]>(r => r.value),
             catchError(this.handleError)
