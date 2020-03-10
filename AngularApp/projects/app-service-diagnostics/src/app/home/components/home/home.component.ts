@@ -86,7 +86,7 @@ export class HomeComponent implements OnInit {
       }
     }
 
-    if (this.isAKSOnNationalCloud){
+    if (this.useStaticAksText){
         
       this.homePageText = {
         title:'Azure Kubernetes Service Diagnostics',
@@ -150,8 +150,8 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  public get isAKSOnNationalCloud() : boolean {
-    return this.armService.isNationalCloud 
+  public get useStaticAksText() : boolean {
+    return this.armService.isMooncake 
     && this._resourceService.parseResourceUri(this._resourceService.resourceIdForRouting).provider.toLowerCase() == 'microsoft.containerservice';
   }
 

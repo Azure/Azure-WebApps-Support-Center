@@ -1,5 +1,5 @@
 <div class="home-container">
-  <div class="input-group input-group-lg search-input-group" (keyup.escape)="clearSearch()" role="search" *ngIf="!isAKSOnNationalCloud">
+  <div class="input-group input-group-lg search-input-group" (keyup.escape)="clearSearch()" role="search" *ngIf="!useStaticAksText">
     <input tabindex="0" type="search" class="form-control" placeholder="{{searchPlaceHolder}}"
       [ngModel]="searchValue" (ngModelChange)="updateSearchValue($event)" (focus)="onSearchBoxFocus(event)"
       (focusout)="onSearchLostFocus()" aria-controls="search-results">
@@ -22,12 +22,12 @@
   <div class="main-area">
     <h2 tabindex="0">{{homePageText.title}}</h2>
     <p id="page-description" tabindex="0">{{homePageText.description}}</p>
-    <div *ngIf="categories && !isAKSOnNationalCloud " class="category-container">
+    <div *ngIf="categories && !useStaticAksText " class="category-container">
       <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
         <category-tile [category]="category"></category-tile>
       </div>
     </div>
-    <markdown ngPreserveWhitespaces *ngIf="isAKSOnNationalCloud">
+    <markdown ngPreserveWhitespaces *ngIf="useStaticAksText">
       ## Management
       Cannot stop, start, or edit my Kubernetes containers
 
