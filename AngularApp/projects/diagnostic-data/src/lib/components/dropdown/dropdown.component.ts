@@ -53,8 +53,9 @@ export class DropdownComponent extends DataRenderBaseComponent {
     this.keys = Array.from(this.keyDataMapping.keys());
   }
 
-  selectKey(key: string) {
+  selectKey(key: string,event:any) {
     this.selectedKey = key;
     this.selectedData = this.keyDataMapping.get(this.selectedKey);
+    event.preventDefault();
   }
 }
