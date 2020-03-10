@@ -16,7 +16,7 @@
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuId">
             <li *ngFor="let key of keys">
-              <a (click)="selectKey(key)">
+              <a tabindex="0" (keyup.enter)="selectKey(key)" (click)="selectKey(key)">
                   <span [innerHtml]="key"></span>
               </a>
             </li>
