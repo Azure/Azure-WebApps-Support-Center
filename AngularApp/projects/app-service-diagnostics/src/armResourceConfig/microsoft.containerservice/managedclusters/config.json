@@ -1,7 +1,7 @@
 {
     "homePageText": {
-        "title": "Azure Kubernetes Service Diagnostics",
-        "description": "Use Azure Kubernetes Service Diagnostics to investigate how your cluster is performing, diagnose issues, and discover how to improve its reliability. Select the problem category that best matches the information or tool that you're interested in:",
+        "title": "Azure Kubernetes Service Diagnostics (Preview)",
+        "description": "Use Azure Kubernetes Service Diagnostics (Preview) to investigate how your cluster is performing, diagnose issues, and discover how to improve its reliability. Select the problem category that best matches the information or tool that you're interested in:",
         "searchBarPlaceHolder": "Search a keyword that best describes your issue"
     },
 	"matchRegEx": "/Microsoft.ContainerService/managedClusters/",
