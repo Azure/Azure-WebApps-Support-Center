@@ -305,6 +305,21 @@ export class OnboardingFlowComponent implements OnInit {
           this.buildOutput.push("========== Build: 0 succeeded, 1 failed ==========");
         }
 
+        if (this.queryResponse.runtimeLogOutput) {
+          this.queryResponse.runtimeLogOutput.forEach(element => {
+            if (element.exception) {
+              this.buildOutput.push(element.timeStamp + ": " +
+                element.message + ": " +
+                element.exception.ClassName + ": " +
+                element.exception.Message + "\r\n" +
+                element.exception.StackTraceString);
+            }
+            else {
+              this.buildOutput.push(element.timeStamp + ": " + element.message);
+            }
+          });
+        }
+
         this.publishButtonDisabled = (
           !this.gistMode && this.queryResponse.runtimeSucceeded != null && !this.queryResponse.runtimeSucceeded
         ) || (
