@@ -21,9 +21,9 @@ export class DetectorCommandBarComponent {
 
 
   // commandbar related
-  commandbarStyles = {
-    backgroundColor: "blue"
-  };
+  // commandbarStyles = {
+  //   backgroundColor: "blue"
+  // };
   listenObj: any;
   dropdownOpen: boolean = true;
 
