@@ -30,8 +30,6 @@ export class MetricsPerInstanceAppsResolver implements Resolve<Observable<boolea
         //if open from home page second blade will go to Diagnostic Tool Overview Page
         //Otherwise redirect to previous page(open from category search bar)
         const url = this._router.url === '/resourceRedirect' ? `resource${this.resourceId}/categories/DiagnosticTools/overview` : this._router.url;
-        // const url = this._router.url === '/resourceRedirect' ? `resource${this.resourceId}/categories/DiagnosticTools/tools/metricsperinstance` : this._router.url;
-        // this._router.navigate([`../../overview`],{relativeTo: this._activatedRoute});
         this._router.navigateByUrl(url);
         this._portalActionService.openMdmMetricsV3Blade();
         return of(true);
@@ -48,7 +46,6 @@ export class MetricsPerInstanceAppServicePlanResolver implements Resolve<Observa
         const url = this._router.url === '/resourceRedirect' ? `resource${this.resourceId}/categories/DiagnosticTools/overview` : this._router.url;
         this._router.navigateByUrl(url);
         this._portalActionService.openMdmMetricsV3Blade(this._portalActionService.currentSite.properties.serverFarmId);
-        // this._router.navigate([`../../categories/DiagnosticTools`], { relativeTo: this._activatedRoute });
         return of(true);
     }
 }
@@ -63,7 +60,6 @@ export class AdvanceApplicationRestartResolver implements Resolve<Observable<boo
         const url = this._router.url === '/resourceRedirect' ? `resource${this.resourceId}/categories/DiagnosticTools/overview` : this._router.url;
         this._router.navigateByUrl(url);
         this._portalActionService.openBladeAdvancedAppRestartBladeForCurrentSite();
-        // this._router.navigate([`../../categories/DiagnosticTools`], { relativeTo: this._activatedRoute });
         return of(true);
     }
 }
@@ -78,7 +74,6 @@ export class SecurityScanningResolver implements Resolve<Observable<boolean>> {
         const url = this._router.url === '/resourceRedirect' ? `resource${this.resourceId}/categories/DiagnosticTools/overview` : this._router.url;
         this._router.navigateByUrl(url);
         this._portalActionService.openTifoilSecurityBlade();
-        // this._router.navigate([`../../categories/DiagnosticTools`], { relativeTo: this._activatedRoute });
         return of(true);
     }
 }

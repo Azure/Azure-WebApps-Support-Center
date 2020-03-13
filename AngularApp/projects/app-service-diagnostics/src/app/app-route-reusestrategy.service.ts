@@ -66,26 +66,13 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
      * Determines if a route should be reused.
      */
     shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
-
-        // // console.log("Current, routeconfig", curr.routeConfig);
-        // // console.log("Future route config", future.routeConfig);
-
-        // // console.log("current/future component", curr.component, future.component);
-
         if (curr.routeConfig === null && future.routeConfig === null) {
-            // console.log("Return 1 true");
             return true;
         }
-
-        // never reuse routes with incompatible configurations
-        // console.log("Return 2 before", future.routeConfig, curr.routeConfig);
         if (future.routeConfig !== curr.routeConfig) {
-            // console.log("Return 2 false", future.routeConfig, curr.routeConfig);
             return false;
         }
 
-        var c = this._getUrl(future) === this._getUrl(curr);
-        // console.log("return 3 c: cur, future", c, this._getUrl(curr), this._getUrl(future));
         return this._getUrl(future) === this._getUrl(curr);
 
     }
