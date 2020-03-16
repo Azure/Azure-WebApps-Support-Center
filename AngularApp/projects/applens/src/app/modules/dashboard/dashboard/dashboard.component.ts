@@ -156,7 +156,7 @@ export class DashboardComponent implements OnDestroy {
   }
 
   openResourceInfoModal() {
-    if (this.keys.indexOf('VnetName') == -1 && typeof this.resourceReady !== 'undefined' && typeof this.resourceDetailsSub === 'undefined')
+    if (this.keys.indexOf('VnetName') == -1 && this.resourceReady != null && this.resourceDetailsSub == null)
     {
       this.resourceDetailsSub = this.resourceReady.subscribe(resource => {
         if (resource) {
