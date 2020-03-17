@@ -98,5 +98,7 @@ namespace Observer {
         InternalStampName: string;
         Subscription: string;
         ResourceGroupName: string;
+        GeomasterName: string;
+        GeomasterServiceAddress: string;
     }
   }
