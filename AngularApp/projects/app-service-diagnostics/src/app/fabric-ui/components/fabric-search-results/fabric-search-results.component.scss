@@ -23,16 +23,12 @@
 }
 
 .result-item {
-    padding: 5px 7px;
     display: flex;
     cursor: pointer;
     min-height: 35px;
     flex-direction: row;
     justify-content: space-between;
-}
-
-.result-item:hover {
-    background-color: #eeeeee
+    align-items: center;
 }
 
 .result-count {
@@ -64,7 +60,6 @@
 
 .feature-title {
     font-size: 14px;
-    align-items: center;
 }
 
 .feature-category {
@@ -72,6 +67,20 @@
     margin: auto 0px;
     padding-right: 10px;
     font-size: 11px;
+}
+
+.selected-result-item {
+    background-color: #edebe9;
+}
+
+.detail-list-style {
+    text-decoration: none;
+    color: #666666;
+    font-size: 14px;
+}
+
+.detail-list-style:hover {
+    background: #edebe9;
 }
 
 

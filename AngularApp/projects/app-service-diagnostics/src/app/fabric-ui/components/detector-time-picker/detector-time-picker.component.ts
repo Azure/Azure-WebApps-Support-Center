@@ -12,7 +12,6 @@ import { Globals } from '../../../globals';
 })
 export class DetectorTimePickerComponent implements OnInit {
   @Output() updateTimerMessage: EventEmitter<string> = new EventEmitter<string>(true);
-  internalTime: string = "";
   showCalendar: boolean = false;
   showTimePicker: boolean = false;
   defaultSelectedKey: string;
@@ -33,7 +32,10 @@ export class DetectorTimePickerComponent implements OnInit {
   endClock: string;
   timeDiffError: string = "";
 
-  formatDate: IDatePickerProps['formatDate'] = (date) => { return this.convertDateToString(date, false) };
+  formatDate: IDatePickerProps['formatDate'] = (date) => { 
+    //only this format can do both fill in date and select date
+    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear() % 100}`;
+  };
 
   choiceGroupOptions: IChoiceGroupOption[] = [
     { key: 'Last1Hour', text: 'Last 1 Hour', onClick: () => { this.setTime(1) } },
@@ -43,20 +45,11 @@ export class DetectorTimePickerComponent implements OnInit {
     { key: 'Custom', text: 'Custom', onClick: () => { this.selectCustom() } },
   ];
 
-  dates: ICalendarStrings = {
-    months: [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
+  dayPickerString: ICalendarStrings = {
+    months: 
+    [
+      'January','February','March','April','May','June',
+      'July','August','September','October','November','December'
     ],
 
     shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -82,32 +75,17 @@ export class DetectorTimePickerComponent implements OnInit {
       //If not customized then prefill start date and endDate
       if (timerPickerInfo.selectedKey === 'Custom') {
         this.showTimePicker = true;
-        const start = timerPickerInfo.startDate;
-        const end = timerPickerInfo.endDate;
-        this.startDate = start;
-        this.endDate = end;
+        this.startDate = timerPickerInfo.startDate;
+        this.endDate = timerPickerInfo.endDate;
 
         //startDate and endDate contains current hour and minute info, only need hh:mm
-        this.startClock = this.convertDateToString(this.startDate).substring(11, 16);
-        this.endClock = this.convertDateToString(this.endDate).substring(11, 16);
-        const startDateWithTime = this.convertLocalDateToUTCWithTimeString(this.startDate,this.startClock);
-        const endDateWithTime = this.convertLocalDateToUTCWithTimeString(this.endDate,this.endClock)
-        this.internalTime = `${startDateWithTime} to ${endDateWithTime}`;
-        this.time = "UTC Time Range (" + this.internalTime + ")";
+        this.startClock = this.convertDateToString(timerPickerInfo.startDate).substring(11, 16);
+        this.endClock = this.convertDateToString(timerPickerInfo.endDate).substring(11, 16);
       } else {
         //Trigger setTime function to set this.hourDiff
         option.onClick.apply(this);
-
-        const localEndTime = this.today;
-        const localStartTime = new Date(localEndTime.getTime() - this.hourDiff * 60 * 60 * 1000);
-        const startDateWithTime = this.convertLocalDateToUTC(localStartTime);
-        const endDateWithTime = this.convertLocalDateToUTC(localEndTime);
-        this.internalTime = `${startDateWithTime} to ${endDateWithTime}`;
-        this.time = "UTC Time Range (" + this.internalTime + ")";
       }
     });
-
-
 
     this.timeDiffError = '';
     if (this.detectorControlService.timeRangeDefaulted) {
@@ -115,12 +93,21 @@ export class DetectorTimePickerComponent implements OnInit {
     }
 
     this.detectorControlService.update.subscribe(validUpdate => {
+      if (validUpdate) {
+        //Todo, update custom prefill info
+        const startTime = this.detectorControlService.startTimeString;
+        const endTime = this.detectorControlService.endTimeString;
+        this.time = `UTC Time Range (${startTime} to ${endTime})`;
+      }
       const routeParams = {
         'startTime': this.detectorControlService.startTime.format('YYYY-MM-DDTHH:mm'),
         'endTime': this.detectorControlService.endTime.format('YYYY-MM-DDTHH:mm')
       };
       if (this.detectorControlService.detectorQueryParamsString != "") {
         routeParams['detectorQueryParams'] = this.detectorControlService.detectorQueryParamsString;
+      }
+      if (this.activatedRoute.queryParams['searchTerm']) {
+        routeParams['searchTerm'] = this.activatedRoute.snapshot.queryParams['searchTerm'];
       }
       this.router.navigate([], { queryParams: routeParams, relativeTo: this.activatedRoute });
     });
@@ -133,6 +120,7 @@ export class DetectorTimePickerComponent implements OnInit {
 
   cancelTimeRange() {
     this.globals.openTimePicker = false;
+    this.showTimePicker = this.defaultSelectedKey === "Custom";
   }
 
   //clickHandler for apply button
@@ -170,14 +158,11 @@ export class DetectorTimePickerComponent implements OnInit {
       };
     }
 
-    this.globals.updateTimePickerInfo(timePickerInfo);
-
-    this.internalTime = `${startDateWithTime} to ${endDateWithTime}`;
-    this.time = "UTC Time Range (" + this.internalTime + ")";
-
     this.timeDiffError = this.detectorControlService.getTimeDurationError(startDateWithTime, endDateWithTime);
     if (this.timeDiffError === '') {
       this.detectorControlService.setCustomStartEnd(startDateWithTime, endDateWithTime);
+      
+      this.globals.updateTimePickerInfo(timePickerInfo);
     }
     this.globals.openTimePicker = this.timeDiffError !== "";
   }
@@ -190,7 +175,7 @@ export class DetectorTimePickerComponent implements OnInit {
   }
 
   //
-  private convertLocalDateToUTC(date: Date) {
+  private convertLocalDateToUTC(date: Date):string {
     const moment = momentNs.utc(date.getTime());
     const stringFormat: string = 'YYYY-MM-DD HH:mm';
     return moment.format(stringFormat);
@@ -207,7 +192,7 @@ export class DetectorTimePickerComponent implements OnInit {
   }
 
   //convert ISO string(UTC time) to LocalDate with same year,month,date...
-  //Maybe have better way to implement
+  //SHould have better way to implement
   private convertUTCToLocalDate(date: Date): Date {
     const s = date.toISOString();
     const year = Number.parseInt(s.substring(0, 4));
@@ -245,6 +230,19 @@ export class DetectorTimePickerComponent implements OnInit {
     //only need hh:mm
     this.startClock = this.convertDateToString(this.startDate).substring(11, 16);
     this.endClock = this.convertDateToString(this.endDate).substring(11, 16);
+  }
+
+  closeTimePicker(e:KeyboardEvent) {
+    //If not enter date or time, then esc will colse time picker
+    const ele = (<HTMLElement>e.target);
+    if (!ele.className.includes('ms-TextField-field')) {
+      this.globals.openTimePicker = false;
+      document.getElementById('commandBar-timePicker').focus(); 
+    }
+  }
+
+  clickOutsideHandler(ele:any) {
+    this.globals.openTimePicker = false;
   }
 }
 

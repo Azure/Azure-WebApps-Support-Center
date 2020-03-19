@@ -5,6 +5,8 @@ import { LoggingV2Service } from "../../../shared-v2/services/logging-v2.service
 import { NotificationService } from "../../../shared-v2/services/notification.service";
 import { Globals } from "../../../globals";
 import { icons } from "../../icons-constants";
+import { SelectionMode } from 'office-ui-fabric-react/lib/DetailsList'
+import { Router } from "@angular/router";
 
 enum BlurType {
   //click other place to close panel
@@ -27,6 +29,8 @@ export class FabricSearchResultsComponent {
   clickSearchBox: BlurType = BlurType.Blur;
   //Only ture when press ESC and no word in search box,collapse search result.
   isEscape: boolean = false;
+  selectionMode = SelectionMode.none;
+  isInCategory:boolean;
   get inputAriaLabel(): string {
     const resultCount = this.features.length;
     if (this.searchValue === "") {
@@ -46,18 +50,25 @@ export class FabricSearchResultsComponent {
       (ele.tagName === "DIV" && ele.className.indexOf("ms-Button-flexContainer") > -1) ||
       (ele.tagName === "I" && ele.className.indexOf("ms-Button-icon") > -1)) {
       this.clickSearchBox = BlurType.None;
-    } else {
+      //Async set to BlurType.Blur,so after clean result it will set to Blur for next onBlur action
+      setTimeout(() => { this.clickSearchBox = BlurType.Blur }, 0);
+    }
+    else if (this.isInCategory) {
+      this.clickSearchBox = BlurType.Blur;
+    } 
+    else {
       this.clickSearchBox = BlurType.Blur;
     }
   }
 
   @HostListener('keydown.Tab', ['$event.target'])
   onKeyUp(ele: HTMLElement) {
-    if (ele.tagName === "INPUT" || (ele.tagName === "BUTTON" && ele.className.indexOf("ms-Button--icon") > -1) && this.features.length > 0) {
+    if (ele.tagName === "INPUT") {
       this.clickSearchBox = BlurType.None;
     }
-    //After go over last search result or no result,collapse results
-    else if (this.features.length > 0 && ele.innerText.includes(this.features[this.features.length - 1].name) || (ele.tagName === "BUTTON" && ele.className.indexOf("ms-Button--icon") > -1 && this.features.length === 0)) {
+    //If in genie or detailLists then blur after tab
+    else if (ele.innerText === "Ask chatbot Genie" ||
+      ele.className.indexOf("ms-FocusZone") > -1) {
       this.clickSearchBox = BlurType.Blur;
       this.onBlurHandler();
     }
@@ -66,9 +77,27 @@ export class FabricSearchResultsComponent {
     }
   }
 
+  //Remove after no longer use search in command bar
+  @HostListener('keydown.arrowright',['$event.target'])
+  onArrowLeft(ele:HTMLElement) {
+    if (this.isInCategory) {
+      this.clickSearchBox = BlurType.None;
+      const list = <any[]>Array.from(ele.parentElement.children);
+      const index = list.findIndex(e => ele === e);
+      if (ele.tagName === "A" &&  this.features.length > 0 && index === this.features.length - 1) {
+        this.clickSearchBox = BlurType.Blur;
+        this.onBlurHandler();
+      }
 
-  constructor(public featureService: FeatureService, private _logger: LoggingV2Service,
-    private _notificationService: NotificationService, private globals: Globals) {
+      if (this.features.length === 0 && ele.innerHTML.includes('Genie')) {
+        this.clickSearchBox = BlurType.Blur;
+        this.onBlurHandler();
+      }
+    }
+  }
+  
+  constructor(public featureService: FeatureService, private _logger: LoggingV2Service,private _notificationService: NotificationService, private globals: Globals,private router:Router) {
+    this.isInCategory = this.router.url.includes('categories');
   }
 
   navigateToFeature(feature: Feature) {
@@ -99,6 +128,13 @@ export class FabricSearchResultsComponent {
     }, 5000);
     this.features = this.featureService.getFeatures(this.searchValue);
     this.isEscape = false;
+
+
+    //Remove tab to right Cross in search bar
+    const crossBtn: any = document.querySelector('.ms-SearchBox-clearButton button');
+    if (crossBtn) {
+      crossBtn.tabIndex = -1;
+    }
   }
 
   onSearchBoxFocus() {
@@ -128,7 +164,6 @@ export class FabricSearchResultsComponent {
         this.showSearchResults = false;
         break;
       case BlurType.None:
-        this.clickSearchBox = BlurType.Blur;
         break;
       default:
         break;
@@ -143,5 +178,17 @@ export class FabricSearchResultsComponent {
     const basePath = "../../../../assets/img/detectors";
     const fileName = icons.has(name) ? name : 'default';
     return `${basePath}/${fileName}.svg`;
+  }
+
+  invokeHandler(selected: { item: Feature }) {
+    this.navigateToFeature(selected.item);
+  }
+
+  escapeHandler(){
+    (<HTMLInputElement>document.querySelector('#fabSearchBox input')).focus();
+  }
+  clickOutsideHandler(){
+    this.clearSearch();
+    this.showSearchResults = false;
   }
 }
