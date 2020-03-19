@@ -101,12 +101,18 @@ export class FeatureService {
   }
 
   getFeatures(searchValue?: string) {
+    const featureUnique = this._features.filter((feature,index,array) => 
+    {
+        return array.findIndex(fea =>feature.name === fea.name) === index; 
+    })
+    
     if (!searchValue || searchValue === '') {
-      return this._features;
+      // return this._features;
+      return featureUnique;
     }
 
     searchValue = searchValue.toLowerCase();
-    return this._features.filter(feature => {
+    return featureUnique.filter(feature => {
       //Remove after A/B Test
       if (this.isLegacy) {
         return feature.name.toLowerCase().indexOf(searchValue) != -1
@@ -116,7 +122,6 @@ export class FeatureService {
         return feature.name.toLowerCase().indexOf(searchValue) != -1
         || (feature.category && feature.category.toLowerCase().indexOf(searchValue) != -1);
       }
-      
     });
   }
   getCategoryIdByhDetectorId(detectorId: string): string {

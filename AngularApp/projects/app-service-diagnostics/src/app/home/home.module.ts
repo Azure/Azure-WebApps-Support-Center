@@ -47,7 +47,6 @@ import { EventViewerComponent } from '../shared/components/daas/event-viewer/eve
 import { FrebViewerComponent } from '../shared/components/daas/freb-viewer/freb-viewer.component';
 import { MetricsPerInstanceAppServicePlanResolver, AdvanceApplicationRestartResolver, SecurityScanningResolver, MetricsPerInstanceAppsResolver } from '../diagnostic-tools/diagnostic-tools.routeconfig';
 import { CategoryTileV4Component } from '../fabric-ui/components/category-tile-v4/category-tile-v4.component';
-import { CategoryChatV4Component } from '../fabric-ui/components/category-chat-v4/category-chat-v4.component';
 import { GenieModule } from '../genie/genie.module';
 import { FabricModule } from '../fabric-ui/fabric.module';
 import { ResourceService } from '../shared-v2/services/resource.service';
@@ -508,7 +507,7 @@ export const HomeRoutes = RouterModule.forChild([
         MarkdownModule.forRoot(),
         FabSearchBoxModule
     ],
-    declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent, CategoryTileV4Component, CategoryChatV4Component],
+    declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent, CategoryTileV4Component],
     providers:
         [
             CategoryTabResolver,

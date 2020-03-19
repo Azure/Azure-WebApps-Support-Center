@@ -8,10 +8,6 @@ import { DetectorControlService } from 'projects/diagnostic-data/src/lib/service
   styleUrls: ['./detector-command-bar.component.scss']
 })
 export class DetectorCommandBarComponent {
-  dropdownStyles = {
-    openPanel: false
-  };
-
   time: string;
 
   constructor(private globals: Globals, private detectorControlService: DetectorControlService) { }
@@ -29,13 +25,15 @@ export class DetectorCommandBarComponent {
   }
 
   toggleOpenTimePicker() {
-    this.globals.openTimePicker = !this.globals.openTimePicker;
+    // setTimeout(() => {this.globals.openTimePicker = !this.globals.openTimePicker},0);
+    this.globals.openTimePicker = !this.globals.openTimePicker
   }
 
-  updateMessage(timeStr: string) {
-    this.time = timeStr;
+  updateMessage(s: string) {
+    this.time = s;
   }
 
-  onCopyClicked() {
+  closeTimePicker() {
+    this.globals.openTimePicker = false;
   }
 }

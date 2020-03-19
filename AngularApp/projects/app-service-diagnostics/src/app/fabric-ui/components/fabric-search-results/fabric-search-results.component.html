@@ -1,34 +1,62 @@
-<div role="search" class="search-result-container">
-  <div class="search-box">
+<div role="search" class="search-result-container" (clickOutside)="clickOutsideHandler()">
+  <div class="search-box" #fabSearchBox>
     <fab-search-box id="fabSearchBox" tabindex="0" type="search" placeholder="Search" [value]="searchValue"
       (onChange)="updateSearchValue($event)" (onFocus)="onSearchBoxFocus()" (onBlur)="onBlurHandler()"
-      (onEscape)="clearSearchWithKey()"
-      aria-controls="search-results">
+      (onEscape)="clearSearchWithKey()" aria-controls="search-results">
     </fab-search-box>
   </div>
-
   <div class="result-container" *ngIf="showSearchResults">
-    <div class="result-group">
-      <div class="result-item" *ngFor="let feature of features" (mousedown)="navigateToFeature(feature)" (keyup.enter)="navigateToFeature(feature)" tabindex="0">
-        <div style="display: flex;flex-direction: row;align-items: center;justify-content: start;">
-          <div class="feature-icon">
-            <div>
-              <!-- <i *ngIf="!checkImageExist(feature.name)" class="fa" [ngClass]="feature.featureType.icon"></i> -->
-              <img style="height: 20px;width: 20px;" [src]="generateIconImagePath(feature.id)" alt="">
+    <div class="result-group" (keyup.escape)="escapeHandler()">
+
+
+      <!-- for search results in home page -->
+      <fab-details-list *ngIf="!isInCategory" [items]="features" [isHeaderVisible]="false"
+        [selectionMode]="selectionMode" (onItemInvoked)="invokeHandler($event)">
+        <columns>
+          <fab-details-list-column>
+            <render>
+              <ng-template let-feature="item">
+                <div class="result-item" tabindex="0" (mousedown)="navigateToFeature(feature)" class="result-item">
+                  <div>
+                    <img style="height: 20px;width: 20px;margin-right: 5px;" [src]="generateIconImagePath(feature.id)"
+                      alt="">
+                    <span class="feature-title">{{feature.name}}</span>
+                  </div>
+                  <div>
+                    <span class="feature-category">{{feature.category}}</span>
+                  </div>
+                </div>
+              </ng-template>
+            </render>
+          </fab-details-list-column>
+        </columns>
+      </fab-details-list>
+
+      <!-- for search result in category page -->
+      <div *ngIf="isInCategory">
+        <a class="result-item detail-list-style" *ngFor="let feature of features;" style="display:flex;"
+          (mousedown)="navigateToFeature(feature)" (keyup.enter)="navigateToFeature(feature)">
+          <div style="display: flex;flex-direction: row;align-items: center;justify-content: start;">
+            <div class="feature-icon">
+              <div>
+                <img style="height: 20px;width: 20px;" [src]="generateIconImagePath(feature.id)" alt="">
+              </div>
             </div>
+            <div class="feature-title">{{feature.name}}</div>
           </div>
-          <div class="feature-title">{{feature.name}}</div>
-        </div>
-        <div class="feature-category">
-          {{feature.category}}
-        </div>
+          <div class="feature-category">
+            {{feature.category}}
+          </div>
+        </a>
       </div>
+
     </div>
     <div *ngIf="inputAriaLabel != ''">
       <hr>
       <div class="result-count" style="padding-bottom: 8px;">
         {{inputAriaLabel}}
-        <span *ngIf="features.length === 0" tabindex="0" (mousedown)="openGeniePanel()">Ask chatbot <a>Genie</a></span>
+        <a *ngIf="features.length === 0" tabindex="0" (mousedown)="openGeniePanel()"
+          (keyup.enter)="openGeniePanel()">Ask chatbot Genie</a>
       </div>
     </div>
   </div>
