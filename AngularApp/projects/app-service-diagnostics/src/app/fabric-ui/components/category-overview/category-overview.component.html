@@ -2,6 +2,10 @@
   <div>
     <h3 class="category-title">{{category.name}}</h3>
     <p class="category-description">{{category.description}}</p>
+    <p  class="category-description"
+    *ngIf="categoryId!=='navigator' && categoryId!=='DiagnosticTools'">
+      If you have a specific problem you want to investigate, click a topic in the left navigation or click Ask Genie.
+    </p>
   </div>
   <div style="margin-left: -20px;margin-top: 10px;">
     <detector-container [detector]="categoryId" [hideDetectorControl]="true"></detector-container>

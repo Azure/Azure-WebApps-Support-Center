@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DetectorControlService } from 'diagnostic-data';
-import { ICalendarStrings, IDatePickerProps, IChoiceGroupOption } from 'office-ui-fabric-react';
+import { ICalendarStrings, IDatePickerProps, IChoiceGroupOption, ITextFieldProps } from 'office-ui-fabric-react';
 import { addMonths, addDays } from 'office-ui-fabric-react/lib/utilities/dateMath/DateMath';
 import * as momentNs from 'moment';
 import { Globals } from '../../../globals';
@@ -32,7 +32,7 @@ export class DetectorTimePickerComponent implements OnInit {
   endClock: string;
   timeDiffError: string = "";
 
-  formatDate: IDatePickerProps['formatDate'] = (date) => { 
+  formatDate: IDatePickerProps['formatDate'] = (date) => {
     //only this format can do both fill in date and select date
     return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear() % 100}`;
   };
@@ -46,11 +46,11 @@ export class DetectorTimePickerComponent implements OnInit {
   ];
 
   dayPickerString: ICalendarStrings = {
-    months: 
-    [
-      'January','February','March','April','May','June',
-      'July','August','September','October','November','December'
-    ],
+    months:
+      [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ],
 
     shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
 
@@ -161,7 +161,7 @@ export class DetectorTimePickerComponent implements OnInit {
     this.timeDiffError = this.detectorControlService.getTimeDurationError(startDateWithTime, endDateWithTime);
     if (this.timeDiffError === '') {
       this.detectorControlService.setCustomStartEnd(startDateWithTime, endDateWithTime);
-      
+
       this.globals.updateTimePickerInfo(timePickerInfo);
     }
     this.globals.openTimePicker = this.timeDiffError !== "";
@@ -175,7 +175,7 @@ export class DetectorTimePickerComponent implements OnInit {
   }
 
   //
-  private convertLocalDateToUTC(date: Date):string {
+  private convertLocalDateToUTC(date: Date): string {
     const moment = momentNs.utc(date.getTime());
     const stringFormat: string = 'YYYY-MM-DD HH:mm';
     return moment.format(stringFormat);
@@ -232,16 +232,25 @@ export class DetectorTimePickerComponent implements OnInit {
     this.endClock = this.convertDateToString(this.endDate).substring(11, 16);
   }
 
-  closeTimePicker(e:KeyboardEvent) {
+  getErrorMessageOnTextField(value: string): string {
+    var values = value.split(":");
+    var errorMessage = "";
+    if (!(values.length > 1 && +values[0] <= 24 && +values[1] <= 59)) {
+      errorMessage = `Invalid time`;
+    }
+    return errorMessage;
+  }
+
+  closeTimePicker(e: KeyboardEvent) {
     //If not enter date or time, then esc will colse time picker
     const ele = (<HTMLElement>e.target);
     if (!ele.className.includes('ms-TextField-field')) {
       this.globals.openTimePicker = false;
-      document.getElementById('commandBar-timePicker').focus(); 
+      document.getElementById('commandBar-timePicker').focus();
     }
   }
 
-  clickOutsideHandler(ele:any) {
+  clickOutsideHandler(ele: any) {
     this.globals.openTimePicker = false;
   }
 }

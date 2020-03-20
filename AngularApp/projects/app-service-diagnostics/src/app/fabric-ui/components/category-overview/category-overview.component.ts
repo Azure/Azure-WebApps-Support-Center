@@ -17,31 +17,6 @@ const suffix = ' cm';
 export class CategoryOverviewComponent implements OnInit {
     categoryId: string = "";
     category: Category;
-    showCalendar: boolean = false;
-
-    renderCheckboxLabel: any = {
-        getProps: defaultProps => ({
-            item: defaultProps["item"],
-            dismissMenu: false
-        }),
-    };
-
-    onMouseOverEventHandler(event: any) {
-        event.preventDefault();
-    }
-
-    onClickEventHandler(event: any) {
-        event.preventDefault();
-    }
-
-    getErrorMessageOnTextField(value: string): string {
-        var values = value.split(":");
-        var errorMessage = "";
-        if (!(values.length > 1 && +values[0] <= 24 && +values[1] <= 59)) {
-            errorMessage = `Invalid time`;
-        }
-        return errorMessage;
-    }
 
     onValidate(value: string, event: Event): string | void {
         value = this._removeSuffix(value, suffix);
@@ -67,11 +42,6 @@ export class CategoryOverviewComponent implements OnInit {
 
     constructor(private _activatedRoute: ActivatedRoute, private _router: Router, private _categoryService: CategoryService, private globals: Globals) {
     }
-
-    ngAfterViewInit() {
-    }
-
-    openMessageBar: boolean = false;
 
     ngOnInit() {
         let categoryParam = this._activatedRoute.parent.snapshot.params.category.toLowerCase();

@@ -40,7 +40,6 @@ import {
     FabContextualMenuModule
 } from '@angular-react/fabric';
 import { FabricFeedbackComponent } from '../fabric-ui/components/fabric-feedback/fabric-feedback.component';
-import { FabricFeedbackContainerComponent } from '../fabric-ui/components/fabric-feedback-container/fabric-feedback-container.component';
 import { FabricSearchResultsComponent } from '../fabric-ui/components/fabric-search-results/fabric-search-results.component';
 import { DetectorTimePickerComponent } from '../fabric-ui/components/detector-time-picker/detector-time-picker.component';
 import { DetectorCommandBarComponent } from '../fabric-ui/components/detector-command-bar/detector-command-bar.component';
@@ -59,7 +58,6 @@ import { SearchPipe, SearchMatchPipe } from '../home/components/pipes/search.pip
     declarations: [
         FabricSearchResultsComponent,
         FabricFeedbackComponent,
-        FabricFeedbackContainerComponent,
         DetectorTimePickerComponent,
         DetectorCommandBarComponent,
         CategorySummaryComponent,
@@ -120,7 +118,6 @@ import { SearchPipe, SearchMatchPipe } from '../home/components/pipes/search.pip
     exports: [
         FabricSearchResultsComponent,
         FabricFeedbackComponent,
-        FabricFeedbackContainerComponent,
         DetectorTimePickerComponent,
         DetectorCommandBarComponent,
         CategorySummaryComponent,
