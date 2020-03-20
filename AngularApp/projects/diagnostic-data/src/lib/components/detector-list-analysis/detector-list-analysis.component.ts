@@ -238,6 +238,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
 
                 if (this.analysisId === "searchResultsAnalysis") {
                     this._activatedRoute.queryParamMap.subscribe(qParams => {
+                        this.resetGlobals();
                         this.searchTerm = qParams.get('searchTerm') === null ? this.searchTerm : qParams.get('searchTerm');
                         this.showAppInsightsSection = false;
                         if (this.searchTerm && this.searchTerm.length > 1) {
