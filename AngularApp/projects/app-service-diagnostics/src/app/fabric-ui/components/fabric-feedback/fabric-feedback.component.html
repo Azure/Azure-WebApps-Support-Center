@@ -3,7 +3,7 @@
   <div>
     <div [ngStyle]="{'display':submitted === false ? 'block': 'none'}">
       <h3>Send us feedback</h3>
-      <p>Thank you for taking the time to give us feedback.</p>
+      <p>Thank you for taking the time to give us feedback</p>
       <div style="display:inline-flex">
         <svg class="svg-icon" viewBox="0 0 6 6" role="presentation" focusable="false"
           xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="6px" height="6px">
@@ -31,14 +31,14 @@
     </div>
 
     <div [ngStyle]="{'display':submitted === true ? 'block': 'none'}">
-      <p>Thank you for your feedback</p>
+      <p>Thank you for your feedback!</p>
       <div *ngIf="rating >= 3">
-        <p>Share your experience with App Service Diagnostics !</p>
+        <!-- <p>Share your experience with App Service Diagnostics !</p> -->
         <!-- <button>Tweet</button> -->
       </div>
 
       <div *ngIf="rating < 3">
-        <p>Get Help from Genie to answer your questions on diagnosting problem of your application.</p>
+        <p>Get help from our interactive chatbot Genie and find answers to the problem of your application.</p>
         <div (click)="openGenieHandler()" class="feedback-btn">Ask Genie</div>
       </div>
     </div>
