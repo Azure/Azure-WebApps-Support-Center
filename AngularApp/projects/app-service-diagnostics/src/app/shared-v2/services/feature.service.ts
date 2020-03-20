@@ -59,6 +59,7 @@ export class FeatureService {
                   if (this.isLegacy) {
                     this._router.navigateByUrl(`resource${startupInfo.resourceId}/analysis/${detector.id}`);
                   } else {
+                    const categoryId = this.getCategoryIdByCategoryName(detector.category);
                     this.navigatTo(startupInfo,categoryId,detector.id,DetectorType.Analysis);
                   }
                 })
