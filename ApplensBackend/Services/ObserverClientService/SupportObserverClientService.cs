@@ -27,7 +27,6 @@ namespace AppLensV3
         private static ClientCredential _aadCredentials;
         private static string _supportObserverResourceUri;
         private static object lockObject = new object();
-        private static bool targetSupportApiTestSlot;
         private string _endpoint;
         private const string APP_SETTING_AAD_AUTHORITY = "Observer:authority";
         private const string APP_SETTING_OBSERVER_ENDPOINT = "Observer:endpoint";
