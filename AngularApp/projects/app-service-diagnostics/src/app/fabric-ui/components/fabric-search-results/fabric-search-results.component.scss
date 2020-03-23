@@ -60,6 +60,7 @@
 
 .feature-title {
     font-size: 14px;
+    vertical-align: middle;
 }
 
 .feature-category {
@@ -81,6 +82,10 @@
 
 .detail-list-style:hover {
     background: #edebe9;
+}
+
+.remove-results-padding {
+    margin: -11px -8px -11px -5px;
 }
 
 

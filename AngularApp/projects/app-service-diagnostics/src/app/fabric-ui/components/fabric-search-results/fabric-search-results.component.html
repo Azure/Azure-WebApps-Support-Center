@@ -16,7 +16,7 @@
           <fab-details-list-column>
             <render>
               <ng-template let-feature="item">
-                <div class="result-item" tabindex="0" (mousedown)="navigateToFeature(feature)" class="result-item">
+                <div class="result-item" tabindex="0" (mousedown)="navigateToFeature(feature)" class="result-item remove-results-padding">
                   <div>
                     <img style="height: 20px;width: 20px;margin-right: 5px;" [src]="generateIconImagePath(feature.id)"
                       alt="">
