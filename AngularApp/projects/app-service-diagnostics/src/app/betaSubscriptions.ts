@@ -27,5 +27,8 @@ export class DemoSubscriptions {
         '5abde51d-cc72-4bcc-b0d7-3c86b4db2a7c', // Shekhar's subscription
         '6a205b0a-6b5a-4346-8468-f4b6367f7efa', //Private Test Sub HAWFOR (Hawk's subscription)
         '6b6db65f-680e-4650-b97d-e82ed6a0f583', //Private Test Sub PUNEETG (Puneet's subscription)
+        '76679aa7-6638-4d84-b1c6-97dafcd8ebeb', // Juntao Zhu's Subscription
+        '1c685347-a4a8-4cbc-8362-7a7b3c18d654', // Anik Shen's Subscription
+        '05c54750-4e91-4d98-981c-8c3e3356e9fa', //Ji Young Lee Susbscription
     ];
 }
