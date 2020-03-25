@@ -156,7 +156,6 @@ export class AppAnalysisComponent implements OnInit, OnDestroy {
     }
 
     private _loadData(invalidateCache: boolean = false): void {
-
         this.runtimeAvailabilitySubscription = this._appAnalysisService.getDetectorResource(this.subscriptionId, this.resourceGroup, this.siteName, this.slotName, 'availability', 'runtimeavailability', invalidateCache)
         .subscribe(data => {
             this.runtimeAvailabilityResponse = data;

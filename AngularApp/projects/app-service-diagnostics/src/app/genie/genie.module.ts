@@ -4,14 +4,12 @@ import { SharedModule } from '../shared/shared.module';
 import { FabricModule } from '../fabric-ui/fabric.module';
 import { SolutionsModule } from '../solutions/solutions.module';
 import { StartupMessages } from './message-flow/startup/startupmessages';
-import { MainMenuMessageFlow } from './message-flow/main-menu/mainmenumessageflow';
 import { Geniefeedbackmessageflow } from './message-flow/genie-feedback/geniefeedbackmessageflow';
 import { GenieMessageProcessor } from './message-processor.service';
 import { GenieTextMessageComponent } from './common/text-message/text-message.component';
 import { ButtonMessageComponent } from './common/button-message/button-message.component';
 import { FeedbackButtonMessageComponent } from './common/feedback-button-message/feedback-button-message.component';
 import { LoadingMessageComponent } from './common/loading-message/loading-message.component';
-import { MainMenuComponent } from './message-flow/main-menu/main-menu.component';
 import { TalkToAgentMessageComponent } from './message-flow/talk-to-agent/talk-to-agent-message.component';
 import { GenieFeedbackComponent } from './message-flow/genie-feedback/genie-feedback.component'
 import { SolutionsMessageComponent } from './common/solutions-message/solutions-message.component';
@@ -36,7 +34,6 @@ import { FabPanelModule } from '@angular-react/fabric';
     declarations: [
         GenieTextMessageComponent,
         LoadingMessageComponent,
-        MainMenuComponent,
         ButtonMessageComponent,
         FeedbackButtonMessageComponent,
         TalkToAgentMessageComponent,
@@ -73,7 +70,6 @@ import { FabPanelModule } from '@angular-react/fabric';
     ],
     providers: [
         StartupMessages,
-        MainMenuMessageFlow,
         Geniefeedbackmessageflow,
         GenieMessageProcessor,
         GenericCategoryFlow,
