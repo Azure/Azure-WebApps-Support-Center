@@ -13,7 +13,7 @@ export class VersioningHelper {
         }
         let firstDigit = "0x" + subscriptionId.substr(0, 1);
 
-        // roughly split of 5% of subscriptions to use new feature.
-        return (parseInt(firstDigit, 16) > 14) && enableV2;
+        // roughly split of 10% of subscriptions to use new feature.
+        return (parseInt(firstDigit, 16) > 13) && enableV2;
     }
 }
