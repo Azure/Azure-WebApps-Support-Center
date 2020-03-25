@@ -23,7 +23,6 @@ import {
 } from '../message-flow/dynamic-analysis/dynamic-analysis.component';
 import { DocumentSearchComponent } from '../message-flow/document-search/document-search.component';
 import { GenieFeedbackComponent } from '../message-flow/genie-feedback/genie-feedback.component';
-import { MainMenuComponent } from '../message-flow/main-menu/main-menu.component';
 import {
     TalkToAgentMessageComponent
 } from '../message-flow/talk-to-agent/talk-to-agent-message.component';
@@ -33,7 +32,7 @@ import { HealthCheckV3Component } from '../message-flow/health-check-v3/health-c
 
 @Component({
     selector: 'dynamic-component-genie',
-    entryComponents: [GenieTextMessageComponent, MainMenuComponent, ButtonMessageComponent, FeedbackButtonMessageComponent, HealthCheckV3Component,
+    entryComponents: [GenieTextMessageComponent, ButtonMessageComponent, FeedbackButtonMessageComponent, HealthCheckV3Component,
         GenieFeedbackComponent, SolutionsMessageComponent, GraphMessageComponent, TalkToAgentMessageComponent, CategoryMenuComponent,
         DetectorSummaryComponent, DocumentSearchComponent, DocumentSearchResultsComponent, DynamicAnalysisComponent],
     template: `
