@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewChild, Renderer2 } from "@angular/core";
+import { Component, OnDestroy, Renderer2, ViewChildren, QueryList, AfterViewInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { MarkdownComponent } from "ngx-markdown";
 import { DataRenderBaseComponent } from "../data-render-base/data-render-base.component";
@@ -9,21 +9,20 @@ import { LinkInterceptorService } from "../../services/link-interceptor.service"
 import { TelemetryEventNames } from "../../services/telemetry/telemetry.common";
 
 
-
-
-
 @Component({
   selector: 'insights-v4',
   templateUrl: './insights-v4.component.html',
   styleUrls: ['./insights-v4.component.scss']
 })
-export class InsightsV4Component extends DataRenderBaseComponent implements OnDestroy {
-  @ViewChild(MarkdownComponent, { static: false })
-  public set markdown(v: MarkdownComponent) {
-    this.markdownDiv = v;
-    if (this.markdownDiv) {
-      this.listenObj = this.renderer.listen(this.markdownDiv.element.nativeElement, 'click', (evt) => this._interceptorService.interceptLinkClick(evt, this.router, this.detector, this.telemetryService));
-    }
+export class InsightsV4Component extends DataRenderBaseComponent implements AfterViewInit, OnDestroy {
+ 
+  @ViewChildren('markdownDiv') markdownComponents: QueryList<MarkdownComponent>;
+
+  ngAfterViewInit() {
+    if (this.markdownComponents != null && this.markdownComponents.length > 0)
+    this.markdownComponents.toArray().forEach(markdownDiv => {
+      this.listenObj = this.renderer.listen(markdownDiv.element.nativeElement, 'click', (evt) => this._interceptorService.interceptLinkClick(evt, this.router, this.detector, this.telemetryService));
+    });
   }
 
   private listenObj: any;

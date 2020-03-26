@@ -29,7 +29,8 @@
       </div>
 
       <div *ngIf="chosenOption.option === 'ChooseExisting'">
-        <select class="mt-2 fixed-width" id="storageAccountsList" [(ngModel)]="chosenStorageAccount">
+        <select class="mt-2 fixed-width" id="storageAccountsList" [ngModel]="chosenStorageAccount"
+          (ngModelChange)="onStorageAccountChange($event)">
           <optgroup *ngFor="let location of getLocations()" [label]="location">
             <option *ngFor="let account of getStorageAccountsForLocation(location)" [ngValue]="account"
               [selected]="account === chosenStorageAccount">{{account.name}}
@@ -38,8 +39,15 @@
         </select>
       </div>
 
+      <div class="focus-box focus-box-warning" style="margin-top:20px;word-wrap: break-word"
+        *ngIf="storageAccountLengthExceeding">
+        Due to a limitation in Autohealing module, the length of the chosen storage account should be less than 13
+        charachters. Please choose a different storage account or reduce the account length. This limitation will be 
+        removed in the upcoming versions of Azure App Service.
+      </div>
       <button type="button" class="btn btn-primary mt-3 mb-2"
-        [disabled]="!saveEnabled || generatingSasUri || creatingStorageAccount" (click)="saveChanges()">Save</button>
+        [disabled]="!saveEnabled || generatingSasUri || creatingStorageAccount || storageAccountLengthExceeding"
+        (click)="saveChanges()">Save</button>
       <button type="button" class="btn btn-primary mt-3 mb-2"
         [disabled]="!saveEnabled || generatingSasUri || creatingStorageAccount || !editMode"
         (click)="cancel()">Cancel</button>

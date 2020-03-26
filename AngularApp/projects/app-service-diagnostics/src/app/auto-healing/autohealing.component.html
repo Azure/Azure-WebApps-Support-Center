@@ -121,13 +121,19 @@
           </div>
 
           <div class="header2">4. Review and Save your Settings</div>
-          <div class="summary autohealtile-content">
-            <div *ngIf="originalSettings">
+          <div class="autohealtile-content">
+            <div class="summary" *ngIf="originalSettings">
               <strong>Current Settings</strong>
               <autohealing-config-summary [autohealSettings]="originalSettings">
               </autohealing-config-summary>
+              <div class="focus-box focus-box-warning" style="margin-top:20px;word-wrap: break-word"
+                *ngIf="storageAccountLengthExceeding">
+                Due to a limitation in Autohealing module, the length of the chosen storage account should be less than
+                13 charachters. Please choose a different storage account or reduce the account length. This limitation
+                will be removed in the upcoming versions of Azure App Service.
+              </div>
             </div>
-            <div *ngIf="currentSettings && saveEnabled" style="margin-top:25px">
+            <div class="summary" *ngIf="currentSettings && saveEnabled" style="margin-top:25px">
               <strong>New Settings</strong>
               <autohealing-config-summary [autohealSettings]="currentSettings">
               </autohealing-config-summary>
@@ -137,18 +143,20 @@
       </div>
       <div *ngIf="!retrievingAutohealSettings  && !errorMessage && saveEnabled && validationWarning.length > 0">
         <table class="ml-4 mt-4 table table-bordered" style="width:90%">
-          <th>
+          <thead>
             <tr>
-              <td>
+              <th>
                 <div style="padding: 10px">
                   <i class="fa health-icon fa-exclamation-triangle warning-icon-color"></i> Warning
                 </div>
-              </td>
+              </th>
             </tr>
-          </th>
-          <tr *ngFor="let warning of validationWarning">
-            <td>{{ warning }}</td>
-          </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let warning of validationWarning">
+              <td>{{ warning }}</td>
+            </tr>
+          </tbody>
         </table>
       </div>
       <div *ngIf="!retrievingAutohealSettings  && !errorMessage" class="saveSection autohealtile-content">

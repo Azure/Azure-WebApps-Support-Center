@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Renderer2, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, Renderer2, OnDestroy, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { Rendering, RenderingType, DiagnosticData, InsightsRendering, HealthStatus } from '../../models/detector';
 import { Insight, InsightUtils } from '../../models/insight';
@@ -14,25 +14,22 @@ import { LinkInterceptorService } from '../../services/link-interceptor.service'
   templateUrl: './insights.component.html',
   styleUrls: ['./insights.component.scss']
 })
-export class InsightsComponent extends DataRenderBaseComponent implements OnDestroy {
+export class InsightsComponent extends DataRenderBaseComponent implements AfterViewInit, OnDestroy {
 
-  @ViewChild(MarkdownComponent, { static: false })
-  public set markdown(v: MarkdownComponent) {
-    this.markdownDiv = v;
-    if (this.markdownDiv) {
-      this.listenObj = this.renderer.listen(this.markdownDiv.element.nativeElement, 'click', (evt) => this._interceptorService.interceptLinkClick(evt, this.router, this.detector, this.telemetryService));
-    }
+  @ViewChildren('markdownDiv') markdownComponents: QueryList<MarkdownComponent>;
+
+  ngAfterViewInit() {
+    if (this.markdownComponents != null && this.markdownComponents.length > 0)
+    this.markdownComponents.toArray().forEach(markdownDiv => {
+      this.listenObj = this.renderer.listen(markdownDiv.element.nativeElement, 'click', (evt) => this._interceptorService.interceptLinkClick(evt, this.router, this.detector, this.telemetryService));
+    });
   }
 
+
   private listenObj: any;
-  private markdownDiv: MarkdownComponent;
-
   DataRenderingType = RenderingType.Insights;
-
   renderingProperties: InsightsRendering;
-
   public insights: Insight[];
-
   InsightStatus = HealthStatus;
 
   constructor(protected telemetryService: TelemetryService, private renderer: Renderer2, private router: Router, private _interceptorService: LinkInterceptorService) {

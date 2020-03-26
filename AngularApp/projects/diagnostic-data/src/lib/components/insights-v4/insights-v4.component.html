@@ -28,7 +28,7 @@
         </h5>
       </div>
 
-      <div class="panel-body" *ngIf="insight.isExpanded && insight.hasData()">
+      <div class="panel-body" [hidden]="!(insight.isExpanded && insight.hasData())">
         <table>
           <tbody>
             <tr *ngFor="let key of insight.getKeys()">
@@ -36,8 +36,8 @@
                 <b>{{key}}</b>
               </td>
               <td class="table-value">
-                <div *ngIf="!isMarkdown(insight.data[key])" [innerHtml]="insight.data[key]"></div>
-                <markdown #markdownDiv [data]="getMarkdown(insight.data[key])" *ngIf="isMarkdown(insight.data[key])">
+                <div [hidden]="isMarkdown(insight.data[key])" [innerHtml]="insight.data[key]"></div>
+                <markdown #markdownDiv [data]="getMarkdown(insight.data[key])" [hidden]="!isMarkdown(insight.data[key])">
                 </markdown>
               </td>
             </tr>

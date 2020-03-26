@@ -4,13 +4,25 @@ This is the repository for Azure App Service diagnostics experience.
 
 [![Build Status](https://dev.azure.com/app-service-diagnostics-portal/app-service-diagnostics-portal/_apis/build/status/Angular%20PR%20Build?branchName=master)](https://dev.azure.com/app-service-diagnostics-portal/app-service-diagnostics-portal/_build/latest?definitionId=1&branchName=master)
 
-## Prerequisites
-- [Node 6.*](https://nodejs.org/en/download/)
+## Steps to upgrade to Angular 8 and run projects locally:
+
+- Install [Node 12.*](https://nodejs.org/en/download/)
+   - Download the .msi file from https://nodejs.org/en/download/ and install it on your machine
+- Install Angular-CLI 8
+   - `npm install -g @angular/cli@8`
+- Build the diagnostic-data lib, Applens and Diagnostics Portal:
+  - `npm run build`
+- Run the project locally:
+   - To run Applens: `npm run applens`
+   - To run Diagnostics Portal: <a class="anchor" aria-hidden="true" href="#app-service-diagnostics-portal">App Service Diagnostics Portal</a>
+  
+## First time set up prerequisites
+- [Node 12.*](https://nodejs.org/en/download/)
 - Node Package Manager (npm)
 - Typescript
   `npm install -g typescript`
 - Angular-CLI
-  `npm install -g @angular/cli@6`
+  `npm install -g @angular/cli@8`
 
 ## Project Structure
 

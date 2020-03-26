@@ -39,6 +39,7 @@ export class AutohealingComponent implements OnInit {
   detectorHasData: boolean = false;
   validationWarning: string[];
   selectedTab: string = 'autoHealing';
+  storageAccountLengthExceeding: boolean = false;
 
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, private _logger: AvailabilityLoggingService, protected _route: ActivatedRoute) {
   }
@@ -66,6 +67,38 @@ export class AutohealingComponent implements OnInit {
     this.originalAutoHealSettings = JSON.parse(this.originalSettings);
     this.updateConditionsAndActions();
     this.updateSummaryText();
+    this.checkStorageLength(this.originalAutoHealSettings);
+  }
+
+  checkStorageLength(autoHealSettings: AutoHealSettings) {
+    if (autoHealSettings.autoHealEnabled &&
+      autoHealSettings.autoHealRules != null &&
+      autoHealSettings.autoHealRules.actions != null &&
+      autoHealSettings.autoHealRules.actions.actionType === AutoHealActionType.CustomAction &&
+      autoHealSettings.autoHealRules.actions.customAction != null &&
+      autoHealSettings.autoHealRules.actions.customAction.parameters != null) {
+      let storageAccountName = this.getStorageAccountNameFromActionParams(autoHealSettings.autoHealRules.actions.customAction.parameters);
+      if (storageAccountName.length > 12) {
+        this.storageAccountLengthExceeding = true;
+      } else {
+        this.storageAccountLengthExceeding = false;
+      }
+
+    }
+  }
+
+  getStorageAccountNameFromActionParams(customActionParams: string): string {
+    let storageAccountName = "";
+    let searchString = "blobsasuri:\"https://";
+    let startIndex = customActionParams.toLowerCase().indexOf(searchString);
+    if (startIndex > 0) {
+      startIndex = startIndex + searchString.length;
+      let endIndex = customActionParams.indexOf(".", startIndex);
+      if (endIndex > 0) {
+        storageAccountName = customActionParams.substring(startIndex, endIndex);
+      }
+    }
+    return storageAccountName;
   }
 
   updateConditionsAndActions() {

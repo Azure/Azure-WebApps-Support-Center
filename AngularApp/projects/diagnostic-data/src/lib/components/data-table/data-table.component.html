@@ -7,6 +7,7 @@
       [footerHeight]="0"
       [scrollbarH]="false"
       [selected]="selected"
+      (activate)="onActivate($event)"
       [ngStyle]="currentStyles">
     </ngx-datatable>
     <div *ngIf="renderingProperties.descriptionColumnName && selected.length > 0">

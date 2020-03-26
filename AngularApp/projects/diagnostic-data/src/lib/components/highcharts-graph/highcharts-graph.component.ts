@@ -1,11 +1,12 @@
 import * as momentNs from 'moment';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, HostListener, ElementRef } from '@angular/core';
 import { TimeSeriesType } from '../../models/detector';
 import * as Highcharts from 'highcharts';
 import HC_exporting from 'highcharts/modules/exporting';
 import * as HC_customEvents_ from 'highcharts-custom-events';
 import AccessibilityModule from 'highcharts/modules/accessibility';
 import { DetectorControlService } from '../../services/detector-control.service';
+import { HighChartTimeSeries } from '../../models/time-series';
 
 const HC_customEvents = HC_customEvents_;
 HC_exporting(Highcharts);
@@ -37,7 +38,34 @@ export class HighchartsGraphComponent implements OnInit {
 
     loading: boolean = true;
 
-    constructor(private detectorControlService: DetectorControlService) {
+    @HostListener('mousemove', ['$event'])
+    onMouseMove(ev: MouseEvent) {
+        this.syncCharts(ev);
+    }
+
+    @HostListener('keydown', ['$event'])
+    onKeydownHandler(ev: KeyboardEvent)
+    {
+        var key = ev.key;
+
+        if (key === 'ArrowLeft' || key === 'ArrowRight') {
+            let currentId = this.el.nativeElement.getElementsByClassName('highcharts-container')[0].id;
+
+            for(let i = 0; i < Highcharts.charts.length; i++) {
+                let chart = Highcharts.charts[i];
+
+                if (chart) {
+                    let xi = chart.xAxis[0];
+                    xi.removePlotLine("myPlotLine");
+                    if (currentId === chart.container.id && !xi.crosshair) {
+                        xi.crosshair = true;
+                    }
+                }
+            }
+        }
+    }
+
+    constructor(private detectorControlService: DetectorControlService, private el: ElementRef<HTMLElement>) {
     }
 
     ngOnInit() {
@@ -47,6 +75,42 @@ export class HighchartsGraphComponent implements OnInit {
         setTimeout(() => {
             this.loading = false;
         }, 100);
+    }
+
+    private syncCharts(ev: MouseEvent) {
+        let xAxisValue : number;
+        let currentId = this.el.nativeElement.getElementsByClassName('highcharts-container')[0].id;
+
+        // Find out which is the current chart object
+        for(let i = 0; i < Highcharts.charts.length; i++) {
+            let chart = Highcharts.charts[i];
+
+            if (chart) {
+                if (currentId === chart.container.id) {
+                    let bbLeft = this.el.nativeElement.offsetLeft + chart.plotLeft;
+
+                    // Get the timestamp value where mouse is hovering
+                    xAxisValue = chart.xAxis[0].toValue(ev.pageX - bbLeft, true);
+                    chart.xAxis[0].crosshair = false;
+                    break;
+                }
+            }
+        }
+
+        for(let i = 0; i < Highcharts.charts.length; i++)
+        {
+            let chart = Highcharts.charts[i];
+            if (chart) {
+                let xi = chart.xAxis[0];
+                xi.removePlotLine("myPlotLine");
+                xi.addPlotLine({
+                    value: xAxisValue,
+                    width: 1,
+                    color: 'grey',
+                    id: 'myPlotLine'
+                });
+            }
+        }
     }
 
     private _updateOptions() {
@@ -266,7 +330,7 @@ export class HighchartsGraphComponent implements OnInit {
                     text: 'Time (UTC)',
                 },
                 tickSize: 10,
-                crosshair: true,
+                crosshair: false,
                 tickFormat: function (d: any) { return moment(d).utc().format('MM/DD HH:mm'); },
                 dateTimeLabelFormats: {
                     second: '%m-%d %H:%M:%S',
@@ -282,6 +346,22 @@ export class HighchartsGraphComponent implements OnInit {
                         whiteSpace: 'nowrap'
                     }
                 },
+                events: {
+                    setExtremes: function(evt: Highcharts.AxisSetExtremesEventObject) {
+                        if (evt.trigger !== 'sync') { // Prevent feedback loop
+                            for(let i = 0; i < Highcharts.charts.length; i++)
+                            {
+                                let chart = Highcharts.charts[i];
+
+                                if (chart && this.chart !== chart) {
+                                    if (chart.xAxis[0].setExtremes) { // It is null while updating
+                                        chart.xAxis[0].setExtremes(evt.min, evt.max, true, true, { trigger: 'sync'} );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
             yAxis: {
                 tickAmount: 3,
