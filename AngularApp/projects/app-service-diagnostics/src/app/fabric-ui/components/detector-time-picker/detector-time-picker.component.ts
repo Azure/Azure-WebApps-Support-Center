@@ -62,14 +62,14 @@ export class DetectorTimePickerComponent implements OnInit {
     weekNumberFormatString: 'Week number {0}',
   };
 
-  @ViewChild('timePicker',{static: true}) timePicker: ElementRef;
   constructor(private activatedRoute: ActivatedRoute, private detectorControlService: DetectorControlService, private router: Router, public globals: Globals,private render:Renderer2) {
     //When close if click outside
     this.render.listen('window','click',(e:Event) => {
       const clickElement = <HTMLElement>(e.target);
+      const timePicker = document.getElementById('timePicker');
       //Get time text div in command bar
       const commandBar = document.querySelector('.ms-CommandBar-secondaryCommand');
-      if (!this.timePicker.nativeElement.contains(clickElement) && !commandBar.contains(clickElement)) {
+      if (!timePicker.contains(clickElement) && !commandBar.contains(clickElement)) {
         this.cancelTimeRange();
       }
     })

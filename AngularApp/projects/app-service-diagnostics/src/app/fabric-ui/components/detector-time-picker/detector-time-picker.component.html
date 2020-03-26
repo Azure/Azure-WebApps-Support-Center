@@ -1,4 +1,4 @@
-<div class="timepicker" #timePicker>
+<div class="timepicker" id="timePicker">
   <div class="time-picker-container" *ngIf="globals.openTimePicker" (keyup.escape)="closeTimePicker($event)">
     <fab-choice-group [options]="choiceGroupOptions" [defaultSelectedKey]="defaultSelectedKey">
     </fab-choice-group>
