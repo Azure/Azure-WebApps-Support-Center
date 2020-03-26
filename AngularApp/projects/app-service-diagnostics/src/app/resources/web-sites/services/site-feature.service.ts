@@ -42,11 +42,6 @@ export class SiteFeatureService extends FeatureService {
     }];
 
     this._authService.getStartupInfo().subscribe(startupInfo => {
-
-      // removing v2 detectors for Availability and Perf
-      // if (this._resourceService.appType == AppType.WebApp && this._resourceService.platform == OperatingSystem.windows) {
-      //   this.getLegacyAvailabilityAndPerformanceFeatures(startupInfo.resourceId).forEach(feature => this._features.push(feature));
-      // }
       this.addDiagnosticTools(startupInfo.resourceId);
       this.addProactiveTools(startupInfo.resourceId);
       this.addPremiumTools();

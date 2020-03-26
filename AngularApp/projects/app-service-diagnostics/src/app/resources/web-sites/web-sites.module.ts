@@ -56,7 +56,6 @@ const ResourceRoutes = RouterModule.forChild([
   ],
   providers: [
     ContentService,
-    WebSitesService,
     SiteFeatureService,
     LoggingV2Service,
     LiveChatService,

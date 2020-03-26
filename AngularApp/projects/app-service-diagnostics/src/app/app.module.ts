@@ -27,8 +27,6 @@ import { GenericSolutionService } from './shared/services/generic-solution.servi
 import { LocalBackendService } from './shared/services/local-backend.service';
 import { PortalKustoTelemetryService } from './shared/services/portal-kusto-telemetry.service';
 import { SharedModule } from './shared/shared.module';
-import { ResourceService } from './shared-v2/services/resource.service';
-import { WebSitesService } from './resources/web-sites/services/web-sites.service';
 import { ContentService } from './shared-v2/services/content.service';
 import { CategoryChatStateService } from './shared-v2/services/category-chat-state.service';
 import { StartupModule } from './startup/startup.module';
@@ -103,7 +101,6 @@ import { GenieModule } from './genie/genie.module';
     { provide: SolutionService, useExisting: GenericSolutionService },
     { provide: SettingsService, useExisting: PortalSettingsService },
     { provide: GenieGlobals, useExisting: Globals },
-    { provide: ResourceService, useExisting: WebSitesService },
     CategoryChatStateService,
     ContentService,
     CategoryService,
