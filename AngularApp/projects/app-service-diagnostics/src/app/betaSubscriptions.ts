@@ -28,5 +28,6 @@ export class DemoSubscriptions {
         '6a205b0a-6b5a-4346-8468-f4b6367f7efa', //Private Test Sub HAWFOR (Hawk's subscription)
         '6b6db65f-680e-4650-b97d-e82ed6a0f583', //Private Test Sub PUNEETG (Puneet's subscription)
         '81fe176a-bfcc-47f6-b21f-865f1acd12c3',//Accessibility Team
+        '688dfd98-3a87-47d6-abd8-55e5e5e87c78'
     ];
 }
