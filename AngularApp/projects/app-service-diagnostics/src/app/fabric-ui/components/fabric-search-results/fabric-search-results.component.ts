@@ -1,4 +1,4 @@
-import { Component, HostListener } from "@angular/core";
+import { Component, HostListener, ViewChild, ElementRef, Renderer2 } from "@angular/core";
 import { Feature } from "../../../shared-v2/models/features";
 import { FeatureService } from "../../../shared-v2/services/feature.service";
 import { LoggingV2Service } from "../../../shared-v2/services/logging-v2.service";
@@ -95,9 +95,17 @@ export class FabricSearchResultsComponent {
       }
     }
   }
-  
-  constructor(public featureService: FeatureService, private _logger: LoggingV2Service,private _notificationService: NotificationService, private globals: Globals,private router:Router) {
+
+  @ViewChild('fabSearchResult',{static:true}) fabSearchResult:ElementRef
+  constructor(public featureService: FeatureService, private _logger: LoggingV2Service,private _notificationService: NotificationService, private globals: Globals,private router:Router,private render:Renderer2) {
     this.isInCategory = this.router.url.includes('categories');
+
+    this.render.listen('window','click',(e:Event) => {
+      if (!this.fabSearchResult.nativeElement.contains(e.target)){
+        this.clickSearchBox = BlurType.Blur;
+        this.onBlurHandler();
+      }
+    });
   }
 
   navigateToFeature(feature: Feature) {

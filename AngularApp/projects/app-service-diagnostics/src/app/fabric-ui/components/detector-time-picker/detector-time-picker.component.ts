@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, Renderer2, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DetectorControlService } from 'diagnostic-data';
 import { ICalendarStrings, IDatePickerProps, IChoiceGroupOption, ITextFieldProps } from 'office-ui-fabric-react';
@@ -62,7 +62,18 @@ export class DetectorTimePickerComponent implements OnInit {
     weekNumberFormatString: 'Week number {0}',
   };
 
-  constructor(private activatedRoute: ActivatedRoute, private detectorControlService: DetectorControlService, private router: Router, public globals: Globals) { }
+  @ViewChild('timePicker',{static: true}) timePicker: ElementRef;
+  constructor(private activatedRoute: ActivatedRoute, private detectorControlService: DetectorControlService, private router: Router, public globals: Globals,private render:Renderer2) {
+    //When close if click outside
+    this.render.listen('window','click',(e:Event) => {
+      const clickElement = <HTMLElement>(e.target);
+      //Get time text div in command bar
+      const commandBar = document.querySelector('.ms-CommandBar-secondaryCommand');
+      if (!this.timePicker.nativeElement.contains(clickElement) && !commandBar.contains(clickElement)) {
+        this.cancelTimeRange();
+      }
+    })
+  }
 
   ngOnInit() {
     this.startDate = addDays(this.today, -1);
@@ -165,6 +176,8 @@ export class DetectorTimePickerComponent implements OnInit {
       this.globals.updateTimePickerInfo(timePickerInfo);
     }
     this.globals.openTimePicker = this.timeDiffError !== "";
+    //Refoucs to command-bar text message again
+    (<HTMLInputElement>document.querySelector('.ms-CommandBar-secondaryCommand button')).focus();
   }
 
   onSelectStartDateHandler(e: { date: Date }) {
@@ -242,16 +255,12 @@ export class DetectorTimePickerComponent implements OnInit {
   }
 
   closeTimePicker(e: KeyboardEvent) {
-    //If not enter date or time, then esc will colse time picker
+    //If not enter date or time,ESC will close time picker
     const ele = (<HTMLElement>e.target);
     if (!ele.className.includes('ms-TextField-field')) {
       this.globals.openTimePicker = false;
-      document.getElementById('commandBar-timePicker').focus();
+      (<HTMLInputElement>document.querySelector('.ms-CommandBar-secondaryCommand button')).focus();
     }
-  }
-
-  clickOutsideHandler(ele: any) {
-    this.globals.openTimePicker = false;
   }
 }
 
