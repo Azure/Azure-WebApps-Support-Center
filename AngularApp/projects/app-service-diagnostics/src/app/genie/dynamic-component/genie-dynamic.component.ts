@@ -6,12 +6,8 @@ import {
 import { ButtonMessageComponent } from '../common/button-message/button-message.component';
 import { FeedbackButtonMessageComponent } from '../common/feedback-button-message/feedback-button-message.component';
 import { GraphMessageComponent } from '../common/graph-message/graph-message.component';
-// import {
-//     ProblemStatementMessageComponent
-// } from '../common/problem-statement-message/problem-statement-message.component';
 import { SolutionsMessageComponent } from '../common/solutions-message/solutions-message.component';
 import { GenieTextMessageComponent } from '../common/text-message/text-message.component';
-import { CategoryMenuComponent } from '../message-flow/category-menu/category-menu.component';
 import {
     DetectorSummaryComponent
 } from '../message-flow/detector-summary/detector-summary.component';
@@ -33,7 +29,7 @@ import { HealthCheckV3Component } from '../message-flow/health-check-v3/health-c
 @Component({
     selector: 'dynamic-component-genie',
     entryComponents: [GenieTextMessageComponent, ButtonMessageComponent, FeedbackButtonMessageComponent, HealthCheckV3Component,
-        GenieFeedbackComponent, SolutionsMessageComponent, GraphMessageComponent, TalkToAgentMessageComponent, CategoryMenuComponent,
+        GenieFeedbackComponent, SolutionsMessageComponent, GraphMessageComponent, TalkToAgentMessageComponent,
         DetectorSummaryComponent, DocumentSearchComponent, DocumentSearchResultsComponent, DynamicAnalysisComponent],
     template: `
     <div #genieDynamicComponentContainer></div>

@@ -1,9 +1,6 @@
 import { Component, OnInit, isDevMode } from '@angular/core';
 import { Router } from '@angular/router';
 import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
-import { WebSitesService } from './resources/web-sites/services/web-sites.service';
-import { AuthService } from './startup/services/auth.service';
-import { StartupInfo } from './shared/models/portal';
 
 @Component({
     selector: 'sc-app',

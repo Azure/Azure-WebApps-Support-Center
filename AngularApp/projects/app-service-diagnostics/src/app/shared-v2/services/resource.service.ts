@@ -1,6 +1,5 @@
 
 import {of,  Observable, BehaviorSubject } from 'rxjs';
-
 import { map, flatMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ArmResource } from '../models/arm';

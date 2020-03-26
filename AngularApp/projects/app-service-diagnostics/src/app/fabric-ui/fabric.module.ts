@@ -127,15 +127,6 @@ import { SearchPipe, SearchMatchPipe } from '../home/components/pipes/search.pip
         CollapsibleMenuItemComponent
     ],
     providers: [
-        // StartupMessages,
-        // MainMenuMessageFlow,
-        // HealthCheckMessageFlow,
-        // Geniefeedbackmessageflow,
-        // CpuAnalysisChatFlow,
-        // GenieMessageProcessor,
-        // AvailabilityPerformanceFlow,
-        // LinuxAvailabilityPerformanceFlow,
-        // GenericCategoryFlow
     ]
 })
 export class FabricModule {

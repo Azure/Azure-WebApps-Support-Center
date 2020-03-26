@@ -3,7 +3,6 @@ import { GenieChatFlow } from '../../../genie/message-flow/v2-flows/genie-chat.f
 import { Message } from '../../../genie/models/message';
 import { GenieMessageProcessor } from '../../../genie/message-processor.service';
 import { Router } from '@angular/router';
-import { WebSitesService } from '../../../resources/web-sites/services/web-sites.service';
 import { PanelType } from 'office-ui-fabric-react';
 import { GenieGlobals } from 'diagnostic-data';
 import { AuthService } from '../../../startup/services/auth.service';
@@ -28,7 +27,7 @@ export class GeniePanelComponent implements OnInit, OnDestroy {
     width: string = "1200px";
     isMessageEmpty: boolean = false;
 
-    constructor(private _resourceService: WebSitesService, private _authService: AuthService, private _route: Router, private _genieChatFlow: GenieChatFlow, private _messageProcessor: GenieMessageProcessor, public globals: GenieGlobals) {
+    constructor(private _genieChatFlow: GenieChatFlow, private _messageProcessor: GenieMessageProcessor, public globals: GenieGlobals) {
         this.chatContainerHeight = 0;
         this.messages = [];
         this.showTypingMessage = false;

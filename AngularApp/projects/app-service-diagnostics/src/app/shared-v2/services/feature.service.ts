@@ -16,7 +16,6 @@ import { VersionTestService } from '../../fabric-ui/version-test.service';
 export class FeatureService {
 
   private _detectors: DetectorMetaData[];
-
   protected _features: Feature[] = [];
   protected _featureDisplayOrder = [];
   private categories: Category[] = [];

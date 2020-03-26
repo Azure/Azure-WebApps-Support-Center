@@ -14,13 +14,11 @@ import { TalkToAgentMessageComponent } from './message-flow/talk-to-agent/talk-t
 import { GenieFeedbackComponent } from './message-flow/genie-feedback/genie-feedback.component'
 import { SolutionsMessageComponent } from './common/solutions-message/solutions-message.component';
 import { GraphMessageComponent } from './common/graph-message/graph-message.component';
-import { CategoryMenuComponent } from './message-flow/category-menu/category-menu.component';
 import { DetectorSummaryComponent } from './message-flow/detector-summary/detector-summary.component';
 import { DocumentSearchComponent } from './message-flow/document-search/document-search.component';
 import { DocumentSearchResultsComponent } from './message-flow/document-search-results/document-search-results.component';
 import { SharedV2Module } from '../shared-v2/shared-v2.module';
 import { DiagnosticDataModule } from 'diagnostic-data';
-import { GenericCategoryFlow } from './message-flow/v2-flows/generic-category.flow';
 import { GenieChatFlow } from './message-flow/v2-flows/genie-chat.flow';
 import { HealthCheckV3Component } from './message-flow/health-check-v3/health-check-v3.component';
 import { FabIconModule,FabChoiceGroupModule } from '@angular-react/fabric';
@@ -40,7 +38,6 @@ import { FabPanelModule } from '@angular-react/fabric';
         GenieFeedbackComponent,
         SolutionsMessageComponent,
         GraphMessageComponent,
-        CategoryMenuComponent,
         DetectorSummaryComponent,
         DocumentSearchComponent,
         DocumentSearchResultsComponent,
@@ -61,7 +58,6 @@ import { FabPanelModule } from '@angular-react/fabric';
         FabPanelModule
     ],
     exports: [
-        CategoryMenuComponent,
         DetectorSummaryComponent,
         HealthCheckV3Component,
         LoadingMessageComponent,
@@ -72,7 +68,6 @@ import { FabPanelModule } from '@angular-react/fabric';
         StartupMessages,
         Geniefeedbackmessageflow,
         GenieMessageProcessor,
-        GenericCategoryFlow,
         GenieChatFlow
     ]
 })
