@@ -66,7 +66,6 @@ export class CategoryTileV4Component implements OnInit {
   }
 
   generateImagePath(name: string): string {
-    return `${imageRootPath}/${name}.svg`;
+    return `${imageRootPath}/${name.toLowerCase()}.svg`;
   }
-
 }
