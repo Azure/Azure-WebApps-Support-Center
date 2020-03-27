@@ -62,7 +62,7 @@ export class FabricSearchResultsComponent {
   }
 
   @HostListener('keydown.Tab', ['$event.target'])
-  onKeyUp(ele: HTMLElement) {
+  onKeyDown(ele: HTMLElement) {
     if (ele.tagName === "INPUT") {
       this.clickSearchBox = BlurType.None;
     }

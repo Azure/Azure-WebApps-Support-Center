@@ -1,5 +1,5 @@
 <div class="timepicker" id="timePicker">
-  <div class="time-picker-container" *ngIf="globals.openTimePicker" (keyup.escape)="closeTimePicker($event)">
+  <div class="time-picker-container" *ngIf="globals.openTimePicker" (keydown.escape)="escapeHandler($event)" (keydown.Tab)="tabHandler($event)">
     <fab-choice-group [options]="choiceGroupOptions" [defaultSelectedKey]="defaultSelectedKey">
     </fab-choice-group>
     <div *ngIf="showTimePicker" class="row">

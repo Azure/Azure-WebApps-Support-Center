@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output, Renderer2, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, Renderer2, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DetectorControlService } from 'diagnostic-data';
 import { ICalendarStrings, IDatePickerProps, IChoiceGroupOption, ITextFieldProps } from 'office-ui-fabric-react';
@@ -62,15 +62,15 @@ export class DetectorTimePickerComponent implements OnInit {
     weekNumberFormatString: 'Week number {0}',
   };
 
-  constructor(private activatedRoute: ActivatedRoute, private detectorControlService: DetectorControlService, private router: Router, public globals: Globals,private render:Renderer2) {
+  constructor(private activatedRoute: ActivatedRoute, private detectorControlService: DetectorControlService, private router: Router, public globals: Globals, private render: Renderer2) {
     //When close if click outside
-    this.render.listen('window','click',(e:Event) => {
+    this.render.listen('window', 'click', (e: Event) => {
       const clickElement = <HTMLElement>(e.target);
       const timePicker = document.getElementById('timePicker');
       //Get time text div in command bar
       const commandBar = document.querySelector('.ms-CommandBar-secondaryCommand');
       if (!timePicker.contains(clickElement) && !commandBar.contains(clickElement)) {
-        this.cancelTimeRange();
+        this.closeTimePicker();
       }
     })
   }
@@ -129,9 +129,16 @@ export class DetectorTimePickerComponent implements OnInit {
     this.hourDiff = hourDiff;
   }
 
-  cancelTimeRange() {
+  //Click outside or tab to next component
+  closeTimePicker() {
     this.globals.openTimePicker = false;
     this.showTimePicker = this.defaultSelectedKey === "Custom";
+  }
+
+  //Press Escape,Click Cancel
+  cancelTimeRange() {
+    this.closeTimePicker();
+    (<HTMLInputElement>document.querySelector('.ms-CommandBar-secondaryCommand button')).focus();
   }
 
   //clickHandler for apply button
@@ -254,12 +261,19 @@ export class DetectorTimePickerComponent implements OnInit {
     return errorMessage;
   }
 
-  closeTimePicker(e: KeyboardEvent) {
+  escapeHandler(e: KeyboardEvent) {
     //If not enter date or time,ESC will close time picker
     const ele = (<HTMLElement>e.target);
     if (!ele.className.includes('ms-TextField-field')) {
-      this.globals.openTimePicker = false;
-      (<HTMLInputElement>document.querySelector('.ms-CommandBar-secondaryCommand button')).focus();
+      this.cancelTimeRange();
+    }
+  }
+
+  tabHandler(e: KeyboardEvent) {
+    const ele = <HTMLElement>e.target;
+    //Tab to Cancel button will close 
+    if (ele.innerText.toLowerCase() === 'cancel') {
+      this.closeTimePicker();
     }
   }
 }
