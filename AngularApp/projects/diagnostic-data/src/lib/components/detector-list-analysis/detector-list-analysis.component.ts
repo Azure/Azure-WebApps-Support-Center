@@ -231,7 +231,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
         }
         else {
             this._activatedRoute.paramMap.subscribe(params => {
-                this.analysisId = this.analysisId == undefined ? params.get('analysisId') : this.analysisId;
+                this.analysisId = params.get('analysisId') === null ? this.analysisId :  params.get('analysisId');
                 this.detectorId = params.get(this.detectorParmName) === null ? "" : params.get(this.detectorParmName);
                 this.resetGlobals();
                 this.populateSupportTopicDocument();
