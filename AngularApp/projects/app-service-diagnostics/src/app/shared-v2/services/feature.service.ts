@@ -11,6 +11,9 @@ import { CategoryService } from '../../shared-v2/services/category.service';
 import { PortalActionService } from '../../shared/services/portal-action.service';
 import { StartupInfo } from '../../shared/models/portal';
 import { VersionTestService } from '../../fabric-ui/version-test.service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { filter } from 'rxjs-compat/operator/filter';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class FeatureService {
@@ -20,10 +23,11 @@ export class FeatureService {
   protected _features: Feature[] = [];
   protected _featureDisplayOrder = [];
   private categories: Category[] = [];
+  private _featureSub:BehaviorSubject<Feature[]> = new BehaviorSubject<Feature[]>([]);
   protected isLegacy:boolean;
   constructor(protected _diagnosticApiService: DiagnosticService, protected _contentService: ContentService, protected _router: Router, protected _authService: AuthService,
     protected _logger: LoggingV2Service, protected _siteService: SiteService, protected _categoryService: CategoryService, protected _activatedRoute: ActivatedRoute,protected _portalActionService:PortalActionService,protected versionTestService:VersionTestService) {
-    this.versionTestService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy)
+    this.versionTestService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy);
     this._categoryService.categories.subscribe(categories => this.categories = categories);
     this._authService.getStartupInfo().subscribe(startupInfo => {
       this._diagnosticApiService.getDetectors().subscribe(detectors => {
@@ -68,6 +72,7 @@ export class FeatureService {
           }
         });
         this.sortFeatures();
+        this._featureSub.next(this._features);
       });
 
       this._contentService.getContent().subscribe(articles => {
@@ -99,6 +104,13 @@ export class FeatureService {
 
   getFeaturesForCategory(category: Category) {
     return this._features.filter(feature => feature.category === category.name);
+  }
+
+  getFeaturesForCategorySub(category:Category):Observable<Feature[]> {
+    this._featureSub.subscribe(fea => console.log("feature service",fea));
+    return this._featureSub.pipe(
+      map(features => this.getFeaturesForCategory(category)
+    ));
   }
 
   getFeatures(searchValue?: string) {

@@ -6,7 +6,6 @@ import { Category } from '../../../shared-v2/models/category';
 import { CategoryChatStateService } from '../../../shared-v2/services/category-chat-state.service';
 import { INavProps, INavLink, INav, autobind, INavStyles } from 'office-ui-fabric-react';
 import { GenericApiService } from '../../../shared/services/generic-api.service';
-import { CategoriesService } from '../../../shared/services/categories.service';
 import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { Tile } from '../../../shared/components/tile-list/tile-list.component';
 import { Feature } from '../../../shared-v2/models/features';
@@ -100,20 +99,20 @@ export class CategoryNavComponent implements OnInit {
         return false;
     }
 
-    navigateTo(path: string) {
-        let navigationExtras: NavigationExtras = {
-            queryParamsHandling: 'preserve',
-            preserveFragment: true,
-            relativeTo: this._activatedRoute
-        };
-        let segments: string[] = [path];
-        this._route.navigate(segments, navigationExtras).then(() => {});
-    }
+    // navigateTo(path: string) {
+    //     let navigationExtras: NavigationExtras = {
+    //         queryParamsHandling: 'preserve',
+    //         preserveFragment: true,
+    //         relativeTo: this._activatedRoute
+    //     };
+    //     let segments: string[] = [path];
+    //     this._route.navigate(segments, navigationExtras).then(() => { });
+    // }
 
 
-    constructor(public siteFeatureService: SiteFeatureService, protected _diagnosticApiService: DiagnosticService, private _route: Router, private _injector: Injector, private _activatedRoute: ActivatedRoute, private categoryService: CategoryService,
-        private _chatState: CategoryChatStateService, private _genericApiService: GenericApiService
-        , private _featureService: FeatureService, protected _authService: AuthService, public _detectorCategorization: DetectorCategorizationService, private _webSiteService: WebSitesService) { }
+    constructor(public siteFeatureService: SiteFeatureService, protected _diagnosticApiService: DiagnosticService, private _route: Router, private _activatedRoute: ActivatedRoute, private categoryService: CategoryService,
+        private _chatState: CategoryChatStateService,
+        protected _authService: AuthService, public _detectorCategorization: DetectorCategorizationService, private _webSiteService: WebSitesService) { }
 
     detectorDataLocalCopy: DetectorMetaData[] = [];
     detectorList: CollapsibleMenuItem[] = [];
@@ -124,8 +123,7 @@ export class CategoryNavComponent implements OnInit {
         this.currentRoutePath = this._activatedRoute.firstChild.snapshot.url.map(urlSegment => urlSegment.path);
     }
     ngOnInit() {
-        if (!this._activatedRoute.firstChild.snapshot.params['analysisId'])
-        {
+        if (!this._activatedRoute.firstChild.snapshot.params['analysisId']) {
             if (this._activatedRoute.firstChild.snapshot.params['detectorName']) {
                 this.currentDetectorId = this._activatedRoute.firstChild.snapshot.params['detectorName'];
             } else if (this._activatedRoute.firstChild.snapshot.params['analysisId']) {
@@ -134,8 +132,7 @@ export class CategoryNavComponent implements OnInit {
                 this.currentDetectorId = null;
             }
         }
-        else
-        {
+        else {
             this.currentDetectorId = this._activatedRoute.firstChild.snapshot.params['analysisId'];
         }
 
@@ -235,31 +232,24 @@ export class CategoryNavComponent implements OnInit {
             });
 
             // Get all the detector list under this category
+            this.siteFeatureService.getFeaturesForCategorySub(this.category).subscribe(features => {
+                if (!this.isDiagnosticTools) {
+                    features.forEach(feature => {
+                        let onClick = () => {
+                            feature.clickAction();
+                        }
+                        let isSelected = () => {
+                            return this.currentDetectorId === feature.id;
+                        }
+                        let icon = this.getIconImagePath(feature.id);
+                        let menuItem = new CollapsibleMenuItem(feature.name, onClick, isSelected, icon);
+                        this.detectorList.push(menuItem);
+                    });
+                }
+            });
+
             this._diagnosticApiService.getDetectors().subscribe(detectors => {
                 this.detectorDataLocalCopy = detectors;
-                detectors.forEach((detector, index) => {
-                    if (detector.category === this.category.name) {
-                        if ((detector.category && detector.category.length > 0) ||
-                            (detector.description && detector.description.length > 0)) {
-                            let routePath: any = "detectors";
-                            if (detector.type === DetectorType.Analysis) {
-                                routePath = "analysis";
-                            }
-                            let onClick = () => {
-                                this.navigateTo(`${routePath}/${detector.id}`);
-                            };
-
-                            let isSelected = () => {
-                                return this.currentDetectorId === detector.id;
-                            };
-
-                            let icon = this.getIconImagePath(detector.id);
-                            let menuItem = new CollapsibleMenuItem(detector.name, onClick, isSelected, icon);
-
-                            this.detectorList.push(menuItem);
-                        }
-                    }
-                });
             });
 
             this._route.events.subscribe((evt) => {
@@ -267,14 +257,11 @@ export class CategoryNavComponent implements OnInit {
                     let itemId = "";
                     let routePath: any = "detectors";
                     if (!(evt.url.split("/").length > 14 && evt.url.split("/")[12].toLowerCase() === "analysis" && (evt.url.split("/")[14].toLowerCase() === "detectors" || evt.url.split("/")[14].toLowerCase() === "analysis"))) {
-                        if (evt.url.split("/").length > 12)
-                        {
-                            if (evt.url.split("/")[12].toLowerCase() === "detectors")
-                            {
+                        if (evt.url.split("/").length > 12) {
+                            if (evt.url.split("/")[12].toLowerCase() === "detectors") {
                                 itemId = evt.url.split("detectors/")[1].split("?")[0];
                             }
-                            else if (evt.url.split("/")[12].toLowerCase() === "analysis")
-                            {
+                            else if (evt.url.split("/")[12].toLowerCase() === "analysis") {
                                 itemId = evt.url.split("analysis/")[1].split("?")[0];
                                 routePath = "analysis";
                             }
