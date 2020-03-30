@@ -1,5 +1,5 @@
 import { DetectorControlService, FeatureNavigationService, DetectorResponse } from 'diagnostic-data';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from '../../../shared-v2/models/category';
 import { CategoryService } from '../../../shared-v2/services/category.service';
@@ -26,7 +26,7 @@ import { SubscriptionPropertiesService } from '../../../shared/services/subscrip
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
     useLegacy: boolean = true;
     isWindowsWebApp: boolean = true;
     isExternalSub: boolean = true;
@@ -196,9 +196,12 @@ export class HomeComponent implements OnInit {
 
         this.logService.logEvent("telemetry service logging", {});
         this.kustologgingService.logEvent("kusto telemetry service logging", {});
-
-     //   initializeIcons('https://static2.sharepointonline.com/files/fabric/assets/icons/');
     };
+
+    ngAfterViewInit() {
+        document.getElementById("healthCheck").focus();
+    }
+
    
   public get useStaticAksText() : boolean {
     return this.armService.isMooncake 
