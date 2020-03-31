@@ -99,17 +99,6 @@ export class CategoryNavComponent implements OnInit {
         return false;
     }
 
-    // navigateTo(path: string) {
-    //     let navigationExtras: NavigationExtras = {
-    //         queryParamsHandling: 'preserve',
-    //         preserveFragment: true,
-    //         relativeTo: this._activatedRoute
-    //     };
-    //     let segments: string[] = [path];
-    //     this._route.navigate(segments, navigationExtras).then(() => { });
-    // }
-
-
     constructor(public siteFeatureService: SiteFeatureService, protected _diagnosticApiService: DiagnosticService, private _route: Router, private _activatedRoute: ActivatedRoute, private categoryService: CategoryService,
         private _chatState: CategoryChatStateService,
         protected _authService: AuthService, public _detectorCategorization: DetectorCategorizationService, private _webSiteService: WebSitesService) { }
