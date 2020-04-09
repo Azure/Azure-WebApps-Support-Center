@@ -7,6 +7,7 @@ import { Globals } from "../../../globals";
 import { icons } from "../../icons-constants";
 import { SelectionMode } from 'office-ui-fabric-react/lib/DetailsList'
 import { Router } from "@angular/router";
+import { TelemetryService } from "diagnostic-data";
 
 enum BlurType {
   //click other place to close panel
@@ -97,7 +98,7 @@ export class FabricSearchResultsComponent {
   }
 
   @ViewChild('fabSearchResult',{static:true}) fabSearchResult:ElementRef
-  constructor(public featureService: FeatureService, private _logger: LoggingV2Service,private _notificationService: NotificationService, private globals: Globals,private router:Router,private render:Renderer2) {
+  constructor(public featureService: FeatureService, private _logger: LoggingV2Service,private _notificationService: NotificationService, private globals: Globals,private router:Router,private render:Renderer2,private telemetryService:TelemetryService) {
     this.isInCategory = this.router.url.includes('categories');
 
     this.render.listen('window','click',(e:Event) => {
@@ -115,12 +116,19 @@ export class FabricSearchResultsComponent {
   }
 
   private _logSearch() {
-    this._logger.LogSearch(this.searchValue);
+    this.telemetryService.logEvent('Search',{
+      'SearchValue': this.searchValue
+    });
   }
 
   private _logSearchSelection(feature: Feature) {
     this._logSearch();
-    this._logger.LogSearchSelection(this.searchValue, feature.id, feature.name, feature.featureType.name);
+    this.telemetryService.logEvent('SearchItemClicked',{
+      'SearchValue':this.searchValue,
+      'SelectionId': feature.id,
+      'SelectionName': feature.name,
+      'SearchBarLocation': this.isInCategory ? 'CategoryOverview' : 'LandingPage'
+    });
   }
 
   updateSearchValue(searchValue: { newValue: string }) {

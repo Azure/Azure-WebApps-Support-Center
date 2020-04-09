@@ -3,7 +3,7 @@ import { Category } from '../../../shared-v2/models/category';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { NotificationService } from '../../../shared-v2/services/notification.service';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
-import { DiagnosticService, DetectorMetaData, DetectorType } from 'diagnostic-data';
+import { DiagnosticService, DetectorMetaData, DetectorType, TelemetryService } from 'diagnostic-data';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
 import { PortalActionService } from '../../../shared/services/portal-action.service';
 
@@ -19,7 +19,7 @@ export class CategoryTileV4Component implements OnInit {
   @Input() category: Category;
   categoryImgPath: string;
   keywords: string;
-  constructor(private _portalService: PortalActionService, private _router: Router, private _activatedRoute: ActivatedRoute, private _notificationService: NotificationService, private _logger: LoggingV2Service, private _diagnosticService: DiagnosticService, private _resourceService: ResourceService) { }
+  constructor(private _portalService: PortalActionService, private _router: Router, private _activatedRoute: ActivatedRoute, private _notificationService: NotificationService, private _logger: LoggingV2Service, private _diagnosticService: DiagnosticService, private _resourceService: ResourceService,private _telemetryService:TelemetryService) { }
 
   ngOnInit() {
     this.categoryImgPath = this.generateImagePath(this.category.id);
@@ -32,8 +32,11 @@ export class CategoryTileV4Component implements OnInit {
 
   navigateToCategory(): void {
 
-    this._logger.LogCategorySelected(this.category.name);
-    this._logger.LogClickEvent('CategorySelection', 'HomeV2', this.category.name);
+    // this._logger.LogCategorySelected(this.category.name);
+    // this._logger.LogClickEvent('CategorySelection', 'HomeV4', this.category.name);
+    this._telemetryService.logEvent('CategorySelection',{
+      'CategoryName': this.category.name
+    });
 
     if (this.category.overridePath) {
       this._router.navigateByUrl(this.category.overridePath);

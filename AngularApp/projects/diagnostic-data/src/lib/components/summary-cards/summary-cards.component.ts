@@ -6,6 +6,7 @@ import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import { DiagnosticService } from '../../services/diagnostic.service';
+import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 
 
 export class SummaryCard {
@@ -25,13 +26,7 @@ export class SummaryCard {
     this.status = status;
     this.link = link;
     this.actionType = actionType;
-    this.isClickable = this.checkClickable(actionType,link);
-  }
-  private checkClickable(actionType:ActionType,link:string):boolean {
-    if (actionType !== ActionType.None && link !== "") {
-      return true;
-    }
-    return false;
+    this.isClickable = this.actionType !== ActionType.None && this.link !== ""
   }
 }
 
@@ -90,6 +85,11 @@ export class SummaryCardsComponent extends DataRenderBaseComponent {
 
   //Todo: Add Tool type Navigation
   onClickCard(card: SummaryCard): void {
+    const eventProperties = {
+      'Title': card.title,
+      'Detector': card.link
+    }
+    this.logEvent(TelemetryEventNames.SummaryCardClicked,eventProperties);
     switch (card.actionType) {
       case ActionType.Detector:
         this.navigate(card);

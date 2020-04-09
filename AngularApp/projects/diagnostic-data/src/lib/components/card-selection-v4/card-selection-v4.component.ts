@@ -55,16 +55,15 @@ export class CardSelectionV4Component extends DataRenderBaseComponent {
   }
 
   public selectCard(card: CardSelection) {
+    this.logCardClick(card);
     //Todo, fix navigate when CardActionType is Detector
     if (card && card.linkType === CardActionType.Detector) {
-      this.logCardClick(card.title);
       if (this.isPublic) {
         this._router.navigate([`../../../detectors/${card.linkValue}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
       } else {
         this._navigator.NavigateToDetector(this._activatedRoute.snapshot.params['detector'], card.linkValue);
       }
     } else if (card && card.linkType === CardActionType.Tool) {
-      this.logCardClick(card.title);
       if (this.isPublic) {
         //For now, this card only use in DiagTool Category Page
         this._router.navigate([`../tools/${card.linkValue}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
@@ -73,11 +72,15 @@ export class CardSelectionV4Component extends DataRenderBaseComponent {
   }
 
   // Send telemetry event for clicking Card
-  logCardClick(title: string) {
+  logCardClick(card: CardSelection) {
     const eventProps = {
-      'Title': title,
-      'Detector': this.detector
+      'Title': card.title,
     };
-    this.logEvent(TelemetryEventNames.CardClicked, eventProps);
+    if (card.linkType === CardActionType.Detector) {
+      eventProps['Detector'] = this.detector;
+    } else if (card.linkType === CardActionType.Tool) {
+      eventProps['Tool'] = card.linkValue;
+    }
+    this.logEvent(TelemetryEventNames.ToolCardClicked, eventProps);
   }
 }

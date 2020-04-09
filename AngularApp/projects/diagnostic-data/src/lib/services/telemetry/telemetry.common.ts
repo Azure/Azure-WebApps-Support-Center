@@ -42,7 +42,10 @@ export const TelemetryEventNames = {
     CXPChatUserAction: 'CXPChatUserAction',
     CXPChatEligibilityCheck: 'CXPChatEligibilityCheck',
     AppInsightsConnectionError: 'AppInsightsConnectionError',
-    AppInsightsConnected: 'AppInsightsConnected'
+    AppInsightsConnected: 'AppInsightsConnected',
+    SummaryCardClicked: 'SummaryCardClicked',
+    ToolCardClicked: 'ToolCardClicked',
+    TimePickerApplied: 'TimePickerApplied'
 };
 
 export interface ITelemetryProvider {

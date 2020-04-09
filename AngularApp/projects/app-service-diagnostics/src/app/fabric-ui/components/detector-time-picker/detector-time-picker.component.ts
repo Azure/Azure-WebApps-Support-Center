@@ -1,10 +1,11 @@
 import { Component, OnInit, EventEmitter, Output, Renderer2 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DetectorControlService } from 'diagnostic-data';
+import { DetectorControlService, TelemetryService, TelemetryEventNames } from 'diagnostic-data';
 import { ICalendarStrings, IDatePickerProps, IChoiceGroupOption } from 'office-ui-fabric-react';
 import { addMonths, addDays } from 'office-ui-fabric-react/lib/utilities/dateMath/DateMath';
 import * as momentNs from 'moment';
 import { Globals } from '../../../globals';
+
 @Component({
   selector: 'detector-time-picker',
   templateUrl: './detector-time-picker.component.html',
@@ -62,7 +63,7 @@ export class DetectorTimePickerComponent implements OnInit {
     weekNumberFormatString: 'Week number {0}',
   };
 
-  constructor(private activatedRoute: ActivatedRoute, private detectorControlService: DetectorControlService, private router: Router, public globals: Globals, private render: Renderer2) {
+  constructor(private activatedRoute: ActivatedRoute, private detectorControlService: DetectorControlService, private router: Router, public globals: Globals, private render: Renderer2,private telemetryService:TelemetryService) {
     //When close if click outside
     this.render.listen('window', 'click', (e: Event) => {
       const clickElement = <HTMLElement>(e.target);
@@ -188,6 +189,19 @@ export class DetectorTimePickerComponent implements OnInit {
     this.globals.openTimePicker = this.timeDiffError !== "";
     //Refoucs to command-bar text message again
     (<HTMLInputElement>document.querySelector('.ms-CommandBar-secondaryCommand button')).focus();
+
+    const eventProperties = {
+      'Title': timePickerInfo.selectedKey
+    }
+    if (timePickerInfo.startDate) {
+      const startTimeString = momentNs(timePickerInfo.startDate).format(this.detectorControlService.stringFormat);
+      eventProperties['StartTime'] = startTimeString;
+    }
+    if (timePickerInfo.endDate) {
+      const endTimeString = momentNs(timePickerInfo.startDate).format(this.detectorControlService.stringFormat);
+      eventProperties['EndTime'] = endTimeString;
+    }
+    this.telemetryService.logEvent(TelemetryEventNames.TimePickerApplied,eventProperties);
   }
 
   onSelectStartDateHandler(e: { date: Date }) {
