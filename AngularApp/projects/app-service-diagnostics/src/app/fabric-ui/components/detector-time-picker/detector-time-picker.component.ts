@@ -131,6 +131,7 @@ export class DetectorTimePickerComponent implements OnInit {
 
   setTime(hourDiff: number) {
     this.showTimePicker = false;
+    this.timeDiffError = '';
     this.hourDiff = hourDiff;
   }
 
@@ -153,6 +154,8 @@ export class DetectorTimePickerComponent implements OnInit {
     let timePickerInfo: TimePickerInfo;
     //customize
     if (this.showTimePicker) {
+      startDateWithTime = this.convertDateTimeToString(this.startDate,this.startClock);
+      endDateWithTime = this.convertDateTimeToString(this.endDate,this.endClock);
       //for timer picker, date and hour,minute
       let infoStartDate = new Date(this.startDate);
       infoStartDate.setHours(Number.parseInt(this.startClock.split(":")[0]), Number.parseInt(this.startClock.split(":")[1]));
@@ -164,9 +167,6 @@ export class DetectorTimePickerComponent implements OnInit {
         startDate: infoStartDate,
         endDate: infoEndDate
       };
-      //Already is UTC time,only need to foramt
-      startDateWithTime = momentNs(infoStartDate).format(this.detectorControlService.stringFormat);
-      endDateWithTime = momentNs(infoEndDate).format(this.detectorControlService.stringFormat);
     } else {
       const localEndTime = this.today;
       const localStartTime = new Date(localEndTime.getTime() - this.hourDiff * 60 * 60 * 1000);
@@ -229,6 +229,14 @@ export class DetectorTimePickerComponent implements OnInit {
   private getHourAndMinute(date: Date): string {
     return momentNs(date).format('HH:mm');
   }
+
+  private convertDateTimeToString(date:Date,time:string): string {
+    const dateString = momentNs(date).format('YYYY-MM-DD');
+    const hour = Number.parseInt(time.split(':')[0]) ? `0${Number.parseInt(time.split(':')[0])}` : `${Number.parseInt(time.split(':')[0])}`;
+    const minute = Number.parseInt(time.split(':')[1]) ? `0${Number.parseInt(time.split(':')[1])}` : `${Number.parseInt(time.split(':')[1])}`;
+    return `${dateString} ${hour}:${minute}`;
+  }
+
 
   //when click LastXX hours,prefill into custom input, should be UTC time
   selectCustom() {
