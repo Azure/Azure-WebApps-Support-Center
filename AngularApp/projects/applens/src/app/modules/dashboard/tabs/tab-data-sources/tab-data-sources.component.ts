@@ -21,10 +21,10 @@ export class TabDataSourcesComponent {
   error: any;
   loadingDetector: boolean = true;
   dataProviderMetadata: DataProviderMetadata[] = [];
-  providerColors = [{ name: "Kusto", color: "#2f2c69", text:"Run in Kusto Web Explorer" },
-  { name: "MDM", color: "#095fb0", text:"Jarvis link" },
-  { name: "AppInsights", color: "#68217a", text:"AppInights Log Analytics Documentation" },
-  { name: "AzureSupportCenter", color: "#0078d7", text:"Azure Support Center link" }
+  providerColors = [{ name: "Kusto", color: "#2f2c69", text: "Run in Kusto Web Explorer" },
+  { name: "MDM", color: "#095fb0", text: "Jarvis link" },
+  { name: "AppInsights", color: "#68217a", text: "AppInights Log Analytics Documentation" },
+  { name: "AzureSupportCenter", color: "#0078d7", text: "Azure Support Center link" }
   ];
 
   ngOnInit() {
@@ -78,7 +78,9 @@ export class TabDataSourcesComponent {
         if (idx > -1) {
           element.propertyBag.forEach(bag => {
             if (bag.key != null && bag.key.length > 0) {
-              metadata[idx].propertyBag.push(bag);
+              if (metadata[idx].propertyBag.findIndex(e => e.value === bag.value) === -1) {
+                metadata[idx].propertyBag.push(bag);
+              }
             }
           });
         } else {
