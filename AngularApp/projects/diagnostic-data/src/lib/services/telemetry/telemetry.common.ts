@@ -45,7 +45,8 @@ export const TelemetryEventNames = {
     AppInsightsConnected: 'AppInsightsConnected',
     SummaryCardClicked: 'SummaryCardClicked',
     ToolCardClicked: 'ToolCardClicked',
-    TimePickerApplied: 'TimePickerApplied'
+    TimePickerApplied: 'TimePickerApplied',
+    CategoryNavItemClicked: 'CategoryNavItemClicked'
 };
 
 export interface ITelemetryProvider {

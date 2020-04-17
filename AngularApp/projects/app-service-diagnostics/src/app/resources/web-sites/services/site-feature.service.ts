@@ -543,8 +543,4 @@ export class SiteFeatureService extends FeatureService {
       this._router.navigateByUrl(`resource${resourceId}/categories/DiagnosticTools/tools/${toolId}`);
     }
   }
-
-  private logFeature() {
-
-  }
 }

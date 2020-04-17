@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BehaviorSubject } from 'rxjs';
 import { SearchPipe } from '../pipes/search.pipe';
-import { TelemetryService } from 'diagnostic-data';
+import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
 
 @Component({
   selector: 'collapsible-menu-item',
@@ -37,7 +37,7 @@ export class CollapsibleMenuItemComponent implements OnInit {
       this.menuItem.expanded = !this.menuItem.expanded;
     }
     else {
-      this.telemetryService.logEvent('CategoryNavClicked',{
+      this.telemetryService.logEvent(TelemetryEventNames.CategoryNavItemClicked,{
         'Title':this.menuItem.label,
         'Version':'V4'
       });
