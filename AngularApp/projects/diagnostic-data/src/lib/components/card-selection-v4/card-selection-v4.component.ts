@@ -75,12 +75,9 @@ export class CardSelectionV4Component extends DataRenderBaseComponent {
   logCardClick(card: CardSelection) {
     const eventProps = {
       'Title': card.title,
+      'Version':'V4',
+      'Tool':card.linkValue
     };
-    if (card.linkType === CardActionType.Detector) {
-      eventProps['Detector'] = this.detector;
-    } else if (card.linkType === CardActionType.Tool) {
-      eventProps['Tool'] = card.linkValue;
-    }
     this.logEvent(TelemetryEventNames.ToolCardClicked, eventProps);
   }
 }

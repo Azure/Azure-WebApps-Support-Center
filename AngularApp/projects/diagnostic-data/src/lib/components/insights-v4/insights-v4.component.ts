@@ -72,7 +72,8 @@ export class InsightsV4Component extends DataRenderBaseComponent implements Afte
     const eventProps: { [name: string]: string } = {
       'Title': insightName,
       'IsExpanded': String(isExpanded),
-      'Status': status
+      'Status': status,
+      'Version':'V4'
     };
 
     this.logEvent(TelemetryEventNames.InsightTitleClicked, eventProps);

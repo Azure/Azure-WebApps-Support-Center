@@ -29,7 +29,8 @@ export class FabricFeedbackComponent {
     const detectorName = this.globals.getDetectorName();
     this.ratingEventProperties = {
       'DetectorId': detectorName,
-      'Url': window.location.href
+      'Url': window.location.href,
+      'Version':'V4'
     };
     this.logEvent(TelemetryEventNames.StarRatingSubmitted, eventProps);
     this.submitted = true;

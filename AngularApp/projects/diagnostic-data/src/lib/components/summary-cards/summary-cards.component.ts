@@ -87,7 +87,8 @@ export class SummaryCardsComponent extends DataRenderBaseComponent {
   onClickCard(card: SummaryCard): void {
     const eventProperties = {
       'Title': card.title,
-      'Detector': card.link
+      'Detector': card.link,
+      'Version':'V4'
     }
     this.logEvent(TelemetryEventNames.SummaryCardClicked,eventProperties);
     switch (card.actionType) {

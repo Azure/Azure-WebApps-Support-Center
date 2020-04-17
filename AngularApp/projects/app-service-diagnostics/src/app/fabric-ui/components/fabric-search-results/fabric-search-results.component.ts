@@ -117,7 +117,8 @@ export class FabricSearchResultsComponent {
 
   private _logSearch() {
     this.telemetryService.logEvent('Search',{
-      'SearchValue': this.searchValue
+      'SearchValue': this.searchValue,
+      'Version':'V4'
     });
   }
 
@@ -127,7 +128,8 @@ export class FabricSearchResultsComponent {
       'SearchValue':this.searchValue,
       'SelectionId': feature.id,
       'SelectionName': feature.name,
-      'SearchBarLocation': this.isInCategory ? 'CategoryOverview' : 'LandingPage'
+      'SearchBarLocation': this.isInCategory ? 'CategoryOverview' : 'LandingPage',
+      'Version':'V4'
     });
   }
 
