@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DiagnosticService, DetectorMetaData, DetectorType } from 'diagnostic-data';
+import { DiagnosticService, DetectorMetaData, DetectorType, TelemetryService } from 'diagnostic-data';
 import { Category } from '../models/category';
 import { Feature, FeatureType, FeatureTypes, FeatureAction } from '../models/features';
 import { ContentService } from './content.service';
@@ -25,7 +25,7 @@ export class FeatureService {
   private _featureSub:BehaviorSubject<Feature[]> = new BehaviorSubject<Feature[]>([]);
   protected isLegacy:boolean;
   constructor(protected _diagnosticApiService: DiagnosticService, protected _contentService: ContentService, protected _router: Router, protected _authService: AuthService,
-    protected _logger: LoggingV2Service, protected _siteService: SiteService, protected _categoryService: CategoryService, protected _activatedRoute: ActivatedRoute,protected _portalActionService:PortalActionService,protected versionTestService:VersionTestService) {
+    protected _logger: TelemetryService, protected _siteService: SiteService, protected _categoryService: CategoryService, protected _activatedRoute: ActivatedRoute,protected _portalActionService:PortalActionService,protected versionTestService:VersionTestService) {
     this.versionTestService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy);
     this._categoryService.categories.subscribe(categories => this.categories = categories);
     this._authService.getStartupInfo().subscribe(startupInfo => {
@@ -96,7 +96,14 @@ export class FeatureService {
 
   protected _createFeatureAction(name: string, category: string, func: Function): FeatureAction {
     return () => {
-      this._logger.LogClickEvent(name, 'feature', category);
+      const eventProperties = {
+        'Name':name,
+        'Category':category
+      }
+      if(!this.isLegacy) {
+        eventProperties['Version'] = 'V4';
+      }
+      this._logger.logEvent('FeatureClicked',eventProperties);
       func();
     };
   }
@@ -106,7 +113,6 @@ export class FeatureService {
   }
 
   getFeaturesForCategorySub(category:Category):Observable<Feature[]> {
-    this._featureSub.subscribe(fea => console.log("feature service",fea));
     return this._featureSub.pipe(
       map(features => this.getFeaturesForCategory(category)
     ));

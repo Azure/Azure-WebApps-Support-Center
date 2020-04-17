@@ -72,6 +72,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
             resourceName: this.resourceName,
             intialView: initialViewLoaded,
         };
+        if (!this.useLegacy) {
+            eventProps['Version'] = 'V4';
+        }
         this.logService.logEvent('DiagnosticsViewLoaded',eventProps);
 
         if (_resourceService.armResourceConfig && _resourceService.armResourceConfig.homePageText
@@ -148,7 +151,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         let eventProps = {
             subscriptionId: this.subscriptionId,
             resourceName: this.resourceName,
-            switchToView: this.useLegacy.toString(),
+            switchToLegacy: this.useLegacy.toString(),
         };
         this.logService.logEvent('SwitchView',eventProps);
     }
@@ -280,10 +283,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
         if (category) {
             this._portalService.openBladeDiagnoseCategoryBlade(category.id);
         }
+        this.logService.logEvent('OpenAviPerf',{
+            'Location':'LandingPage',
+            "Version":'V4'
+        });
     }
 
     openGeniePanel() {
         this.globals.openGeniePanel = true;
+        this.logService.logEvent('OpenGenie',{
+            'Location':'LandingPage',
+            'Version':'V4'
+        });
     }
 }
 

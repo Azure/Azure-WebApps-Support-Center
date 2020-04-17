@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Globals } from '../../../globals';
 import { DetectorControlService } from 'projects/diagnostic-data/src/lib/services/detector-control.service';
 import { ActivatedRoute } from '@angular/router';
+import { TelemetryService } from 'diagnostic-data';
 
 @Component({
   selector: 'detector-command-bar',
@@ -11,7 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 export class DetectorCommandBarComponent {
   time: string;
 
-  constructor(private globals: Globals, private detectorControlService: DetectorControlService, private _route: ActivatedRoute) { }
+  constructor(private globals: Globals, private detectorControlService: DetectorControlService, private _route: ActivatedRoute,private telemetryService:TelemetryService) { }
 
   toggleOpenState() {
     this.globals.openGeniePanel = !this.globals.openGeniePanel;
@@ -25,6 +26,22 @@ export class DetectorCommandBarComponent {
     let childRouteSnapshot = this._route.firstChild.snapshot;
     let childRouteType = childRouteSnapshot.url[0].toString();
     let instanceId = childRouteType === "overview" ? this._route.snapshot.params["category"] : childRouteType === "detectors" ? childRouteSnapshot.params["detectorName"] : childRouteSnapshot.params["analysisId"] ;
+    
+    const eventProperties = {
+      'Category':this._route.snapshot.params['category'],
+      'Version':'V4'
+    };
+    if (childRouteType === "detectors") {
+      eventProperties['Detector'] = childRouteSnapshot.params['detectorName'];
+      eventProperties['Type'] = 'detector';
+    }else if(childRouteType === "analysis"){
+      eventProperties['Analysis'] = childRouteSnapshot.params["analysisId"];
+      eventProperties['Type'] = 'analysis';
+    }else if (childRouteType === "overview") {
+      eventProperties['Type'] = 'overview';
+    }
+
+    this.telemetryService.logEvent('RefreshClicked',eventProperties);
     if (instanceId)
     {
       this.detectorControlService.refresh(instanceId);
@@ -32,7 +49,6 @@ export class DetectorCommandBarComponent {
   }
 
   toggleOpenTimePicker() {
-    // setTimeout(() => {this.globals.openTimePicker = !this.globals.openTimePicker},0);
     this.globals.openTimePicker = !this.globals.openTimePicker
   }
 

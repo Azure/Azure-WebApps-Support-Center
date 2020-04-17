@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BehaviorSubject } from 'rxjs';
 import { SearchPipe } from '../pipes/search.pipe';
+import { TelemetryService } from 'diagnostic-data';
 
 @Component({
   selector: 'collapsible-menu-item',
@@ -23,7 +24,7 @@ export class CollapsibleMenuItemComponent implements OnInit {
   matchesSearchTerm: boolean = true;
   imagePlaceHolder: string = '../../../../assets/img/detectors/default.svg';
 
-  constructor() { }
+  constructor(private telemetryService:TelemetryService) { }
 
   ngOnInit() {
     this.children = this.menuItem.subItems;
@@ -36,6 +37,10 @@ export class CollapsibleMenuItemComponent implements OnInit {
       this.menuItem.expanded = !this.menuItem.expanded;
     }
     else {
+      this.telemetryService.logEvent('CategoryNavClicked',{
+        'Title':this.menuItem.label,
+        'Version':'V4'
+      });
       this.menuItem.onClick();
     }
   }
