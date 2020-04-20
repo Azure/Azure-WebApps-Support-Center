@@ -14,6 +14,8 @@ export class AutohealingSlowrequestsRuleComponent extends AutohealingRuleCompone
     super();
   }
 
+  showIntervalRecommendation: boolean = false;
+
   addNewRule() {
     this.rule = new SlowRequestsBasedTrigger();
     this.ruleCopy = new SlowRequestsBasedTrigger();
@@ -21,8 +23,13 @@ export class AutohealingSlowrequestsRuleComponent extends AutohealingRuleCompone
   }
 
   isValid(): boolean {
+    this.showIntervalRecommendation = false;
     if (this.ruleCopy && this.ruleCopy.timeInterval && this.ruleCopy.timeInterval !== '' && this.ruleCopy.timeTaken && this.ruleCopy.timeTaken != '') {
-      return (this.ruleCopy.count > 0 && FormatHelper.timespanToSeconds(this.ruleCopy.timeInterval) > 0 && FormatHelper.timespanToSeconds(this.ruleCopy.timeTaken) > 0);
+      let isValid: boolean = (this.ruleCopy.count > 0 && FormatHelper.timespanToSeconds(this.ruleCopy.timeInterval) > 0 && FormatHelper.timespanToSeconds(this.ruleCopy.timeTaken) > 0);
+      if (isValid) {
+        this.showIntervalRecommendation = this.ruleCopy.timeInterval < this.ruleCopy.timeTaken
+      }
+      return isValid;
     } else {
       return false;
     }
