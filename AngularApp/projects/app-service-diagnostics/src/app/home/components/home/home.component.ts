@@ -72,9 +72,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
             resourceName: this.resourceName,
             intialView: initialViewLoaded,
         };
-        if (!this.useLegacy) {
-            eventProps['Version'] = 'V4';
-        }
         this.logService.logEvent('DiagnosticsViewLoaded',eventProps);
 
         if (_resourceService.armResourceConfig && _resourceService.armResourceConfig.homePageText
@@ -284,8 +281,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this._portalService.openBladeDiagnoseCategoryBlade(category.id);
         }
         this.logService.logEvent('OpenAviPerf',{
-            'Location':'LandingPage',
-            "Version":'V4'
+            'Location':'LandingPage'
         });
     }
 

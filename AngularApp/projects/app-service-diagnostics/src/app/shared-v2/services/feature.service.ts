@@ -100,9 +100,6 @@ export class FeatureService {
         'Name':name,
         'Category':category
       }
-      if(!this.isLegacy) {
-        eventProperties['Version'] = 'V4';
-      }
       this._logger.logEvent('FeatureClicked',eventProperties);
       func();
     };
