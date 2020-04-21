@@ -22,8 +22,7 @@ export class SiteService {
     public currentSiteStatic: Site;
 
     constructor(private _armClient: ArmService, private _authService: AuthService, private _http: HttpClient,
-        private _uriElementsService: UriElementsService, private _serverFarmService: ServerFarmDataService,
-        private logService: TelemetryService) {
+        private _uriElementsService: UriElementsService, private _serverFarmService: ServerFarmDataService) {
         this._authService.getStartupInfo().subscribe((startUpInfo: StartupInfo) => {
             this._populateSiteInfo(startUpInfo.resourceId);
             if (startUpInfo.resourceType === ResourceType.Site) {
@@ -116,11 +115,11 @@ export class SiteService {
 
         let result = this._armClient.postResourceFullResponse(restartUri, null, true);
         result.subscribe(response => {
-            this.logService.logEvent('Solution_RestartSite', {
-                'status': response.status.toString(),
-                'statusText': response.statusText,
-                'url': response.url
-            });
+            // this.logService.logEvent('Solution_RestartSite', {
+            //     'status': response.status.toString(),
+            //     'statusText': response.statusText,
+            //     'url': response.url
+            // });
         });
 
         return result;
@@ -199,9 +198,9 @@ export class SiteService {
         const restartUri = this._uriElementsService.getUpdateSettingsUri(resourceUri);
 
         // TODO: Use new API call to get HttpResponse info; convert body to {string: string} for logging
-        this.logService.logEvent('Solution_UpdateAppSettings', {
-            'url': resourceUri
-        });
+        // this.logService.logEvent('Solution_UpdateAppSettings', {
+        //     'url': resourceUri
+        // });
 
         return this._armClient.putResource(restartUri, body, null, true);
     }

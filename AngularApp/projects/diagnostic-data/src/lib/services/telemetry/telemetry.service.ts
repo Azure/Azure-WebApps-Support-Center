@@ -5,15 +5,17 @@ import { AppInsightsTelemetryService } from './appinsights-telemetry.service';
 import { KustoTelemetryService } from './kusto-telemetry.service';
 import { BehaviorSubject } from 'rxjs';
 import { SeverityLevel } from '../../models/telemetry';
+import { VersionService } from '../version.service';
 
 @Injectable()
 export class TelemetryService {
     private telemetryProviders: ITelemetryProvider[] = [];
     eventPropertiesSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
     private eventPropertiesLocalCopy: { [name: string]: string } = {};
+    private isLegacy:boolean;
 
     constructor(private _appInsightsService: AppInsightsTelemetryService, private _kustoService: KustoTelemetryService,
-        @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig) {
+        @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig,private _versionService:VersionService) {
         if (config.useKustoForTelemetry) {
             this.telemetryProviders.push(this._kustoService);
         }
@@ -30,6 +32,7 @@ export class TelemetryService {
                 }
             }
         });
+        this._versionService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy);
     }
 
     /**
@@ -46,7 +49,8 @@ export class TelemetryService {
         if (!(properties["url"] || properties["Url"])){
             properties.Url = window.location.href;
         }
-
+        //We can change attributes name
+        properties["VersionFromTelementry"] = this.isLegacy ? "V3" : "V4";
         for (const telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logEvent(eventMessage, properties, measurements);
         }

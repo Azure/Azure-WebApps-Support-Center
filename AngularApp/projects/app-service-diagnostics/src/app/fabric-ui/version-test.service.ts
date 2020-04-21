@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DemoSubscriptions } from '../betaSubscriptions';
 import { AuthService } from '../startup/services/auth.service';
-import { ResourceService } from '../shared-v2/services/resource.service';
 import { ResourceType, AppType } from '../shared/models/portal';
 import { SiteService } from '../shared/services/site.service';
 import { BehaviorSubject } from 'rxjs';
 import { Site } from '../shared/models/site';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn:'root'
 })
 export class VersionTestService {
     public isLegacySub: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true); 
@@ -20,7 +19,7 @@ export class VersionTestService {
     // overrideUseLegacy = 1, we switch to the old experience. 
     // overrideUseLegacy = 2, we switch to the new experience. 
     public overrideUseLegacy: BehaviorSubject<number> = new BehaviorSubject(0); 
-    constructor(private _authService: AuthService, private _resourceService: ResourceService, private _siteService: SiteService) {
+    constructor(private _authService: AuthService, private _siteService: SiteService) {
         this._authService.getStartupInfo().subscribe(startupInfo => {
             const resourceType = this._authService.resourceType;
             const resourceId = startupInfo.resourceId;
