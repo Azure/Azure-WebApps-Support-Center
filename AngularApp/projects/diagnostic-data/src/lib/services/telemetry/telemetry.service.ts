@@ -6,6 +6,9 @@ import { KustoTelemetryService } from './kusto-telemetry.service';
 import { BehaviorSubject } from 'rxjs';
 import { SeverityLevel } from '../../models/telemetry';
 import { VersionService } from '../version.service';
+import { Route, Router, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { ResourceServiceInputsJsonResponse, ResourceServiceInputs } from 'projects/applens/src/app/shared/models/resources';
 
 @Injectable()
 export class TelemetryService {
@@ -13,9 +16,9 @@ export class TelemetryService {
     eventPropertiesSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
     private eventPropertiesLocalCopy: { [name: string]: string } = {};
     private isLegacy:boolean;
-
+    private enabledResourceTypes:ResourceServiceInputs[] = [];
     constructor(private _appInsightsService: AppInsightsTelemetryService, private _kustoService: KustoTelemetryService,
-        @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig,private _versionService:VersionService) {
+        @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig,private _versionService:VersionService,private _activatedRoute:ActivatedRoute,private _router:Router,private _http:HttpClient) {
         if (config.useKustoForTelemetry) {
             this.telemetryProviders.push(this._kustoService);
         }
@@ -33,6 +36,10 @@ export class TelemetryService {
             }
         });
         this._versionService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy);
+
+        this._http.get<ResourceServiceInputsJsonResponse>('assets/enabledResourceTypes.json').subscribe(jsonResponse => {
+            this.enabledResourceTypes = <ResourceServiceInputs[]>jsonResponse.enabledResourceTypes;
+        });
     }
 
     /**
@@ -49,8 +56,15 @@ export class TelemetryService {
         if (!(properties["url"] || properties["Url"])){
             properties.Url = window.location.href;
         }
-        //We can change attributes name
-        properties["VersionFromTelementry"] = this.isLegacy ? "V3" : "V4";
+
+        properties.PortalVersion = this.isLegacy ? 'V2' : 'V3';
+
+        let productName = "";
+        productName = this.findProductName(this._router.url);
+        if (productName !== "") {
+            properties.productName = productName;
+        }
+        
         for (const telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logEvent(eventMessage, properties, measurements);
         }
@@ -81,5 +95,28 @@ export class TelemetryService {
         for (const telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logMetric(name, average, sampleCount, min, max, properties);
         }
+    }
+
+    private findProductName(url:string):string {
+        let productName = "";
+        const resourceName = this._activatedRoute.root.firstChild.firstChild.snapshot.params["resourcename"];
+
+        //match start with "providers" and end with resource name
+        const re = new RegExp(`providers.*${resourceName}`);
+        const matched = url.match(re);
+        if (matched.length > 0 && matched[0].split('/').length > 3) {
+            const matchedString = matched[0];
+            const providerName = matchedString.split('/')[1];
+            const resourceTypeName = matchedString.split('/')[2];
+
+            const type = `${providerName}/${resourceTypeName}`;
+            const resourceType = this.enabledResourceTypes.find(t => t.resourceType.toLowerCase() === type.toLowerCase());
+
+            if (resourceType) {
+                productName = resourceType.searchSuffix;
+            }
+        }
+
+        return productName;
     }
 }
