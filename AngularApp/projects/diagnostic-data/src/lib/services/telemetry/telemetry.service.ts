@@ -1,14 +1,13 @@
 import { Injectable, OnInit, Inject } from '@angular/core';
-import { TelemetryEventNames, ITelemetryProvider } from './telemetry.common';
+import { ITelemetryProvider } from './telemetry.common';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import { AppInsightsTelemetryService } from './appinsights-telemetry.service';
 import { KustoTelemetryService } from './kusto-telemetry.service';
 import { BehaviorSubject } from 'rxjs';
 import { SeverityLevel } from '../../models/telemetry';
 import { VersionService } from '../version.service';
-import { Route, Router, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { ResourceServiceInputsJsonResponse, ResourceServiceInputs } from 'projects/applens/src/app/shared/models/resources';
 
 @Injectable()
 export class TelemetryService {
@@ -16,7 +15,7 @@ export class TelemetryService {
     eventPropertiesSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
     private eventPropertiesLocalCopy: { [name: string]: string } = {};
     private isLegacy:boolean;
-    private enabledResourceTypes:ResourceServiceInputs[] = [];
+    private enabledResourceTypes:any[] = [];
     constructor(private _appInsightsService: AppInsightsTelemetryService, private _kustoService: KustoTelemetryService,
         @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig,private _versionService:VersionService,private _activatedRoute:ActivatedRoute,private _router:Router,private _http:HttpClient) {
         if (config.useKustoForTelemetry) {
@@ -37,8 +36,8 @@ export class TelemetryService {
         });
         this._versionService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy);
 
-        this._http.get<ResourceServiceInputsJsonResponse>('assets/enabledResourceTypes.json').subscribe(jsonResponse => {
-            this.enabledResourceTypes = <ResourceServiceInputs[]>jsonResponse.enabledResourceTypes;
+        this._http.get<any>('assets/enabledResourceTypes.json').subscribe(jsonResponse => {
+            this.enabledResourceTypes = <any[]>jsonResponse.enabledResourceTypes;
         });
     }
 
