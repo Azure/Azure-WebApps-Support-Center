@@ -28,8 +28,7 @@ export class DetectorCommandBarComponent {
     let instanceId = childRouteType === "overview" ? this._route.snapshot.params["category"] : childRouteType === "detectors" ? childRouteSnapshot.params["detectorName"] : childRouteSnapshot.params["analysisId"] ;
     
     const eventProperties = {
-      'Category':this._route.snapshot.params['category'],
-      'Version':'V4'
+      'Category':this._route.snapshot.params['category']
     };
     if (childRouteType === "detectors") {
       eventProperties['Detector'] = childRouteSnapshot.params['detectorName'];

@@ -38,8 +38,7 @@ export class CollapsibleMenuItemComponent implements OnInit {
     }
     else {
       this.telemetryService.logEvent(TelemetryEventNames.CategoryNavItemClicked,{
-        'Title':this.menuItem.label,
-        'Version':'V4'
+        'Title':this.menuItem.label
       });
       this.menuItem.onClick();
     }

@@ -292,8 +292,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     openGeniePanel() {
         this.globals.openGeniePanel = true;
         this.logService.logEvent('OpenGenie',{
-            'Location':'LandingPage',
-            'Version':'V4'
+            'Location':'LandingPage'
         });
     }
 }

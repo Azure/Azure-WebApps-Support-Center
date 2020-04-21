@@ -47,8 +47,7 @@ export class SectionDividerComponent implements OnInit {
 
   sectionHeaderClick() {
       this.telemetryService.logEvent(TelemetryEventNames.CategoryNavItemClicked,{
-        'Title':this.label,
-        'Version':'V4'
+        'Title':this.label
       });
       this.navigateTo(`${this.routePath}`);
   }

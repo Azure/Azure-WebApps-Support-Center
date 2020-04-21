@@ -190,8 +190,7 @@ export class DetectorTimePickerComponent implements OnInit {
     (<HTMLInputElement>document.querySelector('.ms-CommandBar-secondaryCommand button')).focus();
 
     const eventProperties = {
-      'Title': timePickerInfo.selectedKey,
-      'Version':'V4'
+      'Title': timePickerInfo.selectedKey
     }
     if (timePickerInfo.startDate) {
       const startTimeString = momentNs(timePickerInfo.startDate).format(this.detectorControlService.stringFormat);

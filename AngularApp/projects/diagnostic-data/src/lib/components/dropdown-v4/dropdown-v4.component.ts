@@ -86,8 +86,7 @@ export class DropdownV4Component extends DataRenderBaseComponent {
     this.selectedKey = key;
     this.selectedData = this.keyDataMapping.get(this.selectedKey);
     this.logEvent('DropdownSelected',{
-      'title':this.selectedKey,
-      'Version':'V4'
+      'title':this.selectedKey
     });
   }
 
@@ -95,8 +94,7 @@ export class DropdownV4Component extends DataRenderBaseComponent {
     this.selectedKey = key.option.text;
     this.selectedData = this.keyDataMapping.get(this.selectedKey);
     this.logEvent('DropdownSelected',{
-      'title':this.selectedKey,
-      'Version':'V4'
+      'title':this.selectedKey
     });
   }
 
