@@ -1,4 +1,4 @@
-import { Injectable, OnInit, Inject } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { ITelemetryProvider } from './telemetry.common';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import { AppInsightsTelemetryService } from './appinsights-telemetry.service';
@@ -7,17 +7,42 @@ import { BehaviorSubject } from 'rxjs';
 import { SeverityLevel } from '../../models/telemetry';
 import { VersionService } from '../version.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class TelemetryService {
     private telemetryProviders: ITelemetryProvider[] = [];
     eventPropertiesSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
     private eventPropertiesLocalCopy: { [name: string]: string } = {};
-    private isLegacy:boolean;
-    private enabledResourceTypes:any[] = [];
+    private isLegacy: boolean;
+    private enabledResourceTypes: { resourceType: string, name: string }[] = [
+        {
+            resourceType: "Microsoft.Web/sites",
+            name: "AZURE WEB APP"
+        },
+        {
+            resourceType: "Microsoft.Web/hostingEnvironments",
+            name: "AZURE APP SERVICE ENVIRONMENT"
+
+        },
+        {
+            resourceType: "Microsoft.Logic/workflows",
+            name: "AZURE LOGIC APP"
+        },
+        {
+            resourceType: "Microsoft.ContainerService/managedClusters",
+            name: "AZURE KUBERNETES CLUSTER"
+        },
+        {
+            resourceType: "Microsoft.ContainerService/openShiftManagedClusters",
+            name: "AZURE KUBERNETES CLUSTER"
+        },
+        {
+            resourceType: "Microsoft.ApiManagement/service",
+            name: "AZURE API MANAGEMENT SERVICE"
+        }
+    ];
     constructor(private _appInsightsService: AppInsightsTelemetryService, private _kustoService: KustoTelemetryService,
-        @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig,private _versionService:VersionService,private _activatedRoute:ActivatedRoute,private _router:Router,private _http:HttpClient) {
+        @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig, private _versionService: VersionService, private _activatedRoute: ActivatedRoute, private _router: Router) {
         if (config.useKustoForTelemetry) {
             this.telemetryProviders.push(this._kustoService);
         }
@@ -35,10 +60,6 @@ export class TelemetryService {
             }
         });
         this._versionService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy);
-
-        this._http.get<any>('assets/enabledResourceTypes.json').subscribe(jsonResponse => {
-            this.enabledResourceTypes = <any[]>jsonResponse.enabledResourceTypes;
-        });
     }
 
     /**
@@ -52,7 +73,7 @@ export class TelemetryService {
                 }
             }
         }
-        if (!(properties["url"] || properties["Url"])){
+        if (!(properties["url"] || properties["Url"])) {
             properties.Url = window.location.href;
         }
 
@@ -63,7 +84,7 @@ export class TelemetryService {
         if (productName !== "") {
             properties.productName = productName;
         }
-        
+
         for (const telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logEvent(eventMessage, properties, measurements);
         }
@@ -71,7 +92,7 @@ export class TelemetryService {
 
     public logPageView(name: string, properties?: any, measurements?: any, url?: string, duration?: number) {
         for (const telemetryProvider of this.telemetryProviders) {
-            if (!url){
+            if (!url) {
                 url = window.location.href;
             }
             telemetryProvider.logPageView(name, url, properties, measurements, duration);
@@ -96,7 +117,7 @@ export class TelemetryService {
         }
     }
 
-    private findProductName(url:string):string {
+    private findProductName(url: string): string {
         let productName = "";
         const resourceName = this._activatedRoute.root.firstChild.firstChild.snapshot.params["resourcename"];
 
@@ -111,9 +132,7 @@ export class TelemetryService {
             const type = `${providerName}/${resourceTypeName}`;
             const resourceType = this.enabledResourceTypes.find(t => t.resourceType.toLowerCase() === type.toLowerCase());
 
-            if (resourceType) {
-                productName = resourceType.searchSuffix;
-            }
+            productName = resourceType ? resourceType.name : type;
         }
 
         return productName;
