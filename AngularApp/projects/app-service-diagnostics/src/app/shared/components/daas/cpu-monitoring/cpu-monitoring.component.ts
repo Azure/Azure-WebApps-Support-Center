@@ -30,6 +30,7 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
   configCollapsed: boolean = false;
   monitoringCollapsed: boolean = true;
   sessionsCollapsed: boolean = true;
+  blobSasUri:string ="";
 
   titles: string[] = ['1. Configure', '2. Observe', '3. Analyze'];
   constructor(private _siteService: SiteService, private _daasService: DaasService) {
@@ -42,6 +43,7 @@ export class CpuMonitoringComponent implements OnInit, OnDestroy {
 
   onDaasValidated(validated: DaasValidationResult) {
     this.validationResult = validated;
+    this.blobSasUri = this.validationResult.BlobSasUri;
   }
 
   ngOnInit(): void {

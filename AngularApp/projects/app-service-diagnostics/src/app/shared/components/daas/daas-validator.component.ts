@@ -29,7 +29,7 @@ export class DaasValidatorComponent implements OnInit {
   alwaysOnEnabled: boolean = true;
   error: string = '';
   storageAccountNeeded: boolean = false;
-  diagnosersRequiringStorageAccount: string[] = ['Memory Dump'];
+  diagnosersRequiringStorageAccount: string[] = ['Memory Dump', 'CPU Monitoring'];
   validationResult: DaasValidationResult = new DaasValidationResult();
   diagnosers: DiagnoserDefinition[];
 

@@ -13,6 +13,7 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
 
   @Input() siteToBeDiagnosed: SiteDaasInfo;
   @Input() activeSession: MonitoringSession;
+  @Input() blobSasUri:string;
   @Output() monitoringConfigurationChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() savingMonitoringConfiguration: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -182,6 +183,7 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
       newSession.CpuThreshold = this.monitoringSession.CpuThreshold;
       newSession.MaximumNumberOfHours = this.monitoringSession.MaximumNumberOfHours;
       newSession.MonitorScmProcesses = this.monitoringSession.MonitorScmProcesses;
+      newSession.BlobSasUri = this.blobSasUri;
 
       this._daasService.submitMonitoringSession(this.siteToBeDiagnosed, newSession).subscribe(
         result => {

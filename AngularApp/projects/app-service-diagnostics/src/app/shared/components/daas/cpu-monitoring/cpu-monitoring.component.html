@@ -11,6 +11,7 @@
       <collapsible-list [title]="titles[0]" [collapsed]="configCollapsed">
         <collapsible-list-item>
           <cpu-monitoring-configuration [siteToBeDiagnosed]="siteToBeDiagnosed"
+            [blobSasUri] = "blobSasUri"
             [activeSession]="activeMonitoringSession == null ? null : activeMonitoringSession.Session"
             (monitoringConfigurationChange)="updateMonitoringConfiguration($event)" (savingMonitoringConfiguration)="savingMonitoringConfiguration($event)">
           </cpu-monitoring-configuration>

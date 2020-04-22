@@ -143,6 +143,7 @@ export class MonitoringSession {
     AnalysisStatus: AnalysisStatus;
     AnalysisSubmitted: boolean = false;
     ErrorSubmittingAnalysis: string = "";
+    BlobSasUri: string = "";
 }
 
 export interface MonitoringFile {

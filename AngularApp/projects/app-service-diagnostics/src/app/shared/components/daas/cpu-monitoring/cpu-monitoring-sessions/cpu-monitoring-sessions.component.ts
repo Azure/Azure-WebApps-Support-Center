@@ -28,8 +28,13 @@ export class CpuMonitoringSessionsComponent implements OnInit, OnChanges {
   ngOnChanges() {
   }
 
-  openReport(url: string) {
-    this._windowService.open(`https://${this.scmPath}/api/vfs/${url}`);
+  openReport(relativePath: string, blobSasUri: string) {
+    if (blobSasUri && blobSasUri.toLowerCase().startsWith("https")) {
+      let blobUrl = new URL(blobSasUri);
+      this._windowService.open(`https://${blobUrl.host}${blobUrl.pathname}/${relativePath}?${blobUrl.searchParams}`);
+    } else {
+      this._windowService.open(`https://${this.scmPath}/api/vfs/${relativePath}`);
+    }
   }
 
   getfileNameFromPath(path: string): string {
@@ -67,8 +72,8 @@ export class CpuMonitoringSessionsComponent implements OnInit, OnChanges {
     var date = new Date(session.StartDate);
     let formattedDate = (date.getUTCMonth() + 1).toString().padStart(2, '0') + '/' + date.getUTCDate().toString().padStart(2, '0') + '/' + date.getUTCFullYear().toString() + ' ' + (date.getUTCHours() < 10 ? '0' : '') + date.getUTCHours()
       + ':' + (date.getUTCMinutes() < 10 ? '0' : '') + date.getUTCMinutes() + ' UTC';
-    
-      const utc = new Date().toUTCString();
+
+    const utc = new Date().toUTCString();
     if (this.isSessionActive(session)) {
       formattedDate += "<br/>" + FormatHelper.getDurationFromDate(session.StartDate, utc) + ' ago';
     }
