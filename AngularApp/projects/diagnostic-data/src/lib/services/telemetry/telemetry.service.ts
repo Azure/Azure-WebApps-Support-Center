@@ -121,15 +121,11 @@ export class TelemetryService {
         let productName = "";
         const resourceName = this._activatedRoute.root.firstChild.firstChild.snapshot.params["resourcename"];
 
-        //match start with "providers" and end with resource name
-        const re = new RegExp(`providers.*${resourceName}`);
+        //match substring which is after "providers/" and before "/:resourceName",like "microsoft.web/sites"
+        const re = new RegExp(`(?<=providers\/).*(?=\/${resourceName})`);
         const matched = url.match(re);
-        if (matched.length > 0 && matched[0].split('/').length > 3) {
-            const matchedString = matched[0];
-            const providerName = matchedString.split('/')[1];
-            const resourceTypeName = matchedString.split('/')[2];
-
-            const type = `${providerName}/${resourceTypeName}`;
+        if (matched.length > 0 && matched[0].length > 0) {
+            const type = matched[0];
             const resourceType = this.enabledResourceTypes.find(t => t.resourceType.toLowerCase() === type.toLowerCase());
 
             productName = resourceType ? resourceType.name : type;
