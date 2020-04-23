@@ -39,6 +39,7 @@ export class TabDataSourcesComponent {
       });
     }
     else {
+      this.dataProviderMetadata = this.getDataProviderMetadata(this.detectorResponse);
       this.loadingDetector = false;
     }
   }
@@ -78,7 +79,7 @@ export class TabDataSourcesComponent {
         if (idx > -1) {
           element.propertyBag.forEach(bag => {
             if (bag.key != null && bag.key.length > 0) {
-              if (metadata[idx].propertyBag.findIndex(e => e.value === bag.value) === -1) {
+              if (metadata[idx].propertyBag.findIndex(e => e.value.text != null && e.value.text === bag.value.text) === -1) {
                 metadata[idx].propertyBag.push(bag);
               }
             }
