@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 import { SeverityLevel } from '../../models/telemetry';
 import { VersionService } from '../version.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { DiagnosticSiteService } from '../diagnostic-site.service';
 
 @Injectable()
 export class TelemetryService {
@@ -42,7 +43,7 @@ export class TelemetryService {
         }
     ];
     constructor(private _appInsightsService: AppInsightsTelemetryService, private _kustoService: KustoTelemetryService,
-        @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig, private _versionService: VersionService, private _activatedRoute: ActivatedRoute, private _router: Router) {
+        @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig, private _versionService: VersionService, private _activatedRoute: ActivatedRoute, private _router: Router,private _diagnosticSiteService:DiagnosticSiteService) {
         if (config.useKustoForTelemetry) {
             this.telemetryProviders.push(this._kustoService);
         }
@@ -124,13 +125,33 @@ export class TelemetryService {
         //match substring which is after "providers/" and before "/:resourceName",like "microsoft.web/sites"
         const re = new RegExp(`(?<=providers\/).*(?=\/${resourceName})`);
         const matched = url.match(re);
-        if (matched.length > 0 && matched[0].length > 0) {
-            const type = matched[0];
-            const resourceType = this.enabledResourceTypes.find(t => t.resourceType.toLowerCase() === type.toLowerCase());
-
-            productName = resourceType ? resourceType.name : type;
+        
+        if (matched.length <= 0 || matched[0].length <= 0) {
+            return "";
         }
 
+        const type = matched[0];
+        const resourceType = this.enabledResourceTypes.find(t => t.resourceType.toLowerCase() === type.toLowerCase());
+        productName = resourceType ? resourceType.name : type;
+
+        //If it's a web app, Check the kind of web app(Function/Linux)
+        //If it's not Function/Linux, keep productNamse as it is
+        if (type.toLowerCase() === "microsoft.web/sites") {
+            if (!this._diagnosticSiteService.currentSite.value || !this._diagnosticSiteService.currentSite.value.kind) {
+                return productName;
+            }
+            const kind = this._diagnosticSiteService.currentSite.value.kind;
+
+            if (kind.indexOf('linux') >= 0 && kind.indexOf('functionapp') >= 0) {
+                productName = "Azure Linux Function App";
+            }
+            else if (kind.indexOf('linux') >= 0) {
+                productName = "Azure Linux App";
+            }else if (kind.indexOf('functionapp') >= 0) {
+                productName = "Azure Function App";
+            }
+        }
+        
         return productName;
     }
 }
