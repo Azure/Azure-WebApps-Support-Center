@@ -6,6 +6,7 @@ import { PortalService } from '../../startup/services/portal.service';
 import { OpenBladeInfo } from '../models/portal';
 import { ArmService } from './arm.service';
 import { PortalActionService } from './portal-action.service';
+import { AppInsightsService } from './appinsights/appinsights.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,7 @@ export class GenericSolutionService {
 
   constructor(private armService: ArmService, private portalService: PortalService,
     private logService: TelemetryService, private portalNavService: PortalActionService,
+    private appInsightsService:AppInsightsService,
     private _router: Router) {}
 
   assertPropertyExists(dict: {}, property: string) {
@@ -102,6 +104,18 @@ export class GenericSolutionService {
       }
       case 'tinfoilsecurityblade': {
         this.portalNavService.openTifoilSecurityBlade();
+        break;
+      }
+      case 'appinsightsblade': {
+        this.appInsightsService.openAppInsightsBlade();
+        break;
+      }
+      case 'appinsightsfailuresblade': {
+        this.appInsightsService.openAppInsightsFailuresBlade();
+        break;
+      }
+      case 'appinsightsperformanceblade': {
+        this.appInsightsService.openAppInsightsPerformanceBlade();
         break;
       }
       default: {
