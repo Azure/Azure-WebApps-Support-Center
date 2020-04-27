@@ -67,6 +67,8 @@ export class AppInsightsEnablementComponent implements OnInit {
                 this._backendCtrlService.get<any>(`api/appinsights/checkappinsightsaccess`, additionalHeaders).subscribe(resp => {
                   if (resp === true) {
                     this.hasWriteAccess = true;
+                  } else {
+                    this._appInsightsService.logAppInsightsEvent(this.resourceId, TelemetryEventNames.AppInsightsResourceMissingWriteAccess);
                   }
                   this.loadingSettings = false;
                 }, errorCheckingAccess => {
