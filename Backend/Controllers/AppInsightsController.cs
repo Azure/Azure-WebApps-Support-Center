@@ -108,5 +108,38 @@ namespace Backend.Controllers
 
             return Ok(true);
         }
+
+        [HttpGet("checkappinsightsaccess")]
+        [HttpOptions("checkappinsightsaccess")]
+        public async Task<IActionResult> CheckAppInsightsAccess()
+        {
+            if (!Utility.TryGetHeaderValue(Request.Headers, "appinsights-resource-uri", out string appInsightsResource))
+            {
+                return BadRequest("Missing appinsights-resource-uri header");
+            }
+
+            if (!Utility.TryGetHeaderValue(Request.Headers, "authorization", out string authToken))
+            {
+                return BadRequest("Missing authorization header");
+            }
+            appInsightsResource = appInsightsResource.ToLower();
+
+            if (!Utility.ValidateResourceUri(appInsightsResource, out string subscriptionId))
+            {
+                return BadRequest("appinsights-resource-uri not in correct format.");
+            }
+
+            var hasAccess = false;
+            try
+            {
+                hasAccess = await this._appInsightsService.CheckAppInsightsAccess(appInsightsResource, authToken);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok(hasAccess);
+        }
     }
 }

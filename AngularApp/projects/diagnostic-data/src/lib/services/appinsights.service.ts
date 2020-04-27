@@ -37,10 +37,10 @@ export class AppInsightsQueryService {
 
     }
 
-    logAppInsightsConnectionError(resourceUri:string, error: any) {
+    logAppInsightsError(resourceUri:string,telmetryEvent:string, error: any) {
     }
 
-    logAppInsightsConnected(resourceUri:string) {
+    logAppInsightsEvent(resourceUri: string, telmetryEvent:string) {
     }
 }
 
