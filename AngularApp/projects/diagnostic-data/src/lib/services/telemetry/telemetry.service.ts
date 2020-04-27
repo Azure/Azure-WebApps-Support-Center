@@ -122,12 +122,8 @@ export class TelemetryService {
     private findProductName(url: string): string {
         let productName = "";
         const routeParams = this._activatedRoute.root.firstChild.firstChild.firstChild.snapshot.params;
-        // if (this.isPublic) {
-        //     resourceName = this._activatedRoute.root.firstChild.firstChild.snapshot.params["resourcename"];
-        // }else {
-        //     resourceName = this._activatedRoute.root.firstChild.firstChild.firstChild.snapshot.params["resourceName"];
-        // }
         const resourceName = this.isPublic ? routeParams['resourcename'] : routeParams['resourceName'];
+        
         //match substring which is after "providers/" and before "/:resourceName",like "microsoft.web/sites"
         const re = new RegExp(`(?<=providers\/).*(?=\/${resourceName})`);
         const matched = url.match(re);
