@@ -15,6 +15,7 @@ export class TelemetryService {
     eventPropertiesSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
     private eventPropertiesLocalCopy: { [name: string]: string } = {};
     private isLegacy: boolean;
+    private isPublic:boolean;
     private enabledResourceTypes: { resourceType: string, name: string }[] = [
         {
             resourceType: "Microsoft.Web/sites",
@@ -43,14 +44,14 @@ export class TelemetryService {
         }
     ];
     constructor(private _appInsightsService: AppInsightsTelemetryService, private _kustoService: KustoTelemetryService,
-        @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig, private _versionService: VersionService, private _activatedRoute: ActivatedRoute, private _router: Router,private _diagnosticSiteService:DiagnosticSiteService) {
+        @Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private _versionService: VersionService, private _activatedRoute: ActivatedRoute, private _router: Router,private _diagnosticSiteService:DiagnosticSiteService) {
         if (config.useKustoForTelemetry) {
             this.telemetryProviders.push(this._kustoService);
         }
         if (config.useAppInsightsForTelemetry) {
             this.telemetryProviders.push(this._appInsightsService);
         }
-
+        this.isPublic = config && config.isPublic;
         this.eventPropertiesSubject.subscribe((data: any) => {
             if (data) {
                 for (const id of Object.keys(data)) {
@@ -120,13 +121,18 @@ export class TelemetryService {
 
     private findProductName(url: string): string {
         let productName = "";
-        const resourceName = this._activatedRoute.root.firstChild.firstChild.snapshot.params["resourcename"];
-
+        const routeParams = this._activatedRoute.root.firstChild.firstChild.firstChild.snapshot.params;
+        // if (this.isPublic) {
+        //     resourceName = this._activatedRoute.root.firstChild.firstChild.snapshot.params["resourcename"];
+        // }else {
+        //     resourceName = this._activatedRoute.root.firstChild.firstChild.firstChild.snapshot.params["resourceName"];
+        // }
+        const resourceName = this.isPublic ? routeParams['resourcename'] : routeParams['resourceName'];
         //match substring which is after "providers/" and before "/:resourceName",like "microsoft.web/sites"
         const re = new RegExp(`(?<=providers\/).*(?=\/${resourceName})`);
         const matched = url.match(re);
         
-        if (matched.length <= 0 || matched[0].length <= 0) {
+        if (!matched || matched.length <= 0 || matched[0].length <= 0) {
             return "";
         }
 
