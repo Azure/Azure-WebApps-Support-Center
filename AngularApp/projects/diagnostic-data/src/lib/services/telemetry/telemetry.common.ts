@@ -50,6 +50,7 @@ export const TelemetryEventNames = {
     AppInsightsFromDifferentSubscription: 'AppInsightsFromDifferentSubscription',
     AppInsightsAccessCheckError: 'AppInsightsAccessCheckError',
     AppInsightsResourceMissingWriteAccess: 'AppInsightsResourceMissingWriteAccess',
+    AppInsightsConfigurationInvalid: 'AppInsightsConfigurationInvalid',
     SummaryCardClicked: 'SummaryCardClicked',
     ToolCardClicked: 'ToolCardClicked',
     TimePickerApplied: 'TimePickerApplied',

@@ -52,6 +52,8 @@ export class AppInsightsEnablementComponent implements OnInit {
                 this._backendCtrlService.get<any>(`api/appinsights/validate`, additionalHeaders).subscribe(resp => {
                   if (resp === true) {
                     this.appInsightsValidated = true;
+                  } else {
+                    this._appInsightsService.logAppInsightsEvent(this.resourceId, TelemetryEventNames.AppInsightsConfigurationInvalid);
                   }
                   this.loadingSettings = false;
                 }, error => {
