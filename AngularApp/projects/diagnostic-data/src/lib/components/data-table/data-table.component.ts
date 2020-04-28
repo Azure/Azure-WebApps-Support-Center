@@ -17,6 +17,8 @@ export class DataTableComponent extends DataRenderBaseComponent implements After
 
   ngAfterViewInit(): void {
 
+    this.createNgxDataTableObjects();
+
     if (this.renderingProperties.descriptionColumnName != null) {
       this.table.selectionType = SelectionType.single;
       this.table.scrollbarV = true;
@@ -56,7 +58,7 @@ export class DataTableComponent extends DataRenderBaseComponent implements After
   protected processData(data: DiagnosticData) {
     super.processData(data);
     this.renderingProperties = <DataTableRendering>data.renderingProperties;
-    this.createNgxDataTableObjects();
+
   }
 
   private createNgxDataTableObjects() {
