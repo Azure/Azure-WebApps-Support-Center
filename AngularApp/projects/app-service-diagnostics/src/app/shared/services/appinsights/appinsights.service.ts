@@ -264,7 +264,7 @@ export class AppInsightsService {
     public logAppInsightsEvent(resourceUri: string, telmetryEvent:string) {
         this._telmetryService.logEvent(telmetryEvent,
             {
-                'resouceUri': resourceUri
+                'resourceUri': resourceUri
             });
     }
 }
