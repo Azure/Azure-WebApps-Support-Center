@@ -21,7 +21,7 @@ import { DataRenderBaseComponent } from '../data-render-base/data-render-base.co
   animations: [
     trigger('expand', [
       state('shown', style({ height: '*' })),
-      state('hidden', style({ height: '0px' })),
+      state('hidden', style({ height: '0px',visibility:'hidden' })),
       transition('* => *', animate('.25s'))
     ])
   ]
