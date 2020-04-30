@@ -80,7 +80,6 @@ export class AppInsightsEnablementComponent implements OnInit {
               }
             });
           } else {
-            this._appInsightsService.logAppInsightsEvent(this.resourceId, TelemetryEventNames.AppInsightsNotEnabled)
             this.loadingSettings = false;
           }
         } else if (loadStatus === false) {
@@ -97,6 +96,8 @@ export class AppInsightsEnablementComponent implements OnInit {
             //
             this.appSettingsHaveInstrumentationKey = true;
             this._appInsightsService.logAppInsightsEvent(this.resourceId, TelemetryEventNames.AppInsightsFromDifferentSubscription);
+          } else {
+            this._appInsightsService.logAppInsightsEvent(this.resourceId, TelemetryEventNames.AppInsightsNotEnabled)
           }
           this.loadingSettings = false;
         }
