@@ -94,6 +94,7 @@ import { ConnectAppInsightsComponent } from './components/connect-app-insights/c
 import {DetectorSearchComponent} from './components/detector-search/detector-search.component';
 import {WebSearchComponent} from './components/web-search/web-search.component';
 import {RenderFilterPipe} from './components/detector-view/detector-view.component';
+import { DynamicInsightV4Component } from './components/dynamic-insight-v4/dynamic-insight-v4.component';
 
 @NgModule({
   imports: [
@@ -138,7 +139,8 @@ import {RenderFilterPipe} from './components/detector-view/detector-view.compone
     AppInsightsEnablementComponent,
     ConnectAppInsightsComponent,
     WebSearchComponent,
-    RenderFilterPipe
+    RenderFilterPipe,
+    DynamicInsightV4Component
   ],
   exports: [
     FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DetectorSearchComponent,

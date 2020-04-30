@@ -33,6 +33,7 @@ import { CardSelectionV4Component } from '../card-selection-v4/card-selection-v4
 import { VersionService } from '../../services/version.service';
 import { ConnectAppInsightsComponent } from '../connect-app-insights/connect-app-insights.component';
 import { DetectorSearchComponent } from '../detector-search/detector-search.component';
+import { DynamicInsightV4Component } from '../dynamic-insight-v4/dynamic-insight-v4.component';
 
 @Component({
   selector: 'dynamic-data',
@@ -42,7 +43,7 @@ import { DetectorSearchComponent } from '../detector-search/detector-search.comp
     TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent,
     InsightsComponent, TimeSeriesInstanceGraphComponent, DynamicInsightComponent, MarkdownViewComponent,
     DetectorListComponent, DropdownComponent, CardSelectionComponent, SolutionComponent, GuageControlComponent, FormComponent,
-    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent, ConnectAppInsightsComponent, DetectorSearchComponent, SummaryCardsComponent, InsightsV4Component, DropdownV4Component, CardSelectionV4Component
+    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent, ConnectAppInsightsComponent, DetectorSearchComponent, SummaryCardsComponent, InsightsV4Component, DropdownV4Component, CardSelectionV4Component,DynamicInsightV4Component
   ]
 })
 export class DynamicDataComponent implements OnInit {
@@ -102,7 +103,7 @@ export class DynamicDataComponent implements OnInit {
       case RenderingType.TimeSeriesPerInstance:
         return TimeSeriesInstanceGraphComponent;
       case RenderingType.DynamicInsight:
-        return DynamicInsightComponent;
+        return this.isLegacy? DynamicInsightComponent : DynamicInsightV4Component;
       case RenderingType.Markdown:
         return MarkdownViewComponent;
       case RenderingType.DetectorList:
