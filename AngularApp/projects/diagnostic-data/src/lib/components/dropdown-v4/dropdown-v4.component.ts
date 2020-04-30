@@ -82,12 +82,13 @@ export class DropdownV4Component extends DataRenderBaseComponent {
     this.fabDropdownWidth = this.calculateFabWidth(this.options);
   }
 
-  selectKey(key: string) {
+  selectKey(key: string,event:any) {
     this.selectedKey = key;
     this.selectedData = this.keyDataMapping.get(this.selectedKey);
     this.logEvent('DropdownSelected',{
       'title':this.selectedKey
     });
+    event.preventDefault();
   }
 
   selectFabricKey(key: { option: IDropdownOption }) {
