@@ -124,9 +124,10 @@ export class TelemetryService {
         const routeParams = this._activatedRoute.root.firstChild.firstChild.firstChild.snapshot.params;
         const resourceName = this.isPublic ? routeParams['resourcename'] : routeParams['resourceName'];
         let type = "";
-        //match substring which is "providers/microsoft.web/sites/:resourceName"
+        //match substring which is "providers/*/:resourceName"
         try {
-            const re = new RegExp(`providers\/.*\/${resourceName}`);
+            const reString = `providers\/.*\/${resourceName}`;
+            const re = new RegExp(reString);
             const matched = url.match(re);
             if (!matched || matched.length <= 0 || matched[0].length <= 0) {
                 return "";
