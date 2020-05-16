@@ -156,7 +156,7 @@ export class SitesCategoryService extends CategoryService {
         id: 'DiagnosticTools',
         name: 'Diagnostic Tools',
         description: 'Sometimes deeper investigation is necessary. With Diagnostic Tools, you can run language-specific tools to profile your app, collect network traces, memory dumps, and more.',
-        keywords: ['Profiler', 'Memory Dump', 'DaaS', 'AutoHeal', 'Metrics', 'Security'],
+        keywords: ['Profiler', 'Memory Dump', 'DaaS', 'Auto-Heal', 'Metrics', 'Security'],
         color: 'rgb(170, 192, 208)',
         createFlowForCategory: false,
         overridePath: `resource${siteId}/diagnosticTools`
