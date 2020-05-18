@@ -50,8 +50,8 @@
       <label for="requestsCountSlow">After how many slow requests you want this condition to kick in?</label>
     </div>
     <div class="col-sm-4">
-      <input type="number" min="1" id="requestsCountSlow" aria-describedby="requestsCountSlowHelp"
-        placeholder="Enter count" [(ngModel)]="ruleCopy.count" min="1">
+      <input aria-required="true" type="number" id="requestsCountSlow"
+        placeholder="Enter count" [(ngModel)]="ruleCopy.count" min="1" max="4294967295">
       <span style="color:red">*</span>
       <div *ngIf="ruleCopy.count <=0" class="alert alert-danger" style="margin-top:5px">
         Request count should be more than zero
@@ -64,7 +64,7 @@
       <label for="timeTakenSlow">What should be minimum duration (in seconds) for these slow requests?</label>
     </div>
     <div class="col-sm-4">
-      <timespan [(timeSpan)]="ruleCopy.timeTaken" placeholder="e.g. 60" label="Minimum Duration"></timespan>
+      <timespan ControlId="timeTakenSlow" [(timeSpan)]="ruleCopy.timeTaken" placeholder="e.g. 60"></timespan>
     </div>
   </div>
 
@@ -74,7 +74,7 @@
         met?</label>
     </div>
     <div class="col-sm-4">
-      <timespan [(timeSpan)]="ruleCopy.timeInterval" placeholder="e.g. 300" label="Check Duration"></timespan>
+      <timespan ControlId="durationSlow" [(timeSpan)]="ruleCopy.timeInterval" placeholder="e.g. 300"></timespan>
       <div *ngIf="showIntervalRecommendation" class="alert alert-danger" style="margin-top:5px">
         It is recommended that the time interval is higher than the minimum duration setting.
       </div>

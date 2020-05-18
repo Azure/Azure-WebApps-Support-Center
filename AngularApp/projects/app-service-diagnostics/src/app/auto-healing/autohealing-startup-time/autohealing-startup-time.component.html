@@ -11,10 +11,10 @@
 <div class="form-group" *ngIf="editMode">
   <div class="row">
     <div class="col-sm-6">
-      <label for="minProcessExecutionTime">Specify the time (in seconds) after process startup after which autohealing should kick in ?</label>      
+      <label for="minProcessExecutionTime">Specify the time (in seconds) after process startup after which autohealing should kick in ?</label>
     </div>
     <div class="col-sm-4">
-      <input type="number" [(ngModel)]="localMinProcessExecutionTime" id="minProcessExecutionTime" placeholder="e.g. 600">
+      <input aria-required="true" type="number" [(ngModel)]="localMinProcessExecutionTime" id="minProcessExecutionTime" placeholder="e.g. 600" min="1" max="7200">
       <div style="margin-top:5px" *ngIf="localMinProcessExecutionTime < 0 || localMinProcessExecutionTime > 7200" class="alert alert-danger">
         Duration should be >= 0 seconds and below 2 hours
       </div>

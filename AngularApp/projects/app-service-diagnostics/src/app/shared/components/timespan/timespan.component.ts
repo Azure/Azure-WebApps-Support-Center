@@ -19,6 +19,7 @@ export class TimespanComponent implements OnInit {
   @Input() timeSpan: string;
   @Input() placeholder: string;
   @Input() allowZeroValue: boolean;
+  @Input() ControlId:string;
 
   @Input() label: string;
 

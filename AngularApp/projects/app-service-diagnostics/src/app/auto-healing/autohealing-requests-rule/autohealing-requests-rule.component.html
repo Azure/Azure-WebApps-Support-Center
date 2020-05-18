@@ -44,7 +44,7 @@
       <label id="requestCountHelp" for="requests">After how many requests you want this condition to kick in?</label>
     </div>
     <div class="col-sm-4">
-      <input type="number" id="requests" aria-label="Request Count" placeholder="Enter count" [(ngModel)]="ruleCopy.count">
+      <input aria-required="true" type="number" id="requests" aria-label="Request Count" placeholder="Enter count" [(ngModel)]="ruleCopy.count" min="1" max="4294967295">
       <span style="color:red">*</span>
       <div *ngIf="ruleCopy.count <=0" class="alert alert-danger" style="margin-top:5px">
         Request count should be more than zero
@@ -56,7 +56,7 @@
       <label for="durationCount">What is the time interval (in seconds) in which the above condition should be met?</label>
     </div>
     <div class="col-sm-4">
-      <timespan [(timeSpan)]="ruleCopy.timeInterval" placeholder="e.g. 60" label="How frequently do you want to check?"></timespan>
+      <timespan ControlId="durationCount" [(timeSpan)]="ruleCopy.timeInterval" placeholder="e.g. 60"></timespan>
     </div>
   </div>
 

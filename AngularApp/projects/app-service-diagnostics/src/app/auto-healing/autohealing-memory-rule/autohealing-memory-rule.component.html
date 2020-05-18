@@ -40,7 +40,7 @@
       <label for="idPrivateBytes">What is the memory threshold (private bytes) in KB you want to configure ?</label>
     </div>
     <div class="col-sm-4">
-      <input type="number" min="1" id="idPrivateBytes" aria-describedby="privateBytesHelp" placeholder="Enter private bytes in KB"
+      <input aria-required="true" type="number" min="1" id="idPrivateBytes" aria-describedby="privateBytesHelp" placeholder="Enter private bytes in KB" min="1" max="4294967295"
         [(ngModel)]="ruleCopy">
       <span style="color:red">*</span>
       <div *ngIf="ruleCopy !== null && ruleCopy !=0 && !isValid()" class="alert alert-danger" style="margin-top:5px">

@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="rule == null && !editMode">
   If your app is failing with HTTP Server errors, you can configure a rule to mitigate the issue or collect diagnostic data
   to identify the root cause of the problem. You can configure rules on more than one HTTP Status code condition.
 
@@ -58,8 +58,8 @@
         <label for="requestCountStatusCodes">After how many requests you want this condition to kick in?</label>
       </div>
       <div class="col-sm-4">
-        <input type="number" id="requestCountStatusCodes" aria-describedby="requestCountStatusCodesHelp" placeholder="Enter request count"
-          [(ngModel)]="currentRule.count">
+        <input aria-required="true" type="number" id="requestCountStatusCodes" aria-describedby="requestCountStatusCodesHelp" placeholder="Enter request count"
+          [(ngModel)]="currentRule.count" min="1" max="4294967295">
         <span style="color:red">*</span>
         <div *ngIf="currentRule.count <=0" class="alert alert-danger" style="margin-top:5px">
           Request count should be more than zero
@@ -71,7 +71,7 @@
         <label for="statusCode">What should be the status code for these requests?</label>
       </div>
       <div class="col-sm-4">
-        <input type="number" id="statusCode" placeholder="e.g. 500" min="100" [(ngModel)]="currentRule.status">
+        <input aria-required="true" type="number" id="statusCode" placeholder="e.g. 500" min="100" max="500" [(ngModel)]="currentRule.status">
         <span style="color:red">*</span>
         <div *ngIf="currentRule.status < 100 || currentRule.status > 530" class="alert alert-danger" style="margin-top:5px">
           Valid HTTP Status codes range from HTTP 100 to HTTP 530 only.
@@ -85,7 +85,7 @@
       </div>
 
       <div class="col-sm-4">
-        <input type="number" min="0" id="subStatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.subStatus">
+        <input aria-required="false" type="number" min="0" max="500" id="subStatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.subStatus">
       </div>
     </div>
 
@@ -94,7 +94,7 @@
         <label for="win32StatusCode">What should be the win32-status code for these requests?</label>
       </div>
       <div class="col-sm-4">
-        <input type="number" min="0" id="win32StatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.win32Status">
+        <input aria-required="false" type="number" min="0" max="4294967295" id="win32StatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.win32Status">
       </div>
     </div>
 
@@ -103,7 +103,7 @@
         <label for="durationStatusCode">What is the time interval (in seconds) in which the above condition should be met?</label>
       </div>
       <div class="col-sm-4">
-        <timespan [(timeSpan)]="currentRule.timeInterval" placeholder="e.g. 60" label="Check Duration"></timespan>
+        <timespan ControlId="durationStatusCode" [(timeSpan)]="currentRule.timeInterval" placeholder="e.g. 60"></timespan>
       </div>
     </div>
 
