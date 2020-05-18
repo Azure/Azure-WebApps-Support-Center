@@ -37,6 +37,11 @@ export class CollapsibleMenuItemComponent implements OnInit {
       this.menuItem.expanded = !this.menuItem.expanded;
     }
     else {
+      if (document.getElementById(this.menuItem.label))
+      {
+        document.getElementById(this.menuItem.label).focus();
+      }
+
       this.telemetryService.logEvent(TelemetryEventNames.CategoryNavItemClicked,{
         'Title':this.menuItem.label
       });

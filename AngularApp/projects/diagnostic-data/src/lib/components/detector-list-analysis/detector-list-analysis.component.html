@@ -100,7 +100,7 @@
                     code easily.
                   </div>
                   <div class="app-insights-blade-link">
-                    <a (keyup.enter)="this._appInsightsService.openAppInsightsBlade()" role="button"
+                    <a (keyup.enter)="this._appInsightsService.openAppInsightsBlade()" tabindex="0" role="button"
                       aria-label="Enable Application Insights link"
                       (click)="this._appInsightsService.openAppInsightsBlade()">
                       Enable Application Insights
@@ -124,7 +124,7 @@
                     <dynamic-data [diagnosticData]="data.diagnosticData" [startTime]="startTime" [endTime]="endTime">
                     </dynamic-data>
                     <div class="app-insights-blade-link">
-                      <a aria-label="Link to open Application Insights blade" role="button"
+                      <a aria-label="Link to open Application Insights blade" tabindex="0" role="button"
                         (keyup.enter)="_appInsightsService.openAppInsightsExtensionBlade(data.poralBladeInfo.bladeName)"
                         (click)="_appInsightsService.openAppInsightsExtensionBlade(data.poralBladeInfo.bladeName)">
                         {{data.poralBladeInfo.description}}

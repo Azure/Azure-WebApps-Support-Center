@@ -78,7 +78,7 @@ export class CategorySummaryComponent implements OnInit {
             this.categoryName = this.category.name;
 
             this.resourceName = this._activatedRoute.snapshot.params.resourcename;
-            this._portalActionService.updateDiagnoseCategoryBladeTitle(`${this.resourceName} - ` + this.categoryName);
+            this._portalActionService.updateDiagnoseCategoryBladeTitle(`${this.resourceName} | ` + this.categoryName);
         });
     }
 

@@ -42,8 +42,8 @@
                     <b>{{ connection.Name }}</b>
                     <span>({{ getDatabaseTypeName(connection) }})</span>
                     <span class="pull-right">
-                        <i class="fa fa-plus" *ngIf="!connection.Expanded" aria-hidden="true"></i>
-                        <i class="fa fa-minus" *ngIf="connection.Expanded" aria-hidden="true"></i>
+                        <i class="fa fa-plus" *ngIf="!connection.Expanded" tabindex="0" aria-label="Expand connections"></i>
+                        <i class="fa fa-minus" *ngIf="connection.Expanded"  tabindex="0" aria-label="Collapse connections"></i>
                     </span>
                 </div>
                 <div class="panel-body" *ngIf="connection.Expanded">

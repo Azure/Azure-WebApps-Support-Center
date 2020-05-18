@@ -1,5 +1,5 @@
 <div *ngIf="matchesSearchTerm">
-    <div class="menu-item" (click)="handleClick()" [class.selected]="isSelected()" style="padding-top:6px!important"
+    <div [id]="menuItem.label" class="menu-item" (click)="handleClick()" [class.selected]="isSelected()" style="padding-top:6px!important"
         [style.padding-left]="getPadding()" [style.font-size]="getFontSize()">
         <div tabindex="0" role="button" (keyup.enter)="handleClick()" aria-label="menuItem.label" type="button">
             <i class="fa expand-icon" *ngIf=" menuItem.subItems && menuItem.subItems.length > 0"

@@ -3,6 +3,10 @@
     height: 30px;
 }
 
+.search-result-input::placeholder {
+    color: #716f6f
+}
+
 .icon-err{
     color: #bf0000;
 }
