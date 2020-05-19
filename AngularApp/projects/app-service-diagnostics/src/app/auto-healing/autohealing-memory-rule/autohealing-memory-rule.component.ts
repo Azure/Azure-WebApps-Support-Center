@@ -31,9 +31,13 @@ export class AutohealingMemoryRuleComponent extends AutohealingRuleComponent {
 
 
   deleteRule() {
+    this.displayDeleteRuleMessage = true;
     this.rule = 0;
     this.ruleCopy = 0;
     this.ruleChange.emit(this.rule);
+    setTimeout(() => {
+      this.displayDeleteRuleMessage = false;
+    }, 5000);
   }
 
   isValid(): boolean {

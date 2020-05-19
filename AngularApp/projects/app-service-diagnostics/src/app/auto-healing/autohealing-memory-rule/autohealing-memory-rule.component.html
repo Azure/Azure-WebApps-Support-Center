@@ -6,15 +6,18 @@
       Configure Private Bytes rule
     </button>
   </div>
+  <div aria-live="polite" class="mt-1" [style.visibility]="displayDeleteRuleMessage ? 'visibile' : 'hidden'">
+    Rule Deleted
+  </div>
 </div>
 
 <table class="table table-bordered" *ngIf="!editMode && rule > 0">
   <thead>
     <tr>
-      <th>
+      <th scope="col">
         Private Bytes
       </th>
-      <th>
+      <th scope="col">
         Action
       </th>
     </tr>

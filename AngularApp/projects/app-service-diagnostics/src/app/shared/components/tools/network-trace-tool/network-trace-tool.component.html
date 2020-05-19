@@ -76,13 +76,16 @@
                 <div style="display: table-cell;">
                     <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
                 </div>
-                <div *ngIf="durationRemaining > 0" style="display: table-cell;">
-                    Network trace started and will automatically stop after
-                    <strong>{{ durationRemaining }}</strong> seconds. Network traces collected will be available in
+                <div *ngIf="durationRemaining > 0" style="display: table-cell;" role="timer" aria-live="polite">
+                        Network trace started and will automatically stop after
+                        <strong>{{ durationRemaining }}</strong> seconds.
+                </div>
+                <div *ngIf="durationRemaining > 0">
+                    Network traces collected will be available in
                     <strong>{{traceLocation}}</strong> folder in <a  aria-label="link to Kudu Console" href='https://{{scmPath}}' target="_blank">Kudu Console</a> for
                     the App.
                 </div>
-                <div *ngIf="durationRemaining <= 0" style="display: table-cell;">
+                <div *ngIf="durationRemaining <= 0" style="display: table-cell;" aria-live="polite">
                     Stopping trace and collecting files (Note:This step can take a few minutes to complete)
                 </div>
             </div>

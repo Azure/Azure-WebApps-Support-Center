@@ -8,35 +8,30 @@
       Configure Slow Request rule
     </button>
   </div>
+  <div aria-live="polite" class="mt-1" [style.visibility]="displayDeleteRuleMessage ? 'visibile' : 'hidden'">
+    Rule Deleted
+  </div>
 </div>
 
 <table class="table table-bordered" *ngIf="!editMode && rule != null">
   <thead>
     <tr>
-      <th>
-        Request Count
-      </th>
-      <th>
-        Time Taken
-      </th>
-      <th>
-        Duration
-      </th>
-      <th>
-        Action
-      </th>
+      <th scope="col">Request Count</th>
+      <th scope="col">Time Taken</th>
+      <th scope="col">Duration</th>
+      <th scope="col">Action</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>{{ rule.count }}</td>
+      <td scope="row">{{ rule.count }}</td>
       <td>{{ rule.timeTaken }}</td>
       <td>{{ rule.timeInterval }}</td>
       <td>
-        <button class="image-btn" *ngIf="!editMode" (click)="editRule()" title="Edit rule" name="editRule">
+        <button role="button" class="image-btn" *ngIf="!editMode" (click)="editRule()" title="Edit rule" name="editRule">
           <i class="fa fa-edit"></i>
         </button>
-        <button class="image-btn" *ngIf="!editMode" (click)="deleteRule()" title="Delete rule" name="deleteRule">
+        <button role="button" class="image-btn" *ngIf="!editMode" (click)="deleteRule()" title="Delete rule" name="deleteRule">
           <i class="fa fa-trash"></i>
         </button>
       </td>
@@ -50,8 +45,8 @@
       <label for="requestsCountSlow">After how many slow requests you want this condition to kick in?</label>
     </div>
     <div class="col-sm-4">
-      <input aria-required="true" type="number" id="requestsCountSlow"
-        placeholder="Enter count" [(ngModel)]="ruleCopy.count" min="1" max="4294967295">
+      <input aria-required="true" type="number" id="requestsCountSlow" placeholder="Enter count"
+        [(ngModel)]="ruleCopy.count" min="1" max="4294967295">
       <span style="color:red">*</span>
       <div *ngIf="ruleCopy.count <=0" class="alert alert-danger" style="margin-top:5px">
         Request count should be more than zero
