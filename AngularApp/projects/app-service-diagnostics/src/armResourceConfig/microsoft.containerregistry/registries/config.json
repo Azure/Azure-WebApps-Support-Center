@@ -1,0 +1,28 @@
+{
+    "homePageText": {
+        "title": "Azure Container Registry Service Diagnostics (Preview)",
+        "description": "Use Azure Container Registry Service Diagnostics (Preview) to investigate how your registry is performing, diagnose issues, and discover how to improve its reliability. Select the problem category that best matches the information or tool that you're interested in:",
+        "searchBarPlaceHolder": "Search a keyword that best describes your issue"
+    },
+	"matchRegEx": "/Microsoft.ContainerRegistry/registries/",
+	"searchSuffix": "ACR",
+	"azureServiceName": "Azure Container Registry",
+	"armApiVersion": "2019-12-01-preview",
+	"isSearchEnabled": true,
+	"liveChatConfig": {
+		"isApplicableForLiveChat": false,
+		"supportTopicIds": []
+	},
+    "categories": [
+        {
+            "id": "Container Registry Authentication Insights",
+            "name": "Container Registry Authentication Insights",
+            "description": "Is your container registry experiencing authentication failures? Investigate and discover issues that may cause container registry authentication errors.",
+            "keywords": [ "Failures", "Authentication", "Unauthorized", "Authentication Required" ],
+            "color": "rgb(186, 211, 245)",
+            "createFlowForCategory": true,
+            "chatEnabled": false
+        }
+    ],
+	"pesId": "16213"
+}
