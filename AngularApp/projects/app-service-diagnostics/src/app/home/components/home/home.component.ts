@@ -62,6 +62,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.versionTestService.isLegacySub.subscribe(isLegacy => this.useLegacy = isLegacy);
 
         this.versionTestService.initializedPortalVersion.subscribe(version => this.initializedPortalVersion = version); 
+        this.resourceName = this._resourceService.resource.name;
         let eventProps = {
             subscriptionId: this.subscriptionId,
             resourceName: this.resourceName,
@@ -148,7 +149,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        this.resourceName = this._resourceService.resource.name;
         this.providerRegisterUrl = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis/register`;
         if (!this._detectorControlService.startTime) {
             this._detectorControlService.setDefault();
