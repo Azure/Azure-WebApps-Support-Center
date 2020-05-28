@@ -51,6 +51,7 @@ namespace AppLensV3.Services
 
             HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpClient.DefaultRequestHeaders.Add("User-Agent", "applensv3");
+            HttpClient.DefaultRequestHeaders.Add("Authorization", $"token {AccessToken}");
         }
 
         public SelfHelpContentService(IConfiguration configuration)
