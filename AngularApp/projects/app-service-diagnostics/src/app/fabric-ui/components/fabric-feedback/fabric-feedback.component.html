@@ -20,7 +20,7 @@
           [ngClass]="{'selected-icon':rating - 1 === i}" 
           class="feedback-icon"
           style="padding: 5px;" (keyup.enter)="setRating(i)" tabindex="0">
-          <fab-icon [iconName]="feedbackIcon"></fab-icon>
+          <fab-icon #fabIcons [iconName]="feedbackIcon.id"></fab-icon>
         </div>
       </div>
       <textarea [(ngModel)]="feedbackText" placeholder="Tell us about your experience..." tabindex="0" rows="7"
