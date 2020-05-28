@@ -13,7 +13,7 @@
               class="msportalfx-svg-c22"></path>
           </g>
         </svg>
-        <label>Are you satisfied with your experience?</label>
+        <label aria-required="true">Are you satisfied with your experience?</label>
       </div>
       <div style="display: flex; font-size: 25px;">
         <div *ngFor="let feedbackIcon of feedbackIcons;let i = index" (click)="setRating(i)"
