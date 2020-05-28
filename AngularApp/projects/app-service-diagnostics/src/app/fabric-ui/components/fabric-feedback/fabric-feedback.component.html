@@ -21,6 +21,7 @@
           class="feedback-icon"
           style="padding: 5px;" (keyup.enter)="setRating(i)" tabindex="0">
           <fab-icon #fabIcons [iconName]="feedbackIcon.id"></fab-icon>
+          <div class="tooltiptext">{{feedbackIcon.text}}</div>
         </div>
       </div>
       <textarea [(ngModel)]="feedbackText" placeholder="Tell us about your experience..." tabindex="0" rows="7"
