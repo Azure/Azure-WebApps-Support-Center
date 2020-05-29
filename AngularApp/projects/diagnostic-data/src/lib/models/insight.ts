@@ -80,7 +80,7 @@ export class InsightUtils {
             }
 
             if (nameColumnValue && nameColumnValue.length > 0) {
-                insight.data[nameColumnValue] = row[valueColumnIndex];
+                insight.data[nameColumnValue] = `${row[valueColumnIndex]}`;
             }
         }
 
