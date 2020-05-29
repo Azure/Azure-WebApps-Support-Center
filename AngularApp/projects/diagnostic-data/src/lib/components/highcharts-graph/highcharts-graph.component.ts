@@ -79,7 +79,12 @@ export class HighchartsGraphComponent implements OnInit {
 
     private syncCharts(ev: MouseEvent) {
         let xAxisValue : number;
-        let currentId = this.el.nativeElement.getElementsByClassName('highcharts-container')[0].id;
+        let currentCharts = this.el.nativeElement.getElementsByClassName('highcharts-container');
+
+        if (!currentCharts || !currentCharts[0]) {
+            return;
+        }
+        let currentId = currentCharts[0].id;
 
         // Find out which is the current chart object
         for(let i = 0; i < Highcharts.charts.length; i++) {

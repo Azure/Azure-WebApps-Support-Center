@@ -137,6 +137,10 @@ export class DataTableComponent extends DataRenderBaseComponent implements After
   }
 
   onActivate(event: any) {
+    if (!event.row || !event.row.TIMESTAMP) {
+      return;
+    }
+
     let timestamp = new Date(event.row.TIMESTAMP + 'Z');
     for(let i = 0; i < Highcharts.charts.length; i++)
     {
