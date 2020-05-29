@@ -37,12 +37,7 @@ export class ArmService {
             }
             let resourceId = startupInfo.resourceId;
             let subscriptionId = resourceId.split('/')[2];
-            if(this.isNationalCloud || VersioningHelper.isV2Subscription(subscriptionId)) {
-                this.diagRoleVersion = this.routeToLiberation;
-            }
-            else {
-                this.diagRoleVersion = this.routeToDiagnosticRole;
-            }
+            this.diagRoleVersion = this.routeToLiberation;
         });
     }
 
@@ -335,12 +330,12 @@ export class ArmService {
         if (!loggingError.message) {
             loggingError.message = actualError;
         }
-        
+
         if (this.telemetryService)
         {
             this.telemetryService.logException(loggingError, null, loggingProps);
         }
-        
+
         return observableThrowError(actualError);
     }
 
