@@ -43,11 +43,14 @@ export class InsightsComponent extends DataRenderBaseComponent implements AfterV
     this.insights = InsightUtils.parseInsightRendering(data);
   }
 
-  isMarkdown(str: string) {
+  isMarkdown(s: string) {
+    //null -> "null",undefined -> "undefined"
+    const str = `${s}`;
     return str.trim().startsWith('<markdown>') && str.endsWith('</markdown>');
   }
 
-  getMarkdown(str: string) {
+  getMarkdown(s: string) {
+    const str = `${s}`;
     return str.trim().replace('<markdown>', '').replace('</markdown>', '');
   }
 
