@@ -72,8 +72,6 @@ export class DynamicDataComponent implements OnInit {
       const component = this._findInputComponent((<Rendering>diagnosticData.renderingProperties).type);
       if (component == null)
       {
-        const type = <Rendering>diagnosticData.renderingProperties;
-        console.log("component not found", type, diagnosticData);
         return;
       }
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
