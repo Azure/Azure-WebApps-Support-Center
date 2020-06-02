@@ -70,6 +70,12 @@ export class DynamicDataComponent implements OnInit {
     this.versionService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy);
     this.dataBehaviorSubject.subscribe((diagnosticData: DiagnosticData) => {
       const component = this._findInputComponent((<Rendering>diagnosticData.renderingProperties).type);
+      if (component == null)
+      {
+        const type = <Rendering>diagnosticData.renderingProperties;
+        console.log("component not found", type, diagnosticData);
+        return;
+      }
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
       const viewContainerRef = this.dynamicDataContainer;
       viewContainerRef.clear();
