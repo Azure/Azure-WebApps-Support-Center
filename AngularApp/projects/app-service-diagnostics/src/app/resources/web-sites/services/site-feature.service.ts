@@ -170,6 +170,9 @@ export class SiteFeatureService extends FeatureService {
         }
       }
     ];
+    this._websiteFilter.transform(this.premiumTools).forEach(tool => {
+      this._features.push(tool);
+    });
   }
 
   addProactiveTools(resourceId: string) {
@@ -224,6 +227,9 @@ export class SiteFeatureService extends FeatureService {
         }
       }
     ];
+    this._websiteFilter.transform(this.proactiveTools).forEach(tool => {
+      this._features.push(tool);
+    });
   }
   addDiagnosticTools(resourceId: string) {
     this.diagnosticTools = [
