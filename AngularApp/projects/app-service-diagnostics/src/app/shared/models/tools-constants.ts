@@ -5,6 +5,7 @@ export class ToolNames {
     public static Profiler: string = 'Collect .NET Profiler Trace';
     public static JavaThreadDump: string = 'Collect Java Thread Dump';
     public static JavaMemoryDump: string = 'Collect Java Memory Dump';
+    public static JavaFlightRecorder: string = 'Collect Java Flight Recorder Trace';
     public static HttpLogAnalyzer: string = 'Analyze HTTP Logs';
     public static PHPLogAnalyzer: string = 'Analyze PHP Logs';
     public static PHPProcessAnalyzer: string = 'Analyze PHP Process';
@@ -27,6 +28,7 @@ export class ToolIds {
     public static MemoryDump: string = 'memorydump';
     public static JavaThreadDump: string = 'javathreaddump';
     public static JavaMemoryDump: string = 'javamemorydump';
+    public static JavaFlightRecorder: string = 'javaflightrecorder';
     public static HttpLogAnalyzer: string = 'Analyze HTTP Logs';
     public static PHPLogAnalyzer: string = 'phploganalyzer';
     public static PHPProcessAnalyzer: string = 'phpprocessanalyzer';

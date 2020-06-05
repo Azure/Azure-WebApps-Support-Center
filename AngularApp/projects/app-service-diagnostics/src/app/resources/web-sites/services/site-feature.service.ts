@@ -431,6 +431,28 @@ export class SiteFeatureService extends FeatureService {
           })
         }
       },
+      {
+        appType: AppType.WebApp | AppType.FunctionApp,
+        platform: OperatingSystem.windows,
+        sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
+        stack: 'Java',
+        item: {
+          id: ToolIds.JavaFlightRecorder,
+          name: ToolNames.JavaFlightRecorder,
+          category: 'Diagnostic Tools',
+          description: '',
+          featureType: FeatureTypes.Tool,
+          clickAction: this._createFeatureAction(ToolNames.JavaFlightRecorder, 'Diagnostic Tools', () => {
+            //Need remove after A/B test
+            if (this.isLegacy) {
+              this._router.navigateByUrl(`resource${resourceId}/tools/javaflightrecorder`);
+            } else {
+              this.navigateTo(resourceId, ToolIds.JavaFlightRecorder);
+            }
+          })
+        }
+      },
     ];
 
     this.supportTools = [

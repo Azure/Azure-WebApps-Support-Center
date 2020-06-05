@@ -94,6 +94,8 @@ import { FrebViewerComponent } from './components/daas/freb-viewer/freb-viewer.c
 import { CXPChatCallerService } from '../shared-v2/services/cxp-chat-caller.service';
 import { PortalReferrerResolverComponent } from './components/portal-referrer-resolver/portal-referrer-resolver.component';
 import { ConfigureStorageAccountComponent } from './components/daas/configure-storage-account/configure-storage-account.component';
+import { JavaFlightRecorderComponent } from './components/daas/java-flight-recorder/java-flight-recorder.component';
+import { JavaFlightRecorderToolComponent } from './components/tools/java-flight-recorder-tool/java-flight-recorder-tool.component';
 
 @NgModule({
     declarations: [
@@ -158,7 +160,9 @@ import { ConfigureStorageAccountComponent } from './components/daas/configure-st
         EventViewerComponent,
         FrebViewerComponent,
         PortalReferrerResolverComponent,
-        ConfigureStorageAccountComponent
+        ConfigureStorageAccountComponent,
+        JavaFlightRecorderComponent,
+        JavaFlightRecorderToolComponent
     ],
     imports: [
         HttpClientModule,

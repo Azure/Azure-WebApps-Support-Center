@@ -310,6 +310,17 @@ export class CategoriesService {
             AppStack : 'Java'
         });
 
+        tools.Subcategories.push({
+            Name: ToolNames.JavaFlightRecorder,
+            BgColor: 'rgb(0, 148, 153)',
+            TextColor: 'White',
+            Href: 'tools/javaflightrecorder',
+            OperatingSystem: OperatingSystem.windows,
+            AppType: AppType.WebApp | AppType.FunctionApp,
+            Sku: Sku.NotDynamic,
+            AppStack : 'Java'
+        });
+
         this._categories.push(perf);
         this._categories.push(tools);
     }

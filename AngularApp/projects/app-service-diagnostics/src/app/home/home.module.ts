@@ -50,6 +50,7 @@ import { CategoryTileV4Component } from '../fabric-ui/components/category-tile-v
 import { GenieModule } from '../genie/genie.module';
 import { FabricModule } from '../fabric-ui/fabric.module';
 import { ResourceService } from '../shared-v2/services/resource.service';
+import { JavaFlightRecorderToolComponent } from '../shared/components/tools/java-flight-recorder-tool/java-flight-recorder-tool.component';
 
 export const HomeRoutes = RouterModule.forChild([
     {
@@ -223,6 +224,15 @@ export const HomeRoutes = RouterModule.forChild([
                 component: JavaMemoryDumpToolComponent,
                 data: {
                     navigationTitle: ToolNames.JavaMemoryDump,
+                    cacheComponent: true
+                }
+            },
+            // Java Flight Recorder
+            {
+                path: 'tools/javaflightrecorder',
+                component: JavaFlightRecorderToolComponent,
+                data: {
+                    navigationTitle: ToolNames.JavaFlightRecorder,
                     cacheComponent: true
                 }
             },

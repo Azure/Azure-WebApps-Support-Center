@@ -19,6 +19,7 @@ import { Injectable, Component } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { PortalActionService } from '../shared/services/portal-action.service';
 import { AuthService } from '../startup/services/auth.service';
+import { JavaFlightRecorderToolComponent } from '../shared/components/tools/java-flight-recorder-tool/java-flight-recorder-tool.component';
 
 @Injectable()
 export class MetricsPerInstanceAppsResolver implements Resolve<Observable<boolean>> {
@@ -112,6 +113,15 @@ export const DiagnosticToolsRoutes: Route[] = [
         component: JavaMemoryDumpToolComponent,
         data: {
             navigationTitle: ToolNames.JavaMemoryDump,
+            cacheComponent: true
+        }
+    },
+    // Java Flight Recorder
+    {
+        path: 'javaflightrecorder',
+        component: JavaFlightRecorderToolComponent,
+        data: {
+            navigationTitle: ToolNames.JavaFlightRecorder,
             cacheComponent: true
         }
     },

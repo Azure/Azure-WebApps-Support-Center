@@ -1,0 +1,21 @@
+<div class="container">
+  <h2 tabindex="0">{{ title }}</h2>
+  <p tabindex="0">{{ description }}</p>
+
+  <div class="wizardcontainer">
+
+      <java-flight-recorder [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed" (SessionsEvent)="updateSessions($event)">
+      </java-flight-recorder>
+
+  </div>
+
+  <h3>What you should know before collecting a Java Flight Recorder trace</h3>
+  <ul>
+      <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
+  </ul>
+
+  <div class="sessions">
+      <daas-sessions [refreshSessions]="refreshSessions" diagnoserNameLookup="JAVA Flight Recorder" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed"></daas-sessions>
+  </div>
+
+</div>
