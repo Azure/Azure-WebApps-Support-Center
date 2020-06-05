@@ -27,7 +27,7 @@ export class VersionTestService {
             const resourceId = startupInfo.resourceId;
             const subId = resourceId.split('/')[2];
             // Change the percentageToRelease accordingly for more customers, for now it's around 10%
-            this.isVnextSub = this.isVnextSubscription(subId, 0.25);
+            this.isVnextSub = this.isVnextSubscription(subId, 0.5);
             this._siteService.currentSite.subscribe(site => {
                 this.overrideUseLegacy.subscribe(overrideValue => {
                     const isWebAppResource = this.isWindowsWebAppResource(site, resourceType);
