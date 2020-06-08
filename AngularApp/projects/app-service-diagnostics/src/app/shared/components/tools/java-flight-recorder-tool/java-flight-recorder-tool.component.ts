@@ -14,14 +14,6 @@ export class JavaFlightRecorderToolComponent implements OnInit {
 
   title: string = 'Collect a JAVA Flight Recorder Trace';
   description: string = 'If your app is down or performing slow, you can collect a JFR trace to identify the root cause of the issue.';
-
-  thingsToKnowBefore: string[] = [
-    'Once the Flight Recorder is started, reproduce the issue by browsing to the app.',
-    'The trace will automatically stop after 60 seconds.',
-    'Your web app will not be restarted as a result of running the flight recorder.',
-    'The JFR Trace is collected using the Java Flight Recorder tool.',
-  ];
-
   siteToBeDiagnosed: SiteDaasInfo;
   scmPath: string;
   couldNotFindSite: boolean = false;
