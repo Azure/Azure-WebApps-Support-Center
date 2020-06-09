@@ -1,15 +1,14 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { PanelType } from 'office-ui-fabric-react';
 import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
 import { Globals } from '../../../globals';
-import { FabIconComponent } from '@angular-react/fabric';
 
 @Component({
   selector: 'fabric-feedback',
   templateUrl: './fabric-feedback.component.html',
   styleUrls: ['./fabric-feedback.component.scss']
 })
-export class FabricFeedbackComponent implements AfterViewInit{
+export class FabricFeedbackComponent implements AfterViewInit {
   type: PanelType = PanelType.custom;
   // dismissSubject: Subject<void> = new Subject<void>();
   ratingEventProperties: any;
@@ -39,8 +38,6 @@ export class FabricFeedbackComponent implements AfterViewInit{
   ];
   submitted: boolean = false;
   rating: number = 0;
-  // @ViewChild("fabIcons",{static:false}) fabIcons:ElementRef;
-  @ViewChildren('fabIcons') fabIcons:QueryList<FabIconComponent>
   constructor(protected telemetryService: TelemetryService, public globals: Globals) {
     // this.submitted = false;
   }
@@ -82,17 +79,15 @@ export class FabricFeedbackComponent implements AfterViewInit{
   }
 
   ngAfterViewInit() {
-    const fabList = this.fabIcons.toArray();
-    const feedbackIcons = [...this.feedbackIcons];
-    //Need async to get the child <i> under <fab-icon> element
-    setTimeout(function(){
-      //Get all <i> tags to modify role and name attributes;
-      const nativeEles = fabList.map(ele => <HTMLElement>ele.elementRef.nativeElement.firstChild);
-      nativeEles.forEach((ele,index) => {
-        ele.setAttribute("role","button");
-        ele.setAttribute("name",feedbackIcons[index].text);
-      });
-    },100);
+    setTimeout(() => {
+      const eles = document.querySelectorAll("#feedback-icons i");
+      if(eles && eles.length > 0) {
+        eles.forEach((ele,index) => {
+          ele.setAttribute("role","button");
+          ele.setAttribute("name",this.feedbackIcons[index].text);
+        });
+      }
+    });
   }
 
   reset() {
