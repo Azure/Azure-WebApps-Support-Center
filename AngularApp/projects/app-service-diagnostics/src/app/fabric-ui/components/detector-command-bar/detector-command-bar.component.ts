@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Globals } from '../../../globals';
 import { DetectorControlService } from 'projects/diagnostic-data/src/lib/services/detector-control.service';
 import { ActivatedRoute } from '@angular/router';
@@ -11,9 +11,7 @@ import { TelemetryService } from 'diagnostic-data';
 })
 export class DetectorCommandBarComponent {
   time: string;
-
   constructor(private globals: Globals, private detectorControlService: DetectorControlService, private _route: ActivatedRoute,private telemetryService:TelemetryService) { }
-
   toggleOpenState() {
     this.globals.openGeniePanel = !this.globals.openGeniePanel;
   }
@@ -48,7 +46,8 @@ export class DetectorCommandBarComponent {
   }
 
   toggleOpenTimePicker() {
-    this.globals.openTimePicker = !this.globals.openTimePicker
+    this.globals.openTimePicker = !this.globals.openTimePicker;
+    this.updateAriaExpanded();
   }
 
   updateMessage(s: string) {
@@ -57,5 +56,21 @@ export class DetectorCommandBarComponent {
 
   closeTimePicker() {
     this.globals.openTimePicker = false;
+  }
+
+  ngAfterViewInit() {
+    // Async to get button element after grandchild is renderded
+    setTimeout(()=>{
+      this.updateAriaExpanded();
+    });
+  }
+
+
+  updateAriaExpanded(){
+    const btns = document.querySelectorAll("#fab-command-bar button");
+    if(btns && btns.length > 0) {
+      const dropdown = btns[btns.length - 1];
+      dropdown.setAttribute("aria-expanded",`${this.globals.openTimePicker}`);
+    }
   }
 }
