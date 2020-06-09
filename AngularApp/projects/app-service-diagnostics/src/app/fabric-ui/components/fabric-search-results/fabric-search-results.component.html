@@ -1,7 +1,7 @@
 <div role="search" class="search-result-container" #fabSearchResult>
   <div class="search-box">
-    <fab-search-box id="fabSearchBox" tabindex="0" type="search" placeholder="Search" [value]="searchValue"
-      (onChange)="updateSearchValue($event)" (onFocus)="onSearchBoxFocus()" (onBlur)="onBlurHandler()"
+    <fab-search-box id="fabSearchBox" tabindex="0" type="search" placeholder="Search" [value]="searchValue" [ariaLabel]="inputAriaLabel"
+      (onChange)="updateSearchValue($event)" (onFocus)="onSearchBoxFocus()" (onBlur)="onBlurHandler()" 
       (onEscape)="clearSearchWithKey()" aria-controls="search-results">
     </fab-search-box>
   </div>
@@ -15,10 +15,10 @@
         <columns>
           <fab-details-list-column>
             <render>
-              <ng-template let-feature="item">
-                <div class="result-item" tabindex="0" (mousedown)="navigateToFeature(feature)" class="result-item remove-results-padding">
+              <ng-template let-feature="item" let-index="index">
+                <div class="result-item remove-results-padding" tabindex="0" (mousedown)="navigateToFeature(feature)" [attr.aria-label]="getResultAriaLabel(index)">
                   <div>
-                    <img style="height: 20px;width: 20px;margin-right: 5px;" [src]="generateIconImagePath(feature.id)"
+                    <img style="height: 20px;width: 20px;margin-right: 5px;" [src]="getIconImagePath(feature.id)"
                       alt="">
                     <span class="feature-title">{{feature.name}}</span>
                   </div>
@@ -34,12 +34,12 @@
 
       <!-- for search result in category page -->
       <div *ngIf="isInCategory">
-        <a class="result-item detail-list-style" *ngFor="let feature of features;" style="display:flex;"
-          (mousedown)="navigateToFeature(feature)" (keyup.enter)="navigateToFeature(feature)">
+        <a class="result-item detail-list-style" *ngFor="let feature of features;let i = index" style="display:flex;"
+          (mousedown)="navigateToFeature(feature)" (keyup.enter)="navigateToFeature(feature)" [attr.aria-label]="getResultAriaLabel(i)">
           <div style="display: flex;flex-direction: row;align-items: center;justify-content: start;">
             <div class="feature-icon">
               <div>
-                <img style="height: 20px;width: 20px;" [src]="generateIconImagePath(feature.id)" alt="">
+                <img style="height: 20px;width: 20px;" [src]="getIconImagePath(feature.id)" alt="">
               </div>
             </div>
             <div class="feature-title">{{feature.name}}</div>

@@ -103,8 +103,12 @@ export class FabricSearchResultsComponent {
 
     this.render.listen('window','click',(e:Event) => {
       if (!this.fabSearchResult.nativeElement.contains(e.target)){
-        this.clickSearchBox = BlurType.Blur;
-        this.onBlurHandler();
+        this.clickOutside();
+      }
+    });
+    this.render.listen('window','keydown.Tab',(e:Event) => {
+      if (!this.fabSearchResult.nativeElement.contains(e.target)){
+        this.clickOutside();
       }
     });
   }
@@ -155,7 +159,7 @@ export class FabricSearchResultsComponent {
   }
 
   onSearchBoxFocus() {
-    this.showSearchResults = true;
+    // this.showSearchResults = true;
     this.features = this.featureService.getFeatures(this.searchValue);
 
     //Disable AutoComplete
@@ -191,7 +195,7 @@ export class FabricSearchResultsComponent {
     this.globals.openGeniePanel = true;
   }
 
-  generateIconImagePath(name: string) {
+  getIconImagePath(name: string) {
     const basePath = "../../../../assets/img/detectors";
     const fileName = icons.has(name) ? name : 'default';
     return `${basePath}/${fileName}.svg`;
@@ -204,8 +208,15 @@ export class FabricSearchResultsComponent {
   escapeHandler(){
     (<HTMLInputElement>document.querySelector('#fabSearchBox input')).focus();
   }
-  clickOutsideHandler(){
-    this.clearSearch();
-    this.showSearchResults = false;
+  clickOutside(){
+    // this.clearSearch();
+    // this.showSearchResults = false;
+    this.clickSearchBox = BlurType.Blur;
+    this.onBlurHandler();
+  }
+
+  getResultAriaLabel(index:number):string {
+    const featureName = this.features[index].name;
+    return `${index} of ${this.features.length},${featureName}`;
   }
 }
