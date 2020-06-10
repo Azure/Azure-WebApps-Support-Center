@@ -47,17 +47,14 @@
 }
 
 .feedback-icon .tooltiptext {
-    // visibility: hidden;
     display:none;
     background: white;
 }
 
 .feedback-icon:hover .tooltiptext {
-    // visibility: visible;
     display: block;
     opacity: 1;
     background: white!important;
-    // width: 20%;
     white-space: nowrap;
     z-index: 999;
     margin-top: 6px;

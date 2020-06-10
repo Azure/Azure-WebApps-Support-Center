@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { Globals } from '../../../globals';
 import { DetectorControlService } from 'projects/diagnostic-data/src/lib/services/detector-control.service';
 import { ActivatedRoute } from '@angular/router';
@@ -9,7 +9,7 @@ import { TelemetryService } from 'diagnostic-data';
   templateUrl: './detector-command-bar.component.html',
   styleUrls: ['./detector-command-bar.component.scss']
 })
-export class DetectorCommandBarComponent {
+export class DetectorCommandBarComponent implements AfterViewInit{
   time: string;
   constructor(private globals: Globals, private detectorControlService: DetectorControlService, private _route: ActivatedRoute,private telemetryService:TelemetryService) { }
   toggleOpenState() {

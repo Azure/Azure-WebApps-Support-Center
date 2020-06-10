@@ -159,7 +159,6 @@ export class FabricSearchResultsComponent {
   }
 
   onSearchBoxFocus() {
-    // this.showSearchResults = true;
     this.features = this.featureService.getFeatures(this.searchValue);
 
     //Disable AutoComplete
@@ -209,8 +208,6 @@ export class FabricSearchResultsComponent {
     (<HTMLInputElement>document.querySelector('#fabSearchBox input')).focus();
   }
   clickOutside(){
-    // this.clearSearch();
-    // this.showSearchResults = false;
     this.clickSearchBox = BlurType.Blur;
     this.onBlurHandler();
   }
