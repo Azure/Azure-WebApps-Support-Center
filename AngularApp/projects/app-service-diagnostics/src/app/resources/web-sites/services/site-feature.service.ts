@@ -44,7 +44,7 @@ export class SiteFeatureService extends FeatureService {
     this._authService.getStartupInfo().subscribe(startupInfo => {
       this.addDiagnosticTools(startupInfo.resourceId);
       this.addProactiveTools(startupInfo.resourceId);
-      this.addPremiumTools();
+      this.addPremiumTools(startupInfo.resourceId);
       this.subscriptionId = startupInfo.resourceId.split("subscriptions/")[1].split("/")[0];
     });
   }
@@ -150,26 +150,35 @@ export class SiteFeatureService extends FeatureService {
     ];
   }
 
-  addPremiumTools() {
-    this.premiumTools = <SiteFilteredItem<Feature>[]>[
+  addPremiumTools(resourceId: string) {
+    this.premiumTools = [];
+    this._resourceService.getSitePremierAddOns(resourceId).subscribe(data => {
+      if (data && data.value)
       {
-        appType: AppType.WebApp,
-        platform: OperatingSystem.windows,
-        sku: Sku.NotDynamic,
-        hostingEnvironmentKind: HostingEnvironmentKind.All,
-        stack: '',
-        item: {
-          id: ToolIds.SecurityScanning,
-          name: ToolNames.SecurityScanning,
-          category: 'Premium Tools',
-          description: '',
-          featureType: FeatureTypes.Tool,
-          clickAction: this._createFeatureAction(ToolIds.SecurityScanning, 'Premium Tools', () => {
-            this._portalActionService.openTifoilSecurityBlade();
-          })
+        let premierAddOns: any[] = data.value;
+        let TinfoilAddOn = premierAddOns.find(x => (x.product_name === "TinfoilScanning"));
+        if (TinfoilAddOn)
+        {
+          this.premiumTools.push({
+              appType: AppType.WebApp,
+              platform: OperatingSystem.windows,
+              sku: Sku.NotDynamic,
+              hostingEnvironmentKind: HostingEnvironmentKind.All,
+              stack: '',
+              item: {
+                id: ToolIds.SecurityScanning,
+                name: ToolNames.SecurityScanning,
+                category: 'Premium Tools',
+                description: '',
+                featureType: FeatureTypes.Tool,
+                clickAction: this._createFeatureAction(ToolIds.SecurityScanning, 'Premium Tools', () => {
+                  this._portalActionService.openTifoilSecurityBlade();
+                })
+              }
+            });
         }
       }
-    ];
+    });
     this._websiteFilter.transform(this.premiumTools).forEach(tool => {
       this._features.push(tool);
     });
