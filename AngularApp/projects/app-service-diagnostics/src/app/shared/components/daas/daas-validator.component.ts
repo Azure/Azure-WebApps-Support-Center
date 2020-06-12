@@ -41,7 +41,7 @@ export class DaasValidatorComponent implements OnInit {
     //
     
     if (this._daasService.isNationalCloud) {
-      //this.diagnosersRequiringStorageAccount=[];
+      this.diagnosersRequiringStorageAccount=[];
     }
   }
 
