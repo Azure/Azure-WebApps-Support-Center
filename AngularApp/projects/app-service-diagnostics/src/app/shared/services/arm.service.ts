@@ -87,7 +87,8 @@ export class ArmService {
     }
 
     get storageUrl(): string {
-        return this.armUrl.replace("management", "core");
+        let storageUrl = this.armUrl.replace("management", "core").replace("https://", "");
+        return storageUrl;
     }
 
     getApiVersion(resourceUri: string, apiVersion?: string): string {
