@@ -34,8 +34,8 @@
     </ng-container>
   </div>
   <div class="main-area">
-    <h2 tabindex="0">{{homePageText.title}}</h2>
-    <p id="page-description" tabindex="0">{{homePageText.description}}</p>
+    <h2>{{homePageText.title}}</h2>
+    <p id="page-description" >{{homePageText.description}}</p>
     <div *ngIf="categories && !useStaticAksText " class="category-container">
       <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
         <category-tile [category]="category"></category-tile>
@@ -114,8 +114,8 @@
 <ng-template #newSolution>
   <div class="main-area-v4">
     <div class="home-content">
-      <h2 tabindex="0" class="home-title">{{homePageText.title}}</h2>
-      <p tabindex="0" class="home-description-v4">{{homePageText.description}}</p>
+      <h2 class="home-title">{{homePageText.title}}</h2>
+      <p class="home-description-v4">{{homePageText.description}}</p>
       <p class="home-description-v4">If you would like to look at the health check then
         <a id="healthCheck"(click)="openAvaAndPerf()" tabindex="0" aria-label="Open health check"
           (keydown.enter)="openAvaAndPerf()">click here.</a> You can also ask our interactive chatbot
