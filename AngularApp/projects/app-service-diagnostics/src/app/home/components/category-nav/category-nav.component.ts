@@ -54,11 +54,6 @@ export class CategoryNavComponent implements OnInit {
     collapsible: any = false;
     hasUncategorizedDetectors: boolean = false;
 
-    isSelected(detectorId: string) {
-        let routerUrl = this._route.url.toLocaleLowerCase();
-        return routerUrl.includes(`detectors/${detectorId}`) || routerUrl.includes(`analysis/${detectorId}`);
-    }
-
     tempCategoriesArray: any[] = [];
     tempToolsArray: any[] = [];
     tempArray = [];
@@ -111,21 +106,20 @@ export class CategoryNavComponent implements OnInit {
     private getCurrentRoutePath() {
         this.currentRoutePath = this._activatedRoute.firstChild.snapshot.url.map(urlSegment => urlSegment.path);
     }
-    ngOnInit() {
+
+    getCurrentItemId() {
         if (!this._activatedRoute.firstChild.snapshot.params['analysisId']) {
             if (this._activatedRoute.firstChild.snapshot.params['detectorName']) {
                 this.currentDetectorId = this._activatedRoute.firstChild.snapshot.params['detectorName'];
-            } else if (this._activatedRoute.firstChild.snapshot.params['analysisId']) {
-                this.currentDetectorId = this._activatedRoute.firstChild.snapshot.params['analysisId'];
-            } else {
-                this.currentDetectorId = null;
             }
         }
         else {
             this.currentDetectorId = this._activatedRoute.firstChild.snapshot.params['analysisId'];
         }
+    }
 
-
+    ngOnInit() {
+        this.getCurrentItemId();
         this.hasUncategorizedDetectors = false;
         this._route.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
             this.getCurrentRoutePath();
@@ -185,23 +179,26 @@ export class CategoryNavComponent implements OnInit {
             }
         });
 
-        this.toolCategories.push(<SiteFilteredItem<any>>{
-            appType: AppType.WebApp,
-            platform: OperatingSystem.windows,
-            sku: Sku.NotDynamic,
-            hostingEnvironmentKind: HostingEnvironmentKind.All,
-            stack: '',
-            item: {
-                title: 'Premium Tools',
-                tools: this.siteFeatureService.premiumTools.filter(tool => this.stackMatchedForTools(tool)).map(tool => {
-                    let isSelected = () => {
-                        return this._route.url.includes("/" + tool.item.id);
-                    };
-                    let icon = this.getIconImagePath(tool.item.id);
-                    return new CollapsibleMenuItem(tool.item.name, tool.item.clickAction, isSelected, icon);
-                })
-            }
-        });
+        if (this.siteFeatureService.premiumTools && this.siteFeatureService.premiumTools.length > 0)
+        {
+            this.toolCategories.push(<SiteFilteredItem<any>>{
+                appType: AppType.WebApp,
+                platform: OperatingSystem.windows,
+                sku: Sku.NotDynamic,
+                hostingEnvironmentKind: HostingEnvironmentKind.All,
+                stack: '',
+                item: {
+                    title: 'Premium Tools',
+                    tools: this.siteFeatureService.premiumTools.filter(tool => this.stackMatchedForTools(tool)).map(tool => {
+                        let isSelected = () => {
+                            return this._route.url.includes("/" + tool.item.id);
+                        };
+                        let icon = this.getIconImagePath(tool.item.id);
+                        return new CollapsibleMenuItem(tool.item.name, tool.item.clickAction, isSelected, icon);
+                    })
+                }
+            });
+        }
 
         this.toolCategoriesFilteredByStack = this.transform(this.toolCategories);
 
@@ -228,6 +225,7 @@ export class CategoryNavComponent implements OnInit {
                             feature.clickAction();
                         }
                         let isSelected = () => {
+                            this.getCurrentItemId();
                             return this.currentDetectorId === feature.id;
                         }
                         let icon = this.getIconImagePath(feature.id);
