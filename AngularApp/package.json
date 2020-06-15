@@ -50,7 +50,7 @@
     "font-awesome": "^4.7.0",
     "hammerjs": "^2.0.8",
     "ie-shim": "^0.1.0",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.0",
     "moment": "^2.22.1",
     "ng-pick-datetime": "^6.0.16",
     "ng-pick-datetime-moment": "1.0.7",
