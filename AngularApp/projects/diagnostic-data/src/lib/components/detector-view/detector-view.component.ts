@@ -166,8 +166,8 @@ export class DetectorViewComponent implements OnInit {
       this.detectorDataLocalCopy = data;
       if (data) {
         this.detectorEventProperties = {
-          'StartTime': String(this.startTime),
-          'EndTime': String(this.endTime),
+          'StartTime': this.startTime.toISOString(),
+          'EndTime': this.startTime.toISOString(),
           'DetectorId': data.metadata.id,
           'ParentDetectorId': this.parentDetectorId,
           'Url': window.location.href
