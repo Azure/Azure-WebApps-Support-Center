@@ -258,6 +258,11 @@
               "projects/app-service-diagnostics/src/assets",
               "projects/app-service-diagnostics/src/armResourceConfig",
               {
+                "glob": "enabledResourceTypes.json",
+                "input": "projects/applens/src/assets",
+                "output": "/assets"
+              },
+              {
                 "glob": "**/*",
                 "input": "node_modules/ngx-monaco-editor/assets/monaco",
                 "output": "/assets/monaco"
@@ -342,7 +347,12 @@
             "scripts": [],
             "assets": [
               "projects/app-service-diagnostics/src/favicon.ico",
-              "projects/app-service-diagnostics/src/assets"
+              "projects/app-service-diagnostics/src/assets",
+              {
+                "glob": "enabledResourceTypes.json",
+                "input": "projects/applens/src/assets",
+                "output": "/assets"
+              }
             ]
           }
         },
