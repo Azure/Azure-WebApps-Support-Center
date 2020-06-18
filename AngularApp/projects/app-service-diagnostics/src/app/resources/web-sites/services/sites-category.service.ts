@@ -20,7 +20,7 @@ export class SitesCategoryService extends CategoryService {
       sku: Sku.All,
       hostingEnvironmentKind: HostingEnvironmentKind.All,
       item: {
-        id: 'WindowsAvailabilityAndPerformance',
+        id: 'AvailabilityAndPerformanceWindows',
         name: 'Availability and Performance',
         description: 'Is your app experiencing downtime or slowness? Check out the current health status of your app and discover platform and application issues that might affect your app\'s high availability.',
         keywords: ['Health Check', 'Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory'],
