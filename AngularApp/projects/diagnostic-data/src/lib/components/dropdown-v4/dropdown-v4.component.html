@@ -6,7 +6,7 @@
 <data-container [headerTemplate]="header" [title]="renderingProperties.title" *ngIf="dropdownType == Type.Legacy">
   <div>
     <div class="label-container">
-      <label>{{label}}</label>
+      <label for="dropdownMenuId" tabindex="0" [attr.aria-label]="label" role="text">{{label}}</label>
     </div>
     <div class="dropdown-container">
       <div class="dropdown">
@@ -42,8 +42,8 @@
   <div class="fabric-dropdown-header" style="display: flex;" [ngStyle]="{'justify-content': dropdownPostion == Position.FloatRight ? 'space-between' : 'start'}">
     <span class="fabric-dropdown-title">{{renderingProperties.title}}</span>
     <div style="display: flex">
-      <label>{{label}}:</label>
-      <fab-dropdown [options]="options" (onChange)="selectFabricKey($event)" [defaultSelectedKey]="selectedKey"
+      <label for="dropdownV4" tabindex="0" [attr.aria-label]="label" role="text">{{label}}:</label>
+      <fab-dropdown id="dropdownV4" [options]="options" (onChange)="selectFabricKey($event)" [defaultSelectedKey]="selectedKey"
         contentStyle="margin-top: -5px; margin-left: 5px;width:{{fabDropdownWidth}}px;"></fab-dropdown>
     </div>
   </div>
