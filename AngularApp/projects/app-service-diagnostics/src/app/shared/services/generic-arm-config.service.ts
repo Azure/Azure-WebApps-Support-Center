@@ -1,72 +1,16 @@
 import { Injectable } from '@angular/core';
-import { ArmResourceConfig, ResourceDescriptor, ResourceDescriptorGroups, LiveChatConfig } from '../models/arm/armResourceConfig'
+import { ArmResourceConfig, LiveChatConfig } from '../models/arm/armResourceConfig'
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Category } from "../../shared-v2/models/category";
 import { Observable, of, forkJoin } from 'rxjs';
+import { ResourceDescriptor } from 'diagnostic-data';
 
 @Injectable()
 export class GenericArmConfigService {
   public resourceMap: Array<ArmResourceConfig> = [];
   public resourceConfig: ArmResourceConfig;
   public overrideConfig: ArmResourceConfig;
-
-  public parseResourceUri(resourceUri: string): ResourceDescriptor {
-    let resourceDesc: ResourceDescriptor = new ResourceDescriptor();
-
-    if (resourceUri) {
-      if (!resourceUri.startsWith('/')) {
-        resourceUri = '/' + resourceUri;
-      }
-
-      var result = resourceUri.match(resourceDesc.resourceUriRegExp);
-      if (result && result.length > 0) {
-
-        if (result[ResourceDescriptorGroups.subscription]) {
-          resourceDesc.subscription = result[ResourceDescriptorGroups.subscription];
-        }
-        else {
-          resourceDesc.subscription = '';
-        }
-
-        if (result[ResourceDescriptorGroups.resourceGroup]) {
-          resourceDesc.resourceGroup = result[ResourceDescriptorGroups.resourceGroup];
-        }
-        else {
-          resourceDesc.resourceGroup = '';
-        }
-
-        if (result[ResourceDescriptorGroups.provider]) {
-          resourceDesc.provider = result[ResourceDescriptorGroups.provider];
-        }
-        else {
-          resourceDesc.provider = '';
-        }
-
-        if (result[ResourceDescriptorGroups.resource]) {
-          const resourceParts = result[ResourceDescriptorGroups.resource].split('/');
-          if (resourceParts.length % 2 != 0) {
-            //ARM URI is incorrect. The resource section contains an uneven number of parts
-            resourceDesc.resource = '';
-          }
-          else {
-            for (var i = 0; i < resourceParts.length; i += 2) {
-              resourceDesc.type = resourceParts[i];
-              resourceDesc.resource = resourceParts[i + 1];
-
-              resourceDesc.types.push(resourceDesc.type);
-              resourceDesc.resources.push(resourceDesc.resource);
-            }
-          }
-        }
-        else {
-          resourceDesc.resource = '';
-        }
-
-      }
-    }
-    return resourceDesc;
-  }
 
   getValue(source: any, override: any): any {
 
@@ -132,7 +76,8 @@ export class GenericArmConfigService {
     if (!resourceUri.startsWith('/')) {
       resourceUri = '/' + resourceUri;
     }
-    let resourceDesc = this.parseResourceUri(resourceUri);
+    // let resourceDesc = this.parseResourceUri(resourceUri);
+    let resourceDesc = ResourceDescriptor.parseResourceUri(resourceUri);
     const baseUri: string = 'armResourceConfig/' + resourceDesc.provider + '/' + resourceDesc.type + '/';
 
     let override = this._http.get<ArmResourceConfig>(baseUri + 'override.json')

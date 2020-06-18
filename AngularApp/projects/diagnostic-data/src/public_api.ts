@@ -34,5 +34,6 @@ export * from './lib/models/communication';
 export * from './lib/models/compiler-response';
 export * from './lib/models/compilation-properties';
 export * from './lib/models/solution-type-tag';
+export * from './lib/models/resource-descriptor';
 
 export * from './lib/components/detector-list-analysis/detector-list-analysis.component'
