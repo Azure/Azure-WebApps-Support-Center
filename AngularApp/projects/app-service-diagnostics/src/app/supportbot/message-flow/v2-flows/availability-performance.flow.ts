@@ -15,7 +15,7 @@ export class AvailabilityPerformanceFlow extends IMessageFlowProvider {
 
         const messageGroupList: MessageGroup[] = [];
 
-        const availailabilityPerformance: MessageGroup = new MessageGroup('welcome-WindowsAvailabilityAndPerformance', [], () => 'availability-menu');
+        const availailabilityPerformance: MessageGroup = new MessageGroup('welcome-AvailabilityAndPerformanceWindows', [], () => 'availability-menu');
         availailabilityPerformance.messages.push(new TextMessage('Hello! Welcome to App Service Diagnostics! My name is Genie and I\'m here to help you diagnose and solve problems with your app.', MessageSender.System));
         availailabilityPerformance.messages.push(new TextMessage('First, let me run a health check for you so you can get a quick overview of the health of your app.', MessageSender.System));
         availailabilityPerformance.messages.push(new HealthCheckMessage());
