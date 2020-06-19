@@ -509,6 +509,9 @@ export class HighchartsGraphComponent implements OnInit {
                                 series[i].setVisible(true, false);
                             }
                         }
+                    },
+                    contextButton: {
+                        titleKey: "contextButtonTitle"
                     }
                 },
 
