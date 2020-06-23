@@ -96,6 +96,7 @@ import {WebSearchComponent} from './components/web-search/web-search.component';
 import {RenderFilterPipe} from './components/detector-view/detector-view.component';
 import { DynamicInsightV4Component } from './components/dynamic-insight-v4/dynamic-insight-v4.component';
 import { InViewportModule } from "ng-in-viewport";
+import { MarkdownTextComponent } from './components/markdown-text/markdown-text.component';
 
 @NgModule({
   imports: [
@@ -142,7 +143,8 @@ import { InViewportModule } from "ng-in-viewport";
     ConnectAppInsightsComponent,
     WebSearchComponent,
     RenderFilterPipe,
-    DynamicInsightV4Component
+    DynamicInsightV4Component,
+    MarkdownTextComponent
   ],
   entryComponents: [DetectorListAnalysisComponent],
   exports: [

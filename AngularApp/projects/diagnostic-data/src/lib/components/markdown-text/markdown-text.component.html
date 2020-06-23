@@ -1,0 +1,8 @@
+<div *ngIf="needProcess else noProcessMarkdown">
+  <div [hidden]="isMarkdown(markdownData)" [innerHtml]="markdownData"></div>
+  <markdown #markdownDiv [data]="getMarkdown(markdownData)" [hidden]="!isMarkdown(markdownData)"></markdown>
+</div>
+
+<ng-template #noProcessMarkdown>
+  <markdown #markdownDiv [data]="markdownData"></markdown>
+</ng-template>
