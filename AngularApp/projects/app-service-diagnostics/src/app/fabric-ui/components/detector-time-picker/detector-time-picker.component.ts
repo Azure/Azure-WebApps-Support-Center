@@ -232,8 +232,8 @@ export class DetectorTimePickerComponent implements OnInit {
 
   private convertDateTimeToString(date:Date,time:string): string {
     const dateString = momentNs(date).format('YYYY-MM-DD');
-    const hour = Number.parseInt(time.split(':')[0]) ? `0${Number.parseInt(time.split(':')[0])}` : `${Number.parseInt(time.split(':')[0])}`;
-    const minute = Number.parseInt(time.split(':')[1]) ? `0${Number.parseInt(time.split(':')[1])}` : `${Number.parseInt(time.split(':')[1])}`;
+    const hour = Number.parseInt(time.split(':')[0]) < 10 ? `0${Number.parseInt(time.split(':')[0])}` : `${Number.parseInt(time.split(':')[0])}`;
+    const minute = Number.parseInt(time.split(':')[1]) < 10 ? `0${Number.parseInt(time.split(':')[1])}` : `${Number.parseInt(time.split(':')[1])}`;
     return `${dateString} ${hour}:${minute}`;
   }
 
