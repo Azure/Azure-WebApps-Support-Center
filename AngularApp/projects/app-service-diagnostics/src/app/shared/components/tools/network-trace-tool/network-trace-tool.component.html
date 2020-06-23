@@ -60,7 +60,7 @@
 
         <div style="margin-top:20px;">
             Choose duration to collect the Network Trace
-            <select [attr.aria-label]="'select duration'" (click)="durationClicked()" [(ngModel)]="duration"
+            <select [attr.aria-label]="'select duration'" [(ngModel)]="duration"
                 [disabled]="status >= NetworkTraceStatus.Starting">
                 <option value="60">60 seconds</option>
                 <option value="120">2 minutes</option>
