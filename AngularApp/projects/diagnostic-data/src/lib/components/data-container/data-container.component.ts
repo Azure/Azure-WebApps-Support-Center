@@ -16,4 +16,21 @@ export class DataContainerComponent {
   @Input() hideIfNoTitle: boolean = true;
 
   @Input() applicationInsightContainerStyle: number = 0;
+
+  @Input() detector: string = "";
+
+
+  isMarkdown(str: string) {
+    return str.trim().startsWith('<markdown>') && str.endsWith('</markdown>');
+  }
+
+  getMarkdown(str: string) {
+    return str.trim().replace('<markdown>', '').replace('</markdown>', '');
+  }
+
+  // ngAfterViewInit() {
+  //   if (this.markdownDiv) {
+  //     this.listenObj = this.renderer.listen(this.markdownDiv.element.nativeElement, 'click', (evt) => this._interceptorService.interceptLinkClick(evt, this.router, this.detector, this.telemetryService));
+  //   }
+  // }
 }
