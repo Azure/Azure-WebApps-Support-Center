@@ -16,34 +16,34 @@
   <table class="table table-bordered" *ngIf="rule!==null && rule.length > 0" style="margin-top:20px">
     <thead>
       <tr>
-        <th>
+        <th tabindex="0">
           Count
         </th>
-        <th>
+        <th tabindex="0">
           Status Code
         </th>
-        <th>
+        <th tabindex="0">
           Sub-Status
         </th>
-        <th>
+        <th tabindex="0">
           Win32-Status
         </th>
-        <th>
+        <th tabindex="0">
           Interval
         </th>
-        <th>
+        <th tabindex="0">
           Action
         </th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let singleRule of rule; let i = index">
-        <td>{{ singleRule.count }}</td>
-        <td>{{ singleRule.status }}</td>
-        <td>{{ singleRule.subStatus }}</td>
-        <td>{{ singleRule.win32Status }}</td>
-        <td>{{ singleRule.timeInterval }}</td>
-        <td>
+        <td tabindex="0">{{ singleRule.count }}</td>
+        <td tabindex="0">{{ singleRule.status }}</td>
+        <td tabindex="0">{{ singleRule.subStatus }}</td>
+        <td tabindex="0">{{ singleRule.win32Status }}</td>
+        <td tabindex="0">{{ singleRule.timeInterval }}</td>
+        <td tabindex="0">
           <button class="image-btn" *ngIf="!editMode" (click)="editStatusCodeRule(i)" title="Edit rule" name="editRule">
             <i class="fa fa-edit"></i>
           </button>

@@ -14,22 +14,22 @@
 <table class="table table-bordered" *ngIf="!editMode && rule != null">
   <thead>
     <tr>
-      <th scope="col">
+      <th tabindex="0">
         Request Count
       </th>
-      <th scope="col">
+      <th tabindex="0">
         Duration
       </th>
-      <th scope="col">
+      <th tabindex="0">
         Action
       </th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>{{ rule.count }}</td>
-      <td>{{ rule.timeInterval }}</td>
-      <td>
+      <td tabindex="0">{{ rule.count }}</td>
+      <td tabindex="0">{{ rule.timeInterval }}</td>
+      <td tabindex="0">
         <button class="image-btn" *ngIf="!editMode" (click)="editRule()" title="Edit rule" name="editRule">
           <i class="fa fa-edit"></i>
         </button>

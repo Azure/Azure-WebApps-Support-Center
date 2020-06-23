@@ -14,18 +14,18 @@
 <table class="table table-bordered" *ngIf="!editMode && rule > 0">
   <thead>
     <tr>
-      <th scope="col">
+      <th tabindex="0">
         Private Bytes
       </th>
-      <th scope="col">
+      <th tabindex="0">
         Action
       </th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>{{ formatBytes(rule * 1024) }}</td>
-      <td>
+      <td tabindex="0">{{ formatBytes(rule * 1024) }}</td>
+      <td tabindex="0">
         <button class="image-btn" *ngIf="!editMode" (click)="editRule()" title="Edit rule" name="editRule">
           <i class="fa fa-edit"></i>
         </button>
