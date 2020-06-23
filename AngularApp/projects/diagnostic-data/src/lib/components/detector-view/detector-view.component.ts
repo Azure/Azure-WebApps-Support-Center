@@ -167,7 +167,7 @@ export class DetectorViewComponent implements OnInit {
       if (data) {
         this.detectorEventProperties = {
           'StartTime': this.startTime.toISOString(),
-          'EndTime': this.startTime.toISOString(),
+          'EndTime': this.endTime.toISOString(),
           'DetectorId': data.metadata.id,
           'ParentDetectorId': this.parentDetectorId,
           'Url': window.location.href
