@@ -68,8 +68,9 @@
                     <b>{{key}}</b>
                   </td>
                   <td class="table-value">
-                    <div [hidden]="isMarkdown(insight.data[key])" [innerHtml]="insight.data[key]"></div>
-                    <markdown #markdownDiv [data]="getMarkdown(insight.data[key])" [hidden]="!isMarkdown(insight.data[key])"></markdown>
+                    <!-- <div [hidden]="isMarkdown(insight.data[key])" [innerHtml]="insight.data[key]"></div>
+                    <markdown #markdownDiv [data]="getMarkdown(insight.data[key])" [hidden]="!isMarkdown(insight.data[key])"></markdown> -->
+                    <markdown-text [markdownData]="insight.data[key]" [detector]="detector"></markdown-text>
                   </td>
                 </tr>
     
