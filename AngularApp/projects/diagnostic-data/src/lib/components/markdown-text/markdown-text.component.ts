@@ -18,7 +18,7 @@ export class MarkdownTextComponent implements AfterViewInit, OnDestroy {
   @Input() markdownData: string = "";
   
   //Only <markdown-view> don't need to check whether it is markdown format 
-  @Input() needProcess:boolean = true;
+  @Input() isFromMarkdownView:boolean = true;
 
   constructor(private renderer: Renderer2, private linkInterceptorService: LinkInterceptorService, private router: Router, private telemetryService: TelemetryService) { }
 
@@ -32,7 +32,9 @@ export class MarkdownTextComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     if (this.markdownDiv) {
-      this.listenObj = this.renderer.listen(this.markdownDiv.element.nativeElement, 'click', (evt) => this.linkInterceptorService.interceptLinkClick(evt, this.router, this.detector, this.telemetryService));
+      this.listenObj = this.renderer.listen(this.markdownDiv.element.nativeElement, 'click', (evt) => {
+        this.linkInterceptorService.interceptLinkClick(evt, this.router, this.detector, this.telemetryService)
+      });
     }
   }
 
