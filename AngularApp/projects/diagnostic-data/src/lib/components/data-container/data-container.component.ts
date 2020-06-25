@@ -16,6 +16,4 @@ export class DataContainerComponent {
   @Input() hideIfNoTitle: boolean = true;
 
   @Input() applicationInsightContainerStyle: number = 0;
-
-  @Input() detector: string = "";
 }
