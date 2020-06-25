@@ -72,13 +72,16 @@ export class CategorySummaryComponent implements OnInit {
 
     ngOnInit() {
         this.categoryService.categories.subscribe(categories => {
-          let decodedCategoryName = this._activatedRoute.snapshot.params.category.toLowerCase();
+          let decodedCategoryName  = ""; 
+          this._activatedRoute.params.subscribe(parmas => {
+            decodedCategoryName = parmas.category.toLowerCase();
             this.category = categories.find(category => category.id.toLowerCase() === this._activatedRoute.snapshot.params.category.toLowerCase() ||  category.name.replace(/\s/g, '').toLowerCase() === decodedCategoryName);
             this._chatState.category = this.category;
             this.categoryName = this.category.name;
 
             this.resourceName = this._activatedRoute.snapshot.params.resourcename;
             this._portalActionService.updateDiagnoseCategoryBladeTitle(`${this.resourceName} | ` + this.categoryName);
+          });  
         });
     }
 
