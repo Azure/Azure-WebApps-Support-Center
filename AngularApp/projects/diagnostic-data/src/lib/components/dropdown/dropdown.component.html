@@ -10,7 +10,7 @@
       <div class="dropdown-container">
         <div class="dropdown">
           <button class="btn btn-default dropdown-toggle dropdown-button" type="button" id="dropdownMenuId" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="true">
+            aria-haspopup="true" aria-expanded="false">
             <span [innerHtml]="selectedKey"></span>
             <span class="caret"></span>
           </button>
@@ -29,7 +29,8 @@
 
   <div class="body-container">
       <div *ngFor="let data of selectedData" class="dynamic-data-container">
-          <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime"></dynamic-data>
+          <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime" [xAxisPlotBands]="xAxisPlotBands" 
+          [zoomBehavior] = "zoomBehavior" (XAxisSelection)="onXAxisSelection($event)" [isAnalysisView]="isAnalysisView"></dynamic-data>
         </div>
   </div>
   

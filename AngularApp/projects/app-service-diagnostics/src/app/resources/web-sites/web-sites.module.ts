@@ -16,7 +16,6 @@ import { DiagnosticToolsComponent } from './components/diagnostic-tools/diagnost
 import { ContentService } from '../../shared-v2/services/content.service';
 import { WebSitesService } from './services/web-sites.service';
 import { LoggingV2Service } from '../../shared-v2/services/logging-v2.service';
-import { LiveChatService } from '../../shared-v2/services/livechat.service';
 import { CXPChatCallerService } from '../../shared-v2/services/cxp-chat-caller.service';
 
 const ResourceRoutes = RouterModule.forChild([
@@ -58,7 +57,6 @@ const ResourceRoutes = RouterModule.forChild([
     ContentService,
     SiteFeatureService,
     LoggingV2Service,
-    LiveChatService,
     CXPChatCallerService,
     { provide: ResourceService, useExisting: WebSitesService },
     { provide: CategoryService, useClass: SitesCategoryService },

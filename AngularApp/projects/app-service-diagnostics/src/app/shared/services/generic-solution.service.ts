@@ -5,7 +5,9 @@ import { DefaultUrlSerializer, Router } from '@angular/router';
 import { PortalService } from '../../startup/services/portal.service';
 import { OpenBladeInfo } from '../models/portal';
 import { ArmService } from './arm.service';
+import { DaasService } from './daas.service';
 import { PortalActionService } from './portal-action.service';
+import { AppInsightsService } from './appinsights/appinsights.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +23,8 @@ export class GenericSolutionService {
 
   constructor(private armService: ArmService, private portalService: PortalService,
     private logService: TelemetryService, private portalNavService: PortalActionService,
-    private _router: Router) {}
+    private appInsightsService:AppInsightsService,
+    private _daasService: DaasService, private _router: Router) {}
 
   assertPropertyExists(dict: {}, property: string) {
     if (!(property in dict) || property == undefined) {
@@ -104,12 +107,30 @@ export class GenericSolutionService {
         this.portalNavService.openTifoilSecurityBlade();
         break;
       }
+      case 'appinsightsblade': {
+        this.appInsightsService.openAppInsightsBlade();
+        break;
+      }
+      case 'appinsightsfailuresblade': {
+        this.appInsightsService.openAppInsightsFailuresBlade();
+        break;
+      }
+      case 'appinsightsperformanceblade': {
+        this.appInsightsService.openAppInsightsPerformanceBlade();
+        break;
+      }
       default: {
         this.portalService.openBlade(bladeInfo, 'troubleshoot');
       }
     }
 
     return of(bladeInfo.detailBlade);
+  }
+
+  ToggleStdoutSetting(resourceUri: string, actionOptions: {enabled: boolean}): Observable<any> {
+    this.logService.logEvent('SolutionToggleStdoutSetting', {'resourceUri': resourceUri, 'enabled': actionOptions.enabled.toString()});
+
+    return this._daasService.putStdoutSetting(resourceUri, actionOptions.enabled);
   }
 
 }

@@ -66,7 +66,6 @@ export class ContentService {
 
 export interface SearchResults {
   queryContext: { originalQuery: string };
-
 }
 
 

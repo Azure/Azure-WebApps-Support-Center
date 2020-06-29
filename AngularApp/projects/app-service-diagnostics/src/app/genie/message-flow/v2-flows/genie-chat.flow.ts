@@ -36,12 +36,12 @@ export class GenieChatFlow extends IMessageFlowProvider {
     welcomeMessageGroup.messages.push(new TextMessage(welcomeMessage, MessageSender.System, 200));
  
     const feedbackMessageGroup: MessageGroup = new MessageGroup('feedback', [], () => '');
-    feedbackMessageGroup.messages.push(new FeedbackButtonListMessage('Did this information help you solve the issue?',this._getButtonListDidYouFindHelpfulinNewGenie('more-help', 'I need further assistance'), 'Availability and Performance'));
+    feedbackMessageGroup.messages.push(new FeedbackButtonListMessage('Did this information help you solve the issue?',this._getButtonListDidYouFindHelpfulinNewGenie(), 'Availability and Performance'));
    const helpfulGroup: MessageGroup = new MessageGroup('feedback-helpful', [], () => 'feedback-textbox');
    helpfulGroup.messages.push(new TextMessage('Yes', MessageSender.User, 200));
    helpfulGroup.messages.push(new TextMessage('Good to hear! Could you let us know how helpful was this?', MessageSender.System, 500));
    helpfulGroup.messages.push(new GenieFeedbackMessage([], 'Submit', 'Feedback', 'Support Home'));
-   helpfulGroup.messages.push(new TextMessage('Thank you for your feedback! What else can I help you with today? Type in your question below.'));
+   helpfulGroup.messages.push(new TextMessage('Thank you so much for your feedback! If you need more help, type in your question below. Otherwise, exit the session by using the close button in the top right corner.'));
 
    const notHelpfulGroup: MessageGroup = new MessageGroup('feedback-not-helpful', [], () => 'feedback-textbox');
    notHelpfulGroup.messages.push(new TextMessage('No', MessageSender.User, 200));
@@ -96,10 +96,6 @@ export class GenieChatFlow extends IMessageFlowProvider {
       const messageGroupList: MessageGroup[] = [];
 
       const mainMenuId: string = `main-menu-${category.id}`;
-      const docSearch: string = `in-chat-search-${category.id}`;
-      const moreHelpId: string = `more-help-${category.id}`;
-      const showTiles: string = `show-all-tiles-${category.id}`;
-      const feedback: string = `feedback-${category.id}`;
 
       let serviceName: string = 'App Service Diagnostics';
       let welcomeMessage = "genie-Welcome to App Service Diagnostics. My name is Genie and I am here to help you answer any questions you may have about diagnosing and solving your problems with your app. Please describe the issue of your app.";
@@ -119,39 +115,16 @@ export class GenieChatFlow extends IMessageFlowProvider {
     }, this));
   }
 
-  private _getButtonListDidYouFindHelpful(furtherAssistance: string, furtherAssistanceString: string, mainMenuId?: string): any {
-    const buttons = [{
-      title: 'Yes I found the right information',
-      type: ButtonActionType.Continue,
-      next_key: ''
-    },
-    {
-      title: furtherAssistanceString,
-      type: ButtonActionType.SwitchToOtherMessageGroup,
-      next_key: furtherAssistance
-    }];
-
-    if (mainMenuId) {
-      buttons.push({
-        title: 'Show Tile Menu',
-        type: ButtonActionType.SwitchToOtherMessageGroup,
-        next_key: mainMenuId
-      });
-    }
-
-    return buttons;
-  }
-
-  private _getButtonListDidYouFindHelpfulinNewGenie(furtherAssistance: string, furtherAssistanceString: string, mainMenuId?: string): any {
+  private _getButtonListDidYouFindHelpfulinNewGenie(): any {
     const buttons = [{
       title: 'Yes',
       type: ButtonActionType.GetFeedback,
-      next_key: 'feedbackhelpful'
+      next_key: 'feedback-helpful'
     },
     {
       title: 'No',
       type: ButtonActionType.GetFeedback,
-      next_key: 'feedbacknothelpful'
+      next_key: 'feedback-not-helpful'
     }];
 
     return buttons;

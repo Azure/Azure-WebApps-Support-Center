@@ -37,13 +37,14 @@ export class AppInsightsService {
         connectedWithSupportCenter: undefined,
         resourceUri: undefined,
         name: undefined,
-        appId: undefined
+        appId: undefined,
+        appSettingsHaveInstrumentationKey:true
     };
 
-    subscriptionId:string;
-    resourceGroup:string;
-    siteName:string;
-    slotName:string;
+    subscriptionId: string;
+    resourceGroup: string;
+    siteName: string;
+    slotName: string;
 
     constructor(private http: HttpClient, private authService: AuthService, private armService: ArmService, private siteService: SiteService, private appAnalysisService: AppAnalysisService, private portalService: PortalService, private portalActionService: PortalActionService, private logger: AvailabilityLoggingService, private _telmetryService: TelemetryService) {
         this.loadAppInsightsResourceObservable = new BehaviorSubject<boolean>(null);
@@ -159,8 +160,10 @@ export class AppInsightsService {
             }),
             mergeMap(instrumentationKey => {
                 if (this.isNotNullOrEmpty(instrumentationKey)) {
+                    this.appInsightsSettings.appSettingsHaveInstrumentationKey = true;
                     return this.getAppInsightsResourceForInstrumentationKey(instrumentationKey, this.subscriptionId);
                 } else {
+                    this.appInsightsSettings.appSettingsHaveInstrumentationKey = false;
                     return of('');
                 }
             })
@@ -168,10 +171,14 @@ export class AppInsightsService {
     }
 
     getAppInsightsResourceForInstrumentationKey(instrumentationKey: string, subscriptionId: string): Observable<string> {
+        let appInsightsResourceId: string = "";
         const url = `/subscriptions/${subscriptionId}/providers/microsoft.insights/components`;
         return this.armService.getResourceCollection<ResponseMessageCollectionEnvelope<ResponseMessageEnvelope<AppInsightsResponse>[]>>(url, "2015-05-01", true).pipe(map((response: ResponseMessageEnvelope<AppInsightsResponse>[]) => {
             let appInsightsUri = response.find(i => i.properties && i.properties.InstrumentationKey && i.properties.InstrumentationKey === instrumentationKey)
-            return appInsightsUri.id;
+            if (appInsightsUri != null && appInsightsUri.id != null) {
+                appInsightsResourceId = appInsightsUri.id;
+            }
+            return appInsightsResourceId;
         }));
     }
 
@@ -247,17 +254,17 @@ export class AppInsightsService {
         return (item != undefined && item != '');
     }
 
-    public logAppInsightsConnectionError(resourceUri: string, error: any) {
-        this._telmetryService.logEvent(TelemetryEventNames.AppInsightsConnectionError, {
+    public logAppInsightsError(resourceUri: string, telmetryEvent:string,  error: any) {
+        this._telmetryService.logEvent(telmetryEvent, {
             'resourceUri': resourceUri,
             'error': error
         });
     }
 
-    public logAppInsightsConnected(resourceUri: string) {
-        this._telmetryService.logEvent(TelemetryEventNames.AppInsightsConnected,
+    public logAppInsightsEvent(resourceUri: string, telmetryEvent:string) {
+        this._telmetryService.logEvent(telmetryEvent,
             {
-                'resouceUri': resourceUri
+                'resourceUri': resourceUri
             });
     }
 }

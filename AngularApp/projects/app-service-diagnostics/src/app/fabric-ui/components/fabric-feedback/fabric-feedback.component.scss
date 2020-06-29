@@ -1,6 +1,7 @@
 .selected-icon {
     // border: 1px dotted blue;
     color: rgb(255, 185, 0);
+    position: relative;
 }
 
 // .feedback-info {
@@ -43,4 +44,23 @@
 
 .svg-icon {
     fill:red;
+}
+
+.feedback-icon .tooltiptext {
+    display:none;
+    background: white;
+    color: black;
+}
+
+.feedback-icon:hover .tooltiptext {
+    display: block;
+    opacity: 1;
+    background: white!important;
+    white-space: nowrap;
+    z-index: 999;
+    margin-top: 6px;
+    position: absolute;
+    border: 1px solid black;
+    padding: 3px;
+    font-size: 12px;
 }

@@ -1,7 +1,7 @@
 import { Moment } from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import {
-  Component, ComponentFactoryResolver, Input, OnInit, ViewChild, ViewContainerRef
+  Component, ComponentFactoryResolver, Input, OnInit, ViewChild, ViewContainerRef, Output, EventEmitter
 } from '@angular/core';
 import { DiagnosticData, Rendering, RenderingType } from '../../models/detector';
 import { CardSelectionComponent } from '../card-selection/card-selection.component';
@@ -26,6 +26,7 @@ import { CompilationProperties } from '../../models/compilation-properties';
 import { ChangeAnalysisOnboardingComponent } from '../changeanalysis-onboarding/changeanalysis-onboarding.component';
 import { ChangesetsViewComponent } from '../changesets-view/changesets-view.component';
 import { AppDependenciesComponent } from '../app-dependencies/app-dependencies.component';
+import { DetectorListAnalysisComponent } from '../detector-list-analysis/detector-list-analysis.component';
 import { SummaryCardsComponent } from '../summary-cards/summary-cards.component';
 import { InsightsV4Component } from '../insights-v4/insights-v4.component';
 import { DropdownV4Component } from '../dropdown-v4/dropdown-v4.component';
@@ -33,6 +34,9 @@ import { CardSelectionV4Component } from '../card-selection-v4/card-selection-v4
 import { VersionService } from '../../services/version.service';
 import { ConnectAppInsightsComponent } from '../connect-app-insights/connect-app-insights.component';
 import { DetectorSearchComponent } from '../detector-search/detector-search.component';
+import { xAxisPlotBand, zoomBehaviors, XAxisSelection } from '../../models/time-series';
+import { DynamicInsightV4Component } from '../dynamic-insight-v4/dynamic-insight-v4.component';
+import { TelemetryService } from '../../services/telemetry/telemetry.service';
 
 @Component({
   selector: 'dynamic-data',
@@ -42,7 +46,7 @@ import { DetectorSearchComponent } from '../detector-search/detector-search.comp
     TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent,
     InsightsComponent, TimeSeriesInstanceGraphComponent, DynamicInsightComponent, MarkdownViewComponent,
     DetectorListComponent, DropdownComponent, CardSelectionComponent, SolutionComponent, GuageControlComponent, FormComponent,
-    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent, ConnectAppInsightsComponent, DetectorSearchComponent, SummaryCardsComponent, InsightsV4Component, DropdownV4Component, CardSelectionV4Component
+    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent, DetectorListAnalysisComponent, ConnectAppInsightsComponent, DetectorSearchComponent, SummaryCardsComponent, InsightsV4Component, DropdownV4Component, CardSelectionV4Component,DynamicInsightV4Component
   ]
 })
 export class DynamicDataComponent implements OnInit {
@@ -61,14 +65,49 @@ export class DynamicDataComponent implements OnInit {
   @Input() detector: string = '';
   @Input() compilationPackage: CompilationProperties;
   @Input() isAnalysisView: boolean = false;
+  private _instanceRef: DataRenderBaseComponent = null;
+  private _xAxisPlotBands: xAxisPlotBand[] = null;
+  @Input() public set xAxisPlotBands(value:xAxisPlotBand[]) {
+    if(!!value) {
+      this._xAxisPlotBands = value;
+      if(this._instanceRef != null) {
+        this._instanceRef.xAxisPlotBands = value;      
+      }      
+    }    
+  }
+  public get xAxisPlotBands() {
+    return this._xAxisPlotBands;
+  }
+
+  private _zoomBehavior: zoomBehaviors = zoomBehaviors.Zoom;
+  @Input() public set zoomBehavior(value:zoomBehaviors) {
+    if(!!value) {
+      this._zoomBehavior = value;
+      if(this._instanceRef != null) {
+        this._instanceRef.zoomBehavior = value;      
+      }
+    }
+  }
+  public get zoomBehavior() {
+      return this._zoomBehavior;
+  }
+
+  @Output() XAxisSelection:EventEmitter<XAxisSelection> = new EventEmitter<XAxisSelection>();	
+
   @ViewChild('dynamicDataContainer', { read: ViewContainerRef, static: true }) dynamicDataContainer: ViewContainerRef;
   private isLegacy: boolean;
-  constructor(private componentFactoryResolver: ComponentFactoryResolver, private versionService: VersionService) { }
+  constructor(private componentFactoryResolver: ComponentFactoryResolver, private versionService: VersionService, private telemetryService: TelemetryService) { }
 
   ngOnInit(): void {
     this.versionService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy);
     this.dataBehaviorSubject.subscribe((diagnosticData: DiagnosticData) => {
       const component = this._findInputComponent((<Rendering>diagnosticData.renderingProperties).type);
+      if (component == null)
+      {
+        const rendering = (<Rendering>diagnosticData.renderingProperties).type;
+        this.telemetryService.logTrace(`No component found for rendering type : ${RenderingType[rendering]}`);
+        return;
+      }
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
       const viewContainerRef = this.dynamicDataContainer;
       viewContainerRef.clear();
@@ -84,6 +123,12 @@ export class DynamicDataComponent implements OnInit {
       instance.detector = this.detector;
       instance.compilationPackage = this.compilationPackage;
       instance.isAnalysisView = this.isAnalysisView;
+      instance.xAxisPlotBands = this.xAxisPlotBands;
+      instance.zoomBehavior = this.zoomBehavior;      
+      instance.XAxisSelection.subscribe(XAxisSelectionEventArgs => {
+        this.XAxisSelection.emit(XAxisSelectionEventArgs);
+      });
+      this._instanceRef = instance;
     });
   }
 
@@ -102,7 +147,7 @@ export class DynamicDataComponent implements OnInit {
       case RenderingType.TimeSeriesPerInstance:
         return TimeSeriesInstanceGraphComponent;
       case RenderingType.DynamicInsight:
-        return DynamicInsightComponent;
+        return this.isLegacy? DynamicInsightComponent : DynamicInsightV4Component;
       case RenderingType.Markdown:
         return MarkdownViewComponent;
       case RenderingType.DetectorList:

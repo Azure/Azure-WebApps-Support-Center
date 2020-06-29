@@ -6,30 +6,30 @@
     </div>
     <div class="action-box" *ngIf="siteToBeDiagnosed && !checkingAppInfo">
         <div>
-            <table style="border:none;">
+            <table role="presentation" class="table table-borderless">
                 <tr>
-                    <td>App: </td>
-                    <td class="highlight-blue">
+                    <th tabindex="0" class="unbold" scope="row">App: </th>
+                    <td tabindex="0" class="highlight-blue">
                         <b>{{siteToBeDiagnosed.siteName}}</b>
                     </td>
                 </tr>
                 <tr>
-                    <td>Mode: </td>
+                    <th tabindex="0" class="unbold" scope="row">Mode: </th>
                     <td>
-                        <div class="btn-group" role="group">
-                            <button [disabled]="sessionInProgress" type="button" class="btn btn-default btn-xs"
-                                [ngClass]="{'btn-primary':collectionMode === 0}" (click)="selectMode(0);">
+                        <div class="btn-group" role="radiogroup">
+                            <button tabindex="0" [disabled]="sessionInProgress" role="radio" class="btn btn-default btn-xs"
+                                [ngClass]="{'btn-primary':collectionMode === 0}" (click)="selectMode(0);" [attr.aria-checked]="collectionMode === 0">
                                 Collect and Analyze Data
                             </button>
-                            <button [disabled]="sessionInProgress" type="button" class="btn btn-default btn-xs"
-                                [ngClass]="{'btn-primary':collectionMode === 1}" (click)="selectMode(1);">
+                            <button tabindex="0" [disabled]="sessionInProgress" role="radio" class="btn btn-default btn-xs"
+                                [ngClass]="{'btn-primary':collectionMode === 1}" (click)="selectMode(1);" [attr.aria-checked]="collectionMode === 1">
                                 Collect Data Only
                             </button>
                         </div>
                     </td>
                 </tr>
                 <tr *ngIf="!error">
-                    <td valign="top">
+                    <th tabindex="0" class="unbold" scope="row" valign="top">
                         Instance(s):
                         <div class="tool-tip">
                             <i class="fa fa-info-circle" style="color:rgb(84, 143, 255)"></i>
@@ -38,8 +38,8 @@
                                 the App Service Plan.
                             </span>
                         </div>
-                    </td>
-                    <td class="highlight-blue">
+                    </th>
+                    <td tabindex="0" class="highlight-blue">
                         <div *ngFor="let instance of instancesSelected;let i = index">
                             <input [attr.aria-label]="instance.InstanceName" type="checkbox" [disabled]="sessionInProgress"
                                 value="{{ instance.InstanceName }}" name="{{ instance.InstanceName }}" [(ngModel)]="instancesSelected[i].Selected" />
@@ -102,7 +102,7 @@
                 </div>
 
                 <button [disabled]="getSelectedInstanceCount() === 0 || sessionInProgress || operationInProgress || retrievingInstancesFailed" [hidden]="sessionCompleted"
-                    class="btn btn-primary" (click)="collectProfilerTrace()">Collect
+                    class="btn btn-primary" (click)="collectProfilerTrace()" (keyup.enter)="collectProfilerTrace()" (keyup.space)="collectProfilerTrace()">Collect
                     Profiler Trace</button>
                     <div *ngIf="getSelectedInstanceCount() === 0" style="font-size: smaller;color: red;margin-top: 5px;margin-right: 10px;">* Choose at least one instance</div>
                 <div *ngIf="!isAspnetCore" style="margin-top:5px">

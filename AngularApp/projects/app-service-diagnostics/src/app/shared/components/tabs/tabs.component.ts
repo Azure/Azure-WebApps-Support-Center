@@ -1,7 +1,6 @@
 import { Component, OnInit, forwardRef, Inject } from '@angular/core';
 import { INavigationItem } from '../../models/inavigationitem';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { CustomReuseStrategy } from '../../../app-route-reusestrategy.service';
 import { filter } from 'rxjs/operators';
 import { VersionTestService } from '../../../fabric-ui/version-test.service';
 import { AuthService } from '../../../startup/services/auth.service';
@@ -15,7 +14,7 @@ export class TabsComponent implements OnInit {
 
   public navigationItems: INavigationItem[];
   public isLegacy:boolean = true;
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _routeReuseStrategy: CustomReuseStrategy,private _versionTestService:VersionTestService,private _authService: AuthService) {
+    constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _versionTestService:VersionTestService,private _authService: AuthService) {
     this.navigationItems = [];
     this._versionTestService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy);
   }
@@ -102,7 +101,6 @@ export class TabsComponent implements OnInit {
     // We dont want to close the first tab.
     if (index > 0) {
       const tab = this.navigationItems[index];
-      this._routeReuseStrategy.removeCachedRoute(tab.url);
       this.navigationItems.splice(index, 1);
       // this._logger.LogTabClosed(tab.title);
       if (tab.isActive) {

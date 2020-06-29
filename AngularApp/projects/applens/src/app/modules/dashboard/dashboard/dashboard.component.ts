@@ -133,8 +133,6 @@ export class DashboardComponent implements OnDestroy {
   triggerSearch(){
     this._searchService.searchTerm = this._searchService.searchTerm.trim();
     if (this._searchService.searchIsEnabled && this._searchService.searchTerm && this._searchService.searchTerm.length>3){
-      this._searchService.searchId = uuid();
-      this._searchService.newSearch = true;
       this.navigateTo(`search`, {searchTerm: this._searchService.searchTerm}, 'merge');
     }
   }

@@ -112,30 +112,33 @@ export class DiagnosticToolsComponent {
       }
     });
 
-    this.toolCategories.push(<SiteFilteredItem<any>>{
-      appType: AppType.WebApp,
-      platform: OperatingSystem.windows,
-      sku: Sku.NotDynamic,
-      hostingEnvironmentKind:HostingEnvironmentKind.All,
-      stack: '',
-      item: {
-        title: 'Premium Tools',
-        tools: this._sitesFeatureService.premiumTools.map(tool => {
-          return <SiteFilteredItem<Tile>>{
-            appType: tool.appType,
-            platform: tool.platform,
-            sku: tool.sku,
-            hostingEnvironmentKind: tool.hostingEnvironmentKind,
-            stack: tool.stack,
-            item: {
-              title: tool.item.name,
-              action: tool.item.clickAction
-            }
-          };
-        })
-      }
-    });
-
+    if (this._sitesFeatureService.premiumTools && this._sitesFeatureService.premiumTools.length > 0)
+    {
+      this.toolCategories.push(<SiteFilteredItem<any>>{
+        appType: AppType.WebApp,
+        platform: OperatingSystem.windows,
+        sku: Sku.NotDynamic,
+        hostingEnvironmentKind:HostingEnvironmentKind.All,
+        stack: '',
+        item: {
+          title: 'Premium Tools',
+          tools: this._sitesFeatureService.premiumTools.map(tool => {
+            return <SiteFilteredItem<Tile>>{
+              appType: tool.appType,
+              platform: tool.platform,
+              sku: tool.sku,
+              hostingEnvironmentKind: tool.hostingEnvironmentKind,
+              stack: tool.stack,
+              item: {
+                title: tool.item.name,
+                action: tool.item.clickAction
+              }
+            };
+          })
+        }
+      });
+    }
+    
     if (this.webSiteService.appStack && this.webSiteService.appStack != '') {
       this.selectStack(this.webSiteService.appStack);
     }

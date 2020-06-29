@@ -54,7 +54,9 @@
                   easily.
                 </div>
 
-                <button type="button" class="btn btn-info" class="app-insights-blade"
+                <button type="button" class="btn btn-info app-insights-blade"
+                  aria-label="Open Application Insights Blade" tabindex="0" role="button"
+                  (keyup.enter)="this._appInsightsService.openAppInsightsBlade()"
                   (click)="this._appInsightsService.openAppInsightsBlade()">
                   Open Application Insights Blade
                   <i class="fa fa-chevron-right"></i>
@@ -91,7 +93,9 @@
                       easily.
                     </div>
 
-                    <button type="button" class="btn btn-info" class="app-insights-blade"
+                    <button type="button" class="btn btn-info app-insights-blade"
+                      aria-label="Enable Application Insights" tabindex="0" role="button"
+                      (keyup.enter)="this._appInsightsService.openAppInsightsBlade()"
                       (click)="this._appInsightsService.openAppInsightsBlade()">
                       Enable Application Insights
                       <i class="fa fa-chevron-right"></i>
@@ -110,7 +114,10 @@
               [applicationInsightContainerStyle]="1">
               <dynamic-data [diagnosticData]="data.diagnosticData" [startTime]="startTime" [endTime]="endTime">
               </dynamic-data>
-              <button type="button" class="btn btn-info" class="app-insights-blade"
+              <button type="button" class="btn btn-info app-insights-blade"
+                attr.aria-label="Open Application Insights - {{data.poralBladeInfo.description}}" tabindex="0"
+                role="button"
+                (keyup.enter)="this._appInsightsService.openAppInsightsExtensionBlade(data.poralBladeInfo.bladeName)"
                 (click)="_appInsightsService.openAppInsightsExtensionBlade(data.poralBladeInfo.bladeName)">
                 {{data.poralBladeInfo.description}}
                 <i class="fa fa-chevron-right"></i>

@@ -1,3 +1,4 @@
+import * as momentNs from 'moment';
 
 export interface ArmObject {
     id: string;
@@ -199,3 +200,17 @@ interface SampleUtterance {
   text: string;
   links: string[];
 }
+
+export class DownTime {
+    StartTime: momentNs.Moment;
+    EndTime: momentNs.Moment;
+    downTimeLabel: string;
+    isSelected: boolean;
+}
+
+export const DowntimeInteractionSource = {
+    Graph: 'Graph',
+    Dropdown: 'Dropdown',
+    DefaultFromDetector: 'DefaultFromDetector',
+    DefaultFromUI: 'DefaultFromUI'
+};

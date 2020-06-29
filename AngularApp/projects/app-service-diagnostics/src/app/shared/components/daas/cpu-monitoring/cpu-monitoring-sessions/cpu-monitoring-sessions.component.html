@@ -8,7 +8,7 @@
       <div *ngIf="!gettingSessions" style="margin-top:15px">
         <p style="margin-bottom:15px">{{ description }}</p>
 
-        <div *ngIf="monitoringSessions == null || monitoringSessions.length === 0" class="message">
+        <div tabindex="0" *ngIf="monitoringSessions == null || monitoringSessions.length === 0" class="message">
           No rules found!
         </div>
 

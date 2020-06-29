@@ -13,14 +13,15 @@
               class="msportalfx-svg-c22"></path>
           </g>
         </svg>
-        <p>Are you satisfied with your experience?</p>
+        <label aria-required="true">Are you satisfied with your experience?</label>
       </div>
-      <div style="display: flex; font-size: 25px;">
+      <div style="display: flex; font-size: 25px;" id="feedback-icons">
         <div *ngFor="let feedbackIcon of feedbackIcons;let i = index" (click)="setRating(i)"
           [ngClass]="{'selected-icon':rating - 1 === i}" 
           class="feedback-icon"
           style="padding: 5px;" (keyup.enter)="setRating(i)" tabindex="0">
-          <fab-icon [iconName]="feedbackIcon"></fab-icon>
+          <fab-icon [iconName]="feedbackIcon.id" [ariaLabel]="feedbackIcon.name"></fab-icon>
+          <div class="tooltiptext">{{feedbackIcon.text}}</div>
         </div>
       </div>
       <textarea [(ngModel)]="feedbackText" placeholder="Tell us about your experience..." tabindex="0" rows="7"

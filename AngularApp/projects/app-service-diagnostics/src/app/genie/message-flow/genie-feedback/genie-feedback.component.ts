@@ -14,7 +14,7 @@ import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
     styleUrls: ['./genie-feedback.component.scss']
 })
 export class GenieFeedbackComponent extends ButtonMessageComponent {
-    @Input() ratingEventProperties: any;
+    @Input() ratingEventProperties: any={};
     dimissObservable: Observable<void>;
     feedbackText: string = "";
     feedbackIcons: string[] = ["EmojiDisappointed", "Sad", "EmojiNeutral", "Emoji2", "Emoji"];

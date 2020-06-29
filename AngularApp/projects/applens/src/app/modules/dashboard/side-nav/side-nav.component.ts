@@ -133,7 +133,6 @@ export class SideNavComponent implements OnInit {
   }
 
   initializeDetectors() {
-
     this._diagnosticApiService.getDetectors().subscribe(detectorList => {
       if (detectorList) {
         detectorList.forEach(element => {
@@ -157,12 +156,12 @@ export class SideNavComponent implements OnInit {
 
           categoryMenuItem.subItems.push(menuItem);
           if (element.type === DetectorType.Analysis) {
-
             let onClickAnalysisParent = () => {
               this.navigateTo(`analysis/${element.id}`);
             };
 
             let isSelectedAnalysis = () => {
+              this.getCurrentRoutePath();
               return this.currentRoutePath && this.currentRoutePath.join('/') === `analysis/${element.id}`;
             }
 

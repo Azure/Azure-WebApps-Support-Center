@@ -1,5 +1,5 @@
 import { AdalService } from 'adal-angular4';
-import { DetectorMetaData, DetectorResponse, QueryResponse } from 'diagnostic-data';
+import { DetectorMetaData, DetectorResponse, QueryResponse, TelemetryService } from 'diagnostic-data';
 import {map, retry,  catchError, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
@@ -8,6 +8,8 @@ import { environment } from '../../../environments/environment';
 import { HttpMethod } from '../models/http';
 import { Package } from '../models/package';
 import { CacheService } from './cache.service';
+import { Guid } from 'projects/app-service-diagnostics/src/app/shared/utilities/guid';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class DiagnosticApiService {
@@ -18,7 +20,7 @@ export class DiagnosticApiService {
   public Location: string = null;
 
   constructor(private _httpClient: HttpClient, private _cacheService: CacheService,
-    private _adalService: AdalService) { }
+    private _adalService: AdalService, private _telemetryService: TelemetryService, private _router:Router) { }
 
   public get diagnosticApi(): string {
     return environment.production ? '' : this.localDiagnosticApi;
@@ -222,6 +224,26 @@ export class DiagnosticApiService {
     additionalHeaders?: Map<string, string>): Observable<T> {
     let url = `${this.diagnosticApi}api/invoke`
     let request: Observable<any>;
+
+    if(additionalHeaders == null) {
+      additionalHeaders = new Map<string, string>();
+    }
+
+    let requestId:string = Guid.newGuid();
+    if(!additionalHeaders.has('x-ms-request-id') || additionalHeaders.get('x-ms-request-id') == null || additionalHeaders.get('x-ms-request-id') == '' ) {
+      additionalHeaders.set('x-ms-request-id', requestId);
+    }
+
+    let eventProps = {
+      'resourceId': path,            
+      'requestId': requestId,
+      'requestUrl': url,
+      'routerUrl': this._router.url,
+      'targetRuntime': "Liberation"
+    };
+    this._telemetryService.logEvent("RequestRoutingDetails", eventProps);
+
+    
 
     if (getFullResponse) {
       request = this._httpClient.post<T>(url, body, {

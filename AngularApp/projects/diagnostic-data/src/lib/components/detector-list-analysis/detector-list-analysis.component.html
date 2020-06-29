@@ -1,6 +1,35 @@
 <span *ngIf="showPreLoadingError" style="margin-left:30px;margin-top:10px;">{{preLoadingErrorMessage}}</span>
 <span *ngIf="showPreLoader"><i class="fa fa-circle-o-notch fa-2x fa-spin preloading-icon"></i></span>
-<div [hidden]="detectorId !== ''">
+<div *ngIf = "searchMode != SearchAnalysisMode.Genie && inDrillDownMode && this.isPublic">
+  <div>
+    <div style="display: inline-block;margin-left: 20px">
+      <h2>{{ detectorName }}</h2>
+    </div>
+    <div style="display: inline-block;margin-left: 10px">
+      <a tabindex="0" (keyup.enter)="goBackToAnalysis()" aria-label="Link to go back to the analysis view" role="button"
+        (click)="goBackToAnalysis()" >Back to Observations</a>
+    </div>
+  </div>
+</div>
+<div *ngIf = "inDrillDownMode && !this.isPublic">
+  <div style="margin-left:20px" class="tab-container" >
+    <div style="margin-left:20px;margin-bottom: 10px">
+      <div style="display: inline-block">
+        <h4>{{ detectorName }}</h4>
+      </div>
+      <div class="pull-right">
+  
+        <div style="display: inline-block">
+            <button class="btn btn-sm" (click)="navigateToDetector()">Go to Detector</button>
+        </div>
+        <div style="display: inline-block;margin-left: 10px;margin-right:20px">
+            <button class="btn btn-sm" (click)="goBackToAnalysis()">Back to Observations</button>
+        </div>
+      </div>
+    </div>  
+  </div>
+</div>
+<div *ngIf = "!inDrillDownMode">
   <div *ngIf="getPendingDetectorCount() > 0" style="margin-left:30px;margin-bottom: 30px">
     <i class="fa fa-circle-o-notch fa-2x fa-spin spin-icon" aria-hidden="true"></i>
     <span [@loadingAnimation]="showLoadingMessage ? 'shown' : 'hidden'"
@@ -100,7 +129,7 @@
                     code easily.
                   </div>
                   <div class="app-insights-blade-link">
-                    <a (keyup.enter)="this._appInsightsService.openAppInsightsBlade()" role="button"
+                    <a (keyup.enter)="this._appInsightsService.openAppInsightsBlade()" tabindex="0" role="button"
                       aria-label="Enable Application Insights link"
                       (click)="this._appInsightsService.openAppInsightsBlade()">
                       Enable Application Insights
@@ -124,7 +153,7 @@
                     <dynamic-data [diagnosticData]="data.diagnosticData" [startTime]="startTime" [endTime]="endTime">
                     </dynamic-data>
                     <div class="app-insights-blade-link">
-                      <a aria-label="Link to open Application Insights blade" role="button"
+                      <a aria-label="Link to open Application Insights blade" tabindex="0" role="button"
                         (keyup.enter)="_appInsightsService.openAppInsightsExtensionBlade(data.poralBladeInfo.bladeName)"
                         (click)="_appInsightsService.openAppInsightsExtensionBlade(data.poralBladeInfo.bladeName)">
                         {{data.poralBladeInfo.description}}

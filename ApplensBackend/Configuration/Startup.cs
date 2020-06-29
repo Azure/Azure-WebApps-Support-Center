@@ -14,6 +14,9 @@ using AppLensV3.Authorization;
 using System.Collections.Generic;
 using AppLensV3.Services.CosmosDBHandler;
 using AppLensV3.Models;
+using Microsoft.ApplicationInsights.Extensibility;
+using AppLensV3.Services.ApplensTelemetryInitializer;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 
 namespace AppLensV3
 {
@@ -36,11 +39,16 @@ namespace AppLensV3
         }
 
         public IConfiguration Configuration { get; }
-        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddApplicationInsightsTelemetry(Configuration);
+            var applicationInsightsOptions = new ApplicationInsightsServiceOptions
+            {
+                InstrumentationKey = Configuration["ApplicationInsights:InstrumentationKey"],
+                EnableAdaptiveSampling = false
+            };
+            services.AddApplicationInsightsTelemetry(applicationInsightsOptions);
+            services.AddSingleton<ITelemetryInitializer, ApplensTelemetryInitializer>();
 
             services.AddSingleton(Configuration);
 

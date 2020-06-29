@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { PanelType } from 'office-ui-fabric-react';
 import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
 import { Globals } from '../../../globals';
@@ -8,15 +8,36 @@ import { Globals } from '../../../globals';
   templateUrl: './fabric-feedback.component.html',
   styleUrls: ['./fabric-feedback.component.scss']
 })
-export class FabricFeedbackComponent {
+export class FabricFeedbackComponent implements AfterViewInit {
   type: PanelType = PanelType.custom;
   // dismissSubject: Subject<void> = new Subject<void>();
   ratingEventProperties: any;
   feedbackText: string = "";
-  feedbackIcons: string[] = ["EmojiDisappointed", "Sad", "EmojiNeutral", "Emoji2", "Emoji"];
+  feedbackIcons: {id:string,text:string}[] = 
+  [
+      {
+        id:"EmojiDisappointed",
+        text:"very dissatisfied"
+      }, 
+      {
+        id:"Sad",
+        text:"dissatisfied "
+      },
+      {
+        id:"EmojiNeutral",
+        text:"ok"
+      },
+      {
+        id:"Emoji2",
+        text:"satisfied"
+      },
+      {
+        id:"Emoji",
+        text:"very satisfied"
+      }
+  ];
   submitted: boolean = false;
   rating: number = 0;
-
   constructor(protected telemetryService: TelemetryService, public globals: Globals) {
     // this.submitted = false;
   }
@@ -55,6 +76,18 @@ export class FabricFeedbackComponent {
 
   ngOnInit() {
     this.reset();
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      const eles = document.querySelectorAll("#feedback-icons i");
+      if(eles && eles.length > 0) {
+        eles.forEach((ele,index) => {
+          ele.setAttribute("role","button");
+          ele.setAttribute("name",this.feedbackIcons[index].text);
+        });
+      }
+    });
   }
 
   reset() {

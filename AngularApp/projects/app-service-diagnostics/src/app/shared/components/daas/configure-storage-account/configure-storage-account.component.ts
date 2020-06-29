@@ -145,7 +145,7 @@ export class ConfigureStorageAccountComponent implements OnInit {
         },
           error => {
             this.generatingSasUri = false;
-            this.error = error;
+            this.error = "Failed to set BlobSasUri for the current app. " + error;
           });
       }
     },

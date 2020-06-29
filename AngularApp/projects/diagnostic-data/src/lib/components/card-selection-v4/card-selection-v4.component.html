@@ -3,7 +3,7 @@
 
   <div class="card-flex">
     <div *ngFor="let card of cardSelections; let i = index"
-      class="card-container"  (click)="selectCard(card)"  tabindex="0" (keyup.enter)="selectCard(card)">
+      class="card-container"  (click)="selectCard(card)"  tabindex="0" (keyup.enter)="selectCard(card)" role="button">
       <div class="card-header">
         {{card.title}}
       </div>

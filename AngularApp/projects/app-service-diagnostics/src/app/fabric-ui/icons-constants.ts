@@ -44,6 +44,7 @@ export const icons: Set<string> = new Set(
         ToolIds.PHPProcessAnalyzer,
         ToolIds.JavaMemoryDump,
         ToolIds.JavaThreadDump,
+        ToolIds.JavaFlightRecorder,
 
         //Support Tools
         ToolIds.MetricPerInstanceApp,

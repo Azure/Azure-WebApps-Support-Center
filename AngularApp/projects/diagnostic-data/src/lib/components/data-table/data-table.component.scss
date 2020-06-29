@@ -1,4 +1,4 @@
-:host /deep/ .datatable-body-row.active .datatable-row-group {
+::ng-deep .datatable-body-row.active .datatable-row-group {
   background-color: lightgray !important;
   color:black !important;
 }

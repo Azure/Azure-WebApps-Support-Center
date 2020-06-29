@@ -9,7 +9,7 @@ import { environment } from 'projects/app-service-diagnostics/src/environments/e
 @Injectable()
 export class AuthService {
     public inIFrame: boolean;
-    private currentToken: string;
+    private currentToken: string = null;
 
     public resourceType: ResourceType;
 
@@ -28,6 +28,9 @@ export class AuthService {
 
     constructor(private _http: HttpClient, private _portalService: PortalService) {
         this.inIFrame = window.parent !== window;
+        this._portalService.getToken().subscribe(token => {
+            this.setAuthToken(token);
+        });
     }
 
     getAuthToken(): string {
@@ -60,8 +63,10 @@ export class AuthService {
                 if (info && info.resourceId) {
                     info.resourceId = info.resourceId.toLowerCase();
 
-                    this.currentToken = info.token;
-
+                    if (!this.currentToken){
+                        this.currentToken = info.token;
+                    }
+                    
                     if (!this.resourceType) {
                         this.resourceType = info.resourceId.toLowerCase().indexOf('hostingenvironments') > 0 ? ResourceType.HostingEnvironment : ResourceType.Site;
                     }

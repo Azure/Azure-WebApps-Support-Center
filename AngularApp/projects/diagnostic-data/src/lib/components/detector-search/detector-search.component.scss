@@ -47,6 +47,10 @@
     height: 30px;
 }
 
+.search-result-input::placeholder {
+    color: #716f6f
+}
+
 .successful-section-title {
     cursor:pointer;
     color:#1074fe;

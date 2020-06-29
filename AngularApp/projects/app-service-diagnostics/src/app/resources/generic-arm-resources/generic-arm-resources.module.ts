@@ -8,7 +8,6 @@ import { CategoryService } from '../../shared-v2/services/category.service';
 import { ContentService } from '../../shared-v2/services/content.service';
 import { FeatureService } from '../../shared-v2/services/feature.service';
 import { LoggingV2Service } from '../../shared-v2/services/logging-v2.service';
-import { LiveChatService } from '../../shared-v2/services/livechat.service';
 import { SupportTopicService } from '../../shared-v2/services/support-topic.service';
 import { CXPChatCallerService } from '../../shared-v2/services/cxp-chat-caller.service';
 
@@ -33,7 +32,6 @@ const ResourceRoutes = RouterModule.forChild([
     // ContentService,
     FeatureService,
     LoggingV2Service,
-    LiveChatService,
     CXPChatCallerService,
     ResourceService,
     CategoryService,

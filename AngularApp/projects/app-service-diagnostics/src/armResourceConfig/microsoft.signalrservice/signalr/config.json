@@ -1,0 +1,35 @@
+{
+    "homePageText": {
+        "title": "Azure Kubernetes Services Diagnostics",
+        "description": "Use Azure SignalR Service Diagnostics to investigate how your service is performing, diagnose issues, and discover how to improve its reliability. Select the problem category that best matches the information or tool that you're interested in:",
+        "searchBarPlaceHolder": "Search for common problems, tools and more"
+    },
+
+    "matchRegEx": "/Microsoft.SignalRService/SignalR/",
+    "searchSuffix": "signalr",
+    "azureServiceName": "Azure SignalR Services",
+    "armApiVersion": "2020-05-01",
+    "isSearchEnabled": true,
+    "isApplicableForLiveChat": false,
+    "categories": [
+        {
+            "id": "Control Plane",
+            "name": "Control Plane",
+            "description": "Investigate issues with the control plane of your cluster. Find out the common causes and investigate in detail.",
+            "keywords": [ "Config Sever", "App Health", "Availability" ],
+            "color": "rgb(186, 211, 245)",
+            "createFlowForCategory": false,
+            "chatEnabled": false
+        },
+        {
+            "id": "Customer",
+            "name": "Customer",
+            "description": "Are you having issues exploring platform logs or metrics? Are you having issue with some settings that you configured for your app? Find out if your signalr service is at a good state.",
+            "keywords": [ "Resources" ],
+            "color": "rgb(249, 213, 180)",
+            "createFlowForCategory": true,
+            "chatEnabled": false
+        }
+    ],
+    "pesId": "16477"
+}

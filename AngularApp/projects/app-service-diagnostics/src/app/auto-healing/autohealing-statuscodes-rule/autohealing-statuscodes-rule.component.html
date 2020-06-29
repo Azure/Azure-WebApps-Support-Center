@@ -7,44 +7,47 @@
       Add Status Codes rule
     </button>
   </div>
+  <div aria-live="polite" class="mt-1" [style.visibility]="displayDeleteRuleMessage ? 'visibile' : 'hidden'">
+    Rule Deleted
+  </div>
 </div>
 
 <div *ngIf="rule">
   <table class="table table-bordered" *ngIf="rule!==null && rule.length > 0" style="margin-top:20px">
     <thead>
       <tr>
-        <th>
+        <th tabindex="0">
           Count
         </th>
-        <th>
+        <th tabindex="0">
           Status Code
         </th>
-        <th>
+        <th tabindex="0">
           Sub-Status
         </th>
-        <th>
+        <th tabindex="0">
           Win32-Status
         </th>
-        <th>
+        <th tabindex="0">
           Interval
         </th>
-        <th>
+        <th tabindex="0">
           Action
         </th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let singleRule of rule; let i = index">
-        <td>{{ singleRule.count }}</td>
-        <td>{{ singleRule.status }}</td>
-        <td>{{ singleRule.subStatus }}</td>
-        <td>{{ singleRule.win32Status }}</td>
-        <td>{{ singleRule.timeInterval }}</td>
-        <td>
-          <button class="image-btn" *ngIf="!editMode" (click)="editStatusCodeRule(i)">
+        <td tabindex="0">{{ singleRule.count }}</td>
+        <td tabindex="0">{{ singleRule.status }}</td>
+        <td tabindex="0">{{ singleRule.subStatus }}</td>
+        <td tabindex="0">{{ singleRule.win32Status }}</td>
+        <td tabindex="0">{{ singleRule.timeInterval }}</td>
+        <td tabindex="0">
+          <button class="image-btn" *ngIf="!editMode" (click)="editStatusCodeRule(i)" title="Edit rule" name="editRule">
             <i class="fa fa-edit"></i>
           </button>
-          <button class="image-btn" *ngIf="!editMode" (click)="deleteStatusCodeRule(i)">
+          <button class="image-btn" *ngIf="!editMode" (click)="deleteStatusCodeRule(i)" title="Delete rule" name="deleteRule">
             <i class="fa fa-trash"></i>
           </button>
         </td>
@@ -58,8 +61,8 @@
         <label for="requestCountStatusCodes">After how many requests you want this condition to kick in?</label>
       </div>
       <div class="col-sm-4">
-        <input type="number" id="requestCountStatusCodes" aria-describedby="requestCountStatusCodesHelp" placeholder="Enter request count"
-          [(ngModel)]="currentRule.count">
+        <input aria-required="true" type="number" id="requestCountStatusCodes" aria-describedby="requestCountStatusCodesHelp" placeholder="Enter request count"
+          [(ngModel)]="currentRule.count" min="1" max="4294967295">
         <span style="color:red">*</span>
         <div *ngIf="currentRule.count <=0" class="alert alert-danger" style="margin-top:5px">
           Request count should be more than zero
@@ -71,7 +74,7 @@
         <label for="statusCode">What should be the status code for these requests?</label>
       </div>
       <div class="col-sm-4">
-        <input type="number" id="statusCode" placeholder="e.g. 500" min="100" [(ngModel)]="currentRule.status">
+        <input aria-required="true" type="number" id="statusCode" placeholder="e.g. 500" min="100" max="500" [(ngModel)]="currentRule.status">
         <span style="color:red">*</span>
         <div *ngIf="currentRule.status < 100 || currentRule.status > 530" class="alert alert-danger" style="margin-top:5px">
           Valid HTTP Status codes range from HTTP 100 to HTTP 530 only.
@@ -85,7 +88,7 @@
       </div>
 
       <div class="col-sm-4">
-        <input type="number" min="0" id="subStatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.subStatus">
+        <input aria-required="false" type="number" min="0" max="500" id="subStatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.subStatus">
       </div>
     </div>
 
@@ -94,7 +97,7 @@
         <label for="win32StatusCode">What should be the win32-status code for these requests?</label>
       </div>
       <div class="col-sm-4">
-        <input type="number" min="0" id="win32StatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.win32Status">
+        <input aria-required="false" type="number" min="0" max="4294967295" id="win32StatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.win32Status">
       </div>
     </div>
 
@@ -103,7 +106,7 @@
         <label for="durationStatusCode">What is the time interval (in seconds) in which the above condition should be met?</label>
       </div>
       <div class="col-sm-4">
-        <timespan [(timeSpan)]="currentRule.timeInterval" placeholder="e.g. 60" label="Check Duration"></timespan>
+        <timespan ControlId="durationStatusCode" [(timeSpan)]="currentRule.timeInterval" placeholder="e.g. 60"></timespan>
       </div>
     </div>
 

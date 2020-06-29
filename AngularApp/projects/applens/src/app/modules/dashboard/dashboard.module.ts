@@ -123,6 +123,72 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
                 ]
             },
             {
+                path: 'analysis/:analysisId/popout/:detector',
+                component: TabCommonComponent,               
+                children:[
+                    {
+                        path:'',
+                        component:TabDataComponent,
+                        data:{
+                            analysisMode: true
+                        },
+                    },
+                    {
+                        path: 'data',
+                        redirectTo: ''
+                    },
+                    {
+                        path: 'edit',
+                        component: TabDevelopComponent,
+                        data:{
+                            analysisMode: true
+                        },
+                    }, 
+                    {
+                        path: 'changelist',
+                        component: TabChangelistComponent,
+                        data:{
+                            analysisMode: true
+                        },
+                    },
+                    {
+                        path: 'datasource',
+                        component: TabDataSourcesComponent,
+                        data:{
+                            analysisMode: true
+                        },
+                    },
+                    {
+                        path: 'monitoring',
+                        component: TabMonitoringComponent,
+                        data:{
+                            analysisMode: true
+                        },
+                    },
+                    {
+                        path: 'analytics',
+                        component: TabAnalyticsDashboardComponent,
+                        data:{
+                            analysisMode: true
+                        },
+                    },
+                    {
+                        path: 'monitoring/edit',
+                        component: TabMonitoringDevelopComponent,
+                        data:{
+                            analysisMode: true
+                        },
+                    },
+                    {
+                        path: 'analytics/edit',
+                        component: TabAnalyticsDevelopComponent,
+                        data:{
+                            analysisMode: true
+                        },
+                    }
+                ]
+            },
+            {
                 path: 'detectors/:detector',
                 component: TabCommonComponent,
                 children: [
@@ -164,52 +230,26 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
                 ]
             },
             {
-                path: 'analysis/:analysisId/detectors/:detector',
-                component: TabAnalysisComponent,
-                children: [
-                    {
-                        path: '',
-                        component: TabDataComponent,
-                        data: {
-                            analysisMode: true
-                        }
-                    },
-                    {
-                        path: 'data',
-                        redirectTo: ''
-                    },
-                    {
-                        path: 'datasource',
-                        component: TabDataSourcesComponent
-                    }
-                ]
-            },
-            {
                 path: 'analysis/:analysisId',
                 component: TabAnalysisComponent,
                 children: [
                     {
-                        path: '',
-                        component: TabDataComponent
-                    },
-                    {
-                        path: 'data',
-                        redirectTo: ''
-                    },
-                    {
-                        path: 'datasource',
-                        component: TabDataSourcesComponent
-                    }
-                ]
-            },
-            {
-                path: 'analysis/:analysisId/detectors',
-                component: TabAnalysisComponent,
-                children: [
-                    {
-                        path: '',
-                        component: TabDataComponent
-                    },
+                        path: 'detectors/:detector',
+                        component: TabDataComponent,
+                        data:{
+                            analysisMode: true
+                        },
+                        children:[
+                            {
+                                path:'data',
+                                redirectTo:''
+                            },
+                            {
+                                path:'datasource',
+                                component:TabDataSourcesComponent
+                            }
+                        ]
+                    },                    
                     {
                         path: 'data',
                         redirectTo: ''

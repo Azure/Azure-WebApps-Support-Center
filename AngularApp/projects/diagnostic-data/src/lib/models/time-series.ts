@@ -30,6 +30,35 @@ export interface DetailedInstanceHighChartTimeSeries extends HighChartTimeSeries
   instance: InstanceDetails;
 }
 
+export class xAxisPlotBand {
+  public color:string;
+  public from: momentNs.Moment;
+  public to: momentNs.Moment;
+  public style?: xAxisPlotBandStyles;
+  public borderColor?: string;
+  public borderWidth?:number;
+  public id?:string;
+}
+
+export enum xAxisPlotBandStyles {
+  BehindPlotLines = "0",
+  AbovePlotLines = "3",
+  AbovePlotLinesAndSeries = "5"
+}
+
+export enum zoomBehaviors {
+  Zoom = 1,
+  CancelZoom = 2,
+  FireXAxisSelectionEvent = 4
+}
+
+export class XAxisSelection {
+  public chart:Highcharts.Chart;
+  public _rawEventArgs:Highcharts.ChartSelectionContextObject;
+  public fromTime:momentNs.Moment;
+  public toTime:momentNs.Moment;
+}
+
 export class InstanceDetails {
   roleInstance: string; // SmallDedid...
   tenant: string; // Stamp Tenant

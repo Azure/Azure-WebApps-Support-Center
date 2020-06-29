@@ -1,8 +1,8 @@
 .card-container {
     flex: 0 0 35%;
     padding: 10px;
-    height: 110px;
-    border: 1px solid rgb(214,214,214);
+    min-height: 110px;
+    border: 1px solid rgb(118,118,118);
     box-shadow: 3px 3px rgb(214,214,214);
     margin: 10px 10px 10px 0px;
 }

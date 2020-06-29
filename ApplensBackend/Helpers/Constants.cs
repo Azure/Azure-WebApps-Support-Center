@@ -46,7 +46,7 @@ namespace AppLensV3.Helpers
     internal static class SelfHelpConstants
     {
         internal const string RawFileHeaderMediaType = "application/vnd.github.VERSION.raw";
-        internal const string ArticleTemplatePath = "https://api.github.com/repos/Azure/SelfHelpContent/contents/articles/{0}?ref=master&access_token={1}";
+        internal const string ArticleTemplatePath = "https://api.github.com/repos/Azure/SelfHelpContent/contents/articles/{0}?ref=master";
     }
 
     internal static class InsightsConstants

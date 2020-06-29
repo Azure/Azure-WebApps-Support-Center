@@ -3,12 +3,12 @@
     <label style="margin-right:20px"> {{ ToggleText }}
     </label>
     <div class="setting-control-container" [class.toggle-disabled]="isDisabled">
-      <div role="radiogroup" class="medium" aria-disabled="false">
-        <div role="radio" [class.toggle-disabled]="isDisabled" [tabindex]="0" (keydown.ArrowLeft)="update(!selected)" (keydown.ArrowRight)="update(!selected)" (click)="update(false)" attr.aria-checked="{{!selected ? 'true': 'false'}}" aria-labelledby="Off">
-          Off
+      <div tabindex="0" role="switch" class="medium" aria-disabled="false" id="options"
+        attr.aria-checked="{{selected ? 'true': 'false'}}" (keyup.space)="update(!selected)"
+        (keyup.enter)="update(!selected)" (click)="update(!selected)" attr.aria-label="{{ ToggleText }}">
+        <div name="option" [class.toggle-disabled]="isDisabled" attr.aria-checked="{{!selected ? 'true': 'false'}}">Off
         </div>
-        <div role="radio" [class.toggle-disabled]="isDisabled" [tabindex]="0" (keydown.ArrowLeft)="update(!selected)" (keydown.ArrowRight)="update(!selected)" (click)="update(true)" attr.aria-checked="{{selected ? 'true': 'false'}}" aria-labelledby="On">
-          On
+        <div name="option" [class.toggle-disabled]="isDisabled" attr.aria-checked="{{selected ? 'true': 'false'}}">On
         </div>
       </div>
     </div>

@@ -50,6 +50,7 @@ import { CategoryTileV4Component } from '../fabric-ui/components/category-tile-v
 import { GenieModule } from '../genie/genie.module';
 import { FabricModule } from '../fabric-ui/fabric.module';
 import { ResourceService } from '../shared-v2/services/resource.service';
+import { JavaFlightRecorderToolComponent } from '../shared/components/tools/java-flight-recorder-tool/java-flight-recorder-tool.component';
 
 export const HomeRoutes = RouterModule.forChild([
     {
@@ -99,15 +100,19 @@ export const HomeRoutes = RouterModule.forChild([
                 path: 'analysis/:analysisId',
                 component: GenericAnalysisComponent,
                 data: {
-                    cacheComponent: true
+                    cacheComponent: false
                 },
-                children: [
+                children: [                    
                     {
-                        path: '',
+                        path: 'detectors/:detectorName',
                         component: GenericDetectorComponent,
                         data: {
                             analysisMode: true,
-                            cacheComponent: true
+                            cacheComponent: false
+                        },                        
+                        resolve: {
+                            time: TimeControlResolver,
+                            navigationTitle: TabTitleResolver,
                         }
                     }
                 ],
@@ -171,27 +176,6 @@ export const HomeRoutes = RouterModule.forChild([
                 }
             },
             {
-                path: 'analysis/:analysisId/detectors/:detectorName',
-                component: GenericAnalysisComponent,
-                data: {
-                    cacheComponent: true
-                },
-                children: [
-                    {
-                        path: '',
-                        component: GenericDetectorComponent,
-                        data: {
-                            analysisMode: true,
-                            cacheComponent: true
-                        }
-                    }
-                ],
-                resolve: {
-                    time: TimeControlResolver,
-                    navigationTitle: TabTitleResolver,
-                }
-            },
-            {
                 path: 'tools/profiler',
                 component: ProfilerToolComponent,
                 data: {
@@ -223,6 +207,15 @@ export const HomeRoutes = RouterModule.forChild([
                 component: JavaMemoryDumpToolComponent,
                 data: {
                     navigationTitle: ToolNames.JavaMemoryDump,
+                    cacheComponent: true
+                }
+            },
+            // Java Flight Recorder
+            {
+                path: 'tools/javaflightrecorder',
+                component: JavaFlightRecorderToolComponent,
+                data: {
+                    navigationTitle: ToolNames.JavaFlightRecorder,
                     cacheComponent: true
                 }
             },
@@ -375,41 +368,24 @@ export const HomeRoutes = RouterModule.forChild([
         }
     },
     {
-        path: 'analysis/:analysisId/detectors/:detectorName',
-        component: GenericAnalysisComponent,
-        data: {
-            cacheComponent: true
-        },
-        children: [
-            {
-                path: '',
-                component: GenericDetectorComponent,
-                data: {
-                    analysisMode: true,
-                    cacheComponent: true
-                }
-            }
-        ],
-        resolve: {
-            time: TimeControlResolver,
-            navigationTitle: TabTitleResolver,
-        }
-    },
-    {
         path: 'analysis/:analysisId',
         component: GenericAnalysisComponent,
         data: {
-            cacheComponent: true
+            cacheComponent: false
         },
         children: [
             {
-                path: '',
+                path: 'detectors/:detectorName',
                 component: GenericDetectorComponent,
                 data: {
                     analysisMode: true,
-                    cacheComponent: true
+                    cacheComponent: false
+                },
+                resolve: {
+                    time: TimeControlResolver,
+                    navigationTitle: TabTitleResolver,
                 }
-            }
+            },
         ],
         resolve: {
             time: TimeControlResolver,

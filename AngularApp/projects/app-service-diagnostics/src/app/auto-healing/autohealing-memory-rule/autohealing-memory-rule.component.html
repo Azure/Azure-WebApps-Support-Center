@@ -6,27 +6,30 @@
       Configure Private Bytes rule
     </button>
   </div>
+  <div aria-live="polite" class="mt-1" [style.visibility]="displayDeleteRuleMessage ? 'visibile' : 'hidden'">
+    Rule Deleted
+  </div>
 </div>
 
 <table class="table table-bordered" *ngIf="!editMode && rule > 0">
   <thead>
     <tr>
-      <th>
+      <th tabindex="0">
         Private Bytes
       </th>
-      <th>
+      <th tabindex="0">
         Action
       </th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>{{ formatBytes(rule * 1024) }}</td>
-      <td>
-        <button class="image-btn" *ngIf="!editMode" (click)="editRule()">
+      <td tabindex="0">{{ formatBytes(rule * 1024) }}</td>
+      <td tabindex="0">
+        <button class="image-btn" *ngIf="!editMode" (click)="editRule()" title="Edit rule" name="editRule">
           <i class="fa fa-edit"></i>
         </button>
-        <button class="image-btn" *ngIf="!editMode" (click)="deleteRule()">
+        <button class="image-btn" *ngIf="!editMode" (click)="deleteRule()" title="Delete rule" name="deleteRule">
           <i class="fa fa-trash"></i>
         </button>
       </td>
@@ -40,7 +43,7 @@
       <label for="idPrivateBytes">What is the memory threshold (private bytes) in KB you want to configure ?</label>
     </div>
     <div class="col-sm-4">
-      <input type="number" min="1" id="idPrivateBytes" aria-describedby="privateBytesHelp" placeholder="Enter private bytes in KB"
+      <input aria-required="true" type="number" min="1" id="idPrivateBytes" aria-describedby="privateBytesHelp" placeholder="Enter private bytes in KB" min="1" max="4294967295"
         [(ngModel)]="ruleCopy">
       <span style="color:red">*</span>
       <div *ngIf="ruleCopy !== null && ruleCopy !=0 && !isValid()" class="alert alert-danger" style="margin-top:5px">

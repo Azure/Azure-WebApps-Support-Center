@@ -97,6 +97,7 @@ namespace AppLensV3.Services.DiagnosticClientService
             };
 
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("User-Agent", "AppLens");
 
             return client;
         }

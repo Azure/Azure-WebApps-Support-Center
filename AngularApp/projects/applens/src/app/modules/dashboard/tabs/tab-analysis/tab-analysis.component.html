@@ -1,26 +1,8 @@
 <div style="margin-left:20px">
   <comm-alert></comm-alert>
-  <detector-container [detector]="analysisId" [isAnalysisView]="true"></detector-container>
+  <detector-container [detector]="analysisId" [isAnalysisView]="true" (downTimeChanged)="onDowntimeChanged($event)"></detector-container>
 </div>
 
-<detector-list-analysis detectorParmName="detector"></detector-list-analysis>
+<detector-list-analysis #detectorListAnalysis detectorParmName="detector"></detector-list-analysis>
 
-<div style="margin-left:20px" class="tab-container" [hidden]="detectorId === ''">
-  <div style="margin-left:20px;margin-bottom: 10px">
-    <div style="display: inline-block">
-      <h4>{{ detectorName }}</h4>
-    </div>
-    <div class="pull-right">
-
-      <div style="display: inline-block">
-        <button class="btn btn-sm" *ngIf="detectorId !== ''" [routerLink]="['../../../../detectors',detectorId]"
-          preserveFragment queryParamsHandling="preserve">Go to Detector</button>
-      </div>
-      <div style="display: inline-block;margin-left: 10px;margin-right:20px">
-        <button class="btn btn-sm" *ngIf="detectorId !== ''" [routerLink]="['../../']" preserveFragment
-          queryParamsHandling="preserve">Back to Observations</button>
-      </div>
-    </div>
-  </div>
-  <router-outlet (activate)="onActivate($event)"></router-outlet>
-</div>
+<router-outlet (activate)="onActivate($event)"></router-outlet>

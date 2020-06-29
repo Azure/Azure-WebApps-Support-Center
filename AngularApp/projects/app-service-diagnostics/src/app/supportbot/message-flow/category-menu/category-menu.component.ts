@@ -9,6 +9,7 @@ import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { Feature } from '../../../shared-v2/models/features';
 import { Tile } from '../../../shared/components/tile-list/tile-list.component';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
+import { PortalActionService } from '../../../shared/services/portal-action.service';
 
 @Component({
   selector: 'category-menu',
@@ -30,7 +31,7 @@ export class CategoryMenuComponent implements OnInit, AfterViewInit, IChatMessag
   @Output() onComplete = new EventEmitter<{ status: boolean, data?: any }>();
 
   constructor(private _injector: Injector, private _diagnosticService: DiagnosticService, private _featureService: FeatureService,
-    private _chatState: CategoryChatStateService, private _detectorControlService: DetectorControlService, private _logger: LoggingV2Service) { }
+    private _chatState: CategoryChatStateService, private _detectorControlService: DetectorControlService, private _logger: LoggingV2Service, private portalActionService: PortalActionService) { }
 
   ngOnInit() {
     this.takeFeatureAction = this._injector.get('takeFeatureAction');
@@ -59,9 +60,13 @@ export class CategoryMenuComponent implements OnInit, AfterViewInit, IChatMessag
     if (this.takeFeatureAction) {
       detector.clickAction();
     } else {
-      this._chatState.selectedFeature = detector;
-      this.message = new TextMessage(`I am interested in ${detector.name}`, MessageSender.User);
-      this.featureSelected = true;
+        if(detector.id === 'appchanges') {
+            this.portalActionService.openChangeAnalysisBlade();
+            return;
+        }
+            this._chatState.selectedFeature = detector;
+            this.message = new TextMessage(`I am interested in ${detector.name}`, MessageSender.User);
+            this.featureSelected = true;
     }
 
     this.onComplete.emit({ status: true, data: {} });

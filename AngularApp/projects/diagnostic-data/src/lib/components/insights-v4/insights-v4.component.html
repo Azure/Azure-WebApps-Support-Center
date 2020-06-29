@@ -2,7 +2,7 @@
      If there is a title I will wrap it in a container,
      otherwise I will show it by itself -->
 <ng-template #insightView>
-  <div *ngFor="let insight of insights" class="insight-container" tabindex="0" attr.name="{{insight.title}}"
+  <div *ngFor="let insight of insights" class="insight-container" attr.name="{{insight.title}}"
     attr.aria-label="{{insight.title}}" attr.aria-expanded="{{insight.isExpanded}}" role="button"
     (keyup.enter)="toggleInsightStatus(insight)">
     <div div class="panel insight-panel">
@@ -19,8 +19,8 @@
               <div style="display: table-cell;width:100%">
                 {{insight.title}}
               </div>
-              <div style="display: table-cell" class="pull-right">
-                <span class="fa insight-expand-icon" [class.fa-angle-right]="hasContent(insight) && !insight.isExpanded"
+              <div [hidden]="!hasContent(insight)" style="display: table-cell" class="pull-right">
+                <span tabindex="0" class="fa insight-expand-icon" [class.fa-angle-right]="hasContent(insight) && !insight.isExpanded"
                   [class.fa-angle-down]="hasContent(insight) && insight.isExpanded"></span>
               </div>
             </div>

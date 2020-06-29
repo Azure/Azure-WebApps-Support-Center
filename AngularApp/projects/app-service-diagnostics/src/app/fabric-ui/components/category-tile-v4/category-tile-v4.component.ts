@@ -28,13 +28,13 @@ export class CategoryTileV4Component implements OnInit {
 
   openBladeDiagnoseCategoryBlade() {
     this._portalService.openBladeDiagnoseCategoryBlade(this.category.id);
+    this._telemetryService.logEvent('CategorySelected',{
+      'CategoryName': this.category.name
+    });
   }
 
   navigateToCategory(): void {
-
-    // this._logger.LogCategorySelected(this.category.name);
-    // this._logger.LogClickEvent('CategorySelection', 'HomeV4', this.category.name);
-    this._telemetryService.logEvent('CategorySelection',{
+    this._telemetryService.logEvent('CategorySelected',{
       'CategoryName': this.category.name
     });
 

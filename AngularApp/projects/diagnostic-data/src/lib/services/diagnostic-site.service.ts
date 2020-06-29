@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DiagnosticSiteService {
-
+    public currentSite: BehaviorSubject<any> = new BehaviorSubject<any>(null);
     parseResourceUri(resourceUri: string): any {
         return null;
     }

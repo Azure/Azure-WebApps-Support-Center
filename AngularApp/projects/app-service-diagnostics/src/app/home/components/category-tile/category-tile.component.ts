@@ -23,7 +23,7 @@ export class CategoryTileComponent implements OnInit {
   navigateToCategory(): void {
 
     this._logger.LogCategorySelected(this.category.name);
-    this._logger.LogClickEvent('CategorySelection', 'HomeV2', this.category.name);
+    this._logger.LogClickEvent('CategorySelected', 'HomeV2', this.category.name);
 
     if (this.category.overridePath) {
       this._router.navigateByUrl(this.category.overridePath);

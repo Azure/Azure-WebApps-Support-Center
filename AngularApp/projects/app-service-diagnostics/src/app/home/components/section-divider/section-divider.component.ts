@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ContentChildren, QueryList } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ActivatedRoute, Router, NavigationExtras, NavigationEnd, Scroll } from '@angular/router';
+import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
 
 @Component({
   selector: 'section-divider',
@@ -26,7 +27,7 @@ export class SectionDividerComponent implements OnInit {
   overviewImagePath:string = "../../../../assets/img/detectors/Overview.svg";
   selected: boolean = true;
 
-  constructor(private _route: Router, private _activatedRoute:ActivatedRoute) { }
+  constructor(private _route: Router, private _activatedRoute:ActivatedRoute,private telemetryService:TelemetryService) { }
 
   ngOnInit() {
     this.selected = this.initiallySelected;
@@ -45,6 +46,9 @@ export class SectionDividerComponent implements OnInit {
   }
 
   sectionHeaderClick() {
+      this.telemetryService.logEvent(TelemetryEventNames.CategoryNavItemClicked,{
+        'Title':this.label
+      });
       this.navigateTo(`${this.routePath}`);
   }
 

@@ -20,7 +20,7 @@ export class PortalSettingsService {
       this.settingsUrl = `/resource${data.resourceId}/settings`;
       // This needs to be mapped to dynamic category once we expand this to other resource types.
       this.versionTestService.isLegacySub.subscribe(isLegacy => {
-        this.settingsUrl = isLegacy ? `/resource${data.resourceId}/settings`:`/resource${data.resourceId}/categories/WindowsAvailabilityAndPerformance/settings`;
+        this.settingsUrl = isLegacy ? `/resource${data.resourceId}/settings`:`/resource${data.resourceId}/categories/AvailabilityAndPerformanceWindows/settings`;
       });
     });
   }

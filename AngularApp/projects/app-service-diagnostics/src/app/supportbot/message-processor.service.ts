@@ -86,10 +86,10 @@ export class MessageProcessor {
             return null;
         }
 
-        const nextMessge: Message = this._currentMessageGroup.messages[this._currentMessageIterator];
+        const nextMessage: Message = this._currentMessageGroup.messages[this._currentMessageIterator];
         this._currentMessageIterator++;
 
-        return nextMessge;
+        return nextMessage;
     }
 
     public addMessageToCurrentGroup(message: Message) {

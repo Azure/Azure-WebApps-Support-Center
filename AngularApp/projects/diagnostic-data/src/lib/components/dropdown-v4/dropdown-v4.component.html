@@ -6,18 +6,18 @@
 <data-container [headerTemplate]="header" [title]="renderingProperties.title" *ngIf="dropdownType == Type.Legacy">
   <div>
     <div class="label-container">
-      <label>{{label}}</label>
+      <label for="dropdownMenuId" tabindex="0" [attr.aria-label]="label" role="text">{{label}}</label>
     </div>
     <div class="dropdown-container">
       <div class="dropdown">
         <button class="btn btn-default dropdown-toggle dropdown-button" type="button" id="dropdownMenuId"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span [innerHtml]="selectedKey"></span>
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuId">
           <li *ngFor="let key of keys">
-            <a (click)="selectKey(key)">
+            <a href="#" (click)="selectKey(key,$event)">
               <span [innerHtml]="key"></span>
             </a>
           </li>
@@ -30,7 +30,8 @@
 
   <div class="body-container">
     <div *ngFor="let data of selectedData" class="dynamic-data-container">
-      <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime"></dynamic-data>
+      <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime" [xAxisPlotBands]="xAxisPlotBands" 
+      [zoomBehavior] = "zoomBehavior" (XAxisSelection)="onXAxisSelection($event)" [isAnalysisView]="isAnalysisView"></dynamic-data>
     </div>
   </div>
 
@@ -41,14 +42,15 @@
   <div class="fabric-dropdown-header" style="display: flex;" [ngStyle]="{'justify-content': dropdownPostion == Position.FloatRight ? 'space-between' : 'start'}">
     <span class="fabric-dropdown-title">{{renderingProperties.title}}</span>
     <div style="display: flex">
-      <label>{{label}}:</label>
-      <fab-dropdown [options]="options" (onChange)="selectFabricKey($event)" [defaultSelectedKey]="selectedKey"
+      <label for="dropdownV4" tabindex="0" [attr.aria-label]="label" role="text">{{label}}:</label>
+      <fab-dropdown id="dropdownV4" [options]="options" (onChange)="selectFabricKey($event)" [defaultSelectedKey]="selectedKey"
         contentStyle="margin-top: -5px; margin-left: 5px;width:{{fabDropdownWidth}}px;"></fab-dropdown>
     </div>
   </div>
   <div class="fabric-body-container">
     <div *ngFor="let data of selectedData" class="dynamic-data-container">
-      <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime"></dynamic-data>
+      <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime"  [xAxisPlotBands]="xAxisPlotBands" 
+      [zoomBehavior] = "zoomBehavior" (XAxisSelection)="onXAxisSelection($event)" [isAnalysisView]="isAnalysisView"></dynamic-data>
     </div>
   </div>
 </div>

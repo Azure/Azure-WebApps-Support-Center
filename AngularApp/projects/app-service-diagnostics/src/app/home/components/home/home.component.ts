@@ -1,4 +1,4 @@
-import { DetectorControlService, FeatureNavigationService, DetectorResponse } from 'diagnostic-data';
+import { DetectorControlService, FeatureNavigationService, DetectorResponse, TelemetryEventNames } from 'diagnostic-data';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from '../../../shared-v2/models/category';
@@ -11,7 +11,6 @@ import { HomePageText } from '../../../shared/models/arm/armResourceConfig';
 import { ArmService } from '../../../shared/services/arm.service';
 import { AuthService } from '../../../startup/services/auth.service';
 import { TelemetryService } from 'diagnostic-data';
-import { PortalKustoTelemetryService } from '../../../shared/services/portal-kusto-telemetry.service';
 import { WebSitesService } from '../../../resources/web-sites/services/web-sites.service';
 import { AppType } from '../../../shared/models/portal';
 import { DiagnosticService } from 'diagnostic-data';
@@ -28,8 +27,7 @@ import { SubscriptionPropertiesService } from '../../../shared/services/subscrip
 })
 export class HomeComponent implements OnInit, AfterViewInit {
     useLegacy: boolean = true;
-    isWindowsWebApp: boolean = true;
-    isExternalSub: boolean = true;
+    initializedPortalVersion: string = "v2";
     resourceName: string;
     categories: Category[];
     searchValue = '';
@@ -57,22 +55,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     constructor(private _resourceService: ResourceService, private _categoryService: CategoryService, private _notificationService: NotificationService, private _router: Router,
         private _detectorControlService: DetectorControlService, private _featureService: FeatureService, private _logger: LoggingV2Service, private _authService: AuthService,
-        private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute, private armService: ArmService, private logService: TelemetryService,
-        private kustologgingService: PortalKustoTelemetryService, private _diagnosticService: DiagnosticService, private _portalService: PortalActionService, private globals: Globals,
+        private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute, private armService: ArmService, private _telemetryService: TelemetryService, private _diagnosticService: DiagnosticService, private _portalService: PortalActionService, private globals: Globals,
         private versionTestService: VersionTestService, private subscriptionPropertiesService: SubscriptionPropertiesService) {
 
         this.subscriptionId = this._activatedRoute.snapshot.params['subscriptionid'];
-        this.isExternalSub = this.versionTestService.isExternalSub;
         this.versionTestService.isLegacySub.subscribe(isLegacy => this.useLegacy = isLegacy);
-        this.versionTestService.isWindowsWebApp.subscribe(isWebAppResource => this.isWindowsWebApp = isWebAppResource);
-        
-        let initialViewLoaded = this.isWindowsWebApp && !this.isExternalSub ? "new" : "old";
+
+        this.versionTestService.initializedPortalVersion.subscribe(version => this.initializedPortalVersion = version); 
+        this.resourceName = this._resourceService.resource.name;
         let eventProps = {
             subscriptionId: this.subscriptionId,
             resourceName: this.resourceName,
-            intialView: initialViewLoaded,
         };
-        this.logService.logEvent('DiagnosticsViewLoaded',eventProps);
+        this._telemetryService.logEvent('DiagnosticsViewLoaded',eventProps);
 
         if (_resourceService.armResourceConfig && _resourceService.armResourceConfig.homePageText
             && _resourceService.armResourceConfig.homePageText.title && _resourceService.armResourceConfig.homePageText.title.length > 1
@@ -105,7 +100,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 }
                 else {
                     this.homePageText = {
-                        title: 'App Service Diagnostics',
+                        title: 'App Service Diagnostics (Preview)',
                         description: 'Use App Service Diagnostics to investigate how your app is performing, diagnose issues, and discover how to\
             improve your application. Select the problem category that best matches the information or tool that you\'re\
             interested in:',
@@ -148,13 +143,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
         let eventProps = {
             subscriptionId: this.subscriptionId,
             resourceName: this.resourceName,
-            switchToView: this.useLegacy.toString(),
+            switchToLegacy: this.useLegacy.toString(),
         };
-        this.logService.logEvent('SwitchView',eventProps);
+        this._telemetryService.logEvent('SwitchView',eventProps);
     }
 
     ngOnInit() {
-        this.resourceName = this._resourceService.resource.name;
         this.providerRegisterUrl = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis/register`;
         if (!this._detectorControlService.startTime) {
             this._detectorControlService.setDefault();
@@ -169,7 +163,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                     subscriptionId: this.subscriptionId,
                     subscriptionLocationPlacementId: locationPlacementId
                 };
-                this.logService.logEvent('SubscriptionProperties', eventProps);
+                this._telemetryService.logEvent('SubscriptionProperties', eventProps);
             }
         });
 
@@ -181,7 +175,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                         url: this.providerRegisterUrl
 
                     };
-                    this.kustologgingService.logEvent("Change Analysis Resource Provider registered", eventProps);
+                    this._telemetryService.logEvent("Change Analysis Resource Provider registered", eventProps);
                 }, (error: any) => {
                     this.logHTTPError(error, 'registerResourceProvider');
                 });
@@ -194,12 +188,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this._detectorControlService.setDefault();
         }
 
-        this.logService.logEvent("telemetry service logging", {});
-        this.kustologgingService.logEvent("kusto telemetry service logging", {});
+        this._telemetryService.logEvent("telemetry service logging", {});
     };
 
     ngAfterViewInit() {
-        document.getElementById("healthCheck").focus();
+        this._telemetryService.logPageView(TelemetryEventNames.HomePageLoaded, {"numCategories": this.categories.length.toString()});
+        if (document.getElementById("healthCheck"))
+        {
+            document.getElementById("healthCheck").focus();
+        }
     }
 
    
@@ -272,7 +269,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             errorMsg: error.message ? error.message : 'Server Error',
             statusCode: error.status ? error.status : 500
         };
-        this.kustologgingService.logTrace('HTTP error in ' + methodName, errorLoggingProps);
+        this._telemetryService.logTrace('HTTP error in ' + methodName, errorLoggingProps);
     }
 
     openAvaAndPerf() {
@@ -280,10 +277,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
         if (category) {
             this._portalService.openBladeDiagnoseCategoryBlade(category.id);
         }
+        this._telemetryService.logEvent('OpenAviPerf',{
+            'Location':'LandingPage'
+        });
     }
 
     openGeniePanel() {
         this.globals.openGeniePanel = true;
+        this._telemetryService.logEvent('OpenGenie',{
+            'Location':'LandingPage'
+        });
     }
 }
 

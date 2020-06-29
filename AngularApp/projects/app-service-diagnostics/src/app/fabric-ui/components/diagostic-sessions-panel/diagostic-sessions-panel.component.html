@@ -1,0 +1,20 @@
+<fab-panel [isOpen]="globals.openSessionPanel" [type]="type" [customWidth]="width" [isHiddenOnDismiss]="true"
+  [isLightDismiss]="true" [hasCloseButton]="true" [closeButtonAriaLabel]="'close'" (onDismissed)="dismissedHandler()">
+  <div class="row">
+    <div style="margin-bottom: 10px">
+      <div
+        style="position: absolute; left:25px; right: 32px; top:0px; height: 32px; font-family: 'segoe UI'; font-size: 18px; line-height: 24px; font-weight: 600;display: flex; align-items: flex-end"
+        tabindex="0" aria-label="Hi my name is genie">
+        Diagnostic sessions</div>
+      <p>
+        Below is the list of all the diagnostic sessions collected in the past for this web app. To save disk space,
+        older
+        diagnostic sessions and their data collected will be deleted automatically.
+      </p>
+      <div class="sessions">
+        <daas-sessions [diagnoserNameLookup]="" [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed">
+        </daas-sessions>
+      </div>
+    </div>
+  </div>
+</fab-panel>

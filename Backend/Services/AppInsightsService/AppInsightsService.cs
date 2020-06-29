@@ -176,7 +176,7 @@ namespace Backend.Services
 
                 if (appInsightsTag != null && !string.IsNullOrWhiteSpace(appInsightsTag.AppId) && !string.IsNullOrWhiteSpace(appInsightsTag.ApiKey))
                 {
-                    var query = WebUtility.UrlEncode("requests|take 1"); 
+                    var query = WebUtility.UrlEncode("requests|take 1");
                     HttpRequestMessage request = new HttpRequestMessage
                     {
                         Method = HttpMethod.Get,
@@ -200,6 +200,34 @@ namespace Backend.Services
                 return false;
             }
 
+        }
+
+        public async Task<bool> CheckAppInsightsAccess(string appInsightsResource, string authToken)
+        {
+
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://{_armEndpoint}{appInsightsResource}/providers/Microsoft.Authorization/permissions?api-version=2015-07-01"),
+            };
+
+            request.Headers.Add("Authorization", authToken ?? string.Empty);
+            var response = await this._httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            var permissions = JsonConvert.DeserializeObject<Permission>(await response.Content.ReadAsStringAsync());
+            var allowPermission = permissions.value.Any(p => p.actions.Contains("*") || p.actions.Contains("write"));
+            var denyPermission = permissions.value.Any(p => p.notActions.Contains("*") || p.notActions.Contains("write"));
+
+            if (denyPermission)
+            {
+                return false;
+            }
+            else
+            {
+                return allowPermission;
+            }
         }
     }
 }

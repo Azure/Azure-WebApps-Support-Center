@@ -5,6 +5,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from
 import { Injectable } from "@angular/core";
 import { AdalService } from "adal-angular4";
 import { DiagnosticApiService } from '../services/diagnostic-api.service';
+import { ApplensAppinsightsTelemetryService } from '../services/applens-appinsights-telemetry.service';
 
 const loginRedirectKey = 'login_redirect';
 
@@ -14,7 +15,7 @@ export class AadAuthGuard implements CanActivate {
     public isTemporaryAccess: Boolean = false;
     public temporaryAccessExpiryDays: number = 0;
 
-    constructor(private _router: Router, private _adalService: AdalService, private _diagnosticApiService: DiagnosticApiService) { }
+    constructor(private _router: Router, private _adalService: AdalService, private _diagnosticApiService: DiagnosticApiService, private _applensAITelemetry: ApplensAppinsightsTelemetryService) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> {
         this._adalService.handleWindowCallback();
@@ -40,6 +41,8 @@ export class AadAuthGuard implements CanActivate {
                 if (this.isTemporaryAccess) {
                     this.temporaryAccessExpiryDays = res.headers.get("TemporaryAccessExpires");
                 }
+                // Application insights initialization call requires user to be authorized first.
+                this._applensAITelemetry.initialize();
                 this.isAuthorized = true;
                 return true;
             }),

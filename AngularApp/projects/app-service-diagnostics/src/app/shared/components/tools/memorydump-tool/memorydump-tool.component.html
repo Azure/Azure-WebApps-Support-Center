@@ -1,13 +1,13 @@
 <div class="container">
-    <div class="header1">{{ title }}</div>
-    <p>{{ description }}</p>
+    <h2 tabindex="0">{{ title }}</h2>
+    <p tabindex="0">{{ description }}</p>
     <div class="wizardcontainer">
 
         <daas [scmPath]="scmPath" [siteToBeDiagnosed]="siteToBeDiagnosed" [diagnoserName]="diagnoserName" (SessionsEvent)="updateSessions($event)">
         </daas>
     </div>
 
-    <div class="header2">What you should know before collecting a Memory Dump</div>
+    <h3>What you should know before collecting a Memory Dump</h3>
     <ul>
         <li *ngFor="let statement of thingsToKnowBefore">{{statement}}</li>
     </ul>

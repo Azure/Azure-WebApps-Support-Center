@@ -1,5 +1,5 @@
 import * as momentNs from 'moment';
-import { Component, Input, OnInit, HostListener, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, HostListener, ElementRef, Output, EventEmitter } from '@angular/core';
 import { TimeSeriesType } from '../../models/detector';
 import * as Highcharts from 'highcharts';
 import HC_exporting from 'highcharts/modules/exporting';
@@ -7,6 +7,8 @@ import * as HC_customEvents_ from 'highcharts-custom-events';
 import AccessibilityModule from 'highcharts/modules/accessibility';
 import { DetectorControlService } from '../../services/detector-control.service';
 import { HighChartTimeSeries } from '../../models/time-series';
+import { xAxisPlotBand, xAxisPlotBandStyles, zoomBehaviors, XAxisSelection } from '../../models/time-series';
+import { KeyValue } from '@angular/common';
 
 const HC_customEvents = HC_customEvents_;
 HC_exporting(Highcharts);
@@ -35,9 +37,171 @@ export class HighchartsGraphComponent implements OnInit {
     @Input() startTime: momentNs.Moment;
 
     @Input() endTime: momentNs.Moment;
+	
+    private _xAxisPlotBands: xAxisPlotBand[] = null;
+    @Input() public set xAxisPlotBands(value:xAxisPlotBand[]) {
+        this._xAxisPlotBands = [];
+        this._xAxisPlotBands = value;
+        if(value != null && !this.loading ) {
+            this._updateOptions();
+            this.rebindChartOptions();
+        }
+    }
+    public get xAxisPlotBands() {
+        return this._xAxisPlotBands;
+    }
 
-    loading: boolean = true;
+    public static chartProperties: { [chartContainerId: string]: KeyValue<string,any>[] } = {};
+    public static getChartProperty(propertyName:string, chartContainerId:string):any {
+        if(chartContainerId != '') {
+            let retVal = null;
+            if(!!this.chartProperties[chartContainerId] && this.chartProperties[chartContainerId].length > 0) {
+                this.chartProperties[chartContainerId].some(prop => {
+                    if(prop.key == propertyName) {
+                        retVal = prop.value;
+                        return true;
+                    }
+                });                
+            }
+            return retVal;
+        }
+        else {
+            return null;
+        }
+    }
+    public static addOrUpdateChartProperty(propertyName:string, propertyValue:any, chartContainerId:string):boolean {
+        if(chartContainerId == '') {
+            return false;
+        }
+        else {
+            let existingValue = HighchartsGraphComponent.getChartProperty(propertyName, chartContainerId);
+            if(!!existingValue) {
+                HighchartsGraphComponent.chartProperties[chartContainerId].some(prop => {
+                    if(prop.key == propertyName) {
+                        prop.value = propertyValue;
+                        return true;
+                    }
+                });
+            }
+            else {
+                if(HighchartsGraphComponent.chartProperties[chartContainerId] == null) {
+                    HighchartsGraphComponent.chartProperties[chartContainerId] = [];
+                }
+                HighchartsGraphComponent.chartProperties[chartContainerId].push({
+                    key:propertyName,
+                    value:propertyValue
+                } as KeyValue<string, any>);
+            }
+            return true;
+        }
+    }
 
+    private _zoomBehavior: zoomBehaviors = zoomBehaviors.Zoom;
+    @Input() public set zoomBehavior(value:zoomBehaviors) {
+        this._zoomBehavior = value;
+        setTimeout(() => {
+            HighchartsGraphComponent.addOrUpdateChartProperty('zoomBehavior', this._zoomBehavior, this.getCurrentChartContainerId());
+        }, 500);
+    }
+    public get zoomBehavior() {
+        return this._zoomBehavior;
+    }
+
+    @Output() XAxisSelection:EventEmitter<XAxisSelection> = new EventEmitter<XAxisSelection>();
+
+    private getCurrentChartContainerId():string {
+        if(this.el.nativeElement.getElementsByClassName('highcharts-container') && this.el.nativeElement.getElementsByClassName('highcharts-container').length > 0) {
+            return this.el.nativeElement.getElementsByClassName('highcharts-container')[0].id;;
+        }
+        else {
+            return '';
+        }
+    }
+
+    private getCurrentChart() : Highcharts.Chart {
+        let currentId = this.getCurrentChartContainerId();
+        if(currentId == '') {
+            return null;
+        }
+        for(let i = 0; i < Highcharts.charts.length; i++) {
+            let chart = Highcharts.charts[i];
+            if (chart) {
+                if (currentId === chart.container.id) {
+                    return chart;
+                }
+            }
+        }
+        return null;
+    }
+    
+    private customChartSelectionCallbackFunction: Highcharts.ChartSelectionCallbackFunction = (event: Highcharts.ChartSelectionContextObject)=> {
+        if(this._zoomBehavior & zoomBehaviors.FireXAxisSelectionEvent) {
+            if (!!event.xAxis) {                          
+                let fromSelection = moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00',event.xAxis[0].min));
+                let toSelection =moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00',event.xAxis[0].max));
+
+                let fromPoint = null;
+                let toPoint = null;
+                let currChart = this.getCurrentChart();
+                if(!!currChart && !!currChart.series && currChart.series.length > 0) {
+                    currChart.series[0].points.forEach(pt=>{
+                        if(  moment.duration(moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00',pt.x)).diff(fromSelection)).asMinutes() < 4  ) {
+                            fromPoint = moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00',pt.x));
+                        }
+                        if(toPoint == null && moment.duration(moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00',pt.x)).diff(toSelection)).asMinutes() > -4 ) {
+                            toPoint = moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00',pt.x));
+                        }
+                    });
+
+                    if(!!fromPoint && !!toPoint) {
+                        let xAxisSelectionEventArgs = new XAxisSelection();
+                        xAxisSelectionEventArgs.chart = currChart;
+                        xAxisSelectionEventArgs._rawEventArgs = event;
+                        xAxisSelectionEventArgs.fromTime = fromPoint;
+                        xAxisSelectionEventArgs.toTime = toPoint;
+                        this.XAxisSelection.emit(xAxisSelectionEventArgs);
+                    }
+                }
+            }
+        }
+        if(this.zoomBehavior & zoomBehaviors.CancelZoom) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    };
+    
+    private customSetExtremesCallbackFunction: Highcharts.AxisSetExtremesEventCallbackFunction = (evt: Highcharts.AxisSetExtremesEventObject) => {
+        if (evt.trigger !== 'sync') { // Prevent feedback loop
+            let currChart = this.getCurrentChart();
+            if(!currChart) {
+                return;
+            }
+            for(let i = 0; i < Highcharts.charts.length; i++)
+            {
+                let chart = Highcharts.charts[i];
+                if (chart && currChart !== chart) {
+                    let targetZoomBehavior:zoomBehaviors = HighchartsGraphComponent.getChartProperty('zoomBehavior', chart.container.id) as zoomBehaviors;
+                        if(targetZoomBehavior == null || !(targetZoomBehavior & zoomBehaviors.CancelZoom)) {
+                            if (chart.xAxis[0].setExtremes) { // It is null while updating                            
+                                chart.xAxis[0].setExtremes(evt.min, evt.max, true, true, { trigger: 'sync'} );
+                        }
+                    }                    
+                }
+            }
+        }
+    };    
+
+    private rebindChartOptions():void {
+        let currChart = this.getCurrentChart();
+        if(!!currChart) {
+            currChart.update(this.options);
+        }
+    }
+	
+    loading: boolean = true;   
+    
     @HostListener('mousemove', ['$event'])
     onMouseMove(ev: MouseEvent) {
         this.syncCharts(ev);
@@ -79,12 +243,16 @@ export class HighchartsGraphComponent implements OnInit {
 
     private syncCharts(ev: MouseEvent) {
         let xAxisValue : number;
-        let currentId = this.el.nativeElement.getElementsByClassName('highcharts-container')[0].id;
+
+        let currentCharts = this.el.nativeElement.getElementsByClassName('highcharts-container');
+        if (!currentCharts || !currentCharts[0]) {
+            return;
+        }
+        let currentId = currentCharts[0].id;
 
         // Find out which is the current chart object
         for(let i = 0; i < Highcharts.charts.length; i++) {
             let chart = Highcharts.charts[i];
-
             if (chart) {
                 if (currentId === chart.container.id) {
                     //Add width of side-nav in Diag&Solve so cursor will align with vertical line
@@ -110,7 +278,8 @@ export class HighchartsGraphComponent implements OnInit {
                     value: xAxisValue,
                     width: 1,
                     color: 'grey',
-                    id: 'myPlotLine'
+                    id: 'myPlotLine',
+                    zIndex:10
                 });
             }
         }
@@ -157,6 +326,24 @@ export class HighchartsGraphComponent implements OnInit {
         this.options.chart.type = type;
         this.options.plotOptions.series.stacking = stacking;
 
+        if(!!this.xAxisPlotBands && this.xAxisPlotBands.length>0) {
+            let chartPlotBands = [];
+            this.xAxisPlotBands.forEach(plotBand => {
+                var currPlotBand = {
+                    color: plotBand.color == ''? '#FCFFC5': plotBand.color,
+                    from:plotBand.from.utc(true),
+                    to: plotBand.to.utc(true),
+                    zIndex:!!plotBand.style?plotBand.style:xAxisPlotBandStyles.BehindPlotLines,
+                    borderWidth:(!!plotBand.borderWidth && plotBand.borderWidth > 0)?plotBand.borderWidth:0,
+                    borderColor:(!!plotBand.borderColor) ? plotBand.borderColor:'white',
+                    id:(!!plotBand.id)?plotBand.id:''
+                };
+                chartPlotBands.push(currPlotBand);
+                
+            });
+            this.options.xAxis.plotBands = chartPlotBands;            
+        }
+
         if (this.chartOptions) {
             this._updateObject(this.options, this.chartOptions);
         }
@@ -188,7 +375,6 @@ export class HighchartsGraphComponent implements OnInit {
 
         return obj;
     }
-
 
     private _setOptions() {
         this.options = {
@@ -234,6 +420,9 @@ export class HighchartsGraphComponent implements OnInit {
                         x: 0,
                         y: -10
                     }
+                },
+                events: {
+                    selection: this.customChartSelectionCallbackFunction,                    
                 },
             },
             legend: {
@@ -320,6 +509,9 @@ export class HighchartsGraphComponent implements OnInit {
                                 series[i].setVisible(true, false);
                             }
                         }
+                    },
+                    contextButton: {
+                        titleKey: "contextButtonTitle"
                     }
                 },
 
@@ -349,21 +541,9 @@ export class HighchartsGraphComponent implements OnInit {
                         whiteSpace: 'nowrap'
                     }
                 },
+                plotBands:[],
                 events: {
-                    setExtremes: function(evt: Highcharts.AxisSetExtremesEventObject) {
-                        if (evt.trigger !== 'sync') { // Prevent feedback loop
-                            for(let i = 0; i < Highcharts.charts.length; i++)
-                            {
-                                let chart = Highcharts.charts[i];
-
-                                if (chart && this.chart !== chart) {
-                                    if (chart.xAxis[0].setExtremes) { // It is null while updating
-                                        chart.xAxis[0].setExtremes(evt.min, evt.max, true, true, { trigger: 'sync'} );
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    setExtremes: this.customSetExtremesCallbackFunction
                 }
             },
             yAxis: {

@@ -94,6 +94,8 @@ import { ConnectAppInsightsComponent } from './components/connect-app-insights/c
 import {DetectorSearchComponent} from './components/detector-search/detector-search.component';
 import {WebSearchComponent} from './components/web-search/web-search.component';
 import {RenderFilterPipe} from './components/detector-view/detector-view.component';
+import { DynamicInsightV4Component } from './components/dynamic-insight-v4/dynamic-insight-v4.component';
+import { InViewportModule } from "ng-in-viewport";
 
 @NgModule({
   imports: [
@@ -108,7 +110,8 @@ import {RenderFilterPipe} from './components/detector-view/detector-view.compone
     FabIconModule,
     FabChoiceGroupModule,
     FabSearchBoxModule,
-    FabDropdownModule
+    FabDropdownModule,
+    InViewportModule
   ],
   providers: [
     ClipboardService
@@ -138,8 +141,10 @@ import {RenderFilterPipe} from './components/detector-view/detector-view.compone
     AppInsightsEnablementComponent,
     ConnectAppInsightsComponent,
     WebSearchComponent,
-    RenderFilterPipe
+    RenderFilterPipe,
+    DynamicInsightV4Component
   ],
+  entryComponents: [DetectorListAnalysisComponent],
   exports: [
     FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DetectorSearchComponent,
     DataSummaryComponent, LoaderViewComponent, StatusIconComponent, DetectorControlComponent,

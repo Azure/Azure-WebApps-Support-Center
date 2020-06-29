@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { LiveChatService } from '../../../shared-v2/services/livechat.service';
 
 @Component({
     selector: 'liveagent-chat',
@@ -10,7 +9,7 @@ export class LiveAgentChatComponent implements OnInit {
     @Input() autoOpen: boolean = false;
     @Input() source: string = '';
 
-    constructor(private liveChatService: LiveChatService) {
+    constructor() {
     }
 
     ngOnInit(): void {

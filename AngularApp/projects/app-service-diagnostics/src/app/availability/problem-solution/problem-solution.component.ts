@@ -124,7 +124,7 @@ export class ProblemSolutionComponent implements OnInit {
                 title = 'Memory Issue';
                 break;
             case 'autoheal':
-                title = 'Auto Heal';
+                title = 'Auto-Heal';
                 break;
             default:
                 title = 'App Issue'

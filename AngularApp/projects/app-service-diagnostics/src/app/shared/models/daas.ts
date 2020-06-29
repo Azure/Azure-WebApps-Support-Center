@@ -179,6 +179,7 @@ export class DaasSettings {
     BlobContainer: string;
     BlobKey: string;
     BlobAccount: string;
+    EndpointSuffix:string;
 }
 
 export class DaasValidationResult {

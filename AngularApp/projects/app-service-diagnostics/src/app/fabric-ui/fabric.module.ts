@@ -53,6 +53,8 @@ import { RouterModule } from '@angular/router';
 import { DiagnosticDataModule } from 'diagnostic-data';
 import { CollapsibleMenuItemComponent } from '../home/components/collapsible-menu-item/collapsible-menu-item.component';
 import { SearchPipe, SearchMatchPipe } from '../home/components/pipes/search.pipe';
+import { DiagosticSessionsPanelComponent } from './components/diagostic-sessions-panel/diagostic-sessions-panel.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
     declarations: [
@@ -66,7 +68,8 @@ import { SearchPipe, SearchMatchPipe } from '../home/components/pipes/search.pip
         SectionDividerComponent,
         CollapsibleMenuItemComponent,
         SearchPipe,
-        SearchMatchPipe
+        SearchMatchPipe,
+        DiagosticSessionsPanelComponent
     ],
     imports: [
         CommonModule,
@@ -113,7 +116,8 @@ import { SearchPipe, SearchMatchPipe } from '../home/components/pipes/search.pip
         FabProgressIndicatorModule,
         // FabNavModule,
         FabContextualMenuModule,
-        DiagnosticDataModule
+        DiagnosticDataModule,
+        SharedModule
     ],
     exports: [
         FabricSearchResultsComponent,

@@ -1,4 +1,4 @@
-<detector-container *ngIf="displayDetectorContainer" [detector]="analysisDetector" [isAnalysisView]="true"></detector-container>
+<detector-container *ngIf="displayDetectorContainer" [detector]="analysisDetector" [isAnalysisView]="true" (downTimeChanged)="onDowntimeChanged($event)"></detector-container>
 <div *ngIf="showSearchBar" class="search-box">
     <span>Diagnostics based on </span>
     <div class="search-input-box">
@@ -7,18 +7,10 @@
       <i class="fa fa-exclamation icon-err" [style.display]="searchTerm?.trim().length>0 && searchTerm?.trim().length<2? '': 'none'" title="At least 2 characters"></i>
     </div>
 </div>
-<detector-list-analysis withinDiagnoseAndSolve="true" detectorParmName="detectorName"[resourceId]="resourceId" [targetedScore]="targetedScore" [analysisId]="analysisId" [searchTerm]="searchTerm" [searchMode]="searchMode" (onComplete)="updateLoadingStatus($event)"></detector-list-analysis>
 
-<div *ngIf="searchMode !== SearchAnalysisMode.Genie" [hidden]="detectorId === ''">
-  <div>
-    <div style="display: inline-block;margin-left: 20px">
-      <h2>{{ detectorName }}</h2>
-    </div>
-    <div style="display: inline-block;margin-left: 10px">
-      <a tabindex="0" (keyup.enter)="goBackToAnalysis()" aria-label="Link to go back to the analysis view" role="button"
-        (click)="goBackToAnalysis()" *ngIf="detectorId !== ''">Back to Observations</a>
-    </div>
-  </div>
+<detector-list-analysis #detectorListAnalysis detectorParmName="detectorName" [resourceId]="resourceId" [targetedScore]="targetedScore" [analysisId]="analysisId" [searchTerm]="searchTerm" [searchMode]="searchMode" (onComplete)="updateLoadingStatus($event)"></detector-list-analysis>
+
+<div  *ngIf="searchMode !== SearchAnalysisMode.Genie && detectorListAnalysis.inDrillDownMode" >
   <router-outlet></router-outlet>
 </div>
 

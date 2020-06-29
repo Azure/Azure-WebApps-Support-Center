@@ -1,43 +1,20 @@
-import { Injectable, OnInit, Inject, Input } from '@angular/core';
-import { AppInsights, } from 'applicationinsights-js';
+import { Injectable } from '@angular/core';
 import { ITelemetryProvider } from './telemetry.common';
-import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
-import { SeverityLevel } from '../../models/telemetry';
 
 @Injectable()
 export class AppInsightsTelemetryService implements ITelemetryProvider {
-
-    constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig) {
-        if (!AppInsights.config) {
-            AppInsights.downloadAndSetup({
-                instrumentationKey: config.InstrumentationKey,
-                maxBatchSizeInBytes: 1,
-                maxBatchInterval: 1
-            });
-        }
+    constructor() {
     }
 
-    public logPageView(name?: string, url?: string, properties?: any, measurements?: any, duration?: number) {
-        AppInsights.trackPageView(name, url, properties, measurements, duration);
-    }
+    logEvent(message?: string, properties?: any, measurements?: any) {}
 
-    public logEvent(message?: string, properties?: any, measurements?: any) {
-        AppInsights.trackEvent(message, properties, measurements);
-    }
+    logException(exception: Error, handledAt?: string, properties?: any, severityLevel?: any) {}
 
-    public logException(exception: Error, handledAt?: string, properties?: any, measurements?: any, severityLevel?: SeverityLevel) {
-        AppInsights.trackException(exception, handledAt, properties, measurements, severityLevel);
-    }
+    logPageView(name: string, url: string, properties?: any, measurements?: any, duration?: number) {}
 
-    public logTrace(message: string, customProperties?: any, customMetrics?: any) {
-        AppInsights.trackTrace(message, customProperties);
-    }
+    logTrace(message: string, properties?: any, severityLevel?: any) {}
 
-    public logMetric(name: string, average: number, sampleCount?: number, min?: number, max?: number, properties?: any) {
-        AppInsights.trackMetric(name, average, sampleCount, min, max, properties);
-    }
+    logMetric(name: string, average: number, sampleCount: number, min: number, max: number, properties?: any) {}
 
-    public flush() {
-        AppInsights.flush();
-    }
+    flush() {}
 }

@@ -15,13 +15,14 @@ import { LoginComponent } from './shared/components/login/login.component';
 import { AdalService, AdalGuard, AdalInterceptor } from 'adal-angular4';
 import { CustomUrlSerializerService } from './shared/services/custom-url-serializer.service';
 import { DiagnosticDataModule } from 'diagnostic-data';
-import { UnhandledExceptionHandlerService } from 'diagnostic-data';
+import { UnhandledExceptionHandlerService, AppInsightsTelemetryService } from 'diagnostic-data';
 import {CustomMaterialModule} from './material-module';
 import { HighchartsChartModule } from 'highcharts-angular';
 import {UnauthorizedComponent} from './shared/components/unauthorized/unauthorized.component';
 import {AuthRequestFailedComponent} from './shared/components/auth-request-failed/auth-request-failed.component';
 import {TokenInvalidComponent} from './shared/components/tokeninvalid/tokeninvalid.component';
 import { AngularReactBrowserModule } from '@angular-react/core';
+import { ApplensAppinsightsTelemetryService } from './shared/services/applens-appinsights-telemetry.service';
 
 @Injectable()
 export class ValidResourceResolver implements Resolve<void>{
@@ -114,8 +115,6 @@ export const Routes = RouterModule.forRoot([
   ],
   imports: [
     AngularReactBrowserModule,
-    // FabButtonModule,
-    // FabDialogModule,
     BrowserAnimationsModule,
     HttpClientModule,
     DiagnosticDataModule.forRoot(),
@@ -126,6 +125,7 @@ export const Routes = RouterModule.forRoot([
   ],
   providers: [
     ValidResourceResolver,
+    { provide: AppInsightsTelemetryService, useExisting: ApplensAppinsightsTelemetryService},
     AdalService,
     {
       provide: UrlSerializer,

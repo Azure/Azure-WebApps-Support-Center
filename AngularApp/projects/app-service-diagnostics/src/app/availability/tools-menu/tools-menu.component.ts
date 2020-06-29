@@ -130,16 +130,6 @@ export class ToolsMenuComponent  {
             }
         });
 
-        this.premiumTools.push({
-            title: "Security Scanning",
-            description: "",
-            enabled: true,
-            action: () => { 
-                this.logToolUse("TinfoilSecurity");
-                this._portalActionService.openTifoilSecurityBlade();
-            }
-        });
-
         this.initialized = true;
     }
 

@@ -1,0 +1,28 @@
+{
+	"homePageText": {
+		"title": "",
+		"description": "",
+		"searchBarPlaceHolder": ""
+	},
+	"matchRegEx": "Microsoft.ContainerRegistry/registries/",
+	"searchSuffix": "",
+	"azureServiceName": "",
+	"armApiVersion": "",
+	"isSearchEnabled": true,
+	"liveChatConfig": {
+		"isApplicableForLiveChat": false,
+		"supportTopicIds": []
+	},
+	"categories": [{
+			"id": "",
+			"name": "",
+			"description": "",
+			"keywords": [],
+			"color": "",
+			"createFlowForCategory": true,
+			"overridePath": "",
+			"chatEnabled": false
+		}
+	],
+	"pesId": "16213"
+}

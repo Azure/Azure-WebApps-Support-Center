@@ -21,7 +21,8 @@ export enum ActionType {
     Markdown = 'Markdown',
     ArmApi = 'ArmApi',
     OpenTab = 'OpenTab',
-    GoToBlade = 'GoToBlade'
+    GoToBlade = 'GoToBlade',
+    ToggleStdoutSetting = 'ToggleStdoutSetting'
 }
 
 export class ArmApiOptions {

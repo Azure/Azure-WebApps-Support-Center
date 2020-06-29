@@ -1,7 +1,11 @@
 <div *ngIf="supportedTier && !showDetailedView" class="header2">Last 5 {{DiagnoserHeading}}
     <div *ngIf="showDetailsLink" style="display:inline">
-        <div style="display:inline" [routerLink]="allSessions">
+        <div *ngIf="!enableSessionsPanel else useSessionsPanel" style="display:inline" [routerLink]="allSessions">
             (<a tabindex="0" aria-label="View all sessions">View all sessions</a>)</div>
+        <ng-template #useSessionsPanel>
+            <div style="display:inline" (click)="toggleSessionPanel()"  (keyup.enter)="toggleSessionPanel()">
+                (<a tabindex="0" aria-label="View all sessions">View all sessions</a>)</div>
+        </ng-template>
     </div>
 </div>
 <div>

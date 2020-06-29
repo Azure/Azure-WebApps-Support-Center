@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace Backend
 {
@@ -26,6 +28,11 @@ namespace Backend
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
+            if (env.IsDevelopment())
+            {
+                builder.AddApplicationInsightsSettings(developerMode: true);
+            }
+
             Configuration = builder.Build();
         }
 
@@ -34,6 +41,15 @@ namespace Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var applicationInsightsOptions = new ApplicationInsightsServiceOptions
+            {
+                InstrumentationKey = Configuration["ApplicationInsights:InstrumentationKey"],
+                EnableAdaptiveSampling = false
+            };
+            services.AddApplicationInsightsTelemetry(applicationInsightsOptions);
+            services.AddSingleton<ITelemetryInitializer, AppInsightsTelemetryInitializer>();
+
             services.AddMvc(options =>
             {
                 options.CacheProfiles.Add("Default",
@@ -43,16 +59,11 @@ namespace Backend
                         NoStore = true
                     });
             });
-
-            //var config = new ChatConfiguration();
-            var config = Configuration.GetSection("Chat").Get<ChatConfiguration>();
-            services.AddSingleton(config);
             
             services.AddSingleton<IKustoQueryService, KustoQueryService>();
             services.AddSingleton<IKustoTokenRefreshService, KustoTokenRefreshService>();
             services.AddSingleton<IOutageCommunicationService, OutageCommunicationService>();
             services.AddSingleton<IArmService, ArmService>();
-            services.AddSingleton<IChatService, ChatService>();
             services.AddSingleton<IEncryptionService, EncryptionService>();
             services.AddSingleton<IAppInsightsService, AppInsightsService>();
         }

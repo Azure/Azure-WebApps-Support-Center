@@ -6,31 +6,34 @@
       Configure Request Count rule
     </button>
   </div>
+  <div aria-live="polite" class="mt-1" [style.visibility]="displayDeleteRuleMessage ? 'visibile' : 'hidden'">
+    Rule Deleted
+  </div>
 </div>
 
 <table class="table table-bordered" *ngIf="!editMode && rule != null">
   <thead>
     <tr>
-      <th>
+      <th tabindex="0">
         Request Count
       </th>
-      <th>
+      <th tabindex="0">
         Duration
       </th>
-      <th>
+      <th tabindex="0">
         Action
       </th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>{{ rule.count }}</td>
-      <td>{{ rule.timeInterval }}</td>
-      <td>
-        <button class="image-btn" *ngIf="!editMode" (click)="editRule()">
+      <td tabindex="0">{{ rule.count }}</td>
+      <td tabindex="0">{{ rule.timeInterval }}</td>
+      <td tabindex="0">
+        <button class="image-btn" *ngIf="!editMode" (click)="editRule()" title="Edit rule" name="editRule">
           <i class="fa fa-edit"></i>
         </button>
-        <button class="image-btn" *ngIf="!editMode" (click)="deleteRule()">
+        <button class="image-btn" *ngIf="!editMode" (click)="deleteRule()" title="Delete rule" name="deleteRule">
           <i class="fa fa-trash"></i>
         </button>
       </td>
@@ -41,10 +44,10 @@
 <div class="form-group" *ngIf="editMode">
   <div class="row">
     <div class="col-sm-6">
-      <label id="requestCountHelp" for="requests">After how many requests you want this condition to kick in?</label>
+      <label id="requestCountHelp" aria-placeholder="Enter count" for="requestCount">After how many requests you want this condition to kick in?</label>
     </div>
     <div class="col-sm-4">
-      <input type="number" id="requests" aria-label="Request Count" placeholder="Enter count" [(ngModel)]="ruleCopy.count">
+      <input aria-required="true" type="number" id="requestCount" placeholder="Enter count" [(ngModel)]="ruleCopy.count" min="1" max="4294967295">
       <span style="color:red">*</span>
       <div *ngIf="ruleCopy.count <=0" class="alert alert-danger" style="margin-top:5px">
         Request count should be more than zero
@@ -56,7 +59,7 @@
       <label for="durationCount">What is the time interval (in seconds) in which the above condition should be met?</label>
     </div>
     <div class="col-sm-4">
-      <timespan [(timeSpan)]="ruleCopy.timeInterval" placeholder="e.g. 60" label="How frequently do you want to check?"></timespan>
+      <timespan ControlId="durationCount" [(timeSpan)]="ruleCopy.timeInterval" placeholder="e.g. 60"></timespan>
     </div>
   </div>
 

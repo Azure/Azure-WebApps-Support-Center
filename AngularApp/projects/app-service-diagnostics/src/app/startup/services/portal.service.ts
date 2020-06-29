@@ -19,11 +19,13 @@ export class PortalService {
 
 
     private shellSrc: string;
+    private tokenObservable: ReplaySubject<string>;
 
     constructor(private _broadcastService: BroadcastService) {
         this.sessionId = '';
 
         this.startupInfoObservable = new ReplaySubject<StartupInfo>(1);
+        this.tokenObservable = new ReplaySubject<string>(1);
         this.appInsightsResourceObservable = new ReplaySubject<any>(1);
         
         //CXP Chat messages
@@ -38,6 +40,10 @@ export class PortalService {
 
     getStartupInfo(): ReplaySubject<StartupInfo> {
         return this.startupInfoObservable;
+    }
+
+    getToken(): ReplaySubject<string> {
+        return this.tokenObservable;
     }
 
     getAppInsightsResourceInfo(): ReplaySubject<any> {
@@ -151,6 +157,9 @@ export class PortalService {
         } else if (methodName == Verbs.notifyChatOpenedResponse) {
             const notifyChatOpenedResponse = data;
             this.notifyChatOpenedObservable.next(notifyChatOpenedResponse);
+        } else if (methodName == Verbs.sendToken) {
+            const token = data;
+            this.tokenObservable.next(token);            
         }
     }
 

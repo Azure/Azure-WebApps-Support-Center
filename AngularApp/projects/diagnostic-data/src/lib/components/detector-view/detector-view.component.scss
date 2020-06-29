@@ -1,3 +1,5 @@
+@import "../../../../../app-service-diagnostics/src/styles/main.scss";
+
 .edit-button{
     float:right;
     margin-top: 10px;
@@ -49,4 +51,30 @@
 
 .span-h1{
     font-size: 2.4rem;
+}
+
+.downtime-select{
+    margin-bottom: 10px;
+}
+
+.downtime-container {
+    display:inline-flex;
+    flex-flow: row;
+    align-items: baseline;
+    border:0.15em solid darkgrey;
+    border-radius: 2em;
+    padding-left: 1em;
+    padding-right:2em;
+    padding-top:1em;
+    padding-bottom: 0.5em;
+}
+
+.downtime-icon {
+    padding-right: 0.5em;
+    color:deepskyblue
+}
+
+.errorMessage {
+    padding-top: 10px;
+    color: $error-color;
 }

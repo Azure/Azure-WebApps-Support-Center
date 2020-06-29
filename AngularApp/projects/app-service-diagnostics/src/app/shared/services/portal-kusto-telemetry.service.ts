@@ -2,7 +2,9 @@ import { PortalService } from './../../startup/services/portal.service';
 import { Injectable } from '@angular/core';
 import { ITelemetryProvider } from 'diagnostic-data';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class PortalKustoTelemetryService implements ITelemetryProvider {
 
   constructor(private _portalService: PortalService) {

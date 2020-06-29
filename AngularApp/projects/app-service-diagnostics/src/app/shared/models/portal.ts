@@ -19,6 +19,7 @@ export interface StartupInfo {
     resourceType?: ResourceType;
     additionalParameters?: any;
     optionalParameters?: Array<KeyValuePair>;
+    effectiveLocale: string;
 }
 
 export enum ResourceType {

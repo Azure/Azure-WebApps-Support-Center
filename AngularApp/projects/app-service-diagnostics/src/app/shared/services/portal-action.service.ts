@@ -237,6 +237,25 @@ export class PortalActionService {
         this._portalService.openBlade(bladeInfo, 'troubleshoot');
     }
 
+    public openChangeAnalysisBlade(startTime?: string, endTime?: string, resourceUri?: string) {
+        let bladeInfo = {
+            extension: 'Microsoft_Azure_ChangeAnalysis',
+            detailBlade: 'ResourceChangesBlade',
+            detailBladeInputs: {
+                resourceId: resourceUri != null || resourceUri != undefined ? resourceUri : this.currentSite.id,
+                changeLevels: "important,normal",
+                deepLinkOrigin: 'appservicediagnostics'
+            }
+        };
+
+        if(startTime && endTime) {
+            bladeInfo["detailBladeInputs"]["startTime"] = startTime;
+            bladeInfo["detailBladeInputs"]["endTime"] = endTime;
+        }
+
+        this._portalService.openBlade(bladeInfo, 'troubleshoot');
+    }
+
     private getWebsiteId(subscriptionId: string, resourceGroup: string, siteName: string): any {
         return {
             Name: siteName,

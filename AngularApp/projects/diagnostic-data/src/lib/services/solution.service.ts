@@ -18,4 +18,8 @@ export class SolutionService {
     return null;
   }
 
+  ToggleStdoutSetting(resourceUri: string, actionOptions: {}): Observable<any> {
+    return null;
+  }
+
 }

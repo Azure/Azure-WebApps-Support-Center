@@ -76,11 +76,13 @@ namespace AppLensV3.Controllers
         }
 
         [HttpGet("appsettings/{name}")]
-        public IActionResult GetAppSettingValue(string name){
+        public IActionResult GetAppSettingValue(string name)
+        {
             if (string.IsNullOrWhiteSpace(name))
             {
                 return BadRequest("App setting name is empty");
             }
+
             return Ok(config[name]);
         }
 

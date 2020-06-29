@@ -22,51 +22,56 @@ export class GenericDetectorComponent implements OnDestroy {
 
   constructor(private _activatedRoute: ActivatedRoute, private _diagnosticService: DiagnosticService, private _resourceService: ResourceService, private _authServiceInstance: AuthService, private _telemetryService: TelemetryService,
     private _navigator: FeatureNavigationService, private _router: Router) {
-    if (this._activatedRoute.snapshot.params['analysisId'] != null) {
-      this.analysisDetector = this._activatedRoute.snapshot.params['analysisId'];
-      if (this._activatedRoute.snapshot.params['detectorName'] != null) {
-        this.detector = this._activatedRoute.snapshot.params['detectorName'];
-      }
-      else {
-        this.detector = this._activatedRoute.snapshot.params['analysisId'];
-        this.analysisDetector = this.detector;
-      }
-    }
-    else if (this._activatedRoute.snapshot.params['detectorName'] != null) {
-      this.detector = this._activatedRoute.snapshot.params['detectorName'];
-    }
-
-    this.navigateSub = this._navigator.OnDetectorNavigate.subscribe((detector: string) => {
-      if (detector) {
-        let detectorMetaData: DetectorMetaData = this._diagnosticService.getDetectorById(detector);
-        if (detectorMetaData.type === DetectorType.Detector) {
-          this._router.navigate([`../../detectors/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
-        } else if (detectorMetaData.type === DetectorType.Analysis) {
-          this._router.navigate([`../../analysis/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
+      this._activatedRoute.paramMap.subscribe(params =>{
+        let currAnalysisId = params.get('analysisId');
+        let currDetetctor = params.get('detectorName');
+        if(!!currAnalysisId) {
+          this.analysisDetector = currAnalysisId;
+          if(!!currDetetctor) {
+            this.detector = currDetetctor;
+          }
+          else {
+            this.detector = currAnalysisId;
+          }
+        }
+        else {
+          if(!!currDetetctor) {
+            this.detector = currDetetctor;
+          }
         }
 
-      }
-    });
+        this.navigateSub = this._navigator.OnDetectorNavigate.subscribe((detector: string) => {
+          if (detector) {
+            let detectorMetaData: DetectorMetaData = this._diagnosticService.getDetectorById(detector);
+            if (detectorMetaData.type === DetectorType.Detector) {
+              this._router.navigate([`../../detectors/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
+            } else if (detectorMetaData.type === DetectorType.Analysis) {
+              this._router.navigate([`../../analysis/${detector}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
+            }
+    
+          }
+        });
 
-    this.analysisMode = this._activatedRoute.snapshot.data['analysisMode'];
+        this.analysisMode = this._activatedRoute.snapshot.data['analysisMode'];
 
-    this._authServiceInstance.getStartupInfo().subscribe(startUpInfo => {
-      if (startUpInfo) {
-        const resourceId = startUpInfo.resourceId ? startUpInfo.resourceId : '';
-        const ticketBladeWorkflowId = startUpInfo.workflowId ? startUpInfo.workflowId : '';
-        const supportTopicId = startUpInfo.supportTopicId ? startUpInfo.supportTopicId : '';
-        const sessionId = startUpInfo.sessionId ? startUpInfo.sessionId : '';
-
-        const eventProperties: { [name: string]: string } = {
-          'ResourceId': resourceId,
-          'TicketBladeWorkflowId': ticketBladeWorkflowId,
-          'SupportTopicId': supportTopicId,
-          'PortalSessionId': sessionId,
-          'AzureServiceName': this._resourceService.azureServiceName
-        };
-        this._telemetryService.eventPropertiesSubject.next(eventProperties);
-      }
-    });
+        this._authServiceInstance.getStartupInfo().subscribe(startUpInfo => {
+          if (startUpInfo) {
+            const resourceId = startUpInfo.resourceId ? startUpInfo.resourceId : '';
+            const ticketBladeWorkflowId = startUpInfo.workflowId ? startUpInfo.workflowId : '';
+            const supportTopicId = startUpInfo.supportTopicId ? startUpInfo.supportTopicId : '';
+            const sessionId = startUpInfo.sessionId ? startUpInfo.sessionId : '';
+    
+            const eventProperties: { [name: string]: string } = {
+              'ResourceId': resourceId,
+              'TicketBladeWorkflowId': ticketBladeWorkflowId,
+              'SupportTopicId': supportTopicId,
+              'PortalSessionId': sessionId,
+              'AzureServiceName': this._resourceService.azureServiceName
+            };
+            this._telemetryService.eventPropertiesSubject.next(eventProperties);
+          }
+        });
+      });
   }
 
   ngOnDestroy() {

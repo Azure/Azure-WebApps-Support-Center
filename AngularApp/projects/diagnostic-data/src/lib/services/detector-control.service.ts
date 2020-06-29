@@ -79,17 +79,17 @@ export class DetectorControlService {
     let returnValue: string = '';
     this.timeRangeDefaulted = false;
     this.timeRangeErrorString = '';
-
+    let timeStringFormat = this.internalClient ? "YYYY-MM-DD hh:mm" : "MM/DD/YY hh:mm"
     if (startTime && endTime) {
       start = moment.utc(startTime);
       if (!start.isValid()) {
-        returnValue = 'Invalid Start date time specified. Expected format: YYYY-MM-DD hh:mm';
+        returnValue = `Invalid Start date time specified. Expected format: ${timeStringFormat}`;
         this.timeRangeErrorString = returnValue;
         return returnValue;
       }
       end = moment.utc(endTime);
       if (!end.isValid()) {
-        returnValue = 'Invalid End date time specified. Expected format: YYYY-MM-DD hh:mm';
+        returnValue = `Invalid End date time specified. Expected format: ${timeStringFormat}`;
         this.timeRangeErrorString = returnValue;
         return returnValue;
       }
@@ -148,7 +148,7 @@ export class DetectorControlService {
       if (startTime) {
         start = moment.utc(startTime);
         if (!start.isValid()) {
-          returnValue = 'Invalid Start date time specified. Expected format: YYYY-MM-DD hh:mm';
+          returnValue = `Invalid Start date time specified. Expected format: ${timeStringFormat}`;
           this.timeRangeErrorString = returnValue;
           return returnValue;
         }

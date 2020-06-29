@@ -1,4 +1,4 @@
-<ng-container *ngIf="isWindowsWebApp&&!isExternalSub">
+<ng-container *ngIf="initializedPortalVersion === 'v3'">
   <div *ngIf="useLegacy" class="switch2new-context-text">
     <i class="fa fa-info-circle info-banner-icon"></i>
     We have recently launched the new version of App Service Diagnostics.
@@ -34,8 +34,8 @@
     </ng-container>
   </div>
   <div class="main-area">
-    <h2 tabindex="0">{{homePageText.title}}</h2>
-    <p id="page-description" tabindex="0">{{homePageText.description}}</p>
+    <h2>{{homePageText.title}}</h2>
+    <p id="page-description" >{{homePageText.description}}</p>
     <div *ngIf="categories && !useStaticAksText " class="category-container">
       <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
         <category-tile [category]="category"></category-tile>
@@ -105,7 +105,7 @@
 
       - <a href="https://docs.azure.cn/aks/ssh" target="_blank">https://docs.azure.cn/aks/ssh</a>
     </markdown>
-    <div class="privacy-statement" tabindex="0">
+    <div class="privacy-statement">
       <a href="https://azure.microsoft.com/support/legal/?amp%3Bclcid=0x9" target="_blank">Privacy</a>
     </div>
   </div>
@@ -114,8 +114,8 @@
 <ng-template #newSolution>
   <div class="main-area-v4">
     <div class="home-content">
-      <h2 tabindex="0" class="home-title">{{homePageText.title}}</h2>
-      <p tabindex="0" class="home-description-v4">{{homePageText.description}}</p>
+      <h2 class="home-title">{{homePageText.title}}</h2>
+      <p class="home-description-v4">{{homePageText.description}}</p>
       <p class="home-description-v4">If you would like to look at the health check then
         <a id="healthCheck"(click)="openAvaAndPerf()" tabindex="0" aria-label="Open health check"
           (keydown.enter)="openAvaAndPerf()">click here.</a> You can also ask our interactive chatbot
@@ -133,7 +133,7 @@
         <category-tile-v4 [category]="category"></category-tile-v4>
       </div>
     </div>
-    <div class="privacy-statement" tabindex="0">
+    <div class="privacy-statement">
       <a href="https://azure.microsoft.com/support/legal/?amp%3Bclcid=0x9" target="_blank">Privacy</a>
     </div>
   </div>

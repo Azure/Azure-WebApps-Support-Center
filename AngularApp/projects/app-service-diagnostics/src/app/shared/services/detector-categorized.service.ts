@@ -30,7 +30,7 @@ export class DetectorCategorizationService {
             })
         });
 
-        this.detectorlistCategories["WindowsAvailabilityAndPerformance"]=[];
+        this.detectorlistCategories["AvailabilityAndPerformanceWindows"]=[];
         this.detectorlistCategories["ConfigurationAndManagement"]=[];
         this.detectorlistCategories["SSLandDomains"]=[];
         this.detectorlistCategories["BestPractices"]=[];

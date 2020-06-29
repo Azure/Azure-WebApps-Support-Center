@@ -68,6 +68,9 @@ export class SolutionComponent extends DataRenderBaseComponent {
         if (overrideKeys.indexOf('detailblade') > -1) {
             return ActionType.GoToBlade;
         }
+        if (overrideKeys.indexOf('stdout') > -1) {
+            return ActionType.ToggleStdoutSetting;
+        }
 
         return ActionType.Markdown;
     }
@@ -89,6 +92,10 @@ export class SolutionComponent extends DataRenderBaseComponent {
             case (ActionType.OpenTab): {
                 actionOptions = this.solution.TabOptions;
                 this.confirmationMessage = 'Tab Opened';
+                break;
+            }
+            case (ActionType.ToggleStdoutSetting) : {
+                this.confirmationMessage = 'STDOUT Logging Enabled';
                 break;
             }
         }
@@ -146,6 +153,9 @@ export class SolutionComponent extends DataRenderBaseComponent {
             }
             case (ActionType.OpenTab): {
                 return this._siteService.OpenTab(this.solution.ResourceUri, this.overrideOptions);
+            }
+            case (ActionType.ToggleStdoutSetting): {
+                return this._siteService.ToggleStdoutSetting(this.solution.ResourceUri, this.overrideOptions);
             }
             default: {
                 throw new Error(`ActionType ${this.solution.Action} does not have a corresponding action`);

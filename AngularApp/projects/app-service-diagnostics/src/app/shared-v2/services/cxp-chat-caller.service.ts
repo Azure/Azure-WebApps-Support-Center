@@ -15,7 +15,7 @@ export class CXPChatCallerService {
   public pesId: string = '';
   public readonly cxpChatTagName: string = 'webapps';
   public readonly applensUserAgentForCXPChat: string = 'applensDiagnostics';
-  public readonly supportPlanType: string = 'Basic';
+  public supportPlanType: string = '';
   public chatLanguage: string = 'en';
 
   public trackingId:string = '';
@@ -32,10 +32,21 @@ export class CXPChatCallerService {
 
     this._authService.getStartupInfo()
       .subscribe(startupInfo => {
-        if (!!startupInfo && !!startupInfo.optionalParameters) {
-          var caseSubjectParam = startupInfo.optionalParameters.find(param => param.key === "caseSubject");
-          if (caseSubjectParam) {
-            this.caseSubject = caseSubjectParam.value;
+        if (!!startupInfo) {
+          if(!!startupInfo.effectiveLocale && startupInfo.effectiveLocale.length > 0) {
+            this.chatLanguage = startupInfo.effectiveLocale;
+          }
+
+          if(!!startupInfo.optionalParameters) {
+            var caseSubjectParam = startupInfo.optionalParameters.find(param => param.key === "caseSubject");
+            if (!!caseSubjectParam) {
+              this.caseSubject = caseSubjectParam.value;
+            }
+
+            var cxSupportPlanType = startupInfo.optionalParameters.find(param => param.key === "supportPlans");
+            if(!!cxSupportPlanType) {
+              this.supportPlanType = cxSupportPlanType.value.supportPlanType;
+            }
           }
         }
       });
@@ -205,7 +216,8 @@ export class CXPChatCallerService {
         subscriptionId: this._resourceService.subscriptionId,
         productId: this.pesId,
         supportTopicId: supportTopicId,
-        title: this.caseSubject
+        title: this.caseSubject,
+        resourceId: this._resourceService.resource.id
       }
     };
 

@@ -10,7 +10,7 @@ export class SearchConfiguration{
         this.CustomQueryString = null;
         this.DetectorSearchConfiguration = new DetectorSearchConfiguration();
         this.WebSearchConfiguration = new WebSearchConfiguration();
-        if (table.columns && table.rows && table.rows.length>0){
+        if (table && table.columns && table.rows && table.rows.length>0){
             this.DetectorSearchEnabled = table.rows[0][table.columns.findIndex(x => x.columnName=="DetectorSearchEnabled")];
             this.WebSearchEnabled = table.rows[0][table.columns.findIndex(x => x.columnName=="WebSearchEnabled")];
             this.CustomQueryString = table.rows[0][table.columns.findIndex(x => x.columnName=="CustomQueryString")];

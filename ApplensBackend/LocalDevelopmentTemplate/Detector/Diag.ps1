@@ -145,7 +145,7 @@ if ($run) {
         [System.IO.File]::WriteAllText("$PSScriptRoot\..\FrameWork\UI\Detector-UI-Rendering\dist\assets\invocationOutput.json", $invocationOutput)
 
         if ($compilationResponse.compilationOutput.compilationSucceeded -eq $true) {
-            http-server "$PSScriptRoot\..\Framework\UI\Detector-UI-Rendering\dist" -o http://localhost:8000/index.html -a localhost -p 8000 -c-1
+            http-server "$PSScriptRoot\..\Framework\UI\Detector-UI-Rendering\dist" -o /index.html -a localhost -p 8000 -c-1
         }
     }
 }

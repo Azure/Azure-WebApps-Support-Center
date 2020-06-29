@@ -4,7 +4,6 @@ import { SharedModule } from '../shared/shared.module';
 import { FabricModule } from '../fabric-ui/fabric.module';
 import { SolutionsModule } from '../solutions/solutions.module';
 import { StartupMessages } from './message-flow/startup/startupmessages';
-import { Geniefeedbackmessageflow } from './message-flow/genie-feedback/geniefeedbackmessageflow';
 import { GenieMessageProcessor } from './message-processor.service';
 import { GenieTextMessageComponent } from './common/text-message/text-message.component';
 import { ButtonMessageComponent } from './common/button-message/button-message.component';
@@ -66,7 +65,6 @@ import { FabPanelModule } from '@angular-react/fabric';
     ],
     providers: [
         StartupMessages,
-        Geniefeedbackmessageflow,
         GenieMessageProcessor,
         GenieChatFlow
     ]

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryService } from '../../../shared-v2/services/category.service';
 import { Category } from '../../../shared-v2/models/category';
 import { Globals } from '../../../globals';
+import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
 
 const suffix = ' cm';
 
@@ -40,7 +41,7 @@ export class CategoryOverviewComponent implements OnInit {
         return value.substr(0, value.length - suffix.length);
     }
 
-    constructor(private _activatedRoute: ActivatedRoute, private _router: Router, private _categoryService: CategoryService, private globals: Globals) {
+    constructor(private _activatedRoute: ActivatedRoute, private _router: Router, private _categoryService: CategoryService, private globals: Globals, private _telemetryService: TelemetryService) {
     }
 
     ngOnInit() {
@@ -50,5 +51,9 @@ export class CategoryOverviewComponent implements OnInit {
         });
 
         this.categoryId = this.category.id
+    }
+
+    ngAfterViewInit () {
+        this._telemetryService.logPageView(TelemetryEventNames.CategoryOverviewPageLoaded, {"categoryId": this.categoryId});
     }
 }

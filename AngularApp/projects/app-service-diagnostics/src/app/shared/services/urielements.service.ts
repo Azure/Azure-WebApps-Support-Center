@@ -52,6 +52,7 @@ export class UriElementsService {
     private _diagnosticsDatabaseTestPath = this._diagnosticsPath + 'databasetest';
     private _diagnosticsAppInfo = this._diagnosticsPath + 'appinfo';
     private _diagnosticsMonitoringPath = this._diagnosticsPath + "CpuMonitoring";
+    private _diagnosticsStdoutSettingPath = this._diagnosticsPath + 'settings/stdout';
     private _diagnosticsMonitoringSessionActive = this._diagnosticsMonitoringPath + "/active"
     private _diagnosticsMonitoringSessionActiveDetails = this._diagnosticsMonitoringPath + "/activesessiondetails"
     private _diagnosticsMonitoringSessionStop = this._diagnosticsMonitoringPath + "/stop"
@@ -137,6 +138,10 @@ export class UriElementsService {
 
     getBlobSasUriUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSettingsPath;
+    }
+
+    getStdoutSettingUrl(resourceUrl: string) {
+        return resourceUrl + this._diagnosticsStdoutSettingPath;
     }
 
     getWebJobs(site: SiteInfoMetaData) {

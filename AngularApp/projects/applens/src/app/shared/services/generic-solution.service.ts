@@ -18,4 +18,8 @@ export class GenericSolutionService {
     return of("Not implemented");
   }
 
+  ToggleStdoutSetting(resourceUri: string, actionOptions: {}): Observable<any> {
+    return of("Not implemented");
+  }
+
 }

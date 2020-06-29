@@ -272,7 +272,8 @@
               "projects/app-service-diagnostics/src/styles.scss",
               "projects/app-service-diagnostics/src/styles/main.scss",
               "node_modules/vis/dist/vis.min.css",
-              "node_modules/vis/dist/vis-timeline-graph2d.min.css"
+              "node_modules/vis/dist/vis-timeline-graph2d.min.css",
+              "projects/app-service-diagnostics/src/assets/custom-timeline.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

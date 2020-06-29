@@ -9,6 +9,8 @@ import { DiagnosticService } from '../../services/diagnostic.service';
 import { DetectorControlService } from '../../services/detector-control.service';
 import { ChangeAnalysisService} from '../../services/change-analysis.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
+import { PortalActionGenericService } from '../../services/portal-action.service';
+
 @Component({
   selector: 'app-dependencies',
   templateUrl: './app-dependencies.component.html',
@@ -24,8 +26,9 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
     showNotSupport: boolean = false;
     selectedResourceType: string = '';
     supportedResources: string[] = ['Storage Account', 'SQL Server', 'Redis Cache', 'Vnet'];
+
     constructor(protected telemetryService: TelemetryService, protected diagnosticService: DiagnosticService,
-        protected detectorControlService: DetectorControlService, protected changeAnalysisService: ChangeAnalysisService) {
+        protected detectorControlService: DetectorControlService, protected changeAnalysisService: ChangeAnalysisService, protected portalAction: PortalActionGenericService) {
         super(telemetryService);
     }
 
@@ -50,7 +53,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
             networkDataSet.push({
                 id: this.primaryResourceId,
                 image: ChangeAnalysisUtilities.getImgPathForResource(ChangeAnalysisUtilities.getResourceType(this.primaryResourceId)),
-                title: this.primaryResourceId,
+                title: this.detectorControlService.internalClient ? this.primaryResourceId: this.createTitle(this.primaryResourceId),
                 shape: 'circularImage',
                 label: resourceName
             });
@@ -62,7 +65,7 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
                 networkDataSet.push({
                     id: resourceUri,
                     image: ChangeAnalysisUtilities.getImgPathForResource(resourceType),
-                    title: resourceUri,
+                    title: this.detectorControlService.internalClient ? resourceUri: this.createTitle(resourceUri),
                     shape: 'circularImage',
                     label: resourceName
                 })
@@ -101,6 +104,10 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
                 color: {
                     border: '#D3D3D3',
                     background: '#fcfcfc'
+                  },
+                  font:{
+                      face: 'Segoe UI',
+                      size: 13
                   }
             },
             interaction: {
@@ -108,14 +115,15 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
                 zoomView: false,
                 dragNodes: false,
                 dragView: false
-            }
+            },
+
         };
-        var network = new Network(container, networkData, networkOptions);
+        let network = new Network(container, networkData, networkOptions);
         network.on("selectNode", this.triggerTimelineRefresh);
         network.selectNodes([this.primaryResourceId]);
         }
-
     }
+
 
     private triggerTimelineRefresh(properties: any): void {
         let domelement = <HTMLInputElement>document.getElementById("resourceUri");
@@ -126,12 +134,24 @@ export class AppDependenciesComponent extends DataRenderBaseComponent implements
         }
     }
 
+    createTitle(resource: string): HTMLElement {
+        let contentTag = document.createElement("p");
+        var text = "Resource Uri: </br>" + resource + "</br></br> <span>Open the Change Analysis blade to view the changes</span>";
+        contentTag.innerHTML = text;
+        return contentTag;
+    }
+
     refreshChangeTimeline(): void {
         this.logGraphClick();
         let selectedResource = <HTMLInputElement> document.getElementById('resourceUri');
         if(selectedResource.value) {
             this.selectedResourceId = selectedResource.value;
-            this.loadChangesTimeLine();
+            if(this.detectorControlService.internalClient) {
+                this.refreshChangeTimeline();
+            } else {
+                this.portalAction.openChangeAnalysisBlade(this.detectorControlService.startTimeString, this.detectorControlService.endTimeString, this.selectedResourceId);
+            }
+
         }
     }
 

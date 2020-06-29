@@ -7,6 +7,9 @@ import { SiteDaasInfo } from '../../models/solution-metadata';
 import { Subscription, Observable, interval } from 'rxjs';
 import { retry } from 'rxjs/operators';
 import { FormatHelper } from '../../utilities/formattingHelper';
+import { ActivatedRoute } from '@angular/router';
+import { Globals } from '../../../globals';
+import { TelemetryService } from 'diagnostic-data';
 
 @Component({
     selector: 'daas-sessions',
@@ -26,14 +29,14 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
 
     DiagnoserHeading: string;
     supportedTier: boolean = false;
+    enableSessionsPanel: boolean = false;
 
     @Input() refreshSessions: boolean = false;
     showDetailedView: boolean = false;
     allSessions: string = '../../diagnosticTools';
     subscription: Subscription;
 
-
-    constructor(private _windowService: WindowService, private _serverFarmService: ServerFarmDataService, private _daasService: DaasService) {
+    constructor(private _windowService: WindowService, private _serverFarmService: ServerFarmDataService, private _daasService: DaasService, protected _route: ActivatedRoute, public globals: Globals, public telemetryService: TelemetryService) {
         this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
             if (serverFarm) {
                 if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier === 'Basic' || serverFarm.sku.tier.indexOf('Premium') > -1) {
@@ -43,7 +46,7 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
         }, error => {
             //TODO: handle error
         });
-
+       this.enableSessionsPanel = this._route.snapshot.params['category'] != null || this._route.parent.snapshot.params['category']!= null;      
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -203,6 +206,11 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
         return datestring.toUpperCase().endsWith('Z') ? datestring : datestring += 'Z';;
     }
 
+    toggleSessionPanel() {
+        this.globals.openSessionPanel=!this.globals.openSessionPanel;
+        this.telemetryService.logEvent("OpenSesssionsPanel");
+        this.telemetryService.logPageView("SessionsPanelView");
+    }
 }
 
 @Pipe({ name: 'datetimediff' })
