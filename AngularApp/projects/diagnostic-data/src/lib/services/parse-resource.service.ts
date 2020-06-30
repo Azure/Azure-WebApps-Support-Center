@@ -11,7 +11,8 @@ import { ResourceDescriptor } from "../models/resource-descriptor";
 @Injectable()
 export class ParseResourceService {
     public res: any[] = [];
-    public resourceType: string = "";
+    public resource: any;
+    public resourceType: string;
     constructor(private _httpClient: HttpClient, private _diagnosticSiteService: DiagnosticSiteService) { }
 
     //Only If when parse for main App, then we can differentiate between Web App/Function App by DiagnosticSiteService
@@ -32,10 +33,10 @@ export class ParseResourceService {
         )
     }
 
-    private getErrorMsgForSupportType(resourceUri: string, isForParentApp: boolean): string {
+    private getErrorMsgForSupportType(resourceUri: string, isForMainApp: boolean): string {
         if (!resourceUri.startsWith('/')) resourceUri = '/' + resourceUri;
         const descriptor = ResourceDescriptor.parseResourceUri(resourceUri);
-        
+
         //Format issue,can't pass regex
         if (descriptor.provider === "" || descriptor.types.length === 0 || descriptor.resourceGroup === "" || descriptor.resource === "") {
             return "Resource Uri is not formatted properly";
@@ -44,15 +45,15 @@ export class ParseResourceService {
         const type = `${descriptor.provider}/${descriptor.types[0]}`;
 
 
-        const resource = this.res.find(resource => type.toLowerCase() === resource.resourceType.toLowerCase());
-        this.resourceType = resource ? resource.searchSuffix : "";
-        
+        this.resource = this.res.find(resource => type.toLowerCase() === resource.resourceType.toLowerCase());
+        this.resourceType = this.resource ? this.resource.searchSuffix : "";
+
         //If no resource type from enableResourceType.json, then this resource is not supported
         if (this.resourceType === '') {
             return `Not Support for resource type: ${type}`;
         }
 
-        if (isForParentApp) {
+        if (isForMainApp) {
             this.checkIsFunctionOrLinux(type);
         }
 
