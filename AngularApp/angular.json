@@ -264,6 +264,11 @@
               },
               {
                 "glob": "**/*",
+                "input": "projects/applens/src/assets/img",
+                "output": "/assets/img"
+              },
+              {
+                "glob": "**/*",
                 "input": "node_modules/ngx-monaco-editor/assets/monaco",
                 "output": "/assets/monaco"
               }
@@ -347,12 +352,7 @@
             "scripts": [],
             "assets": [
               "projects/app-service-diagnostics/src/favicon.ico",
-              "projects/app-service-diagnostics/src/assets",
-              {
-                "glob": "enabledResourceTypes.json",
-                "input": "projects/applens/src/assets",
-                "output": "/assets"
-              }
+              "projects/app-service-diagnostics/src/assets"
             ]
           }
         },
