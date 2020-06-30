@@ -15,12 +15,11 @@ export class DiagnosticService {
         return null;
     }
 
-    public getDetector(detector: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean,
-            formQueryParams?: string): Observable<DetectorResponse> {
+    public getDetector(detector: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean, formQueryParams?: string,overrideResourceUri?:string): Observable<DetectorResponse> {
         return null;
     }
 
-    public getDetectors(internalClient:boolean = true): Observable<DetectorMetaData[]> {
+    public getDetectors(overrideResourceUri:string = "",internalClient:boolean = true): Observable<DetectorMetaData[]> {
         return null;
     }
 

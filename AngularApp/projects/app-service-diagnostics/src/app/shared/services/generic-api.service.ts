@@ -28,13 +28,13 @@ export class GenericApiService {
         return this.detectorList.find(detector => detector.id === detectorId);
     }
 
-    public getDetectors(): Observable<DetectorMetaData[]> {
-
+    public getDetectors(overrideResourceUri:string = ""): Observable<DetectorMetaData[]> {
+        let resourceId = overrideResourceUri ? overrideResourceUri : this.resourceId;
         if (this.useLocal) {
-            const path = `v4${this.resourceId}/detectors?stampName=waws-prod-bay-085&hostnames=netpractice.azurewebsites.net`;
+            const path = `v4${resourceId}/detectors?stampName=waws-prod-bay-085&hostnames=netpractice.azurewebsites.net`;
             return this.invoke<DetectorResponse[]>(path, 'POST').pipe(map(response => response.map(detector => detector.metadata)));
         } else {
-            const path = `${this.resourceId}/detectors`;
+            const path = `${resourceId}/detectors`;
             return this._armService.getResourceCollection<DetectorResponse[]>(path).pipe(map((response: ResponseMessageEnvelope<DetectorResponse>[]) => {
                 this.detectorList = response.map(listItem => listItem.properties.metadata);
                 return this.detectorList;
@@ -57,13 +57,13 @@ export class GenericApiService {
         }
     }
 
-    public getDetector(detectorName: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean, additionalQueryParams?: string) {
-
+    public getDetector(detectorName: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean, additionalQueryParams?: string,overrideResourceUri?: string) {
+        let resourceId = overrideResourceUri ? overrideResourceUri : this.resourceId;
         if (this.useLocal) {
-            const path = `v4${this.resourceId}/detectors/${detectorName}?stampName=waws-prod-bay-085&hostnames=netpractice.azurewebsites.net`;
+            const path = `v4${resourceId}/detectors/${detectorName}?stampName=waws-prod-bay-085&hostnames=netpractice.azurewebsites.net`;
             return this.invoke<DetectorResponse>(path, 'POST');
         } else {
-            let path = `${this.resourceId}/detectors/${detectorName}?startTime=${startTime}&endTime=${endTime}`;
+            let path = `${resourceId}/detectors/${detectorName}?startTime=${startTime}&endTime=${endTime}`;
             if (additionalQueryParams != undefined) {
                 path += additionalQueryParams;
             }
