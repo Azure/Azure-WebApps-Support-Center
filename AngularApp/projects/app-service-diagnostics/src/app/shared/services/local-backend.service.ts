@@ -34,10 +34,8 @@ export class LocalBackendService {
     }
 
     return this.invoke<DetectorResponse[]>(path, 'POST').pipe(map(response => {
-      console.log(path);
       const detectorList = response.map(detector => detector.metadata);
-      // this.detectorList = response.map(detector => detector.metadata);
-      if(overrideResourceUri == "") this.detectorList = detectorList;
+      if(overrideResourceUri === "") this.detectorList = detectorList;
       return detectorList;
     }));
   }

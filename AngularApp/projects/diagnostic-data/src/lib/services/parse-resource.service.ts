@@ -10,23 +10,23 @@ import { ResourceDescriptor } from "../models/resource-descriptor";
 
 @Injectable()
 export class ParseResourceService {
-    public res: any[] = [];
+    public supportResources: any[] = [];
     public resource: any;
     public resourceType: string;
     constructor(private _httpClient: HttpClient, private _diagnosticSiteService: DiagnosticSiteService) { }
 
-    //Only If when parse for main App, then we can differentiate between Web App/Function App by DiagnosticSiteService
+    //Only If when parse for main App, then we can differentiate between Web App/Function App/Linux App by DiagnosticSiteService
     //Todo: add this method into telemetry.service and replace findProductName method  
     public checkIsResourceSupport(resourceUri: string, isForParentApp = true): Observable<string> {
         //For cache
-        if (this.res.length > 0) {
+        if (this.supportResources.length > 0) {
             const errorMsg = this.getErrorMsgForSupportType(resourceUri, isForParentApp);
             return of(errorMsg);
         }
 
         return this._httpClient.get<any>('assets/enabledResourceTypes.json').pipe(
             map(response => {
-                this.res = response.enabledResourceTypes;
+                this.supportResources = response.enabledResourceTypes;
                 return this.getErrorMsgForSupportType(resourceUri, isForParentApp);
 
             })
@@ -45,10 +45,9 @@ export class ParseResourceService {
         const type = `${descriptor.provider}/${descriptor.types[0]}`;
 
 
-        this.resource = this.res.find(resource => type.toLowerCase() === resource.resourceType.toLowerCase());
+        this.resource = this.supportResources.find(resource => type.toLowerCase() === resource.resourceType.toLowerCase());
         this.resourceType = this.resource ? this.resource.searchSuffix : "";
 
-        //If no resource type from enableResourceType.json, then this resource is not supported
         if (this.resourceType === '') {
             return `Not Support for resource type: ${type}`;
         }
@@ -61,7 +60,7 @@ export class ParseResourceService {
     }
 
 
-    //Not working for resource integration,since diagnostic service will fetch from main app
+    //Not working for resource integration,since diagnostic service will only fetch for main app,but can be used in telemetry
     private checkIsFunctionOrLinux(type: string): void {
         if (type.toLowerCase() === "microsoft.web/sites") {
             if (!this._diagnosticSiteService.currentSite.value || !this._diagnosticSiteService.currentSite.value.kind) {
