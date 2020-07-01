@@ -1,6 +1,7 @@
 <div role="group" aria-label="Detector list">
   <div *ngIf="overrideResourceUri !== '' else detectorContainer" class="list-wrapper">
-    <div>
+    <!-- If no error and no data then hide whole div -->
+    <div *ngIf="internalErrorMsg !== '' || errorMsg !== '' || detectorViewModels.length > 0">
       <!-- When has image and with error, hide vertical line -->
       <div *ngIf="!(imgSrc !== '' && (internalErrorMsg !== '' || errorMsg !== ''))" class="red-line"></div>
       <div class="list-item-wrapper">

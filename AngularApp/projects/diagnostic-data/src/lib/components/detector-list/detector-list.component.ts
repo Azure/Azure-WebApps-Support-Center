@@ -34,7 +34,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
   LoadingStatus = LoadingStatus;
   renderingProperties: DetectorListRendering;
   detectorMetaData: DetectorMetaData[];
-  detectorViewModels: any[];
+  detectorViewModels: any[] = [];
   DetectorStatus = HealthStatus;
   errorDetectors: any[] = [];
   private childDetectorsEventProperties = {};
