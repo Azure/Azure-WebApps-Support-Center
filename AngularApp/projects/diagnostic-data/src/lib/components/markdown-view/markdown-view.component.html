@@ -11,7 +11,7 @@
 </ng-template>
 
 <data-container *ngIf="renderingProperties.isContainerNeeded else noContainerMarkdown" [headerTemplate]="header" [title]="renderingProperties.title">
-    <markdown-text [markdownData]="markdownData" [detector]="detector" [isForMarkdownView]="true"></markdown-text>
+    <markdown-text [markdownData]="markdownData" [detector]="detector" [isMarkdownView]="true"></markdown-text>
 </data-container>
 
 <!-- If there is no title, do not use container. Note this is called from the else statement in the *ngIf above -->
@@ -19,6 +19,6 @@
     <div *ngIf="renderingProperties.title">
         <h1>{{renderingProperties.title}}</h1>
     </div>
-    <markdown-text [markdownData]="markdownData" [isForMarkdownView]="true"></markdown-text>
+    <markdown-text [markdownData]="markdownData" [isMarkdownView]="true"></markdown-text>
 </ng-template>
   

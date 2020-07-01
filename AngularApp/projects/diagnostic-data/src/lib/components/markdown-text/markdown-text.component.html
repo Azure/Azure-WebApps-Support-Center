@@ -1,5 +1,5 @@
 <!-- If is not from markdown-view component, then markdownData can pass directly, no need to check-->
-<div *ngIf="isForMarkdownView else processMarkdown">
+<div *ngIf="isMarkdownView else processMarkdown">
   <markdown #markdownDiv [data]="markdownData"></markdown>
 </div>
 
