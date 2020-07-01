@@ -29,7 +29,6 @@ export class MarkdownViewComponent extends DataRenderBaseComponent {
   renderingProperties: MarkdownRendering;
   markdownData: string;
   isPublic: boolean;
-  // listenObj: any;
 
   constructor(private _markdownService: MarkdownService, private _clipboard: ClipboardService, @Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, protected telemetryService: TelemetryService) {
     super(telemetryService);
