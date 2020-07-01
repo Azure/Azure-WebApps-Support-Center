@@ -78,7 +78,7 @@
 </div>
 
 
-<cxp-chat-launcher *ngIf="showChatButton()" [trackingId] = "cxpChatTrackingId" [chatUrl] = "cxpChatUrl" ></cxp-chat-launcher>
+<cxp-chat-launcher *ngIf="showChatButton()" [trackingId] = "cxpChatTrackingId" [chatUrl] = "cxpChatUrl" [supportTopicId] = "supportTopicId" ></cxp-chat-launcher>
 <loader-view style="margin-top:300px" *ngIf="!detectorDataLocalCopy && !errorState"
   [message]="isCategoryOverview? 'Diagnosing ...' : 'Loading Detector...'"></loader-view>
 

@@ -1,6 +1,6 @@
 import { Subscription } from './subscription';
 
-interface KeyValuePair{
+export interface KeyValuePair {
     key: string;
     value: any;
 }
@@ -10,12 +10,12 @@ export interface StartupInfo {
     subscriptions: Subscription[];
     sessionId: string;
     resourceId: string;
-    featureUri?:  string;
+    featureUri?: string;
     armEndpoint?: string;
-    source?:  string;
+    source?: string;
     pesId?: string;
-    supportTopicId?:  string;
-    workflowId?:  string;
+    supportTopicId?: string;
+    workflowId?: string;
     resourceType?: ResourceType;
     additionalParameters?: any;
     optionalParameters?: Array<KeyValuePair>;
@@ -90,7 +90,7 @@ export class Verbs {
     public static openSupportRequestBlade = 'open-support-request-inputs';
     public static getAppInsightsResource = 'get-appinsights-resource';
     public static sendAppInsightsResource = 'send-appinsights-resource';
-    
+
     //CXP Live Chat Requests from iframe
     public static getChatAvailability = 'get-chat-availability';
     public static sendChatAvailability = 'send-chat-availability';
@@ -98,9 +98,12 @@ export class Verbs {
     public static sendbuiltChatUrl = 'send-built-chat-url';
     public static getChatUrl = 'get-chat-url'; //This combines the functionality of getChatAvailability and buildChatUrl
     public static sendChatUrl = 'send-chat-url';
-    public static notifyChatOpened = 'notify-Chat-Opened';
-    public static notifyChatOpenedResponse = 'notify-Chat-Opened-Response';
+    public static getBladeReturnValue = 'get-Blade-Return-Value';
+    public static getBladeReturnValueResponse = 'get-Blade-Return-Value-Response';
+    public static setBladeReturnValue = 'set-Blade-Return-Value';
+    public static setBladeReturnValueResponse = 'set-Blade-Return-Value-Response';
 }
+
 
 export enum LogEntryLevel {
     /**
@@ -126,7 +129,7 @@ export enum LogEntryLevel {
 }
 
 // These must not change because these are the identifiers for the portal blades
-export  class BladeOptions {
+export class BladeOptions {
     public static pulse: string = 'pulse';
     public static eventviewer: string = 'eventviewer';
     public static freblogs: string = 'freblogs';

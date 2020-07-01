@@ -61,6 +61,7 @@ export class DetectorViewComponent implements OnInit {
   emailToApplensTeam: string = '';
 
   cxpChatTrackingId:string= '';
+  supportTopicId:string = '';
   cxpChatUrl:string = '';
 
   fabOptions: IDropdownOption[] = [];
@@ -617,6 +618,7 @@ export class DetectorViewComponent implements OnInit {
     if(this.cxpChatTrackingId === '' && this.cxpChatUrl === '') {
       if(this._supportTopicService && this._cxpChatService && this._cxpChatService.isSupportTopicEnabledForLiveChat(this._supportTopicService.supportTopicId)) {
           this.cxpChatTrackingId = this._cxpChatService.generateTrackingId();
+          this.supportTopicId = this._supportTopicService.supportTopicId;
           this._cxpChatService.getChatURL(this._supportTopicService.supportTopicId, this.cxpChatTrackingId).subscribe((chatApiResponse:any)=>{
             if (chatApiResponse && chatApiResponse != '') {
               this.cxpChatUrl = chatApiResponse;

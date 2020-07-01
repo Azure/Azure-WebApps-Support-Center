@@ -15,7 +15,7 @@
       </ng-container>
     </div>
     <div *ngIf="description" class="panel-heading text-muted card-description" [class.with-top-border]="!title">
-      {{description}}
+      <markdown-text [markdownData]="description"></markdown-text>
     </div>
     <div class="panel-body" [class.data-container-body]="applicationInsightContainerStyle === 0" [class.data-container-body-appinsight]="applicationInsightContainerStyle === 1"
       [class.no-padding]="noBodyPadding" [class.with-top-border]="!title && !description">

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { flatMap } from 'rxjs/operators';
-import { Observable, ReplaySubject, of} from 'rxjs';
+import { Observable, ReplaySubject, of } from 'rxjs';
 import { PortalService } from '../../startup/services/portal.service';
-import { ResourceService } from './resource.service' ;
-import { Verbs } from '../../shared/models/portal'
+import { ResourceService } from './resource.service';
+import { Verbs, KeyValuePair } from '../../shared/models/portal'
 import { Guid } from '../../shared/utilities/guid';
 import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
 import { AuthService } from '../../startup/services/auth.service';
@@ -18,11 +18,11 @@ export class CXPChatCallerService {
   public supportPlanType: string = '';
   public chatLanguage: string = 'en';
 
-  public trackingId:string = '';
-  public chatUrl:string = '';
-  public caseSubject : string = '';
-  
-  
+  public trackingId: string = '';
+  public chatUrl: string = '';
+  public caseSubject: string = '';
+
+
 
   constructor(private _authService: AuthService, private _portalService: PortalService, private _telemetryService: TelemetryService, private _resourceService?: ResourceService) {
     this.isChatSupported = this._resourceService.isApplicableForLiveChat;
@@ -33,18 +33,18 @@ export class CXPChatCallerService {
     this._authService.getStartupInfo()
       .subscribe(startupInfo => {
         if (!!startupInfo) {
-          if(!!startupInfo.effectiveLocale && startupInfo.effectiveLocale.length > 0) {
+          if (!!startupInfo.effectiveLocale && startupInfo.effectiveLocale.length > 0) {
             this.chatLanguage = startupInfo.effectiveLocale;
           }
 
-          if(!!startupInfo.optionalParameters) {
+          if (!!startupInfo.optionalParameters) {
             var caseSubjectParam = startupInfo.optionalParameters.find(param => param.key === "caseSubject");
             if (!!caseSubjectParam) {
               this.caseSubject = caseSubjectParam.value;
             }
 
             var cxSupportPlanType = startupInfo.optionalParameters.find(param => param.key === "supportPlans");
-            if(!!cxSupportPlanType) {
+            if (!!cxSupportPlanType) {
               this.supportPlanType = cxSupportPlanType.value.supportPlanType;
             }
           }
@@ -76,7 +76,7 @@ export class CXPChatCallerService {
         return returnValue;
       });
 
-      this.logChatEligibilityCheck('SupportTopicEnabledForCXPChat', `${supportTopicIdToCheck} is ${!returnValue? 'not ': ''}enabled.`);
+      this.logChatEligibilityCheck('SupportTopicEnabledForCXPChat', `${supportTopicIdToCheck} is ${!returnValue ? 'not ' : ''}enabled.`);
 
       return returnValue;
     }
@@ -90,7 +90,7 @@ export class CXPChatCallerService {
       return generatedGuid;
     } catch (error) {
       this.logChatEligibilityCheck('GenerateCXPChatTrackingId', `Error while generating tracking ID : ${JSON.stringify(error)}`);
-      return ''; 
+      return '';
     }
   }
 
@@ -147,7 +147,7 @@ export class CXPChatCallerService {
       additionalInfo: {}
     };
 
-    if(this.chatUrl.length > 0 && this.trackingId.length > 0) {
+    if (this.chatUrl.length > 0 && this.trackingId.length > 0) {
       let stringToLog = `No call made, result from service cache. ChatUrl: ${this.chatUrl}`;
       this._telemetryService.logEvent(TelemetryEventNames.BuildCXPChatUrl, {
         "cxpChatTrackingId": this.trackingId,
@@ -194,9 +194,10 @@ export class CXPChatCallerService {
   /**
    * @param supportTopicId  Support Topic id for which the chat is being initiated for.
    * @param trackingIdGuid  Guid used for tracking. Get this by calling generateTrackingId().
+   * @param forceFetch Optional boolean. If set to true, will force fetch the ChatURK ignoring the one currently cached.
    * @returns Chat URL string. This can be an empty string if no agents are available or if the queue is not found. Always handle for empty string.
    */
-  public getChatURL(supportTopicId: string, trackingIdGuid: string): Observable<string> {
+  public getChatURL(supportTopicId: string, trackingIdGuid: string, forceFetch: boolean = false): Observable<string> {
     let input = {
       tagName: this.cxpChatTagName,
       eligibilityParams: {
@@ -221,7 +222,7 @@ export class CXPChatCallerService {
       }
     };
 
-    if(this.chatUrl.length > 0 && this.trackingId.length > 0) {
+    if (this.chatUrl.length > 0 && this.trackingId.length > 0 && forceFetch == false) {
       let stringToLog = `No call made, result from service cache. ChatUrl: ${this.chatUrl}`;
       this._telemetryService.logEvent(TelemetryEventNames.BuildCXPChatUrl, {
         "cxpChatTrackingId": this.trackingId,
@@ -232,13 +233,25 @@ export class CXPChatCallerService {
       return of(this.chatUrl);
     }
     else {
-      
+
+      let forceFetchReasonStr: string = '';
+      if (forceFetch) {
+        forceFetchReasonStr = ' Force Fetch attribute was set for this call.';
+      }
+      if (this.chatUrl.length > 0) {
+        forceFetchReasonStr = `${forceFetchReasonStr} Current chat URL before this call is ${this.chatUrl}.`;
+      }
+
+      if (this.trackingId.length > 0) {
+        forceFetchReasonStr = `${forceFetchReasonStr} Current tracking id before this call is ${this.trackingId}.`;
+      }
+
       //Make a call to the CXP Chat API to get the URL, the call is piped via SCI Frame blade in the portal.
       try {
         this._telemetryService.logEvent(TelemetryEventNames.GetCXPChatURL, {
           "cxpChatTrackingId": trackingIdGuid,
           "passedInput": JSON.stringify(input),
-          "returnValue": 'About to make a call to CXP chat portal RPC API.'
+          "returnValue": `About to make a call to CXP chat portal RPC API.${forceFetchReasonStr}`
         });
 
         this._portalService.postMessage(Verbs.getChatUrl, JSON.stringify(input));
@@ -255,13 +268,13 @@ export class CXPChatCallerService {
           "returnValue": `Error while sending a call to CXP chat portal RPC API. ${JSON.stringify(error)}`
         });
       }
-      
+
       //Wait for the response from the CXP chat API call.
       try {
         return this._portalService.getChatUrl().pipe(flatMap((chatUrl) => {
           let stringToLog = '';
           let returnValue = '';
-          
+
           if (chatUrl && chatUrl != '') {
             this.chatUrl = chatUrl;
             this.trackingId = trackingIdGuid;
@@ -276,14 +289,14 @@ export class CXPChatCallerService {
               stringToLog = 'NULL object returned. Likely cause, unknown. Followup with CXP team with trackingId.';
             }
           }
-    
+
           this._telemetryService.logEvent(TelemetryEventNames.GetCXPChatURL, {
             "cxpChatTrackingId": trackingIdGuid,
             "passedInput": JSON.stringify(input),
             "returnValue": stringToLog
           });
           return of(returnValue);
-        }));      
+        }));
       } catch (error) {
         this._telemetryService.logEvent(TelemetryEventNames.GetCXPChatURL, {
           "cxpChatTrackingId": trackingIdGuid,
@@ -296,18 +309,44 @@ export class CXPChatCallerService {
     }
   }
 
+  /**
+ * @param trackingId  Guid used for tracking. This is the trackingId for which the Chat was initiated.
+ * @param chatUrl  The chat URL that is being opened.
+ * @param chatStarted Did the customer start a chat session.
+ */
+  public notifyChatOpened(trackingId: string, chatUrl: string, chatStarted: boolean) {
+    let chatOpenedNotificationContract = {
+      key: 'ChatEngagementState',
+      value: {
+        hasChatted: chatStarted,
+        chatUrl: chatUrl
+      }
+    } as KeyValuePair;
 
-  public notifyChatOpened() {
-    //When CXP API is ready to receive a message from us on chat opened, update this function and call their API with the correct contract in the Ibiza project SCIFrameBlade _notifyChatOpened method
-    let chatOpenedNotificationContract = {};
-    this._portalService.postMessage(Verbs.notifyChatOpened, JSON.stringify(chatOpenedNotificationContract) );
+    this._portalService.setBladeReturnValue(chatOpenedNotificationContract).subscribe((returnValue: any) => {
+      if (returnValue.returnValueSet) {
+        this.logUserActionOnChat('CXPChatStartedStatusSendToIbizaComplete', trackingId, chatUrl);
+      }
+      else {
+        const notificationSetError = {
+          "cxpChatTrackingId": trackingId,
+          "userAction": 'CXPChatStartedStatusSendToIbizaFailed',
+          "chatUrl": chatUrl,
+          "failueReason": returnValue.reason,
+          "dataSentByIFrame": JSON.stringify(chatOpenedNotificationContract),
+          "returnedDataFromIbiza": returnValue.data
+        };
+
+        this._telemetryService.logEvent(TelemetryEventNames.CXPChatUserAction, notificationSetError);
+      }
+    });
   }
 
   /**
- * @param userAction Which button did the user click on
- * @param trackingIdGuid  Guid used for tracking. This is the trackingId for which the Chat was initiated.
- * @param chatUrl  The chat URL that is being opened.
- */
+   * @param userAction Which button did the user click on
+   * @param trackingIdGuid  Guid used for tracking. This is the trackingId for which the Chat was initiated.
+   * @param chatUrl  The chat URL that is being opened.
+   */
   public logUserActionOnChat(userAction: string, trackingIdGuid: string, chatUrl: string): void {
     let notificationMessage = {
       "cxpChatTrackingId": trackingIdGuid,

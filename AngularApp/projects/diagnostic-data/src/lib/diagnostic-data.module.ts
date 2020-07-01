@@ -97,6 +97,7 @@ import {RenderFilterPipe} from './components/detector-view/detector-view.compone
 import { DynamicInsightV4Component } from './components/dynamic-insight-v4/dynamic-insight-v4.component';
 import { InViewportModule } from "ng-in-viewport";
 import { ParseResourceService } from './services/parse-resource.service';
+import { MarkdownTextComponent } from './components/markdown-text/markdown-text.component';
 
 @NgModule({
   imports: [
@@ -143,7 +144,8 @@ import { ParseResourceService } from './services/parse-resource.service';
     ConnectAppInsightsComponent,
     WebSearchComponent,
     RenderFilterPipe,
-    DynamicInsightV4Component
+    DynamicInsightV4Component,
+    MarkdownTextComponent
   ],
   entryComponents: [DetectorListAnalysisComponent],
   exports: [

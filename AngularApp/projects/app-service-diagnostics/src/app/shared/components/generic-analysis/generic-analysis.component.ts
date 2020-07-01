@@ -33,6 +33,7 @@ export class GenericAnalysisComponent extends GenericDetectorComponent implement
   @ViewChild('detectorListAnalysis', {static:true}) detectorListAnalysis: DetectorListAnalysisComponent
   isPublic: boolean = false;
   cxpChatTrackingId: string = '';
+  supportTopicId:string = '';
   cxpChatUrl: string = ''; 
 
   constructor(private _activatedRouteLocal: ActivatedRoute, private _diagnosticServiceLocal: DiagnosticService, _resourceService: ResourceService, _authServiceInstance: AuthService, _telemetryService: TelemetryService,
@@ -116,6 +117,7 @@ export class GenericAnalysisComponent extends GenericDetectorComponent implement
     if(this.cxpChatTrackingId === '' && this.cxpChatUrl === '') {
       if(this._supportTopicService && this._cxpChatService && this._cxpChatService.isSupportTopicEnabledForLiveChat(this._supportTopicService.supportTopicId)) {
           this.cxpChatTrackingId = this._cxpChatService.generateTrackingId();
+          this.supportTopicId = this._supportTopicService.supportTopicId;
           this._cxpChatService.getChatURL(this._supportTopicService.supportTopicId, this.cxpChatTrackingId).subscribe((chatApiResponse:any)=>{
             if (chatApiResponse && chatApiResponse != '') {
               this.cxpChatUrl = chatApiResponse;

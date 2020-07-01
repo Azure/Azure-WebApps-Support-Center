@@ -15,5 +15,5 @@
 </div>
 
 <div *ngIf="searchMode !== SearchAnalysisMode.Genie" class = "cxp-chat-launcher-container align-width">
-  <cxp-chat-launcher *ngIf="showChatButton()" [trackingId] = "cxpChatTrackingId" [chatUrl] = "cxpChatUrl" ></cxp-chat-launcher>
+  <cxp-chat-launcher *ngIf="showChatButton()" [trackingId] = "cxpChatTrackingId" [chatUrl] = "cxpChatUrl" [supportTopicId] = "supportTopicId" ></cxp-chat-launcher>
 </div>

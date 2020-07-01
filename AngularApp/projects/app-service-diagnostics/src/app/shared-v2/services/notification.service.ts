@@ -42,11 +42,13 @@ export class Notification {
   action: Function;
   icon: string;
   color: string;
+  disableDismiss: boolean;
 
-  constructor(title: string, action: Function, icon?: string, color?: string) {
+  constructor(title: string, action: Function, icon?: string, color?: string, disableDismiss?: boolean) {
     this.title = title;
     this.action = action;
     this.icon = icon ? icon : 'fa-info-circle';
     this.color = color ? color : '#dddddd';
+    this.disableDismiss = disableDismiss == undefined || disableDismiss == null ? false : disableDismiss;
   }
 }
