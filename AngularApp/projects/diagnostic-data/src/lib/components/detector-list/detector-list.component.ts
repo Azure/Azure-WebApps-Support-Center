@@ -52,10 +52,10 @@ export class DetectorListComponent extends DataRenderBaseComponent {
   protected processData(data: DiagnosticData) {
     super.processData(data);
     this.renderingProperties = <DetectorListRendering>data.renderingProperties;
-    this.checkShouldGetDetectors();
+    this.getResponseFromResource();
   }
 
-  private checkShouldGetDetectors() {
+  private getResponseFromResource() {
     let isFromDependentResource = this.checkIsFromDependentResource();
     if (isFromDependentResource) {
       this.parseResourceService.checkIsResourceSupport(this.overrideResourceUri, false).subscribe(error => {

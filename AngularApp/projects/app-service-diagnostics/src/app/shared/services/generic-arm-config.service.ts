@@ -76,7 +76,6 @@ export class GenericArmConfigService {
     if (!resourceUri.startsWith('/')) {
       resourceUri = '/' + resourceUri;
     }
-    // let resourceDesc = this.parseResourceUri(resourceUri);
     let resourceDesc = ResourceDescriptor.parseResourceUri(resourceUri);
     const baseUri: string = 'armResourceConfig/' + resourceDesc.provider + '/' + resourceDesc.type + '/';
 
