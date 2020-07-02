@@ -18,7 +18,7 @@
             "id": "Container Insights",
             "name": "Container Insights",
             "description": "Is your container group experiencing failures or unresponsiveness? Investigate and discover issues that may cause your container group to function unexpectedly.",
-            "keywords": [ "Deployment", "Delete", "VNet", "Network Peering", "IP" ],
+            "keywords": [ "Deployment", "Credentials", "Management Operations", "VNet", "Network Peering", "IP" ],
             "color": "rgb(186, 211, 245)",
             "createFlowForCategory": true,
             "chatEnabled": false
