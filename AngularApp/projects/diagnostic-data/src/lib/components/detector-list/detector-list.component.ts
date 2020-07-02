@@ -63,6 +63,9 @@ export class DetectorListComponent extends DataRenderBaseComponent {
         if (error === "") {
           this.resourceType = this.parseResourceService.resourceType;
           this.imgSrc = this.parseResourceService.resource.imgSrc;
+          this.telemetryService.logEvent("DependentChildDetector", {
+            resourceUri: this.overrideResourceUri
+          });
           this.getDetectorResponses();
         }
       });
@@ -184,7 +187,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
     // Log children detectors click
     this.logEvent(TelemetryEventNames.ChildDetectorClicked, clickDetectorEventProperties);
   }
-  
+
   checkIsFromDependentResource(): boolean {
     if (!this.renderingProperties.resourceUri || this.renderingProperties.resourceUri === "") return false;
     this.overrideResourceUri = this.renderingProperties.resourceUri;

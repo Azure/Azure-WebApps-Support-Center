@@ -17,23 +17,23 @@ export class ParseResourceService {
 
     //Only If when parse for main App, then we can differentiate between Web App/Function App/Linux App by DiagnosticSiteService
     //Todo: add this method into telemetry.service and replace findProductName method  
-    public checkIsResourceSupport(resourceUri: string, isForParentApp = true): Observable<string> {
+    public checkIsResourceSupport(resourceUri: string, isMainApp = true): Observable<string> {
         //For cache
         if (this.supportResources.length > 0) {
-            const errorMsg = this.getErrorMsgForSupportType(resourceUri, isForParentApp);
+            const errorMsg = this.getErrorMsgForSupportType(resourceUri, isMainApp);
             return of(errorMsg);
         }
 
         return this._httpClient.get<any>('assets/enabledResourceTypes.json').pipe(
             map(response => {
                 this.supportResources = response.enabledResourceTypes;
-                return this.getErrorMsgForSupportType(resourceUri, isForParentApp);
+                return this.getErrorMsgForSupportType(resourceUri, isMainApp);
 
             })
         )
     }
 
-    private getErrorMsgForSupportType(resourceUri: string, isForMainApp: boolean): string {
+    private getErrorMsgForSupportType(resourceUri: string, isMainApp: boolean): string {
         if (!resourceUri.startsWith('/')) resourceUri = '/' + resourceUri;
         const descriptor = ResourceDescriptor.parseResourceUri(resourceUri);
 
@@ -52,7 +52,7 @@ export class ParseResourceService {
             return `Not Support for resource type: ${type}`;
         }
 
-        if (isForMainApp) {
+        if (isMainApp) {
             this.checkIsFunctionOrLinux(type);
         }
 
