@@ -63,8 +63,9 @@ export class DetectorListComponent extends DataRenderBaseComponent {
         if (error === "") {
           this.resourceType = this.parseResourceService.resourceType;
           this.imgSrc = this.parseResourceService.resource.imgSrc;
-          this.telemetryService.logEvent("DependentChildDetector", {
-            resourceUri: this.overrideResourceUri
+          this.logEvent("DependentChildDetectorsLoaded", {
+            DependentResourceUri: this.overrideResourceUri,
+            DependentResourceType: this.resourceType
           });
           this.getDetectorResponses();
         }
