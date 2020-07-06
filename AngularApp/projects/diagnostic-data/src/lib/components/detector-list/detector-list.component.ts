@@ -44,6 +44,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
   internalErrorMsg: string = "";
   isPublic: boolean;
   imgSrc: string = "";
+  resourceText: string = "";
   constructor(private _diagnosticService: DiagnosticService, protected telemetryService: TelemetryService, private _detectorControl: DetectorControlService, private parseResourceService: ParseResourceService, @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig) {
     super(telemetryService);
     this.isPublic = this.config && this.config.isPublic;
@@ -63,6 +64,13 @@ export class DetectorListComponent extends DataRenderBaseComponent {
         if (error === "") {
           this.resourceType = this.parseResourceService.resourceType;
           this.imgSrc = this.parseResourceService.resource.imgSrc;
+          
+          if(this.isPublic){
+            this.resourceText = `Showing diagnostics from the dependent resource type: ${this.resourceType}`;
+          } else {
+            this.resourceText = `Showing detectors from the dependent resource type: ${this.resourceType}`;
+          }
+
           this.logEvent("DependentChildDetectorsLoaded", {
             DependentResourceUri: this.overrideResourceUri,
             DependentResourceType: this.resourceType

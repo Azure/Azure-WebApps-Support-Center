@@ -13,8 +13,8 @@
           {{internalErrorMsg}}
         </div>
         <div *ngIf="internalErrorMsg === '' && errorMsg === ''" class="list-item">
-          <div class="resource-text">
-            Showing detectors from the dependent resource type: {{resourceType}}
+          <div class="resource-text" [attr.aria-label]="resourceText">
+            {{resourceText}}
           </div>
           <ng-container *ngTemplateOutlet="detectorContainer"></ng-container>
         </div>
