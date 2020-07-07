@@ -15,7 +15,7 @@
     "build-applens": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build applens --prod",
     "build-ncloud-applens-prod": "ng build applens --configuration=nationalcloud-production",
     "build-ncloud-applens-local": "ng build applens --configuration=nationalcloud-local",
-    "build-asd": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build app-service-diagnostics --prod",
+    "build-asd": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build app-service-diagnostics --prod --sourceMap=true",
     "build": "npm run build-lib && npm run build-applens && npm run build-asd",
     "test": "ng test",
     "lint": "ng lint",
