@@ -8,7 +8,7 @@
     border-bottom:1px solid #eef;
     cursor:pointer;
 
-    -webkit-user-select: none; /* Chrome/Safari */        
+    -webkit-user-select: none; /* Chrome/Safari */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+ */
     -o-user-select: none;
@@ -38,3 +38,15 @@
 .list-item.disabled:hover{
     text-decoration: none;
 }
+
+button {
+    all: inherit;
+    border: 0;
+    width: 100%;
+  }
+
+button:focus {
+    outline-color: #00bcf2;
+    outline-width: 1px;
+    outline-style: dashed;
+  }

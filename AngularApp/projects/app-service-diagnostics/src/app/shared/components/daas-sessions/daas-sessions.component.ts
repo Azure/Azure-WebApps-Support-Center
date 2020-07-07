@@ -46,7 +46,7 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
         }, error => {
             //TODO: handle error
         });
-       this.enableSessionsPanel = this._route.snapshot.params['category'] != null || this._route.parent.snapshot.params['category']!= null;      
+        this.enableSessionsPanel = this._route.snapshot.params['category'] != null || this._route.parent.snapshot.params['category'] != null;
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -77,11 +77,13 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
     checkSessions() {
         this._daasService.getDaasSessionsWithDetails(this.siteToBeDiagnosed).pipe(retry(2))
             .subscribe(sessions => {
-                const newSessions = sessions.map(this.reducedSession);
-                const existingSessions = this.sessions.map(this.reducedSession);
-                let anySessionUpdated = newSessions.filter(newSession => existingSessions.findIndex(session => JSON.stringify(session) === JSON.stringify(newSession)) === -1).length > 0;
-                if (newSessions.length !== existingSessions.length || anySessionUpdated) {
-                    this.sessions = this.setExpanded(sessions);
+                if (sessions != null) {
+                    const newSessions = sessions.map(this.reducedSession);
+                    const existingSessions = this.sessions.map(this.reducedSession);
+                    let anySessionUpdated = newSessions.filter(newSession => existingSessions.findIndex(session => JSON.stringify(session) === JSON.stringify(newSession)) === -1).length > 0;
+                    if (newSessions.length !== existingSessions.length || anySessionUpdated) {
+                        this.sessions = this.setExpanded(sessions);
+                    }
                 }
             });
     }
@@ -207,7 +209,7 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
     }
 
     toggleSessionPanel() {
-        this.globals.openSessionPanel=!this.globals.openSessionPanel;
+        this.globals.openSessionPanel = !this.globals.openSessionPanel;
         this.telemetryService.logEvent("OpenSesssionsPanel");
         this.telemetryService.logPageView("SessionsPanelView");
     }
