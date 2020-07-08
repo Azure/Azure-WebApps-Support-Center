@@ -520,7 +520,7 @@ export class HighchartsGraphComponent implements OnInit {
                         }
                     },
                     contextButton: {
-                        titleKey: "contextButtonTitle"
+                        enabled: false,
                     }
                 },
 
@@ -560,6 +560,8 @@ export class HighchartsGraphComponent implements OnInit {
                 softMin: 0,
                 crosshair: true,
                 gridLineColor: "#929294",
+                gridLineWidth: 0,
+                minorGridLineWidth: 0,
                 accessibility: {
                     description: `Y axis values`
                 },
