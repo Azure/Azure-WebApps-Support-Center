@@ -4,20 +4,21 @@
     }
 
   section.sidebar {
-      width: 265px;
+      width: 20%;
       position: fixed;
       top: 0px;
       bottom: 0px;
       border-right: 1px solid #eee;
       overflow-y: scroll;
+      overflow-x: hidden;
     }
 
   section.content {
     position: fixed;
-    width:calc(100% - 265px);
+    width: 80%;
     top: 0px;
     bottom: 0px;
-    left: 265px;
+    left: 20%;
     overflow-y: auto;
     overflow-x: hidden;
   }
