@@ -5,7 +5,7 @@ import { Subscription } from '../models/subscription';
 import { ResponseMessageEnvelope, ResponseMessageCollectionEnvelope } from '../models/responsemessageenvelope';
 import { AuthService } from '../../startup/services/auth.service';
 import { CacheService } from './cache.service';
-import { catchError, retry, map } from 'rxjs/operators';
+import { catchError, retry, map, retryWhen } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { GenericArmConfigService } from './generic-arm-config.service';
 import { StartupInfo } from '../models/portal';
@@ -138,17 +138,35 @@ export class ArmService {
         additionalHeaders.set('x-ms-request-id', requestId);
 
         let eventProps = {
-            'resourceId': resourceUri,            
+            'resourceId': resourceUri,
             'requestId': requestId,
             'requestUrl': url,
             'routerUrl': this._router.url,
             'targetRuntime': this.diagRoleVersion == this.routeToLiberation ? "Liberation" : "DiagnosticRole"
         };
         this.telemetryService.logEvent("RequestRoutingDetails", eventProps);
+
+        let requestHeaders = this.getHeaders(null, additionalHeaders);
         const request = this._http.get<ResponseMessageEnvelope<T>>(url, {
-            headers: this.getHeaders(null, additionalHeaders)
+            headers: requestHeaders
         }).pipe(
-            retry(2),
+            retryWhen(err => {
+                let requestId:string = Guid.newGuid();
+                additionalHeaders.set('x-ms-request-id', requestId);
+                requestHeaders = this.getHeaders(null, additionalHeaders);
+
+                let retryCount = 0;
+                eventProps.requestId = requestId;
+                eventProps["retryCount"] = retryCount;
+
+                if (retryCount++ >= 2) {
+                    this.telemetryService.logEvent("RetryRequestFailed", eventProps);
+                    throw err;
+                }
+
+                this.telemetryService.logEvent("RetryRequestRoutingDetails", eventProps);
+                return err;
+            }),
             catchError(this.handleError)
         );
 
@@ -373,7 +391,7 @@ export class ArmService {
         additionalHeaders.set('x-ms-request-id', requestId);
 
         let eventProps = {
-            'resourceId': resourceId,            
+            'resourceId': resourceId,
             'requestId': requestId,
             'requestUrl': url,
             'routerUrl': this._router.url,
