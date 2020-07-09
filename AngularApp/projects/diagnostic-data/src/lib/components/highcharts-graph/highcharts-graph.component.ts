@@ -413,9 +413,6 @@ export class HighchartsGraphComponent implements OnInit {
                     skipNullPoints: true
                 },
             },
-            caption: {
-                text: `${this.chartDescription}`,
-            },
             chart: {
                 reflow: true,
                 height: 300,
