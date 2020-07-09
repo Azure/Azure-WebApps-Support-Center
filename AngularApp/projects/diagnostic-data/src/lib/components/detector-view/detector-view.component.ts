@@ -1,7 +1,7 @@
 import { Moment } from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, Inject, Input, OnInit, Output, EventEmitter, Pipe, PipeTransform, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, Inject, Input, OnInit, Output, EventEmitter, Pipe, PipeTransform, SimpleChanges } from '@angular/core';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import { DetectorResponse, Rendering, RenderingType, DataTableResponseObject, DownTime, DowntimeInteractionSource, DetectorMetaData, DetectorType, DiagnosticData } from '../../models/detector';
 import { DetectorControlService } from '../../services/detector-control.service';
@@ -267,6 +267,14 @@ export class DetectorViewComponent implements OnInit {
             this.resetGlobals();
           }
         }
+
+        //After loading detectors, foucs indicator will land into detector title
+        //For now asynchronouslly to foucs after render, it should have better solution
+        setTimeout(() => {
+          if(document.getElementById("detector-name")){
+            document.getElementById("detector-name").focus();
+          }
+        });
       }
     });
   }
