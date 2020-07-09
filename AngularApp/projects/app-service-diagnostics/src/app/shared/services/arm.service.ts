@@ -5,7 +5,7 @@ import { Subscription } from '../models/subscription';
 import { ResponseMessageEnvelope, ResponseMessageCollectionEnvelope } from '../models/responsemessageenvelope';
 import { AuthService } from '../../startup/services/auth.service';
 import { CacheService } from './cache.service';
-import { catchError, retry, map, retryWhen } from 'rxjs/operators';
+import { catchError, retry, map, retryWhen, delay } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { GenericArmConfigService } from './generic-arm-config.service';
 import { StartupInfo } from '../models/portal';
@@ -159,13 +159,15 @@ export class ArmService {
                 eventProps.requestId = requestId;
                 eventProps["retryCount"] = retryCount;
 
-                if (retryCount++ >= 2) {
-                    this.telemetryService.logEvent("RetryRequestFailed", eventProps);
-                    throw err;
-                }
+                return err.pipe(delay(1000), map(err => {
+                    if(retryCount++ >= 2){
+                        this.telemetryService.logEvent("RetryRequestFailed", eventProps);
+                        throw err;
+                    }
+                    this.telemetryService.logEvent("RetryRequestRoutingDetails", eventProps);
+                    return err;
+                }));
 
-                this.telemetryService.logEvent("RetryRequestRoutingDetails", eventProps);
-                return err;
             }),
             catchError(this.handleError)
         );
