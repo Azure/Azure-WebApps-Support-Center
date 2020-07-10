@@ -137,12 +137,6 @@
               <strong>Current Settings</strong>
               <autohealing-config-summary [autohealSettings]="originalSettings">
               </autohealing-config-summary>
-              <div class="focus-box focus-box-warning" style="margin-top:20px;word-wrap: break-word"
-                *ngIf="storageAccountLengthExceeding">
-                Due to a limitation in Autohealing module, the length of the chosen storage account should be less than
-                13 characters. Please choose a different storage account or reduce the account length. This limitation
-                will be removed in the upcoming versions of Azure App Service.
-              </div>
             </div>
             <div class="summary" *ngIf="currentSettings && saveEnabled" style="margin-top:25px">
               <strong>New Settings</strong>

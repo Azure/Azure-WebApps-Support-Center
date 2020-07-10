@@ -32,16 +32,17 @@ export class DaasValidatorComponent implements OnInit {
   diagnosersRequiringStorageAccount: string[] = ['Memory Dump', 'CPU Monitoring'];
   validationResult: DaasValidationResult = new DaasValidationResult();
   diagnosers: DiagnoserDefinition[];
+  daasAppSettingsCheck: DaasAppSettingsCheck;
 
   constructor(private _serverFarmService: ServerFarmDataService, private _siteService: SiteService, private _daasService: DaasService) {
-    
+
     //
     // Temporary fix to unblock users in national clouds.
     // Should be removed after DAAS 1.40 update
     //
-    
+
     if (this._daasService.isNationalCloud) {
-      this.diagnosersRequiringStorageAccount=[];
+      this.diagnosersRequiringStorageAccount = [];
     }
   }
 
@@ -70,12 +71,17 @@ export class DaasValidatorComponent implements OnInit {
         catchError(err => {
           this.error = `Failed with error ${JSON.stringify(err)} while retrieving DaaS settings`;
           return of(err);
-        }))
+        })),
+      this.validateAppSettings(this.siteToBeDiagnosed).pipe(catchError(err => {
+        this.error = `Failed with error ${JSON.stringify(err)} while checking App Settings`;
+        return of(err);
+      }))
     ).subscribe(results => {
       this.checkingSupportedTier = false;
       const serverFarm = results[0];
       this.alwaysOnEnabled = results[1];
       this.diagnosers = results[2];
+      this.daasAppSettingsCheck = results[3];
 
       if (serverFarm != null) {
         this.checkingSkuSucceeded = true;
@@ -94,6 +100,10 @@ export class DaasValidatorComponent implements OnInit {
         this.supportedTier = true;
       }
 
+      if (this.daasAppSettingsCheck.DaasDisabled || this.daasAppSettingsCheck.LocalCacheEnabled || this.daasAppSettingsCheck.WebjobsStopped) {
+        return;
+      }
+
       if (this.error === '') {
         if (this.checkDiagnoserWarnings()) {
           return;
@@ -103,6 +113,33 @@ export class DaasValidatorComponent implements OnInit {
         }
       }
     });
+  }
+
+  validateAppSettings(site: SiteDaasInfo): Observable<DaasAppSettingsCheck> {
+
+    return this._siteService.getSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot).pipe(map(settingsResponse => {
+
+      let daasAppSettingsCheck: DaasAppSettingsCheck = new DaasAppSettingsCheck();
+
+      if (settingsResponse && settingsResponse.properties) {
+
+        if (settingsResponse.properties["WEBSITE_LOCAL_CACHE_OPTION"] != null
+          && settingsResponse.properties["WEBSITE_LOCAL_CACHE_OPTION"].toString().toLowerCase() === "Always".toLowerCase()) {
+          daasAppSettingsCheck.LocalCacheEnabled = true;
+        }
+
+        if (settingsResponse.properties["WEBSITE_DAAS_DISABLED"] != null
+          && settingsResponse.properties["WEBSITE_DAAS_DISABLED"].toString().toLowerCase() === "true".toLowerCase()) {
+          daasAppSettingsCheck.DaasDisabled = true;
+        }
+
+        if (settingsResponse.properties["WEBJOBS_STOPPED"] != null
+          && settingsResponse.properties["WEBJOBS_STOPPED"].toString().toLowerCase() === "true".toLowerCase()) {
+          daasAppSettingsCheck.WebjobsStopped = true;
+        }
+      }
+      return daasAppSettingsCheck;
+    }));
   }
 
   checkDiagnoserWarnings(): boolean {
@@ -171,4 +208,10 @@ export class DaasValidatorComponent implements OnInit {
   onStorageAccountValidated(event: DaasValidationResult) {
     this.DaasValidated.emit(event);
   }
+}
+
+class DaasAppSettingsCheck {
+  LocalCacheEnabled: boolean = false;
+  DaasDisabled: boolean = false;
+  WebjobsStopped: boolean = false;
 }

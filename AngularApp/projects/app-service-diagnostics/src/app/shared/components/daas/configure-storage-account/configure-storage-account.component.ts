@@ -35,7 +35,6 @@ export class ConfigureStorageAccountComponent implements OnInit {
   editMode: boolean = false;
   validationResult: DaasValidationResult = new DaasValidationResult();
   error: any;
-  storageAccountLengthExceeding: boolean = false;
 
   ngOnInit() {
     this._storageService.getStorageAccounts(this.siteToBeDiagnosed.subscriptionId).subscribe(resp => {
@@ -74,8 +73,6 @@ export class ConfigureStorageAccountComponent implements OnInit {
 
   chooseOption(option: any) {
     this.chosenOption = option;
-    let accountName: string = this.chosenOption.option === 'CreateNew' ? this.newStorageAccountName : this.chosenStorageAccount.name;
-    this.checkAccountLength(accountName)
   }
 
   updateStorageAccount(storageAccount: string) {
@@ -85,7 +82,6 @@ export class ConfigureStorageAccountComponent implements OnInit {
     } else {
       this.saveEnabled = true;
     }
-    this.checkAccountLength(this.newStorageAccountName);
   }
 
   saveChanges() {
@@ -182,19 +178,6 @@ export class ConfigureStorageAccountComponent implements OnInit {
     this.editMode = false;
     this.validationResult.Validated = true;
     this.StorageAccountValidated.emit(this.validationResult);
-  }
-
-  onStorageAccountChange(selectedStorageAccount: StorageAccount) {
-    this.chosenStorageAccount = selectedStorageAccount;
-    this.checkAccountLength(this.chosenStorageAccount.name);
-  }
-
-  checkAccountLength(storageAccountName: string) {
-    if (storageAccountName.length > 12) {
-      this.storageAccountLengthExceeding = true;
-    } else {
-      this.storageAccountLengthExceeding = false;
-    }
   }
 
 }

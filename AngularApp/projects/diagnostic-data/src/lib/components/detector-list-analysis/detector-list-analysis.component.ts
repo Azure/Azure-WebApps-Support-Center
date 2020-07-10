@@ -96,8 +96,8 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     showWebSearchTimeout: any = null;
     searchDiagnosticData: DiagnosticData;
     readonly stringFormat: string = 'YYYY-MM-DDTHH:mm';
-    public inDrillDownMode:boolean = false;
-    drillDownDetectorId:string = '';
+    public inDrillDownMode: boolean = false;
+    drillDownDetectorId: string = '';
 
     constructor(public _activatedRoute: ActivatedRoute, private _router: Router,
         private _diagnosticService: DiagnosticService, private _detectorControl: DetectorControlService,
@@ -118,16 +118,16 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     @Input()
     detectorParmName: string;
 
-    public _downTime:DownTime = null;
+    public _downTime: DownTime = null;
     @Input()
     set downTime(downTime: DownTime) {
-      if (!!downTime && !!downTime.StartTime && !!downTime.EndTime) {
-          this._downTime = downTime;
-          this.refresh();
-      }
-      else {
-          this._downTime = null;
-      }
+        if (!!downTime && !!downTime.StartTime && !!downTime.EndTime) {
+            this._downTime = downTime;
+            this.refresh();
+        }
+        else {
+            this._downTime = null;
+        }
     }
 
     withinDiagnoseAndSolve: boolean = !this._detectorControl.internalClient;
@@ -238,24 +238,24 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
         }
     }
 
-    analysisContainsDowntime() : Observable<boolean> {
-        if(this.analysisId === 'searchResultsAnalysis') {
+    analysisContainsDowntime(): Observable<boolean> {
+        if (this.analysisId === 'searchResultsAnalysis') {
             return of(false);
         }
         return this._diagnosticService.getDetector(this.analysisId, this._detectorControl.startTimeString, this._detectorControl.endTimeString).pipe(
             map((response: DetectorResponse) => {
                 let downTimeRenderingType = response.dataset.find(set => (<Rendering>set.renderingProperties).type === RenderingType.DownTime);
-                if(!!downTimeRenderingType) {
+                if (!!downTimeRenderingType) {
                     return true;
                 }
                 else {
                     return false;
                 }
             }),
-            catchError(e=>{return of(false)})
+            catchError(e => { return of(false) })
         );
     }
-  
+
     refresh() {
         if (this.withinGenie) {
             this.detectorId = "";
@@ -264,31 +264,31 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
         }
         else {
             this._activatedRoute.paramMap.subscribe(params => {
-                this.analysisId = (this.analysisId != 'searchResultsAnalysis' && !!params.get('analysisId'))? params.get('analysisId') : this.analysisId;
+                this.analysisId = (this.analysisId != 'searchResultsAnalysis' && !!params.get('analysisId')) ? params.get('analysisId') : this.analysisId;
                 this.detectorId = params.get(this.detectorParmName) === null ? "" : params.get(this.detectorParmName);
                 if (this.analysisId != 'searchResultsAnalysis') this.goBackToAnalysis();
                 this.populateSupportTopicDocument();
                 this.analysisContainsDowntime().subscribe(containsDownTime => {
-                    if( (containsDownTime && !!this._downTime ) || !containsDownTime ) {
+                    if ((containsDownTime && !!this._downTime) || !containsDownTime) {
                         let currDowntime = this._downTime;
                         this.resetGlobals();
                         if (this.analysisId === "searchResultsAnalysis") {
                             this._activatedRoute.queryParamMap.subscribe(qParams => {
                                 this.resetGlobals();
-                                this.searchTerm = qParams.get('searchTerm') === null ? this.searchTerm : qParams.get('searchTerm');this.showAppInsightsSection = false;
+                                this.searchTerm = qParams.get('searchTerm') === null ? this.searchTerm : qParams.get('searchTerm'); this.showAppInsightsSection = false;
                                 if (this.searchTerm && this.searchTerm.length > 1) {
                                     this.isDynamicAnalysis = true;
-                                    if(this.detectorId) {
+                                    if (this.detectorId) {
                                         this.updateDrillDownMode(true, null);
                                         this._diagnosticService.getDetectors().subscribe(detectorList => {
                                             if (detectorList) {
                                                 if (this.detectorId !== "") {
-                                                let currentDetector = detectorList.find(detector => detector.id == this.detectorId)
-                                                this.detectorName = currentDetector.name;
+                                                    let currentDetector = detectorList.find(detector => detector.id == this.detectorId)
+                                                    this.detectorName = currentDetector.name;
                                                 }
                                             }
                                         });
-                                    }                                    
+                                    }
                                     this.showSuccessfulChecks = false;
                                     this.renderInsightsFromSearch(currDowntime);
                                 }
@@ -359,9 +359,9 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
                 searchMode: this.searchMode,
                 searchId: this.searchId,
                 query: this.searchTerm, results: JSON.stringify(searchResults.map((det: DetectorMetaData) => new Object({
-                        id: det.id,
-                        score: det.score
-                    }))), ts: Math.floor((new Date()).getTime() / 1000).toString()
+                    id: det.id,
+                    score: det.score
+                }))), ts: Math.floor((new Date()).getTime() / 1000).toString()
             });
             var detectorList = results[1];
             if (detectorList) {
@@ -384,13 +384,13 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
                 this.analysisContainsDowntime().subscribe(containsDownTime => {
                     this.startDetectorRendering(detectorList, downTime, containsDownTime);
                 });
-                
+
             }
         },
-        (err) => {
+            (err) => {
                 this.showPreLoader = false;
                 this.showPreLoadingError = true;
-        });
+            });
     }
 
     checkSearchEmbedded(response: DetectorResponse) {
@@ -407,7 +407,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
         });
     }
 
-    startDetectorRendering(detectorList, downTime: DownTime, containsDownTime:boolean) {
+    startDetectorRendering(detectorList, downTime: DownTime, containsDownTime: boolean) {
         if (this.showWebSearchTimeout) {
             clearTimeout(this.showWebSearchTimeout);
         }
@@ -430,16 +430,21 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
                         if (this.detectorViewModels[index].status === HealthStatus.Critical || this.detectorViewModels[index].status === HealthStatus.Warning) {
                             let insight = this.getDetectorInsight(this.detectorViewModels[index]);
                             let issueDetectedViewModel = { model: this.detectorViewModels[index], insightTitle: insight.title, insightDescription: insight.description };
+
+                            if (this.issueDetectedViewModels.length > 0) {
+                                this.issueDetectedViewModels = this.issueDetectedViewModels.filter(iVM => (!!iVM.model && !!iVM.model.metadata && !!iVM.model.metadata.id && iVM.model.metadata.id != issueDetectedViewModel.model.metadata.id));
+                            }
+
                             this.issueDetectedViewModels.push(issueDetectedViewModel);
                             this.issueDetectedViewModels = this.issueDetectedViewModels.sort((n1, n2) => n1.model.status - n2.model.status);
                         } else {
                             let insight = this.getDetectorInsight(this.detectorViewModels[index]);
                             let successViewModel = { model: this.detectorViewModels[index], insightTitle: insight.title, insightDescription: insight.description };
 
-                            if(this.successfulViewModels.length > 0) {
-                                this.successfulViewModels  = this.successfulViewModels.filter(sVM=> (!!sVM.model && !!sVM.model.metadata && !!sVM.model.metadata.id && sVM.model.metadata.id != successViewModel.model.metadata.id));
+                            if (this.successfulViewModels.length > 0) {
+                                this.successfulViewModels = this.successfulViewModels.filter(sVM => (!!sVM.model && !!sVM.model.metadata && !!sVM.model.metadata.id && sVM.model.metadata.id != successViewModel.model.metadata.id));
                             }
-                            
+
                             this.successfulViewModels.push(successViewModel);
                         }
                     }
@@ -577,14 +582,14 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
         return viewModel;
     }
 
-    private getDetectorViewModel(detector: DetectorMetaData, downtime: DownTime, containsDownTime:boolean) {
-      let startTimeString = this._detectorControl.startTimeString;
-      let endTimeString = this._detectorControl.endTimeString;
+    private getDetectorViewModel(detector: DetectorMetaData, downtime: DownTime, containsDownTime: boolean) {
+        let startTimeString = this._detectorControl.startTimeString;
+        let endTimeString = this._detectorControl.endTimeString;
 
-      if (containsDownTime && !!downtime && !!downtime.StartTime && !!downtime.EndTime) {
-        startTimeString = downtime.StartTime.format(this.stringFormat);
-        endTimeString = downtime.EndTime.format(this.stringFormat);
-      }
+        if (containsDownTime && !!downtime && !!downtime.StartTime && !!downtime.EndTime) {
+            startTimeString = downtime.StartTime.format(this.stringFormat);
+            endTimeString = downtime.EndTime.format(this.stringFormat);
+        }
 
         return {
             title: detector.name,
@@ -627,34 +632,34 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
 
     }
 
-    public navigateToDetector():void {
-        if(!this.isPublic) {
-           if(!!this.drillDownDetectorId && this.drillDownDetectorId.length > 0 ) {
-            this._router.navigate([`./popout/${this.drillDownDetectorId}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });            
-           }
+    public navigateToDetector(): void {
+        if (!this.isPublic) {
+            if (!!this.drillDownDetectorId && this.drillDownDetectorId.length > 0) {
+                this._router.navigate([`./popout/${this.drillDownDetectorId}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
+            }
         }
     }
 
-    public goBackToAnalysis():void {
+    public goBackToAnalysis(): void {
         this.updateDrillDownMode(false, null);
-        if (this.analysisId=== "searchResultsAnalysis" && this.searchTerm){
-          this._router.navigate([`../../../../${this.analysisId}/search`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge', queryParams: {searchTerm: this.searchTerm} });
+        if (this.analysisId === "searchResultsAnalysis" && this.searchTerm) {
+            this._router.navigate([`../../../../${this.analysisId}/search`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge', queryParams: { searchTerm: this.searchTerm } });
         }
-        else{
-            if(!!this.analysisId && this.analysisId.length>0) {
+        else {
+            if (!!this.analysisId && this.analysisId.length > 0) {
                 this._router.navigate([`../${this.analysisId}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
-            }          
+            }
         }
-      }
+    }
 
-    private updateDrillDownMode(inDrillDownMode:boolean, viewModel:any):void {
+    private updateDrillDownMode(inDrillDownMode: boolean, viewModel: any): void {
         this.inDrillDownMode = inDrillDownMode;
-        if(!this.inDrillDownMode) {
+        if (!this.inDrillDownMode) {
             this.detectorName = '';
             this.drillDownDetectorId = '';
         }
         else {
-            if(!!viewModel && !!viewModel.model && !!viewModel.model.metadata && !!viewModel.model.metadata.name) {
+            if (!!viewModel && !!viewModel.model && !!viewModel.model.metadata && !!viewModel.model.metadata.name) {
                 this.detectorName = viewModel.model.metadata.name;
                 this.drillDownDetectorId = viewModel.model.metadata.id;
             }
@@ -691,7 +696,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
                     //If in homepage then open second blade for Diagnostic Tool and second blade will continue to open third blade for
                     if (this.withinGenie) {
                         const isHomepage = !this._activatedRoute.root.firstChild.firstChild.firstChild.firstChild.snapshot.params["category"];
-                        if(detectorId == 'appchanges' && !this._detectorControl.internalClient) {
+                        if (detectorId == 'appchanges' && !this._detectorControl.internalClient) {
                             this.portalActionService.openChangeAnalysisBlade(this._detectorControl.startTimeString, this._detectorControl.endTimeString);
                             return;
                         }
@@ -711,18 +716,18 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
                     }
                 }
                 else {
-                    if(detectorId === 'appchanges' && !this._detectorControl.internalClient) {
+                    if (detectorId === 'appchanges' && !this._detectorControl.internalClient) {
                         this.portalActionService.openChangeAnalysisBlade(this._detectorControl.startTimeString, this._detectorControl.endTimeString);
                     } else {
                         this.updateDrillDownMode(true, viewModel);
                         if (viewModel.model.startTime != null && viewModel.model.endTime != null) {
                             this.analysisContainsDowntime().subscribe(containsDowntime => {
-                                if(containsDowntime) {
+                                if (containsDowntime) {
                                     this._router.navigate([`./detectors/${detectorId}`], {
                                         relativeTo: this._activatedRoute,
                                         queryParams: { startTimeChildDetector: viewModel.model.startTime, endTimeChildDetector: viewModel.model.endTime },
                                         queryParamsHandling: 'merge',
-                                        replaceUrl:true
+                                        replaceUrl: true
                                     });
                                 }
                                 else {
@@ -730,7 +735,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
                                         relativeTo: this._activatedRoute,
                                         queryParams: { startTime: viewModel.model.startTime, endTime: viewModel.model.endTime },
                                         queryParamsHandling: '',
-                                        replaceUrl:true
+                                        replaceUrl: true
                                     });
                                 }
                             });
