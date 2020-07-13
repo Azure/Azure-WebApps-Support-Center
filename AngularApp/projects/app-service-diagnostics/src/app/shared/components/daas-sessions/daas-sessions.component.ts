@@ -20,7 +20,7 @@ import { TelemetryService } from 'diagnostic-data';
 export class DaasSessionsComponent implements OnChanges, OnDestroy {
 
     checkingExistingSessions: boolean;
-    sessions: Session[];
+    sessions: Session[] = [];
 
     @Input() public diagnoserNameLookup: string = '';
     @Input() public siteToBeDiagnosed: SiteDaasInfo;
@@ -79,9 +79,16 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
             .subscribe(sessions => {
                 if (sessions != null) {
                     const newSessions = sessions.map(this.reducedSession);
-                    const existingSessions = this.sessions.map(this.reducedSession);
-                    let anySessionUpdated = newSessions.filter(newSession => existingSessions.findIndex(session => JSON.stringify(session) === JSON.stringify(newSession)) === -1).length > 0;
-                    if (newSessions.length !== existingSessions.length || anySessionUpdated) {
+                    if (this.sessions != null)
+                    {
+                        const existingSessions = this.sessions.map(this.reducedSession);
+                        let anySessionUpdated = newSessions.filter(newSession => existingSessions.findIndex(session => JSON.stringify(session) === JSON.stringify(newSession)) === -1).length > 0;
+                        if (newSessions.length !== existingSessions.length || anySessionUpdated) {
+                            this.sessions = this.setExpanded(sessions);
+                        }
+                    }
+                    else
+                    {
                         this.sessions = this.setExpanded(sessions);
                     }
                 }
