@@ -70,7 +70,7 @@ export class DetectorTimePickerComponent implements OnInit {
       const timePicker = document.getElementById('timePicker');
       //Get time text div in command bar
       const commandBar = document.querySelector('.ms-CommandBar-secondaryCommand');
-      if (!timePicker.contains(clickElement) && !commandBar.contains(clickElement)) {
+      if (timePicker && commandBar && !timePicker.contains(clickElement) && !commandBar.contains(clickElement)) {
         this.closeTimePicker();
       }
     })
