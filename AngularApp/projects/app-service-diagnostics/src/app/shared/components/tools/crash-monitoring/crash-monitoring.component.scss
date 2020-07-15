@@ -1,0 +1,49 @@
+//@import "../../../../../styles/main.scss";
+
+.category-container {
+    margin: 1px 30px 25px 0px;
+    padding: 25px 0px 0px 30px;
+    width: 100%;
+    padding-left: 30px;
+}
+
+.category-title {
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 600;
+    font-family: "Segoe UI";
+}
+
+.category-description {
+    font-size: 16px;
+    line-height: 22px;
+}
+
+.field-label {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.required {
+    color: #a4262c;
+    margin-left: 6px;
+    margin-right: 5px;
+}
+
+.fixed-height {
+    height: 20px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 40px;
+    width: 60%;
+    height: 60px;
+}
+
+.validationError {
+    color: #a4262c;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}

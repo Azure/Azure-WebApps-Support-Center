@@ -51,6 +51,7 @@ import { GenieModule } from '../genie/genie.module';
 import { FabricModule } from '../fabric-ui/fabric.module';
 import { ResourceService } from '../shared-v2/services/resource.service';
 import { JavaFlightRecorderToolComponent } from '../shared/components/tools/java-flight-recorder-tool/java-flight-recorder-tool.component';
+import { CrashMonitoringComponent } from '../shared/components/tools/crash-monitoring/crash-monitoring.component';
 
 export const HomeRoutes = RouterModule.forChild([
     {
@@ -261,6 +262,15 @@ export const HomeRoutes = RouterModule.forChild([
                 component: CpuMonitoringToolComponent,
                 data: {
                     navigationTitle: ToolNames.CpuMonitoring,
+                    cacheComponent: true
+                }
+            },
+            // Crash Monitoring tool
+            {
+                path: 'tools/crashmonitoring',
+                component: CrashMonitoringComponent,
+                data: {
+                    navigationTitle: ToolNames.CrashMonitoring,
                     cacheComponent: true
                 }
             },

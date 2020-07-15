@@ -55,6 +55,7 @@ import { CollapsibleMenuItemComponent } from '../home/components/collapsible-men
 import { SearchPipe, SearchMatchPipe } from '../home/components/pipes/search.pipe';
 import { DiagosticSessionsPanelComponent } from './components/diagostic-sessions-panel/diagostic-sessions-panel.component';
 import { SharedModule } from '../shared/shared.module';
+import { CreateStorageAccountPanelComponent } from './components/create-storage-account-panel/create-storage-account-panel.component';
 
 @NgModule({
     declarations: [
@@ -69,7 +70,8 @@ import { SharedModule } from '../shared/shared.module';
         CollapsibleMenuItemComponent,
         SearchPipe,
         SearchMatchPipe,
-        DiagosticSessionsPanelComponent
+        DiagosticSessionsPanelComponent,
+        CreateStorageAccountPanelComponent
     ],
     imports: [
         CommonModule,

@@ -1,0 +1,30 @@
+<fab-panel [isOpen]="globals.openCreateStorageAccountPanel" [type]="type" [customWidth]="width"
+  [isHiddenOnDismiss]="true" [isLightDismiss]="true" [hasCloseButton]="true" [closeButtonAriaLabel]="'close'"
+  (onDismissed)="dismissedHandler()">
+  <div class="row">
+    <div style="margin-bottom: 10px">
+      <h1>Create new storage account</h1>
+      <div style="margin-top: 40px;">
+        <div class="row">
+          <div class="col-md-3 field-label">
+            Storage account name <span class="required">*</span>
+            <i class="fa fa-info-circle" aria-hidden="true"></i>
+          </div>
+          <div class="col-md-4">
+            <input type="text">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <hr style="margin-bottom: 20px;">
+
+    <fab-primary-button contentStyle="margin-right:10px">
+      Save
+    </fab-primary-button>
+    <fab-default-button contentStyle="margin-right:10px">
+      Cancel
+    </fab-default-button>
+  </div>
+</fab-panel>

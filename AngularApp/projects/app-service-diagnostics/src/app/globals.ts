@@ -28,6 +28,7 @@ export class Globals {
   openFeedback: boolean = false;
   openTimePicker: boolean = false;
   openSessionPanel: boolean = false;
+  openCreateStorageAccountPanel: boolean = false;
   private localStorageKey: string = "genieChat";
   public timePickerInfoSub:BehaviorSubject<TimePickerInfo> = new BehaviorSubject<TimePickerInfo>({
     selectedKey: "Last24Hours"

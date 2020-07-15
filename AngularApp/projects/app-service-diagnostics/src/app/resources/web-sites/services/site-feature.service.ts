@@ -234,6 +234,28 @@ export class SiteFeatureService extends FeatureService {
             }
           })
         }
+      }, {
+        appType: AppType.WebApp | AppType.FunctionApp,
+        platform: OperatingSystem.windows,
+        sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
+        stack: '',
+        item: {
+          id: ToolIds.CrashMonitoring,
+          name: ToolNames.CrashMonitoring,
+          category: 'Proactive Tools',
+          description: '',
+          featureType: FeatureTypes.Tool,
+          clickAction: this._createFeatureAction(ToolNames.CrashMonitoring, 'Proactive Tools', () => {
+
+            //Need remove after A/B test
+            if (this.isLegacy) {
+              this._router.navigateByUrl(`resource${resourceId}/tools/crashmonitoring`);
+            } else {
+              this.navigateTo(resourceId, ToolIds.CrashMonitoring);
+            }
+          })
+        }
       }
     ];
     this._websiteFilter.transform(this.proactiveTools).forEach(tool => {
