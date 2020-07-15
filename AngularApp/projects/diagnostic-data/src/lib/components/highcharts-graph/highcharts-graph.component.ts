@@ -135,7 +135,7 @@ export class HighchartsGraphComponent implements OnInit {
         return null;
     }
 
-    private hcCallback: Highcharts.ChartLoadCallbackFunction = (chart: any) =>{
+    highchartCallback: Highcharts.ChartLoadCallbackFunction = (chart: any) =>{
         chart.customNamespace = {};
         chart.customNamespace["selectAllButton"] = chart.renderer.button(
             'All', chart.chartWidth - 120, 10, function () {
