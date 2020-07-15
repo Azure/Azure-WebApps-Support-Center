@@ -1,7 +1,5 @@
-<highcharts-chart *ngIf="HighchartData && !loading" [Highcharts]="Highcharts" [options]="options" style="display: block;" [callbackFunction]="hcCallback"  (chartInstance)="logChartInstance($event)">
+<highcharts-chart *ngIf="HighchartData && !loading" [Highcharts]="Highcharts" [options]="options" style="display: block;" [callbackFunction]="hcCallback">
 </highcharts-chart>
 <div *ngIf="!HighchartData || loading" style="height:200px">
   <i class="fa fa-circle-o-notch fa-spin"></i>
 </div>
-<!--
--->

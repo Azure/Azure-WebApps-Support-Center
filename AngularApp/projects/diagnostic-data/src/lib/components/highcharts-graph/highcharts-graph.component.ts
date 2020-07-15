@@ -136,7 +136,6 @@ export class HighchartsGraphComponent implements OnInit {
     }
 
     private hcCallback: Highcharts.ChartLoadCallbackFunction = (chart: any) =>{
-        console.log("chart object", chart);
         chart.customNamespace = {};
         chart.customNamespace["selectAllButton"] = chart.renderer.button(
             'All', chart.chartWidth - 120, 10, function () {
@@ -154,18 +153,7 @@ export class HighchartsGraphComponent implements OnInit {
                 }
             }).add();
 
-
-        // chart.customNamespace.keys.forEach(key => {
-        //     const currentButton = chart.customNamespace[key];
-        //     console.log("currentButton", key, currentButton);
-        // })
-
         var currentCustomKey = "";
-
-        // var CustomComponent = function customComponentGenerator(chart, buttonKey) {
-        //     this.initBase(chart);
-        // };
-
         var SelectAllButton = function selectAllButton(chart) {
             this.initBase(chart);
         };
@@ -173,273 +161,82 @@ export class HighchartsGraphComponent implements OnInit {
             this.initBase(chart);
         };
 
-        SelectAllButton.prototype = new Highcharts.AccessibilityComponent();
-        SelectNoneButton.prototype = new Highcharts.AccessibilityComponent();
-
-        // var buttonKeys: [] = ["selectAllButton", "selectNoneButton"];
         var customButtons = [SelectAllButton, SelectNoneButton];
-        currentCustomKey = "selectAllButton";
-        Highcharts.extend(SelectAllButton.prototype, {
+        customButtons.forEach((customButton) => {
+            customButton.prototype = new Highcharts.AccessibilityComponent();
+            currentCustomKey = customButton.name;
+            Highcharts.extend(customButton.prototype, {
+                // Perform tasks to be done when the chart is updated
+                onChartUpdate: function () {
+                    // Get custom button if it exists, and set attributes on it
+                    var namespace = chart.customNamespace || {};
+                    currentCustomKey = customButton.name;
+                    if (namespace[currentCustomKey]) {
+                        namespace[currentCustomKey].attr({
+                            role: 'button',
+                            tabindex: -1,
+                            "aria-label": currentCustomKey === "selectAllButton"? `select all the time series` : "Deselect all the time series"
+                        });
+                    }
+                },
 
-            // Perform tasks to be done when the chart is updated
-            onChartUpdate: function () {
-                // Get all and none buttons if they exist, and set attributes on it
-                var namespace = chart.customNamespace || {};
-                if (namespace["selectAllButton"]) {
-                    namespace["selectAllButton"].attr({
-                        role: 'button',
-                        tabindex: -1
-                    });
-                }
+                // Define keyboard navigation for this component
+                getKeyboardNavigation: function () {
+                    var keys = this.keyCodes,
+                        chart = this.chart,
+                        namespace = chart.customNamespace || {},
+                        component = this;
 
-                if (namespace["selectNoneButton"]) {
-                    namespace["selectNoneButton"].attr({
-                        role: 'button',
-                        tabindex: -1
-                    });
-                }
+                    return new Highcharts.KeyboardNavigationHandler(chart, {
+                        keyCodeMap: [
+                            // On arrow/tab we just move to the next chart element.
+                            [[
+                                keys.tab, keys.up, keys.down, keys.left, keys.right
+                            ], function (keyCode, e) {
+                                return this.response[
+                                    keyCode === this.tab && e.shiftKey ||
+                                        keyCode === keys.left || keyCode === keys.up ?
+                                        'prev' : 'next'
+                                ];
+                            }],
 
-                // if (namespace[currentCustomKey]) {
-                //     namespace[currentCustomKey].attr({
-                //         role: 'button',
-                //         tabindex: -1
-                //     });
-                // }
-            },
+                            // Space/enter means we click the button
+                            [[
+                                keys.space, keys.enter
+                            ], function () {
+                                currentCustomKey = customButton.name;
+                                // Fake a click event on the button element
+                                var buttonElement = namespace[currentCustomKey] &&
+                                    namespace[currentCustomKey].element;
+                                if (buttonElement) {
+                                    component.fakeClickEvent(buttonElement);
+                                }
+                                return this.response.success;
+                            }]
+                        ],
 
-            // Define keyboard navigation for this component
-            getKeyboardNavigation: function () {
-                var keys = this.keyCodes,
-                    chart = this.chart,
-                    namespace = chart.customNamespace || {},
-                    component = this;
-
-                return new Highcharts.KeyboardNavigationHandler(chart, {
-                    keyCodeMap: [
-                        // On arrow/tab we just move to the next chart element.
-                        // If we had multiple buttons we wanted to group together,
-                        // we could move between them here.
-                        [[
-                            keys.tab, keys.up, keys.down, keys.left, keys.right
-                        ], function (keyCode, e) {
-                            return this.response[
-                                keyCode === this.tab && e.shiftKey ||
-                                    keyCode === keys.left || keyCode === keys.up ?
-                                    'prev' : 'next'
-                            ];
-                        }],
-
-                        // Space/enter means we click the button
-                        [[
-                            keys.space, keys.enter
-                        ], function () {
-                            currentCustomKey = "selectAllButton";
-                            // Fake a click event on the button element
+                        // Focus button initially
+                        init: function () {
+                            currentCustomKey = customButton.name;
                             var buttonElement = namespace[currentCustomKey] &&
                                 namespace[currentCustomKey].element;
-                            if (buttonElement) {
-                                console.log("custom buttonelement: SELECTAll", buttonElement);
-                                component.fakeClickEvent(buttonElement);
+                            if (buttonElement && buttonElement.focus) {
+                                buttonElement.focus();
                             }
-                            return this.response.success;
-                        }]
-                    ],
-
-                    // Focus button initially
-                    init: function () {
-                        currentCustomKey = "selectAllButton";
-                        var buttonElement = namespace[currentCustomKey] &&
-                            namespace[currentCustomKey].element;
-                        if (buttonElement && buttonElement.focus) {
-                            console.log("init: custom current component in all", buttonElement, currentCustomKey);
-                            buttonElement.focus();
                         }
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
 
-         currentCustomKey = "selectNoneButton";
-        Highcharts.extend(SelectNoneButton.prototype, {
-
-            // Perform tasks to be done when the chart is updated
-            // onChartUpdate: function () {
-            //     // Get all and none buttons if they exist, and set attributes on it
-            // //    var namespace = chart.customNamespace || {};
-            //     // if (namespace["selectAllButton"]) {
-            //     //     namespace["selectAllButton"].attr({
-            //     //         role: 'button',
-            //     //         tabindex: -1
-            //     //     });
-            //     // }
-
-            //     // if (namespace["selectNoneButton"]) {
-            //     //     namespace["selectNoneButton"].attr({
-            //     //         role: 'button',
-            //     //         tabindex: -1
-            //     //     });
-            //     // }
-
-            //     // if (namespace[currentCustomKey]) {
-            //     //     namespace[currentCustomKey].attr({
-            //     //         role: 'button',
-            //     //         tabindex: -1
-            //     //     });
-            //     // }
-            // },
-
-            // Define keyboard navigation for this component
-            getKeyboardNavigation: function () {
-                var keys = this.keyCodes,
-                chart = this.chart,
-                    namespace = chart.customNamespace || {},
-                    component = this;
-
-                return new Highcharts.KeyboardNavigationHandler(chart, {
-                    keyCodeMap: [
-                        // On arrow/tab we just move to the next chart element.
-                        // If we had multiple buttons we wanted to group together,
-                        // we could move between them here.
-                        [[
-                            keys.tab, keys.up, keys.down, keys.left, keys.right
-                        ], function (keyCode, e) {
-                            return this.response[
-                                keyCode === this.tab && e.shiftKey ||
-                                    keyCode === keys.left || keyCode === keys.up ?
-                                    'prev' : 'next'
-                            ];
-                        }],
-
-                        // Space/enter means we click the button
-                        [[
-                            keys.space, keys.enter
-                        ], function () {
-                            // Fake a click event on the button element
-                            currentCustomKey = "selectNoneButton";
-                            var buttonElement = namespace[currentCustomKey] &&
-                                namespace[currentCustomKey].element;
-                            if (buttonElement) {
-                                console.log("custom buttonelement: SELECTNONE", buttonElement);
-                                component.fakeClickEvent(buttonElement);
-                            }
-                            return this.response.success;
-                        }]
-                    ],
-
-                    // Focus button initiallyf
-                    init: function () {
-                        currentCustomKey = "selectNoneButton";
-                        var buttonElement = namespace[currentCustomKey] &&
-                            namespace[currentCustomKey].element;
-                        if (buttonElement && buttonElement.focus) {
-                            console.log("init: custom current component in none", buttonElement, currentCustomKey);
-                            buttonElement.focus();
-                        }
-                    }
-                });
-            }
-        });
-
-        //  customButtons.forEach((customButton) => {
-        //     customButton.prototype = new Highcharts.AccessibilityComponent();
-        //     currentCustomKey = customButton.name;
-        //     console.log("customButton and currentCustomKey", chart.customNamespace, chart.customNamespace[currentCustomKey], customButton, customButton.name, currentCustomKey);
-        //     Highcharts.extend(customButton.prototype, {
-
-        //         // Perform tasks to be done when the chart is updated
-        //         onChartUpdate: function () {
-        //             // Get all and none buttons if they exist, and set attributes on it
-        //             var namespace = chart.customNamespace || {};
-        //             if (namespace["selectAllButton"]) {
-        //                 namespace["selectAllButton"].attr({
-        //                     role: 'button',
-        //                     tabindex: -1
-        //                 });
-        //             }
-
-        //             if (namespace["selectNoneButton"]) {
-        //                 namespace["selectNoneButton"].attr({
-        //                     role: 'button',
-        //                     tabindex: -1
-        //                 });
-        //             }
-
-        //             // if (namespace[currentCustomKey]) {
-        //             //     namespace[currentCustomKey].attr({
-        //             //         role: 'button',
-        //             //         tabindex: -1
-        //             //     });
-        //             // }
-        //         },
-
-        //        // Define keyboard navigation for this component
-        //         getKeyboardNavigation: function () {
-        //             var keys = this.keyCodes,
-        //                 chart = this.chart,
-        //                 namespace = chart.customNamespace || {},
-        //                 component = this;
-
-        //             return new Highcharts.KeyboardNavigationHandler(chart, {
-        //                 keyCodeMap: [
-        //                     // On arrow/tab we just move to the next chart element.
-        //                     // If we had multiple buttons we wanted to group together,
-        //                     // we could move between them here.
-        //                     [[
-        //                         keys.tab, keys.up, keys.down, keys.left, keys.right
-        //                     ], function (keyCode, e) {
-        //                         return this.response[
-        //                             keyCode === this.tab && e.shiftKey ||
-        //                             keyCode === keys.left || keyCode === keys.up ?
-        //                                 'prev' : 'next'
-        //                         ];
-        //                     }],
-
-        //                     // Space/enter means we click the button
-        //                     [[
-        //                         keys.space, keys.enter
-        //                     ], function () {
-        //                         // Fake a click event on the button element
-        //                         var buttonElement = namespace[currentCustomKey] &&
-        //                                 namespace[currentCustomKey].element;
-        //                         if (buttonElement) {
-        //                             component.fakeClickEvent(buttonElement);
-        //                         }
-        //                         return this.response.success;
-        //                     }]
-        //                 ],
-
-        //                 // Focus button initially
-        //                 init: function () {
-        //                     var buttonElement = namespace[currentCustomKey] &&
-        //                             namespace[currentCustomKey].element;
-        //                     if (buttonElement && buttonElement.focus) {
-        //                         buttonElement.focus();
-        //                     }
-        //                 }
-        //             });
-        //         }
-        //     });
-
-        //     console.log("custom current prototype", customButton, customButton.prototype, customButton.prototype.onChartUpdate);
-        // });
-        // for(let i = 0; i < 2; i++) {
-
-        // }
-
-     //   console.log("custom component name", CustomComponent.name, CustomComponent);
-
-
-        console.log('some variables: ', Highcharts, chart);
         chart.update({
             accessibility: {
                 customComponents: {
-                //    toggleSeriesButton: new SelectAllButton(chart),
                     selectAllButton: new SelectAllButton(chart),
                     selectNoneButton: new SelectNoneButton(chart)
                 },
                 keyboardNavigation: {
                     order: ["legend", "series", "zoom", "rangeSelector", "selectAllButton", "selectNoneButton"],
-                    //  order: ['customComponent', 'series', 'chartMenu', 'legend']
                 }
             }
         });
@@ -548,11 +345,6 @@ export class HighchartsGraphComponent implements OnInit {
     }
 
     constructor(private detectorControlService: DetectorControlService, private el: ElementRef<HTMLElement>) {
-    }
-
-    // Demonstrate chart instance
-    logChartInstance(chart: Highcharts.Chart) {
-        console.log('Chart instance: ', chart);
     }
 
     ngOnInit() {
@@ -810,24 +602,6 @@ export class HighchartsGraphComponent implements OnInit {
                     enabled: true,
                 },
                 buttons: {
-                    // DeselectAllButton: {
-                    //     text: 'None',
-                    //     onclick: function () {
-                    //         var series = this.series;
-                    //         for (var i = 0; i < series.length; i++) {
-                    //             series[i].setVisible(false, false);
-                    //         }
-                    //     }
-                    // },
-                    // SelectAllButton: {
-                    //     text: 'All',
-                    //     onclick: function () {
-                    //         var series = this.series;
-                    //         for (var i = 0; i < series.length; i++) {
-                    //             series[i].setVisible(true, false);
-                    //         }
-                    //     }
-                    // },
                     contextButton: {
                         enabled: false,
                     }
