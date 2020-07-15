@@ -26,6 +26,7 @@ export class HighchartsGraphComponent implements OnInit {
     Highcharts: typeof Highcharts = Highcharts;
     options: any;
 
+
     @Input() HighchartData: any = [];
 
     @Input() chartDescription: string = "";
@@ -37,12 +38,12 @@ export class HighchartsGraphComponent implements OnInit {
     @Input() startTime: momentNs.Moment;
 
     @Input() endTime: momentNs.Moment;
-	
+
     private _xAxisPlotBands: xAxisPlotBand[] = null;
-    @Input() public set xAxisPlotBands(value:xAxisPlotBand[]) {
+    @Input() public set xAxisPlotBands(value: xAxisPlotBand[]) {
         this._xAxisPlotBands = [];
         this._xAxisPlotBands = value;
-        if(value != null && !this.loading ) {
+        if (value != null && !this.loading) {
             this._updateOptions();
             this.rebindChartOptions();
         }
@@ -51,17 +52,17 @@ export class HighchartsGraphComponent implements OnInit {
         return this._xAxisPlotBands;
     }
 
-    public static chartProperties: { [chartContainerId: string]: KeyValue<string,any>[] } = {};
-    public static getChartProperty(propertyName:string, chartContainerId:string):any {
-        if(chartContainerId != '') {
+    public static chartProperties: { [chartContainerId: string]: KeyValue<string, any>[] } = {};
+    public static getChartProperty(propertyName: string, chartContainerId: string): any {
+        if (chartContainerId != '') {
             let retVal = null;
-            if(!!this.chartProperties[chartContainerId] && this.chartProperties[chartContainerId].length > 0) {
+            if (!!this.chartProperties[chartContainerId] && this.chartProperties[chartContainerId].length > 0) {
                 this.chartProperties[chartContainerId].some(prop => {
-                    if(prop.key == propertyName) {
+                    if (prop.key == propertyName) {
                         retVal = prop.value;
                         return true;
                     }
-                });                
+                });
             }
             return retVal;
         }
@@ -69,27 +70,27 @@ export class HighchartsGraphComponent implements OnInit {
             return null;
         }
     }
-    public static addOrUpdateChartProperty(propertyName:string, propertyValue:any, chartContainerId:string):boolean {
-        if(chartContainerId == '') {
+    public static addOrUpdateChartProperty(propertyName: string, propertyValue: any, chartContainerId: string): boolean {
+        if (chartContainerId == '') {
             return false;
         }
         else {
             let existingValue = HighchartsGraphComponent.getChartProperty(propertyName, chartContainerId);
-            if(!!existingValue) {
+            if (!!existingValue) {
                 HighchartsGraphComponent.chartProperties[chartContainerId].some(prop => {
-                    if(prop.key == propertyName) {
+                    if (prop.key == propertyName) {
                         prop.value = propertyValue;
                         return true;
                     }
                 });
             }
             else {
-                if(HighchartsGraphComponent.chartProperties[chartContainerId] == null) {
+                if (HighchartsGraphComponent.chartProperties[chartContainerId] == null) {
                     HighchartsGraphComponent.chartProperties[chartContainerId] = [];
                 }
                 HighchartsGraphComponent.chartProperties[chartContainerId].push({
-                    key:propertyName,
-                    value:propertyValue
+                    key: propertyName,
+                    value: propertyValue
                 } as KeyValue<string, any>);
             }
             return true;
@@ -97,7 +98,7 @@ export class HighchartsGraphComponent implements OnInit {
     }
 
     private _zoomBehavior: zoomBehaviors = zoomBehaviors.Zoom;
-    @Input() public set zoomBehavior(value:zoomBehaviors) {
+    @Input() public set zoomBehavior(value: zoomBehaviors) {
         this._zoomBehavior = value;
         setTimeout(() => {
             HighchartsGraphComponent.addOrUpdateChartProperty('zoomBehavior', this._zoomBehavior, this.getCurrentChartContainerId());
@@ -107,10 +108,10 @@ export class HighchartsGraphComponent implements OnInit {
         return this._zoomBehavior;
     }
 
-    @Output() XAxisSelection:EventEmitter<XAxisSelection> = new EventEmitter<XAxisSelection>();
+    @Output() XAxisSelection: EventEmitter<XAxisSelection> = new EventEmitter<XAxisSelection>();
 
-    private getCurrentChartContainerId():string {
-        if(this.el.nativeElement.getElementsByClassName('highcharts-container') && this.el.nativeElement.getElementsByClassName('highcharts-container').length > 0) {
+    private getCurrentChartContainerId(): string {
+        if (this.el.nativeElement.getElementsByClassName('highcharts-container') && this.el.nativeElement.getElementsByClassName('highcharts-container').length > 0) {
             return this.el.nativeElement.getElementsByClassName('highcharts-container')[0].id;;
         }
         else {
@@ -118,12 +119,12 @@ export class HighchartsGraphComponent implements OnInit {
         }
     }
 
-    private getCurrentChart() : Highcharts.Chart {
+    private getCurrentChart(): Highcharts.Chart {
         let currentId = this.getCurrentChartContainerId();
-        if(currentId == '') {
+        if (currentId == '') {
             return null;
         }
-        for(let i = 0; i < Highcharts.charts.length; i++) {
+        for (let i = 0; i < Highcharts.charts.length; i++) {
             let chart = Highcharts.charts[i];
             if (chart) {
                 if (currentId === chart.container.id) {
@@ -133,36 +134,346 @@ export class HighchartsGraphComponent implements OnInit {
         }
         return null;
     }
-    
-    private customChartSelectionCallbackFunction: Highcharts.ChartSelectionCallbackFunction = (event: Highcharts.ChartSelectionContextObject)=> {
-        if(this._zoomBehavior & zoomBehaviors.FireXAxisSelectionEvent) {
-            if (!!event.xAxis) {                          
-                let fromSelection = moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00',event.xAxis[0].min));
-                let toSelection =moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00',event.xAxis[0].max));
+
+    private hcCallback: Highcharts.ChartLoadCallbackFunction = (chart: any) =>{
+        console.log("chart object", chart);
+        chart.customNamespace = {};
+        chart.customNamespace["selectAllButton"] = chart.renderer.button(
+            'All', chart.chartWidth - 120, 10, function () {
+                var series = chart.series;
+                for (var i = 0; i < series.length; i++) {
+                    series[i].setVisible(true, false);
+                }
+            }).add();
+
+        chart.customNamespace["selectNoneButton"] = chart.renderer.button(
+            'None', chart.chartWidth - 60, 10, function () {
+                var series = chart.series;
+                for (var i = 0; i < series.length; i++) {
+                    series[i].setVisible(false, false);
+                }
+            }).add();
+
+
+        // chart.customNamespace.keys.forEach(key => {
+        //     const currentButton = chart.customNamespace[key];
+        //     console.log("currentButton", key, currentButton);
+        // })
+
+        var currentCustomKey = "";
+
+        // var CustomComponent = function customComponentGenerator(chart, buttonKey) {
+        //     this.initBase(chart);
+        // };
+
+        var SelectAllButton = function selectAllButton(chart) {
+            this.initBase(chart);
+        };
+        var SelectNoneButton = function selectNoneButton(chart) {
+            this.initBase(chart);
+        };
+
+        SelectAllButton.prototype = new Highcharts.AccessibilityComponent();
+        SelectNoneButton.prototype = new Highcharts.AccessibilityComponent();
+
+        // var buttonKeys: [] = ["selectAllButton", "selectNoneButton"];
+        var customButtons = [SelectAllButton, SelectNoneButton];
+        currentCustomKey = "selectAllButton";
+        Highcharts.extend(SelectAllButton.prototype, {
+
+            // Perform tasks to be done when the chart is updated
+            onChartUpdate: function () {
+                // Get all and none buttons if they exist, and set attributes on it
+                var namespace = chart.customNamespace || {};
+                if (namespace["selectAllButton"]) {
+                    namespace["selectAllButton"].attr({
+                        role: 'button',
+                        tabindex: -1
+                    });
+                }
+
+                if (namespace["selectNoneButton"]) {
+                    namespace["selectNoneButton"].attr({
+                        role: 'button',
+                        tabindex: -1
+                    });
+                }
+
+                // if (namespace[currentCustomKey]) {
+                //     namespace[currentCustomKey].attr({
+                //         role: 'button',
+                //         tabindex: -1
+                //     });
+                // }
+            },
+
+            // Define keyboard navigation for this component
+            getKeyboardNavigation: function () {
+                var keys = this.keyCodes,
+                    chart = this.chart,
+                    namespace = chart.customNamespace || {},
+                    component = this;
+
+                return new Highcharts.KeyboardNavigationHandler(chart, {
+                    keyCodeMap: [
+                        // On arrow/tab we just move to the next chart element.
+                        // If we had multiple buttons we wanted to group together,
+                        // we could move between them here.
+                        [[
+                            keys.tab, keys.up, keys.down, keys.left, keys.right
+                        ], function (keyCode, e) {
+                            return this.response[
+                                keyCode === this.tab && e.shiftKey ||
+                                    keyCode === keys.left || keyCode === keys.up ?
+                                    'prev' : 'next'
+                            ];
+                        }],
+
+                        // Space/enter means we click the button
+                        [[
+                            keys.space, keys.enter
+                        ], function () {
+                            currentCustomKey = "selectAllButton";
+                            // Fake a click event on the button element
+                            var buttonElement = namespace[currentCustomKey] &&
+                                namespace[currentCustomKey].element;
+                            if (buttonElement) {
+                                console.log("custom buttonelement: SELECTAll", buttonElement);
+                                component.fakeClickEvent(buttonElement);
+                            }
+                            return this.response.success;
+                        }]
+                    ],
+
+                    // Focus button initially
+                    init: function () {
+                        currentCustomKey = "selectAllButton";
+                        var buttonElement = namespace[currentCustomKey] &&
+                            namespace[currentCustomKey].element;
+                        if (buttonElement && buttonElement.focus) {
+                            console.log("init: custom current component in all", buttonElement, currentCustomKey);
+                            buttonElement.focus();
+                        }
+                    }
+                });
+            }
+        });
+
+         currentCustomKey = "selectNoneButton";
+        Highcharts.extend(SelectNoneButton.prototype, {
+
+            // Perform tasks to be done when the chart is updated
+            // onChartUpdate: function () {
+            //     // Get all and none buttons if they exist, and set attributes on it
+            // //    var namespace = chart.customNamespace || {};
+            //     // if (namespace["selectAllButton"]) {
+            //     //     namespace["selectAllButton"].attr({
+            //     //         role: 'button',
+            //     //         tabindex: -1
+            //     //     });
+            //     // }
+
+            //     // if (namespace["selectNoneButton"]) {
+            //     //     namespace["selectNoneButton"].attr({
+            //     //         role: 'button',
+            //     //         tabindex: -1
+            //     //     });
+            //     // }
+
+            //     // if (namespace[currentCustomKey]) {
+            //     //     namespace[currentCustomKey].attr({
+            //     //         role: 'button',
+            //     //         tabindex: -1
+            //     //     });
+            //     // }
+            // },
+
+            // Define keyboard navigation for this component
+            getKeyboardNavigation: function () {
+                var keys = this.keyCodes,
+                chart = this.chart,
+                    namespace = chart.customNamespace || {},
+                    component = this;
+
+                return new Highcharts.KeyboardNavigationHandler(chart, {
+                    keyCodeMap: [
+                        // On arrow/tab we just move to the next chart element.
+                        // If we had multiple buttons we wanted to group together,
+                        // we could move between them here.
+                        [[
+                            keys.tab, keys.up, keys.down, keys.left, keys.right
+                        ], function (keyCode, e) {
+                            return this.response[
+                                keyCode === this.tab && e.shiftKey ||
+                                    keyCode === keys.left || keyCode === keys.up ?
+                                    'prev' : 'next'
+                            ];
+                        }],
+
+                        // Space/enter means we click the button
+                        [[
+                            keys.space, keys.enter
+                        ], function () {
+                            // Fake a click event on the button element
+                            currentCustomKey = "selectNoneButton";
+                            var buttonElement = namespace[currentCustomKey] &&
+                                namespace[currentCustomKey].element;
+                            if (buttonElement) {
+                                console.log("custom buttonelement: SELECTNONE", buttonElement);
+                                component.fakeClickEvent(buttonElement);
+                            }
+                            return this.response.success;
+                        }]
+                    ],
+
+                    // Focus button initiallyf
+                    init: function () {
+                        currentCustomKey = "selectNoneButton";
+                        var buttonElement = namespace[currentCustomKey] &&
+                            namespace[currentCustomKey].element;
+                        if (buttonElement && buttonElement.focus) {
+                            console.log("init: custom current component in none", buttonElement, currentCustomKey);
+                            buttonElement.focus();
+                        }
+                    }
+                });
+            }
+        });
+
+        //  customButtons.forEach((customButton) => {
+        //     customButton.prototype = new Highcharts.AccessibilityComponent();
+        //     currentCustomKey = customButton.name;
+        //     console.log("customButton and currentCustomKey", chart.customNamespace, chart.customNamespace[currentCustomKey], customButton, customButton.name, currentCustomKey);
+        //     Highcharts.extend(customButton.prototype, {
+
+        //         // Perform tasks to be done when the chart is updated
+        //         onChartUpdate: function () {
+        //             // Get all and none buttons if they exist, and set attributes on it
+        //             var namespace = chart.customNamespace || {};
+        //             if (namespace["selectAllButton"]) {
+        //                 namespace["selectAllButton"].attr({
+        //                     role: 'button',
+        //                     tabindex: -1
+        //                 });
+        //             }
+
+        //             if (namespace["selectNoneButton"]) {
+        //                 namespace["selectNoneButton"].attr({
+        //                     role: 'button',
+        //                     tabindex: -1
+        //                 });
+        //             }
+
+        //             // if (namespace[currentCustomKey]) {
+        //             //     namespace[currentCustomKey].attr({
+        //             //         role: 'button',
+        //             //         tabindex: -1
+        //             //     });
+        //             // }
+        //         },
+
+        //        // Define keyboard navigation for this component
+        //         getKeyboardNavigation: function () {
+        //             var keys = this.keyCodes,
+        //                 chart = this.chart,
+        //                 namespace = chart.customNamespace || {},
+        //                 component = this;
+
+        //             return new Highcharts.KeyboardNavigationHandler(chart, {
+        //                 keyCodeMap: [
+        //                     // On arrow/tab we just move to the next chart element.
+        //                     // If we had multiple buttons we wanted to group together,
+        //                     // we could move between them here.
+        //                     [[
+        //                         keys.tab, keys.up, keys.down, keys.left, keys.right
+        //                     ], function (keyCode, e) {
+        //                         return this.response[
+        //                             keyCode === this.tab && e.shiftKey ||
+        //                             keyCode === keys.left || keyCode === keys.up ?
+        //                                 'prev' : 'next'
+        //                         ];
+        //                     }],
+
+        //                     // Space/enter means we click the button
+        //                     [[
+        //                         keys.space, keys.enter
+        //                     ], function () {
+        //                         // Fake a click event on the button element
+        //                         var buttonElement = namespace[currentCustomKey] &&
+        //                                 namespace[currentCustomKey].element;
+        //                         if (buttonElement) {
+        //                             component.fakeClickEvent(buttonElement);
+        //                         }
+        //                         return this.response.success;
+        //                     }]
+        //                 ],
+
+        //                 // Focus button initially
+        //                 init: function () {
+        //                     var buttonElement = namespace[currentCustomKey] &&
+        //                             namespace[currentCustomKey].element;
+        //                     if (buttonElement && buttonElement.focus) {
+        //                         buttonElement.focus();
+        //                     }
+        //                 }
+        //             });
+        //         }
+        //     });
+
+        //     console.log("custom current prototype", customButton, customButton.prototype, customButton.prototype.onChartUpdate);
+        // });
+        // for(let i = 0; i < 2; i++) {
+
+        // }
+
+     //   console.log("custom component name", CustomComponent.name, CustomComponent);
+
+
+        console.log('some variables: ', Highcharts, chart);
+        chart.update({
+            accessibility: {
+                customComponents: {
+                //    toggleSeriesButton: new SelectAllButton(chart),
+                    selectAllButton: new SelectAllButton(chart),
+                    selectNoneButton: new SelectNoneButton(chart)
+                },
+                keyboardNavigation: {
+                    order: ["legend", "series", "zoom", "rangeSelector", "selectAllButton", "selectNoneButton"],
+                    //  order: ['customComponent', 'series', 'chartMenu', 'legend']
+                }
+            }
+        });
+    };
+
+    private customChartSelectionCallbackFunction: Highcharts.ChartSelectionCallbackFunction = (event: Highcharts.ChartSelectionContextObject) => {
+        if (this._zoomBehavior & zoomBehaviors.FireXAxisSelectionEvent) {
+            if (!!event.xAxis) {
+                let fromSelection = moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00', event.xAxis[0].min));
+                let toSelection = moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00', event.xAxis[0].max));
 
                 let fromPoint = null;
                 let toPoint = null;
                 let currChart = this.getCurrentChart();
-                if(!!currChart && !!currChart.series && currChart.series.length > 0) {
-                    let firstNonEmptySeries:number = -1;
+                if (!!currChart && !!currChart.series && currChart.series.length > 0) {
+                    let firstNonEmptySeries: number = -1;
                     for (let index = 0; index < currChart.series.length; index++) {
-                        if(currChart.series[index].visible && currChart.series[index].xAxis.hasData()) {
+                        if (currChart.series[index].visible && currChart.series[index].xAxis.hasData()) {
                             firstNonEmptySeries = index;
                             break;
                         }
                     }
-                    if(firstNonEmptySeries>-1) {
-                        currChart.series[firstNonEmptySeries].points.forEach(pt=>{
-                            if(  moment.duration(moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00',pt.x)).diff(fromSelection)).asMinutes() < 4  ) {
-                                fromPoint = moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00',pt.x));
+                    if (firstNonEmptySeries > -1) {
+                        currChart.series[firstNonEmptySeries].points.forEach(pt => {
+                            if (moment.duration(moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00', pt.x)).diff(fromSelection)).asMinutes() < 4) {
+                                fromPoint = moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00', pt.x));
                             }
-                            if(toPoint == null && moment.duration(moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00',pt.x)).diff(toSelection)).asMinutes() > -4 ) {
-                                toPoint = moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00',pt.x));
+                            if (toPoint == null && moment.duration(moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00', pt.x)).diff(toSelection)).asMinutes() > -4) {
+                                toPoint = moment.utc(Highcharts.dateFormat('%Y-%m-%d %H:%M:00', pt.x));
                             }
                         });
-                    }                    
+                    }
 
-                    if(!!fromPoint && !!toPoint) {
+                    if (!!fromPoint && !!toPoint) {
                         let xAxisSelectionEventArgs = new XAxisSelection();
                         xAxisSelectionEventArgs.chart = currChart;
                         xAxisSelectionEventArgs._rawEventArgs = event;
@@ -173,58 +484,56 @@ export class HighchartsGraphComponent implements OnInit {
                 }
             }
         }
-        if(this.zoomBehavior & zoomBehaviors.CancelZoom) {
+        if (this.zoomBehavior & zoomBehaviors.CancelZoom) {
             return false;
         }
         else {
             return true;
         }
     };
-    
+
     private customSetExtremesCallbackFunction: Highcharts.AxisSetExtremesEventCallbackFunction = (evt: Highcharts.AxisSetExtremesEventObject) => {
         if (evt.trigger !== 'sync') { // Prevent feedback loop
             let currChart = this.getCurrentChart();
-            if(!currChart) {
+            if (!currChart) {
                 return;
             }
-            for(let i = 0; i < Highcharts.charts.length; i++)
-            {
+            for (let i = 0; i < Highcharts.charts.length; i++) {
                 let chart = Highcharts.charts[i];
                 if (chart && currChart !== chart) {
-                    let targetZoomBehavior:zoomBehaviors = HighchartsGraphComponent.getChartProperty('zoomBehavior', chart.container.id) as zoomBehaviors;
-                        if(targetZoomBehavior == null || !(targetZoomBehavior & zoomBehaviors.CancelZoom)) {
-                            if (chart.xAxis[0].setExtremes) { // It is null while updating                            
-                                chart.xAxis[0].setExtremes(evt.min, evt.max, true, true, { trigger: 'sync'} );
+                    let targetZoomBehavior: zoomBehaviors = HighchartsGraphComponent.getChartProperty('zoomBehavior', chart.container.id) as zoomBehaviors;
+                    if (targetZoomBehavior == null || !(targetZoomBehavior & zoomBehaviors.CancelZoom)) {
+                        if (chart.xAxis[0].setExtremes) { // It is null while updating
+                            chart.xAxis[0].setExtremes(evt.min, evt.max, true, true, { trigger: 'sync' });
                         }
-                    }                    
+                    }
                 }
             }
         }
-    };    
+    };
 
-    private rebindChartOptions():void {
+    private rebindChartOptions(): void {
         let currChart = this.getCurrentChart();
-        if(!!currChart) {
+        if (!!currChart) {
             currChart.update(this.options);
         }
     }
-	
-    loading: boolean = true;   
-    
+
+    loading: boolean = true;
+
     @HostListener('mousemove', ['$event'])
     onMouseMove(ev: MouseEvent) {
         this.syncCharts(ev);
     }
 
     @HostListener('keydown', ['$event'])
-    onKeydownHandler(ev: KeyboardEvent)
-    {
+    onKeydownHandler(ev: KeyboardEvent) {
         var key = ev.key;
 
         if (key === 'ArrowLeft' || key === 'ArrowRight') {
             let currentId = this.el.nativeElement.getElementsByClassName('highcharts-container')[0].id;
 
-            for(let i = 0; i < Highcharts.charts.length; i++) {
+            for (let i = 0; i < Highcharts.charts.length; i++) {
                 let chart = Highcharts.charts[i];
 
                 if (chart) {
@@ -241,6 +550,11 @@ export class HighchartsGraphComponent implements OnInit {
     constructor(private detectorControlService: DetectorControlService, private el: ElementRef<HTMLElement>) {
     }
 
+    // Demonstrate chart instance
+    logChartInstance(chart: Highcharts.Chart) {
+        console.log('Chart instance: ', chart);
+    }
+
     ngOnInit() {
         this._setOptions();
         this._updateOptions();
@@ -251,7 +565,7 @@ export class HighchartsGraphComponent implements OnInit {
     }
 
     private syncCharts(ev: MouseEvent) {
-        let xAxisValue : number;
+        let xAxisValue: number;
 
         let currentCharts = this.el.nativeElement.getElementsByClassName('highcharts-container');
         if (!currentCharts || !currentCharts[0]) {
@@ -260,7 +574,7 @@ export class HighchartsGraphComponent implements OnInit {
         let currentId = currentCharts[0].id;
 
         // Find out which is the current chart object
-        for(let i = 0; i < Highcharts.charts.length; i++) {
+        for (let i = 0; i < Highcharts.charts.length; i++) {
             let chart = Highcharts.charts[i];
             if (chart) {
                 if (currentId === chart.container.id) {
@@ -277,8 +591,7 @@ export class HighchartsGraphComponent implements OnInit {
             }
         }
 
-        for(let i = 0; i < Highcharts.charts.length; i++)
-        {
+        for (let i = 0; i < Highcharts.charts.length; i++) {
             let chart = Highcharts.charts[i];
             if (chart) {
                 let xi = chart.xAxis[0];
@@ -288,7 +601,7 @@ export class HighchartsGraphComponent implements OnInit {
                     width: 1,
                     color: 'grey',
                     id: 'myPlotLine',
-                    zIndex:10
+                    zIndex: 10
                 });
             }
         }
@@ -335,22 +648,22 @@ export class HighchartsGraphComponent implements OnInit {
         this.options.chart.type = type;
         this.options.plotOptions.series.stacking = stacking;
 
-        if(!!this.xAxisPlotBands && this.xAxisPlotBands.length>0) {
+        if (!!this.xAxisPlotBands && this.xAxisPlotBands.length > 0) {
             let chartPlotBands = [];
             this.xAxisPlotBands.forEach(plotBand => {
                 var currPlotBand = {
-                    color: plotBand.color == ''? '#FCFFC5': plotBand.color,
-                    from:plotBand.from.utc(true),
+                    color: plotBand.color == '' ? '#FCFFC5' : plotBand.color,
+                    from: plotBand.from.utc(true),
                     to: plotBand.to.utc(true),
-                    zIndex:!!plotBand.style?plotBand.style:xAxisPlotBandStyles.BehindPlotLines,
-                    borderWidth:(!!plotBand.borderWidth && plotBand.borderWidth > 0)?plotBand.borderWidth:0,
-                    borderColor:(!!plotBand.borderColor) ? plotBand.borderColor:'white',
-                    id:(!!plotBand.id)?plotBand.id:''
+                    zIndex: !!plotBand.style ? plotBand.style : xAxisPlotBandStyles.BehindPlotLines,
+                    borderWidth: (!!plotBand.borderWidth && plotBand.borderWidth > 0) ? plotBand.borderWidth : 0,
+                    borderColor: (!!plotBand.borderColor) ? plotBand.borderColor : 'white',
+                    id: (!!plotBand.id) ? plotBand.id : ''
                 };
                 chartPlotBands.push(currPlotBand);
-                
+
             });
-            this.options.xAxis.plotBands = chartPlotBands;            
+            this.options.xAxis.plotBands = chartPlotBands;
         }
 
         if (this.chartOptions) {
@@ -374,8 +687,7 @@ export class HighchartsGraphComponent implements OnInit {
                 obj[key] = this._updateObject(subItem, replace);
             } else {
                 // Special handling for the key to override colors. In highchart library, the key should be "colors" instead of "colors"
-                if (key === "color" || key === "colors")
-                {
+                if (key === "color" || key === "colors") {
                     key = "colors";
                 }
                 obj[key] = replace;
@@ -428,7 +740,7 @@ export class HighchartsGraphComponent implements OnInit {
                     }
                 },
                 events: {
-                    selection: this.customChartSelectionCallbackFunction,                    
+                    selection: this.customChartSelectionCallbackFunction,
                 },
             },
             legend: {
@@ -498,24 +810,24 @@ export class HighchartsGraphComponent implements OnInit {
                     enabled: true,
                 },
                 buttons: {
-                    DeselectAllButton: {
-                        text: 'None',
-                        onclick: function () {
-                            var series = this.series;
-                            for (var i = 0; i < series.length; i++) {
-                                series[i].setVisible(false, false);
-                            }
-                        }
-                    },
-                    SelectAllButton: {
-                        text: 'All',
-                        onclick: function () {
-                            var series = this.series;
-                            for (var i = 0; i < series.length; i++) {
-                                series[i].setVisible(true, false);
-                            }
-                        }
-                    },
+                    // DeselectAllButton: {
+                    //     text: 'None',
+                    //     onclick: function () {
+                    //         var series = this.series;
+                    //         for (var i = 0; i < series.length; i++) {
+                    //             series[i].setVisible(false, false);
+                    //         }
+                    //     }
+                    // },
+                    // SelectAllButton: {
+                    //     text: 'All',
+                    //     onclick: function () {
+                    //         var series = this.series;
+                    //         for (var i = 0; i < series.length; i++) {
+                    //             series[i].setVisible(true, false);
+                    //         }
+                    //     }
+                    // },
                     contextButton: {
                         enabled: false,
                     }
@@ -547,7 +859,7 @@ export class HighchartsGraphComponent implements OnInit {
                         whiteSpace: 'nowrap'
                     }
                 },
-                plotBands:[],
+                plotBands: [],
                 events: {
                     setExtremes: this.customSetExtremesCallbackFunction
                 }
@@ -577,7 +889,7 @@ export class HighchartsGraphComponent implements OnInit {
                 },
             },
             series: this.HighchartData
-        } as Highcharts.Options;
+        } as Highcharts.Options
     }
 }
 
