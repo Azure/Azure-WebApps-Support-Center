@@ -159,7 +159,7 @@ export class HighchartsGraphComponent implements OnInit {
                 namespace["toggleSelectionButton"].attr({
                     role: 'button',
                     tabindex: -1,
-                    x: chart.plotWidth -60,
+                    x: chart.plotWidth -115,
                     "aria-label": "Deselect all the series",
                 });
             }
@@ -515,7 +515,7 @@ export class HighchartsGraphComponent implements OnInit {
                 resetZoomButton: {
                     position: {
                         x: 0,
-                        y: -10
+                        y: -57
                     }
                 },
                 events: {
@@ -524,7 +524,7 @@ export class HighchartsGraphComponent implements OnInit {
                     render: function() {
                         var chart:any = this;
                         chart.customNamespace["toggleSelectionButton"].attr({
-                            x: this.plotWidth -60,
+                            x: this.plotWidth -115,
                         });
                     }
                 },
