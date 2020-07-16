@@ -10,6 +10,9 @@ import { DaasService } from '../../../services/daas.service';
 import { Globals } from '../../../../globals'
 import { TelemetryService } from 'diagnostic-data';
 import { SharedStorageAccountService } from 'projects/app-service-diagnostics/src/app/shared-v2/services/shared-storage-account.service';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { CrashMonitoringSettings } from '../../../models/daas';
 
 @Component({
   selector: 'crash-monitoring',
@@ -45,6 +48,12 @@ export class CrashMonitoringComponent implements OnInit {
   validationError: string = "";
   updatingStorageAccounts: boolean = false;
   defaultSelectedKey: string = "";
+  selectedStorageAccount: StorageAccount = null;
+
+  chosenStartDateTime: Date;
+  chosenEndDateTime: Date;
+  selectedDumpCount: number = 3;
+  selectedTabKey: string = "0";
 
   formatDate: IDatePickerProps['formatDate'] = (date) => {
     return momentNs(date).format('YYYY-MM-DD');
@@ -77,7 +86,7 @@ export class CrashMonitoringComponent implements OnInit {
 
       this.storageAccounts = tempArray;
       this.defaultSelectedKey = newStorageAccount.name
-      this.defaultSelectedKey = newStorageAccount.name
+      this.selectedStorageAccount = newStorageAccount;
 
     }
   }
@@ -153,10 +162,9 @@ export class CrashMonitoringComponent implements OnInit {
 
       if (isSelected) {
         this.defaultSelectedKey = acc.name;
+        this.selectedStorageAccount = acc;
       }
     }
-    console.log(this.defaultSelectedKey);
-    console.log(JSON.stringify(this.storageAccounts));
   }
 
   initDumpOptions() {
@@ -173,8 +181,8 @@ export class CrashMonitoringComponent implements OnInit {
 
   }
 
-  selectFabricKey(event: any) {
-
+  selectStorageAccount(event: any) {
+    this.selectedStorageAccount = event.option.data;
   }
 
   onSelectStartDateHandler(event: any) {
@@ -191,7 +199,7 @@ export class CrashMonitoringComponent implements OnInit {
 
   startMonitoring() {
     if (this.validateSettings()) {
-
+      this.saveMonitoringSettings(this.selectedStorageAccount.id, this.selectedStorageAccount.name);
     }
   }
 
@@ -202,10 +210,10 @@ export class CrashMonitoringComponent implements OnInit {
       var startTimeValues = this.startClock.split(":");
       var endTimeValues = this.endClock.split(":");
 
-      let actualStartTime = this.getChosenDateTime(this.startDate, startTimeValues);
-      let actualEndTime = this.getChosenDateTime(this.endDate, endTimeValues);
+      this.chosenStartDateTime = this.getDateWithTime(this.startDate, startTimeValues);
+      this.chosenEndDateTime = this.getDateWithTime(this.endDate, endTimeValues);
 
-      if (actualStartTime >= actualEndTime) {
+      if (this.chosenStartDateTime >= this.chosenEndDateTime) {
         isValid = false;
         this.validationError = "Start date and time cannot be greater than or equal to end date and time";
       }
@@ -217,12 +225,8 @@ export class CrashMonitoringComponent implements OnInit {
     return isValid;
   }
 
-  getChosenDateTime(date: Date, values: string[]): Date {
-    let dateTime = new Date(date.getFullYear(), date.getMonth(), date.getDay());
-    dateTime.setUTCHours(parseInt(values[0]));
-    dateTime.setUTCMinutes(parseInt(values[1]));
-    dateTime.setUTCSeconds(0);
-    dateTime.setUTCMilliseconds(0);
+  getDateWithTime(date: Date, values: string[]): Date {
+    let dateTime = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(values[0]), parseInt(values[1]), 0, 0));
     return dateTime
   }
 
@@ -255,6 +259,91 @@ export class CrashMonitoringComponent implements OnInit {
     //this.telemetryService.logPageView("SessionsPanelView");
   }
 
+  saveMonitoringSettings(storageAccountId: string, storageAccountName: string) {
+    this.status = toolStatus.ConfiguringBlobSasUri;
+    this._storageService.getStorageAccountKey(storageAccountId).subscribe(resp => {
+      if (resp.keys && resp.keys.length > 0) {
+        let storageKey = resp.keys[0].value;
+        this._daasService.setBlobSasUri(this.siteToBeDiagnosed, storageAccountName, storageKey).subscribe(resp => {
+          if (resp) {
+            this.status = toolStatus.BlobSasUriSaved;
+
+            this.saveCrashMonitoringSettings(this.siteToBeDiagnosed, this.getCrashMonitoringSetting()).subscribe(resp => {
+              this.status = toolStatus.SettingsSaved;
+              this.selectedTabKey = "1";
+              console.log("Settings saved");
+            },
+              error => {
+                this.status = toolStatus.Error;
+                this.errorMessage = "Failed while saving crash monitoring settings for the current app. ";
+                this.error = error;
+              });
+
+          } else {
+            this.status = toolStatus.Error;
+            this.errorMessage = "Failed to set BlobSasUri for the current app."
+            this.error = null;
+          }
+        },
+          error => {
+            this.status = toolStatus.Error;
+            this.errorMessage = "Failed to set BlobSasUri for the current app. ";
+            this.error = error;
+          });
+      }
+    },
+      error => {
+        this.status = toolStatus.Error;
+        this.errorMessage = "Failed while getting storage account key";
+        this.error = error;
+      });
+  }
+
+  selectDumpCount(event: any) {
+    this.selectedDumpCount = parseInt(event.option.key);
+  }
+
+  getCrashMonitoringSetting(): CrashMonitoringSettings {
+    let monitoringSettings: CrashMonitoringSettings = new CrashMonitoringSettings();
+    let durationInHours = momentNs.utc(this.chosenEndDateTime).diff(momentNs.utc(this.chosenStartDateTime), 'hours', true);
+    monitoringSettings.StartTimeUtc = momentNs.utc(this.chosenStartDateTime, momentNs.defaultFormatUtc).toISOString();
+    monitoringSettings.MaxHours = Math.round(durationInHours * 100) / 100;
+    monitoringSettings.MaxDumpCount = this.selectedDumpCount;
+
+    return monitoringSettings;
+  }
+
+  changeTab(event: any) {
+    if (event.item != null && event.item.props != null && event.item.props.itemKey != null)
+      this.selectedTabKey = event.item.props.itemKey;
+  }
+
+  saveCrashMonitoringSettings(site: SiteDaasInfo, crashMonitoringSettings: CrashMonitoringSettings): Observable<any> {
+    return this._siteService.getSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot).pipe(
+      map(settingsResponse => {
+        if (settingsResponse && settingsResponse.properties) {
+
+          // Clear crashMonitoring settings.
+          if (crashMonitoringSettings == null) {
+            if (settingsResponse.properties['WEBSITE_CRASHMONITORING_SETTINGS']) {
+              delete settingsResponse.properties['WEBSITE_CRASHMONITORING_SETTINGS'];
+              if (settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED']) {
+                delete settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED'];
+                this._siteService.updateSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot, settingsResponse).subscribe(updateResponse => {
+                  return updateResponse;
+                });
+              }
+            }
+          } else {
+            settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED'] = true;
+            settingsResponse.properties['WEBSITE_CRASHMONITORING_SETTINGS'] = JSON.stringify(crashMonitoringSettings);
+            this._siteService.updateSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot, settingsResponse).subscribe(updateResponse => {
+              return updateResponse;
+            });
+          }
+        }
+      }));
+  }
 }
 
 export enum toolStatus {
@@ -263,10 +352,8 @@ export enum toolStatus {
   CheckingBlobSasUri,
   Loaded,
   ConfiguringBlobSasUri,
+  BlobSasUriSaved,
+  SavingCrashMonitoringSettings,
+  SettingsSaved,
   Error
-}
-
-export class CrashMonitoringSettings {
-  StartTimeUtc: string;
-  MaxHours: number;
 }
