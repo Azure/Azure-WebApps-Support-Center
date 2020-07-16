@@ -135,108 +135,94 @@ export class HighchartsGraphComponent implements OnInit {
         return null;
     }
 
-    highchartCallback: Highcharts.ChartLoadCallbackFunction = (chart: any) =>{
+    highchartCallback: Highcharts.ChartLoadCallbackFunction = function() {
+        var chart:any = this;
         chart.customNamespace = {};
-        chart.customNamespace["selectAllButton"] = chart.renderer.button(
-            'All', chart.chartWidth - 120, 10, function () {
+        chart.customNamespace["toggleSelectionButton"] = chart.renderer.button(
+            'Select None', null, -10, function () {
                 var series = chart.series;
+                var statusToSet = this.text && this.text.textStr && this.text.textStr === "Select All" ? true : false;
                 for (var i = 0; i < series.length; i++) {
-                    series[i].setVisible(true, false);
+                    series[i].setVisible(statusToSet, false);
                 }
-            }).add();
+                statusToSet = !statusToSet;
+                var textStr = statusToSet ? "Select All": "Select None";
+                var ariaLabel= statusToSet ? "Select all the series" : "Deselect all the series";
+                this.attr({
+                    text: textStr,
+                    "aria-label": ariaLabel,
+                });
+            }, null, null, null, null, null, true).add();
 
-        chart.customNamespace["selectNoneButton"] = chart.renderer.button(
-            'None', chart.chartWidth - 60, 10, function () {
-                var series = chart.series;
-                for (var i = 0; i < series.length; i++) {
-                    series[i].setVisible(false, false);
-                }
-            }).add();
+            var namespace = chart.customNamespace || {};
+            if (namespace["toggleSelectionButton"]) {
+                namespace["toggleSelectionButton"].attr({
+                    role: 'button',
+                    tabindex: -1,
+                    x: chart.plotWidth -60,
+                    "aria-label": "Deselect all the series",
+                });
+            }
 
-        var currentCustomKey = "";
-        var SelectAllButton = function selectAllButton(chart) {
+        var ToggleSelectionButton = function toggleSelectionButton(chart) {
             this.initBase(chart);
         };
-        var SelectNoneButton = function selectNoneButton(chart) {
-            this.initBase(chart);
-        };
 
-        var customButtons = [SelectAllButton, SelectNoneButton];
-        customButtons.forEach((customButton) => {
-            customButton.prototype = new Highcharts.AccessibilityComponent();
-            currentCustomKey = customButton.name;
-            Highcharts.extend(customButton.prototype, {
-                // Perform tasks to be done when the chart is updated
-                onChartUpdate: function () {
-                    // Get custom button if it exists, and set attributes on it
-                    var namespace = chart.customNamespace || {};
-                    currentCustomKey = customButton.name;
-                    if (namespace[currentCustomKey]) {
-                        namespace[currentCustomKey].attr({
-                            role: 'button',
-                            tabindex: -1,
-                            "aria-label": currentCustomKey === "selectAllButton"? `select all the time series` : "Deselect all the time series"
-                        });
-                    }
-                },
+        ToggleSelectionButton.prototype = new Highcharts.AccessibilityComponent();
+        Highcharts.extend(ToggleSelectionButton.prototype, {
+            // Define keyboard navigation for this component
+            getKeyboardNavigation: function () {
+                var keys = this.keyCodes,
+                    chart = this.chart,
+                    namespace = chart.customNamespace || {},
+                    component = this;
 
-                // Define keyboard navigation for this component
-                getKeyboardNavigation: function () {
-                    var keys = this.keyCodes,
-                        chart = this.chart,
-                        namespace = chart.customNamespace || {},
-                        component = this;
+                return new Highcharts.KeyboardNavigationHandler(chart, {
+                    keyCodeMap: [
+                        // On arrow/tab we just move to the next chart element.
+                        [[
+                            keys.tab, keys.up, keys.down, keys.left, keys.right
+                        ], function (keyCode, e) {
+                            return this.response[
+                                keyCode === this.tab && e.shiftKey ||
+                                    keyCode === keys.left || keyCode === keys.up ?
+                                    'prev' : 'next'
+                            ];
+                        }],
 
-                    return new Highcharts.KeyboardNavigationHandler(chart, {
-                        keyCodeMap: [
-                            // On arrow/tab we just move to the next chart element.
-                            [[
-                                keys.tab, keys.up, keys.down, keys.left, keys.right
-                            ], function (keyCode, e) {
-                                return this.response[
-                                    keyCode === this.tab && e.shiftKey ||
-                                        keyCode === keys.left || keyCode === keys.up ?
-                                        'prev' : 'next'
-                                ];
-                            }],
-
-                            // Space/enter means we click the button
-                            [[
-                                keys.space, keys.enter
-                            ], function () {
-                                currentCustomKey = customButton.name;
-                                // Fake a click event on the button element
-                                var buttonElement = namespace[currentCustomKey] &&
-                                    namespace[currentCustomKey].element;
-                                if (buttonElement) {
-                                    component.fakeClickEvent(buttonElement);
-                                }
-                                return this.response.success;
-                            }]
-                        ],
-
-                        // Focus button initially
-                        init: function () {
-                            currentCustomKey = customButton.name;
-                            var buttonElement = namespace[currentCustomKey] &&
-                                namespace[currentCustomKey].element;
-                            if (buttonElement && buttonElement.focus) {
-                                buttonElement.focus();
+                        // Space/enter means we click the button
+                        [[
+                            keys.space, keys.enter
+                        ], function () {
+                            // Fake a click event on the button element
+                            var buttonElement = namespace["toggleSelectionButton"] &&
+                                namespace["toggleSelectionButton"].element;
+                            if (buttonElement) {
+                                component.fakeClickEvent(buttonElement);
                             }
+                            return this.response.success;
+                        }]
+                    ],
+
+                    // Focus button initially
+                    init: function () {
+                        var buttonElement = namespace["toggleSelectionButton"] &&
+                            namespace["toggleSelectionButton"].element;
+                        if (buttonElement && buttonElement.focus) {
+                            buttonElement.focus();
                         }
-                    });
-                }
-            });
+                    }
+                });
+            }
         });
 
         chart.update({
             accessibility: {
                 customComponents: {
-                    selectAllButton: new SelectAllButton(chart),
-                    selectNoneButton: new SelectNoneButton(chart)
+                 toggleSelectionButton: new ToggleSelectionButton(chart),
                 },
                 keyboardNavigation: {
-                    order: ["legend", "series", "zoom", "rangeSelector", "selectAllButton", "selectNoneButton"],
+                    order: ["legend", "series", "zoom", "rangeSelector", "toggleSelectionButton"],
                 }
             }
         });
@@ -504,7 +490,7 @@ export class HighchartsGraphComponent implements OnInit {
                 keyboardNavigation: {
                     enabled: true,
                     mode: "normal",
-                    order: ["legend", "series", "zoom", "rangeSelector", "chartMenu"],
+                    order: ["legend", "series", "zoom", "rangeSelector"],
                     focusBorder: {
                         style: {
                             lineWidth: 3,
@@ -522,6 +508,7 @@ export class HighchartsGraphComponent implements OnInit {
                 height: 300,
                 display: 'block!important',
                 type: 'line',
+                // styledMode: true,
                 zoomType: 'x',
                 panKey: 'shift',
                 panning: true,
@@ -533,6 +520,13 @@ export class HighchartsGraphComponent implements OnInit {
                 },
                 events: {
                     selection: this.customChartSelectionCallbackFunction,
+                    load: this.highchartCallback,
+                    render: function() {
+                        var chart:any = this;
+                        chart.customNamespace["toggleSelectionButton"].attr({
+                            x: this.plotWidth -60,
+                        });
+                    }
                 },
             },
             legend: {
