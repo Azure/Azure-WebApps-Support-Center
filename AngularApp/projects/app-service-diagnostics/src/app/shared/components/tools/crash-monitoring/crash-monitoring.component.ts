@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IDatePickerProps, IDropdownOption } from 'office-ui-fabric-react';
+import { IDatePickerProps, IDropdownOption, SelectableOptionMenuItemType } from 'office-ui-fabric-react';
 import * as momentNs from 'moment';
 import { addMonths, addDays } from 'office-ui-fabric-react/lib/utilities/dateMath/DateMath';
 import { StorageService } from '../../../services/storage.service';
@@ -9,6 +9,7 @@ import { StorageAccount } from '../../../models/storage';
 import { DaasService } from '../../../services/daas.service';
 import { Globals } from '../../../../globals'
 import { TelemetryService } from 'diagnostic-data';
+import { SharedStorageAccountService } from 'projects/app-service-diagnostics/src/app/shared-v2/services/shared-storage-account.service';
 
 @Component({
   selector: 'crash-monitoring',
@@ -17,7 +18,12 @@ import { TelemetryService } from 'diagnostic-data';
 })
 export class CrashMonitoringComponent implements OnInit {
 
-  constructor(private _storageService: StorageService, private _siteService: SiteService, private _daasService: DaasService, private globals: Globals, private telemetryService:TelemetryService) {
+  constructor(private _storageService: StorageService, private _siteService: SiteService,
+    private _daasService: DaasService, private globals: Globals, private telemetryService: TelemetryService,
+    private _sharedStorageAccountService: SharedStorageAccountService) {
+    this._sharedStorageAccountService.changeEmitted$.subscribe(newStorageAccount => {
+      this.addNewlyCreatedStorageAccount(newStorageAccount);
+    })
   }
 
   today: Date = new Date(Date.now());
@@ -37,10 +43,44 @@ export class CrashMonitoringComponent implements OnInit {
   errorMessage: string;
   toolStatus = toolStatus;
   validationError: string = "";
+  updatingStorageAccounts: boolean = false;
+  defaultSelectedKey: string = "";
 
   formatDate: IDatePickerProps['formatDate'] = (date) => {
     return momentNs(date).format('YYYY-MM-DD');
   };
+
+  addNewlyCreatedStorageAccount(newStorageAccount: StorageAccount) {
+    if (this.storageAccounts != null
+      && this.storageAccounts.findIndex(x => x.key === newStorageAccount.name) === -1) {
+
+      //
+      // If we are just changing this.storageAccounts, the dropdown is not reflecting the correct
+      // status for some reason. Instead, we clear this.storageAccounts array, clone it and then
+      // assign the newly created array to this.storageAccounts and that seems to have done the trick 
+      //
+      let tempArray: IDropdownOption[] = JSON.parse(JSON.stringify(this.storageAccounts));
+      this.storageAccounts = [];
+      tempArray.forEach(val => {
+        val.selected = false;
+        val.isSelected = false;
+      })
+
+      tempArray.push({
+        key: newStorageAccount.name,
+        text: newStorageAccount.name,
+        ariaLabel: newStorageAccount.name,
+        data: newStorageAccount,
+        isSelected: true,
+        selected: true
+      });
+
+      this.storageAccounts = tempArray;
+      this.defaultSelectedKey = newStorageAccount.name
+      this.defaultSelectedKey = newStorageAccount.name
+
+    }
+  }
 
   ngOnInit() {
 
@@ -90,16 +130,33 @@ export class CrashMonitoringComponent implements OnInit {
 
   initStorageAccounts(storageAccounts: StorageAccount[], currentLocation: string, configuredSasUri: string = "") {
     this.storageAccounts = [];
-    storageAccounts.forEach(acc => {
-      if (acc.location === currentLocation) {
-        this.storageAccounts.push({
-          key: acc.name,
-          text: acc.name,
-          ariaLabel: acc.name,
-          isSelected: configuredSasUri != null && configuredSasUri.toLowerCase().indexOf(acc.name.toLowerCase() + ".") > -1 ? true : false
-        });
+    let accountsCurrentLocation = storageAccounts.filter(x => x.location === currentLocation);
+
+    for (let index = 0; index < accountsCurrentLocation.length; index++) {
+      let isSelected = false;
+      const acc = accountsCurrentLocation[index];
+      if (configuredSasUri && configuredSasUri.toLowerCase().indexOf(acc.name.toLowerCase() + ".") > -1) {
+        isSelected = true;
       }
-    });
+      else {
+        if (!configuredSasUri && index === 0) {
+          isSelected = true;
+        }
+      }
+      this.storageAccounts.push({
+        key: acc.name,
+        text: acc.name,
+        ariaLabel: acc.name,
+        data: acc,
+        isSelected: isSelected
+      });
+
+      if (isSelected) {
+        this.defaultSelectedKey = acc.name;
+      }
+    }
+    console.log(this.defaultSelectedKey);
+    console.log(JSON.stringify(this.storageAccounts));
   }
 
   initDumpOptions() {
@@ -207,4 +264,9 @@ export enum toolStatus {
   Loaded,
   ConfiguringBlobSasUri,
   Error
+}
+
+export class CrashMonitoringSettings {
+  StartTimeUtc: string;
+  MaxHours: number;
 }

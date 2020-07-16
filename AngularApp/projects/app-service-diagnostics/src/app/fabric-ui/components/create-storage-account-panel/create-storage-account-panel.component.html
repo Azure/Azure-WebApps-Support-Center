@@ -11,19 +11,23 @@
             <i class="fa fa-info-circle" aria-hidden="true"></i>
           </div>
           <div class="col-md-4">
-            <input type="text">
+            <input type="text" id="newStorageAccountName" (input)="updateStorageAccount($event.target.value)" [ngModel]="newStorageAccountName">
           </div>
         </div>
       </div>
     </div>
   </div>
+  <div *ngIf="creatingStorageAccount">
+    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+    Creating storage account...
+  </div>
   <div class="footer">
     <hr style="margin-bottom: 20px;">
 
-    <fab-primary-button contentStyle="margin-right:10px">
+    <fab-primary-button contentStyle="margin-right:10px" (click)="saveChanges()">
       Save
     </fab-primary-button>
-    <fab-default-button contentStyle="margin-right:10px">
+    <fab-default-button contentStyle="margin-right:10px" (click)="dismissedHandler()">
       Cancel
     </fab-default-button>
   </div>

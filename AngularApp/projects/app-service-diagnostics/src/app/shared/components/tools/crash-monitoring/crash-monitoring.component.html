@@ -18,8 +18,8 @@
           <i class="fa fa-info-circle" aria-hidden="true"></i>
         </div>
         <div class="col-md-3">
-          <fab-dropdown id="chooseStorageAccount" role="combobox" [options]="storageAccounts"
-            (onChange)="selectFabricKey($event)">
+          <fab-dropdown *ngIf="!updatingStorageAccounts" id="chooseStorageAccount" role="combobox" [options]="storageAccounts"
+            (onChange)="selectFabricKey($event)" [defaultSelectedKey]="defaultSelectedKey">
           </fab-dropdown>
           <div class="mt-1 mb-4" (click)="toggleStorageAccountPanel()" (keyup.enter)="toggleStorageAccountPanel()">
             <a tabindex="0" aria-label="Create new storage account">Create New</a>
