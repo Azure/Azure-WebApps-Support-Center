@@ -129,6 +129,7 @@ import {
     FabProgressIndicatorModule,
     FabContextualMenuModule
 } from '@angular-react/fabric';
+import { CrashMonitoringAnalysisComponent } from './components/tools/crash-monitoring/crash-monitoring-analysis/crash-monitoring-analysis.component';
 @NgModule({
     declarations: [
         LimitToFilter,
@@ -195,7 +196,8 @@ import {
         ConfigureStorageAccountComponent,
         JavaFlightRecorderComponent,
         JavaFlightRecorderToolComponent,
-        CrashMonitoringComponent
+        CrashMonitoringComponent,
+        CrashMonitoringAnalysisComponent
     ],
     imports: [
         HttpClientModule,

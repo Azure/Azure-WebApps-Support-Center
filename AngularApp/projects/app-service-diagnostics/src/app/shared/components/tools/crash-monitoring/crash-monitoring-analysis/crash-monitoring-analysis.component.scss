@@ -1,0 +1,86 @@
+.insight-container {
+    margin-bottom: 10px;
+}
+
+.insight-container:last-child {
+    margin-bottom: 0px;
+}
+
+.insight-panel {
+    border-left-width: 4px;
+}
+
+.success-insight-panel {
+    border-left-color: #3da907;
+}
+
+.warning-insight-panel {
+    border-left-color: #ff9104;
+}
+
+.critical-insight-panel {
+    border-left-color: red;
+}
+
+.info-insight-panel {
+    border-left-color: #3a9bc7
+}
+
+.insight-expand-icon {
+    font-weight: bold;
+    float:left;
+    font-size:18px;
+    min-height: 1px;
+    min-width: 1.5%;
+    margin-right:10px;
+}
+
+.card-header {
+    font-size: 16px;
+}
+
+.clickable-header {
+    cursor: pointer;
+}
+
+.card-body {
+    font-size: 14px;
+}
+
+.table-key {
+    width: 20%;
+}
+
+table {
+    width: 100%;
+}
+
+.status-icon {
+    margin-right: 25px;
+}
+
+.fa-exclamation-circle {
+    color: #ff0000;
+}
+
+.fa-exclamation-triangle {
+    color: #ff9104;
+}
+
+.fa-check-circle {
+    color: #3da907;
+}
+
+.fa-info-circle {
+    color: #3a9bc7;
+}
+
+.expand-icon {
+    float:right;
+    font-size: 20px;
+}
+
+td {
+    vertical-align: text-top;
+    padding-bottom: 10px;
+}
