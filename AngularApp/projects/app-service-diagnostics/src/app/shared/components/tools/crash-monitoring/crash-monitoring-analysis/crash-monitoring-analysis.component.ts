@@ -81,6 +81,11 @@ export class CrashMonitoringAnalysisComponent implements OnInit {
     return `https://${blobUrl.host}${blobUrl.pathname}/${relativePath}?${blobUrl.searchParams}`;
   }
 
+  viewCallStack(insight:CrashInsight, data:CrashMonitoringData){
+    insight.selectedCallStack = data.callStack;
+    insight.selectedManagedException = data.managedException;
+  }
+
 }
 
 
@@ -111,4 +116,7 @@ export class CrashInsight {
   isExpanded: boolean = false;
   title: string;
   data: CrashMonitoringData[];
+  selectedManagedException: string = "";
+  selectedCallStack: string = "";
+
 }

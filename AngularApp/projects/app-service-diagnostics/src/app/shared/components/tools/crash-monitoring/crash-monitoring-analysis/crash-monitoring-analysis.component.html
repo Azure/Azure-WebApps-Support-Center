@@ -1,60 +1,66 @@
-<div *ngIf="status === crashMonitoringAnalysisStatus.Loading">
-  <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-  Loading...
-</div>
-
-<div *ngIf="status === crashMonitoringAnalysisStatus.Loaded">
-
-  <div *ngFor="let insight of insights" class="insight-container" tabindex="0" attr.name="{{insight.title}}"
-    attr.aria-label="{{insight.title}}" attr.aria-expanded="{{insight.isExpanded}}" role="button"
-    (keyup.enter)="toggleInsightStatus(insight)">
-    <div class="panel panel-default insight-panel critical-insight-panel">
-      <div class="panel-heading">
-        <h5 class="panel-title clickable-header" (click)="toggleInsightStatus(insight)">
-          <div style="display: table;">
-            <div style="display: table-row">
-              <div style="display: table-cell">
-                <span class="fa insight-expand-icon" [class.fa-angle-right]="!insight.isExpanded"
-                  [class.fa-angle-down]="insight.isExpanded"></span>
-              </div>
-              <div style="display: table-cell">
-                <span class="fa status-icon  fa-exclamation-circle"></span>
-              </div>
-              <div style="display: table-cell;width:100%">
-                {{insight.title}}
-              </div>
-            </div>
-          </div>
-        </h5>
-      </div>
-
-      <div class="panel-body" [hidden]="!(insight.isExpanded)">
-        <table class="table table-bordered">
-          <thead>
-            <th>TimeStamp</th>
-            <th>Dump</th>
-            <th>Call Stack</th>
-            <th>Managed Exception</th>
-          </thead>
-          <tbody>
-            <tr *ngFor="let data of insight.data">
-              <td>{{ data.timeStamp }}</td>
-              <td> <a href='{{ data.dumpHref }}' target="_blank">{{ data.dumpFileName }}</a> </td>
-              <td>
-                <div style="height: 200px; overflow-y: scroll;">
-                  <code>
-                        {{ data.callStack }}
-                      </code>
-                </div>
-              </td>
-              <td>{{ data.managedException }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-    </div>
+<div style="margin-top: 20px;">
+  <div *ngIf="status === crashMonitoringAnalysisStatus.Loading">
+    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+    Loading...
   </div>
 
+  <div *ngIf="status === crashMonitoringAnalysisStatus.Loaded">
 
+    <div *ngFor="let insight of insights" class="insight-container" tabindex="0" attr.name="{{insight.title}}"
+      attr.aria-label="{{insight.title}}" attr.aria-expanded="{{insight.isExpanded}}" role="button"
+      (keyup.enter)="toggleInsightStatus(insight)">
+      <div class="panel panel-default insight-panel critical-insight-panel">
+        <div class="panel-heading">
+          <h5 class="panel-title clickable-header" (click)="toggleInsightStatus(insight)">
+            <div style="display: table;">
+              <div style="display: table-row">
+                <div style="display: table-cell">
+                  <span class="fa insight-expand-icon" [class.fa-angle-right]="!insight.isExpanded"
+                    [class.fa-angle-down]="insight.isExpanded"></span>
+                </div>
+                <div style="display: table-cell">
+                  <span class="fa status-icon  fa-exclamation-circle"></span>
+                </div>
+                <div style="display: table-cell;width:100%">
+                  {{insight.title}}
+                </div>
+              </div>
+            </div>
+          </h5>
+        </div>
+
+        <div class="panel-body" [hidden]="!(insight.isExpanded)">
+          <table class="table table-bordered">
+            <thead>
+              <th>Crash time</th>
+              <th>Call Stack</th>
+              <th>Dump File</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of insight.data">
+                <td>{{ data.timeStamp }}</td>
+                <td>
+                  <div (click)="viewCallStack(insight, data)">
+                    <a tabindex="0" aria-label="View callstack">View</a>
+                  </div>
+                </td>
+                <td> <a href='{{ data.dumpHref }}' target="_blank">Download file</a> </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="insight.selectedCallStack">
+            <div>
+              {{ insight.selectedManagedException }}
+            </div>
+            <div style="height: 200px; overflow-y: scroll;">
+              <code>
+                {{ insight.selectedCallStack }}
+              </code>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </div>
