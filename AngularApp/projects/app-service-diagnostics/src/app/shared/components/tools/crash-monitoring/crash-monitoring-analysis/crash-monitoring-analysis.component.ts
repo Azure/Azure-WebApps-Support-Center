@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { DiagnosticService, RenderingType, DataTableResponseObject, DetectorControlService, Insight } from 'diagnostic-data';
 import { DaasService } from '../../../../services/daas.service';
 import { SiteService } from '../../../../services/site.service';
-
+import * as momentNs from 'moment';
+import { StorageService } from '../../../../services/storage.service';
 
 @Component({
   selector: 'crash-monitoring-analysis',
@@ -12,7 +13,7 @@ import { SiteService } from '../../../../services/site.service';
 export class CrashMonitoringAnalysisComponent implements OnInit {
 
   constructor(private _diagnosticService: DiagnosticService, private detectorControlService: DetectorControlService,
-    private _daasService: DaasService, private _siteService: SiteService) { }
+    private _daasService: DaasService, private _siteService: SiteService, private _storageService: StorageService) { }
   crashMonitoringAnalysisStatus = crashMonitoringAnalysisStatus;
   status: crashMonitoringAnalysisStatus = crashMonitoringAnalysisStatus.Loading;
   crashMonitoringDatas: CrashMonitoringData[] = [];
@@ -58,17 +59,23 @@ export class CrashMonitoringAnalysisComponent implements OnInit {
               unique.forEach(exitCode => {
                 let insight = new CrashInsight();
                 insight.data = this.crashMonitoringDatas.filter(x => x.exitCode == exitCode);
-                insight.title = insight.data.length + " crashes due to exit code 0x" + exitCode;
+                if (insight.data.length > 1) {
+                  insight.title = insight.data.length + " crashes";
+                } else {
+                  insight.title = "One crash"
+                }
+                insight.title += " due to exit code 0x" + exitCode;
                 this.insights.push(insight);
-              })
+              });
             }
           });
         }
       });
     });
+  }
 
-
-
+  getDisplayDate(date: Date): string {
+    return momentNs(date).format('YYYY-MM-DD hh:mm') + ' UTC';
   }
 
   toggleInsightStatus(insight: CrashInsight) {
@@ -81,7 +88,7 @@ export class CrashMonitoringAnalysisComponent implements OnInit {
     return `https://${blobUrl.host}${blobUrl.pathname}/${relativePath}?${blobUrl.searchParams}`;
   }
 
-  viewCallStack(insight:CrashInsight, data:CrashMonitoringData){
+  viewCallStack(insight: CrashInsight, data: CrashMonitoringData) {
     insight.selectedCallStack = data.callStack;
     insight.selectedManagedException = data.managedException;
   }

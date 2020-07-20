@@ -23,16 +23,16 @@
 }
 
 .info-insight-panel {
-    border-left-color: #3a9bc7
+    border-left-color: #3a9bc7;
 }
 
 .insight-expand-icon {
     font-weight: bold;
-    float:left;
-    font-size:18px;
+    float: left;
+    font-size: 18px;
     min-height: 1px;
     min-width: 1.5%;
-    margin-right:10px;
+    margin-right: 10px;
 }
 
 .card-header {
@@ -76,11 +76,15 @@ table {
 }
 
 .expand-icon {
-    float:right;
+    float: right;
     font-size: 20px;
 }
 
 td {
     vertical-align: text-top;
     padding-bottom: 10px;
+}
+
+table {
+    font-size: 14px;
 }

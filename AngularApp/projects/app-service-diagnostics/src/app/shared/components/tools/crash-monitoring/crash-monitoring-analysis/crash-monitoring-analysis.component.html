@@ -9,7 +9,7 @@
     <div *ngFor="let insight of insights" class="insight-container" tabindex="0" attr.name="{{insight.title}}"
       attr.aria-label="{{insight.title}}" attr.aria-expanded="{{insight.isExpanded}}" role="button"
       (keyup.enter)="toggleInsightStatus(insight)">
-      <div class="panel panel-default insight-panel critical-insight-panel">
+      <div class="panel panel-default insight-panel warning-insight-panel">
         <div class="panel-heading">
           <h5 class="panel-title clickable-header" (click)="toggleInsightStatus(insight)">
             <div style="display: table;">
@@ -19,7 +19,7 @@
                     [class.fa-angle-down]="insight.isExpanded"></span>
                 </div>
                 <div style="display: table-cell">
-                  <span class="fa status-icon  fa-exclamation-circle"></span>
+                  <span class="fa status-icon  fa-exclamation-triangle"></span>
                 </div>
                 <div style="display: table-cell;width:100%">
                   {{insight.title}}
@@ -32,13 +32,15 @@
         <div class="panel-body" [hidden]="!(insight.isExpanded)">
           <table class="table table-bordered">
             <thead>
-              <th>Crash time</th>
-              <th>Call Stack</th>
-              <th>Dump File</th>
+              <tr>
+                <th>Crash time</th>
+                <th>Callstack</th>
+                <th>Memory dump</th>
+              </tr>
             </thead>
             <tbody>
               <tr *ngFor="let data of insight.data">
-                <td>{{ data.timeStamp }}</td>
+                <td>{{ getDisplayDate(data.timeStamp) }}</td>
                 <td>
                   <div (click)="viewCallStack(insight, data)">
                     <a tabindex="0" aria-label="View callstack">View</a>
