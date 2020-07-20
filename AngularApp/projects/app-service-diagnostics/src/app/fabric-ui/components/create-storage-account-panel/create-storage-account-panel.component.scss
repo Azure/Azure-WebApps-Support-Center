@@ -2,6 +2,7 @@
     display: flex;
     align-items: center;
     font-weight: 600;
+    margin-bottom: 30px;
 }
 
 .footer {
@@ -15,4 +16,18 @@
     color: #a4262c;
     margin-left: 2px;
     margin-right: 5px;
+}
+
+::ng-deep .ms-ChoiceField {
+    flex: 1;
+}
+
+::ng-deep .ms-ChoiceFieldGroup-flexContainer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+::ng-deep .ms-ChoiceField-wrapper {
+    min-width: 10em;
 }

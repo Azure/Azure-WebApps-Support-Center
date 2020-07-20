@@ -1,29 +1,62 @@
 <fab-panel [isOpen]="globals.openCreateStorageAccountPanel" [type]="type" [customWidth]="width"
   [isHiddenOnDismiss]="true" [isLightDismiss]="true" [hasCloseButton]="true" [closeButtonAriaLabel]="'close'"
   (onDismissed)="dismissedHandler()">
+
+  <div style="margin-bottom: 10px;margin-top: 20px;">
+    <h1>Choose Storage account</h1>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-6">
+      <fab-choice-group [options]="choiceGroupOptions" defaultSelectedKey="CreateNew">
+      </fab-choice-group>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-3 field-label">
+      Subscription
+    </div>
+    <div class="col-md-6">
+      <fab-text-field [value]="subscriptionId" disabled="true">
+      </fab-text-field>
+    </div>
+  </div>
   <div class="row">
-    <div style="margin-bottom: 10px">
-      <h1>Create new storage account</h1>
-      <div style="margin-top: 40px;">
-        <div class="row">
-          <div class="col-md-3 field-label">
-            Storage account name <span class="required">*</span>
-            <i class="fa fa-info-circle" aria-hidden="true"></i>
-          </div>
-          <div class="col-md-4">
-            <input type="text" id="newStorageAccountName" (input)="updateStorageAccount($event.target.value)" [ngModel]="newStorageAccountName">
-          </div>
-        </div>
+    <div class="col-md-3 field-label">
+      Resource Group
+    </div>
+    <div class="col-md-6">
+      <fab-text-field [value]="resourceGroup" disabled="true">
+      </fab-text-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 field-label">
+      Account name <span class="required">*</span>
+      <i class="fa fa-info-circle" aria-hidden="true"></i>
+    </div>
+    <div class="col-md-6" *ngIf="createNewMode">
+      <fab-text-field [value]="newStorageAccountName" (onChange)="updateStorageAccount($event.target.value)">
+      </fab-text-field>
+      <div *ngIf="creatingStorageAccount">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Creating storage account...
+      </div>
+    </div>
+    <div class="col-md-6" *ngIf="!createNewMode">
+      <fab-dropdown *ngIf="!loadingStroageAccounts" id="chooseStorageAccount" role="combobox"
+        [options]="storageAccounts" (onChange)="selectStorageAccount($event)" [defaultSelectedKey]="defaultSelectedKey">
+      </fab-dropdown>
+      <div *ngIf=generatingSasUri>
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        Generating Blob SaS Uri...
       </div>
     </div>
   </div>
-  <div *ngIf="creatingStorageAccount">
-    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-    Creating storage account...
-  </div>
+
   <div class="footer">
     <hr style="margin-bottom: 20px;">
-
     <fab-primary-button contentStyle="margin-right:10px" (click)="saveChanges()">
       Save
     </fab-primary-button>

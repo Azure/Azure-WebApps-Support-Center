@@ -1,10 +1,12 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { PanelType } from 'office-ui-fabric-react';
+import { PanelType, IChoiceGroupOption, IDropdownOption } from 'office-ui-fabric-react';
 import { Globals } from '../../../globals';
 import { StorageService } from '../../../shared/services/storage.service';
 import { SiteService } from '../../../shared/services/site.service';
 import { SiteDaasInfo } from '../../../shared/models/solution-metadata';
 import { SharedStorageAccountService } from '../../../shared-v2/services/shared-storage-account.service';
+import { StorageAccount } from '../../../shared/models/storage';
+import { DaasService } from '../../../shared/services/daas.service';
 
 @Component({
   selector: 'create-storage-account-panel',
@@ -16,18 +18,74 @@ export class CreateStorageAccountPanelComponent implements OnInit {
   type: PanelType = PanelType.custom;
   width: string = "850px";
   error: any;
-  creatingStorageAccount:boolean = false;
+  creatingStorageAccount: boolean = false;
   siteToBeDiagnosed: SiteDaasInfo;
-  newStorageAccountName:string;
-  
+  newStorageAccountName: string;
+  createNewMode: boolean = true;
+  errorMessage: string = "";
+  loadingStroageAccounts: boolean = true;
+  defaultSelectedKey: string = "";
+  selectedStorageAccount: StorageAccount = null;
+  generatingSasUri: boolean = false;
+  subscriptionId:string = "";
+  resourceGroup:string = "";
 
-  constructor(public globals: Globals, private _storageService:StorageService, private _siteService:SiteService, private _sharedStorageAccountService:SharedStorageAccountService) { }
+  storageAccounts: IDropdownOption[] = [];
+  choiceGroupOptions: IChoiceGroupOption[] = [
+    { key: 'CreateNew', text: 'Create new', defaultChecked : true, onClick: () => { this.createNewMode = true } },
+    { key: 'ChooseExisting', text: 'Choose existing', onClick: () => { this.createNewMode = false } }
+  ];
+
+
+  constructor(public globals: Globals, private _storageService: StorageService, private _daasService: DaasService, private _siteService: SiteService, private _sharedStorageAccountService: SharedStorageAccountService) { }
 
   ngOnInit() {
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
       this.siteToBeDiagnosed = site;
+      this.subscriptionId = site.subscriptionId;
+      this.resourceGroup = site.resourceGroupName;
+      this._storageService.getStorageAccounts(this.siteToBeDiagnosed.subscriptionId).subscribe(resp => {
+        this.loadingStroageAccounts = false;
+        let storageAccounts = resp;
+        this.initStorageAccounts(storageAccounts, this.getSiteLocation());
+      },
+        error => {
+          this.errorMessage = "Failed to retrieve storage accounts";
+          this.error = error;
+        });
       this.newStorageAccountName = (this._siteService.currentSiteStatic.name.substring(0, 6) + this.randomHash()).toLowerCase();
     });
+  }
+
+  initStorageAccounts(storageAccounts: StorageAccount[], currentLocation: string) {
+    this.storageAccounts = [];
+    let accountsCurrentLocation = storageAccounts.filter(x => x.location === currentLocation);
+
+    for (let index = 0; index < accountsCurrentLocation.length; index++) {
+      let isSelected = false;
+      const acc = accountsCurrentLocation[index];
+      if (index === 0) {
+        isSelected = true;
+      }
+      this.storageAccounts.push({
+        key: acc.name,
+        text: acc.name,
+        ariaLabel: acc.name,
+        data: acc,
+        isSelected: isSelected
+      });
+
+      if (isSelected) {
+        this.defaultSelectedKey = acc.name;
+        this.selectedStorageAccount = acc;
+      }
+    }
+  }
+
+  getSiteLocation() {
+    let location = this._siteService.currentSiteStatic.location;
+    location = location.replace(/\s/g, "").toLowerCase();
+    return location;
   }
 
   randomHash(): string {
@@ -35,7 +93,7 @@ export class CreateStorageAccountPanelComponent implements OnInit {
     return Math.random().toString(36).substring(2, 5) + Math.random().toString(36).substring(2, 5);
   }
 
-  dismissedHandler(){
+  dismissedHandler() {
     this.globals.openCreateStorageAccountPanel = false;
   }
 
@@ -43,28 +101,72 @@ export class CreateStorageAccountPanelComponent implements OnInit {
     this.newStorageAccountName = storageAccount;
   }
 
-  saveChanges(){
-    this.creatingStorageAccount = true;
-    this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
-      .subscribe(storageAccount => {
-        if (!storageAccount) {
-          this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
-            .subscribe(storageAccount => {
-              this.creatingStorageAccount = false;
-              this._sharedStorageAccountService.emitChange(storageAccount);
-              this.globals.openCreateStorageAccountPanel = false;
+  saveChanges() {
+    if (this.createNewMode) {
+      this.creatingStorageAccount = true;
+      this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
+        .subscribe(storageAccount => {
+          if (!storageAccount) {
+            this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
+              .subscribe(storageAccount => {
+                this.creatingStorageAccount = false;
+                this._sharedStorageAccountService.emitChange(this.newStorageAccountName);
+                this.globals.openCreateStorageAccountPanel = false;
+              },
+                error => {
+                  this.creatingStorageAccount = false;
+                  this.error = error;
+                });
+          }
+
+        },
+          error => {
+            this.creatingStorageAccount = false;
+            this.error = error;
+          });
+    } else {
+      this.setBlobSasUri(this.selectedStorageAccount.id, this.selectedStorageAccount.name);
+    }
+
+  }
+
+  setBlobSasUri(storageAccountId: string, storageAccountName: string) {
+    this.generatingSasUri = true;
+    this._storageService.getStorageAccountKey(storageAccountId).subscribe(resp => {
+      if (resp.keys && resp.keys.length > 0) {
+        let storageKey = resp.keys[0].value;
+        this._daasService.setBlobSasUri(this.siteToBeDiagnosed, storageAccountName, storageKey).subscribe(resp => {
+          if (resp) {
+            this._daasService.getBlobSasUri(this.siteToBeDiagnosed).subscribe(resp => {
+              this.generatingSasUri = false;
+              if (resp.BlobSasUri && resp.BlobSasUri.length > 0) {
+                this._sharedStorageAccountService.emitChange(storageAccountName);
+                this.globals.openCreateStorageAccountPanel = false;
+              }
             },
               error => {
-                this.creatingStorageAccount = false;
+                this.generatingSasUri = false;
                 this.error = error;
               });
-        }
+          } else {
+            this.generatingSasUri = false;
+            this.error = "Failed to set BlobSasUri for the current app."
+          }
+        },
+          error => {
+            this.generatingSasUri = false;
+            this.error = "Failed to set BlobSasUri for the current app. " + error;
+          });
+      }
+    },
+      error => {
+        this.generatingSasUri = false;
+        this.error = error;
+      });
+  }
 
-      },
-        error => {
-          this.creatingStorageAccount = false;
-          this.error = error;
-        });
+  selectStorageAccount(event: any) {
+    this.selectedStorageAccount = event.option.data;
   }
 
 }
