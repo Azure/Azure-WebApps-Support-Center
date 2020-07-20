@@ -125,7 +125,9 @@ export class DaasValidatorComponent implements OnInit {
 
         if (settingsResponse.properties["WEBSITE_LOCAL_CACHE_OPTION"] != null
           && settingsResponse.properties["WEBSITE_LOCAL_CACHE_OPTION"].toString().toLowerCase() === "Always".toLowerCase()) {
-          daasAppSettingsCheck.LocalCacheEnabled = true;
+
+          // Disabling this check for now. Will re-visit DAAS with Local Cache in future
+          daasAppSettingsCheck.LocalCacheEnabled = false;
         }
 
         if (settingsResponse.properties["WEBSITE_DAAS_DISABLED"] != null
