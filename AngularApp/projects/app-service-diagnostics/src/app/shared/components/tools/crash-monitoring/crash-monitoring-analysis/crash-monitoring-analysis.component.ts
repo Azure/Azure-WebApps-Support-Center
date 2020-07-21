@@ -1,17 +1,18 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { DiagnosticService, RenderingType, DataTableResponseObject, DetectorControlService, Insight } from 'diagnostic-data';
 import { DaasService } from '../../../../services/daas.service';
 import { SiteService } from '../../../../services/site.service';
 import * as momentNs from 'moment';
 import { CrashMonitoringSettings } from '../../../../models/daas';
 import moment = require('moment');
+import { Subscription, interval } from 'rxjs';
 
 @Component({
   selector: 'crash-monitoring-analysis',
   templateUrl: './crash-monitoring-analysis.component.html',
   styleUrls: ['./crash-monitoring-analysis.component.scss']
 })
-export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges {
+export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() crashMonitoringSettings: CrashMonitoringSettings
   loading: boolean = true;
@@ -22,12 +23,25 @@ export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges {
   error: any;
   errorMessage: string;
   loadingMessage: string;
+  subscription: Subscription;
 
   constructor(private _diagnosticService: DiagnosticService, private detectorControlService: DetectorControlService,
     private _daasService: DaasService, private _siteService: SiteService) { }
 
   ngOnInit() {
-    //this.init();
+    this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
+      this._daasService.getBlobSasUri(site).subscribe(resp => {
+        if (resp.BlobSasUri) {
+          this.blobSasUri = resp.BlobSasUri;
+        }
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -44,48 +58,31 @@ export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges {
     this.loadingMessage = "";
   }
 
+  refreshData() {
+    this._diagnosticService.getDetector("crashmonitoring", this.detectorControlService.startTimeString, this.detectorControlService.endTimeString, true, false, null, null).subscribe(detectorResponse => {
+      let rawTable = detectorResponse.dataset.find(x => x.renderingProperties.type === RenderingType.Table) // && x.table.tableName === "CrashMonitoring");
+      if (rawTable != null && rawTable.table != null && rawTable.table.rows != null && rawTable.table.rows.length > 0) {
+        let dataTable: DataTableResponseObject = rawTable.table;
+        this.populateInsights(dataTable);
+      }
+    });
+
+  }
+
   init() {
     this.initGlobals()
     this.loadingMessage = "Getting site information";
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
+      this.loading = false;
       if (this.crashMonitoringSettings != null) {
         let monitoringDates = this._siteService.getCrashMonitoringDates(this.crashMonitoringSettings);
         if (momentNs.utc() > momentNs.utc(monitoringDates.start) && momentNs.utc() < momentNs.utc(monitoringDates.end)) {
           this.monitoringEnabled = true;
-
-          this.loadingMessage = "Retrieving crash monitoring insights";
-          this._diagnosticService.getDetector("crashmonitoring", this.detectorControlService.startTimeString, this.detectorControlService.endTimeString, true, false, null, null).subscribe(detectorResponse => {
-            let rawTable = detectorResponse.dataset.find(x => x.renderingProperties.type === RenderingType.Table) // && x.table.tableName === "CrashMonitoring");
-
-            this.loadingMessage = "Checking for configured Blob storage";
-            this._daasService.getBlobSasUri(site).subscribe(resp => {
-              this.blobSasUri = resp.BlobSasUri;
-              if (resp.BlobSasUri) {
-                this.loading = false;
-                if (rawTable != null && rawTable.table != null && rawTable.table.rows != null && rawTable.table.rows.length > 0) {
-                  let dataTable: DataTableResponseObject = rawTable.table;
-                  this.populateInsights(dataTable);
-                }
-              }
-            },
-              error => {
-                this.loading = false;
-                this.errorMessage = "Failed while checking BlobSasUri";
-                this.error = error;
-              });
-          }, error => {
-            this.loading = false;
-            this.errorMessage = "Failed while retrieving crash monitoring data. Please retry";
-            this.error = error;
+          this.subscription = interval(60 * 1000).subscribe(res => {
+            this.refreshData();
           });
-        } else {
-          this.loading = false;
         }
-
-      } else {
-        this.loading = false;
       }
-
     });
   }
 
