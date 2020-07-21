@@ -9,8 +9,10 @@ import { AuthService } from '../../startup/services/auth.service';
 import { UriElementsService } from './urielements.service';
 import { ServerFarmDataService } from './server-farm-data.service';
 import { SiteDaasInfo } from '../models/solution-metadata';
-import { mergeMap ,  map } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 import { TelemetryService } from '../../../../../diagnostic-data/src/lib/services/telemetry/telemetry.service';
+import { CrashMonitoringSettings } from '../models/daas';
+import * as momentNs from 'moment';
 
 @Injectable()
 export class SiteService {
@@ -134,7 +136,7 @@ export class SiteService {
                 }
             }
 
-            const url =  this._uriElementsService.getKillSiteProcessUrl(subscriptionId, targetedSite.resourceGroup, targetedSite.name);
+            const url = this._uriElementsService.getKillSiteProcessUrl(subscriptionId, targetedSite.resourceGroup, targetedSite.name);
             const body: any = {
                 'InstanceId': instanceId,
                 'ScmHostName': scmHostName
@@ -148,12 +150,12 @@ export class SiteService {
     }
 
     getSiteAppSettings(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): Observable<any> {
-        const url =  this._uriElementsService.getListAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
+        const url = this._uriElementsService.getListAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
         return this._armClient.postResource(url, {}, null, true);
     }
 
     getSiteConfigSettings(siteInfo: SiteInfoMetaData): Observable<any> {
-        const url =  this._uriElementsService.getConfigWebUrl(siteInfo);
+        const url = this._uriElementsService.getConfigWebUrl(siteInfo);
         return this._armClient.getResource<ResponseMessageEnvelope<any>>(url).pipe(map((response: ResponseMessageEnvelope<any>) => {
             return response.properties;
         }));
@@ -167,17 +169,14 @@ export class SiteService {
 
     getVirtualNetworkConnectionsInformation(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = ''): Observable<any> {
 
-        const url =  this._uriElementsService.getVirtualNetworkConnections(subscriptionId, resourceGroup, siteName, slot);
+        const url = this._uriElementsService.getVirtualNetworkConnections(subscriptionId, resourceGroup, siteName, slot);
         return this._armClient.getResource(url);
     }
 
     getSiteDaasInfoFromSiteMetadata(): Observable<SiteDaasInfo> {
         return this.currentSiteMetaData.pipe(map(siteInfo => {
             if (siteInfo) {
-
-                const siteInfoMetaData = siteInfo;
                 const siteToBeDiagnosed = new SiteDaasInfo();
-
                 siteToBeDiagnosed.subscriptionId = siteInfo.subscriptionId;
                 siteToBeDiagnosed.resourceGroupName = siteInfo.resourceGroupName;
                 siteToBeDiagnosed.siteName = siteInfo.siteName;
@@ -189,8 +188,67 @@ export class SiteService {
         }));
     }
 
+    getCrashMonitoringSettings(site: SiteDaasInfo): Observable<CrashMonitoringSettings> {
+        return this.getSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot).pipe(map(settingsResponse => {
+            if (settingsResponse && settingsResponse.properties) {
+                if (settingsResponse.properties['WEBSITE_CRASHMONITORING_SETTINGS']
+                    && settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED']
+                    && settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED'].toString().toLowerCase() === "true") {
+                    let crashMonitoringSettings: CrashMonitoringSettings;
+                    crashMonitoringSettings = JSON.parse(settingsResponse.properties['WEBSITE_CRASHMONITORING_SETTINGS']);
+                    return crashMonitoringSettings;
+                }
+            }
+        }));
+    }
+
+    getCrashMonitoringDates(crashMonitoringSettings: CrashMonitoringSettings): { start: Date, end: Date } {
+        const startDate = momentNs.utc(crashMonitoringSettings.StartTimeUtc);
+        const returnStartDate = startDate.toDate();
+
+        let endDate: any;
+        if (crashMonitoringSettings.MaxHours >= 24) {
+            let days: number = (crashMonitoringSettings.MaxHours) / 24;
+            let hours = crashMonitoringSettings.MaxHours - (Math.floor(days) * 24);
+            endDate = startDate.add(Math.floor(days), 'days');
+            endDate = startDate.add(hours, 'hours');
+        } else {
+            endDate = startDate.add(crashMonitoringSettings.MaxHours, 'hours');
+        }
+
+        const returnEndDate = endDate.toDate();
+        return { start: returnStartDate, end: returnEndDate };
+    }
+
+    saveCrashMonitoringSettings(site: SiteDaasInfo, crashMonitoringSettings: CrashMonitoringSettings): Observable<any> {
+        return this.getSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot).pipe(
+            map(settingsResponse => {
+                if (settingsResponse && settingsResponse.properties) {
+
+                    // Clear crashMonitoring settings.
+                    if (crashMonitoringSettings == null) {
+                        if (settingsResponse.properties['WEBSITE_CRASHMONITORING_SETTINGS']) {
+                            delete settingsResponse.properties['WEBSITE_CRASHMONITORING_SETTINGS'];
+                            if (settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED']) {
+                                delete settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED'];
+                                this.updateSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot, settingsResponse).subscribe(updateResponse => {
+                                    return updateResponse;
+                                });
+                            }
+                        }
+                    } else {
+                        settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED'] = true;
+                        settingsResponse.properties['WEBSITE_CRASHMONITORING_SETTINGS'] = JSON.stringify(crashMonitoringSettings);
+                        this.updateSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot, settingsResponse).subscribe(updateResponse => {
+                            return updateResponse;
+                        });
+                    }
+                }
+            }));
+    }
+
     updateSiteAppSettings(subscriptionId: string, resourceGroup: string, siteName: string, slot: string = '', body: any): Observable<any> {
-        const url =  this._uriElementsService.getUpdateAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
+        const url = this._uriElementsService.getUpdateAppSettingsUrl(subscriptionId, resourceGroup, siteName, slot);
         return this._armClient.putResource(url, body, null, true);
     }
 

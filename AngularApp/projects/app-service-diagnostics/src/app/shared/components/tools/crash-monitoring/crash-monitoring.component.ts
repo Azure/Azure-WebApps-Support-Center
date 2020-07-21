@@ -1,18 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { IDatePickerProps, IDropdownOption, SelectableOptionMenuItemType } from 'office-ui-fabric-react';
 import * as momentNs from 'moment';
 import { addMonths, addDays } from 'office-ui-fabric-react/lib/utilities/dateMath/DateMath';
-import { StorageService } from '../../../services/storage.service';
 import { SiteDaasInfo } from '../../../models/solution-metadata';
 import { SiteService } from '../../../services/site.service';
 import { DaasService } from '../../../services/daas.service';
 import { Globals } from '../../../../globals'
 import { TelemetryService } from 'diagnostic-data';
 import { SharedStorageAccountService } from 'projects/app-service-diagnostics/src/app/shared-v2/services/shared-storage-account.service';
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 import { CrashMonitoringSettings } from '../../../models/daas';
 import moment = require('moment');
+import { CrashMonitoringAnalysisComponent } from './crash-monitoring-analysis/crash-monitoring-analysis.component';
 
 @Component({
   selector: 'crash-monitoring',
@@ -21,7 +19,12 @@ import moment = require('moment');
 })
 export class CrashMonitoringComponent implements OnInit {
 
-  constructor(private _storageService: StorageService, private _siteService: SiteService,
+  @ViewChild('crashMonitoringAnalysisRef', { static: false }) crashMonitoringAnalysis: CrashMonitoringAnalysisComponent;
+
+  ngAfterViewInit() {
+  }
+
+  constructor(private _siteService: SiteService,
     private _daasService: DaasService, private globals: Globals, private telemetryService: TelemetryService,
     private _sharedStorageAccountService: SharedStorageAccountService) {
     this._sharedStorageAccountService.changeEmitted$.subscribe(newStorageAccount => {
@@ -52,8 +55,8 @@ export class CrashMonitoringComponent implements OnInit {
   chosenEndDateTime: Date;
   selectedDumpCount: string = "3";
   selectedTabKey: string = "0";
-  monitoringInPlace: boolean = false;
-
+  monitoringEnabled: boolean = false;
+  crashMonitoringSettings: CrashMonitoringSettings = null;;
 
   formatDate: IDatePickerProps['formatDate'] = (date) => {
     return momentNs(date).format('YYYY-MM-DD');
@@ -71,14 +74,11 @@ export class CrashMonitoringComponent implements OnInit {
           configuredSasUri = resp.BlobSasUri;
           this.chosenStorageAccount = this.getStorageAccountNameFromSasUri(configuredSasUri);
         }
-        this._siteService.getSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot).subscribe(settingsResponse => {
-          if (settingsResponse && settingsResponse.properties) {
-            if (settingsResponse.properties['WEBSITE_CRASHMONITORING_SETTINGS']
-              && settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED']
-              && settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED'].toString().toLowerCase() === "true") {
-              this.populateSettings(settingsResponse.properties);
-              this.monitoringInPlace = true;
-            }
+        this._siteService.getCrashMonitoringSettings(site).subscribe(crashMonitoringSettings => {
+          if (crashMonitoringSettings != null) {
+            this.crashMonitoringSettings = crashMonitoringSettings;
+            this.populateSettings(crashMonitoringSettings);
+            this.monitoringEnabled = true;
           }
           this.status = toolStatus.Loaded;
         });
@@ -97,28 +97,31 @@ export class CrashMonitoringComponent implements OnInit {
     this.initDumpOptions();
   }
 
-  populateSettings(settings: any) {
-    let crashMonitoringSettings: CrashMonitoringSettings;
-    crashMonitoringSettings = JSON.parse(settings['WEBSITE_CRASHMONITORING_SETTINGS']);
+  resetGlobals() {
+    this.maxDate = this.convertUTCToLocalDate(addMonths(this.today, 1))
+    this.minDate = this.convertUTCToLocalDate(this.today)
+    this.startDate = this.minDate;
+    this.endDate = addDays(this.startDate, 1);
+    this.startClock = this.getHourAndMinute(this.startDate);
+    this.endClock = this.getHourAndMinute(this.endDate);
+    this.monitoringEnabled = false;
+  }
+
+  populateSettings(crashMonitoringSettings: CrashMonitoringSettings) {
     if (crashMonitoringSettings.MaxDumpCount && crashMonitoringSettings.MaxDumpCount < 6) {
       this.selectedDumpCount = crashMonitoringSettings.MaxDumpCount.toString();
     }
 
-    const startDate = momentNs.utc(crashMonitoringSettings.StartTimeUtc);
-    this.startDate = startDate.toDate();
-    this.startClock = startDate.hours() + ":" + startDate.minutes();
-    let endDate: any;
-    if (crashMonitoringSettings.MaxHours > 24) {
-      let days: number = (crashMonitoringSettings.MaxHours) / 24;
-      let hours = crashMonitoringSettings.MaxHours - (Math.floor(days) * 24);
-      endDate = startDate.add(Math.floor(days), 'days');
-      endDate = startDate.add(hours, 'hours');
-    } else {
-      endDate = startDate.add(crashMonitoringSettings.MaxHours, 'hours');
-    }
+    let monitoringDates = this._siteService.getCrashMonitoringDates(crashMonitoringSettings);
 
-    this.endDate = endDate.toDate();
-    this.endClock = endDate.hours() + ":" + endDate.minutes();
+    this.startDate = this.convertUTCToLocalDate(monitoringDates.start);
+    this.endDate = this.convertUTCToLocalDate(monitoringDates.end);
+
+    this.startClock = this.getHourAndMinute(this.startDate);
+    this.endClock = this.getHourAndMinute(this.endDate);
+
+    // Reset the minDate to avoid the UI displaying an error
+    this.minDate = this.startDate;
   }
 
   getStorageAccountNameFromSasUri(blobSasUri: string): string {
@@ -215,14 +218,29 @@ export class CrashMonitoringComponent implements OnInit {
   }
 
   saveMonitoringSettings() {
-    this.saveCrashMonitoringSettings(this.siteToBeDiagnosed, this.getCrashMonitoringSetting()).subscribe(resp => {
+    this.status = toolStatus.SavingCrashMonitoringSettings;
+    this._siteService.saveCrashMonitoringSettings(this.siteToBeDiagnosed, this.getCrashMonitoringSetting()).subscribe(resp => {
       this.status = toolStatus.SettingsSaved;
       this.selectedTabKey = "1";
-      this.monitoringInPlace = true;
+      this.monitoringEnabled = true;
     },
       error => {
         this.status = toolStatus.Error;
         this.errorMessage = "Failed while saving crash monitoring settings for the current app. ";
+        this.error = error;
+      });
+  }
+
+  stopMonitoring() {
+    this.status = toolStatus.SavingCrashMonitoringSettings;
+    this._siteService.saveCrashMonitoringSettings(this.siteToBeDiagnosed, null).subscribe(resp => {
+      this.crashMonitoringSettings = null;
+      this.status = toolStatus.SettingsSaved;
+      this.resetGlobals();
+    },
+      error => {
+        this.status = toolStatus.Error;
+        this.errorMessage = "Failed while stopping crash monitoring for the current app. ";
         this.error = error;
       });
   }
@@ -237,7 +255,7 @@ export class CrashMonitoringComponent implements OnInit {
     monitoringSettings.StartTimeUtc = momentNs.utc(this.chosenStartDateTime, momentNs.defaultFormatUtc).toISOString();
     monitoringSettings.MaxHours = durationInHours;
     monitoringSettings.MaxDumpCount = parseInt(this.selectedDumpCount);
-
+    this.crashMonitoringSettings = monitoringSettings;
     return monitoringSettings;
   }
 
@@ -246,31 +264,8 @@ export class CrashMonitoringComponent implements OnInit {
       this.selectedTabKey = event.item.props.itemKey;
   }
 
-  saveCrashMonitoringSettings(site: SiteDaasInfo, crashMonitoringSettings: CrashMonitoringSettings): Observable<any> {
-    return this._siteService.getSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot).pipe(
-      map(settingsResponse => {
-        if (settingsResponse && settingsResponse.properties) {
-
-          // Clear crashMonitoring settings.
-          if (crashMonitoringSettings == null) {
-            if (settingsResponse.properties['WEBSITE_CRASHMONITORING_SETTINGS']) {
-              delete settingsResponse.properties['WEBSITE_CRASHMONITORING_SETTINGS'];
-              if (settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED']) {
-                delete settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED'];
-                this._siteService.updateSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot, settingsResponse).subscribe(updateResponse => {
-                  return updateResponse;
-                });
-              }
-            }
-          } else {
-            settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED'] = true;
-            settingsResponse.properties['WEBSITE_CRASHMONITORING_SETTINGS'] = JSON.stringify(crashMonitoringSettings);
-            this._siteService.updateSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot, settingsResponse).subscribe(updateResponse => {
-              return updateResponse;
-            });
-          }
-        }
-      }));
+  getErrorDetails(): string {
+    return JSON.stringify(this.error);
   }
 }
 
