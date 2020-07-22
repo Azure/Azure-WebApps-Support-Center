@@ -7,6 +7,7 @@ import { SiteDaasInfo } from '../../../shared/models/solution-metadata';
 import { SharedStorageAccountService } from '../../../shared-v2/services/shared-storage-account.service';
 import { StorageAccount } from '../../../shared/models/storage';
 import { DaasService } from '../../../shared/services/daas.service';
+import { ArmService } from '../../../shared/services/arm.service';
 
 @Component({
   selector: 'create-storage-account-panel',
@@ -27,23 +28,34 @@ export class CreateStorageAccountPanelComponent implements OnInit {
   defaultSelectedKey: string = "";
   selectedStorageAccount: StorageAccount = null;
   generatingSasUri: boolean = false;
-  subscriptionId:string = "";
-  resourceGroup:string = "";
+  subscriptionId: string = "";
+  resourceGroup: string = "";
+  subscriptionName: string = "";
+  private apiVersion: string = "2019-06-01";
 
   storageAccounts: IDropdownOption[] = [];
   choiceGroupOptions: IChoiceGroupOption[] = [
-    { key: 'CreateNew', text: 'Create new', defaultChecked : true, onClick: () => { this.createNewMode = true } },
+    { key: 'CreateNew', text: 'Create new', defaultChecked: true, onClick: () => { this.createNewMode = true } },
     { key: 'ChooseExisting', text: 'Choose existing', onClick: () => { this.createNewMode = false } }
   ];
 
 
-  constructor(public globals: Globals, private _storageService: StorageService, private _daasService: DaasService, private _siteService: SiteService, private _sharedStorageAccountService: SharedStorageAccountService) { }
+  constructor(public globals: Globals, private _storageService: StorageService, private _daasService: DaasService,
+    private _siteService: SiteService, private _sharedStorageAccountService: SharedStorageAccountService,
+    private _armService: ArmService) { }
 
   ngOnInit() {
+
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
       this.siteToBeDiagnosed = site;
       this.subscriptionId = site.subscriptionId;
+      this.subscriptionName = this.subscriptionId;
       this.resourceGroup = site.resourceGroupName;
+      this._armService.getArmResource<any>("subscriptions/" + this.subscriptionId, this.apiVersion).subscribe(subscriptionResponse => {
+        if (subscriptionResponse != null) {
+          this.subscriptionName = subscriptionResponse.displayName;
+        }
+      });
       this._storageService.getStorageAccounts(this.siteToBeDiagnosed.subscriptionId).subscribe(resp => {
         this.loadingStroageAccounts = false;
         let storageAccounts = resp;
