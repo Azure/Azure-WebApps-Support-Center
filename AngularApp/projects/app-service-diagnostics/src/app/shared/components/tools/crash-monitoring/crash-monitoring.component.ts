@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IDatePickerProps, IDropdownOption, SelectableOptionMenuItemType } from 'office-ui-fabric-react';
+import { IDatePickerProps, IDropdownOption, SelectableOptionMenuItemType, ICalloutProps } from 'office-ui-fabric-react';
 import * as momentNs from 'moment';
 import { addMonths, addDays } from 'office-ui-fabric-react/lib/utilities/dateMath/DateMath';
 import { SiteDaasInfo } from '../../../models/solution-metadata';
@@ -11,6 +11,14 @@ import { SharedStorageAccountService } from 'projects/app-service-diagnostics/sr
 import { CrashMonitoringSettings } from '../../../models/daas';
 import moment = require('moment');
 import { CrashMonitoringAnalysisComponent } from './crash-monitoring-analysis/crash-monitoring-analysis.component';
+import {
+    TooltipHost,
+    TooltipDelay,
+    DirectionalHint,
+    ITooltipProps,
+    ITooltipHostStyles,
+  } from 'office-ui-fabric-react/lib/Tooltip';
+import { ITooltipOptions } from '@angular-react/fabric';
 
 @Component({
   selector: 'crash-monitoring',
@@ -56,7 +64,19 @@ export class CrashMonitoringComponent implements OnInit {
   selectedDumpCount: string = "3";
   selectedTabKey: string = "0";
   monitoringEnabled: boolean = false;
-  crashMonitoringSettings: CrashMonitoringSettings = null;;
+  crashMonitoringSettings: CrashMonitoringSettings = null;
+
+  // For tooltip display
+  directionalHint = DirectionalHint.rightTopEdge;
+  value: ITooltipOptions = {
+      styles:{
+          content: {
+              // We can specifiy some style for the tooltip, Need to figure out how to get to the right style.
+        //   'backgroundColor': 'black',
+        //   'color': 'white',
+          }
+        }
+  }
 
   formatDate: IDatePickerProps['formatDate'] = (date) => {
     return momentNs(date).format('YYYY-MM-DD');

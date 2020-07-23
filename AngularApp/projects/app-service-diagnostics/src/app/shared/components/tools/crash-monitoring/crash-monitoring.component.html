@@ -18,7 +18,9 @@
             <div class="row">
               <div class="col-md-3 field-label">
                 Storage account <span class="required">*</span>
+                <fab-tooltip-host content="Crash monitoring data captured via this tool will be stored in this storage account" [directionalHint]="directionalHint" [tooltipOptions]="value">
                 <i class="fa fa-info-circle" aria-hidden="true"></i>
+              </fab-tooltip-host>
               </div>
               <div class="col-md-3">
                 <fab-text-field [value]="chosenStorageAccount" disabled="true">
