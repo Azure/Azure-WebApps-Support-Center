@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { DiagnosticService, RenderingType, DataTableResponseObject } from 'diagnostic-data';
 import { DaasService } from '../../../../services/daas.service';
 import { SiteService } from '../../../../services/site.service';
@@ -6,6 +6,8 @@ import * as momentNs from 'moment';
 import { CrashMonitoringSettings } from '../../../../models/daas';
 import moment = require('moment');
 import { Subscription, interval } from 'rxjs';
+import { SiteDaasInfo } from '../../../../models/solution-metadata';
+import { isObject } from 'util';
 
 @Component({
   selector: 'crash-monitoring-analysis',
@@ -14,7 +16,9 @@ import { Subscription, interval } from 'rxjs';
 })
 export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges, OnDestroy {
 
-  @Input() crashMonitoringSettings: CrashMonitoringSettings
+  @Input() crashMonitoringSettings: CrashMonitoringSettings;
+  @Output() settingsChanged: EventEmitter<CrashMonitoringSettings> = new EventEmitter<CrashMonitoringSettings>();
+
   loading: boolean = true;
   blobSasUri: string = "";
   insights: CrashInsight[];
@@ -23,12 +27,18 @@ export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges, OnDe
   errorMessage: string;
   subscription: Subscription;
   readonly stringFormat: string = 'YYYY-MM-DD HH:mm';
+  collapse = [{ title: 'Analyze', collapsed: true },
+  { title: 'View History', collapsed: true }];
+  dumpsCollected: number = 0;
+  siteToBeDiagnosed: SiteDaasInfo = null;
+  savingSettings: boolean = false;
 
-  constructor(private _diagnosticService: DiagnosticService, private _daasService: DaasService, 
+  constructor(private _diagnosticService: DiagnosticService, private _daasService: DaasService,
     private _siteService: SiteService) { }
 
   ngOnInit() {
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
+      this.siteToBeDiagnosed = site;
       this._daasService.getBlobSasUri(site).subscribe(resp => {
         if (resp.BlobSasUri) {
           this.blobSasUri = resp.BlobSasUri;
@@ -53,38 +63,61 @@ export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges, OnDe
     this.errorMessage = "";
     this.insights = [];
     this.monitoringEnabled = false;
+    this.dumpsCollected = 0;
   }
 
   refreshData() {
-    let _startTime = moment.utc().subtract(1,'days');
-    let _endTime = moment.utc().subtract(16,'minutes');
+    this.updateMonitoringStatus();
+    if (this.crashMonitoringSettings != null) {
 
-    this._diagnosticService.getDetector("crashmonitoring", _startTime.format(this.stringFormat), _endTime.format(this.stringFormat), true, false, null, null).subscribe(detectorResponse => {
-      let rawTable = detectorResponse.dataset.find(x => x.renderingProperties.type === RenderingType.Table) // && x.table.tableName === "CrashMonitoring");
-      if (rawTable != null && rawTable.table != null && rawTable.table.rows != null && rawTable.table.rows.length > 0) {
-        if (this.blobSasUri === "") {
-          return;
+      let _startTime = moment.utc().subtract(1, 'days');
+      let _endTime = moment.utc().subtract(16, 'minutes');
+
+      this._diagnosticService.getDetector("crashmonitoring", _startTime.format(this.stringFormat), _endTime.format(this.stringFormat), true, false, null, null).subscribe(detectorResponse => {
+        let rawTable = detectorResponse.dataset.find(x => x.renderingProperties.type === RenderingType.Table) // && x.table.tableName === "CrashMonitoring");
+        if (rawTable != null && rawTable.table != null && rawTable.table.rows != null && rawTable.table.rows.length > 0) {
+          this.loading = false;
+          let crashMonitoringDatas = this.parseData(rawTable.table);
+          this.dumpsCollected = crashMonitoringDatas.length;
+          this.populateInsights(crashMonitoringDatas);
+          if (this.dumpsCollected === this.crashMonitoringSettings.MaxDumpCount) {
+            this.monitoringEnabled = false;
+          }
         }
-        this.loading = false;
-        let crashMonitoringDatas = this.parseData(rawTable.table);
-        this.populateInsights(crashMonitoringDatas);
-      }
-    });
+      });
+    }
+  }
 
+  updateMonitoringStatus() {
+    if (this.crashMonitoringSettings == null) {
+      this.monitoringEnabled = false;
+      if (this.subscription) {
+        this.subscription.unsubscribe();
+      }
+      return;
+    }
+    let monitoringDates = this._siteService.getCrashMonitoringDates(this.crashMonitoringSettings);
+    if (momentNs.utc() > momentNs.utc(monitoringDates.start)
+      && momentNs.utc() < momentNs.utc(monitoringDates.end) && this.dumpsCollected < this.crashMonitoringSettings.MaxDumpCount) {
+      this.monitoringEnabled = true;
+    } else {
+      this.monitoringEnabled = false
+    }
   }
 
   init() {
     this.initGlobals()
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
       if (this.crashMonitoringSettings != null) {
-        let monitoringDates = this._siteService.getCrashMonitoringDates(this.crashMonitoringSettings);
+        this.collapse[0].collapsed = false;
         this.refreshData();
-        if (momentNs.utc() > momentNs.utc(monitoringDates.start) && momentNs.utc() < momentNs.utc(monitoringDates.end)) {
-          this.monitoringEnabled = true;
+        if (this.monitoringEnabled) {
           this.subscription = interval(45 * 1000).subscribe(res => {
             this.refreshData();
           });
         }
+      } else {
+        this.collapse[0].collapsed = true;
       }
     });
   }
@@ -102,12 +135,11 @@ export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges, OnDe
       const idx = this.insights.findIndex(x => x.exitCode === exitCode);
       if (idx === -1) {
         this.insights.push(insight);
+        this.setInsightTitle(insight);
       } else {
         this.mergeArrays(this.insights[idx].data, insight.data);
+        this.setInsightTitle(this.insights[idx]);
       }
-
-      this.setInsightTitle(insight);
-
     });
   }
 
@@ -164,7 +196,21 @@ export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges, OnDe
     } else {
       return "";
     }
+  }
 
+  stopMonitoring() {
+    this.savingSettings = true;
+    this._siteService.saveCrashMonitoringSettings(this.siteToBeDiagnosed, null).subscribe(resp => {
+      this.savingSettings = false;
+      this.crashMonitoringSettings = null;
+      this.settingsChanged.emit(this.crashMonitoringSettings);
+      this.collapse.forEach(item => item.collapsed = true);
+    },
+      error => {
+        this.savingSettings = false;
+        this.errorMessage = "Failed while stopping crash monitoring for the current app. ";
+        this.error = error;
+      });
   }
 
   viewCallStack(insight: CrashInsight, data: CrashMonitoringData) {
@@ -186,7 +232,7 @@ export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges, OnDe
       } else {
         if (sourceElement.callStack != target[existingIdx].callStack
           || sourceElement.managedException != target[existingIdx].managedException)
-        Object.assign(target[existingIdx], sourceElement);
+          Object.assign(target[existingIdx], sourceElement);
       }
     }
   }

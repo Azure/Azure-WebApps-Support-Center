@@ -88,3 +88,66 @@ td {
 table {
     font-size: 14px;
 }
+
+.data-collection-loading{
+    display: flex;
+    margin-top:20px;
+}
+
+/**
+ * ==============================================
+ * Dot Flashing
+ * ==============================================
+ */
+ .dot-flashing {
+    position: relative;
+    margin-left:15px;
+    margin-right:20px;
+	top:5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 7px;
+    background-color: #3471FF;
+    color: #3471FF;
+    animation: dot-flashing 1s infinite linear alternate;
+    animation-delay: .5s;
+  }
+  
+  .dot-flashing::before, .dot-flashing::after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    top: 0;
+  }
+  
+  .dot-flashing::before {
+    left: -13px;
+    width: 7px;
+    height: 7px;
+    border-radius: 7px;
+    background-color: #3471FF;
+    color: #3471FF;
+    animation: dot-flashing 1s infinite alternate;
+    animation-delay: 0s;
+  }
+  
+  .dot-flashing::after {
+    left: 13px;
+    width: 7px;
+    height: 7px;
+    border-radius: 7px;
+    background-color: #3471FF;
+    color: #3471FF;
+    animation: dot-flashing 1s infinite alternate;
+    animation-delay: 1s;
+  }
+  
+  @keyframes dot-flashing {
+    0% {
+      background-color: #3471FF;
+    }
+    50%,
+    100% {
+      background-color: #ebe6ff;
+    }
+  }

@@ -130,6 +130,7 @@ import {
     FabContextualMenuModule
 } from '@angular-react/fabric';
 import { CrashMonitoringAnalysisComponent } from './components/tools/crash-monitoring/crash-monitoring-analysis/crash-monitoring-analysis.component';
+import { CollapsibleListFabricComponent } from './components/collapsible-list/collapsible-list-fabric/collapsible-list-fabric.component';
 @NgModule({
     declarations: [
         LimitToFilter,
@@ -197,7 +198,8 @@ import { CrashMonitoringAnalysisComponent } from './components/tools/crash-monit
         JavaFlightRecorderComponent,
         JavaFlightRecorderToolComponent,
         CrashMonitoringComponent,
-        CrashMonitoringAnalysisComponent
+        CrashMonitoringAnalysisComponent,
+        CollapsibleListFabricComponent
     ],
     imports: [
         HttpClientModule,
