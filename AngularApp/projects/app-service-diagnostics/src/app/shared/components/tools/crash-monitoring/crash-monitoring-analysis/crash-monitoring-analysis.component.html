@@ -1,82 +1,161 @@
-<div style="margin-top: 20px;">
-  <div *ngIf="loading">
-    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-    Loading...
-  </div>
+<collapsible-list-fabric [collapsed]="collapse[0].collapsed" [title]="collapse[0].title">
+  <collapsible-list-item body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9">
+          <div *ngIf="loading">
+            <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+            Loading...
+          </div>
 
-  <div *ngIf="!loading">
-    <div *ngIf="!monitoringEnabled">
-      Crash Monitoring is not enabled or past the configured Date and time
-    </div>
-    <div *ngIf="monitoringEnabled">
-      <div *ngIf="insights.length === 0">
-        Crash Monitoring is currently enabled but no data has come so far. Wait for some time for process to Crash and
-        data to show up here
-      </div>
-      <div *ngIf="insights != null && insights.length > 0">
-        <div *ngFor="let insight of insights" class="insight-container" tabindex="0" attr.name="{{insight.title}}"
-          attr.aria-label="{{insight.title}}" attr.aria-expanded="{{insight.isExpanded}}" role="button"
-          (keyup.enter)="toggleInsightStatus(insight)">
-          <div class="panel panel-default insight-panel warning-insight-panel">
-            <div class="panel-heading">
-              <h5 class="panel-title clickable-header" (click)="toggleInsightStatus(insight)">
-                <div style="display: table;">
-                  <div style="display: table-row">
-                    <div style="display: table-cell">
-                      <span class="fa insight-expand-icon" [class.fa-angle-right]="!insight.isExpanded"
-                        [class.fa-angle-down]="insight.isExpanded"></span>
-                    </div>
-                    <div style="display: table-cell">
-                      <span class="fa status-icon  fa-exclamation-triangle"></span>
-                    </div>
-                    <div style="display: table-cell;width:100%">
-                      {{insight.title}}
+          <div *ngIf="!loading">
+            <div *ngIf="crashMonitoringSettings == null">
+              Crash Monitoring is not enabled for this app
+            </div>
+            <div *ngIf="crashMonitoringSettings != null">
+              <div>
+                <div *ngIf="monitoringEnabled" class="data-collection-loading">
+                  <div class="dot-flashing"></div>
+                  <div *ngIf="insights.length === 0">Data collection in progress. Please return to this page if any
+                    future
+                    crashes happen.</div>
+                  <div *ngIf="insights.length > 0">We are still collecting data. Please see the insights below</div>
+                </div>
+                <div *ngIf="!monitoringEnabled">
+                  <i class="fa health-icon fa-check-circle healthy-icon-color" aria-hidden="true"></i>
+                  The crash monitoring session has finished.
+                  <span *ngIf="insights != null && insights.length > 0">Please see the insights below.</span>
+                  <span *ngIf="insights != null && insights.length === 0">
+                    No crashes were detected during this time frame.</span>
+                </div>
+
+                <div style="margin-top:15px" *ngIf="insights != null && insights.length > 0">
+                  <div *ngFor="let insight of insights" class="insight-container" attr.name="{{insight.title}}"
+                    attr.aria-label="{{insight.title}}" attr.aria-expanded="{{insight.isExpanded}}">
+                    <div class="insight-panel">
+                      <div class="display-table">
+                        <div>
+                          <div><i class="fa health-icon fa-exclamation-triangle warning-icon-color"
+                              aria-hidden="true"></i></div>
+                          <strong> {{insight.title}}</strong>
+                        </div>
+                        <div>
+                          <div></div>
+                          <div>
+                            <a *ngIf="!insight.isExpanded" (keyup.enter)="toggleInsightStatus(insight)"
+                              (click)="toggleInsightStatus(insight)" aria-label="View insight details" role="button">
+                              View details
+                            </a>
+                            <a *ngIf="insight.isExpanded" (keyup.enter)="toggleInsightStatus(insight)"
+                              (click)="toggleInsightStatus(insight)" aria-label="Close insight details" role="button">
+                              Close details
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                      <div [hidden]="!(insight.isExpanded)" class="top-margin">
+                        <table class="table table-borderless">
+                          <thead>
+                            <tr>
+                              <th>Crash time</th>
+                              <th>Callstack</th>
+                              <th>Memory dump</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let data of insight.data">
+                              <td>{{ getDisplayDate(data.timeStamp) }}</td>
+                              <td>
+                                <div *ngIf="data.callStack" (click)="viewCallStack(data)">
+                                  <a aria-label="View callstack">View</a>
+                                </div>
+                                <span *ngIf="data.callStack == null">Analysis Pending</span>
+                              </td>
+                              <td> <a href='{{ data.dumpHref }}' target="_blank">Download file</a> </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </h5>
-            </div>
 
-            <div class="panel-body" [hidden]="!(insight.isExpanded)">
-              <table class="table table-bordered">
+                <div style="margin-top:20px;">
+
+                  <fab-default-button style="float:left" (onClick)="stopMonitoring()">
+                    {{ monitoringEnabled ? 'Stop monitor' : 'Run a new monitor' }}
+                  </fab-default-button>
+                  <div class="disable-agent">
+                    <a tabindex="0" class="mr-3" *ngIf="!monitoringEnabled" (click)="stopMonitoring()">Disable agent</a>
+                    <img src="assets/img/info.svg" />
+                  </div>
+
+                  <div *ngIf="savingSettings">
+                    <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+                    Saving...
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div *ngIf="error">
+              <strong>{{ errorMessage }}</strong>
+              <div>{{ getErrorDetails() }}</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+  </collapsible-list-item>
+</collapsible-list-fabric>
+
+<collapsible-list-fabric [collapsed]="collapse[1].collapsed" [title]="collapse[1].title">
+  <collapsible-list-item body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9">
+          <div *ngIf="refreshingHistory">
+            <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+            Loading...
+          </div>
+
+          <div *ngIf="!refreshingHistory">
+            <div *ngIf="crashMonitoringHistory.length === 0">
+              No data collected in the past 15 days
+            </div>
+            <div *ngIf="crashMonitoringHistory.length > 0">
+              <div class="mt-2">View Crash data captured by this tool in the last 15 days</div>
+              <table class="table table-borderless">
                 <thead>
                   <tr>
-                    <th>Crash time</th>
+                    <th style="height: 50px;">Crash time</th>
+                    <th>Exit Code</th>
                     <th>Callstack</th>
                     <th>Memory dump</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let data of insight.data">
+                  <tr *ngFor="let data of crashMonitoringHistory">
                     <td>{{ getDisplayDate(data.timeStamp) }}</td>
+                    <td>{{ data.exitCode }}</td>
                     <td>
-                      <div *ngIf="data.callStack" (click)="viewCallStack(insight, data)">
-                        <a aria-label="View callstack">View</a>
+                      <div *ngIf="data.callStack" (click)="viewCallStack(data)">
+                        <a tabindex="0" aria-label="View callstack">View</a>
                       </div>
                       <span *ngIf="data.callStack == null">Analysis Pending</span>
                     </td>
-                    <td> <a href='{{ data.dumpHref }}' target="_blank">Download file</a> </td>
+                    <td> <a tabindex="0" href='{{ data.dumpHref }}' target="_blank">Download file</a> </td>
                   </tr>
                 </tbody>
               </table>
-              <div *ngIf="insight.selectedCallStack">
-                <div>
-                  {{ insight.selectedManagedException }}
-                </div>
-                <div style="height: 200px; overflow-y: scroll;">
-                  <code>
-                {{ insight.selectedCallStack }}
-              </code>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div *ngIf="error">
-      <strong>{{ errorMessage }}</strong>
-      <div>{{ getErrorDetails() }}</div>
-    </div>
-  </div>
-</div>
+
+  </collapsible-list-item>
+</collapsible-list-fabric>

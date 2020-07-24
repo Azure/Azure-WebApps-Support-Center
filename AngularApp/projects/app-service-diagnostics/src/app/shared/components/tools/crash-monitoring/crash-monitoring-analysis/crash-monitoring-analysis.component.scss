@@ -2,89 +2,102 @@
     margin-bottom: 10px;
 }
 
-.insight-container:last-child {
-    margin-bottom: 0px;
-}
-
 .insight-panel {
     border-left-width: 4px;
+    background-color: #fff8f0;
 }
 
-.success-insight-panel {
-    border-left-color: #3da907;
+.top-margin {
+    border-top: 1px solid #ccc;
+    margin-left: 32px;
 }
 
-.warning-insight-panel {
-    border-left-color: #ff9104;
-}
-
-.critical-insight-panel {
-    border-left-color: red;
-}
-
-.info-insight-panel {
-    border-left-color: #3a9bc7;
-}
-
-.insight-expand-icon {
-    font-weight: bold;
+.disable-agent{
+    margin-top: 6px;
     float: left;
-    font-size: 18px;
-    min-height: 1px;
-    min-width: 1.5%;
-    margin-right: 10px;
+    margin-left: 10px;
 }
 
-.card-header {
-    font-size: 16px;
+.display-table {
+    display: table;
+}
+.display-table > div {
+    display: table-row;
+}
+.display-table > div > div {
+    display: table-cell;
+    padding: 8px;
 }
 
-.clickable-header {
-    cursor: pointer;
+.data-collection-loading {
+    display: flex;
+    margin-top: 20px;
 }
 
-.card-body {
-    font-size: 14px;
+.table-borderless > tbody > tr > td,
+.table-borderless > tbody > tr > th,
+.table-borderless > tfoot > tr > td,
+.table-borderless > tfoot > tr > th,
+.table-borderless > thead > tr > td,
+.table-borderless > thead > tr > th {
+    border: none;
 }
 
-.table-key {
-    width: 20%;
+/**
+ * ==============================================
+ * Dot Flashing
+ * ==============================================
+ */
+.dot-flashing {
+    position: relative;
+    margin-left: 15px;
+    margin-right: 20px;
+    top: 5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 7px;
+    background-color: #3471ff;
+    color: #3471ff;
+    animation: dot-flashing 1s infinite linear alternate;
+    animation-delay: 0.5s;
 }
 
-table {
-    width: 100%;
+.dot-flashing::before,
+.dot-flashing::after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 0;
 }
 
-.status-icon {
-    margin-right: 25px;
+.dot-flashing::before {
+    left: -13px;
+    width: 7px;
+    height: 7px;
+    border-radius: 7px;
+    background-color: #3471ff;
+    color: #3471ff;
+    animation: dot-flashing 1s infinite alternate;
+    animation-delay: 0s;
 }
 
-.fa-exclamation-circle {
-    color: #ff0000;
+.dot-flashing::after {
+    left: 13px;
+    width: 7px;
+    height: 7px;
+    border-radius: 7px;
+    background-color: #3471ff;
+    color: #3471ff;
+    animation: dot-flashing 1s infinite alternate;
+    animation-delay: 1s;
 }
 
-.fa-exclamation-triangle {
-    color: #ff9104;
-}
-
-.fa-check-circle {
-    color: #3da907;
-}
-
-.fa-info-circle {
-    color: #3a9bc7;
-}
-
-.expand-icon {
-    float: right;
-    font-size: 20px;
-}
-
-td {
-    vertical-align: text-top;
-    padding-bottom: 10px;
-}
-
-table {
-    font-size: 14px;
+@keyframes dot-flashing {
+    0% {
+        background-color: #3471ff;
+    }
+    50%,
+    100% {
+        background-color: #ebe6ff;
+    }
 }

@@ -2,8 +2,8 @@
   [isHiddenOnDismiss]="true" [isLightDismiss]="true" [hasCloseButton]="true" [closeButtonAriaLabel]="'close'"
   (onDismissed)="dismissedHandler()">
 
-  <div style="margin-bottom: 10px;margin-top: 20px;">
-    <h1>Choose Storage account</h1>
+  <div style="margin-bottom: 10px">
+    <h2>Choose Storage account</h2>
   </div>
 
   <div class="row mt-5">
@@ -57,10 +57,10 @@
 
   <div class="footer">
     <hr style="margin-bottom: 20px;">
-    <fab-primary-button contentStyle="margin-right:10px" (click)="saveChanges()">
+    <fab-primary-button contentStyle="margin-left:10px;margin-right:10px" (click)="saveChanges()">
       Save
     </fab-primary-button>
-    <fab-default-button contentStyle="margin-right:10px" (click)="dismissedHandler()">
+    <fab-default-button (click)="dismissedHandler()">
       Cancel
     </fab-default-button>
   </div>

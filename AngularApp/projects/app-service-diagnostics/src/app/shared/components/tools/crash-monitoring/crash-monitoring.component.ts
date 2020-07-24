@@ -10,7 +10,6 @@ import { TelemetryService } from 'diagnostic-data';
 import { SharedStorageAccountService } from 'projects/app-service-diagnostics/src/app/shared-v2/services/shared-storage-account.service';
 import { CrashMonitoringSettings } from '../../../models/daas';
 import moment = require('moment');
-import { CrashMonitoringAnalysisComponent } from './crash-monitoring-analysis/crash-monitoring-analysis.component';
 import {
     TooltipHost,
     TooltipDelay,
@@ -19,6 +18,7 @@ import {
     ITooltipHostStyles,
   } from 'office-ui-fabric-react/lib/Tooltip';
 import { ITooltipOptions } from '@angular-react/fabric';
+import { CrashMonitoringAnalysisComponent, CrashMonitoringData } from './crash-monitoring-analysis/crash-monitoring-analysis.component';
 
 @Component({
   selector: 'crash-monitoring',
@@ -29,14 +29,14 @@ export class CrashMonitoringComponent implements OnInit {
 
   @ViewChild('crashMonitoringAnalysisRef', { static: false }) crashMonitoringAnalysis: CrashMonitoringAnalysisComponent;
 
-  ngAfterViewInit() {
-  }
-
   constructor(private _siteService: SiteService,
     private _daasService: DaasService, private globals: Globals, private telemetryService: TelemetryService,
     private _sharedStorageAccountService: SharedStorageAccountService) {
     this._sharedStorageAccountService.changeEmitted$.subscribe(newStorageAccount => {
       this.chosenStorageAccount = newStorageAccount;
+      if (this.chosenStorageAccount) {
+        this.validationError = "";
+      }
     })
   }
 
@@ -65,7 +65,8 @@ export class CrashMonitoringComponent implements OnInit {
   selectedTabKey: string = "0";
   monitoringEnabled: boolean = false;
   crashMonitoringSettings: CrashMonitoringSettings = null;
-
+  collapsed: boolean = false;
+  
   // For tooltip display
   directionalHint = DirectionalHint.rightTopEdge;
   value: ITooltipOptions = {
@@ -99,6 +100,7 @@ export class CrashMonitoringComponent implements OnInit {
             this.crashMonitoringSettings = crashMonitoringSettings;
             this.populateSettings(crashMonitoringSettings);
             this.monitoringEnabled = true;
+            this.collapsed = true;
           }
           this.status = toolStatus.Loaded;
         });
@@ -125,6 +127,7 @@ export class CrashMonitoringComponent implements OnInit {
     this.startClock = this.getHourAndMinute(this.startDate);
     this.endClock = this.getHourAndMinute(this.endDate);
     this.monitoringEnabled = false;
+    this.collapsed = false;
   }
 
   populateSettings(crashMonitoringSettings: CrashMonitoringSettings) {
@@ -184,6 +187,10 @@ export class CrashMonitoringComponent implements OnInit {
   validateSettings(): boolean {
     this.validationError = ""
     let isValid: boolean = true;
+    if (!this.chosenStorageAccount) {
+      this.validationError = "Please choose a storage account to save the memory dumps";
+      return false;
+    }
     if (this.getErrorMessageOnTextField(this.startClock) === "" && this.getErrorMessageOnTextField(this.endClock) === "") {
       var startTimeValues = this.startClock.split(":");
       var endTimeValues = this.endClock.split(":");
@@ -234,7 +241,7 @@ export class CrashMonitoringComponent implements OnInit {
   toggleStorageAccountPanel() {
     this.globals.openCreateStorageAccountPanel = !this.globals.openCreateStorageAccountPanel;
     this.telemetryService.logEvent("OpenCreateStorageAccountPanel");
-    //this.telemetryService.logPageView("SessionsPanelView");
+    this.telemetryService.logPageView("CreateStorageAccountPanelView");
   }
 
   saveMonitoringSettings() {
@@ -243,24 +250,11 @@ export class CrashMonitoringComponent implements OnInit {
       this.status = toolStatus.SettingsSaved;
       this.selectedTabKey = "1";
       this.monitoringEnabled = true;
+      this.collapsed = true;
     },
       error => {
         this.status = toolStatus.Error;
         this.errorMessage = "Failed while saving crash monitoring settings for the current app. ";
-        this.error = error;
-      });
-  }
-
-  stopMonitoring() {
-    this.status = toolStatus.SavingCrashMonitoringSettings;
-    this._siteService.saveCrashMonitoringSettings(this.siteToBeDiagnosed, null).subscribe(resp => {
-      this.crashMonitoringSettings = null;
-      this.status = toolStatus.SettingsSaved;
-      this.resetGlobals();
-    },
-      error => {
-        this.status = toolStatus.Error;
-        this.errorMessage = "Failed while stopping crash monitoring for the current app. ";
         this.error = error;
       });
   }
@@ -279,13 +273,26 @@ export class CrashMonitoringComponent implements OnInit {
     return monitoringSettings;
   }
 
-  changeTab(event: any) {
-    if (event.item != null && event.item.props != null && event.item.props.itemKey != null)
-      this.selectedTabKey = event.item.props.itemKey;
-  }
-
   getErrorDetails(): string {
     return JSON.stringify(this.error);
+  }
+
+  getMonitoringSummary(): string {
+
+    if (this.crashMonitoringSettings != null) {
+      let monitoringDates = this._siteService.getCrashMonitoringDates(this.crashMonitoringSettings);
+      return `${this.siteToBeDiagnosed.siteName} | ${this.formatDateToString(monitoringDates.start, true)} to ${this.formatDateToString(monitoringDates.end, true)} | ${this.crashMonitoringSettings.MaxDumpCount} memory dumps`;
+    }
+  }
+
+  formatDateToString(date: Date, appendTime: boolean = false) {
+
+    return appendTime ? momentNs.utc(date).format("YYYY-MM-DD HH:mm") : momentNs.utc(date).format("YYYY-MM-DD");
+  }
+
+  monitoringSettingsChanged(event: CrashMonitoringSettings) {
+    this.crashMonitoringSettings = event;
+    this.resetGlobals();
   }
 }
 

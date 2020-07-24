@@ -56,6 +56,7 @@ import { SearchPipe, SearchMatchPipe } from '../home/components/pipes/search.pip
 import { DiagosticSessionsPanelComponent } from './components/diagostic-sessions-panel/diagostic-sessions-panel.component';
 import { SharedModule } from '../shared/shared.module';
 import { CreateStorageAccountPanelComponent } from './components/create-storage-account-panel/create-storage-account-panel.component';
+import { CallstackPanelComponent } from './components/callstack-panel/callstack-panel.component';
 
 @NgModule({
     declarations: [
@@ -71,7 +72,8 @@ import { CreateStorageAccountPanelComponent } from './components/create-storage-
         SearchPipe,
         SearchMatchPipe,
         DiagosticSessionsPanelComponent,
-        CreateStorageAccountPanelComponent
+        CreateStorageAccountPanelComponent,
+        CallstackPanelComponent
     ],
     imports: [
         CommonModule,
