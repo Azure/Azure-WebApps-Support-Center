@@ -13,18 +13,20 @@
 
   <div *ngIf="status >= toolStatus.Loaded" style="margin-top: 40px;">
     <collapsible-list-fabric [collapsed]="collapsed" title="Configure">
-      <div header class="ml-5 mt-3 summaryText">
-        <div>{{ getMonitoringSummary() }}</div>
+      <div header class="container">
+        <div header class="summaryText">
+          {{ getMonitoringSummary() }}
+        </div>
       </div>
       <collapsible-list-item body>
-        <div>
-          <div class="mt-5">
-            <div class="row">
+        <div class="container">
+          <div>
+            <div class="row mt-4">
               <div class="col-md-3 field-label">
                 Storage account <span class="required">*</span>
                 <img src="assets/img/info.svg" />
               </div>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <span *ngIf="chosenStorageAccount"> {{ chosenStorageAccount }}
                 </span>
                 <div class="mt-1 mb-4" (click)="toggleStorageAccountPanel()"
@@ -39,7 +41,7 @@
                 Start time <span class="required">*</span>
                 <img src="assets/img/info.svg" />
               </div>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <fab-date-picker *ngIf="!monitoringEnabled" [minDate]="minDate" [maxDate]="maxDate"
                   placeholder="Select a date..." ariaLabel="Select start date" allowTextInput="true"
                   showMonthPickerAsOverlay="true" (onSelectDate)="onSelectStartDateHandler($event)"
@@ -63,7 +65,7 @@
                 Stop time <span class="required">*</span>
                 <img src="assets/img/info.svg" />
               </div>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <fab-date-picker *ngIf="!monitoringEnabled" [minDate]="minDate" [maxDate]="maxDate"
                   placeholder="Select a date..." ariaLabel="Select end date" allowTextInput="true"
                   showMonthPickerAsOverlay="true" (onSelectDate)="onSelectEndDateHandler($event)"
@@ -87,7 +89,7 @@
                 Max No. of memory dump <span class="required">*</span>
                 <img src="assets/img/info.svg" />
               </div>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <fab-dropdown *ngIf="!monitoringEnabled" id="downtimeFilter" role="combobox"
                   [options]="memoryDumpOptions" [defaultSelectedKey]="selectedDumpCount"
                   (onChange)="selectDumpCount($event)" [disabled]="monitoringEnabled">
@@ -107,7 +109,7 @@
             <div>{{ getErrorDetails() }}</div>
           </div>
 
-          <div class="mt-5">
+          <div class="mt-3">
             <fab-primary-button contentStyle="margin-right:10px" [disabled]="monitoringEnabled"
               (onClick)="startMonitoring()">
               Start monitor
@@ -121,7 +123,6 @@
         </div>
       </collapsible-list-item>
     </collapsible-list-fabric>
-
 
     <crash-monitoring-analysis (settingsChanged)="monitoringSettingsChanged($event)" #crashMonitoringAnalysisRef
       [crashMonitoringSettings]="crashMonitoringSettings">

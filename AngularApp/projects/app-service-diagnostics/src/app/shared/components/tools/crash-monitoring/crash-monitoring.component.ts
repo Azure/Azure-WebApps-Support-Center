@@ -10,7 +10,7 @@ import { TelemetryService } from 'diagnostic-data';
 import { SharedStorageAccountService } from 'projects/app-service-diagnostics/src/app/shared-v2/services/shared-storage-account.service';
 import { CrashMonitoringSettings } from '../../../models/daas';
 import moment = require('moment');
-import { CrashMonitoringAnalysisComponent } from './crash-monitoring-analysis/crash-monitoring-analysis.component';
+import { CrashMonitoringAnalysisComponent, CrashMonitoringData } from './crash-monitoring-analysis/crash-monitoring-analysis.component';
 
 @Component({
   selector: 'crash-monitoring',
@@ -221,7 +221,7 @@ export class CrashMonitoringComponent implements OnInit {
   toggleStorageAccountPanel() {
     this.globals.openCreateStorageAccountPanel = !this.globals.openCreateStorageAccountPanel;
     this.telemetryService.logEvent("OpenCreateStorageAccountPanel");
-    //this.telemetryService.logPageView("SessionsPanelView");
+    this.telemetryService.logPageView("CreateStorageAccountPanelView");
   }
 
   saveMonitoringSettings() {
