@@ -22,7 +22,7 @@
                   <div *ngIf="insights.length > 0">We are still collecting data. Please see the insights below</div>
                 </div>
                 <div *ngIf="!monitoringEnabled">
-                  <i class="fa health-icon fa-check healthy-icon-color" aria-hidden="true"></i>
+                  <i class="fa health-icon fa-check-circle healthy-icon-color" aria-hidden="true"></i>
                   The crash monitoring session has finished.
                   <span *ngIf="insights != null && insights.length > 0">Please see the insights below.</span>
                   <span *ngIf="insights != null && insights.length === 0">
@@ -30,32 +30,31 @@
                 </div>
 
                 <div style="margin-top:15px" *ngIf="insights != null && insights.length > 0">
-                  <div *ngFor="let insight of insights" class="insight-container" tabindex="0"
-                    attr.name="{{insight.title}}" attr.aria-label="{{insight.title}}"
-                    attr.aria-expanded="{{insight.isExpanded}}" role="button"
-                    (keyup.enter)="toggleInsightStatus(insight)">
-                    <div class="panel panel-default insight-panel warning-insight-panel">
-                      <div class="panel-heading">
-                        <h5 class="panel-title clickable-header" (click)="toggleInsightStatus(insight)">
-                          <div style="display: table;">
-                            <div style="display: table-row">
-                              <div style="display: table-cell">
-                                <span class="fa insight-expand-icon" [class.fa-angle-right]="!insight.isExpanded"
-                                  [class.fa-angle-down]="insight.isExpanded"></span>
-                              </div>
-                              <div style="display: table-cell">
-                                <span class="fa status-icon  fa-exclamation-triangle"></span>
-                              </div>
-                              <div style="display: table-cell;width:100%">
-                                {{insight.title}}
-                              </div>
-                            </div>
+                  <div *ngFor="let insight of insights" class="insight-container" attr.name="{{insight.title}}"
+                    attr.aria-label="{{insight.title}}" attr.aria-expanded="{{insight.isExpanded}}">
+                    <div class="insight-panel">
+                      <div class="display-table">
+                        <div>
+                          <div><i class="fa health-icon fa-exclamation-triangle warning-icon-color"
+                              aria-hidden="true"></i></div>
+                          <strong> {{insight.title}}</strong>
+                        </div>
+                        <div>
+                          <div></div>
+                          <div>
+                            <a *ngIf="!insight.isExpanded" (keyup.enter)="toggleInsightStatus(insight)"
+                              (click)="toggleInsightStatus(insight)" aria-label="View insight details" role="button">
+                              View details
+                            </a>
+                            <a *ngIf="insight.isExpanded" (keyup.enter)="toggleInsightStatus(insight)"
+                              (click)="toggleInsightStatus(insight)" aria-label="Close insight details" role="button">
+                              Close details
+                            </a>
                           </div>
-                        </h5>
+                        </div>
                       </div>
-
-                      <div class="panel-body" [hidden]="!(insight.isExpanded)">
-                        <table class="table table-bordered">
+                      <div [hidden]="!(insight.isExpanded)" class="top-margin">
+                        <table class="table table-borderless">
                           <thead>
                             <tr>
                               <th>Crash time</th>
@@ -82,12 +81,15 @@
                 </div>
 
                 <div style="margin-top:20px;">
-                  <fab-default-button (onClick)="stopMonitoring()">
+
+                  <fab-default-button style="float:left" (onClick)="stopMonitoring()">
                     {{ monitoringEnabled ? 'Stop monitor' : 'Run a new monitor' }}
                   </fab-default-button>
-                  <a *ngIf="!monitoringEnabled" (click)="stopMonitoring()">
-                    Disable agent
-                  </a>
+                  <div class="disable-agent">
+                    <a tabindex="0" class="mr-3" *ngIf="!monitoringEnabled" (click)="stopMonitoring()">Disable agent</a>
+                    <img src="assets/img/info.svg" />
+                  </div>
+
                   <div *ngIf="savingSettings">
                     <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
                     Saving...
@@ -126,7 +128,7 @@
             </div>
             <div *ngIf="crashMonitoringHistory.length > 0">
               <div class="mt-2">View Crash data captured by this tool in the last 15 days</div>
-              <table class="table-borderless">
+              <table class="table table-borderless">
                 <thead>
                   <tr>
                     <th style="height: 50px;">Crash time</th>
@@ -141,11 +143,11 @@
                     <td>{{ data.exitCode }}</td>
                     <td>
                       <div *ngIf="data.callStack" (click)="viewCallStack(data)">
-                        <a aria-label="View callstack">View</a>
+                        <a tabindex="0" aria-label="View callstack">View</a>
                       </div>
                       <span *ngIf="data.callStack == null">Analysis Pending</span>
                     </td>
-                    <td> <a href='{{ data.dumpHref }}' target="_blank">Download file</a> </td>
+                    <td> <a tabindex="0" href='{{ data.dumpHref }}' target="_blank">Download file</a> </td>
                   </tr>
                 </tbody>
               </table>
