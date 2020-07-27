@@ -14,6 +14,7 @@ export class ToolNames {
     public static AutoHealing: string = 'Auto-Heal';
     public static Diagnostics: string = 'Diagnostics';
     public static CpuMonitoring: string = 'Proactive CPU Monitoring';
+    public static CrashMonitoring: string = 'Crash Monitoring';
     public static EventViewer: string = 'Application Event Logs';
     public static FrebViewer: string = "Failed Request Tracing Logs";
     public static MetricPerInstanceApp: string = 'Metrics per Instance (Apps)';
@@ -37,6 +38,7 @@ export class ToolIds {
     public static AutoHealing: string = 'mitigate';
     public static Diagnostics: string = 'Diagnostics';
     public static CpuMonitoring: string = 'cpumonitoring';
+    public static CrashMonitoring:string = 'crashmonitoring';
     public static EventViewer: string = SupportBladeDefinitions.EventViewer.Identifier;
     public static FrebViewer: string = SupportBladeDefinitions.FREBLogs.Identifier;
     public static MetricPerInstanceApp: string = SupportBladeDefinitions.MetricPerInstance.Identifier;

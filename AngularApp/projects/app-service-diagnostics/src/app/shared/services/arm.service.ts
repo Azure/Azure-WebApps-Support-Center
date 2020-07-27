@@ -134,7 +134,7 @@ export class ArmService {
             additionalHeaders.set('x-ms-azureportal', 'true');
         }
 
-        let requestId:string = Guid.newGuid();
+        let requestId: string = Guid.newGuid();
         additionalHeaders.set('x-ms-request-id', requestId);
 
         let eventProps = {
@@ -151,7 +151,7 @@ export class ArmService {
             headers: requestHeaders
         }).pipe(
             retryWhen(err => {
-                let requestId:string = Guid.newGuid();
+                let requestId: string = Guid.newGuid();
                 additionalHeaders.set('x-ms-request-id', requestId);
                 requestHeaders = this.getHeaders(null, additionalHeaders);
 
@@ -160,7 +160,7 @@ export class ArmService {
                 eventProps["retryCount"] = retryCount;
 
                 return err.pipe(delay(1000), map(err => {
-                    if(retryCount++ >= 2){
+                    if (retryCount++ >= 2) {
                         this.telemetryService.logEvent("RetryRequestFailed", eventProps);
                         throw err;
                     }
@@ -345,7 +345,21 @@ export class ArmService {
 
         if (error) {
             if (error.error) {
-                actualError = JSON.stringify(error.error);
+                if (error.error.error) {
+                    let innerMost = error.error.error;
+                    if (innerMost.code && innerMost.message) {
+                        actualError = innerMost.code + "-" + innerMost.message;
+                    } else {
+                        if (innerMost.message) {
+                            actualError = innerMost.message;
+                        } else {
+                            actualError = JSON.stringify(error.error);
+                        }
+                    }
+                } else {
+                    actualError = JSON.stringify(error.error);
+                }
+
                 if (error.error instanceof ErrorEvent) {
                     loggingError.message = error.error.message;
                     loggingProps['reason'] = "A client-side or network error occured.";
@@ -389,7 +403,7 @@ export class ArmService {
             additionalHeaders.set('x-ms-azureportal', 'true');
         }
 
-        let requestId:string = Guid.newGuid();
+        let requestId: string = Guid.newGuid();
         additionalHeaders.set('x-ms-request-id', requestId);
 
         let eventProps = {

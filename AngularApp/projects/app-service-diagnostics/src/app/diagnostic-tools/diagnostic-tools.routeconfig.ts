@@ -20,6 +20,7 @@ import { Observable, of } from 'rxjs';
 import { PortalActionService } from '../shared/services/portal-action.service';
 import { AuthService } from '../startup/services/auth.service';
 import { JavaFlightRecorderToolComponent } from '../shared/components/tools/java-flight-recorder-tool/java-flight-recorder-tool.component';
+import { CrashMonitoringComponent } from '../shared/components/tools/crash-monitoring/crash-monitoring.component';
 
 @Injectable()
 export class MetricsPerInstanceAppsResolver implements Resolve<Observable<boolean>> {
@@ -167,6 +168,15 @@ export const DiagnosticToolsRoutes: Route[] = [
         component: CpuMonitoringToolComponent,
         data: {
             navigationTitle: ToolNames.CpuMonitoring,
+            cacheComponent: true
+        }
+    },
+    // CPU Monitoring tool
+    {
+        path: 'crashmonitoring',
+        component: CrashMonitoringComponent,
+        data: {
+            navigationTitle: ToolNames.CrashMonitoring,
             cacheComponent: true
         }
     },
