@@ -56,21 +56,21 @@
                         <table class="table table-borderless">
                           <thead>
                             <tr>
-                              <th>Crash time</th>
-                              <th>Callstack</th>
-                              <th>Memory dump</th>
+                              <th tabindex="0">Crash time</th>
+                              <th tabindex="0">Callstack</th>
+                              <th tabindex="0">Memory dump</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr *ngFor="let data of insight.data">
-                              <td>{{ getDisplayDate(data.timeStamp) }}</td>
+                              <td tabindex="0">{{ getDisplayDate(data.timeStamp) }}</td>
                               <td>
                                 <div *ngIf="data.callStack" (click)="viewCallStack(data)">
-                                  <a aria-label="View callstack">View</a>
+                                  <a tabindex="0" aria-label="View callstack">View</a>
                                 </div>
                                 <span *ngIf="data.callStack == null">Analysis Pending</span>
                               </td>
-                              <td> <a href='{{ data.dumpHref }}' target="_blank">Download file</a> </td>
+                              <td> <a href='{{ data.dumpHref }}' tabindex="0" target="_blank">Download file</a> </td>
                             </tr>
                           </tbody>
                         </table>
@@ -141,16 +141,16 @@
               <table class="table table-borderless">
                 <thead>
                   <tr>
-                    <th style="height: 50px;">Crash time</th>
-                    <th>Exit Code</th>
-                    <th>Callstack</th>
-                    <th>Memory dump</th>
+                    <th tabindex="0" style="height: 50px;">Crash time</th>
+                    <th tabindex="0">Exit Code</th>
+                    <th tabindex="0">Callstack</th>
+                    <th tabindex="0">Memory dump</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let data of crashMonitoringHistory">
-                    <td>{{ getDisplayDate(data.timeStamp) }}</td>
-                    <td>{{ data.exitCode }}</td>
+                    <td tabindex="0">{{ getDisplayDate(data.timeStamp) }}</td>
+                    <td tabindex="0">{{ data.exitCode }}</td>
                     <td>
                       <div *ngIf="data.callStack" (click)="viewCallStack(data)">
                         <a tabindex="0" aria-label="View callstack">View</a>
