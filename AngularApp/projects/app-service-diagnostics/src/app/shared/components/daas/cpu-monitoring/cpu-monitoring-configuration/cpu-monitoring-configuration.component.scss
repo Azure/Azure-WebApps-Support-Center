@@ -69,3 +69,39 @@
         }
     }
 }
+
+@media screen and (-ms-high-contrast: black-on-white) {
+    ::ng-deep {
+        .custom-slider .ng5-slider {
+            .ng5-slider-pointer {
+                border: 1px solid #000;
+            }
+
+            .ng5-slider-tick {
+                border: 1px solid #000;
+            }
+
+            .ng5-slider-bar {
+                border: 1px solid #000;
+            }
+        }
+    }
+}
+
+@media screen and (-ms-high-contrast: white-on-black) {
+    ::ng-deep {
+        .custom-slider .ng5-slider {
+            .ng5-slider-pointer {
+                border: 1px solid #fff;
+            }
+
+            .ng5-slider-tick {
+                border: 1px solid #fff;
+            }
+
+            .ng5-slider-bar {
+                border: 1px solid #fff;
+            }
+        }
+    }
+}
