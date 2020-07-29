@@ -572,7 +572,7 @@ export class SiteFeatureService extends FeatureService {
   }
 
   private navigateTo(resourceId: string, toolId: string) {
-    const isHomepage = !this._activatedRoute.root.firstChild.firstChild.firstChild.firstChild.snapshot.params["category"];
+    const isHomepage = this._router.url.endsWith(resourceId);
     //If in homepage then open second blade for Diagnostic Tool and second blade will continue to open third blade for 
     if (isHomepage) {
       this._portalActionService.openBladeDiagnosticToolId(toolId);
