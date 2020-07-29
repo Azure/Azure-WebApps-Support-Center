@@ -6,7 +6,7 @@ import { SiteDaasInfo } from '../../../models/solution-metadata';
 import { SiteService } from '../../../services/site.service';
 import { DaasService } from '../../../services/daas.service';
 import { Globals } from '../../../../globals'
-import { TelemetryService } from 'diagnostic-data';
+import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
 import { SharedStorageAccountService } from 'projects/app-service-diagnostics/src/app/shared-v2/services/shared-storage-account.service';
 import { CrashMonitoringSettings } from '../../../models/daas';
 import moment = require('moment');
@@ -120,6 +120,7 @@ export class CrashMonitoringComponent implements OnInit {
   }
 
   resetGlobals() {
+    this.today = new Date(Date.now());
     this.maxDate = this.convertUTCToLocalDate(addMonths(this.today, 1))
     this.minDate = this.convertUTCToLocalDate(this.today)
     this.startDate = this.minDate;
@@ -247,6 +248,7 @@ export class CrashMonitoringComponent implements OnInit {
   saveMonitoringSettings() {
     this.status = toolStatus.SavingCrashMonitoringSettings;
     let crashMonitoringSettings = this.getCrashMonitoringSetting();
+    this.logCrashMonitoringEnabled(crashMonitoringSettings);
     this._siteService.saveCrashMonitoringSettings(this.siteToBeDiagnosed, crashMonitoringSettings)
       .subscribe(resp => {
         this.crashMonitoringSettings = crashMonitoringSettings;
@@ -259,6 +261,13 @@ export class CrashMonitoringComponent implements OnInit {
           this.errorMessage = "Failed while saving crash monitoring settings for the current app. ";
           this.error = error;
         });
+  }
+
+  logCrashMonitoringEnabled(crashMonitoringSettings: CrashMonitoringSettings) {
+    let eventProps = {
+      'Settings': JSON.stringify(crashMonitoringSettings)
+    }
+    this.telemetryService.logEvent(TelemetryEventNames.CrashMonitoringEnabled, eventProps);
   }
 
   selectDumpCount(event: any) {

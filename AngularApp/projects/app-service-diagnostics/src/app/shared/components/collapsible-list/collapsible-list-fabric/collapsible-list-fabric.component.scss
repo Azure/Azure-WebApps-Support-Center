@@ -57,3 +57,11 @@ button {
     box-shadow: 0 0 2px 2px #51a7e8; /* keyboard-only focus styles */
     color: #00bcf2; /* keyboard-only focus styles */
 }
+
+.custom-caret {
+    transition: transform 0.1s linear 0s;
+}
+
+.custom-caret-down {
+    transform: rotate(-90deg);
+}

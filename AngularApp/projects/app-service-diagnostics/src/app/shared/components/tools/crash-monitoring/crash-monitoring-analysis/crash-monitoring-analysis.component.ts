@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { DiagnosticService, RenderingType, DataTableResponseObject } from 'diagnostic-data';
+import { DiagnosticService, RenderingType, DataTableResponseObject, TelemetryEventNames } from 'diagnostic-data';
 import { DaasService } from '../../../../services/daas.service';
 import { SiteService } from '../../../../services/site.service';
 import * as momentNs from 'moment';
@@ -244,11 +244,12 @@ export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges, OnDe
     }
   }
 
-  stopMonitoring() {
+  stopMonitoring(viaAgent: boolean) {
     this.errorMessage = "";
     this.error = null;
     this.savingSettings = true;
     this._siteService.saveCrashMonitoringSettings(this.siteToBeDiagnosed, null).subscribe(resp => {
+      this.logCrashMonitoringStopped(viaAgent);
       this.savingSettings = false;
       this.crashMonitoringSettings = null;
       this.settingsChanged.emit(this.crashMonitoringSettings);
@@ -259,6 +260,14 @@ export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges, OnDe
         this.errorMessage = "Failed while stopping crash monitoring for the current app. ";
         this.error = error;
       });
+  }
+
+  logCrashMonitoringStopped(viaAgent: boolean) {
+    if (!viaAgent) {
+      this.telemetryService.logEvent(TelemetryEventNames.CrashMonitoringStopped);
+    } else {
+      this.telemetryService.logEvent(TelemetryEventNames.CrashMonitoringAgentDisabled);
+    }
   }
 
   viewCallStack(data: CrashMonitoringData) {

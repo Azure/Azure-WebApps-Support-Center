@@ -58,7 +58,10 @@ export const TelemetryEventNames = {
     TimePickerApplied: 'TimePickerApplied',
     CategoryNavItemClicked: 'CategoryNavItemClicked',
     DowntimeInteraction: 'DowntimeInteraction',
-    DowntimeListPassedByDetector: 'DowntimePassedByDetector'
+    DowntimeListPassedByDetector: 'DowntimePassedByDetector',
+    CrashMonitoringEnabled:'CrashMonitoringEnabled',
+    CrashMonitoringStopped:'CrashMonitoringStopped',
+    CrashMonitoringAgentDisabled:'CrashMonitoringAgentDisabled'
 };
 
 export interface ITelemetryProvider {
