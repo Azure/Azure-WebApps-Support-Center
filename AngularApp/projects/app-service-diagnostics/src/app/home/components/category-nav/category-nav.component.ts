@@ -119,9 +119,9 @@ export class CategoryNavComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getCurrentItemId();
         this.hasUncategorizedDetectors = false;
         this._route.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
+            this.getCurrentItemId();
             this.getCurrentRoutePath();
         });
 
