@@ -98,6 +98,7 @@ import { DynamicInsightV4Component } from './components/dynamic-insight-v4/dynam
 import { InViewportModule } from "ng-in-viewport";
 import { ParseResourceService } from './services/parse-resource.service';
 import { MarkdownTextComponent } from './components/markdown-text/markdown-text.component';
+import { DataTableV4Component } from './components/data-table-v4/data-table-v4.component';
 
 @NgModule({
   imports: [
@@ -147,7 +148,8 @@ import { MarkdownTextComponent } from './components/markdown-text/markdown-text.
     WebSearchComponent,
     RenderFilterPipe,
     DynamicInsightV4Component,
-    MarkdownTextComponent
+    MarkdownTextComponent,
+    DataTableV4Component
   ],
   entryComponents: [DetectorListAnalysisComponent],
   exports: [

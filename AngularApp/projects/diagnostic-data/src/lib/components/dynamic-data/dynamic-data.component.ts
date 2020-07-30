@@ -37,6 +37,7 @@ import { DetectorSearchComponent } from '../detector-search/detector-search.comp
 import { xAxisPlotBand, zoomBehaviors, XAxisSelection } from '../../models/time-series';
 import { DynamicInsightV4Component } from '../dynamic-insight-v4/dynamic-insight-v4.component';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
+import { DataTableV4Component } from '../data-table-v4/data-table-v4.component';
 
 @Component({
   selector: 'dynamic-data',
@@ -46,7 +47,7 @@ import { TelemetryService } from '../../services/telemetry/telemetry.service';
     TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent,
     InsightsComponent, TimeSeriesInstanceGraphComponent, DynamicInsightComponent, MarkdownViewComponent,
     DetectorListComponent, DropdownComponent, CardSelectionComponent, SolutionComponent, GuageControlComponent, FormComponent,
-    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent, DetectorListAnalysisComponent, ConnectAppInsightsComponent, DetectorSearchComponent, SummaryCardsComponent, InsightsV4Component, DropdownV4Component, CardSelectionV4Component,DynamicInsightV4Component
+    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent, DetectorListAnalysisComponent, ConnectAppInsightsComponent, DetectorSearchComponent, SummaryCardsComponent, InsightsV4Component, DropdownV4Component, CardSelectionV4Component,DynamicInsightV4Component,DataTableV4Component
   ]
 })
 export class DynamicDataComponent implements OnInit {
@@ -137,7 +138,9 @@ export class DynamicDataComponent implements OnInit {
       case RenderingType.TimeSeries:
         return TimeSeriesGraphComponent;
       case RenderingType.Table:
-        return DataTableComponent;
+        //For testing only, in PROD dynamic return old/new table
+        return DataTableV4Component;
+        // return this.isLegacy ? DataTableComponent : DataTableV4Component;
       case RenderingType.DataSummary:
         return DataSummaryComponent;
       case RenderingType.Email:
