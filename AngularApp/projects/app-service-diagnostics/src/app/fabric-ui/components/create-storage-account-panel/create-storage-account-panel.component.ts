@@ -122,8 +122,7 @@ export class CreateStorageAccountPanelComponent implements OnInit {
             this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
               .subscribe(storageAccount => {
                 this.creatingStorageAccount = false;
-                this._sharedStorageAccountService.emitChange(this.newStorageAccountName);
-                this.globals.openCreateStorageAccountPanel = false;
+                this.setBlobSasUri(storageAccount.id, storageAccount.name);
               },
                 error => {
                   this.creatingStorageAccount = false;
