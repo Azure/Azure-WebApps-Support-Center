@@ -5,10 +5,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "applens": "ng serve applens --aot --optimization=false",
+    "applens": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng serve applens --aot --optimization=false",
     "ncloud-applens-prod": "ng serve applens --configuration=nationalcloud-production --aot --optimization=false",
     "ncloud-applens-local": "ng serve applens --configuration=nationalcloud-local --aot --optimization=false",
-    "ssl": "ng serve app-service-diagnostics --aot --optimization=false --ssl --sslCert ./ssl/server.crt --sslKey ./ssl/server.key",
+    "ssl": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng serve app-service-diagnostics --aot --optimization=false --ssl --sslCert ./ssl/server.crt --sslKey ./ssl/server.key",
     "ssl-local": "npm run ssl -- -c local",
     "asd": "concurrently -k \"npm run ssl\" \"npm run lib\"",
     "build-lib": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build diagnostic-data",
