@@ -1,12 +1,10 @@
-import { Component, ViewChild, AfterViewInit, TemplateRef, AfterContentInit, ContentChild, Directive, OnInit, ContentChildren, QueryList, ViewChildren } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
 import { DiagnosticData, DataTableRendering, RenderingType } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { DatatableComponent, SelectionType } from '@swimlane/ngx-datatable';
 import * as Highcharts from 'highcharts';
 import HC_exporting from 'highcharts/modules/exporting';
-import { SelectionMode, IColumn, IDetailsListProps, IDetailsHeaderProps, IDetailsFooterProps, IPlainCard, IPlainCardProps, IListProps, IDetailsColumnProps, IDetailsRowProps, IExpandingCardProps } from 'office-ui-fabric-react';
-import { InputRendererOptions } from '@angular-react/core';
-import { FabTextFieldComponent, FabDetailsListComponent, FabPlainCardComponent, IPlainCardOptions, IExpandingCardOptions, RenderCardContext, FabHoverCardComponent } from '@angular-react/fabric';
+import { SelectionMode, IColumn, IListProps, ISelection, Selection, IDetailsListProps, DetailsListLayoutMode, ITextFieldProps } from 'office-ui-fabric-react';
+import { FabDetailsListComponent } from '@angular-react/fabric';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 
 HC_exporting(Highcharts);
@@ -18,61 +16,66 @@ HC_exporting(Highcharts);
 })
 export class DataTableV4Component extends DataRenderBaseComponent implements AfterViewInit, AfterContentInit {
   Highcharts: typeof Highcharts = Highcharts;
-  // constructor(protected telemetryService:TelemetryService) { 
-  //   super(telemetryService);
-  // }
+  constructor(protected telemetryService: TelemetryService) {
+    super(telemetryService);
+  }
   ngAfterViewInit(): void {
-    if (this.renderingProperties.descriptionColumnName != null) {
-      this.table.selectionType = SelectionType.single;
-      this.table.scrollbarV = true;
-      this.table.scrollbarH = false;
-      this.table.rowHeight = 35;
-      this.currentStyles = { 'height': '300px' };
-    }
-
-    if (this.renderingProperties.height != null && this.renderingProperties.height !== "") {
-      this.currentStyles = { 'height': this.renderingProperties.height, 'overflow-y': 'visible' };
-    }
-
-    if (this.renderingProperties.tableOptions != null) {
-      Object.keys(this.renderingProperties.tableOptions).forEach(item => {
-        this.table[item] = this.renderingProperties.tableOptions[item];
-      });
-    }
-
-    this.table.rows = this.rows;
-    this.table.columns = this.columns;
+    // if (this.renderingProperties.tableOptions != null) {
+    //   Object.keys(this.renderingProperties.tableOptions).forEach(item => {
+    //     this.table[item] = this.renderingProperties.tableOptions[item];
+    //   });
+    // }
   }
 
   ngAfterContentInit() {
     this.createFabricDataTableObjects();
 
     //For dynamic passing table properties
-    this.fabDetailsList.selectionMode = SelectionMode.none;
-    this.fabDetailsList.initialFocusedIndex = 0;
+    this.fabDetailsList.selectionMode = this.renderingProperties.descriptionColumnName ? SelectionMode.single : SelectionMode.none;
+    this.fabDetailsList.selection = this.selection;
     this.fabDetailsList.onShouldVirtualize = (list: IListProps<any>) => {
       return this.rows.length > this.rowLimit ? false : true;
     }
     if (this.renderingProperties.allowColumnSearch) {
-      // this.fabDetailsList.renderDetailsHeader = this.headerWithSearch;
-    } 
+      this.allowColumnSearch = this.renderingProperties.allowColumnSearch;
+    }
+    this.fabDetailsList.usePageCache = true;
+    this.fabDetailsList.layoutMode = DetailsListLayoutMode.justified;
+
+
+    //Customize table style
+    let detailListStyles: IDetailsListProps["styles"] = { root: { height: '300px' } };
+    if (this.renderingProperties.height != null && this.renderingProperties.height !== "") {
+      detailListStyles = { root: { height: this.renderingProperties.height } };
+    }
+    this.fabDetailsList.styles = detailListStyles;
   }
-  
-  DataRenderingType = RenderingType.Table;
-  columns: any[];
-  selected = [];
+
+  // DataRenderingType = RenderingType.Table;
+  selection: ISelection = new Selection({
+    onSelectionChanged: () => {
+      const selectionCount = this.selection.getSelectedCount();
+      if (selectionCount === 0) {
+        this.selectionText = "";
+      } else if (selectionCount === 1) {
+        const row = this.selection.getSelection()[0];
+        if (this.renderingProperties.descriptionColumnName) {
+          this.selectionText = row[this.renderingProperties.descriptionColumnName];
+        }
+      }
+    }
+  });
+  selectionText = "";
   rows: any[];
   rowsClone: any[];
   grouped: boolean = true;
   rowLimit = 25;
   renderingProperties: DataTableRendering;
-  currentStyles = {};
-  searchTexts = {};
-  selectionMode = SelectionMode.none;
+  searchText = {};
   tableColumns: IColumn[] = [];
-  @ViewChild('myTable', { static: false }) table: DatatableComponent;
+  allowColumnSearch: boolean = false;
+  searchTimeout:any;
   @ViewChild(FabDetailsListComponent, { static: true }) fabDetailsList: FabDetailsListComponent;
-
   protected processData(data: DiagnosticData) {
     super.processData(data);
     this.renderingProperties = <DataTableRendering>data.renderingProperties;
@@ -103,48 +106,49 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       this.rows.push(rowObject);
 
       if (this.renderingProperties.descriptionColumnName && this.rows.length > 0) {
-        this.selected.push(this.rows[0]);
+        this.selectionText = ""
       }
 
       this.rowsClone = Object.assign([], this.rows);
     });
   }
 
-  toggleExpandGroup(group) {
-    this.table.groupHeader.toggleExpandGroup(group);
-  }
-
-  getValue(): any {
-    if (this.selected.length > 0) {
-      return this.selected[0][this.renderingProperties.descriptionColumnName];
-    }
-  }
 
   //For now use one search bar for all columns 
-  updateFilter(event: { event: Event, newValue?: string }, column: IColumn) {
-
-    this.selected = [];
+  updateFilter(e: { event: Event, newValue?: string }) {
     // const val = event.target.value.toLowerCase();
-    const val = event.newValue.toLowerCase();
-    this.searchTexts[column.name] = val;
-
-    const temp = this.rowsClone.filter(item => {
-      let allMatch = true;
-      Object.keys(this.searchTexts).forEach(key => {
-        if (item[key]) {
-          allMatch = allMatch && item[key].toString().toLowerCase().indexOf(this.searchTexts[key]) !== -1;
-        }
+    const val = e.newValue.toLowerCase();
+    if(this.searchTimeout){
+      clearTimeout(this.searchTimeout);
+    }
+    this.searchTimeout = setTimeout(() => {
+      this.telemetryService.logEvent("TableSearch",{
+        'SearchValue': val
       });
-      return allMatch;
-    });
+    },5000);
+    // this.searchTexts[column.name] = val;
+    // const temp = this.rowsClone.filter(item => {
+    //   let allMatch = true;
+    //   Object.keys(this.searchTexts).forEach(key => {
+    //     if (item[key]) {
+    //       allMatch = allMatch && item[key].toString().toLowerCase().indexOf(this.searchTexts[key]) !== -1;
+    //     }
+    //   });
+    //   return allMatch;
+    // });
 
+    //For single search bar
+    const temp = [];
+    for (const row of this.rowsClone) {
+      for (const col of this.tableColumns) {
+        const cellValue: string = row[col.name].toString();
+        if (cellValue.toString().toLowerCase().indexOf(val) !== -1) {
+          temp.push(row);
+        }
+      }
+    }
     this.rows = temp;
-    // this.table.rows = this.rows;
   }
-
-  // onInputClicked(event: any) {
-  //   event.stopPropagation();
-  // }
 
   onActivate(event: any) {
     if (!event.row || !event.row.TIMESTAMP) {
@@ -167,11 +171,11 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     }
   }
 
-  clickColumn(event: { ev: Event, column: IColumn }) {
-    this.sortColumn(event.column);
+  clickColumn(e: { ev: Event, column: IColumn }) {
+    this.sortColumn(e.column);
   }
 
-  sortColumn(column: IColumn) {
+  private sortColumn(column: IColumn) {
     const isSortedDescending = column.isSortedDescending;
     const columnName = column.name;
 
@@ -182,12 +186,9 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     if (column.isSortedDescending) {
       this.rows.reverse();
     }
-
-    // let tableColumn = this.tableColumns.find(column => column.name === colName);
-    // tableColumn.isSortedDescending = !isSortedDescending;
-    // tableColumn.isSorted = true;
-    column.isSortedDescending = !isSortedDescending;
-    column.isSorted = true;
+    const col = this.tableColumns.find(c => c.name === columnName);
+    col.isSortedDescending = !isSortedDescending;
+    col.isSorted = true;
   }
 }
 
