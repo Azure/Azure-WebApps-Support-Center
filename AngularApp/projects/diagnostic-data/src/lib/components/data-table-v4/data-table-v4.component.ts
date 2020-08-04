@@ -1,13 +1,9 @@
 import { Component, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
 import { DiagnosticData, DataTableRendering } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import * as Highcharts from 'highcharts';
-import HC_exporting from 'highcharts/modules/exporting';
 import { SelectionMode, IColumn, IListProps, ISelection, Selection, IDetailsListProps, DetailsListLayoutMode, ITextFieldProps, IStyle } from 'office-ui-fabric-react';
 import { FabDetailsListComponent } from '@angular-react/fabric';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
-
-HC_exporting(Highcharts);
 
 @Component({
   selector: 'data-table-v4',
@@ -15,7 +11,6 @@ HC_exporting(Highcharts);
   styleUrls: ['./data-table-v4.component.scss']
 })
 export class DataTableV4Component extends DataRenderBaseComponent implements AfterContentInit {
-  Highcharts: typeof Highcharts = Highcharts;
   constructor(protected telemetryService: TelemetryService) {
     super(telemetryService);
   }
@@ -35,7 +30,13 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       this.allowColumnSearch = this.renderingProperties.allowColumnSearch;
     }
 
-    //Customize table style
+    if(this.renderingProperties.descriptionColumnName){
+     this.fabDetailsList.getRowAriaLabel = (row:any) => {
+       const descriptionName = this.renderingProperties.descriptionColumnName;
+       return `${descriptionName} : ${row[descriptionName]}`;
+     } 
+    }
+
     const detailListStyles: IStyle = { height: '300px' };
     if (this.renderingProperties.height != null && this.renderingProperties.height !== "") {
       detailListStyles.height = this.renderingProperties.height;
