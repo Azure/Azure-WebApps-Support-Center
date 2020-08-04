@@ -131,26 +131,38 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       }
     }
     this.rows = temp;
+    //Update rows order with column sorting
+    const column = this.columns.find(col => col.isSorted === true);
+    if(column){
+      this.sortColumn(column,column.isSortedDescending);
+    }
   }
 
   clickColumn(e: { ev: Event, column: IColumn }) {
-    this.sortColumn(e.column);
+    const isSortedDescending = !e.column.isSortedDescending;
+    this.sortColumn(e.column,isSortedDescending);
+
   }
 
-  private sortColumn(column: IColumn) {
-    const isSortedDescending = column.isSortedDescending;
+  private sortColumn(column: IColumn,isSortedDescending:boolean) {
     const columnName = column.name;
 
     this.rows.sort((r1, r2) => {
       return r1[columnName] > r2[columnName] ? 1 : -1;
     });
 
-    if (column.isSortedDescending) {
+    if (isSortedDescending) {
       this.rows.reverse();
     }
-    const col = this.columns.find(c => c.name === columnName);
-    col.isSortedDescending = !isSortedDescending;
-    col.isSorted = true;
+    this.columns.forEach(column => {
+      if(column.name === columnName){
+        column.isSortedDescending = isSortedDescending;
+        column.isSorted = true;
+      }else {
+        column.isSorted = false;
+        column.isSortedDescending = true;
+      }
+    });
   }
 }
 
