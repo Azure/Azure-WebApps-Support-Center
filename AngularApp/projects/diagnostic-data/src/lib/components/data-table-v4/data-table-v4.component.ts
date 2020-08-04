@@ -1,9 +1,9 @@
 import { Component, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
-import { DiagnosticData, DataTableRendering, RenderingType } from '../../models/detector';
+import { DiagnosticData, DataTableRendering } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import * as Highcharts from 'highcharts';
 import HC_exporting from 'highcharts/modules/exporting';
-import { SelectionMode, IColumn, IListProps, ISelection, Selection, IDetailsListProps, DetailsListLayoutMode, ITextFieldProps } from 'office-ui-fabric-react';
+import { SelectionMode, IColumn, IListProps, ISelection, Selection, IDetailsListProps, DetailsListLayoutMode, ITextFieldProps, IStyle } from 'office-ui-fabric-react';
 import { FabDetailsListComponent } from '@angular-react/fabric';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 
@@ -14,41 +14,35 @@ HC_exporting(Highcharts);
   templateUrl: './data-table-v4.component.html',
   styleUrls: ['./data-table-v4.component.scss']
 })
-export class DataTableV4Component extends DataRenderBaseComponent implements AfterViewInit, AfterContentInit {
+export class DataTableV4Component extends DataRenderBaseComponent implements AfterContentInit {
   Highcharts: typeof Highcharts = Highcharts;
   constructor(protected telemetryService: TelemetryService) {
     super(telemetryService);
-  }
-  ngAfterViewInit(): void {
-    // if (this.renderingProperties.tableOptions != null) {
-    //   Object.keys(this.renderingProperties.tableOptions).forEach(item => {
-    //     this.table[item] = this.renderingProperties.tableOptions[item];
-    //   });
-    // }
   }
 
   ngAfterContentInit() {
     this.createFabricDataTableObjects();
 
-    //For dynamic passing table properties
     this.fabDetailsList.selectionMode = this.renderingProperties.descriptionColumnName ? SelectionMode.single : SelectionMode.none;
     this.fabDetailsList.selection = this.selection;
+    //Ideally,it should be enable if table is too large. 
+    //But for now, if enabled, it will show only 40 rows
     this.fabDetailsList.onShouldVirtualize = (list: IListProps<any>) => {
-      return this.rows.length > this.rowLimit ? false : true;
+      // return this.rows.length > this.rowLimit ? true : false;
+      return false;
     }
     if (this.renderingProperties.allowColumnSearch) {
       this.allowColumnSearch = this.renderingProperties.allowColumnSearch;
     }
-    this.fabDetailsList.usePageCache = true;
     this.fabDetailsList.layoutMode = DetailsListLayoutMode.justified;
 
 
     //Customize table style
-    let detailListStyles: IDetailsListProps["styles"] = { root: { height: '300px' } };
+    const detailListStyles: IStyle = { height: '300px', overflowX: "hidden" };
     if (this.renderingProperties.height != null && this.renderingProperties.height !== "") {
-      detailListStyles = { root: { height: this.renderingProperties.height } };
+      detailListStyles.height = this.renderingProperties.height;
     }
-    this.fabDetailsList.styles = detailListStyles;
+    this.fabDetailsList.styles = { root: detailListStyles };
   }
 
   // DataRenderingType = RenderingType.Table;
@@ -68,13 +62,13 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   selectionText = "";
   rows: any[];
   rowsClone: any[];
-  grouped: boolean = true;
   rowLimit = 25;
   renderingProperties: DataTableRendering;
   searchText = {};
   tableColumns: IColumn[] = [];
   allowColumnSearch: boolean = false;
-  searchTimeout:any;
+  searchTimeout: any;
+  searchAriaLabel = "Filter by all columns";
   @ViewChild(FabDetailsListComponent, { static: true }) fabDetailsList: FabDetailsListComponent;
   protected processData(data: DiagnosticData) {
     super.processData(data);
@@ -118,14 +112,14 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   updateFilter(e: { event: Event, newValue?: string }) {
     // const val = event.target.value.toLowerCase();
     const val = e.newValue.toLowerCase();
-    if(this.searchTimeout){
+    if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
     }
     this.searchTimeout = setTimeout(() => {
-      this.telemetryService.logEvent("TableSearch",{
+      this.telemetryService.logEvent("TableSearch", {
         'SearchValue': val
       });
-    },5000);
+    }, 5000);
     // this.searchTexts[column.name] = val;
     // const temp = this.rowsClone.filter(item => {
     //   let allMatch = true;
@@ -148,27 +142,6 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       }
     }
     this.rows = temp;
-  }
-
-  onActivate(event: any) {
-    if (!event.row || !event.row.TIMESTAMP) {
-      return;
-    }
-
-    let timestamp = new Date(event.row.TIMESTAMP + 'Z');
-    for (let i = 0; i < Highcharts.charts.length; i++) {
-      let chart = Highcharts.charts[i];
-      if (chart) {
-        let xi = chart.xAxis[0];
-        xi.removePlotLine("myPlotLine");
-        xi.addPlotLine({
-          value: timestamp.valueOf(),
-          width: 1,
-          color: 'grey',
-          id: 'myPlotLine'
-        });
-      }
-    }
   }
 
   clickColumn(e: { ev: Event, column: IColumn }) {
