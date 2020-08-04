@@ -64,8 +64,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   rowsClone: any[];
   rowLimit = 25;
   renderingProperties: DataTableRendering;
-  searchText = {};
-  tableColumns: IColumn[] = [];
+  columns: IColumn[] = [];
   allowColumnSearch: boolean = false;
   searchTimeout: any;
   searchAriaLabel = "Filter by all columns";
@@ -87,7 +86,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
         isMultiline: true,
       });
 
-    this.tableColumns = columns.filter((item) => item.name !== this.renderingProperties.descriptionColumnName);
+    this.columns = columns.filter((item) => item.name !== this.renderingProperties.descriptionColumnName);
     this.rows = [];
 
     this.diagnosticData.table.rows.forEach(row => {
@@ -120,21 +119,11 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
         'SearchValue': val
       });
     }, 5000);
-    // this.searchTexts[column.name] = val;
-    // const temp = this.rowsClone.filter(item => {
-    //   let allMatch = true;
-    //   Object.keys(this.searchTexts).forEach(key => {
-    //     if (item[key]) {
-    //       allMatch = allMatch && item[key].toString().toLowerCase().indexOf(this.searchTexts[key]) !== -1;
-    //     }
-    //   });
-    //   return allMatch;
-    // });
 
     //For single search bar
     const temp = [];
     for (const row of this.rowsClone) {
-      for (const col of this.tableColumns) {
+      for (const col of this.columns) {
         const cellValue: string = row[col.name].toString();
         if (cellValue.toString().toLowerCase().indexOf(val) !== -1) {
           temp.push(row);
@@ -159,7 +148,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     if (column.isSortedDescending) {
       this.rows.reverse();
     }
-    const col = this.tableColumns.find(c => c.name === columnName);
+    const col = this.columns.find(c => c.name === columnName);
     col.isSortedDescending = !isSortedDescending;
     col.isSorted = true;
   }

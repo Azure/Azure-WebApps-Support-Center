@@ -7,7 +7,7 @@
   <div [attr.data-is-scrollable]="true" style="overflow: auto;">
     <fab-details-list [items]="rows">
       <columns>
-        <fab-details-list-column #fabDetailListColumn *ngFor="let col of tableColumns;let colIndex=index"
+        <fab-details-list-column #fabDetailListColumn *ngFor="let col of columns;let colIndex=index"
           [key]="col.key" [name]="col.name" [minWidth]="100" [maxWidth]="150" [isSorted]="col.isSorted"
           [isSortedDescending]="col.isSortedDescending" (onColumnClick)="clickColumn($event)"
           [isResizable]="col.isResizable" [isMultiline]="col.isMultiline" [ariaLabel]="col.name">
