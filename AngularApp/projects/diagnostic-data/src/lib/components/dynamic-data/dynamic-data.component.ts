@@ -138,7 +138,7 @@ export class DynamicDataComponent implements OnInit {
       case RenderingType.TimeSeries:
         return TimeSeriesGraphComponent;
       case RenderingType.Table:
-        return this.isLegacy ? DataTableComponent : DataTableV4Component;
+        return DataTableV4Component;
       case RenderingType.DataSummary:
         return DataSummaryComponent;
       case RenderingType.Email:
@@ -154,7 +154,7 @@ export class DynamicDataComponent implements OnInit {
       case RenderingType.DetectorList:
         return DetectorListComponent;
       case RenderingType.DropDown:
-        return this.isLegacy ? DropdownComponent : DropdownV4Component;
+        return DropdownV4Component;
       case RenderingType.Cards:
         return this.isLegacy ? CardSelectionComponent : CardSelectionV4Component;
       case RenderingType.Solution:
