@@ -1,14 +1,13 @@
 <data-container [title]="renderingProperties.title" [description]="renderingProperties.description">
   <div *ngIf="allowColumnSearch" class="text-field">
-    <fab-text-field (onChange)=updateFilter($event)
-      [rows]="1"
-      [placeholder]="searchAriaLabel" [ariaLabel]="searchAriaLabel"></fab-text-field>
+    <fab-text-field (onChange)=updateFilter($event) [rows]="1" [placeholder]="searchAriaLabel"
+      [ariaLabel]="searchAriaLabel"></fab-text-field>
   </div>
   <div [attr.data-is-scrollable]="true" style="overflow: auto;">
     <fab-details-list [items]="rows">
       <columns>
-        <fab-details-list-column #fabDetailListColumn *ngFor="let col of columns;let colIndex=index"
-          [key]="col.key" [name]="col.name" [minWidth]="100" [maxWidth]="150" [isSorted]="col.isSorted"
+        <fab-details-list-column #fabDetailListColumn *ngFor="let col of columns;let colIndex=index" [key]="col.key"
+          [name]="col.name" [minWidth]="100" [maxWidth]="150" [isSorted]="col.isSorted"
           [isSortedDescending]="col.isSortedDescending" (onColumnClick)="clickColumn($event)"
           [isResizable]="col.isResizable" [isMultiline]="col.isMultiline" [ariaLabel]="col.name">
           <render>

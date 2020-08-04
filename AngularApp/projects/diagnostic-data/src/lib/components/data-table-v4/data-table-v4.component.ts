@@ -133,18 +133,18 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     this.rows = temp;
     //Update rows order with column sorting
     const column = this.columns.find(col => col.isSorted === true);
-    if(column){
-      this.sortColumn(column,column.isSortedDescending);
+    if (column) {
+      this.sortColumn(column, column.isSortedDescending);
     }
   }
 
   clickColumn(e: { ev: Event, column: IColumn }) {
     const isSortedDescending = !e.column.isSortedDescending;
-    this.sortColumn(e.column,isSortedDescending);
+    this.sortColumn(e.column, isSortedDescending);
 
   }
 
-  private sortColumn(column: IColumn,isSortedDescending:boolean) {
+  private sortColumn(column: IColumn, isSortedDescending: boolean) {
     const columnName = column.name;
 
     this.rows.sort((r1, r2) => {
@@ -155,10 +155,10 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       this.rows.reverse();
     }
     this.columns.forEach(column => {
-      if(column.name === columnName){
+      if (column.name === columnName) {
         column.isSortedDescending = isSortedDescending;
         column.isSorted = true;
-      }else {
+      } else {
         column.isSorted = false;
         column.isSortedDescending = true;
       }
