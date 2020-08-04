@@ -34,18 +34,15 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     if (this.renderingProperties.allowColumnSearch) {
       this.allowColumnSearch = this.renderingProperties.allowColumnSearch;
     }
-    this.fabDetailsList.layoutMode = DetailsListLayoutMode.justified;
-
 
     //Customize table style
-    const detailListStyles: IStyle = { height: '300px', overflowX: "hidden" };
+    const detailListStyles: IStyle = { height: '300px' };
     if (this.renderingProperties.height != null && this.renderingProperties.height !== "") {
       detailListStyles.height = this.renderingProperties.height;
     }
     this.fabDetailsList.styles = { root: detailListStyles };
   }
 
-  // DataRenderingType = RenderingType.Table;
   selection: ISelection = new Selection({
     onSelectionChanged: () => {
       const selectionCount = this.selection.getSelectedCount();
@@ -98,10 +95,6 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
 
       this.rows.push(rowObject);
 
-      if (this.renderingProperties.descriptionColumnName && this.rows.length > 0) {
-        this.selectionText = ""
-      }
-
       this.rowsClone = Object.assign([], this.rows);
     });
   }
@@ -109,7 +102,6 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
 
   //For now use one search bar for all columns 
   updateFilter(e: { event: Event, newValue?: string }) {
-    // const val = event.target.value.toLowerCase();
     const val = e.newValue.toLowerCase();
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
