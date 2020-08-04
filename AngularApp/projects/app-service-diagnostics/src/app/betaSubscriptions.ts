@@ -35,6 +35,7 @@ export class DemoSubscriptions {
         '688dfd98-3a87-47d6-abd8-55e5e5e87c78',//Jeff Hopper's Subscription, external
         '82acd5bb-4206-47d4-9c12-a65db028483d',//Christian Smith,
         '59673966-501b-4a6c-9ed5-12a166a5bde9', // Testing mwh geo
-        '750f6b19-1621-45ba-a641-0eb3babe2141' // Tulika Chaudharie's Subscription
+        '750f6b19-1621-45ba-a641-0eb3babe2141', // Tulika Chaudharie's Subscription
+        'fa125e53-a44d-494b-a386-824498910cd4' //  Venkata Manusha Gopisetty's subscription
     ];
 }
