@@ -1,7 +1,7 @@
 import { Component, ViewChild, AfterContentInit } from '@angular/core';
 import { DiagnosticData, DataTableRendering } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { SelectionMode, IColumn, IListProps, ISelection, Selection, IStyle } from 'office-ui-fabric-react';
+import { SelectionMode, IColumn, IListProps, ISelection, Selection, IStyle, DetailsListLayoutMode } from 'office-ui-fabric-react';
 import { FabDetailsListComponent } from '@angular-react/fabric';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 
@@ -42,6 +42,8 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       detailListStyles.height = this.renderingProperties.height;
     }
     this.fabDetailsList.styles = { root: detailListStyles };
+
+    this.fabDetailsList.layoutMode = DetailsListLayoutMode.justified;
   }
 
   selection: ISelection = new Selection({
@@ -82,6 +84,8 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
         isSorted: false,
         isResizable: true,
         isMultiline: true,
+        minWidth: 100,
+        maxWidth: 250
       });
 
     this.columns = columns.filter((item) => item.name !== this.renderingProperties.descriptionColumnName);
