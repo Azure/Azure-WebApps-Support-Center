@@ -12,4 +12,8 @@
     max-width: 300px; 
     margin-bottom: 30px;
   }
+
+  ::ng-deep .ms-DetailsHeader-cell{
+    font-weight: 600;
+  }
   
