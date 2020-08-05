@@ -1,7 +1,7 @@
-import { Component, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
+import { Component, ViewChild, AfterContentInit } from '@angular/core';
 import { DiagnosticData, DataTableRendering } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { SelectionMode, IColumn, IListProps, ISelection, Selection, IDetailsListProps, DetailsListLayoutMode, ITextFieldProps, IStyle } from 'office-ui-fabric-react';
+import { SelectionMode, IColumn, IListProps, ISelection, Selection, IStyle } from 'office-ui-fabric-react';
 import { FabDetailsListComponent } from '@angular-react/fabric';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 
@@ -30,15 +30,15 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       this.allowColumnSearch = this.renderingProperties.allowColumnSearch;
     }
 
-    if(this.renderingProperties.descriptionColumnName){
-     this.fabDetailsList.getRowAriaLabel = (row:any) => {
-       const descriptionName = this.renderingProperties.descriptionColumnName;
-       return `${descriptionName} : ${row[descriptionName]}`;
-     } 
+    if (this.renderingProperties.descriptionColumnName) {
+      this.fabDetailsList.getRowAriaLabel = (row: any) => {
+        const descriptionName = this.renderingProperties.descriptionColumnName;
+        return `${descriptionName} : ${row[descriptionName]}`;
+      }
     }
 
     const detailListStyles: IStyle = { height: '300px' };
-    if (this.renderingProperties.height != null && this.renderingProperties.height !== "") {
+    if (this.renderingProperties.height) {
       detailListStyles.height = this.renderingProperties.height;
     }
     this.fabDetailsList.styles = { root: detailListStyles };
