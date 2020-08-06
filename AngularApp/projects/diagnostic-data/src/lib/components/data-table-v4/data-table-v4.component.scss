@@ -13,6 +13,11 @@
     margin-bottom: 30px;
   }
 
+  .table-footer{
+    display: flex;
+    justify-content: center;
+  }
+
   ::ng-deep .ms-DetailsHeader-cell{
     font-weight: 600;
   }

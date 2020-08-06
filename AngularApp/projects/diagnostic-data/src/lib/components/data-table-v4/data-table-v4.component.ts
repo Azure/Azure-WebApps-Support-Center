@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, ViewChild, AfterContentInit, TemplateRef, OnInit, AfterViewInit } from '@angular/core';
 import { DiagnosticData, DataTableRendering } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { SelectionMode, IColumn, IListProps, ISelection, Selection, IStyle, DetailsListLayoutMode } from 'office-ui-fabric-react';
@@ -37,14 +37,19 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       }
     }
 
-    let tableHeight = this.rowsClone.length > 0 ? '300px' : '100px';
+    let tableHeight = `${this.calculateTableHeight()}px`;
     if (this.renderingProperties.height) {
       tableHeight = this.renderingProperties.height;
     }
     this.fabDetailsList.styles = { root: { height: tableHeight } };
 
     this.fabDetailsList.layoutMode = DetailsListLayoutMode.justified;
+
+    if (this.rowsClone.length === 0) {
+      this.fabDetailsList.renderDetailsFooter = this.emptyTableFooter
+    }
   }
+
 
   selection: ISelection = new Selection({
     onSelectionChanged: () => {
@@ -61,7 +66,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   });
   selectionText = "";
   rows: any[];
-  rowsClone: any[];
+  rowsClone: any[] = [];
   rowLimit = 25;
   renderingProperties: DataTableRendering;
   columns: IColumn[] = [];
@@ -69,6 +74,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   searchTimeout: any;
   searchAriaLabel = "Filter by all columns";
   @ViewChild(FabDetailsListComponent, { static: true }) fabDetailsList: FabDetailsListComponent;
+  @ViewChild('emptyTableFooter', { static: true }) emptyTableFooter: TemplateRef<any>
   protected processData(data: DiagnosticData) {
     super.processData(data);
     this.renderingProperties = <DataTableRendering>data.renderingProperties;
@@ -160,6 +166,12 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
         column.isSortedDescending = true;
       }
     });
+  }
+
+  calculateTableHeight(): number {
+    const maxTableHeight = 300;
+    const minTableHeight = 100;
+    return Math.min(maxTableHeight, 20 * this.rowsClone.length + minTableHeight);
   }
 }
 
