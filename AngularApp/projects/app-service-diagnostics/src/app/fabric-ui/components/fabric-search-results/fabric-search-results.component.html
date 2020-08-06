@@ -11,7 +11,7 @@
 
       <!-- for search results in home page -->
       <fab-details-list *ngIf="!isInCategory" [items]="features" [isHeaderVisible]="false"
-        [selectionMode]="selectionMode" (onItemInvoked)="invokeHandler($event)">
+        [selectionMode]="selectionMode" (onItemInvoked)="invokeHandler($event)" [ariaLabel]="'Search Results, use arrow up and down key to go through each result'">
         <columns>
           <fab-details-list-column>
             <render>

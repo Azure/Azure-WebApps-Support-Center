@@ -34,13 +34,15 @@ export class FabricSearchResultsComponent {
   isInCategory:boolean;
   get inputAriaLabel(): string {
     const resultCount = this.features.length;
+    let searchResultAriaLabel = "";
     if (this.searchValue === "") {
-      return "";
+      searchResultAriaLabel = "";
     } else if (resultCount >= 1) {
-      return resultCount > 1 ? `${resultCount} Results` : `${resultCount} Result`;
+      searchResultAriaLabel = resultCount > 1 ? `${resultCount} Results` : `${resultCount} Result`;
     } else {
-      return `No results were found.`;
+      searchResultAriaLabel = `No results were found.`;
     }
+    return `${searchResultAriaLabel} Press Escape to clear search result`;
   }
 
   @HostListener('mousedown', ['$event.target'])
@@ -159,8 +161,8 @@ export class FabricSearchResultsComponent {
   }
 
   onSearchBoxFocus() {
+    this.showSearchResults = true;
     this.features = this.featureService.getFeatures(this.searchValue);
-
     //Disable AutoComplete
     //get element which type is input,class has ms-SearchBox-field,placeholder=Search
     const input: any = document.querySelector("input.ms-SearchBox-field[placeholder=Search]");
