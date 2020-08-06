@@ -233,12 +233,7 @@ export class SiteFeatureService extends FeatureService {
             }
           })
         }
-      }
-    ];
-
-    let isBetaSubscription = DemoSubscriptions.betaSubscriptions.findIndex(item => this.subscriptionId.toLowerCase() === item.toLowerCase()) > -1;
-    if (isBetaSubscription)
-      this.proactiveTools.push({
+      }, {
         appType: AppType.WebApp | AppType.FunctionApp,
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
@@ -260,7 +255,9 @@ export class SiteFeatureService extends FeatureService {
             }
           })
         }
-      });
+      }
+    ];
+
     this._websiteFilter.transform(this.proactiveTools).forEach(tool => {
       this._features.push(tool);
     });
