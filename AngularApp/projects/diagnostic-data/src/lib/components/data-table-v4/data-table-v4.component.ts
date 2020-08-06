@@ -37,11 +37,11 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       }
     }
 
-    const detailListStyles: IStyle = { height: '300px' };
+    let tableHeight = this.rowsClone.length > 0 ? '300px' : '100px';
     if (this.renderingProperties.height) {
-      detailListStyles.height = this.renderingProperties.height;
+      tableHeight = this.renderingProperties.height;
     }
-    this.fabDetailsList.styles = { root: detailListStyles };
+    this.fabDetailsList.styles = { root: { height: tableHeight } };
 
     this.fabDetailsList.layoutMode = DetailsListLayoutMode.justified;
   }
