@@ -153,11 +153,14 @@ export class FabricSearchResultsComponent {
     this.isEscape = false;
 
 
-    //Remove tab to right Cross in search bar
-    const crossBtn: any = document.querySelector('.ms-SearchBox-clearButton button');
-    if (crossBtn) {
-      crossBtn.tabIndex = -1;
-    }
+    //remove tab for right Cross in search bar
+    //need async so when type first letter we can wait cross show up then disable it
+    setTimeout(() => {
+      const crossBtn: any = document.querySelector('.ms-SearchBox-clearButton button');
+      if (crossBtn) {
+        crossBtn.tabIndex = -1;
+      }
+    });
   }
 
   onSearchBoxFocus() {
