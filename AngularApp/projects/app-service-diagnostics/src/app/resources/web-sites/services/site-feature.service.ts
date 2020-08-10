@@ -53,10 +53,11 @@ export class SiteFeatureService extends FeatureService {
   sortFeatures() {
     let featureDisplayOrder = this._featureDisplayOrder;
     let locationPlacementId = '';
-    this.subscriptionPropertiesService.getSubscriptionProperties(this.subscriptionId).subscribe(response => {
-      locationPlacementId = response.body['subscriptionPolicies']['locationPlacementId'];
-    });
-
+    if(this.subscriptionPropertiesService){
+      this.subscriptionPropertiesService.getSubscriptionProperties(this.subscriptionId).subscribe(response => {
+        locationPlacementId = response.body['subscriptionPolicies']['locationPlacementId'];
+      });
+    }
     // remove features not applicable
     if (locationPlacementId && locationPlacementId.toLowerCase() === 'geos_2020-01-01') {
       this._features = this._features.filter(x => {
