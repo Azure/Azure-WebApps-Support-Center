@@ -22,10 +22,10 @@ export class FeatureService {
   protected _features: Feature[] = [];
   protected _featureDisplayOrder = [];
   private categories: Category[] = [];
-  private _featureSub:BehaviorSubject<Feature[]> = new BehaviorSubject<Feature[]>([]);
-  protected isLegacy:boolean;
+  private _featureSub: BehaviorSubject<Feature[]> = new BehaviorSubject<Feature[]>([]);
+  protected isLegacy: boolean;
   constructor(protected _diagnosticApiService: DiagnosticService, protected _contentService: ContentService, protected _router: Router, protected _authService: AuthService,
-    protected _logger: TelemetryService, protected _siteService: SiteService, protected _categoryService: CategoryService, protected _activatedRoute: ActivatedRoute,protected _portalActionService:PortalActionService,protected versionTestService:VersionTestService) {
+    protected _logger: TelemetryService, protected _siteService: SiteService, protected _categoryService: CategoryService, protected _activatedRoute: ActivatedRoute, protected _portalActionService: PortalActionService, protected versionTestService: VersionTestService) {
     this.versionTestService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy);
     this._categoryService.categories.subscribe(categories => this.categories = categories);
     this._authService.getStartupInfo().subscribe(startupInfo => {
@@ -44,14 +44,14 @@ export class FeatureService {
                 clickAction: this._createFeatureAction(detector.name, detector.category, () => {
                   //Remove after A/B test
                   if (this.isLegacy) {
-                      if(detector.id === 'appchanges') {
-                          this._portalActionService.openChangeAnalysisBlade();
-                      } else {
-                        this._router.navigateByUrl(`resource${startupInfo.resourceId}/detectors/${detector.id}`);
-                      }
+                    if (detector.id === 'appchanges') {
+                      this._portalActionService.openChangeAnalysisBlade();
+                    } else {
+                      this._router.navigateByUrl(`resource${startupInfo.resourceId}/detectors/${detector.id}`);
+                    }
                   } else {
                     const categoryId = this.getCategoryIdByCategoryName(detector.category);
-                    this.navigatTo(startupInfo,categoryId,detector.id,DetectorType.Detector);
+                    this.navigatTo(startupInfo, categoryId, detector.id, DetectorType.Detector);
                   }
                 })
               });
@@ -67,7 +67,7 @@ export class FeatureService {
                     this._router.navigateByUrl(`resource${startupInfo.resourceId}/analysis/${detector.id}`);
                   } else {
                     const categoryId = this.getCategoryIdByCategoryName(detector.category);
-                    this.navigatTo(startupInfo,categoryId,detector.id,DetectorType.Analysis);
+                    this.navigatTo(startupInfo, categoryId, detector.id, DetectorType.Analysis);
                   }
                 })
               });
@@ -101,10 +101,10 @@ export class FeatureService {
   protected _createFeatureAction(name: string, category: string, func: Function): FeatureAction {
     return () => {
       const eventProperties = {
-        'Name':name,
-        'Category':category
+        'Name': name,
+        'Category': category
       }
-      this._logger.logEvent('FeatureClicked',eventProperties);
+      this._logger.logEvent('FeatureClicked', eventProperties);
       func();
     };
   }
@@ -113,16 +113,15 @@ export class FeatureService {
     return this._features.filter(feature => feature.category === category.name);
   }
 
-  getFeaturesForCategorySub(category:Category):Observable<Feature[]> {
+  getFeaturesForCategorySub(category: Category): Observable<Feature[]> {
     return this._featureSub.pipe(
       map(features => this.getFeaturesForCategory(category)
-    ));
+      ));
   }
 
   getFeatures(searchValue?: string) {
-    const featureUnique = this._features.filter((feature,index,array) =>
-    {
-        return array.findIndex(fea =>feature.name === fea.name) === index;
+    const featureUnique = this._features.filter((feature, index, array) => {
+      return array.findIndex(fea => feature.name === fea.name) === index;
     })
 
     if (!searchValue || searchValue === '') {
@@ -135,11 +134,11 @@ export class FeatureService {
       //Remove after A/B Test
       if (this.isLegacy) {
         return feature.name.toLowerCase().indexOf(searchValue) != -1
-        || (feature.category && feature.category.toLowerCase().indexOf(searchValue) != -1)
-      || (feature.description && feature.description.toLowerCase().indexOf(searchValue) != -1);
+          || (feature.category && feature.category.toLowerCase().indexOf(searchValue) != -1)
+          || (feature.description && feature.description.toLowerCase().indexOf(searchValue) != -1);
       } else {
         return feature.name.toLowerCase().indexOf(searchValue) != -1
-        || (feature.category && feature.category.toLowerCase().indexOf(searchValue) != -1);
+          || (feature.category && feature.category.toLowerCase().indexOf(searchValue) != -1);
       }
     });
   }
@@ -149,47 +148,49 @@ export class FeatureService {
   }
 
   private getCategoryIdByCategoryName(name: string): string {
-    let categoryId: string;
+    //Default set to first category id, to make sure routing is working
+    let categoryId: string = this.categories[0].id;
     const currentCategoryId = this._activatedRoute.root.firstChild.firstChild.firstChild.firstChild.snapshot.params["category"];
     //If category name is "XXX Tools" then should belong to Diagnostic Tool Category
-    if (name && name.includes('Tools')) {
-      categoryId = 'DiagnosticTools';
+    if (name && name.includes('Tools') && this.categories.find(category => category.name === "Diagnostic Tools")) {
+      const category = this.categories.find(category => category.name === "Diagnostic Tools");
+      categoryId = category.id;
     }
     else if (name && this.categories.find(category => category.name === name)) {
       const category = this.categories.find(category => category.name === name);
       categoryId = category.id;
     }
+    //In category-overview page and uncategoried detector,return current categoryId
+    else if (currentCategoryId) {
+      categoryId = currentCategoryId;
+    }
     //In home page,no categoryId in router,return category as availability&perf
-    else if (!currentCategoryId){
+    else if (this.categories.find(category => category.name === "Availability and Performance")) {
       const category = this.categories.find(category => category.name === "Availability and Performance");
       categoryId = category.id;
-    }
-    //In category-overview page and uncategoried detector,return current categoryId
-    else {
-      categoryId = currentCategoryId;
     }
     return categoryId;
 
   }
 
-  private navigatTo(startupInfo:StartupInfo,category:string,detector:string,type:DetectorType) {
-      if(detector === 'appchanges') {
-        this._portalActionService.openChangeAnalysisBlade();
-        return;
-      }
+  private navigatTo(startupInfo: StartupInfo, category: string, detector: string, type: DetectorType) {
+    if (detector === 'appchanges') {
+      this._portalActionService.openChangeAnalysisBlade();
+      return;
+    }
     const isHomepage = !this._activatedRoute.root.firstChild.firstChild.firstChild.firstChild.snapshot.params["category"];
     //If it's in category overview page
     if (!isHomepage) {
-         if (type === DetectorType.Detector) {
-            this._router.navigateByUrl(`resource${startupInfo.resourceId}/categories/${category}/detectors/${detector}`);
-        } else if (type === DetectorType.Analysis) {
-            this._router.navigateByUrl(`resource${startupInfo.resourceId}/categories/${category}/analysis/${detector}`);
+      if (type === DetectorType.Detector) {
+        this._router.navigateByUrl(`resource${startupInfo.resourceId}/categories/${category}/detectors/${detector}`);
+      } else if (type === DetectorType.Analysis) {
+        this._router.navigateByUrl(`resource${startupInfo.resourceId}/categories/${category}/analysis/${detector}`);
       }
 
     }
     //If it's in Home page,open new category page
     else {
-        this._portalActionService.openBladeDiagnoseDetectorId(category,detector,type);
+      this._portalActionService.openBladeDiagnoseDetectorId(category, detector, type);
     }
   }
 }
