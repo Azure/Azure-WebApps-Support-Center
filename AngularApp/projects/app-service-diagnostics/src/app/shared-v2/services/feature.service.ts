@@ -151,8 +151,8 @@ export class FeatureService {
     //Default set to first category id, to make sure routing is working
     let categoryId: string = this.categories.length > 0 ? this.categories[0].id : "";
     const currentCategoryId = this._activatedRoute.root.firstChild.firstChild.firstChild.firstChild.snapshot.params["category"];
-    //If category name is "XXX Tools" then should belong to Diagnostic Tool Category
-    if (name && name.includes('Tools') && this.categories.find(category => category.name === "Diagnostic Tools")) {
+    //If category name is "XXX Tools" and has Diagnostic Tools category,then should belong to Diagnostic Tool Category.For now this should be working in Windows Web App 
+    if ((name === "Diagnostic Tools" || name === "Support Tools" || name === "Proactive Tools") && this.categories.find(category => category.name === "Diagnostic Tools")) {
       const category = this.categories.find(category => category.name === "Diagnostic Tools");
       categoryId = category.id;
     }
