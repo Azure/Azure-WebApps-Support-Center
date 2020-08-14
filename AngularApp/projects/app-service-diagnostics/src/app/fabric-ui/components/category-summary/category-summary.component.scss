@@ -24,6 +24,12 @@
     overflow-x: hidden;
   }
 
+  section.content-hide-nav{
+    min-width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
   .sidebar, .content{
     flex-basis: auto;
   }
