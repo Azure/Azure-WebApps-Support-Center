@@ -50,7 +50,16 @@ namespace AppLensV3.Configuration
             services.AddSingleton<IDiagnosticClientService, DiagnosticClient>();
             services.AddObserver(configuration);
             services.AddSingleton<IEmailNotificationService, NullableEmailNotificationService>();
-            services.AddSingleton<IGithubClientService, GithubClientService>();
+
+            if (configuration.GetValue("AzureStorage:Detectors:Enabled", false))
+            {
+                services.AddSingleton<IGithubClientService, AzureStorageDetectorClientService>();
+            }
+            else
+            {
+                services.AddSingleton<IGithubClientService, GithubClientService>();
+            }
+
             services.AddSingleton<IGraphClientService, NationalCloudGraphClientService>();
 
             services.AddMemoryCache();
