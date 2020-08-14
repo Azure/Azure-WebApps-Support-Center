@@ -65,8 +65,15 @@ export class CreateStorageAccountPanelComponent implements OnInit {
           this.errorMessage = "Failed to retrieve storage accounts";
           this.error = error;
         });
-      this.newStorageAccountName = (this._siteService.currentSiteStatic.name.substring(0, 6) + this.randomHash()).toLowerCase();
+      this.newStorageAccountName = this.getNewStorageAccoutName(this._siteService.currentSiteStatic.name);
     });
+  }
+
+  getNewStorageAccoutName(siteName: string): string {
+    const searchRegExp = /-/gi;
+    siteName = siteName.replace(searchRegExp, '');
+    siteName = siteName.substring(0, siteName.length > 6 ? 6 : siteName.length);
+    return siteName + this.randomHash().toLowerCase();
   }
 
   initStorageAccounts(storageAccounts: StorageAccount[], currentLocation: string) {
@@ -109,11 +116,14 @@ export class CreateStorageAccountPanelComponent implements OnInit {
     this.globals.openCreateStorageAccountPanel = false;
   }
 
-  updateStorageAccount(storageAccount: string) {
-    this.newStorageAccountName = storageAccount;
+  updateStorageAccount(e: { event: Event, newValue?: string }) {
+    this.newStorageAccountName = e.newValue.toString();
   }
 
   saveChanges() {
+    this.error = '';
+    this.errorMessage = '';
+
     if (this.createNewMode) {
       this.creatingStorageAccount = true;
       this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
@@ -147,6 +157,11 @@ export class CreateStorageAccountPanelComponent implements OnInit {
     this.generatingSasUri = true;
     this._storageService.getStorageAccountKey(storageAccountId).subscribe(resp => {
       if (resp.keys && resp.keys.length > 0) {
+        if (resp.keys[0].value == null) {
+          this.generatingSasUri = false;
+          this.error = "Failed to retrieve keys for this storage account. Please choose a different storage account or create a new one";
+          return;
+        }
         let storageKey = resp.keys[0].value;
         this._daasService.setBlobSasUri(this.siteToBeDiagnosed, storageAccountName, storageKey).subscribe(resp => {
           if (resp) {
@@ -168,13 +183,13 @@ export class CreateStorageAccountPanelComponent implements OnInit {
         },
           error => {
             this.generatingSasUri = false;
-            this.errorMessage = "Failed to set BlobSasUri for the current app. " 
+            this.errorMessage = "Failed to set BlobSasUri for the current app. ";
             this.error = error;
           });
       }
     },
       error => {
-        this.errorMessage = "Failed while getting storage account key" 
+        this.errorMessage = "Failed while getting storage account key";
         this.generatingSasUri = false;
         this.error = error;
       });

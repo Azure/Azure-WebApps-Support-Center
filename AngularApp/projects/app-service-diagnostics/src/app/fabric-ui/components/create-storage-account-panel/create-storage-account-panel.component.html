@@ -34,7 +34,7 @@
       Account name <span class="required">*</span>
     </div>
     <div class="col-md-6" *ngIf="createNewMode">
-      <fab-text-field [value]="newStorageAccountName" (onChange)="updateStorageAccount($event.target.value)">
+      <fab-text-field [value]="newStorageAccountName" (onChange)="updateStorageAccount($event)">
       </fab-text-field>
       
     </div>
