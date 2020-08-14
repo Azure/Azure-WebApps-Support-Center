@@ -1,7 +1,9 @@
 <ng-container *ngIf="notificationService.activeNotification">
-    <div class="notification" [class.notification-noaction]="!notificationService.activeNotification.action" (click)="notificationService.currentNotificationAction()">
-        <i class="fa" [ngClass]="notificationService.activeNotification.icon"></i> 
+    <div class="notification" [class.notification-noaction]="!notificationService.activeNotification.action"
+        (click)="notificationService.currentNotificationAction()">
+        <i class="fa" [ngClass]="notificationService.activeNotification.icon"></i>
         {{notificationService.activeNotification.title}}
-        <i class="fa fa-close pull-right" (click)="notificationService.dismiss()"></i>
+        <i *ngIf="!notificationService.activeNotification.disableDismiss" class="fa fa-close pull-right"
+            (click)="notificationService.dismiss()"></i>
     </div>
 </ng-container>

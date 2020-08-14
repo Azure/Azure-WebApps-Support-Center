@@ -4,9 +4,10 @@ import { map, flatMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ArmResource } from '../models/arm';
 import { ArmService } from '../../shared/services/arm.service';
-import { ArmResourceConfig, ResourceDescriptor, ResourceDescriptorGroups } from '../../shared/models/arm/armResourceConfig';
+import { ArmResourceConfig } from '../../shared/models/arm/armResourceConfig';
 import { GenericArmConfigService } from '../../shared/services/generic-arm-config.service';
 import { PortalReferrerMap } from '../../shared/models/portal-referrer-map';
+import { ResourceDescriptor, ResourceDescriptorGroups } from 'diagnostic-data';
 
 @Injectable({providedIn: 'root'})
 export class ResourceService {
@@ -141,66 +142,7 @@ export class ResourceService {
         }));
     }
   }
-
-
-  public parseResourceUri(resourceUri: string): ResourceDescriptor {
-    let resourceDesc: ResourceDescriptor = new ResourceDescriptor();
-    if (resourceUri) {
-      if (!resourceUri.startsWith('/')) {
-        resourceUri = '/' + resourceUri;
-      }
-
-      var result = resourceUri.match(resourceDesc.resourceUriRegExp);
-      if (result && result.length > 0) {
-
-        if (result[ResourceDescriptorGroups.subscription]) {
-          resourceDesc.subscription = result[ResourceDescriptorGroups.subscription];
-        }
-        else {
-          resourceDesc.subscription = '';
-        }
-
-        if (result[ResourceDescriptorGroups.resourceGroup]) {
-          resourceDesc.resourceGroup = result[ResourceDescriptorGroups.resourceGroup];
-        }
-        else {
-          resourceDesc.resourceGroup = '';
-        }
-
-        if (result[ResourceDescriptorGroups.provider]) {
-          resourceDesc.provider = result[ResourceDescriptorGroups.provider];
-        }
-        else {
-          resourceDesc.provider = '';
-        }
-
-        if (result[ResourceDescriptorGroups.resource]) {
-          const resourceParts = result[ResourceDescriptorGroups.resource].split('/');
-          if (resourceParts.length % 2 != 0) {
-            //ARM URI is incorrect. The resource section contains an uneven number of parts
-            resourceDesc.resource = '';
-          }
-          else {
-            for (var i = 0; i < resourceParts.length; i += 2) {
-              resourceDesc.type = resourceParts[i];
-              resourceDesc.resource = resourceParts[i + 1];
-
-              resourceDesc.types.push(resourceDesc.type);
-              resourceDesc.resources.push(resourceDesc.resource);
-            }
-          }
-        }
-        else {
-          resourceDesc.resource = '';
-        }
-
-      }
-    }
-    return resourceDesc;
-  }
-
-
-
+  
   protected makeWarmUpCalls() {
     //No warm up calls in base
   }

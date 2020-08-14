@@ -1,15 +1,16 @@
 import { AdalService } from 'adal-angular4';
 import { DetectorMetaData, DetectorResponse, QueryResponse, TelemetryService } from 'diagnostic-data';
-import {map, retry,  catchError, tap } from 'rxjs/operators';
+import { map, retry, catchError, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Observable ,  throwError as observableThrowError } from 'rxjs';
+import { Observable, throwError as observableThrowError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { HttpMethod } from '../models/http';
 import { Package } from '../models/package';
 import { CacheService } from './cache.service';
 import { Guid } from 'projects/app-service-diagnostics/src/app/shared/utilities/guid';
 import { Router } from '@angular/router';
+import { TelemetryPayload } from 'diagnostic-data';
 
 @Injectable()
 export class DiagnosticApiService {
@@ -20,7 +21,7 @@ export class DiagnosticApiService {
   public Location: string = null;
 
   constructor(private _httpClient: HttpClient, private _cacheService: CacheService,
-    private _adalService: AdalService, private _telemetryService: TelemetryService, private _router:Router) { }
+    private _adalService: AdalService, private _telemetryService: TelemetryService, private _router: Router) { }
 
   public get diagnosticApi(): string {
     return environment.production ? '' : this.localDiagnosticApi;
@@ -225,25 +226,27 @@ export class DiagnosticApiService {
     let url = `${this.diagnosticApi}api/invoke`
     let request: Observable<any>;
 
-    if(additionalHeaders == null) {
+    if (additionalHeaders == null) {
       additionalHeaders = new Map<string, string>();
     }
 
-    let requestId:string = Guid.newGuid();
-    if(!additionalHeaders.has('x-ms-request-id') || additionalHeaders.get('x-ms-request-id') == null || additionalHeaders.get('x-ms-request-id') == '' ) {
+    let requestId: string = Guid.newGuid();
+    if (!additionalHeaders.has('x-ms-request-id') || additionalHeaders.get('x-ms-request-id') == null || additionalHeaders.get('x-ms-request-id') == '') {
       additionalHeaders.set('x-ms-request-id', requestId);
     }
 
     let eventProps = {
-      'resourceId': path,            
+      'resourceId': path,
       'requestId': requestId,
       'requestUrl': url,
       'routerUrl': this._router.url,
       'targetRuntime': "Liberation"
     };
-    this._telemetryService.logEvent("RequestRoutingDetails", eventProps);
 
-    
+    let logData = {
+      eventIdentifier: "RequestRoutingDetails",
+      eventPayload: eventProps
+    } as TelemetryPayload;
 
     if (getFullResponse) {
       request = this._httpClient.post<T>(url, body, {
@@ -257,7 +260,13 @@ export class DiagnosticApiService {
     }
 
     let keyPostfix = internalClient === true ? "-true" : "-false";
-    return useCache ? this._cacheService.get(this.getCacheKey(method, path + keyPostfix), request, invalidateCache) : request;
+    if (useCache) {
+      return this._cacheService.get(this.getCacheKey(method, path + keyPostfix), request, invalidateCache, logData);
+    }
+    else {
+      this._telemetryService.logEvent(logData.eventIdentifier, logData.eventPayload);
+      return request;
+    }
   }
 
   public get<T>(path: string, invalidateCache: boolean = false): Observable<T> {
@@ -296,9 +305,9 @@ export class DiagnosticApiService {
 
     if (this.GeomasterServiceAddress)
       headers = headers.set("x-ms-geomaster-hostname", this.GeomasterServiceAddress);
-      
+
     if (this.GeomasterName)
-      headers = headers.set("x-ms-geomaster-name", this.GeomasterName);      
+      headers = headers.set("x-ms-geomaster-name", this.GeomasterName);
 
     if (path) {
       headers = headers.set('x-ms-path-query', encodeURI(path));

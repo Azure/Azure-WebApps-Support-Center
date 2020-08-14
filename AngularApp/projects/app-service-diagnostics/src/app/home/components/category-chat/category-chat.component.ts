@@ -16,10 +16,12 @@ export class CategoryChatComponent implements OnInit {
   category: Category;
 
   constructor(private _injector: Injector, private _activatedRoute: ActivatedRoute, private _categoryService: CategoryService, private _chatState: CategoryChatStateService) {
-    this._categoryService.categories.subscribe(categories => {
-      this.category = categories.find(category => category.id === this._activatedRoute.snapshot.params.category);
-      this._chatState.category = this.category;
-      this.startingKey = `welcome-${this.category.id}`;
+    this._activatedRoute.params.subscribe(params => {
+      this._categoryService.categories.subscribe(categories => {
+        this.category = categories.find(category => category.id === this._activatedRoute.snapshot.params.category);
+        this._chatState.category = this.category;
+        this.startingKey = `welcome-${this.category.id}`;
+      });
     });
   }
 

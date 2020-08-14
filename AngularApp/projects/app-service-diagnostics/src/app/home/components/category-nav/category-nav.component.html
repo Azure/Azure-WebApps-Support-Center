@@ -6,7 +6,7 @@
           <collapsible-menu-item *ngFor="let detector of detectorList" [menuItem]="detector"
             [class.selected]="isSelected"></collapsible-menu-item>
         </section-divider>
-        <section-divider *ngIf="orphanDetectorList.length>0" [label]="'Others'" [routePath]="'Others'">
+        <section-divider *ngIf="orphanDetectorList&&orphanDetectorList.length>0" [label]="'Others'" [routePath]="'Others'">
           <collapsible-menu-item *ngFor="let orphanDetector of orphanDetectorList" [menuItem]="orphanDetector"
             [class.selected]="isSelected"></collapsible-menu-item>
         </section-divider>

@@ -18,6 +18,7 @@ const suffix = ' cm';
 export class CategoryOverviewComponent implements OnInit {
     categoryId: string = "";
     category: Category;
+    categoryOverviewDetector: string = "";
 
     onValidate(value: string, event: Event): string | void {
         value = this._removeSuffix(value, suffix);
@@ -50,7 +51,8 @@ export class CategoryOverviewComponent implements OnInit {
             this.category = categories.find(category => categoryParam === category.id.toLowerCase() || category.name.replace(/\s/g, '').toLowerCase() === categoryParam);
         });
 
-        this.categoryId = this.category.id
+        this.categoryId = this.category.id;
+        this.categoryOverviewDetector =  this.category.overviewDetectorId;
     }
 
     ngAfterViewInit () {

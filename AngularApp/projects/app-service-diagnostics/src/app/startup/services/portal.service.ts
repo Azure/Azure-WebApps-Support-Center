@@ -1,6 +1,6 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
-import { StartupInfo, Event, Data, Verbs, Action, LogEntryLevel, Message, OpenBladeInfo } from '../../shared/models/portal';
+import { StartupInfo, Event, Data, Verbs, Action, LogEntryLevel, Message, OpenBladeInfo, KeyValuePair } from '../../shared/models/portal';
 import { ErrorEvent } from '../../shared/models/error-event';
 import { BroadcastService } from './broadcast.service';
 import { BroadcastEvent } from '../models/broadcast-event';
@@ -15,7 +15,8 @@ export class PortalService {
     private sendChatAvailabilityObservable: ReplaySubject<any>;
     private sendbuiltChatUrlObservable: ReplaySubject<any>;
     private sendChatUrlObservable: ReplaySubject<any>;
-    private notifyChatOpenedObservable: ReplaySubject<any>;
+    private getBladeReturnValueObservable: ReplaySubject<KeyValuePair>;
+    private setBladeReturnValueObservable: ReplaySubject<any>;
 
 
     private shellSrc: string;
@@ -27,15 +28,18 @@ export class PortalService {
         this.startupInfoObservable = new ReplaySubject<StartupInfo>(1);
         this.tokenObservable = new ReplaySubject<string>(1);
         this.appInsightsResourceObservable = new ReplaySubject<any>(1);
-        
+
         //CXP Chat messages
         this.sendChatAvailabilityObservable = new ReplaySubject<any>(1);
         this.sendbuiltChatUrlObservable = new ReplaySubject<any>(1);
         this.sendChatUrlObservable = new ReplaySubject<any>(1);
 
+        this.getBladeReturnValueObservable = new ReplaySubject<KeyValuePair>(1);
+        this.setBladeReturnValueObservable = new ReplaySubject<any>(1);
+
         if (this.inIFrame()) {
             this.initializeIframe();
-        }        
+        }
     }
 
     getStartupInfo(): ReplaySubject<StartupInfo> {
@@ -62,9 +66,22 @@ export class PortalService {
         return this.sendChatUrlObservable;
     }
 
-    notifyChatOpened():ReplaySubject<any> {
-        return this.notifyChatOpenedObservable;
+    getBladeReturnValue(): ReplaySubject<KeyValuePair> {
+        return this.getBladeReturnValueObservable;
     }
+
+    public setBladeReturnValue(dataToSet: KeyValuePair): ReplaySubject<any> {
+        if (!!dataToSet) {
+            this.postMessage(Verbs.setBladeReturnValue, JSON.stringify(dataToSet));
+            return this.setBladeReturnValueObservable;
+        }
+        else {
+            this.logMessage(LogEntryLevel.Error, 'NULL data cannot be set as blade return value.');
+            return null;
+        }
+    }
+
+
 
     initializeIframe(): void {
         this.shellSrc = this.getQueryStringParameter('trustedAuthority');
@@ -72,8 +89,8 @@ export class PortalService {
         window.addEventListener(Verbs.message, this.iframeReceivedMsg.bind(this), false);
 
         // This is a required message. It tells the shell that your iframe is ready to receive messages.
-        this.postMessage(Verbs.ready, null);
-        this.postMessage(Verbs.getStartupInfo, null);
+        this.postMessage(Verbs.ready, JSON.stringify({eventType: "ready"}));
+        this.postMessage(Verbs.getStartupInfo, JSON.stringify({eventType: "get-startup-info"}));
 
         this._broadcastService.subscribe<ErrorEvent>(BroadcastEvent.Error, error => {
             if (error.details) {
@@ -101,7 +118,8 @@ export class PortalService {
     }
 
     logAction(subcomponent: string, action: string, data?: any): void {
-        const actionStr = JSON.stringify(<Action>{
+        const actionStr = JSON.stringify({
+            eventType: "log-action",
             subcomponent: subcomponent,
             action: action,
             data: data
@@ -129,14 +147,13 @@ export class PortalService {
     }
 
     private iframeReceivedMsg(event: Event): void {
-
         if (!event || !event.data || event.data.signature !== this.portalSignature) {
             return;
         }
 
         const data = event.data.data;
         const methodName = event.data.kind;
-        console.log('[iFrame] Received mesg: ' + methodName, event);
+        console.log('[iFrame] Received validated mesg: ' + methodName, event);
 
         if (methodName === Verbs.sendStartupInfo) {
             const info = <StartupInfo>data;
@@ -148,20 +165,25 @@ export class PortalService {
         } else if (methodName === Verbs.sendChatAvailability) {
             const chatAvailability = data;
             this.sendChatAvailabilityObservable.next(chatAvailability);
-        } else if(methodName === Verbs.sendbuiltChatUrl) {
+        } else if (methodName === Verbs.sendbuiltChatUrl) {
             const chatUrl = data;
             this.sendbuiltChatUrlObservable.next(chatUrl);
-        } else if(methodName === Verbs.sendChatUrl) {
+        } else if (methodName === Verbs.sendChatUrl) {
             const chatUrlAfterAvailability = data;
             this.sendChatUrlObservable.next(chatUrlAfterAvailability);
-        } else if (methodName == Verbs.notifyChatOpenedResponse) {
-            const notifyChatOpenedResponse = data;
-            this.notifyChatOpenedObservable.next(notifyChatOpenedResponse);
+        } else if (methodName == Verbs.getBladeReturnValueResponse) {
+            const getBladeReturnValueResponse = data;
+            this.getBladeReturnValueObservable.next(getBladeReturnValueResponse);
+        } else if (methodName == Verbs.setBladeReturnValueResponse) {
+            const setBladeReturnValueResponse = data;
+            this.setBladeReturnValueObservable.next(setBladeReturnValueResponse);
         } else if (methodName == Verbs.sendToken) {
             const token = data;
-            this.tokenObservable.next(token);            
+            this.tokenObservable.next(token);
         }
     }
+
+
 
     public postMessage(verb: string, data: string) {
         if (this.inIFrame()) {

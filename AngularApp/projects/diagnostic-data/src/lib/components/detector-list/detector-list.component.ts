@@ -2,9 +2,9 @@ import { forkJoin as observableForkJoin, Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 import { catchError } from 'rxjs/operators';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, Pipe, PipeTransform } from '@angular/core';
+import { Component, Pipe, PipeTransform, Inject } from '@angular/core';
 import {
-    DetectorListRendering, DetectorMetaData, DetectorResponse, DiagnosticData, HealthStatus
+  DetectorListRendering, DetectorMetaData, DetectorResponse, DiagnosticData, HealthStatus
 } from '../../models/detector';
 import { LoadingStatus } from '../../models/loading';
 import { StatusStyles } from '../../models/styles';
@@ -13,6 +13,9 @@ import { DiagnosticService } from '../../services/diagnostic.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
+import { ParseResourceService } from '../../services/parse-resource.service';
+import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
+
 
 @Component({
   selector: 'detector-list',
@@ -21,7 +24,7 @@ import { DataRenderBaseComponent } from '../data-render-base/data-render-base.co
   animations: [
     trigger('expand', [
       state('shown', style({ height: '*' })),
-      state('hidden', style({ height: '0px',visibility:'hidden' })),
+      state('hidden', style({ height: '0px', visibility: 'hidden' })),
       transition('* => *', animate('.25s'))
     ])
   ]
@@ -31,27 +34,60 @@ export class DetectorListComponent extends DataRenderBaseComponent {
   LoadingStatus = LoadingStatus;
   renderingProperties: DetectorListRendering;
   detectorMetaData: DetectorMetaData[];
-  detectorViewModels: any[];
+  detectorViewModels: any[] = [];
   DetectorStatus = HealthStatus;
   errorDetectors: any[] = [];
   private childDetectorsEventProperties = {};
-
-  constructor(private _diagnosticService: DiagnosticService, protected telemetryService: TelemetryService,
-    private _detectorControl: DetectorControlService) {
+  overrideResourceUri: string = "";
+  resourceType: string = "";
+  errorMsg: string = "";
+  internalErrorMsg: string = "";
+  isPublic: boolean;
+  imgSrc: string = "";
+  resourceText: string = "";
+  constructor(private _diagnosticService: DiagnosticService, protected telemetryService: TelemetryService, private _detectorControl: DetectorControlService, private parseResourceService: ParseResourceService, @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig) {
     super(telemetryService);
+    this.isPublic = this.config && this.config.isPublic;
   }
 
   protected processData(data: DiagnosticData) {
     super.processData(data);
     this.renderingProperties = <DetectorListRendering>data.renderingProperties;
-    this.getDetectorResponses();
+    this.getResponseFromResource();
+  }
+
+  private getResponseFromResource() {
+    let isFromDependentResource = this.checkIsFromDependentResource();
+    if (isFromDependentResource) {
+      this.parseResourceService.checkIsResourceSupport(this.overrideResourceUri, false).subscribe(error => {
+        this.internalErrorMsg = error;
+        if (error === "") {
+          this.resourceType = this.parseResourceService.resourceType;
+          this.imgSrc = this.parseResourceService.resource.imgSrc;
+          
+          if(this.isPublic){
+            this.resourceText = `Showing diagnostics from the dependent resource type: ${this.resourceType}`;
+          } else {
+            this.resourceText = `Showing detectors from the dependent resource type: ${this.resourceType}`;
+          }
+
+          this.logEvent("DependentChildDetectorsLoaded", {
+            DependentResourceUri: this.overrideResourceUri,
+            DependentResourceType: this.resourceType
+          });
+          this.getDetectorResponses();
+        }
+      });
+    } else {
+      //From parent resource
+      this.getDetectorResponses();
+    }
   }
 
   private getDetectorResponses() {
-
-    this._diagnosticService.getDetectors().subscribe(detectors => {
+    this._diagnosticService.getDetectors(this.overrideResourceUri).subscribe(detectors => {
       this.detectorMetaData = detectors.filter(detector => this.renderingProperties.detectorIds.indexOf(detector.id) >= 0);
-      this.detectorViewModels = this.detectorMetaData.map(detector => this.getDetectorViewModel(detector, this.renderingProperties.additionalParams));
+      this.detectorViewModels = this.detectorMetaData.map(detector => this.getDetectorViewModel(detector, this.renderingProperties.additionalParams, this.overrideResourceUri));
 
       const requests: Observable<any>[] = [];
       this.detectorViewModels.forEach((metaData, index) => {
@@ -77,7 +113,29 @@ export class DetectorListComponent extends DataRenderBaseComponent {
         this.childDetectorsEventProperties['ChildDetectorsList'] = JSON.stringify(childDetectorData);
         this.logEvent(TelemetryEventNames.ChildDetectorsSummary, this.childDetectorsEventProperties);
       });
-    });
+    },
+      (err => {
+        if (this.overrideResourceUri !== "") {
+          const e = JSON.parse(err);
+          let code: string = "";
+          if (e && e.error && e.error.code) {
+            code = e.error.code;
+          }
+          switch (code) {
+            case "InvalidAuthenticationTokenTenant":
+              this.errorMsg = `No Access for resource ${this.resourceType} , please check your access`;
+              break;
+
+            case "":
+              break;
+
+            default:
+              this.errorMsg = code;
+              break;
+          }
+        }
+      })
+    );
   }
 
   public retryRequest(metaData: any) {
@@ -91,17 +149,17 @@ export class DetectorListComponent extends DataRenderBaseComponent {
       });
   }
 
-  private getDetectorViewModel(detector: DetectorMetaData, additionalParams?: string) {
-      let queryString = null;
-      if(additionalParams) {
-          let contextToPass = <Object>JSON.parse(additionalParams);
-          queryString = '';
-          for(var key in contextToPass) {
-              if(contextToPass.hasOwnProperty(key)) {
-                queryString += `&${key}=${encodeURIComponent(contextToPass[key])}`;
-              }
-          }
+  private getDetectorViewModel(detector: DetectorMetaData, additionalParams?: string, overwriteResourceUrl?: string) {
+    let queryString = null;
+    if (additionalParams) {
+      let contextToPass = <Object>JSON.parse(additionalParams);
+      queryString = '';
+      for (var key in contextToPass) {
+        if (contextToPass.hasOwnProperty(key)) {
+          queryString += `&${key}=${encodeURIComponent(contextToPass[key])}`;
+        }
       }
+    }
     return {
       title: detector.name,
       metadata: detector,
@@ -111,7 +169,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
       statusIcon: null,
       expanded: false,
       response: null,
-      request: this._diagnosticService.getDetector(detector.id, this._detectorControl.startTimeString, this._detectorControl.endTimeString, this._detectorControl.shouldRefresh, this._detectorControl.isInternalView, queryString)
+      request: this._diagnosticService.getDetector(detector.id, this._detectorControl.startTimeString, this._detectorControl.endTimeString, this._detectorControl.shouldRefresh, this._detectorControl.isInternalView, queryString, overwriteResourceUrl)
     };
   }
 
@@ -137,6 +195,13 @@ export class DetectorListComponent extends DataRenderBaseComponent {
 
     // Log children detectors click
     this.logEvent(TelemetryEventNames.ChildDetectorClicked, clickDetectorEventProperties);
+  }
+
+  checkIsFromDependentResource(): boolean {
+    if (!this.renderingProperties.resourceUri || this.renderingProperties.resourceUri === "") return false;
+    this.overrideResourceUri = this.renderingProperties.resourceUri;
+
+    return true;
   }
 }
 

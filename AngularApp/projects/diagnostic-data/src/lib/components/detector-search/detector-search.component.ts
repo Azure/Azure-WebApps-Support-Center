@@ -235,7 +235,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
         }));
         this.showPreLoader = true;
         observableForkJoin([searchTask, detectorsTask, childrenTask]).subscribe(results => {
-            setTimeout(() => {this.searchResultsSection.nativeElement.click();}, 2000);
+            setTimeout(() => {this.searchResultsSection.nativeElement.click();this.searchResultsSection.nativeElement.focus();}, 2000);
             this.showPreLoader = false;
             var searchResults: DetectorMetaData[] = results[0];
             this.logEvent(TelemetryEventNames.SearchQueryResults, { parentDetectorId: this.detector, searchId: this.searchId, query: this.searchTerm, results: JSON.stringify(searchResults.map((det: DetectorMetaData) => new Object({ id: det.id, score: det.score }))), ts: Math.floor((new Date()).getTime() / 1000).toString() });

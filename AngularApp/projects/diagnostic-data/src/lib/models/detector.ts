@@ -185,6 +185,7 @@ export interface DynamicInsightRendering extends Rendering {
 export interface DetectorListRendering extends Rendering {
     detectorIds: string[];
     additionalParams?: string;
+    resourceUri?: string
 }
 
 export interface MarkdownRendering extends Rendering {
@@ -212,5 +213,6 @@ export const DowntimeInteractionSource = {
     Graph: 'Graph',
     Dropdown: 'Dropdown',
     DefaultFromDetector: 'DefaultFromDetector',
+    DefaultFromQueryParams: 'DefaultFromQueryParams',
     DefaultFromUI: 'DefaultFromUI'
 };

@@ -5,7 +5,7 @@
 .menu-item {
     cursor: pointer;
     font-family: az_ea_font,"Segoe UI",wf_segoe-ui_normal,"Segoe WP",Tahoma,Arial,sans-serif;
-    height: 32px;
+    position: relative;
 }
 
 :host-context(.light-theme) .menu-item:hover,
@@ -57,21 +57,21 @@
 }
 
 .menu-item .tooltiptext {
-    visibility: hidden;
+    display: none;
     background: white;
 }
 
 .menu-item:hover .tooltiptext {
-    visibility: visible;
+    display: block;
     opacity: 1;
     background: white!important;
-    width: 100%;
-    white-space: nowrap;
+    width: 85%;
     z-index: 999;
     margin-top: 6px;
-    position: relative;
+    position: absolute;
     border: 1px solid black;
     padding: 3px;
     font-size: 12px;
+    bottom: -60%;
 }
 

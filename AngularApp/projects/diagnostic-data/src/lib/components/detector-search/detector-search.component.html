@@ -1,11 +1,11 @@
 <div inViewport [inViewportOptions]="{ threshold: [0.3, 0.7] }" (inViewportAction)="listenVisibility($event)" role="search">
 <div *ngIf="showSearchBar && (searchConfiguration.DetectorSearchEnabled || searchConfiguration.WebSearchEnabled)">
     <div style="display:block;margin-bottom:10px;margin-top:10px;" tabindex="0">
-        <span class="span-h1">Didn’t find what you’re looking for? Tell us about your problem below, and we may be able to provide some additional diagnostics:</span>
+        <span class="span-h1">Didn't find a solution? Give us more details and we'll recommend diagnostics & docs:</span>
     </div>
     <div style="margin-left:20px;">
         <div class="input-group input-group-sm search-input-group" *ngIf="!searchConfiguration.DetectorSearchEnabled || detectorId == ''">
-            <input aria-controls="search-results" class="form-control search-result-input" [(ngModel)]="searchTerm" tabindex="0" type="search" placeholder="Describe your problem here" (keyup.enter)="hitSearch()" maxlength="140" onChange="resetAlert()" #searchInputBox>
+            <input aria-controls="search-results" class="form-control search-result-input" [(ngModel)]="searchTerm" tabindex="0" type="search" placeholder="Describe your problem here" (keyup.enter)="hitSearch()" maxlength="140" (ngModelChange)="resetAlert()" #searchInputBox>
             <div class="input-group-btn" id="clear-search">
                 <button aria-label="Please provide at least 2 characters"
                 title="Please provide at least 2 characters"
@@ -22,7 +22,7 @@
         <p #charAlertRef *ngIf="showCharAlert" tabindex="0">Please provide at least 2 characters</p>
     </div>
 </div>
-<div style="margin-left:20px;" *ngIf="searchConfiguration.DetectorSearchEnabled" #searchResultsSection>
+<div style="margin-left:20px;" *ngIf="searchConfiguration.DetectorSearchEnabled" tabindex="0" #searchResultsSection>
     <div [hidden]="detectorId === ''">
     <div>
         <div style="display: inline-block;margin-top: 10px">

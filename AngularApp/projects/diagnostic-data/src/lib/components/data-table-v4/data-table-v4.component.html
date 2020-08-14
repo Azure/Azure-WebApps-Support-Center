@@ -1,0 +1,31 @@
+<data-container [title]="renderingProperties.title" [description]="renderingProperties.description">
+  <div *ngIf="allowColumnSearch" class="text-field">
+    <fab-text-field (onChange)=updateFilter($event) [rows]="1" [placeholder]="searchAriaLabel"
+      [ariaLabel]="searchAriaLabel"></fab-text-field>
+  </div>
+  <div [attr.data-is-scrollable]="true" style="overflow: auto;">
+    <fab-details-list [items]="rows">
+      <columns>
+        <fab-details-list-column #fabDetailListColumn *ngFor="let col of columns;let colIndex=index" [key]="col.key"
+          [name]="col.name" [minWidth]="col.minWidth" [maxWidth]="col.maxWidth" [isSorted]="col.isSorted"
+          [isSortedDescending]="col.isSortedDescending" (onColumnClick)="clickColumn($event)"
+          [isResizable]="col.isResizable" [isMultiline]="col.isMultiline" [ariaLabel]="col.name">
+          <render>
+            <ng-template let-item="item" let-column="column" let-rowIndex="index">
+              <div [innerHTML]="item[column.name]"></div>
+            </ng-template>
+          </render>
+        </fab-details-list-column>
+      </columns>
+    </fab-details-list>
+  </div>
+  <div *ngIf="renderingProperties.descriptionColumnName && selectionText !== ''">
+    <pre class="description-text">{{ selectionText }}</pre>
+  </div>
+</data-container>
+
+<ng-template #emptyTableFooter>
+  <div tabindex="0" class="table-footer">
+    <p>No Data to Display</p>
+  </div>
+</ng-template>

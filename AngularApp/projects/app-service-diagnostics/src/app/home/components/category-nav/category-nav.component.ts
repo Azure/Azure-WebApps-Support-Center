@@ -119,9 +119,9 @@ export class CategoryNavComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getCurrentItemId();
         this.hasUncategorizedDetectors = false;
         this._route.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
+            this.getCurrentItemId();
             this.getCurrentRoutePath();
         });
 
@@ -135,7 +135,7 @@ export class CategoryNavComponent implements OnInit {
                 title: 'Proactive Tools',
                 tools: this.siteFeatureService.proactiveTools.map(tool => {
                     let isSelected = () => {
-                        return this._route.url.includes("/" + tool.item.id);
+                        return this._route.url.endsWith("/" + tool.item.id);
                     };
                     let icon = this.getIconImagePath(tool.item.id);
                     return new CollapsibleMenuItem(tool.item.name, tool.item.clickAction, isSelected, icon);
@@ -153,7 +153,7 @@ export class CategoryNavComponent implements OnInit {
                 title: 'Diagnostic Tools',
                 tools: this.siteFeatureService.diagnosticTools.filter(tool => this.stackMatchedForTools(tool)).map(tool => {
                     let isSelected = () => {
-                        return this._route.url.includes("/" + tool.item.id);
+                        return this._route.url.endsWith("/" + tool.item.id);
                     };
                     let icon = this.getIconImagePath(tool.item.id);
                     return new CollapsibleMenuItem(tool.item.name, tool.item.clickAction, isSelected, icon);
@@ -171,7 +171,7 @@ export class CategoryNavComponent implements OnInit {
                 title: 'Support Tools',
                 tools: this.siteFeatureService.supportTools.filter(tool => this.stackMatchedForTools(tool)).map(tool => {
                     let isSelected = () => {
-                        return this._route.url.includes("/" + tool.item.id);
+                        return this._route.url.endsWith("/" + tool.item.id);
                     };
                     let icon = this.getIconImagePath(tool.item.id);
                     return new CollapsibleMenuItem(tool.item.name, tool.item.clickAction, isSelected, icon);
@@ -191,7 +191,7 @@ export class CategoryNavComponent implements OnInit {
                     title: 'Premium Tools',
                     tools: this.siteFeatureService.premiumTools.filter(tool => this.stackMatchedForTools(tool)).map(tool => {
                         let isSelected = () => {
-                            return this._route.url.includes("/" + tool.item.id);
+                            return this._route.url.endsWith("/" + tool.item.id);
                         };
                         let icon = this.getIconImagePath(tool.item.id);
                         return new CollapsibleMenuItem(tool.item.name, tool.item.clickAction, isSelected, icon);
@@ -203,7 +203,7 @@ export class CategoryNavComponent implements OnInit {
         this.toolCategoriesFilteredByStack = this.transform(this.toolCategories);
 
         this.categoryService.categories.subscribe(categories => {
-            let decodedCategoryName  = ""; 
+            let decodedCategoryName  = "";
             this._activatedRoute.params.subscribe(params => {
                 this.detectorList = [];
                 decodedCategoryName = params.category.toLowerCase();
@@ -212,14 +212,14 @@ export class CategoryNavComponent implements OnInit {
                 this.categoryName = this.category.name;
                 this.categoryId = this.category.id;
                 this.isDiagnosticTools = this.category.id === "DiagnosticTools";
-    
+
                 this.orphanDetectorList = this._detectorCategorization.detectorlistCategories[this.category.id];
-    
+
                 this._authService.getStartupInfo().subscribe(startupInfo => {
                     this.resourceId = startupInfo.resourceId;
                     this.baseUrl = `resource${this.resourceId}/categories/${this.category.id}/`;
                 });
-    
+
                 // Get all the detector list under this category
                 this.siteFeatureService.getFeaturesForCategorySub(this.category).subscribe(features => {
                     if (!this.isDiagnosticTools) {
@@ -237,11 +237,13 @@ export class CategoryNavComponent implements OnInit {
                         });
                     }
                 });
-    
+
+
+
                 this._diagnosticApiService.getDetectors().subscribe(detectors => {
                     this.detectorDataLocalCopy = detectors;
                 });
-    
+
                 this._route.events.subscribe((evt) => {
                     if (evt instanceof NavigationEnd) {
                         let itemId = "";
@@ -256,9 +258,9 @@ export class CategoryNavComponent implements OnInit {
                                     routePath = "analysis";
                                 }
                             }
-    
+
                             let item = this.detectorDataLocalCopy.find(metadata => metadata.id.toLowerCase() === itemId.toLowerCase());
-    
+
                             if (item && (item.category == undefined || item.category == "") && !this.detectorList.find((detector) => detector.label === item.id)) {
                                 if (!this.orphanDetectorList.find((orphan) => (orphan.label) === item.name)) {
                                     let isSelected = () => {
@@ -270,18 +272,18 @@ export class CategoryNavComponent implements OnInit {
                                         this._route.navigate([dest1]);
                                     };
                                     let orphanMenuItem = new CollapsibleMenuItem(item.name, onClick, isSelected, icon);
-    
+
                                     if (!this.orphanDetectorList.find((item1 => item1.label === orphanMenuItem.label))) {
                                         this._detectorCategorization.detectorlistCategories[this.category.id].push(orphanMenuItem);
                                     }
                                     this.orphanDetectorList = this._detectorCategorization.detectorlistCategories[this.category.id];
                                 }
                             }
-    
+
                         }
                     }
                 });
-            }); 
+            });
         });
     }
 

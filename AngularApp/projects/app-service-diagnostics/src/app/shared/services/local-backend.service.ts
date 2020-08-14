@@ -12,7 +12,7 @@ export class LocalBackendService {
 
   resourceId: string;
 
-  detectorList: DetectorMetaData[];
+  detectorList: DetectorMetaData[] = [];
 
   useLocal: boolean = false;
 
@@ -26,15 +26,17 @@ export class LocalBackendService {
     return this.detectorList.find(detector => detector.id === detectorId);
   }
 
-  public getDetectors(): Observable<DetectorMetaData[]> {
-    const path = `v4${this.resourceId}/detectors`;
-    if (this.detectorList) {
+  public getDetectors(overrideResourceUri:string = ""): Observable<DetectorMetaData[]> {
+    let resourceId = overrideResourceUri ? overrideResourceUri : this.resourceId;
+    const path = `v4${resourceId}/detectors`;
+    if (this.detectorList.length > 0 && overrideResourceUri === "") {
       return of(this.detectorList);
     }
 
     return this.invoke<DetectorResponse[]>(path, 'POST').pipe(map(response => {
-      this.detectorList = response.map(detector => detector.metadata);
-      return this.detectorList;
+      const detectorList = response.map(detector => detector.metadata);
+      if(overrideResourceUri === "") this.detectorList = detectorList;
+      return detectorList;
     }));
   }
 
@@ -47,8 +49,9 @@ export class LocalBackendService {
     }));
   }
 
-  public getDetector(detectorName: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean, formQueryParams?: string) {
-    let path = `v4${this.resourceId}/detectors/${detectorName}?startTime=${startTime}&endTime=${endTime}`;
+  public getDetector(detectorName: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean, formQueryParams?: string,overrideResourceUri?: string) {
+    let resourceId = overrideResourceUri ? overrideResourceUri : this.resourceId;
+    let path = `v4${resourceId}/detectors/${detectorName}?startTime=${startTime}&endTime=${endTime}`;
     if(formQueryParams != null) {
       path += formQueryParams;
     }

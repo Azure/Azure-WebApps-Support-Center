@@ -4,7 +4,7 @@ import { GenericSupportTopicService } from 'diagnostic-data';
 import { AuthService } from '../../../startup/services/auth.service';
 import { NotificationService, Notification } from '../../../shared-v2/services/notification.service';
 import { PortalKustoTelemetryService } from '../../../shared/services/portal-kusto-telemetry.service';
-import { SubscriptionPropertiesService} from '../../../shared/services/subscription-properties.service';
+import { SubscriptionPropertiesService } from '../../../shared/services/subscription-properties.service';
 @Component({
   selector: 'support-topic-redirect',
   templateUrl: './support-topic-redirect.component.html',
@@ -22,7 +22,7 @@ export class SupportTopicRedirectComponent implements OnInit {
       this._authService.getStartupInfo().subscribe(startupInfo => {
 
         if (startupInfo.source && startupInfo.source.toLowerCase() == ('CaseSubmissionV2-NonContext').toLowerCase()) {
-          const notification = new Notification('To continue with case submission, please close this view.', null, 'fa-info-circle');
+          const notification = new Notification('To continue with case submission, please close this view.', null, 'fa-info-circle', undefined, true);
           this._notificationService.pushNotification(notification);
         }
       });
@@ -33,12 +33,12 @@ export class SupportTopicRedirectComponent implements OnInit {
     let subscriptionid = this._activatedRoute.snapshot.params['subscriptionid'];
 
     this.subscriptionPropertiesService.getSubscriptionProperties(subscriptionid).subscribe(response => {
-        if(response.body["subscriptionPolicies"]) {
-            this.portalKustoLogging.logEvent("SubscriptionProperties", {
-                subscriptionid: subscriptionid,
-                subscriptionLocationPlacementId: response.body["subscriptionPolicies"]["locationPlacementId"]
-            });
-        }
+      if (response.body["subscriptionPolicies"]) {
+        this.portalKustoLogging.logEvent("SubscriptionProperties", {
+          subscriptionid: subscriptionid,
+          subscriptionLocationPlacementId: response.body["subscriptionPolicies"]["locationPlacementId"]
+        });
+      }
     });
 
   }

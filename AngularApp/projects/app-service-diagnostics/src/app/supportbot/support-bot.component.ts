@@ -14,7 +14,13 @@ export class SupportBotComponent implements OnInit {
     showTypingMessage: boolean;
     chatContainerHeight: number;
 
-    @Input() startingKey: string;
+    public _startingKey: string;
+    @Input() set startingKey(startingKey: string) {
+        if (!!startingKey && startingKey.length > 0) {
+            this._startingKey = startingKey;
+            this.Initialize();
+        }
+    }
 
     constructor(private _messageProcessor: MessageProcessor) {
         this.messages = [];
@@ -22,14 +28,18 @@ export class SupportBotComponent implements OnInit {
         this.chatContainerHeight = 0;
     }
 
-    ngOnInit(): void {
-        if (this.startingKey) {
-            this._messageProcessor.setCurrentKey(this.startingKey);
+    Initialize(): void {
+        this.messages = [];
+        if (!!this._startingKey) {
+            this._messageProcessor.setCurrentKey(this._startingKey);
         }
 
         this.chatContainerHeight = window.innerHeight - 60;
 
         this.getMessage();
+    }
+
+    ngOnInit(): void {
     }
 
     scrollToBottom(event?: any): void {

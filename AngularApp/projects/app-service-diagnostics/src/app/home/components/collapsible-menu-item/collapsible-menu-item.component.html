@@ -1,15 +1,16 @@
 <div *ngIf="matchesSearchTerm">
+  <fab-tooltip-host [content]="menuItem.label" [directionalHint]="directionalHint">
     <div [id]="menuItem.label" class="menu-item" (click)="handleClick()" [class.selected]="isSelected()" style="padding-top:6px!important"
         [style.padding-left]="getPadding()" [style.font-size]="getFontSize()">
-        <div tabindex="0" role="button" (keyup.enter)="handleClick()" aria-label="menuItem.label" type="button">
+        <div tabindex="0" role="button" (keyup.enter)="handleClick()" [attr.aria-label]="menuItem.label" type="button">
             <i class="fa expand-icon" *ngIf=" menuItem.subItems && menuItem.subItems.length > 0"
                 [class.fa-caret-right]="!menuItem.expanded" [class.fa-caret-down]="menuItem.expanded"></i>
             <img class="category-icon" [src]="menuItem.icon" />
             <span class="menu-label" style="font-size: 13px!important;"
                 [innerHtml]="truncatedLable | searchmatch:searchValueLocal"></span>
         </div>
-        <div class="tooltiptext">{{menuItem.label}}</div>
     </div>
+  </fab-tooltip-host>
     <div class="menu-item-children">
         <collapsible-menu-item *ngFor="let item of menuItem.subItems" [menuItem]="item" [level]="level + 1">
         </collapsible-menu-item>

@@ -1,0 +1,28 @@
+{
+    "homePageText": {
+        "title": "Azure Container Instances (ACI) Diagnostics (Preview)",
+        "description": "Use Azure Container Instances Diagnostics (Preview) to investigate how your container group is performing, diagnose issues, and discover how to improve its reliability. Select the problem category that best matches the information or tool that you're interested in:",
+        "searchBarPlaceHolder": "Search a keyword that best describes your issue"
+    },
+	"matchRegEx": "/Microsoft.ContainerInstance/containerGroups/",
+	"searchSuffix": "ACI",
+	"azureServiceName": "Azure Container Instances",
+	"armApiVersion": "2019-12-01",
+	"isSearchEnabled": true,
+	"liveChatConfig": {
+		"isApplicableForLiveChat": false,
+		"supportTopicIds": []
+	},
+    "categories": [
+        {
+            "id": "Container Insights",
+            "name": "Container Insights",
+            "description": "Is your container group experiencing failures or unresponsiveness? Investigate and discover issues that may cause your container group to function unexpectedly.",
+            "keywords": [ "Deployment", "Credentials", "Management Operations", "VNet", "Network Peering", "IP" ],
+            "color": "rgb(186, 211, 245)",
+            "createFlowForCategory": true,
+            "chatEnabled": false
+        }
+    ],
+	"pesId": "16326"
+}

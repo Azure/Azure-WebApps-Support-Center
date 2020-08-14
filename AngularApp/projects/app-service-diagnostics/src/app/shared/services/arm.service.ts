@@ -5,7 +5,7 @@ import { Subscription } from '../models/subscription';
 import { ResponseMessageEnvelope, ResponseMessageCollectionEnvelope } from '../models/responsemessageenvelope';
 import { AuthService } from '../../startup/services/auth.service';
 import { CacheService } from './cache.service';
-import { catchError, retry, map } from 'rxjs/operators';
+import { catchError, retry, map, retryWhen, delay } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { GenericArmConfigService } from './generic-arm-config.service';
 import { StartupInfo } from '../models/portal';
@@ -14,6 +14,7 @@ import { VersioningHelper } from '../../../app/shared/utilities/versioningHelper
 import { PortalKustoTelemetryService } from './portal-kusto-telemetry.service';
 import { Guid } from '../utilities/guid';
 import { Router } from '@angular/router';
+import { TelemetryPayload } from 'diagnostic-data';
 
 @Injectable()
 export class ArmService {
@@ -27,6 +28,7 @@ export class ArmService {
     private readonly usGovernmentAzureArmUrl = 'https://management.usgovcloudapi.net';
     private readonly blackforestAzureArmUrl = 'https://management.microsoftazure.de';
     private readonly usnatAzureArmUrl = 'https://management.azure.eaglex.ic.gov';
+    private readonly ussecAzureArmUrl = 'https://management.azure.microsoft.scloud';
     private diagRoleVersion: string = '';
     private readonly routeToLiberation = '2';
     private readonly routeToDiagnosticRole = '1';
@@ -63,8 +65,12 @@ export class ArmService {
         return this.armUrl === this.usnatAzureArmUrl;
     }
 
+    get isUssec(): boolean {
+        return this.armUrl === this.ussecAzureArmUrl;
+    }
+
     get isNationalCloud(): boolean {
-        return this.isMooncake || this.isFairfax || this.isBlackforest || this.isUsnat;
+        return this.isMooncake || this.isFairfax || this.isBlackforest || this.isUsnat || this.isUssec;
     }
 
     get armUrl(): string {
@@ -134,25 +140,49 @@ export class ArmService {
             additionalHeaders.set('x-ms-azureportal', 'true');
         }
 
-        let requestId:string = Guid.newGuid();
+        let requestId: string = Guid.newGuid();
         additionalHeaders.set('x-ms-request-id', requestId);
 
         let eventProps = {
-            'resourceId': resourceUri,            
+            'resourceId': resourceUri,
             'requestId': requestId,
             'requestUrl': url,
             'routerUrl': this._router.url,
             'targetRuntime': this.diagRoleVersion == this.routeToLiberation ? "Liberation" : "DiagnosticRole"
         };
-        this.telemetryService.logEvent("RequestRoutingDetails", eventProps);
+
+        let logData = {
+            eventIdentifier: "RequestRoutingDetails",
+            eventPayload: eventProps
+        } as TelemetryPayload;
+
+        let requestHeaders = this.getHeaders(null, additionalHeaders);
         const request = this._http.get<ResponseMessageEnvelope<T>>(url, {
-            headers: this.getHeaders(null, additionalHeaders)
+            headers: requestHeaders
         }).pipe(
-            retry(2),
+            retryWhen(err => {
+                let requestId: string = Guid.newGuid();
+                additionalHeaders.set('x-ms-request-id', requestId);
+                requestHeaders = this.getHeaders(null, additionalHeaders);
+
+                let retryCount = 0;
+                eventProps.requestId = requestId;
+                eventProps["retryCount"] = retryCount;
+
+                return err.pipe(delay(1000), map(err => {
+                    if (retryCount++ >= 2) {
+                        this.telemetryService.logEvent("RetryRequestFailed", eventProps);
+                        throw err;
+                    }
+                    this.telemetryService.logEvent("RetryRequestRoutingDetails", eventProps);
+                    return err;
+                }));
+
+            }),
             catchError(this.handleError)
         );
 
-        return this._cache.get(url, request, invalidateCache);
+        return this._cache.get(url, request, invalidateCache, logData);
     }
 
     getArmResource<T>(resourceUri: string, apiVersion?: string, invalidateCache: boolean = false): Observable<T> {
@@ -325,7 +355,21 @@ export class ArmService {
 
         if (error) {
             if (error.error) {
-                actualError = JSON.stringify(error.error);
+                if (error.error.error) {
+                    let innerMost = error.error.error;
+                    if (innerMost.code && innerMost.message) {
+                        actualError = innerMost.code + "-" + innerMost.message;
+                    } else {
+                        if (innerMost.message) {
+                            actualError = innerMost.message;
+                        } else {
+                            actualError = JSON.stringify(error.error);
+                        }
+                    }
+                } else {
+                    actualError = JSON.stringify(error.error);
+                }
+
                 if (error.error instanceof ErrorEvent) {
                     loggingError.message = error.error.message;
                     loggingProps['reason'] = "A client-side or network error occured.";
@@ -369,23 +413,28 @@ export class ArmService {
             additionalHeaders.set('x-ms-azureportal', 'true');
         }
 
-        let requestId:string = Guid.newGuid();
+        let requestId: string = Guid.newGuid();
         additionalHeaders.set('x-ms-request-id', requestId);
 
         let eventProps = {
-            'resourceId': resourceId,            
+            'resourceId': resourceId,
             'requestId': requestId,
             'requestUrl': url,
             'routerUrl': this._router.url,
             'targetRuntime': this.diagRoleVersion == this.routeToLiberation ? "Liberation" : "DiagnosticRole"
         };
-        this.telemetryService.logEvent("RequestRoutingDetails", eventProps);
+
+        let logData = {
+            eventIdentifier: "RequestRoutingDetails",
+            eventPayload: eventProps
+        } as TelemetryPayload;
+
         const request = this._http.get(url, { headers: this.getHeaders(null, additionalHeaders) }).pipe(
             map<ResponseMessageCollectionEnvelope<ResponseMessageEnvelope<T>>, ResponseMessageEnvelope<T>[]>(r => r.value),
             catchError(this.handleError)
         );
 
-        return this._cache.get(url, request, invalidateCache);
+        return this._cache.get(url, request, invalidateCache, logData);
     }
 
     getSubscriptionLocation(subscriptionId: string): Observable<HttpResponse<any>> {

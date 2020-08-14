@@ -306,6 +306,15 @@
             "pesId": "",
             "staticSelfHelpContent": "",
             "searchSuffix": "AZURE SIGNAL SERVICE"
+        },
+        { 
+            "service": "ResourceService",  
+            "resourceType": "Microsoft.NetApp/netAppAccounts",  
+            "templateFileName": "NetAppAccounts",  
+            "imgSrc": "assets/img/Azure-NetApp-Logo.png",  
+            "versionPrefix": "", 
+            "pesId": "16469",  
+            "azureCommImpactedServicesList": "Azure NetApp Files"  
         }
     ]
 }

@@ -1,20 +1,51 @@
 <div role="group" aria-label="Detector list">
-  <div class="detector-container" *ngFor="let viewModel of detectorViewModels" >
-    <div class="detector-header"  (click)="toggleDetectorHeaderStatus(viewModel)" (keyup.enter)="toggleDetectorHeaderStatus(viewModel)" tabindex="0"  role="button" attr.aria-expanded="{{viewModel.expanded}}" attr.aria-label="Detector title {{viewModel.title}}">
+  <div *ngIf="overrideResourceUri !== '' else detectorContainer" class="list-wrapper">
+    <!-- If no error and no data then hide whole div -->
+    <div *ngIf="internalErrorMsg !== '' || errorMsg !== '' || detectorViewModels.length > 0">
+      <!-- When has image and with error, hide vertical line -->
+      <div *ngIf="!(imgSrc !== '' && (internalErrorMsg !== '' || errorMsg !== ''))" class="red-line"></div>
+      <div class="list-item-wrapper">
+        <img *ngIf="imgSrc !== ''" [src]="imgSrc" class="resource-icon">
+        <div *ngIf="errorMsg !== ''" class="error-msg" [attr.aria-label]="errorMsg">
+          {{errorMsg}}
+        </div>
+        <div *ngIf="internalErrorMsg !== '' && !isPublic" class="error-msg" [attr.aria-label]="internalErrorMsg">
+          {{internalErrorMsg}}
+        </div>
+        <div *ngIf="internalErrorMsg === '' && errorMsg === ''" class="list-item">
+          <div class="resource-text" [attr.aria-label]="resourceText">
+            {{resourceText}}
+          </div>
+          <ng-container *ngTemplateOutlet="detectorContainer"></ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #detectorContainer>
+  <div class="detector-container" *ngFor="let viewModel of detectorViewModels">
+    <div class="detector-header" (click)="toggleDetectorHeaderStatus(viewModel)"
+      (keyup.enter)="toggleDetectorHeaderStatus(viewModel)" tabindex="0" role="button"
+      attr.aria-expanded="{{viewModel.expanded}}" attr.aria-label="Detector title {{viewModel.title}}">
       <div class="status-icon">
         <status-icon [loading]="viewModel.loadingStatus" [status]="viewModel.status" [size]="20"></status-icon>
       </div>
       <div class="detector-title">
-        {{viewModel.title}} <span style="margin-left: 20px;font-size: 16px" *ngIf="viewModel.loadingStatus == LoadingStatus.Failed" (click)="retryRequest(viewModel)">Error: Click to retry</span>
+        {{viewModel.title}} <span style="margin-left: 20px;font-size: 16px"
+          *ngIf="viewModel.loadingStatus == LoadingStatus.Failed" (click)="retryRequest(viewModel)">Error: Click to
+          retry</span>
       </div>
-      <div class="expand-icon"  role="button" attr.aria-expanded="{{viewModel.expanded}}" >
+      <div class="expand-icon" role="button" attr.aria-expanded="{{viewModel.expanded}}">
         <span class="fa" [class.fa-angle-down]="!viewModel.expanded" [class.fa-angle-up]="viewModel.expanded"></span>
       </div>
     </div>
     <div style="overflow-y: hidden;height:0px" [@expand]="viewModel.expanded ? 'shown' : 'hidden'">
       <div class="detector-body">
-        <detector-view [insideDetectorList]="true" [parentDetectorId]="detectorEventProperties.DetectorId" [detectorResponse]="viewModel.response" [startTime]="startTime" [endTime]="endTime"></detector-view>
+        <detector-view [insideDetectorList]="true" [parentDetectorId]="detectorEventProperties.DetectorId"
+          [detectorResponse]="viewModel.response" [startTime]="startTime" [endTime]="endTime"></detector-view>
       </div>
     </div>
   </div>
-</div>
+</ng-template>

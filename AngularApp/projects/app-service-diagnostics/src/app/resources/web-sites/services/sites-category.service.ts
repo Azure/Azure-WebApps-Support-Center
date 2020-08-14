@@ -22,6 +22,7 @@ export class SitesCategoryService extends CategoryService {
       item: {
         id: 'AvailabilityAndPerformanceWindows',
         name: 'Availability and Performance',
+        overviewDetectorId: 'AvailabilityAndPerformanceWindows',
         description: 'Is your app experiencing downtime or slowness? Check out the current health status of your app and discover platform and application issues that might affect your app\'s high availability.',
         keywords: ['Health Check', 'Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory'],
         color: 'rgb(208, 175, 239)',
@@ -39,6 +40,7 @@ export class SitesCategoryService extends CategoryService {
       item: {
         id: 'LinuxAvailabilityAndPerformance',
         name: 'Availability and Performance',
+        overviewDetectorId: 'LinuxAvailabilityAndPerformance',
         description: 'Is your app experiencing downtime or slowness? Discover issues that may impact SLA, caused by your app itself or Azure.',
         keywords: ['Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory'],
         color: 'rgb(208, 175, 239)',
@@ -55,6 +57,7 @@ export class SitesCategoryService extends CategoryService {
       item: {
         id: 'ConfigurationAndManagement',
         name: 'Configuration and Management',
+        overviewDetectorId: 'ConfigurationAndManagement',
         description: 'Are you having issues with something that you configured specifically for your app? Find out if you misconfigured App Service features, such as backups, deployment slots, and scaling.',
         keywords: ['Scaling', 'Swaps', 'Failed Backups', 'IPs', 'Migration'],
         color: 'rgb(249, 213, 180)',
@@ -71,6 +74,7 @@ export class SitesCategoryService extends CategoryService {
       item: {
         id: 'SSLandDomains',
         name: 'SSL and Domains',
+        overviewDetectorId: 'SSLandDomains',
         description: 'Having trouble with certificates and custom domains? Discover any issues related to SSL certificates, authentication, and domain management.',
         keywords: ['4xx Errors', 'SSL', 'Domains', 'Permissions', 'Auth', 'Cert'],
         color: 'rgb(186, 211, 245)',
@@ -88,6 +92,7 @@ export class SitesCategoryService extends CategoryService {
       item: {
         id: 'BestPractices',
         name: 'Best Practices',
+        overviewDetectorId: 'BestPractices',
         description: 'Are you running your application in production? Review best practice recommendations to best ensure that you running your production application with the optimal configurations and suggestions.',
         keywords: ['AutoScale', 'Traffic Manager', 'AlwaysOn', 'ARR Affinity'],
         color: 'rgb(208, 228, 176)',
@@ -104,7 +109,8 @@ export class SitesCategoryService extends CategoryService {
       sku: Sku.All,
       hostingEnvironmentKind: HostingEnvironmentKind.All,
       item: {
-        id: 'FunctionsAvailabilityAndPerformance',
+        id: 'AvailabilityAndPerformanceFunctionApp',
+        overviewDetectorId: 'AvailabilityAndPerformanceFunctionApp',
         name: 'Availability and Performance',
         description: 'Is your Function App performing slower than normal? Investigate performance issues or just check the health of your Function App.',
         keywords: ['Downtime', '5xx Errors', '4xx Errors', 'CPU', 'Memory', 'Slowness'],
@@ -112,7 +118,58 @@ export class SitesCategoryService extends CategoryService {
         createFlowForCategory: true,
         chatEnabled: false
       }
-    }
+    },
+    {
+        appType: AppType.FunctionApp,
+        platform: OperatingSystem.windows | OperatingSystem.linux,
+        stack: '',
+        sku: Sku.All,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
+        item: {
+          id: 'ConfigurationAndManagementFunctionApp',
+          overviewDetectorId: 'functionsettings',
+          name: 'Configuration and Management',
+          description: 'Are you having issues with something that you configured specifically for your function app? Find out if you misconfigured Function App features',
+          keywords: ['Scaling', 'Swaps', 'Failed Backups', 'IPs', 'Migration'],
+          color: 'rgb(249, 213, 180)',
+          createFlowForCategory: true,
+          chatEnabled: false
+        }
+      },
+      {
+        appType: AppType.FunctionApp,
+        platform: OperatingSystem.windows,
+        stack: '',
+        sku: Sku.All,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
+        item: {
+          id: 'SSLandDomainsFunctionApp',
+          name: 'SSL and Domains',
+          overviewDetectorId:'SSLandDomainsFunctionApp',
+          description: 'Having trouble with certificates and custom domains? Discover any issues related to SSL certificates, authentication, and domain management.',
+          keywords: ['4xx Errors', 'SSL', 'Domains', 'Permissions', 'Auth', 'Cert'],
+          color: 'rgb(186, 211, 245)',
+          createFlowForCategory: true,
+          chatEnabled: true
+        }
+      },
+      {
+        appType: AppType.FunctionApp,
+        platform: OperatingSystem.windows,
+        stack: '',
+        sku: Sku.All,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
+        item: {
+          id: 'BestPracticesFunctionApp',
+          name: 'Best Practices',
+          overviewDetectorId: 'BestPracticesFunctionApp',
+          description: 'Are you running your Function App in production? Review best practice recommendations to best ensure that you running your production application with the optimal configurations and suggestions.',
+          keywords: ['BestPractices', 'AlwaysOn', 'Async Pattern'],
+          color: 'rgb(208, 228, 176)',
+          createFlowForCategory: true,
+          chatEnabled: false
+        }
+      },
   ];
 
   constructor(private _resourceService: WebSitesService, private _websiteFilter: WebSiteFilter, private _armService: ArmService) {
@@ -129,6 +186,7 @@ export class SitesCategoryService extends CategoryService {
           item: {
               id: 'navigator',
               name: 'Navigator (Preview)',
+              overviewDetectorId:'navigator',
               description: 'Are you having issues after making changes on your app and its dependencies? Review Navigator to investigate the recent changes in your app and dependencies.',
               keywords: ['Dependency Map', 'Changes', 'Dependency', 'Change Analysis'],
               color: 'rgb(255, 217, 119)',
@@ -137,7 +195,7 @@ export class SitesCategoryService extends CategoryService {
               overridePath: `resource${this._resourceService.resourceIdForRouting}/detectors/navigator`
           }
       }
-      );      
+      );
     }
     this._sitesCategories.push(this._getDiagnosticToolsCategory(this._resourceService.resourceIdForRouting));
     this._addCategories(
@@ -155,6 +213,7 @@ export class SitesCategoryService extends CategoryService {
       item: {
         id: 'DiagnosticTools',
         name: 'Diagnostic Tools',
+        overviewDetectorId:'DiagnosticTools',
         description: 'Sometimes deeper investigation is necessary. With Diagnostic Tools, you can run language-specific tools to profile your app, collect network traces, memory dumps, and more.',
         keywords: ['Profiler', 'Memory Dump', 'DaaS', 'Auto-Heal', 'Metrics', 'Security'],
         color: 'rgb(170, 192, 208)',

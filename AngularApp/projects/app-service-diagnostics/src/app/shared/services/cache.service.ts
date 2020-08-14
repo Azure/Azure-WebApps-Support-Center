@@ -1,7 +1,9 @@
 
-import {throwError as observableThrowError,  Observable ,  Subject, of } from 'rxjs';
+import { throwError as observableThrowError, Observable, Subject, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { tap, finalize } from 'rxjs/operators';
+import { PortalKustoTelemetryService } from './portal-kusto-telemetry.service';
+import { TelemetryPayload } from 'diagnostic-data';
 
 interface CacheContent {
     value: any;
@@ -15,7 +17,9 @@ export class CacheService {
     // This is useful to enable if you are trying to test and make sure this service is working properly
     private enableConsoleLogging: boolean = false;
 
-    get(key: string, fallback?: Observable<any>, invalidateCache: boolean = false): Observable<any> | Subject<any> {
+    constructor(private telemetryService?: PortalKustoTelemetryService) { }
+
+    get(key: string, fallback?: Observable<any>, invalidateCache: boolean = false, logDataForActualCall?: TelemetryPayload): Observable<any> | Subject<any> {
 
         if (this.has(key)) {
             if (invalidateCache) {
@@ -32,6 +36,9 @@ export class CacheService {
         } else if (fallback && fallback instanceof Observable) {
             this.inFlightObservables.set(key, new Subject());
             this.log(`%c Calling api for ${key}`, 'color: purple');
+            if (!!logDataForActualCall && !!logDataForActualCall.eventIdentifier && !!logDataForActualCall.eventPayload) {
+                this.telemetryService.logEvent(logDataForActualCall.eventIdentifier, logDataForActualCall.eventPayload);
+            }
             return fallback.pipe(
                 tap(
                     (value) => {

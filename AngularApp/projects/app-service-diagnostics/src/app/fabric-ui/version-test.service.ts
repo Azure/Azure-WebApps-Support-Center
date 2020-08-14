@@ -11,16 +11,16 @@ import { Site } from '../shared/models/site';
     providedIn:'root'
 })
 export class VersionTestService {
-    public isLegacySub: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true); 
-    public isVnextSub: boolean = false; 
-    public isWindowsWebApp: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true); 
+    public isLegacySub: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+    public isVnextSub: boolean = false;
+    public isVnextOnlyResource: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
     public initializedPortalVersion: BehaviorSubject<string> = new BehaviorSubject<string>("v2");
 
     // If overrideUseLegacy is not set, we still use the logic to return true for windows web app, return false for other resource types
     // If overrideUseLegacy is set, this will take precedence of our existing logic:
-    // overrideUseLegacy = 1, we switch to the old experience. 
-    // overrideUseLegacy = 2, we switch to the new experience. 
-    public overrideUseLegacy: BehaviorSubject<number> = new BehaviorSubject(0); 
+    // overrideUseLegacy = 1, we switch to the old experience.
+    // overrideUseLegacy = 2, we switch to the new experience.
+    public overrideUseLegacy: BehaviorSubject<number> = new BehaviorSubject(0);
     constructor(private _authService: AuthService, private _siteService: SiteService) {
         this._authService.getStartupInfo().subscribe(startupInfo => {
             const resourceType = this._authService.resourceType;
@@ -30,13 +30,14 @@ export class VersionTestService {
             this.isVnextSub = true;
             this._siteService.currentSite.subscribe(site => {
                 this.overrideUseLegacy.subscribe(overrideValue => {
-                    const isWebAppResource = this.isWindowsWebAppResource(site, resourceType);
+                    const isVnextOnlyResourceType = this.isVnextOnlyResourceType(site, resourceType);
+                    const isVnextResourceType = this.isVnextResourceType(site, resourceType);
                     // Initialize with the new version if the subscription falls in vnext sub groups and the resource is web app
-                    this.initializedPortalVersion.next(this.isVnextSub && isWebAppResource ? "v3" : "v2");
+                    this.initializedPortalVersion.next(this.isVnextSub && isVnextResourceType ? "v3" : "v2");
                     // The current expericence can still be override if customer click on the link to switch to a different version
-                    const shouldUseLegacy = overrideValue !== 0 ? overrideValue === 1 : (!this.isVnextSub||!isWebAppResource);
+                    const shouldUseLegacy = overrideValue !== 0 ? overrideValue === 1 : (!this.isVnextSub||!isVnextResourceType);
                     this.isLegacySub.next(shouldUseLegacy);
-                    this.isWindowsWebApp.next(isWebAppResource);
+                    this.isVnextOnlyResource.next(isVnextOnlyResourceType);
                 });
             });
         });
@@ -47,9 +48,18 @@ export class VersionTestService {
         this.overrideUseLegacy.next(useLegacy);
     }
 
-    private isWindowsWebAppResource(site: Site, resourceType: ResourceType): boolean {
+    // This is the resource type that we completely migrate to new diagnose and solve experience
+      // Resource types that are currently using new D&S only: windows web app
+    private isVnextOnlyResourceType(site: Site, resourceType: ResourceType): boolean {
         let isLinuxPlatform = site && site.kind && site.kind.toLowerCase().indexOf('linux') >= 0;
-        return resourceType === ResourceType.Site && site && site.appType === AppType.WebApp && !isLinuxPlatform;
+        return resourceType === ResourceType.Site && site && (site.appType === AppType.WebApp) && !isLinuxPlatform;
+    }
+
+    // This is the resource type that we migrate to new diagnose and solve experience but still offer the option to switch back to the old experience
+    // Resource types that are currently using new D&S: windows web app, function app
+    private isVnextResourceType(site: Site, resourceType: ResourceType): boolean {
+        let isLinuxPlatform = site && site.kind && site.kind.toLowerCase().indexOf('linux') >= 0;
+        return resourceType === ResourceType.Site && site && (site.appType === AppType.WebApp || site.appType == AppType.FunctionApp) && !isLinuxPlatform;
     }
 
     private isVnextSubscription(subscriptionId: string, percentageToRelease: number = 0.1): boolean {

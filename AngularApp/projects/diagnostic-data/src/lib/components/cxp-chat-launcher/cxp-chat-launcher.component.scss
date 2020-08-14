@@ -71,30 +71,18 @@ $zIndex:99;
     bottom:5.2em;    
 }
 
-.cxpChat-CloseIconBackground {
-    display: flex;
-    justify-content: flex-end;
-    padding-right: 5px;
-    padding-top: 5px;
-}
-
 .cxpChat-CloseIcon {
     cursor: pointer;
-    color:darkred;
-    background: radial-gradient(#DBDBDB 50%, transparent 50%);
-    background: -webkit-gradient(#DBDBDB 50%, transparent 50%);
-    background: -webkit-radial-gradient(#DBDBDB 50%, transparent 50%);
-    background: -moz-radial-gradient(#DBDBDB 50%, transparent 50%);
-    background: -o-radial-gradient(#DBDBDB 50%, transparent 50%);
-    background: -ms-radial-gradient(#DBDBDB 50%, transparent 50%);
+    color: white;
+    margin-right:4px;    
 }
 
 .cxpChat-ConfText {
-    padding-top: 18px;
-    padding-right: 24px;
-    padding-bottom: 20px;
-    padding-left: 24px;  
-    width: 30em;  
+    padding-top: 10px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    padding-left: 15px;  
+    width: 25em;
 }
 
 .cxpChat-ConsentContainer {
@@ -112,10 +100,17 @@ $zIndex:99;
 
 label {
     color: white;
+    margin-left: 3px;
+    margin-bottom: 0px;
 }
 
 a {
     color: skyblue;
+}
+
+hr {
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 
 .cxpChat-actionBtnContainer {
@@ -126,6 +121,9 @@ a {
 
 .inactive-button {
     background-color: $chatBubble-color;
+    margin-left: 0px;
+    padding-left: 35px;
+    padding-right: 35px;
     &:hover {
         background-color: $primary-color;
     }
@@ -135,6 +133,9 @@ a {
     background-color: white;
     color: $chatBubble-color;
     font-weight: bold;
+    margin-left: 0px;
+    padding-left: 35px;
+    padding-right: 35px;
     &:hover{
         color: white;
         background-color: $primary-color;
@@ -143,4 +144,16 @@ a {
 
 .white-border {
     border: 1px solid white;
+}
+
+.cxpChat-ChangeIcon > .fa + .fa,
+.cxpChat-ChangeIcon:hover > .fa {
+  display: none;
+}
+.cxpChat-ChangeIcon:hover > .fa + .fa {
+  display: inherit;
+  color: #ba141a;
+  background-color: white;
+  margin-top: 5px;
+  margin-right: 0px;
 }

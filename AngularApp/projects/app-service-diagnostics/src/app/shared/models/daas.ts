@@ -179,10 +179,16 @@ export class DaasSettings {
     BlobContainer: string;
     BlobKey: string;
     BlobAccount: string;
-    EndpointSuffix:string;
+    EndpointSuffix: string;
 }
 
 export class DaasValidationResult {
     Validated: boolean = false;
     BlobSasUri: string = "";
+}
+
+export class CrashMonitoringSettings {
+    StartTimeUtc: string;
+    MaxHours: number;
+    MaxDumpCount: number;
 }

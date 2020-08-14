@@ -1,0 +1,108 @@
+.insight-container {
+    margin-bottom: 10px;
+}
+
+.insight-panel {
+    border-left-width: 4px;
+    background-color: #fff8f0;
+}
+
+.top-margin {
+    border-top: 1px solid #ccc;
+    margin-left: 32px;
+}
+
+.disable-agent{
+    margin-top: 6px;
+    float: left;
+    margin-left: 10px;
+}
+
+.display-table {
+    display: table;
+}
+.display-table > div {
+    display: table-row;
+}
+.display-table > div > div {
+    display: table-cell;
+    padding: 8px;
+}
+
+.data-collection-loading {
+    display: flex;
+    margin-top: 20px;
+}
+
+.table-borderless > tbody > tr > td,
+.table-borderless > tbody > tr > th,
+.table-borderless > tfoot > tr > td,
+.table-borderless > tfoot > tr > th,
+.table-borderless > thead > tr > td,
+.table-borderless > thead > tr > th {
+    border: none;
+}
+
+.error-details {
+    background-color: rgb(254, 240, 240);
+    padding: 5px;
+}
+
+/**
+ * ==============================================
+ * Dot Flashing
+ * ==============================================
+ */
+.dot-flashing {
+    position: relative;
+    margin-left: 15px;
+    margin-right: 20px;
+    top: 5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 7px;
+    background-color: #3471ff;
+    color: #3471ff;
+    animation: dot-flashing 1s infinite linear alternate;
+    animation-delay: 0.5s;
+}
+
+.dot-flashing::before,
+.dot-flashing::after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 0;
+}
+
+.dot-flashing::before {
+    left: -13px;
+    width: 7px;
+    height: 7px;
+    border-radius: 7px;
+    background-color: #3471ff;
+    color: #3471ff;
+    animation: dot-flashing 1s infinite alternate;
+    animation-delay: 0s;
+}
+
+.dot-flashing::after {
+    left: 13px;
+    width: 7px;
+    height: 7px;
+    border-radius: 7px;
+    background-color: #3471ff;
+    color: #3471ff;
+    animation: dot-flashing 1s infinite alternate;
+    animation-delay: 1s;
+}
+
+@keyframes dot-flashing {
+    0% {
+        background-color: #3471ff;
+    }
+    50%,
+    100% {
+        background-color: #ebe6ff;
+    }
+}

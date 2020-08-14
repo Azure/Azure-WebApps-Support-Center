@@ -1,4 +1,4 @@
-<ng-container *ngIf="initializedPortalVersion === 'v3'">
+<ng-container *ngIf="initializedPortalVersion === 'v3'&&!isVnextOnlyResourceType">
   <div *ngIf="useLegacy" class="switch2new-context-text">
     <i class="fa fa-info-circle info-banner-icon"></i>
     We have recently launched the new version of App Service Diagnostics.

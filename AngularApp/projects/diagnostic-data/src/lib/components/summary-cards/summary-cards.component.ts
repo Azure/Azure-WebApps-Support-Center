@@ -44,7 +44,7 @@ export enum ActionType {
 export class SummaryCardsComponent extends DataRenderBaseComponent {
   summaryCards: SummaryCard[] = [];
   isDetector: boolean[] = [];
-  detectors: DetectorMetaData[];
+  detectors: DetectorMetaData[] = [];
   SummaryStatus = HealthStatus;
   isPublic: boolean;
   constructor(protected _telemetryService: TelemetryService, private _activatedRoute: ActivatedRoute, private _router: Router, @Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private _navigator: FeatureNavigationService,private _diagnosticService: DiagnosticService) {

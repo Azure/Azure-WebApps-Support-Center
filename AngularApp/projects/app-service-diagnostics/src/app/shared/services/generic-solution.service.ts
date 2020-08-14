@@ -16,6 +16,7 @@ export class GenericSolutionService {
 
   allowedRoutes = {
     'restart': ['post'],
+    'reboot': ['post'],
     'config/web': ['get', 'put', 'patch'],
     'config/appsettings/list': ['get', 'put'],
     'config/logs': ['put']

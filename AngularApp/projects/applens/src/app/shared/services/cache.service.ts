@@ -1,9 +1,10 @@
 
-import {throwError as observableThrowError, of as observableOf,  Observable, Subscription as RxSubscription, Subject, ReplaySubject } from 'rxjs';
+import { throwError as observableThrowError, of as observableOf, Observable, Subscription as RxSubscription, Subject, ReplaySubject } from 'rxjs';
 
-import {tap} from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
+import { TelemetryService, TelemetryPayload } from 'diagnostic-data';
 
 interface CacheContent {
     value: any;
@@ -17,7 +18,9 @@ export class CacheService {
     // This is useful to enable if you are trying to test and make sure this service is working properly
     private enableConsoleLogging: boolean = false;
 
-    get(key: string, fallback?: Observable<any>, invalidateCache: boolean = false): Observable<any> | Subject<any> {
+    constructor(private _telemetryService: TelemetryService) { }
+
+    get(key: string, fallback?: Observable<any>, invalidateCache: boolean = false, logDataForActualCall?: TelemetryPayload): Observable<any> | Subject<any> {
 
         if (this.has(key)) {
             if (invalidateCache) {
@@ -36,6 +39,9 @@ export class CacheService {
 
             this.inFlightObservables.set(key, new Subject());
             this.log(`%c Calling api for ${key}`, 'color: purple');
+            if (!!logDataForActualCall && !!logDataForActualCall.eventIdentifier && !!logDataForActualCall.eventPayload) {
+                this._telemetryService.logEvent(logDataForActualCall.eventIdentifier, logDataForActualCall.eventPayload);
+            }
             return fallback.pipe(tap((value) => { this.set(key, value); }, error => this.inFlightObservables.delete(key)));
         } else {
             return observableThrowError('Requested key is not available in Cache');

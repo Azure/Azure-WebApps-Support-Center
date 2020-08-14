@@ -27,7 +27,12 @@ export class CategoryService {
   }
 
   protected _addCategories(categories: Category[]) {
-    this._categories = this._categories.concat(categories);
+    categories.forEach(newCategory=> {
+      let alreadyEisting = this._categories.find(existingCategory=> existingCategory.id == newCategory.id);
+      if(alreadyEisting == null || alreadyEisting == undefined) {
+        this._categories.push(newCategory);
+      }
+    });
     this.categories.next(this._categories);
   }
 

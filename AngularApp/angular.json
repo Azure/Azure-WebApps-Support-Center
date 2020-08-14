@@ -258,6 +258,16 @@
               "projects/app-service-diagnostics/src/assets",
               "projects/app-service-diagnostics/src/armResourceConfig",
               {
+                "glob": "enabledResourceTypes.json",
+                "input": "projects/applens/src/assets",
+                "output": "/assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/applens/src/assets/img",
+                "output": "/assets/img"
+              },
+              {
                 "glob": "**/*",
                 "input": "node_modules/ngx-monaco-editor/assets/monaco",
                 "output": "/assets/monaco"

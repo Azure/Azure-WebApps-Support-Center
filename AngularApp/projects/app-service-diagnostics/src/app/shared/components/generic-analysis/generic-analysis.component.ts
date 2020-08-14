@@ -6,8 +6,8 @@ import { FeatureNavigationService, TelemetryService, DiagnosticService, DownTime
 import { AuthService } from '../../../startup/services/auth.service';
 import { DetectorListAnalysisComponent } from 'diagnostic-data';
 import { SearchAnalysisMode } from 'projects/diagnostic-data/src/lib/models/search-mode';
-import { CXPChatService } from 'diagnostic-data' ;
-import {GenericSupportTopicService} from '../../../../../../diagnostic-data/src/lib/services/generic-support-topic.service';
+import { CXPChatService } from 'diagnostic-data';
+import { GenericSupportTopicService } from '../../../../../../diagnostic-data/src/lib/services/generic-support-topic.service';
 
 
 @Component({
@@ -19,7 +19,7 @@ export class GenericAnalysisComponent extends GenericDetectorComponent implement
   @Input() analysisId: string = "";
   @Input() searchTerm: string = "";
   @Input() searchMode: SearchAnalysisMode = SearchAnalysisMode.CaseSubmission;
-  @Input() resourceId: string="";
+  @Input() resourceId: string = "";
   @Input() targetedScore: number = 0;
   detectorId: string = "";
   detectorName: string = "";
@@ -30,13 +30,14 @@ export class GenericAnalysisComponent extends GenericDetectorComponent implement
   displayDetectorContainer: boolean = true;
   searchBarFocus: boolean = false;
   downTime: DownTime;
-  @ViewChild('detectorListAnalysis', {static:true}) detectorListAnalysis: DetectorListAnalysisComponent
+  @ViewChild('detectorListAnalysis', { static: true }) detectorListAnalysis: DetectorListAnalysisComponent
   isPublic: boolean = false;
   cxpChatTrackingId: string = '';
-  cxpChatUrl: string = ''; 
+  supportTopicId: string = '';
+  cxpChatUrl: string = '';
 
   constructor(private _activatedRouteLocal: ActivatedRoute, private _diagnosticServiceLocal: DiagnosticService, _resourceService: ResourceService, _authServiceInstance: AuthService, _telemetryService: TelemetryService,
-    _navigator: FeatureNavigationService, private _routerLocal: Router, private _supportTopicService:GenericSupportTopicService, private _cxpChatService:CXPChatService,
+    _navigator: FeatureNavigationService, private _routerLocal: Router, private _supportTopicService: GenericSupportTopicService, private _cxpChatService: CXPChatService,
     @Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig) {
     super(_activatedRouteLocal, _diagnosticServiceLocal, _resourceService, _authServiceInstance, _telemetryService, _navigator, _routerLocal);
     this.isPublic = config && config.isPublic;
@@ -54,27 +55,29 @@ export class GenericAnalysisComponent extends GenericDetectorComponent implement
     else {
       var checkOutcome = {
         _supportTopicServiceObj: !!this._supportTopicService,
-        supportTopicId: (!!this._supportTopicService)? this._supportTopicService.supportTopicId : '_supportTopicService is NULL',
+        supportTopicId: (!!this._supportTopicService) ? this._supportTopicService.supportTopicId : '_supportTopicService is NULL',
         _cxpChatService: !!this._cxpChatService,
-        isSupportTopicEnabledForLiveChat:  (!!this._supportTopicService && !!this._cxpChatService)? this._cxpChatService.isSupportTopicEnabledForLiveChat(this._supportTopicService.supportTopicId): null,
+        isSupportTopicEnabledForLiveChat: (!!this._supportTopicService && !!this._cxpChatService) ? this._cxpChatService.isSupportTopicEnabledForLiveChat(this._supportTopicService.supportTopicId) : null,
         isPublic: false
       };
 
-      this._cxpChatService.logChatEligibilityCheck('Call to CXP Chat API skipped. Config is not Public.', JSON.stringify(checkOutcome));
-    }    
+      this._cxpChatService.logChatEligibilityCheck(
+        ((!!this._supportTopicService && !!this._supportTopicService.supportTopicId) ? this._supportTopicService.supportTopicId : ''),
+        'Call to CXP Chat API skipped. Config is not Public.',
+        JSON.stringify(checkOutcome));
+    }
     this._activatedRouteLocal.paramMap.subscribe(params => {
-      this.analysisId = (this.analysisId != 'searchResultsAnalysis' && !!params.get('analysisId'))? params.get('analysisId') : this.analysisId;
+      this.analysisId = (this.analysisId != 'searchResultsAnalysis' && !!params.get('analysisId')) ? params.get('analysisId') : this.analysisId;
       this.analysisDetector = this.analysisId;
       this.detectorId = params.get('detectorName') === null ? "" : params.get('detectorName');
       this._activatedRouteLocal.queryParamMap.subscribe(qParams => {
         this.searchTerm = qParams.get('searchTerm') === null ? this.searchTerm : qParams.get('searchTerm');
-        if (this.analysisId=== "searchResultsAnalysis" && this.searchTerm && this.searchTerm.length>0){
-            this.showSearchBar = this.searchMode === SearchAnalysisMode.CaseSubmission ? true : this.showSearchBar;
-            this.displayDetectorContainer = false;
+        if (this.analysisId === "searchResultsAnalysis" && this.searchTerm && this.searchTerm.length > 0) {
+          this.showSearchBar = this.searchMode === SearchAnalysisMode.CaseSubmission ? true : this.showSearchBar;
+          this.displayDetectorContainer = false;
         }
-        else
-        {
-            this.showSearchBar = false;
+        else {
+          this.showSearchBar = false;
         }
 
         this._diagnosticServiceLocal.getDetectors().subscribe(detectorList => {
@@ -89,49 +92,53 @@ export class GenericAnalysisComponent extends GenericDetectorComponent implement
     });
   }
 
-  updateLoadingStatus(dataOutput){
-      this.onComplete.emit(dataOutput);
+  updateLoadingStatus(dataOutput) {
+    this.onComplete.emit(dataOutput);
   }
 
-  triggerSearch(){
-    if (this.searchTerm && this.searchTerm.length>1) {
+  triggerSearch() {
+    if (this.searchTerm && this.searchTerm.length > 1) {
       this.searchBarFocus = false;
       var searchBar = document.getElementById('caseSubmissionFlowSearchBar');
       searchBar.blur();
-      this._routerLocal.navigate([`../../${this.analysisId}/search`], { relativeTo: this._activatedRouteLocal, queryParamsHandling: 'merge', queryParams: {searchTerm: this.searchTerm} });
+      this._routerLocal.navigate([`../../${this.analysisId}/search`], { relativeTo: this._activatedRouteLocal, queryParamsHandling: 'merge', queryParams: { searchTerm: this.searchTerm } });
     }
   }
 
-  focusSearch(){
+  focusSearch() {
     var searchBar = document.getElementById('caseSubmissionFlowSearchBar');
     searchBar.focus();
     this.searchBarFocus = true;
   }
 
-  showChatButton():boolean {
+  showChatButton(): boolean {
     return this.isPublic && this.cxpChatTrackingId != '' && this.cxpChatUrl != '';
   }
 
-  renderCXPChatButton(){
-    if(this.cxpChatTrackingId === '' && this.cxpChatUrl === '') {
-      if(this._supportTopicService && this._cxpChatService && this._cxpChatService.isSupportTopicEnabledForLiveChat(this._supportTopicService.supportTopicId)) {
-          this.cxpChatTrackingId = this._cxpChatService.generateTrackingId();
-          this._cxpChatService.getChatURL(this._supportTopicService.supportTopicId, this.cxpChatTrackingId).subscribe((chatApiResponse:any)=>{
-            if (chatApiResponse && chatApiResponse != '') {
-              this.cxpChatUrl = chatApiResponse;
-            }
-          });               
+  renderCXPChatButton() {
+    if (this.cxpChatTrackingId === '' && this.cxpChatUrl === '') {
+      if (this._supportTopicService && this._cxpChatService && this._cxpChatService.isSupportTopicEnabledForLiveChat(this._supportTopicService.supportTopicId)) {
+        this.cxpChatTrackingId = this._cxpChatService.generateTrackingId(((!!this._supportTopicService && !!this._supportTopicService.supportTopicId) ? this._supportTopicService.supportTopicId : ''));
+        this.supportTopicId = this._supportTopicService.supportTopicId;
+        this._cxpChatService.getChatURL(this._supportTopicService.supportTopicId, this.cxpChatTrackingId).subscribe((chatApiResponse: any) => {
+          if (chatApiResponse && chatApiResponse != '') {
+            this.cxpChatUrl = chatApiResponse;
+          }
+        });
       }
       else {
         var checkOutcome = {
           _supportTopicServiceObj: !!this._supportTopicService,
-          supportTopicId: (!!this._supportTopicService)? this._supportTopicService.supportTopicId : '_supportTopicService is NULL',
+          supportTopicId: (!!this._supportTopicService) ? this._supportTopicService.supportTopicId : '_supportTopicService is NULL',
           _cxpChatService: !!this._cxpChatService,
-          isSupportTopicEnabledForLiveChat:  (!!this._supportTopicService && !!this._cxpChatService)? this._cxpChatService.isSupportTopicEnabledForLiveChat(this._supportTopicService.supportTopicId): null,
+          isSupportTopicEnabledForLiveChat: (!!this._supportTopicService && !!this._cxpChatService) ? this._cxpChatService.isSupportTopicEnabledForLiveChat(this._supportTopicService.supportTopicId) : null,
           isPublic: true
         };
 
-        this._cxpChatService.logChatEligibilityCheck('Call to CXP Chat API skipped', JSON.stringify(checkOutcome));
+        this._cxpChatService.logChatEligibilityCheck(
+          ((!!this._supportTopicService && !!this._supportTopicService.supportTopicId) ? this._supportTopicService.supportTopicId : ''),
+          'Call to CXP Chat API skipped',
+          JSON.stringify(checkOutcome));
       }
     }
   }

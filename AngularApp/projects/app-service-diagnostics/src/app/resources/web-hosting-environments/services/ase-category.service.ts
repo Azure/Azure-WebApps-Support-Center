@@ -9,6 +9,7 @@ export class AseCategoryService extends CategoryService {
     {
         id: 'Networking',
         name: 'Networking',
+        overviewDetectorId: 'Networking',
         description: 'Sometimes an ASE can be unhealthy and scaling operations can take a long time due to changes in NSG, UDRs, Express Route that may inadvertently harm the ASE. Find out if your network setup is configured correctly for your ASE.',
         keywords: ['NSG', 'Connectivity', 'Outbound Connections', 'Subnet'],
         color: 'rgb(208, 175, 239)',
@@ -18,6 +19,7 @@ export class AseCategoryService extends CategoryService {
     {
       id: 'Scaling',
       name: 'Scaling',
+      overviewDetectorId: 'Scaling',
       description: 'Find out the current status of your scale operations, why your scale operations may be taking a long time, or why they are failing',
       keywords: ['Scale Up', 'Scale Out', 'Deployment', 'Stuck'],
       color: 'rgb(249, 213, 180)',

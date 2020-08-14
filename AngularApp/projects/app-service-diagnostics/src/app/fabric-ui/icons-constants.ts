@@ -34,6 +34,7 @@ export const icons: Set<string> = new Set(
         //Proactive Tools
         ToolIds.AutoHealing,
         ToolIds.CpuMonitoring,
+        ToolIds.CrashMonitoring,
 
         //Diagnostic Tools
         ToolIds.Profiler,

@@ -19,6 +19,7 @@ import { CategoryService } from '../../../shared-v2/services/category.service';
 import { VersionTestService } from '../../../fabric-ui/version-test.service';
 import { ArmService } from '../../../shared/services/arm.service';
 import { SubscriptionPropertiesService } from '../../../shared/services/subscription-properties.service';
+import { DemoSubscriptions } from '../../../betaSubscriptions';
 
 @Injectable()
 export class SiteFeatureService extends FeatureService {
@@ -42,20 +43,21 @@ export class SiteFeatureService extends FeatureService {
     }];
 
     this._authService.getStartupInfo().subscribe(startupInfo => {
+      this.subscriptionId = startupInfo.resourceId.split("subscriptions/")[1].split("/")[0];
       this.addDiagnosticTools(startupInfo.resourceId);
       this.addProactiveTools(startupInfo.resourceId);
       this.addPremiumTools(startupInfo.resourceId);
-      this.subscriptionId = startupInfo.resourceId.split("subscriptions/")[1].split("/")[0];
     });
   }
 
   sortFeatures() {
     let featureDisplayOrder = this._featureDisplayOrder;
     let locationPlacementId = '';
-    this.subscriptionPropertiesService.getSubscriptionProperties(this.subscriptionId).subscribe(response => {
-      locationPlacementId = response.body['subscriptionPolicies']['locationPlacementId'];
-    });
-
+    if(this.subscriptionPropertiesService){
+      this.subscriptionPropertiesService.getSubscriptionProperties(this.subscriptionId).subscribe(response => {
+        locationPlacementId = response.body['subscriptionPolicies']['locationPlacementId'];
+      });
+    }
     // remove features not applicable
     if (locationPlacementId && locationPlacementId.toLowerCase() === 'geos_2020-01-01') {
       this._features = this._features.filter(x => {
@@ -153,29 +155,27 @@ export class SiteFeatureService extends FeatureService {
   addPremiumTools(resourceId: string) {
     this.premiumTools = [];
     this._resourceService.getSitePremierAddOns(resourceId).subscribe(data => {
-      if (data && data.value)
-      {
+      if (data && data.value) {
         let premierAddOns: any[] = data.value;
         let TinfoilAddOn = premierAddOns.find(x => (x.product_name === "TinfoilScanning"));
-        if (TinfoilAddOn)
-        {
+        if (TinfoilAddOn) {
           this.premiumTools.push({
-              appType: AppType.WebApp,
-              platform: OperatingSystem.windows,
-              sku: Sku.NotDynamic,
-              hostingEnvironmentKind: HostingEnvironmentKind.All,
-              stack: '',
-              item: {
-                id: ToolIds.SecurityScanning,
-                name: ToolNames.SecurityScanning,
-                category: 'Premium Tools',
-                description: '',
-                featureType: FeatureTypes.Tool,
-                clickAction: this._createFeatureAction(ToolIds.SecurityScanning, 'Premium Tools', () => {
-                  this._portalActionService.openTifoilSecurityBlade();
-                })
-              }
-            });
+            appType: AppType.WebApp,
+            platform: OperatingSystem.windows,
+            sku: Sku.NotDynamic,
+            hostingEnvironmentKind: HostingEnvironmentKind.All,
+            stack: '',
+            item: {
+              id: ToolIds.SecurityScanning,
+              name: ToolNames.SecurityScanning,
+              category: 'Premium Tools',
+              description: '',
+              featureType: FeatureTypes.Tool,
+              clickAction: this._createFeatureAction(ToolIds.SecurityScanning, 'Premium Tools', () => {
+                this._portalActionService.openTifoilSecurityBlade();
+              })
+            }
+          });
         }
       }
     });
@@ -234,8 +234,31 @@ export class SiteFeatureService extends FeatureService {
             }
           })
         }
+      }, {
+        appType: AppType.WebApp | AppType.FunctionApp,
+        platform: OperatingSystem.windows,
+        sku: Sku.NotDynamic,
+        hostingEnvironmentKind: HostingEnvironmentKind.All,
+        stack: '',
+        item: {
+          id: ToolIds.CrashMonitoring,
+          name: ToolNames.CrashMonitoring,
+          category: 'Proactive Tools',
+          description: '',
+          featureType: FeatureTypes.Tool,
+          clickAction: this._createFeatureAction(ToolNames.CrashMonitoring, 'Proactive Tools', () => {
+
+            //Need remove after A/B test
+            if (this.isLegacy) {
+              this._router.navigateByUrl(`resource${resourceId}/tools/crashmonitoring`);
+            } else {
+              this.navigateTo(resourceId, ToolIds.CrashMonitoring);
+            }
+          })
+        }
       }
     ];
+
     this._websiteFilter.transform(this.proactiveTools).forEach(tool => {
       this._features.push(tool);
     });
@@ -572,7 +595,7 @@ export class SiteFeatureService extends FeatureService {
   }
 
   private navigateTo(resourceId: string, toolId: string) {
-    const isHomepage = !this._activatedRoute.root.firstChild.firstChild.firstChild.firstChild.snapshot.params["category"];
+    const isHomepage = this._router.url.endsWith(resourceId);
     //If in homepage then open second blade for Diagnostic Tool and second blade will continue to open third blade for 
     if (isHomepage) {
       this._portalActionService.openBladeDiagnosticToolId(toolId);
