@@ -93,6 +93,10 @@ export class DynamicDataComponent implements OnInit {
       return this._zoomBehavior;
   }
 
+  get isIE_Browser(): boolean {
+    return /msie\s|trident\//i.test(window.navigator.userAgent);
+  }
+
   @Output() XAxisSelection:EventEmitter<XAxisSelection> = new EventEmitter<XAxisSelection>();	
 
   @ViewChild('dynamicDataContainer', { read: ViewContainerRef, static: true }) dynamicDataContainer: ViewContainerRef;
@@ -138,7 +142,7 @@ export class DynamicDataComponent implements OnInit {
       case RenderingType.TimeSeries:
         return TimeSeriesGraphComponent;
       case RenderingType.Table:
-        return DataTableV4Component;
+        return this.isIE_Browser ? DataTableComponent : DataTableV4Component;
       case RenderingType.DataSummary:
         return DataSummaryComponent;
       case RenderingType.Email:
