@@ -55,7 +55,8 @@ namespace AppLensV3
 
         public async Task<string> GetCommitContent(string filePath, string sha)
         {
-            return await GetBlobByName(filePath);
+            var parts = filePath.Split(new char[] { '/' });
+            return await GetBlobByName($"{parts[0]}/{sha}/{parts[1]}");
         }
 
         public async Task<string> GetConfiguration(string id)
