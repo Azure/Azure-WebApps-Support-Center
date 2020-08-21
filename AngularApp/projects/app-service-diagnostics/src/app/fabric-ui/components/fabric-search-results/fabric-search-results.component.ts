@@ -45,10 +45,6 @@ export class FabricSearchResultsComponent {
     return `${searchResultAriaLabel} Press Escape to clear search result`;
   }
 
-  get isIE_Browser(): boolean {
-    return /msie\s|trident\//i.test(window.navigator.userAgent);
-  }
-
   @HostListener('mousedown', ['$event.target'])
   onClick(ele: HTMLElement) {
     //If is cross icon in search box

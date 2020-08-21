@@ -9,7 +9,7 @@
     <div class="result-group" (keyup.escape)="escapeHandler()">
 
       <!-- for search result in category page -->
-      <div *ngIf="isInCategory || isIE_Browser else searchResults">
+      <div *ngIf="isInCategory else searchResults">
         <a tabindex="0" class="result-item detail-list-style" *ngFor="let feature of features;let i = index" style="display:flex;"
           (mousedown)="navigateToFeature(feature)" (keyup.enter)="navigateToFeature(feature)"
           [attr.aria-label]="getResultAriaLabel(i)">
