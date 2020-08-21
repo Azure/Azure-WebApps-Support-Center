@@ -1,74 +1,100 @@
 <div *ngIf="isEnabledInProd" class="animated fadeIn panel panel-info width-90">
   <div class="banner">
-    <div class="vertical-center">
-      <div *ngIf="loadingSettings">
-        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-        Checking AppInsights...
-      </div>
-      <div *ngIf="!loadingSettings">
-        <div *ngIf="!connecting && !error">
-          <div *ngIf="isAppInsightsEnabled">
-            <div *ngIf="!isAppInsightsConnected">
-              <div *ngIf="hasWriteAccess">
-                <i class="fa fa-exclamation-triangle warning-icon-color mr-2 "></i>
-                Connect Application Insights with App Service Diagnostics to allow App Service Diagnostics to access App
-                Insights information.
-                <button class="ms-Button ms-Button--primary" (click)="connect()">
-                  <span class="ms-Button-label">Connect</span>
-                </button>
-                <a target="_blank"
-                  href="https://azure.github.io/AppService/2020/04/21/Announcing-Application-Insights-Integration-with-App-Service-Diagnostics.html">
-                  <i style="color: gray;" class="fa fa-info-circle info-icon-color fa-lg ml-2"></i>
-                </a>
-              </div>
-              <div *ngIf="!hasWriteAccess">
-                <i class="fa fa-exclamation-triangle warning-icon-color mr-2 "></i>
-                Application Insights is enabled for this app but you do not have Write Permissions to create an API key
-                for the connected Application Insights resource.
-              </div>
-            </div>
-            <div *ngIf="isAppInsightsConnected">
-              <ng-container *ngIf="!appInsightsValidated">
-                <i class="fa fa-exclamation-triangle warning-icon-color"></i>
-                Application Insights was connected with App Service Diagnostics but the saved configuration is no more
-                valid. Please connect again.
-                <button class="ms-Button ms-Button--primary" (click)="connect()">
-                  <span class="ms-Button-label">Connect</span>
-                </button>
-                <a target="_blank"
-                  href="https://azure.github.io/AppService/2020/04/21/Announcing-Application-Insights-Integration-with-App-Service-Diagnostics.html">
-                  <i style="color: gray;" class="fa fa-info-circle info-icon-color fa-lg ml-2"></i>
-                </a>
-              </ng-container>
-              <ng-container *ngIf="appInsightsValidated">
-                <i class="fa fa-check-circle healthy-icon-color"></i>
-                <span class="ml-3">App Insights is enabled
-                  and connected with App Service Diagnostics</span>
-              </ng-container>
-            </div>
-          </div>
-          <div *ngIf="!isAppInsightsEnabled">
-            <div *ngIf="appSettingsHaveInstrumentationKey">
-              <i class="fa fa-exclamation-triangle warning-icon-color"></i>
-              It appears that Application Insights is enabled for the app but we failed to look up the associated
-              Application Insights resource information. This can happen if you do not have read access on the
-              Azure subscription that is hosting the connected Application Insights resource.
-            </div>
-            <div *ngIf="!appSettingsHaveInstrumentationKey">
-              <i class="fa fa-exclamation-triangle warning-icon-color"></i>
-              Enable Application insights for your app to collect application level monitoring data
-              <button class="ms-Button ms-Button--primary" (click)="enable()">
-                <span class="ms-Button-label">Enable</span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div *ngIf="connecting">
+    <div class="banner-child">
+      <div class="ml-3">
+        <div *ngIf="loadingSettings">
           <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
-          Connecting AppInsights with App Service Diagnostics...
+          Checking AppInsights...
         </div>
-        <div *ngIf="error" class="focus-box focus-box-warning">
-          {{ error }}
+        <div *ngIf="!loadingSettings">
+          <div *ngIf="!connecting && !error">
+            <div *ngIf="isAppInsightsEnabled">
+              <div *ngIf="!isAppInsightsConnected">
+                <div *ngIf="hasWriteAccess">
+                  <table *ngIf="hasWriteAccess && !isAppInsightsConnected">
+                    <tbody>
+                      <tr>
+                        <td><i class="fa fa-exclamation-triangle warning-icon-color mr-2"></i>
+                        </td>
+                        <td>Connect Application Insights with App Service Diagnostics to allow App Service Diagnostics
+                          to
+                          access App Insights information.
+                        </td>
+                        <td>
+                          <fab-primary-button contentClass="ml-2" (click)="connect()">
+                            Connect
+                          </fab-primary-button>
+                        </td>
+                        <td><a
+                            href="https://azure.github.io/AppService/2020/04/21/Announcing-Application-Insights-Integration-with-App-Service-Diagnostics.html"
+                            target="_blank"><i _ngcontent-app-id-c44=""
+                              class="fa fa-info-circle info-icon-color fa-lg ml-2" style="color: gray;"></i></a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div *ngIf="!hasWriteAccess">
+                  <i class="fa fa-exclamation-triangle warning-icon-color mr-2 "></i>
+                  Application Insights is enabled for this app but you do not have Write Permissions to create an API
+                  key
+                  for the connected Application Insights resource.
+                </div>
+              </div>
+              <div *ngIf="isAppInsightsConnected">
+                <ng-container *ngIf="!appInsightsValidated">
+                  <i class="fa fa-exclamation-triangle warning-icon-color"></i>
+                  Application Insights was connected with App Service Diagnostics but the saved configuration is no more
+                  valid. Please connect again.
+                  <fab-primary-button contentClass="ml-2" (click)="connect()">
+                    Connect
+                  </fab-primary-button>
+                  <a target="_blank"
+                    href="https://azure.github.io/AppService/2020/04/21/Announcing-Application-Insights-Integration-with-App-Service-Diagnostics.html">
+                    <i style="color: gray;" class="fa fa-info-circle info-icon-color fa-lg ml-2"></i>
+                  </a>
+                </ng-container>
+                <ng-container *ngIf="appInsightsValidated">
+                  <i class="fa fa-check-circle healthy-icon-color"></i>
+                  <span class="ml-3">App Insights is enabled
+                    and connected with App Service Diagnostics</span>
+                </ng-container>
+              </div>
+            </div>
+            <div *ngIf="!isAppInsightsEnabled">
+              <div *ngIf="appSettingsHaveInstrumentationKey">
+                <i class="fa fa-exclamation-triangle warning-icon-color"></i>
+                Either we failed to look up the App Settings for the App or we failed to look up the associated
+                Application Insights resource information for this app. This can happen if you do not have permissions
+                to read the app settings or you do not have read access on the Azure subscription that is hosting the
+                connected Application Insights resource.
+              </div>
+              <div *ngIf="!appSettingsHaveInstrumentationKey">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td><i class="fa fa-exclamation-triangle warning-icon-color mr-2"></i>
+                      </td>
+                      <td> Enable Application insights for your app to collect application level monitoring data
+                      </td>
+                      <td>
+                        <fab-primary-button contentClass="ml-2" (click)="enable()">
+                          Enable
+                        </fab-primary-button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="connecting">
+            <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+            Connecting AppInsights with App Service Diagnostics...
+          </div>
+          <div *ngIf="error">
+            <i class="fa fa-exclamation-triangle warning-icon-color mr-2"></i>
+            Failed while connecting App Insights with App Service Diagnostics. {{ error }}
+          </div>
         </div>
       </div>
     </div>

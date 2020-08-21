@@ -31,7 +31,6 @@ import { ToolsMenuComponent } from './tools-menu/tools-menu.component';
 import { AvailabilityAndPerformanceCategoryRouteConfig } from './availability.routeconfig';
 import { AspNetCoreComponent } from "./detector-view/detectors/aspnetcore-detector/aspnetcore-detector.component";
 import { AppInsightsTileComponent } from './app-insights/app-insights-tile.component';
-import { AppInsightsSettingsComponent } from './app-insights/app-insights-settings.component';
 import { AppInsightsExceptionsComponent } from './app-insights/exceptions/app-insights-exceptions.component';
 import { AppInsightsDependenciesComponent } from './app-insights/dependencies/app-insights-dependencies.component';
 import { TcpConnectionsAnalysisComponent } from './analysis/tcpconnectionsanalysis/tcp-connections-analysis.component';
@@ -69,7 +68,6 @@ import { RerouteResolver } from './reroute/reroute.resolver';
         AspNetCoreComponent,
         TcpConnectionsAnalysisComponent,
         AppInsightsTileComponent,
-        AppInsightsSettingsComponent,
         AppInsightsExceptionsComponent,
         AppInsightsDependenciesComponent,
         ProblemSolutionComponent,
@@ -88,7 +86,6 @@ import { RerouteResolver } from './reroute/reroute.resolver';
         ObservationsPerformanceComponent,
         DetectorViewProblemComponent,
         AppInsightsTileComponent,
-        AppInsightsSettingsComponent,
         ProblemSolutionComponent,
         AutohealingDetectorComponent,
         DetectorLoaderComponent

@@ -4,6 +4,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { SettingsService } from '../../services/settings.service';
 import { BackendCtrlQueryService } from '../../services/backend-ctrl-query.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
+import { MessageBarType } from 'office-ui-fabric-react';
 
 @Component({
   selector: 'app-insights-enablement',
@@ -29,6 +30,7 @@ export class AppInsightsEnablementComponent implements OnInit {
   appSettingsHaveInstrumentationKey: boolean = false;
   hasWriteAccess: boolean = false;
   isEnabledInProd: boolean = true;
+  messageBarType = MessageBarType.info;
 
   @Input()
   resourceId: string = "";
@@ -48,35 +50,45 @@ export class AppInsightsEnablementComponent implements OnInit {
               if (connected) {
                 this._appInsightsService.logAppInsightsEvent(this.resourceId, TelemetryEventNames.AppInsightsAlreadyConnected);
                 this.isAppInsightsConnected = true;
-                const additionalHeaders = new HttpHeaders({ 'resource-uri': this.resourceId });
-                this._backendCtrlService.get<any>(`api/appinsights/validate`, additionalHeaders).subscribe(resp => {
-                  if (resp === true) {
-                    this.appInsightsValidated = true;
+                this._appInsightsService.getAppInsightsArmTag(this.resourceId).subscribe(tagResponse => {
+                  if (tagResponse && tagResponse.AppId && tagResponse.ApiKey) {
+                    const additionalHeaders = new HttpHeaders({ 'appinsights-app-id': tagResponse.AppId, 'appinsights-encryptedkey': tagResponse.ApiKey });
+                    this._backendCtrlService.get<any>(`api/appinsights/validate`, additionalHeaders).subscribe(resp => {
+                      if (resp === true) {
+                        this.appInsightsValidated = true;
+                      }
+                      this.loadingSettings = false;
+                    }, error => {
+                      this.loadingSettings = false;
+                      this._appInsightsService.logAppInsightsEvent(this.resourceId, TelemetryEventNames.AppInsightsConfigurationInvalid);
+                    });
                   }
-                  this.loadingSettings = false;
                 }, error => {
                   this.loadingSettings = false;
-                  this._appInsightsService.logAppInsightsEvent(this.resourceId, TelemetryEventNames.AppInsightsConfigurationInvalid);
                 });
+
+
               } else {
 
                 //
                 // If AppInsights is not connected already, check if the user has write access to the 
                 // AppInsights resource by checking ARM permissions
                 //
-                const additionalHeaders = new HttpHeaders({ 'appinsights-resource-uri': this.appInsightsResourceUri });
-                this._backendCtrlService.get<any>(`api/appinsights/checkappinsightsaccess`, additionalHeaders).subscribe(resp => {
-                  if (resp === true) {
-                    this.hasWriteAccess = true;
-                  } else {
+
+                this._appInsightsService.checkAppInsightsAccess(this.appInsightsResourceUri).subscribe(hasAccess => {
+                  this.hasWriteAccess = hasAccess;
+                  this.loadingSettings = false;
+
+                  if (!this.hasWriteAccess) {
                     this._appInsightsService.logAppInsightsEvent(this.resourceId, TelemetryEventNames.AppInsightsResourceMissingWriteAccess);
                   }
-                  this.loadingSettings = false;
+
                 }, errorCheckingAccess => {
                   this._appInsightsService.logAppInsightsError(this.resourceId, TelemetryEventNames.AppInsightsAccessCheckError, errorCheckingAccess);
                   this.loadingSettings = false;
                   this.hasWriteAccess = false;
                 });
+
               }
             });
           } else {
@@ -88,11 +100,13 @@ export class AppInsightsEnablementComponent implements OnInit {
             && !this._appInsightsService.appInsightsSettings.enabledForWebApp) {
 
             //
-            // This is the case where we found Instrumention Key in AppSettings but 
-            // we failed to reverse lookup Application Insights resource corresponding
-            // to the app settings. This can happen if the app has the AppSetting set
-            // incorrectly or the current user has access to the app but does not have 
-            // access on the subscription to list all the AppInsights resources
+            // This is the case where :- 
+            // 1. Either we failed to look up the App Settings for the app, or
+            // 2. We succeeded to view app settings but we  failed to reverse lookup 
+            //    Application Insights resource corresponding to the app settings. This 
+            //    can happen if the app has the AppSetting set incorrectly or the current 
+            //    user has access to the app but does not have access on the subscription 
+            //    to list all the AppInsights resources.
             //
             this.appSettingsHaveInstrumentationKey = true;
             this._appInsightsService.logAppInsightsEvent(this.resourceId, TelemetryEventNames.AppInsightsFromDifferentSubscription);
@@ -112,18 +126,17 @@ export class AppInsightsEnablementComponent implements OnInit {
 
   connect() {
     this.connecting = true;
-    const additionalHeaders = new HttpHeaders({ 'resource-uri': this.resourceId, 'appinsights-resource-uri': this.appInsightsResourceUri, 'appinsights-app-id': this.appId });
-    this._backendCtrlService.put<any, null>(`api/appinsights`, null, additionalHeaders).subscribe(resp => {
+    this._appInsightsService.connectAppInsights(this.resourceId, this.appInsightsResourceUri, this.appId).subscribe(resp => {
       this.connecting = false;
-      if (resp === true) {
+      if (resp) {
         this.isAppInsightsConnected = true;
         this.appInsightsValidated = true;
         this._appInsightsService.logAppInsightsEvent(this.resourceId, TelemetryEventNames.AppInsightsConnected);
       }
+
     }, error => {
       this.connecting = false;
-      this.error = error.error ? error.error : JSON.stringify(error);
-      this.error = "Failed while connecting App Insights with App Service Diagnostics. Error - " + this.error;
+      this.error = error;
       this._appInsightsService.logAppInsightsError(this.resourceId, TelemetryEventNames.AppInsightsConnectionError, this.error);
     });
   }

@@ -302,7 +302,9 @@ export class ArmService {
         const request = this._http.post<T>(url, body, {
             headers: this.getHeaders(),
             observe: 'response'
-        });
+        }).pipe(
+            catchError(this.handleError)
+        );
 
         return this._cache.get(resourceUri, request, invalidateCache);
     }
@@ -313,7 +315,9 @@ export class ArmService {
         const request = this._http.put<T>(url, body, {
             headers: this.getHeaders(),
             observe: 'response'
-        });
+        }).pipe(
+            catchError(this.handleError)
+        );
 
         return this._cache.get(resourceUri, request, invalidateCache);
     }
@@ -324,7 +328,9 @@ export class ArmService {
         const request = this._http.patch<T>(url, body, {
             headers: this.getHeaders(),
             observe: 'response'
-        });
+        }).pipe(
+            catchError(this.handleError)
+        );
 
         return this._cache.get(resourceUri, request, invalidateCache);
     }
@@ -335,7 +341,9 @@ export class ArmService {
         const request = this._http.get<T>(url, {
             headers: this.getHeaders(),
             observe: 'response'
-        });
+        }).pipe(
+            catchError(this.handleError)
+        );
 
         return this._cache.get(resourceUri, request, invalidateCache);
     }
@@ -343,9 +351,33 @@ export class ArmService {
     getResourceFullUrl<T>(resourceUri: string, invalidateCache: boolean = false): Observable<T> {
         const request = this._http.get<T>(resourceUri, {
             headers: this.getHeaders()
-        });
+        }).pipe(
+            catchError(this.handleError)
+        );
 
         return this._cache.get(resourceUri, request, invalidateCache);
+    }
+
+    static prettifyError(error: any): string {
+        let errorReturn = '';
+
+        if (error.code) {
+            errorReturn = "Code:" + error.code;
+        } else if (error.StatusCode) {
+            errorReturn = "StatusCode:" + error.StatusCode;
+        }
+        if (error.message) {
+            errorReturn += ' ' + error.message;
+        } else if (error.description) {
+            errorReturn += ' ' + error.description;
+        } else if (error.Description) {
+            errorReturn += ' ' + error.Description;
+        }
+
+        if (errorReturn === '') {
+            errorReturn = JSON.stringify(error);
+        }
+        return errorReturn;
     }
 
     private handleError(error: HttpErrorResponse): any {
@@ -356,18 +388,9 @@ export class ArmService {
         if (error) {
             if (error.error) {
                 if (error.error.error) {
-                    let innerMost = error.error.error;
-                    if (innerMost.code && innerMost.message) {
-                        actualError = innerMost.code + "-" + innerMost.message;
-                    } else {
-                        if (innerMost.message) {
-                            actualError = innerMost.message;
-                        } else {
-                            actualError = JSON.stringify(error.error);
-                        }
-                    }
+                    actualError = ArmService.prettifyError(error.error.error);
                 } else {
-                    actualError = JSON.stringify(error.error);
+                    actualError = ArmService.prettifyError(error.error);
                 }
 
                 if (error.error instanceof ErrorEvent) {

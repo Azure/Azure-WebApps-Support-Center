@@ -25,7 +25,6 @@ import { GraphMessageComponent } from './common/graph-message/graph-message.comp
 import { CpuAnalysisChatFlow } from './message-flow/cpu-analysis-chat/cpu-analysis-chat-flow';
 import { ProblemStatementMessageComponent } from './common/problem-statement-message/problem-statement-message.component';
 
-import { AppInsightsSettingsComponent } from '../availability/app-insights/app-insights-settings.component';
 import { CategoryMenuComponent } from './message-flow/category-menu/category-menu.component';
 import { DetectorSummaryComponent } from './message-flow/detector-summary/detector-summary.component';
 import { DocumentSearchComponent } from './message-flow/document-search/document-search.component';

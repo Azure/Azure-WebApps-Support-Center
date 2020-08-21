@@ -3,9 +3,7 @@
 namespace Backend.Services
 {
     public interface IAppInsightsService
-    {
-        Task<bool> ConnectApplicationInsights(string resourceId, string appInsightsResource, string appInsightsAppId, string bearerToken);
-        Task<bool> Validate(string resourceId, string bearerToken);
-        Task<bool> CheckAppInsightsAccess(string appInsightsResource, string authToken);
+    { 
+        Task<bool> Validate(string appInsightsAppId, string encryptedKey);
     }
 }

@@ -82,7 +82,7 @@ import { AppDependenciesComponent } from './components/app-dependencies/app-depe
 import { HighchartsChartModule } from 'highcharts-angular';
 import { HighchartsGraphComponent } from './components/highcharts-graph/highcharts-graph.component';
 import { FabNavModule } from './components/fab-nav/fab-nav.module';
-import { FabIconModule, FabChoiceGroupModule, FabSearchBoxModule, FabDropdownModule, FabDetailsListModule, FabTextFieldModule } from '@angular-react/fabric';
+import { FabIconModule, FabChoiceGroupModule, FabSearchBoxModule, FabDropdownModule, FabDetailsListModule, FabTextFieldModule, FabMessageBarModule, FabButtonModule } from '@angular-react/fabric';
 import { SummaryCardsComponent } from './components/summary-cards/summary-cards.component';
 import { InsightsV4Component } from './components/insights-v4/insights-v4.component';
 import { CardSelectionV4Component } from './components/card-selection-v4/card-selection-v4.component';
@@ -116,7 +116,9 @@ import { DataTableV4Component } from './components/data-table-v4/data-table-v4.c
     FabDropdownModule,
     InViewportModule,
     FabDetailsListModule,
-    FabTextFieldModule
+    FabTextFieldModule,
+    FabMessageBarModule,
+    FabButtonModule
   ],
   providers: [
     ClipboardService

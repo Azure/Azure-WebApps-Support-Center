@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, of } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, BehaviorSubject, of, throwError } from 'rxjs';
 import { StartupInfo, ResourceType } from '../../models/portal';
 import { Verbs } from '../../models/portal';
 import { AuthService } from '../../../startup/services/auth.service';
@@ -10,18 +10,24 @@ import { AppAnalysisService } from '../appanalysis.service';
 import { PortalService } from '../../../startup/services/portal.service';
 import { PortalActionService } from '../portal-action.service';
 import { AvailabilityLoggingService } from '../logging/availability.logging.service';
-import { tap, map, mergeMap } from 'rxjs/operators';
+import { tap, map, mergeMap, catchError } from 'rxjs/operators';
 import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
 import { ResponseMessageCollectionEnvelope, ResponseMessageEnvelope } from '../../models/responsemessageenvelope';
 import { AppInsightsResponse } from '../../models/appinsights';
+import { ArmResource } from '../../../shared-v2/models/arm';
+import { BackendCtrlService } from '../backend-ctrl.service';
+import { RBACService } from '../rbac.service';
+
+const apiVersion : string = "2018-02-01";
 
 @Injectable()
 export class AppInsightsService {
 
     private appInsightsExtension = 'AppInsightsExtension';
-    private appInsights_KeyStr: string = 'WEBAPP_SUPPORTCNTR_READONLYKEY';
+    private appInsightsKeyName: string = 'APPSERVICEDIAGNOSTICS_READONLYKEY';
+    private appInsightsTagName: string = 'hidden-related:diagnostics/applicationInsightsSettings';
     private appInsightsApiEndpoint: string = 'https://api.applicationinsights.io/v1/apps/';
-    private appInsightsAppSettingName: string = 'APPINSIGHTS_INSTRUMENTATIONKEY';
+    private appInsightsAppSettingName: string = 'APPINSIGHTS_INSTRUMENTATIONKEY'; 
 
     public appId_AppSettingStr: string = 'SUPPORTCNTR_APPINSIGHTS_APPID';
     public appKey_AppSettingStr: string = 'SUPPORTCNTR_APPINSIGHTS_APPKEY';
@@ -38,7 +44,7 @@ export class AppInsightsService {
         resourceUri: undefined,
         name: undefined,
         appId: undefined,
-        appSettingsHaveInstrumentationKey:true
+        appSettingsHaveInstrumentationKey: true
     };
 
     subscriptionId: string;
@@ -46,7 +52,10 @@ export class AppInsightsService {
     siteName: string;
     slotName: string;
 
-    constructor(private http: HttpClient, private authService: AuthService, private armService: ArmService, private siteService: SiteService, private appAnalysisService: AppAnalysisService, private portalService: PortalService, private portalActionService: PortalActionService, private logger: AvailabilityLoggingService, private _telmetryService: TelemetryService) {
+    constructor(private http: HttpClient, private authService: AuthService, private armService: ArmService,
+        private siteService: SiteService, private appAnalysisService: AppAnalysisService, private portalService: PortalService,
+        private portalActionService: PortalActionService, private logger: AvailabilityLoggingService, private _telmetryService: TelemetryService,
+        private _backendService: BackendCtrlService, private _rbacService: RBACService) {
         this.loadAppInsightsResourceObservable = new BehaviorSubject<boolean>(null);
         this.loadAppDiagnosticPropertiesObservable = new BehaviorSubject<boolean>(null);
         this.applicationInsightsValidForApp = new BehaviorSubject<boolean>(null);
@@ -113,6 +122,8 @@ export class AppInsightsService {
             }
 
             this.logger.LogAppInsightsSettings(this.appInsightsSettings.enabledForWebApp);
+        }, error => {
+            this.loadAppInsightsResourceObservable.next(false);
         });
     }
 
@@ -182,31 +193,43 @@ export class AppInsightsService {
         }));
     }
 
-    DeleteAppInsightsAccessKeyIfExists(): Observable<any> {
-
+    deleteAppInsightsAccessKeyIfExists(headers: HttpHeaders): Observable<any> {
         const url = `${this.armService.armUrl}${this.appInsightsSettings.resourceUri}/ApiKeys?api-version=2015-05-01`;
-        return this.http.get(url).pipe(tap((data: any) => {
-            if (data && data.length && data.length > 0) {
-
-                data.forEach(element => {
-                    if (element['name'].toLowerCase() === this.appInsights_KeyStr.toLowerCase()) {
-
-                        this.http.delete(`${this.armService.armUrl}${element['id']}?api-version=2015-05-01`);
+        return this.http.get(url, { headers: headers }).pipe(
+            map((data: any) => {
+                if (data && data.value && data.value.length && data.value.length > 0) {
+                    let existingKey = data.value.find(x => x.name.toLowerCase() === this.appInsightsKeyName.toLowerCase());
+                    if (existingKey) {
+                        return existingKey.id;
                     }
-                });
-            }
-        }));
+                }
+            }),
+            mergeMap(existingKeyId => {
+                if (existingKeyId) {
+                    return this.http.delete(`${this.armService.armUrl}${existingKeyId}?api-version=2015-05-01`, { headers: headers }).pipe(
+                        map(resp => {
+                            return resp;
+                        }));
+                } else {
+                    return of("KeyDoesNotExist");
+                }
+            }));
     }
 
-    GenerateAppInsightsAccessKey(): Observable<any> {
+    generateAppInsightsAccessKey(): Observable<any> {
         const url = `${this.appInsightsSettings.resourceUri}/ApiKeys`;
         const body: any = {
-            name: this.appInsights_KeyStr,
+            name: this.appInsightsKeyName,
             linkedReadProperties: [`${this.appInsightsSettings.resourceUri}/api`],
             linkedWriteProperties: []
         };
 
-        return this.armService.postResourceWithoutEnvelope<any, any>(url, body, '2015-05-01');
+        return this.armService.postResourceWithoutEnvelope<any, any>(url, body, '2015-05-01')
+            .pipe(
+                catchError(err => {
+                    return throwError("Failed while generating AppInsights ApiKey - " + err);
+                })
+            );
     }
 
     ExecuteQuery(query: string): Observable<any> {
@@ -254,18 +277,122 @@ export class AppInsightsService {
         return (item != undefined && item != '');
     }
 
-    public logAppInsightsError(resourceUri: string, telmetryEvent:string,  error: any) {
+    public logAppInsightsError(resourceUri: string, telmetryEvent: string, error: any) {
         this._telmetryService.logEvent(telmetryEvent, {
             'resourceUri': resourceUri,
             'error': error
         });
     }
 
-    public logAppInsightsEvent(resourceUri: string, telmetryEvent:string) {
+    public logAppInsightsEvent(resourceUri: string, telmetryEvent: string) {
         this._telmetryService.logEvent(telmetryEvent,
             {
                 'resourceUri': resourceUri
             });
+    }
+
+    public connectAppInsights(resourceUri: string, appInsightsResourceUri: string, appId: string): Observable<any> {
+
+        return this.authService.getStartupInfo().pipe(
+            map((startupInfo: StartupInfo) => {
+                let headers = this._getHeaders(startupInfo, null);
+                return headers;
+            }),
+            mergeMap(headers => {
+                return this.deleteAppInsightsAccessKeyIfExists(headers);
+            }),
+            mergeMap(deleteTagResponse => {
+                return this.generateAppInsightsAccessKey().map(keyResponse => {
+                    if (keyResponse && keyResponse.apiKey) {
+                        return keyResponse.apiKey;
+                    }
+                });
+            }),
+            mergeMap(apiKey => {
+                if (apiKey) {
+                    const additionalHeaders = new HttpHeaders({ 'appinsights-key': apiKey });
+                    return this._backendService.get(`api/appinsights/encryptkey`, additionalHeaders)
+                        .pipe(
+                            catchError(err => {
+                                return throwError("Failed while encrypting the AppInsights API Key");
+                            })
+                        )
+                        .map((encryptedKey: string) => {
+                            return encryptedKey;
+                        });
+                }
+            }),
+            mergeMap(encryptedKey => {
+                if (encryptedKey) {
+                    return this.getUpdatedTags(resourceUri, encryptedKey, appId).map(updatedTags => {
+                        return updatedTags;
+                    });
+                }
+            }),
+            mergeMap(updatedTags => {
+                if (updatedTags) {
+                    return this.armService.patchResourceFullResponse(resourceUri, { tags: updatedTags }, true, apiVersion)
+                        .pipe(
+                            catchError(err => {
+                                return throwError("Failed while updating ARM tags for the resource - " + err);
+                            })
+                        ).map(patchTagsResponse => {
+                            return patchTagsResponse;
+                        });
+                }
+            }));
+    }
+
+    private getExistingTags(resourceUri: string): Observable<{ [key: string]: string }> {
+        return this.armService.getResourceFullResponse(resourceUri, true, apiVersion)
+            .pipe(
+                catchError(err => {
+                    return throwError("Failed while getting ARM tags for the resource - " + err);
+                })
+            ).map(response => {
+                let armResource = <ArmResource>response.body;
+                return armResource.tags;
+            });
+    }
+
+    private getUpdatedTags(resourceUri: string, encryptedKey: string, appId: string) {
+        return this.getExistingTags(resourceUri).map(existingTags => {
+            existingTags[this.appInsightsTagName] = JSON.stringify({ ApiKey: encryptedKey, AppId: appId });
+            return existingTags;
+        });
+    }
+
+    public getAppInsightsArmTag(resourceUri: string): Observable<any> {
+        return this.getExistingTags(resourceUri).map(existingTags => {
+            if (existingTags[this.appInsightsTagName] != null) {
+                var appInsightsTag = JSON.parse(existingTags[this.appInsightsTagName]);
+                return appInsightsTag;
+
+            } else {
+                return null;
+            }
+        });
+    }
+
+    public checkAppInsightsAccess(appInsightsResourceUri: string): Observable<boolean> {
+        return this._rbacService.hasPermission(appInsightsResourceUri, [this._rbacService.writeScope]);
+    }
+
+    private _getHeaders(startupInfo: StartupInfo, additionalHeaders: HttpHeaders): HttpHeaders {
+        let headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${startupInfo.token}`
+        });
+
+        if (additionalHeaders) {
+            additionalHeaders.keys().forEach(key => {
+                if (!headers.has(key)) {
+                    headers = headers.set(key, additionalHeaders.get(key));
+                }
+            });
+        }
+        return headers;
     }
 }
 

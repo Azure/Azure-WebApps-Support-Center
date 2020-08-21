@@ -1,13 +1,13 @@
 .collapsable-list {
-    margin-top: 10px;
+    margin-top: 24px;
     padding: 0px 10px;
     border-bottom: 1px solid #ccc;
-    padding-bottom: 20px;
 }
 .list-header {
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
+    height:37px;
 
     -webkit-user-select: none; /* Chrome/Safari */
     -moz-user-select: none; /* Firefox */
@@ -21,7 +21,8 @@
     font-size: 10px;
 }
 .list-items-container {
-    margin-left: 10px;
+    margin-left: 5px;
+    margin-bottom: 18px;
 }
 .list-item {
     padding-top: 10px;
@@ -63,5 +64,5 @@ button {
 }
 
 .custom-caret-down {
-    transform: rotate(-90deg);
+    transform: rotate(180deg);
 }
