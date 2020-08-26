@@ -160,8 +160,16 @@ export class DiagnosticApiService {
 
   public publishPackage(resourceId: string, emailRecipients: string, packageToPublish: Package): Observable<any> {
     let path = `${resourceId}/diagnostics/publish`;
-    var modifiedByAlias = this._adalService.userInfo.profile ? this._adalService.userInfo.profile.upn : 'user';
-    modifiedByAlias = modifiedByAlias.replace('@microsoft.com', '');
+    let modifiedByAlias: string;
+    
+    if (environment.adal.enabled) {
+      modifiedByAlias = this._adalService.userInfo.profile ? this._adalService.userInfo.profile.upn : 'user';
+      modifiedByAlias = modifiedByAlias.replace('@microsoft.com', '');
+    }
+    else{
+      modifiedByAlias = "ncloud-noname";
+    }
+    
     let additionalHeaders = new Map<string, string>();
     additionalHeaders.set('x-ms-modifiedBy', modifiedByAlias);
     additionalHeaders.set('x-ms-emailRecipients', emailRecipients);
