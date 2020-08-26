@@ -18,7 +18,7 @@
             "id": "Cluster Insights",
             "name": "Cluster Insights",
             "description": "Is your cluster experiencing failures or unresponsiveness? Investigate and discover issues that may cause your cluster to no longer be manageable.",
-            "keywords": [ "Failures", "Node Readiness", "Node Health", "Scaling", "CRUD", "Identity" ],
+            "keywords": [ "Failed State", "Node Readiness", "Node Health", "Scaling", "CRUD", "Identity", "Certificates" ],
             "color": "rgb(186, 211, 245)",
             "createFlowForCategory": true,
             "chatEnabled": false

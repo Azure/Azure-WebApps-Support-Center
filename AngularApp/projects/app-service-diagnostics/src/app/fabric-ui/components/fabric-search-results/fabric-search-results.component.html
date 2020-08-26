@@ -1,41 +1,18 @@
 <div role="search" class="search-result-container" #fabSearchResult>
   <div class="search-box">
-    <fab-search-box id="fabSearchBox" type="search" placeholder="Search" [value]="searchValue" [ariaLabel]="inputAriaLabel"
-      (onChange)="updateSearchValue($event)" (onFocus)="onSearchBoxFocus()" (onBlur)="onBlurHandler()" 
-      (onEscape)="clearSearchWithKey()" aria-controls="search-results">
+    <fab-search-box id="fabSearchBox" type="search" placeholder="Search" [value]="searchValue"
+      [ariaLabel]="inputAriaLabel" (onChange)="updateSearchValue($event)" (onFocus)="onSearchBoxFocus()"
+      (onBlur)="onBlurHandler()" (onEscape)="clearSearchWithKey()" aria-controls="search-results">
     </fab-search-box>
   </div>
   <div class="result-container" *ngIf="showSearchResults">
     <div class="result-group" (keyup.escape)="escapeHandler()">
 
-
-      <!-- for search results in home page -->
-      <fab-details-list *ngIf="!isInCategory" [items]="features" [isHeaderVisible]="false"
-        [selectionMode]="selectionMode" (onItemInvoked)="invokeHandler($event)" [ariaLabel]="'Search Results, use arrow up and down key to go through each result'">
-        <columns>
-          <fab-details-list-column>
-            <render>
-              <ng-template let-feature="item" let-index="index">
-                <div class="result-item remove-results-padding" tabindex="0" (mousedown)="navigateToFeature(feature)" [attr.aria-label]="getResultAriaLabel(index)">
-                  <div>
-                    <img style="height: 20px;width: 20px;margin-right: 5px;" [src]="getIconImagePath(feature.id)"
-                      alt="">
-                    <span class="feature-title">{{feature.name}}</span>
-                  </div>
-                  <div>
-                    <span class="feature-category">{{feature.category}}</span>
-                  </div>
-                </div>
-              </ng-template>
-            </render>
-          </fab-details-list-column>
-        </columns>
-      </fab-details-list>
-
       <!-- for search result in category page -->
-      <div *ngIf="isInCategory">
-        <a class="result-item detail-list-style" *ngFor="let feature of features;let i = index" style="display:flex;"
-          (mousedown)="navigateToFeature(feature)" (keyup.enter)="navigateToFeature(feature)" [attr.aria-label]="getResultAriaLabel(i)">
+      <div *ngIf="isInCategory else searchResults">
+        <a tabindex="0" class="result-item detail-list-style" *ngFor="let feature of features;let i = index" style="display:flex;"
+          (mousedown)="navigateToFeature(feature)" (keyup.enter)="navigateToFeature(feature)"
+          [attr.aria-label]="getResultAriaLabel(i)">
           <div style="display: flex;flex-direction: row;align-items: center;justify-content: start;">
             <div class="feature-icon">
               <div>
@@ -61,3 +38,29 @@
     </div>
   </div>
 </div>
+
+<ng-template #searchResults>
+  <!-- for search results in home page -->
+  <fab-details-list [items]="features" [isHeaderVisible]="false"
+    [selectionMode]="selectionMode" (onItemInvoked)="invokeHandler($event)"
+    [ariaLabel]="'Search Results, use arrow up and down key to go through each result'">
+    <columns>
+      <fab-details-list-column>
+        <render>
+          <ng-template let-feature="item" let-index="index">
+            <div class="result-item remove-results-padding" tabindex="0" (mousedown)="navigateToFeature(feature)"
+              [attr.aria-label]="getResultAriaLabel(index)">
+              <div>
+                <img style="height: 20px;width: 20px;margin-right: 5px;" [src]="getIconImagePath(feature.id)" alt="">
+                <span class="feature-title">{{feature.name}}</span>
+              </div>
+              <div>
+                <span class="feature-category">{{feature.category}}</span>
+              </div>
+            </div>
+          </ng-template>
+        </render>
+      </fab-details-list-column>
+    </columns>
+  </fab-details-list>
+</ng-template>

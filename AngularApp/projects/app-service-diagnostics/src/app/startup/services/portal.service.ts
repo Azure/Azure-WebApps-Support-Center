@@ -9,6 +9,7 @@ import { BroadcastEvent } from '../models/broadcast-event';
 export class PortalService {
     public sessionId = '';
     private portalSignature: string = 'FxFrameBlade';
+    private iFrameSignature: string = 'AppServiceDiagnosticsIFrame';
     private startupInfoObservable: ReplaySubject<StartupInfo>;
     private appInsightsResourceObservable: ReplaySubject<any>;
 
@@ -89,8 +90,8 @@ export class PortalService {
         window.addEventListener(Verbs.message, this.iframeReceivedMsg.bind(this), false);
 
         // This is a required message. It tells the shell that your iframe is ready to receive messages.
-        this.postMessage(Verbs.ready, JSON.stringify({eventType: "ready"}));
-        this.postMessage(Verbs.getStartupInfo, JSON.stringify({eventType: "get-startup-info"}));
+        this.postMessage(Verbs.ready, null);
+        this.postMessage(Verbs.getStartupInfo, null);
 
         this._broadcastService.subscribe<ErrorEvent>(BroadcastEvent.Error, error => {
             if (error.details) {
@@ -118,8 +119,7 @@ export class PortalService {
     }
 
     logAction(subcomponent: string, action: string, data?: any): void {
-        const actionStr = JSON.stringify({
-            eventType: "log-action",
+        const actionStr = JSON.stringify(<Action>{
             subcomponent: subcomponent,
             action: action,
             data: data
@@ -187,10 +187,25 @@ export class PortalService {
 
     public postMessage(verb: string, data: string) {
         if (this.inIFrame()) {
+            let dataString = data;
+            try {
+                var dataJsonObject = data === null ? {} : JSON.parse(data);
+                const dataObjectWithEventType = {
+                    signature: this.iFrameSignature,
+                    eventType: verb,
+                    ...dataJsonObject,
+                }
+
+                dataString = JSON.stringify(dataObjectWithEventType);
+            }
+            catch (error) {
+                // If Json is misformatted, log json string without verb in data only.
+            }
+
             window.parent.postMessage(<Data>{
                 signature: this.portalSignature,
                 kind: verb,
-                data: data
+                data: dataString
             }, this.shellSrc);
         }
     }

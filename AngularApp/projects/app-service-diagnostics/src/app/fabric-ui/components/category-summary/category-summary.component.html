@@ -1,10 +1,10 @@
 
 <div class="app">
   <div class="body-content" style="border:bold; color:black">
-    <section class="sidebar" id="sidebar">
+    <section *ngIf="category" class="sidebar" id="sidebar">
       <category-nav></category-nav>
     </section>
-    <section class="content">
+    <section [ngClass]="{'content' : category,'content-hide-nav' : !category}">
       <div class="col-md col-ms col-lg" style="width:98%; display: inline-block;">
         <detector-command-bar (openPanel)="setFocusOnCallpsibleButton()"></detector-command-bar>
         <router-outlet></router-outlet>

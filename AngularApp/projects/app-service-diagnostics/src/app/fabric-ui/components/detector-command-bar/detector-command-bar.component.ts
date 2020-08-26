@@ -1,7 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { Globals } from '../../../globals';
 import { DetectorControlService } from 'projects/diagnostic-data/src/lib/services/detector-control.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TelemetryService } from 'diagnostic-data';
 
 @Component({
@@ -11,7 +11,7 @@ import { TelemetryService } from 'diagnostic-data';
 })
 export class DetectorCommandBarComponent implements AfterViewInit{
   time: string;
-  constructor(private globals: Globals, private detectorControlService: DetectorControlService, private _route: ActivatedRoute,private telemetryService:TelemetryService) { }
+  constructor(private globals: Globals, private detectorControlService: DetectorControlService, private _route: ActivatedRoute, private router: Router, private telemetryService:TelemetryService) { }
   toggleOpenState() {
     this.globals.openGeniePanel = !this.globals.openGeniePanel;
   }
@@ -23,8 +23,10 @@ export class DetectorCommandBarComponent implements AfterViewInit{
   refreshPage() {
     let childRouteSnapshot = this._route.firstChild.snapshot;
     let childRouteType = childRouteSnapshot.url[0].toString();
-    let instanceId = childRouteType === "overview" ? this._route.snapshot.params["category"] : childRouteType === "detectors" ? childRouteSnapshot.params["detectorName"] : childRouteSnapshot.params["analysisId"] ;
-    
+
+    let instanceId = childRouteType === "overview" ? this._route.snapshot.params["category"] : (this._route.snapshot.params["category"] === "DiagnosticTools" ? childRouteSnapshot.url[1].toString(): childRouteType === "detectors" ? childRouteSnapshot.params["detectorName"] : childRouteSnapshot.params["analysisId"]);
+    let isDiagnosticToolUIPage = this._route.snapshot.params["category"] === "DiagnosticTools" && childRouteType !== "overview" && instanceId !== "eventviewer" && instanceId !== "freblogs";
+
     const eventProperties = {
       'Category':this._route.snapshot.params['category']
     };
@@ -36,10 +38,18 @@ export class DetectorCommandBarComponent implements AfterViewInit{
       eventProperties['Type'] = 'analysis';
     }else if (childRouteType === "overview") {
       eventProperties['Type'] = 'overview';
+    }else if (this._route.snapshot.params["category"] === "DiagnosticTools") {
+        eventProperties['Type'] = 'DiagnosticTools';
+        eventProperties['Tool'] = instanceId ? instanceId : "";
     }
 
     this.telemetryService.logEvent('RefreshClicked',eventProperties);
-    if (instanceId)
+    if (isDiagnosticToolUIPage)
+    {
+        // Currently there is no easy way to force reloading the static UI child component under DiagnosticTools Category
+        this.router.navigate(['overview'], { relativeTo: this._route, skipLocationChange: true}).then(() => this.router.navigate([`tools/${instanceId}`], { relativeTo: this._route}));
+    }
+    else if (instanceId)
     {
       this.detectorControlService.refresh(instanceId);
     }
