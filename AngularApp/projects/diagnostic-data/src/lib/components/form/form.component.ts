@@ -9,6 +9,7 @@ import { Location } from '@angular/common';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
+import { DirectionalHint } from 'office-ui-fabric-react/lib/Tooltip';
 
 @Component({
   selector: 'custom-form',
@@ -20,7 +21,7 @@ export class FormComponent extends DataRenderBaseComponent {
   renderingProperties: Rendering;
   detectorForms: Form[] = [];
   isPublic: boolean;
-
+  directionalHint = DirectionalHint.topLeftEdge;
 
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private _diagnosticService: DiagnosticService, private _router: Router, protected telemetryService: TelemetryService,
     private detectorControlService: DetectorControlService,
@@ -79,7 +80,10 @@ export class FormComponent extends DataRenderBaseComponent {
               formInputs[ip]["inputId"],
               formInputs[ip]["inputType"],
               formInputs[ip]["label"],
-              formInputs[ip]["items"]));
+              formInputs[ip]["items"],
+              formInputs[ip]["toolTip"] != undefined ? formInputs[ip]["toolTip"] : "",
+              formInputs[ip]["tooltipIcon"] != "" ? formInputs[ip]["tooltipIcon"] : "fa-info-circle"
+              ));
           }
           else {
             this.detectorForms[i].formInputs.push(new FormInput(
@@ -87,7 +91,9 @@ export class FormComponent extends DataRenderBaseComponent {
               formInputs[ip]["inputId"],
               formInputs[ip]["inputType"],
               formInputs[ip]["label"],
-              formInputs[ip]["isRequired"]));
+              formInputs[ip]["isRequired"],
+              formInputs[ip]["toolTip"] != undefined ? formInputs[ip]["toolTip"] : "",
+              formInputs[ip]["tooltipIcon"] != "" ? formInputs[ip]["tooltipIcon"] : "fa-info-circle"));
           }
         }
       }

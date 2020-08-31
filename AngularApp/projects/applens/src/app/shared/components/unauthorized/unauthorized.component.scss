@@ -6,10 +6,14 @@
 
 .unauthorized-div{
     height: 100vh;
-    margin-left: 20%;
-    margin-right: 20%;
-    padding-top: 10%;
-    font-size: 22px;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    padding-top: 11vh;
+    font-size: 16px;
+}
+
+.unauthorized-sub-header {
+    font-size: 18px;
 }
 
 .unauthorized-header{
@@ -25,4 +29,5 @@
     text-decoration: underline;
     cursor: pointer;
     color: #72afd2;
+    font-weight: 700;
 }
