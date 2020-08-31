@@ -27,7 +27,8 @@ export class CrashMonitoringComponent implements OnInit {
     private _daasService: DaasService, private globals: Globals, private telemetryService: TelemetryService,
     private _sharedStorageAccountService: SharedStorageAccountService) {
     this._sharedStorageAccountService.changeEmitted$.subscribe(newStorageAccount => {
-      this.chosenStorageAccount = newStorageAccount;
+      this.chosenStorageAccount = newStorageAccount.name;
+      this.blobSasUriEnvironmentVariable = newStorageAccount.sasUri;
       if (this.chosenStorageAccount) {
         this.validationError = "";
       }
@@ -59,6 +60,8 @@ export class CrashMonitoringComponent implements OnInit {
   monitoringEnabled: boolean = false;
   crashMonitoringSettings: CrashMonitoringSettings = null;
   collapsed: boolean = false;
+  blobSasUriEnvironmentVariable: string = "";
+  toolBlocked: boolean = false;
 
   // For tooltip display
   directionalHint = DirectionalHint.rightTopEdge;
@@ -84,39 +87,48 @@ export class CrashMonitoringComponent implements OnInit {
   };
 
   ngOnInit() {
-
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
       this.siteToBeDiagnosed = site;
-      this.status = toolStatus.CheckingBlobSasUri;
-      this._daasService.getBlobSasUri(this.siteToBeDiagnosed).subscribe(resp => {
-        this.status = toolStatus.CheckingBlobSasUri;
-        let configuredSasUri = "";
-        if (resp.BlobSasUri) {
-          configuredSasUri = resp.BlobSasUri;
-          this.chosenStorageAccount = this.getStorageAccountNameFromSasUri(configuredSasUri);
-        }
-        this._siteService.getCrashMonitoringSettings(site).subscribe(crashMonitoringSettings => {
-          if (crashMonitoringSettings != null) {
-            this.crashMonitoringSettings = crashMonitoringSettings;
-            this.populateSettings(crashMonitoringSettings);
-            this.monitoringEnabled = true;
-            this.collapsed = true;
+      this._siteService.getSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot).subscribe(settingsResponse => {
+        if (settingsResponse && settingsResponse.properties) {
+          if (settingsResponse.properties["WEBSITE_LOCAL_CACHE_OPTION"] != null
+            && settingsResponse.properties["WEBSITE_LOCAL_CACHE_OPTION"].toString().toLowerCase() === "Always".toLowerCase()) {
+            this.toolBlocked = true;
+            return;
           }
-          this.status = toolStatus.Loaded;
-        });
+        }
+        this.status = toolStatus.CheckingBlobSasUri;
+        this._daasService.getBlobSasUri(this.siteToBeDiagnosed).subscribe(resp => {
+          this.status = toolStatus.CheckingBlobSasUri;
+          let configuredSasUri = "";
+          if (resp.BlobSasUri) {
+            configuredSasUri = resp.BlobSasUri;
+            this.chosenStorageAccount = this.getStorageAccountNameFromSasUri(configuredSasUri);
+          }
 
-      },
-        error => {
-          this.errorMessage = "Failed while checking configured storage account";
-          this.status = toolStatus.Error;
-          this.error = error;
-        });
+          this._siteService.getCrashMonitoringSettings(site).subscribe(crashMonitoringSettings => {
+            if (crashMonitoringSettings != null) {
+              this.crashMonitoringSettings = crashMonitoringSettings;
+              this.populateSettings(crashMonitoringSettings);
+              this.monitoringEnabled = true;
+              this.collapsed = true;
+            }
+            this.status = toolStatus.Loaded;
+          });
+
+        },
+          error => {
+            this.errorMessage = "Failed while checking configured storage account";
+            this.status = toolStatus.Error;
+            this.error = error;
+          });
+      });
+
+      this.startClock = this.getHourAndMinute(this.startDate);
+      this.endClock = this.getHourAndMinute(this.endDate);
+
+      this.initDumpOptions();
     });
-
-    this.startClock = this.getHourAndMinute(this.startDate);
-    this.endClock = this.getHourAndMinute(this.endDate);
-
-    this.initDumpOptions();
   }
 
   resetGlobals() {
@@ -255,7 +267,7 @@ export class CrashMonitoringComponent implements OnInit {
     this.status = toolStatus.SavingCrashMonitoringSettings;
     let crashMonitoringSettings = this.getCrashMonitoringSetting();
     this.logCrashMonitoringEnabled(crashMonitoringSettings);
-    this._siteService.saveCrashMonitoringSettings(this.siteToBeDiagnosed, crashMonitoringSettings)
+    this._siteService.saveCrashMonitoringSettings(this.siteToBeDiagnosed, crashMonitoringSettings, this.blobSasUriEnvironmentVariable)
       .subscribe(resp => {
         this.crashMonitoringSettings = crashMonitoringSettings;
         this.status = toolStatus.SettingsSaved;

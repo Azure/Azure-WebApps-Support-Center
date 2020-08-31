@@ -95,8 +95,12 @@ export class ArmService {
     }
 
     get storageUrl(): string {
-        let storageUrl = this.armUrl.replace("management", "core").replace("https://", "");
-        return storageUrl;
+        if (this.isNationalCloud) {
+            let storageUrl = this.armUrl.replace("management", "core").replace("https://", "");
+            return storageUrl;
+        } else {
+            return "core.windows.net";
+        }
     }
 
     getApiVersion(resourceUri: string, apiVersion?: string): string {

@@ -161,7 +161,7 @@ export class DaasService {
         return <Observable<{ Stdout: string }>>this._armClient.putResourceWithoutEnvelope<{ Stdout: string }, any>(resourceUri, { Stdout: enabled ? "Enabled" : "Disabled" });
     }
 
-    get isNationalCloud(){
+    get isNationalCloud() {
         return this._armClient.isNationalCloud;
     }
 
@@ -173,5 +173,9 @@ export class DaasService {
         headers.append('Authorization', `Bearer ${this._authService.getAuthToken()}`);
 
         return headers;
+    }
+
+    get defaultContainerName(): string {
+        return BlobContainerName;
     }
 }

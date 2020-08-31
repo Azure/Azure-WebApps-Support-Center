@@ -6,9 +6,21 @@
     <a target="_blank" href="https://aka.ms/app-service-diagnostics-crash-monitoring">Learn more</a>
   </p>
 
-  <div *ngIf="status < toolStatus.Loaded">
+  <div *ngIf="status < toolStatus.Loaded && !toolBlocked">
     <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
     Loading...
+  </div>
+
+  <div *ngIf="toolBlocked" class="mt-5 error-details" style="padding: 15px;">
+    <i class="fa health-icon fa-times-circle unhealthy-icon-color" aria-hidden="true"></i>
+    We identified that the app has Local Cache enabled and that causes inconsistencies with the Crash Monitoring
+    feature. This issue will be fixed in the upcoming versions of the
+    service. If you want to leverage Crash Monitoring feature, consider disablling Local Cache by
+    removing <b>WEBSITE_LOCAL_CACHE</b> app setting as a workaround.
+
+    <br/> <br/>
+    If this feature was recently enabled on your app, you can disable it by removing the
+    <b>WEBSITE_CRASHMONITORING_ENABLED</b> setting from app's configuration.
   </div>
 
   <div *ngIf="status >= toolStatus.Loaded" style="margin-top: 40px;">
@@ -26,7 +38,7 @@
                 Storage account <span class="required">*</span>
 
                 <fab-tooltip-host
-                  content= "The selected storage account will store the memory dumps captured via Crash Monitoring. It is strongly advised that you use one storage account per app. Selecting a storage account already in use for another app may cause Crash Monitoring to fail"
+                  content="The selected storage account will store the memory dumps captured via Crash Monitoring. It is strongly advised that you use one storage account per app. Selecting a storage account already in use for another app may cause Crash Monitoring to fail"
                   [directionalHint]="directionalHint" [tooltipOptions]="toolTipOptionsValue">
                   <img src="assets/img/info.svg" />
                 </fab-tooltip-host>

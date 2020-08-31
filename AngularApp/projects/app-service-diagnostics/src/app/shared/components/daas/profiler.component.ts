@@ -27,6 +27,7 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
     isAspnetCoreLowerVersion: boolean = false;
     isAspnetCore: boolean = false;
     aspnetCoreWarningExpanded: boolean = true;
+    netCoreVersion: string = "";
 
     constructor(private _serverFarmServiceLocal: ServerFarmDataService, private _siteServiceLocal: SiteService, private _daasServiceLocal: DaasService, private _windowServiceLocal: WindowService, private _loggerLocal: AvailabilityLoggingService) {
 
@@ -40,16 +41,12 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
         this._daasServiceLocal.getAppInfo(this.siteToBeDiagnosed).subscribe(resp => {
             this.appInfo = resp;
             this.checkingAppInfo = false;
-            if (this.appInfo.AspNetCoreVersion != null) {
+            if (this.appInfo.Framework === "DotNetCore" || this.appInfo.AspNetCoreVersion != null) {
                 this.isAspnetCore = true;
-                if (this.cmpVersions(this.appInfo.AspNetCoreVersion, "2.2.3") >= 0) {
-                    this.isAspnetCoreLowerVersion = false;
-                }
-                else {
-                    this.isAspnetCoreLowerVersion = true;
-                }
+                this.netCoreVersion = this.appInfo.FrameworkVersion != null ? this.appInfo.FrameworkVersion : this.appInfo.AspNetCoreVersion;
+                this.isAspnetCoreLowerVersion = !(this.netCoreVersion && this.cmpVersions(this.netCoreVersion, "2.2.3") >= 0);
             }
-        }, error=>{
+        }, error => {
             this.checkingAppInfo = false;
         });
     }

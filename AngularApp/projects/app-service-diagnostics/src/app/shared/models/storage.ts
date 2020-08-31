@@ -25,3 +25,16 @@ export class NewStorageAccount {
 export class StorageAccountSku {
     name: string = "Standard_GRS";
 }
+
+export class SasUriPostBody {
+    signedServices: string;
+    signedResourceTypes: string;
+    signedPermission: string;
+    signedProtocol: string;
+    signedStart: string;
+    signedExpiry: string;
+}
+
+export interface SasUriPostResponse {
+    accountSasToken: string;
+}

@@ -4,7 +4,7 @@ import { Globals } from '../../../globals';
 import { StorageService } from '../../../shared/services/storage.service';
 import { SiteService } from '../../../shared/services/site.service';
 import { SiteDaasInfo } from '../../../shared/models/solution-metadata';
-import { SharedStorageAccountService } from '../../../shared-v2/services/shared-storage-account.service';
+import { SharedStorageAccountService, StorageAccountProperties } from '../../../shared-v2/services/shared-storage-account.service';
 import { StorageAccount } from '../../../shared/models/storage';
 import { DaasService } from '../../../shared/services/daas.service';
 import { ArmService } from '../../../shared/services/arm.service';
@@ -163,12 +163,20 @@ export class CreateStorageAccountPanelComponent implements OnInit {
           return;
         }
         let storageKey = resp.keys[0].value;
+
+        // TODO : Remove call to daasService.setBlobSasUri and change to below method
+        // once the backend deployment of ANT90 is complete.
+        // this.generateSasKey(storageAccountId, storageAccountName, storageKey);
+
         this._daasService.setBlobSasUri(this.siteToBeDiagnosed, storageAccountName, storageKey).subscribe(resp => {
           if (resp) {
             this._daasService.getBlobSasUri(this.siteToBeDiagnosed).subscribe(resp => {
               this.generatingSasUri = false;
               if (resp.BlobSasUri && resp.BlobSasUri.length > 0) {
-                this._sharedStorageAccountService.emitChange(storageAccountName);
+                let storageAccountProperties: StorageAccountProperties = new StorageAccountProperties();
+                storageAccountProperties.name = storageAccountName;
+                storageAccountProperties.sasUri = "";
+                this._sharedStorageAccountService.emitChange(storageAccountProperties);
                 this.globals.openCreateStorageAccountPanel = false;
               }
             },
@@ -193,6 +201,23 @@ export class CreateStorageAccountPanelComponent implements OnInit {
         this.generatingSasUri = false;
         this.error = error;
       });
+  }
+
+  generateSasKey(storageAccountId: string, storageAccountName: string, storageKey: string) {
+    this._storageService.generateSasKey(storageAccountId, storageKey).subscribe(generatedSasUri => {
+      if (generatedSasUri) {
+        let storageAccountProperties: StorageAccountProperties = new StorageAccountProperties();
+        storageAccountProperties.name = storageAccountName;
+        storageAccountProperties.sasUri = `https://${storageAccountName}.blob.${this._armService.storageUrl}/${this._daasService.defaultContainerName}?${generatedSasUri}`;
+        console.log(storageAccountProperties.sasUri);
+        this._sharedStorageAccountService.emitChange(storageAccountProperties);
+        this.globals.openCreateStorageAccountPanel = false;
+      }
+    }, error => {
+      this.errorMessage = "Failed while generating SAS Key";
+      this.generatingSasUri = false;
+      this.error = error;
+    });
   }
 
   selectStorageAccount(event: any) {

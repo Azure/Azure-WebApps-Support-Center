@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { ArmService } from './arm.service';
 import { UriElementsService } from './urielements.service';
 import { Observable } from 'rxjs';
-import { map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ResponseMessageCollectionEnvelope, ResponseMessageEnvelope } from '../models/responsemessageenvelope';
-import { StorageAccount, StorageKeys, NewStorageAccount } from '../models/storage';
+import { StorageAccount, StorageKeys, NewStorageAccount, SasUriPostBody, SasUriPostResponse } from '../models/storage';
+import moment = require('moment');
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +45,25 @@ export class StorageService {
     return this._armClient.putResourceWithoutEnvelope<any, NewStorageAccount>(url, requestBody, this.apiVersion)
       .pipe(map(response => {
         return response;
+      }));
+  }
+
+  // https://docs.microsoft.com/en-us/rest/api/storagerp/storageaccounts/listaccountsas
+  generateSasKey(storageAccountResourceUri: string, storageAccountkey: string): Observable<string> {
+    let postBody = new SasUriPostBody();
+    postBody.signedServices = "b";
+    postBody.signedResourceTypes = "co";
+    postBody.signedPermission = "rwdl";
+    postBody.signedProtocol = "http,https";
+    postBody.signedExpiry = moment.utc().add(10, 'years').toISOString();
+    postBody.signedStart = moment.utc().toISOString();
+    let url = this._uriElementsService.createSasUri(storageAccountResourceUri);
+
+    return this._armClient.postResourceFullResponse<SasUriPostResponse>(url, postBody, true, this.apiVersion)
+      .pipe(map(response => {
+        if (response && response.body) {
+          return response.body.accountSasToken;
+        }
       }));
   }
 

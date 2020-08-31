@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { StorageAccount } from '../../shared/models/storage';
-
 
 @Injectable({
   providedIn: 'root'
@@ -9,13 +7,18 @@ import { StorageAccount } from '../../shared/models/storage';
 export class SharedStorageAccountService {
 
   // Observable string sources
-  private emitChangeSource = new Subject<string>();
-  
+  private emitChangeSource = new Subject<StorageAccountProperties>();
+
   // Observable string streams
   changeEmitted$ = this.emitChangeSource.asObservable();
-  
+
   // Service message commands
-  emitChange(change: string) {
+  emitChange(change: StorageAccountProperties) {
     this.emitChangeSource.next(change);
   }
+}
+
+export class StorageAccountProperties {
+  name: string;
+  sasUri: string;
 }
