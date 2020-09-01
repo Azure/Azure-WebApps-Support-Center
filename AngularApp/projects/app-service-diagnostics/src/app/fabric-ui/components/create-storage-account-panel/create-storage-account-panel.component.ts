@@ -209,7 +209,6 @@ export class CreateStorageAccountPanelComponent implements OnInit {
         let storageAccountProperties: StorageAccountProperties = new StorageAccountProperties();
         storageAccountProperties.name = storageAccountName;
         storageAccountProperties.sasUri = `https://${storageAccountName}.blob.${this._armService.storageUrl}/${this._daasService.defaultContainerName}?${generatedSasUri}`;
-        console.log(storageAccountProperties.sasUri);
         this._sharedStorageAccountService.emitChange(storageAccountProperties);
         this.globals.openCreateStorageAccountPanel = false;
       }
