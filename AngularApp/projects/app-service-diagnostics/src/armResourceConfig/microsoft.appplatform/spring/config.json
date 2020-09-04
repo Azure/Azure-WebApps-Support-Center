@@ -7,7 +7,7 @@
 	"matchRegEx": "/Microsoft.AppPlatform/Spring/",
 	"searchSuffix": "Spring",
 	"azureServiceName": "Azure Spring Cloud",
-	"armApiVersion": "2019-05-01-preview",
+	"armApiVersion": "2020-07-01",
 	"isSearchEnabled": true,
 	"liveChatConfig": {
 		"isApplicableForLiveChat": false,
