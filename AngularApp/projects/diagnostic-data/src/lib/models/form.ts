@@ -1,4 +1,6 @@
 import { DetectorResponse } from '../models/detector';
+import { IDropdownOption } from 'office-ui-fabric-react';
+
 export class Form {
     formId: number;
     formTitle: string;
@@ -52,6 +54,15 @@ export class RadioButtonList extends FormInput {
         })
     }
 }
+
+export class Dropdown extends FormInput {
+    dropdownOptions: IDropdownOption[];
+    constructor(internalId:string, id:number, inputType: InputType, label:string, options:IDropdownOption[], tooltip:string, tooltipIcon:string) {
+        super(internalId, id, inputType, label, false, tooltip, tooltipIcon)
+        this.dropdownOptions = options;
+    }
+}
+
 
 export enum InputType {
     TextBox,

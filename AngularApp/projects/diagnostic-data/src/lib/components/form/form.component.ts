@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { DiagnosticData, Rendering, DataTableResponseObject, DetectorResponse } from '../../models/detector';
-import { Form, FormInput, InputType, FormButton, ButtonStyles, RadioButtonList } from '../../models/form';
+import { Form, FormInput, InputType, FormButton, ButtonStyles, RadioButtonList, Dropdown } from '../../models/form';
 import { DiagnosticService } from '../../services/diagnostic.service';
 import { DetectorControlService } from '../../services/detector-control.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -54,6 +54,10 @@ export class FormComponent extends DataRenderBaseComponent {
     return inputType === InputType.RadioButton;
   }
 
+  public isDropdown(inputType: InputType) {
+      return inputType === InputType.DropDown;
+  }
+
   // parses the incoming data to render a form
   private parseData(data: DataTableResponseObject) {
     let totalForms = data.rows.length;
@@ -83,6 +87,17 @@ export class FormComponent extends DataRenderBaseComponent {
               formInputs[ip]["items"],
               formInputs[ip]["toolTip"] != undefined ? formInputs[ip]["toolTip"] : "",
               formInputs[ip]["tooltipIcon"] != "" ? formInputs[ip]["tooltipIcon"] : "fa-info-circle"
+              ));
+          }
+          else if(this.isDropdown(formInputs[ip]["inputType"])) {
+              this.detectorForms[i].formInputs.push(new Dropdown(
+                `${this.detectorForms[i].formId}.${formInputs[ip]["inputId"]}`,
+                formInputs[ip]["inputId"],
+                formInputs[ip]["inputType"],
+                formInputs[ip]["label"],
+                formInputs[ip]["dropdownOptions"],
+                formInputs[ip]["toolTip"] != undefined ? formInputs[ip]["toolTip"] : "",
+                formInputs[ip]["tooltipIcon"] != "" ? formInputs[ip]["tooltipIcon"] : "fa-info-circle"
               ));
           }
           else {
