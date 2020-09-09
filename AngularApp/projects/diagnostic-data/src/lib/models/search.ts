@@ -4,9 +4,14 @@ export class SearchConfiguration{
     public CustomQueryString: string;
     public DetectorSearchConfiguration: DetectorSearchConfiguration;
     public WebSearchConfiguration: WebSearchConfiguration;
+    
+    public DocumentSearchEnabled : boolean ;
+    public DocumentSearchConfiguration : DocumentSearchConfiguration;
     public constructor(table: any) {
         this.DetectorSearchEnabled = true;
         this.WebSearchEnabled = true;
+        this.DocumentSearchEnabled = true;
+
         this.CustomQueryString = null;
         this.DetectorSearchConfiguration = new DetectorSearchConfiguration();
         this.WebSearchConfiguration = new WebSearchConfiguration();
@@ -41,3 +46,12 @@ export class WebSearchConfiguration {
         this.PreferredSites = [];
     }
 }
+
+export class DocumentSearchConfiguration {
+    public MaxResults : number;
+    
+    public constructor(){
+        this.MaxResults = 5;
+    }
+}
+

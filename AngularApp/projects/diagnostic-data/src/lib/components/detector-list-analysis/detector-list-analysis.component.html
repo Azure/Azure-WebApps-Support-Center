@@ -274,6 +274,15 @@
     <web-search [searchTerm]="searchTerm" [searchId]="searchId" [isChildComponent]="true"></web-search>
   </div>
 
+  <div *ngIf="isDynamicAnalysis && ((!showPreLoader && getPendingDetectorCount() === 0) || showWebSearch)"
+    style="margin-left:80px;margin-top:20px;">
+    <documents-search
+        [searchTerm]="searchTerm"
+        [isChildComponent]="true" >
+    </documents-search>
+  </div>
+
+
   <div class="list-wrapper" *ngIf="supportDocumentRendered">
     <div class="list-item-wrapper" *ngIf="supportDocumentRendered">
       <div class="stepper-circle stepper-circle-dark-blue">

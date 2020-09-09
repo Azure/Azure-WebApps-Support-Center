@@ -18,6 +18,7 @@ import { InsightUtils, Insight } from '../../models/insight';
 import { StatusStyles } from '../../models/styles';
 import { SearchConfiguration } from '../../models/search';
 import { GenericResourceService } from '../../services/generic-resource-service';
+import { SearchResults } from 'projects/app-service-diagnostics/src/app/shared-v2/models/search-results';
 @Component({
     selector: 'detector-search',
     templateUrl: './detector-search.component.html',
@@ -71,7 +72,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
     showLoadingMessage: boolean = false;
 
     webSearchResults: any[] = [];
-    
+    searchResults : SearchResults ;
     searchConfiguration: SearchConfiguration = null;
     
     initialDelay: number = 5000;

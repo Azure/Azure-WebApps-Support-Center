@@ -24,16 +24,25 @@
             <li>Try more general keywords.</li>
         </ul>
     </div>
-    <div *ngIf="searchResults && searchResults.length>0">
+    <div *ngIf="searchResults && searchResults.length>0 ">
         <div class="article-container">
           <div class="article-heading" tabindex="0">Here are some documents from the web that might help you</div>
-          <div class="article" *ngFor="let article of searchResults" (click)="selectResult(article)" tabindex="0" (keyup.enter)="selectResult(article)" >
-            <a>{{article.title}}
-              <i class="fa fa-external-link"></i>
-            </a>
-            <div class="article-link">{{getLinkText(article.link)}}</div>
-            {{article.description}}
+          
+          <div *ngFor="let article of searchResults;let i = index">
+            <div [hidden]="i==0 ? false : !viewRemainingArticles" class="article"   (click)="selectResult(article)" tabindex="0" (keyup.enter)="selectResult(article)" >
+                <a>{{article.title}}
+                    <i class="fa fa-external-link"></i>
+                    </a>
+                    <div class="article-link">{{getLinkText(article.link)}}</div>
+                    {{article.description}}
+                <br>
+
+            </div>                     
           </div>
+          <a (click)="showRemainingArticles()"> {{!viewRemainingArticles ? "View" : "Hide" }} {{searchResults.length-1}} {{!viewRemainingArticles ? "more" : "last" }} results</a>
         </div>
     </div>
+    
 </div>
+
+

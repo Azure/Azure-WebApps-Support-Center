@@ -99,6 +99,8 @@ import { InViewportModule } from "ng-in-viewport";
 import { ParseResourceService } from './services/parse-resource.service';
 import { MarkdownTextComponent } from './components/markdown-text/markdown-text.component';
 import { DataTableV4Component } from './components/data-table-v4/data-table-v4.component';
+import { DocumentsSearchComponent } from './components/documents-search/documents-search.component';
+
 
 @NgModule({
   imports: [
@@ -152,7 +154,9 @@ import { DataTableV4Component } from './components/data-table-v4/data-table-v4.c
     RenderFilterPipe,
     DynamicInsightV4Component,
     MarkdownTextComponent,
-    DataTableV4Component
+    DataTableV4Component,
+    DocumentsSearchComponent,
+    
   ],
   entryComponents: [DetectorListAnalysisComponent],
   exports: [
@@ -170,7 +174,8 @@ import { DataTableV4Component } from './components/data-table-v4/data-table-v4.c
     CxpChatLauncherComponent,
     AppInsightsEnablementComponent,
     ConnectAppInsightsComponent,
-    WebSearchComponent
+    WebSearchComponent,
+    DocumentsSearchComponent
   ],
 })
 export class DiagnosticDataModule {

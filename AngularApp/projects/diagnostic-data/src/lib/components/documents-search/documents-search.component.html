@@ -1,0 +1,32 @@
+<span *ngIf="showPreLoadingError" style="margin-top:10px;">{{preLoadingErrorMessage}}</span>
+    <span *ngIf="showPreLoader" style="margin-top:10px;">
+        <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
+        <span style="margin-left:5px">Fetching results from web...</span>
+</span>
+<div *ngIf="!isChildComponent && showSearchTermPractices" class="no-results-section">
+    <span class="no-results-header">Your search "{{searchTermDisplay}}" did not yield any results from the web.</span>
+    <span class="no-results-content">Suggestions:</span>
+    <ul class="no-results-content">
+        <li>Make sure all words are spelled correctly.</li>
+        <li>Try different keywords.</li>
+        <li>Try more general keywords.</li>
+    </ul>
+</div>
+<div *ngIf='searchResults'>
+  <div class="article-container">
+    <div class="article-heading" tabindex="0">Here are some documents from Custom Search that might help you
+    </div>
+    <input type="checkbox" name="onlyCSSWiki" [checked]="viewResultsFromCSSWikionly" (click)="toggleCSSWikiResults()">
+    <label for="onlyCSSWiki"> View Results only from CSS wiki </label><br>
+    <div class="article" *ngFor="let article of searchResults.documents" 
+                            tabindex="0" 
+                            (click)="selectResult(article)" 
+                            (keyup.enter)="selectResult(article)">
+          <a>{{article.title}} 
+            <i class="fa fa-external-link"></i>
+          </a>
+          <div class="article-link">{{getLinkText(article.url)}}</div>
+          {{article.description}}
+          
+        </div>  
+</div>

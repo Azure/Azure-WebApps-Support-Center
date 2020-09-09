@@ -15,7 +15,7 @@ import { TelemetryPayload } from 'diagnostic-data';
 @Injectable()
 export class DiagnosticApiService {
 
-  public readonly localDiagnosticApi = "http://localhost:5000/";
+  public readonly localDiagnosticApi = "https://applens.azurewebsites.net/";
   public GeomasterServiceAddress: string = null;
   public GeomasterName: string = null;
   public Location: string = null;

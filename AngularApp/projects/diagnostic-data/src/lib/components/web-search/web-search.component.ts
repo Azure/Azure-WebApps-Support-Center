@@ -29,11 +29,13 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
     showPreLoadingError: boolean = false;
     preLoadingErrorMessage: string = "Some error occurred while fetching web results."
     subscription: ISubscription;
+    viewRemainingArticles : boolean = false;
     
     constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, public telemetryService: TelemetryService,
         private _activatedRoute: ActivatedRoute, private _router: Router, private _contentService: GenericContentService) {
         super(telemetryService);
         this.isPublic = config && config.isPublic;
+        
         const subscription = this._activatedRoute.queryParamMap.subscribe(qParams => {
             this.searchTerm = qParams.get('searchTerm') === null ? "" || this.searchTerm : qParams.get('searchTerm');
             this.refresh();
@@ -130,7 +132,7 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
     }
   
     getLinkText(link: string) {
-      return !link || link.length < 20 ? link : link.substr(0, 25) + '...';
+        return !link || link.length < 20 ? link : link.substr(0, 25) + '...';
     }
 
     resetGlobals() {
@@ -139,5 +141,9 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
         this.showPreLoadingError = false;
         this.showSearchTermPractices = false;
         this.searchTermDisplay = "";
+    }
+
+    showRemainingArticles(){
+        this.viewRemainingArticles =!this.viewRemainingArticles
     }
 }

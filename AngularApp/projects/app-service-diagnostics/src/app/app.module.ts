@@ -5,7 +5,7 @@ import {
   KustoTelemetryService, AppInsightsTelemetryService, UnhandledExceptionHandlerService
 } from 'diagnostic-data';
 import { SiteService } from 'projects/app-service-diagnostics/src/app/shared/services/site.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -49,6 +49,7 @@ import { PortalActionService} from './shared/services/portal-action.service';
   imports: [
     AngularReactBrowserModule,
     HttpClientModule,
+    HttpClient,
     ResourcesModule,
     WebSitesModule,
     SharedModule.forRoot(),
