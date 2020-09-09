@@ -5,7 +5,7 @@
     </div>
     <div style="margin-left:20px;">
         <div class="input-group input-group-sm search-input-group" *ngIf="!searchConfiguration.DetectorSearchEnabled || detectorId == ''">
-            <input aria-controls="search-results" class="form-control search-result-input" [(ngModel)]="searchTerm" tabindex="0" type="search" placeholder="Describe your problem here" (keyup.enter)="hitSearch()" maxlength="140" (ngModelChange)="resetAlert()" #searchInputBox>
+            <input aria-controls="search-results" class="form-control search-result-input" [(ngModel)]="searchTerm" tabindex="0" type="search" placeholder="Describe your problem here" (keyup.enter)="hitSearch(true)" maxlength="140" (ngModelChange)="resetAlert()" #searchInputBox>
             <div class="input-group-btn" id="clear-search">
                 <button aria-label="Please provide at least 2 characters"
                 title="Please provide at least 2 characters"
