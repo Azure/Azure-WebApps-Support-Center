@@ -96,6 +96,8 @@ export class FormComponent extends DataRenderBaseComponent {
                 formInputs[ip]["inputType"],
                 formInputs[ip]["label"],
                 formInputs[ip]["dropdownOptions"],
+                formInputs[ip]["defaultSelectedKey"],
+                formInputs[ip]["isMultiSelect"],
                 formInputs[ip]["toolTip"] != undefined ? formInputs[ip]["toolTip"] : "",
                 formInputs[ip]["tooltipIcon"] != "" ? formInputs[ip]["tooltipIcon"] : "fa-info-circle"
               ));

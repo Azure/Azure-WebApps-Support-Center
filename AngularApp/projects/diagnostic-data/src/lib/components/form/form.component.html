@@ -43,6 +43,21 @@
         </div>
       </div>
 
+      <div class="form-group row" *ngIf=isDropdown(formInput.inputType)>
+        <div class="col-sm-8">
+          <label class="col-sm-4 col-md-2 col-form-label" [class.col-md-4]="formInput.tooltip != ''" [class.col-md-2]="formInput.tooltip == ''"> {{formInput.inputLabel}}
+            <fab-tooltip-host  *ngIf="formInput.tooltip != ''" [content]="formInput.tooltip" [directionalHint]="directionalHint">
+              <span class="fa form-tooltip" [ngClass]="formInput.tooltipIcon" style="display: inline;"></span>
+            </fab-tooltip-host>
+          </label>
+          <div class="col-sm-8 col-md-6">
+            <fab-dropdown id="formdropdown" role="combobox" [options]="formInput.dropdownOptions"
+              [multiSelect]="formInput.isMultiSelect" [defaultSelectedKey]="formInput.defaultSelectedKey">
+            </fab-dropdown>
+          </div>
+        </div>
+      </div>
+
     </ng-template>
     <!-- Display form buttons -->
     <div class="btn-toolbar">

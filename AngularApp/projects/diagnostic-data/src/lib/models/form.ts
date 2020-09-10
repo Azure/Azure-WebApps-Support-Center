@@ -57,9 +57,16 @@ export class RadioButtonList extends FormInput {
 
 export class Dropdown extends FormInput {
     dropdownOptions: IDropdownOption[];
-    constructor(internalId:string, id:number, inputType: InputType, label:string, options:IDropdownOption[], tooltip:string, tooltipIcon:string) {
+    isMultiSelect:boolean;
+    defaultSelectedKey: string;
+    constructor(internalId:string, id:number, inputType: InputType, label:string, options:IDropdownOption[], defaultKey:string, multiSelect: boolean, tooltip:string, tooltipIcon:string) {
         super(internalId, id, inputType, label, false, tooltip, tooltipIcon)
         this.dropdownOptions = options;
+        this.isMultiSelect = multiSelect;
+        this.defaultSelectedKey = defaultKey;
+        this.dropdownOptions.forEach(item => {
+            item.ariaLabel = item.text;
+        });
     }
 }
 
