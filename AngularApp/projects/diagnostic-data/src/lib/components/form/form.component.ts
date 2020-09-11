@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild, ElementRef } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { DiagnosticData, Rendering, DataTableResponseObject, DetectorResponse } from '../../models/detector';
 import { Form, FormInput, InputType, FormButton, ButtonStyles, RadioButtonList, Dropdown } from '../../models/form';
@@ -10,6 +10,7 @@ import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import { DirectionalHint } from 'office-ui-fabric-react/lib/Tooltip';
+import { IDropdownOption, IComboBox, IDropdown } from 'office-ui-fabric-react';
 
 @Component({
   selector: 'custom-form',
@@ -23,6 +24,7 @@ export class FormComponent extends DataRenderBaseComponent {
   isPublic: boolean;
   directionalHint = DirectionalHint.topLeftEdge;
 
+  @ViewChild ('formDropdown', {static: false}) formdropDownRef: ElementRef<IDropdown>;
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private _diagnosticService: DiagnosticService, private _router: Router, protected telemetryService: TelemetryService,
     private detectorControlService: DetectorControlService,
     private activatedRoute: ActivatedRoute,
@@ -98,6 +100,7 @@ export class FormComponent extends DataRenderBaseComponent {
                 formInputs[ip]["dropdownOptions"],
                 formInputs[ip]["defaultSelectedKey"],
                 formInputs[ip]["isMultiSelect"],
+                formInputs[ip]["defaultSelectedKeys"],
                 formInputs[ip]["toolTip"] != undefined ? formInputs[ip]["toolTip"] : "",
                 formInputs[ip]["tooltipIcon"] != "" ? formInputs[ip]["tooltipIcon"] : "fa-info-circle"
               ));
@@ -271,5 +274,24 @@ export class FormComponent extends DataRenderBaseComponent {
       'FormTitle': formTitle ? formTitle : ""
     };
     this.logEvent(TelemetryEventNames.FormButtonClicked, eventProps);
+  }
+
+  setDropdownSelection(event: { option: IDropdownOption }) {
+    let data = event.option["data"];
+    let isMultiSelect = data["isMultiSelect"];
+    let internalId = data["internalId"];
+    let formId = internalId.split(".")[0];
+    let inputId = internalId.split(".")[1];
+    // Find matching form
+    let form = this.detectorForms.find(f => f.formId == formId);
+    // Find the input
+    let formInput = form.formInputs.find(inp => inp.inputId == inputId);
+    if(isMultiSelect) {
+        formInput["userSelection"] = this.formdropDownRef["current"].selectedOptions;
+    } else {
+        formInput["userSelection"] = [];
+        formInput["userSelection"] = [event.option];
+    }
+    console.log(this.formdropDownRef);
   }
 }

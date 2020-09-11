@@ -51,8 +51,10 @@
             </fab-tooltip-host>
           </label>
           <div class="col-sm-8 col-md-6">
-            <fab-dropdown id="formdropdown" role="combobox" [options]="formInput.dropdownOptions"
-              [multiSelect]="formInput.isMultiSelect" [defaultSelectedKey]="formInput.defaultSelectedKey">
+            <fab-dropdown [id]="formInput.internalId" role="combobox" [options]="formInput.dropdownOptions"
+              [multiSelect]="formInput.isMultiSelect" [defaultSelectedKey]="formInput.defaultSelectedKey"
+              (onChange)=setDropdownSelection($event) [defaultSelectedKeys]="formInput.defaultSelectedKeys"
+               #formDropdown [componentRef]="formdropDownRef">
             </fab-dropdown>
           </div>
         </div>

@@ -59,13 +59,22 @@ export class Dropdown extends FormInput {
     dropdownOptions: IDropdownOption[];
     isMultiSelect:boolean;
     defaultSelectedKey: string;
-    constructor(internalId:string, id:number, inputType: InputType, label:string, options:IDropdownOption[], defaultKey:string, multiSelect: boolean, tooltip:string, tooltipIcon:string) {
+    defaultSelectedKeys:string[]
+    userSelection:any[];
+    constructor(internalId:string, id:number, inputType: InputType, label:string, options:IDropdownOption[], defaultKey:string,
+        multiSelect: boolean, defaultKeys:string[], tooltip:string, tooltipIcon:string) {
         super(internalId, id, inputType, label, false, tooltip, tooltipIcon)
         this.dropdownOptions = options;
         this.isMultiSelect = multiSelect;
         this.defaultSelectedKey = defaultKey;
+        this.defaultSelectedKeys = defaultKeys;
+        this.userSelection = defaultKey != '' ? [defaultKey] : [];
         this.dropdownOptions.forEach(item => {
             item.ariaLabel = item.text;
+            item.data = {
+                "internalId": internalId,
+                "isMultiSelect": multiSelect
+            };
         });
     }
 }
