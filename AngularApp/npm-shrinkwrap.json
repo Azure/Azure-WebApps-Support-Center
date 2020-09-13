@@ -8486,9 +8486,9 @@
       }
     },
     "highcharts": {
-      "version": "7.1.3",
-      "resolved": "https://registry.npmjs.org/highcharts/-/highcharts-7.1.3.tgz",
-      "integrity": "sha512-aHAzlSf/czqJlpVt96jYkirWrIV1ZNHgxsTAyk2R5CcG/0V1G8Ge65p76eFqZQp7C8+cA8e6g1xsAPj51MsJ3Q=="
+      "version": "8.2.0",
+      "resolved": "https://registry.npmjs.org/highcharts/-/highcharts-8.2.0.tgz",
+      "integrity": "sha512-s3R7UEaMWUDJNxFfdjuiOtI8rnSvhEZUNN4TA7LiDRc9Tw7DUKvTv5WXSTYzxojokLbybwwlf9t3jg/meAUTnQ=="
     },
     "highcharts-angular": {
       "version": "2.4.0",

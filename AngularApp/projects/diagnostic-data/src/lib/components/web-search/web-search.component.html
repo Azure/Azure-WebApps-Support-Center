@@ -29,7 +29,7 @@
           <div class="article-heading" tabindex="0">Here are some documents from the web that might help you</div>
           
           <div *ngFor="let article of searchResults;let i = index">
-            <div [hidden]="i==0 ? false : !viewRemainingArticles" class="article"   (click)="selectResult(article)" tabindex="0" (keyup.enter)="selectResult(article)" >
+            <div [hidden]="i > numArticlesExpanded ? false : !viewRemainingArticles" class="article"   (click)="selectResult(article)" tabindex="0" (keyup.enter)="selectResult(article)" >
                 <a>{{article.title}}
                     <i class="fa fa-external-link"></i>
                     </a>
@@ -39,7 +39,7 @@
 
             </div>                     
           </div>
-          <a (click)="showRemainingArticles()"> {{!viewRemainingArticles ? "View" : "Hide" }} {{searchResults.length-1}} {{!viewRemainingArticles ? "more" : "last" }} results</a>
+          <a  (click)="showRemainingArticles()"> {{!viewRemainingArticles ? "View" : "Hide" }} {{ !viewRemainingArticles ? searchResults.length- numArticlesExpanded : ""}} {{!viewRemainingArticles ? "more" : "last" }} {{ viewRemainingArticles ? searchResults.length- numArticlesExpanded : ""}} documents </a>
         </div>
     </div>
     

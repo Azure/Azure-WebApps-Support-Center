@@ -16,12 +16,15 @@ import { WebSearchConfiguration } from '../../models/search';
     styleUrls: ['./web-search.component.scss']
 })
 export class WebSearchComponent extends DataRenderBaseComponent implements OnInit {
-    isPublic: boolean = false;
     @Input() searchTerm: string = '';
     @Input() searchId: string = '';
     @Input() isChildComponent: boolean = true;
     @Input('webSearchConfig') webSearchConfig: WebSearchConfiguration = new WebSearchConfiguration();
     @Input() searchResults: any[] = [];
+    @Input() isCollapsible: boolean = true;
+    @Input() numArticlesExpanded: number = 2;
+    @Input() isPublic : boolean = true;
+
     @Output() searchResultsChange: EventEmitter<any[]> = new EventEmitter<any[]>();
     searchTermDisplay: string = '';
     showSearchTermPractices: boolean = false;

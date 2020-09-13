@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
 import { FetchDocumentsService } from 'projects/app-service-diagnostics/src/app/shared-v2/services/documents.service';
 import { SearchResults } from 'projects/app-service-diagnostics/src/app/shared-v2/models/search-results';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
@@ -10,6 +10,7 @@ import { map, catchError, delay, retryWhen, take } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
 import { Query } from 'projects/app-service-diagnostics/src/app/shared-v2/models/query';
 import { v4 as uuid } from 'uuid';
+import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 
 @Component({
   selector: 'documents-search',
@@ -22,23 +23,29 @@ export class DocumentsSearchComponent extends DataRenderBaseComponent  implement
   showSearchTermPractices: boolean = false;
   showPreLoader: boolean = false;
   showPreLoadingError: boolean = false;
-  preLoadingErrorMessage: string = "Some error occurred while fetching web results."
+  preLoadingErrorMessage: string = "Some error occurred while fetching Deep Search results."
   subscription: ISubscription;
   viewResultsFromCSSWikionly : boolean = true
+  viewRemainingArticles : boolean = false;
 
   @Input() searchTerm : string = ""; 
   @Input() isChildComponent: boolean = true;
+  @Input() isCollapsible: boolean = true;
+  @Input() numDocumentsExpanded: number = 2;
+  @Input() numArticlesExpanded: number = 2;
+  @Input() isPublic : boolean = true;
 
   @Output() searchResults : SearchResults;
   @Output() searchResultsChange: EventEmitter<SearchResults> = new EventEmitter<SearchResults>();
     
 
-  constructor(private _fetchDocumentsService : FetchDocumentsService,
+  constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, 
+              private _fetchDocumentsService : FetchDocumentsService,
               public telemetryService: TelemetryService,
               private _activatedRoute: ActivatedRoute ,
               private _router: Router   ) {
     super(telemetryService);
-    console.log("Constructor initialized");
+    this.isPublic = config && config.isPublic;
     const subscription = this._activatedRoute.queryParamMap.subscribe(qParams => {
       this.searchTerm = qParams.get('searchTerm') === null ? "" || this.searchTerm : qParams.get('searchTerm');
       this.refresh();
@@ -52,7 +59,6 @@ export class DocumentsSearchComponent extends DataRenderBaseComponent  implement
   }
   getLinkText(link: string) {
     return !link || link.length < 30 ? link : link.substr(0, 40) + '...';
-    //console.log(link);
     
   }
 
@@ -105,7 +111,6 @@ export class DocumentsSearchComponent extends DataRenderBaseComponent  implement
     
     this.showPreLoader = true;
     searchTask.subscribe(results => {
-      console.debug(results)
       this.showPreLoader = false;
       if (results && results.documents && results.documents.length > 0) {
           this.searchResults = results
@@ -115,13 +120,7 @@ export class DocumentsSearchComponent extends DataRenderBaseComponent  implement
           this.searchTermDisplay = this.searchTerm.valueOf();
           this.showSearchTermPractices = true;
       }
-      /* this.logEvent(TelemetryEventNames.WebQueryResults, { searchId: this.searchId, query: this.searchTerm, results: JSON.stringify(this.searchResults.map(result => {
-          return {
-              title: result.title.replace(";"," "),
-              description: result.description.replace(";", " "),
-              link: result.link
-          };
-      })), ts: Math.floor((new Date()).getTime() / 1000).toString() });*/
+      
   },
   (err) => {
       this.handleRequestFailure();
@@ -159,17 +158,11 @@ export class DocumentsSearchComponent extends DataRenderBaseComponent  implement
     if(!this.isChildComponent)
         {
           this.refresh();
-        }
-    
-    /*.subscribe({
-      next(result) {
-        console.log("Result is here ",result);
-        this.searchResults = result;
-        return this.searchResults;
-      },
-      error(err) {console.log(err)}
-    });;*/
-                              
+        }                             
   }
+
+  showRemainingArticles(){
+    this.viewRemainingArticles =!this.viewRemainingArticles
+}
 
 }

@@ -271,14 +271,22 @@
   </div>
   <div *ngIf="isDynamicAnalysis && ((!showPreLoader && getPendingDetectorCount() === 0) || showWebSearch)"
     style="margin-left:80px;margin-top:20px;">
-    <web-search [searchTerm]="searchTerm" [searchId]="searchId" [isChildComponent]="true"></web-search>
+    <web-search [searchTerm]="searchTerm" 
+                [searchId]="searchId" 
+                [isChildComponent]="true"  
+                [isCollapsible] = "true"     
+                [numArticlesExpanded] = 2 
+                [isPublic]="false"  >
+    </web-search>
   </div>
 
   <div *ngIf="isDynamicAnalysis && ((!showPreLoader && getPendingDetectorCount() === 0) || showWebSearch)"
     style="margin-left:80px;margin-top:20px;">
-    <documents-search
-        [searchTerm]="searchTerm"
-        [isChildComponent]="true" >
+    <documents-search   [searchTerm]="searchTerm"
+                        [isChildComponent]="true"
+                        [isCollapsible] = "true"     
+                        [numArticlesExpanded] = 2 
+                        [isPublic]="false"  >
     </documents-search>
   </div>
 

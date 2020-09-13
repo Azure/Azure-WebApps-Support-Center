@@ -173,15 +173,20 @@
                 [searchId]="searchId" 
                 [isChildComponent]="true" 
                 [(searchResults)]="webSearchResults" 
-                [webSearchConfig]="searchConfiguration.WebSearchConfiguration">
+                [webSearchConfig]="searchConfiguration.WebSearchConfiguration"
+                [isCollapsible] = "true"
+                [numArticlesExpanded] = 2
+                [isPublic]="false">
     </web-search>
 </div>
 
 
 <div style="margin-left:20px;margin-top:20px;" *ngIf="searchConfiguration.WebSearchEnabled">
-    <documents-search
-        [searchTerm]="searchTerm"
-        [isChildComponent]="true" >
+    <documents-search   [searchTerm]="searchTerm"
+                        [isChildComponent]="true"
+                        [isCollapsible] = "false"
+                        [numDocumentsExpanded] = 2
+                        [isPublic]="false">
     </documents-search>
 </div>
 
