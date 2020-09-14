@@ -29,6 +29,8 @@
               <div [innerHtml] = "document.description" ></div>
          </div>                     
     </div>
-    <a [hidden]="!isPublic" (click)="showRemainingArticles()"> {{!viewRemainingArticles ? "View" : "Hide" }} {{ !viewRemainingArticles ? searchResults.documents.length- numArticlesExpanded : ""}} {{!viewRemainingArticles ? "more" : "last" }} {{ viewRemainingArticles ? searchResults.documents.length- numArticlesExpanded : ""}} documents </a>
+    <a  class="article-link"
+        [hidden]="!isPublic" 
+        (click)="showRemainingArticles()"> {{!viewRemainingArticles ? "View" : "Hide" }} {{ !viewRemainingArticles ? searchResults.documents.length- numArticlesExpanded : ""}} {{!viewRemainingArticles ? "more" : "last" }} {{ viewRemainingArticles ? searchResults.documents.length- numArticlesExpanded : ""}} documents </a>
   </div>
 </div>

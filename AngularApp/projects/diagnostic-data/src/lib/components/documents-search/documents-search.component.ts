@@ -23,7 +23,7 @@ export class DocumentsSearchComponent extends DataRenderBaseComponent  implement
   showSearchTermPractices: boolean = false;
   showPreLoader: boolean = false;
   showPreLoadingError: boolean = false;
-  preLoadingErrorMessage: string = "Some error occurred while fetching Deep Search results."
+  preLoadingErrorMessage: string = "Some error occurred while fetching Deep Search results. "
   subscription: ISubscription;
   viewResultsFromCSSWikionly : boolean = true
   viewRemainingArticles : boolean = false;
