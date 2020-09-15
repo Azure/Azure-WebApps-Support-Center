@@ -59,8 +59,7 @@ export class Dropdown extends FormInput {
     dropdownOptions: IDropdownOption[];
     isMultiSelect:boolean;
     defaultSelectedKey: string;
-    defaultSelectedKeys:string[]
-    userSelection:any[];
+    defaultSelectedKeys:string[];
     constructor(internalId:string, id:number, inputType: InputType, label:string, options:IDropdownOption[], defaultKey:string,
         multiSelect: boolean, defaultKeys:string[], tooltip:string, tooltipIcon:string) {
         super(internalId, id, inputType, label, false, tooltip, tooltipIcon)
@@ -68,7 +67,7 @@ export class Dropdown extends FormInput {
         this.isMultiSelect = multiSelect;
         this.defaultSelectedKey = defaultKey;
         this.defaultSelectedKeys = defaultKeys;
-        this.userSelection = defaultKey != '' ? [defaultKey] : [];
+        this.inputValue = defaultKey != '' ? [defaultKey] : [];
         this.dropdownOptions.forEach(item => {
             item.ariaLabel = item.text;
             item.data = {

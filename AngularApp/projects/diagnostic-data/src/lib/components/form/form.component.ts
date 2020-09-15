@@ -134,6 +134,19 @@ export class FormComponent extends DataRenderBaseComponent {
       formToExecute.errorMessage = '';
       let queryParams = `&fId=${formId}&btnId=${buttonId}`;
       formToExecute.formInputs.forEach(ip => {
+          if(this.isDropdown(ip.inputType)) {
+              let val = '';
+              if(ip["isMultiSelect"] == true) {
+                  let keys = [];
+                ip.inputValue.forEach(element => {
+                  keys.push(element['key']);
+                });
+                val = keys.join(',');
+              } else {
+                  val = ip['inputValue'];
+              }
+              queryParams +=  `&inpId=${ip.inputId}&val=${val}&inpType=${ip.inputType}`;
+          }
         queryParams += `&inpId=${ip.inputId}&val=${ip.inputValue}&inpType=${ip.inputType}`;
       });
       // Send telemetry event for Form Button click
@@ -287,10 +300,10 @@ export class FormComponent extends DataRenderBaseComponent {
     // Find the input
     let formInput = form.formInputs.find(inp => inp.inputId == inputId);
     if(isMultiSelect) {
-        formInput["userSelection"] = this.formdropDownRef["current"].selectedOptions;
+        formInput.inputValue = this.formdropDownRef["current"].selectedOptions;
     } else {
-        formInput["userSelection"] = [];
-        formInput["userSelection"] = [event.option];
+        formInput.inputValue = [];
+        formInput.inputValue = [event.option];
     }
     console.log(this.formdropDownRef);
   }
