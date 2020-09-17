@@ -42,6 +42,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
     @ViewChild ('searchInputBox', {static: false}) searchInputBox: ElementRef;
     @ViewChild ('searchResultsSection', {static: false}) searchResultsSection: ElementRef;
     detectorSearchEnabledPesIds: string[] = ["14748", "16072", "16170"];
+    detectorSearchEnabledPesIdsInternal: string[] = ["14748", "16072", "16170", "16450"];
     startTime: Moment;
     endTime: Moment;
     isPublic: boolean = false;
@@ -107,7 +108,7 @@ export class DetectorSearchComponent extends DataRenderBaseComponent implements 
         var searchConf = new SearchConfiguration(this.diagnosticData? this.diagnosticData.table: null);
         this.searchConfiguration = searchConf;
         this._resourceService.getPesId().subscribe(pesId => {
-            if (this.detectorSearchEnabledPesIds.findIndex(x => x==pesId)<0){
+            if ((this.isPublic && this.detectorSearchEnabledPesIds.findIndex(x => x==pesId)<0) || (!this.isPublic && this.detectorSearchEnabledPesIdsInternal.findIndex(x => x==pesId)<0)){
                 this.searchConfiguration.DetectorSearchEnabled = false;
             }
             this.detectorControlService.update.subscribe(isValidUpdate => {
