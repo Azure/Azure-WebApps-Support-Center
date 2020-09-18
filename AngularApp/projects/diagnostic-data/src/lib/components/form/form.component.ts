@@ -146,8 +146,9 @@ export class FormComponent extends DataRenderBaseComponent {
                   val = ip['inputValue'];
               }
               queryParams +=  `&inpId=${ip.inputId}&val=${val}&inpType=${ip.inputType}`;
+          } else {
+              queryParams += `&inpId=${ip.inputId}&val=${ip.inputValue}&inpType=${ip.inputType}`;
           }
-        queryParams += `&inpId=${ip.inputId}&val=${ip.inputValue}&inpType=${ip.inputType}`;
       });
       // Send telemetry event for Form Button click
       this.logFormButtonClick(formToExecute.formTitle);
@@ -186,11 +187,30 @@ export class FormComponent extends DataRenderBaseComponent {
           'inputs': [],
         }
         formToExecute.formInputs.forEach(ip => {
-          detectorParams.inputs.push({
-            'inpId': ip.inputId,
-            'val': ip.inputValue,
-            'inpType': ip.inputType
-          });
+            if(this.isDropdown(ip.inputType)) {
+                let val = '';
+                if(ip["isMultiSelect"] == true) {
+                    let keys = [];
+                  ip.inputValue.forEach(element => {
+                    keys.push(element['key']);
+                  });
+                  val = keys.join(',');
+                } else {
+                    val = ip['inputValue'];
+                }
+                detectorParams.inputs.push({
+                    'inpId': ip.inputId,
+                    'val': val,
+                    'inpType': ip.inputType
+                  });
+            } else {
+                detectorParams.inputs.push({
+                    'inpId': ip.inputId,
+                    'val': ip.inputValue,
+                    'inpType': ip.inputType
+                  });
+            }
+
         });
         let detectorQueryParamsString = JSON.stringify(detectorParams);
         if (!this.isPublic) {
@@ -210,8 +230,18 @@ export class FormComponent extends DataRenderBaseComponent {
       let formToSetValues = this.detectorForms.find(form => form.formId == detectorQueryParams.fId);
       detectorQueryParams.inputs.forEach(ip => {
         let inputElement = formToSetValues.formInputs.find(input => input.inputId == ip.inpId);
-        inputElement.inputValue = ip.val;
         inputElement.inputType = ip.inpType;
+        if(this.isDropdown(ip.inpType)) {
+            let selection = ip.val;
+            let isMultiSelect = selection.indexOf(",") > -1;
+            if (isMultiSelect) {
+                inputElement["defaultSelectedKeys"] = selection.split(",")
+            }  else {
+                inputElement["defaultSelectedKey"] = selection;
+            }
+        } else {
+            inputElement.inputValue = ip.val;
+        }
       });
     }
   }
@@ -305,6 +335,5 @@ export class FormComponent extends DataRenderBaseComponent {
         formInput.inputValue = [];
         formInput.inputValue = [event.option];
     }
-    console.log(this.formdropDownRef);
   }
 }
