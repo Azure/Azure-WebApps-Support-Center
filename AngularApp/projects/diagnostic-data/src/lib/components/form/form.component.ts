@@ -145,7 +145,7 @@ export class FormComponent extends DataRenderBaseComponent {
               } else {
                   val = ip['inputValue'];
               }
-              queryParams +=  `&inpId=${ip.inputId}&val=${val}&inpType=${ip.inputType}`;
+              queryParams +=  `&inpId=${ip.inputId}&val=${val}&inpType=${ip.inputType}&isMultiSelect=${ip["isMultiSelect"]}`;
           } else {
               queryParams += `&inpId=${ip.inputId}&val=${ip.inputValue}&inpType=${ip.inputType}`;
           }
@@ -201,7 +201,8 @@ export class FormComponent extends DataRenderBaseComponent {
                 detectorParams.inputs.push({
                     'inpId': ip.inputId,
                     'val': val,
-                    'inpType': ip.inputType
+                    'inpType': ip.inputType,
+                    'isMultiSelect': ip["isMultiSelect"]
                   });
             } else {
                 detectorParams.inputs.push({
@@ -233,9 +234,9 @@ export class FormComponent extends DataRenderBaseComponent {
         inputElement.inputType = ip.inpType;
         if(this.isDropdown(ip.inpType)) {
             let selection = ip.val;
-            let isMultiSelect = selection.indexOf(",") > -1;
+            let isMultiSelect = ip["isMultiSelect"];
             if (isMultiSelect) {
-                inputElement["defaultSelectedKeys"] = selection.split(",")
+                inputElement["defaultSelectedKeys"] = selection.split(",");
             }  else {
                 inputElement["defaultSelectedKey"] = selection;
             }
@@ -333,7 +334,7 @@ export class FormComponent extends DataRenderBaseComponent {
         formInput.inputValue = this.formdropDownRef["current"].selectedOptions;
     } else {
         formInput.inputValue = [];
-        formInput.inputValue = [event.option];
+        formInput.inputValue = [event.option['key']];
     }
   }
 }
