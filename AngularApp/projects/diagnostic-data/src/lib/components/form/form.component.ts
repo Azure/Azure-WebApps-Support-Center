@@ -135,16 +135,7 @@ export class FormComponent extends DataRenderBaseComponent {
       let queryParams = `&fId=${formId}&btnId=${buttonId}`;
       formToExecute.formInputs.forEach(ip => {
           if(this.isDropdown(ip.inputType)) {
-              let val = '';
-              if(ip["isMultiSelect"] == true) {
-                  let keys = [];
-                ip.inputValue.forEach(element => {
-                  keys.push(element['key']);
-                });
-                val = keys.join(',');
-              } else {
-                  val = ip['inputValue'];
-              }
+              let val = this.getQueryParamForDropdown(ip);
               queryParams +=  `&inpId=${ip.inputId}&val=${val}&inpType=${ip.inputType}&isMultiSelect=${ip["isMultiSelect"]}`;
           } else {
               queryParams += `&inpId=${ip.inputId}&val=${ip.inputValue}&inpType=${ip.inputType}`;
@@ -188,16 +179,7 @@ export class FormComponent extends DataRenderBaseComponent {
         }
         formToExecute.formInputs.forEach(ip => {
             if(this.isDropdown(ip.inputType)) {
-                let val = '';
-                if(ip["isMultiSelect"] == true) {
-                    let keys = [];
-                  ip.inputValue.forEach(element => {
-                    keys.push(element['key']);
-                  });
-                  val = keys.join(',');
-                } else {
-                    val = ip['inputValue'];
-                }
+                let val = this.getQueryParamForDropdown(ip);
                 detectorParams.inputs.push({
                     'inpId': ip.inputId,
                     'val': val,
@@ -237,8 +219,10 @@ export class FormComponent extends DataRenderBaseComponent {
             let isMultiSelect = ip["isMultiSelect"];
             if (isMultiSelect) {
                 inputElement["defaultSelectedKeys"] = selection.split(",");
+                inputElement.inputValue = selection.split(",");
             }  else {
                 inputElement["defaultSelectedKey"] = selection;
+                inputElement.inputValue = selection;
             }
         } else {
             inputElement.inputValue = ip.val;
@@ -336,5 +320,23 @@ export class FormComponent extends DataRenderBaseComponent {
         formInput.inputValue = [];
         formInput.inputValue = [event.option['key']];
     }
+  }
+
+  getQueryParamForDropdown(formInput: FormInput): string {
+    let val = '';
+    if(formInput["isMultiSelect"] == true) {
+        let keys = [];
+        formInput.inputValue.forEach(element => {
+        if(element.hasOwnProperty('key')) {
+            keys.push(element['key']);
+        } else {
+            keys.push(element);
+        }
+      });
+      val = keys.join(',');
+    } else {
+        val = formInput['inputValue'];
+    }
+    return val;
   }
 }
