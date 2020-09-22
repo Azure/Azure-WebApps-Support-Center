@@ -137,11 +137,13 @@ export class FormComponent extends DataRenderBaseComponent {
       formToExecute.errorMessage = '';
       let queryParams = `&fId=${formId}&btnId=${buttonId}`;
       formToExecute.formInputs.forEach(ip => {
-          if(this.isDropdown(ip.inputType)) {
-              let val = this.getQueryParamForDropdown(ip);
-              queryParams +=  `&inpId=${ip.inputId}&val=${val}&inpType=${ip.inputType}&isMultiSelect=${ip["isMultiSelect"]}`;
-          } else {
-              queryParams += `&inpId=${ip.inputId}&val=${ip.inputValue}&inpType=${ip.inputType}`;
+          if(ip.isVisible) {
+            if(this.isDropdown(ip.inputType)) {
+                let val = this.getQueryParamForDropdown(ip);
+                queryParams +=  `&inpId=${ip.inputId}&val=${val}&inpType=${ip.inputType}&isMultiSelect=${ip["isMultiSelect"]}`;
+            } else {
+                queryParams += `&inpId=${ip.inputId}&val=${ip.inputValue}&inpType=${ip.inputType}`;
+            }
           }
       });
       // Send telemetry event for Form Button click
@@ -181,22 +183,23 @@ export class FormComponent extends DataRenderBaseComponent {
           'inputs': [],
         }
         formToExecute.formInputs.forEach(ip => {
-            if(this.isDropdown(ip.inputType)) {
-                let val = this.getQueryParamForDropdown(ip);
-                detectorParams.inputs.push({
-                    'inpId': ip.inputId,
-                    'val': val,
-                    'inpType': ip.inputType,
-                    'isMultiSelect': ip["isMultiSelect"]
-                  });
-            } else {
-                detectorParams.inputs.push({
-                    'inpId': ip.inputId,
-                    'val': ip.inputValue,
-                    'inpType': ip.inputType
-                  });
+            if(ip.isVisible) {
+                if(this.isDropdown(ip.inputType)) {
+                    let val = this.getQueryParamForDropdown(ip);
+                    detectorParams.inputs.push({
+                        'inpId': ip.inputId,
+                        'val': val,
+                        'inpType': ip.inputType,
+                        'isMultiSelect': ip["isMultiSelect"]
+                      });
+                } else {
+                    detectorParams.inputs.push({
+                        'inpId': ip.inputId,
+                        'val': ip.inputValue,
+                        'inpType': ip.inputType
+                      });
+                }
             }
-
         });
         let detectorQueryParamsString = JSON.stringify(detectorParams);
         if (!this.isPublic) {
@@ -227,6 +230,8 @@ export class FormComponent extends DataRenderBaseComponent {
                 inputElement["defaultSelectedKey"] = selection;
                 inputElement.inputValue = selection;
             }
+            // Set visibility in case detector refreshed or opened with deep link
+            inputElement.isVisible = true;
         } else {
             inputElement.inputValue = ip.val;
         }
@@ -324,15 +329,7 @@ export class FormComponent extends DataRenderBaseComponent {
         formInput.inputValue = [event.option['key']];
         let children = event.option['data']['children'];
         if(children) {
-            children.forEach(element => {
-                let formInput = form.formInputs.find(ip => ip.inputId == element);
-                formInput.isVisible = true;
-            });
-            let inputsToHide = formInput["children"].filter(item => children.indexOf(item) < 0);
-            inputsToHide.forEach(element => {
-                let formInput = form.formInputs.find(ip => ip.inputId == element);
-                formInput.isVisible = false;
-            });
+            this.changeVisibility(children, form.formInputs,formInput);
         }
     }
   }
@@ -353,5 +350,21 @@ export class FormComponent extends DataRenderBaseComponent {
         val = formInput['inputValue'];
     }
     return val;
+  }
+
+
+
+  changeVisibility(selectedChildren:any, allInputs: FormInput[], currentDropdown:FormInput) {
+     //set visibility of selected children of dropdown option to true
+    selectedChildren.forEach(element => {
+        let formInput = allInputs.find(ip => ip.inputId == element);
+        formInput.isVisible = true;
+    });
+    // set visibility of other children linked with current dropdown to false
+    let inputsToHide = currentDropdown["children"].filter(item => selectedChildren.indexOf(item) < 0);
+    inputsToHide.forEach(element => {
+        let formInput = allInputs.find(ip => ip.inputId == element);
+        formInput.isVisible = false;
+    });
   }
 }
