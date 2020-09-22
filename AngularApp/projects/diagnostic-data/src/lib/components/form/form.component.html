@@ -43,7 +43,7 @@
         </div>
       </div>
 
-      <div class="form-group row" *ngIf=isDropdown(formInput.inputType)>
+      <div class="form-group row" *ngIf="isDropdown(formInput.inputType) && formInput.isVisible">
         <div class="col-sm-8">
           <label class="col-sm-4 col-md-2 col-form-label" [class.col-md-4]="formInput.tooltip != ''" [class.col-md-2]="formInput.tooltip == ''"> {{formInput.inputLabel}}
             <fab-tooltip-host  *ngIf="formInput.tooltip != ''" [content]="formInput.tooltip" [directionalHint]="directionalHint">

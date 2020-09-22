@@ -21,8 +21,9 @@ export class FormInput {
     displayValidation: boolean = false;
     tooltip: string;
     tooltipIcon: string;
+    isVisible: boolean = true;
 
-    constructor(internalId: string, id: number, inputType: InputType, label: string, isRequired: boolean, tooltip: string, tooltipIcon:string) {
+    constructor(internalId: string, id: number, inputType: InputType, label: string, isRequired: boolean, tooltip: string, tooltipIcon:string, isVisible: boolean = true) {
         this.internalId = internalId;
         this.inputId = id;
         this.inputType = inputType;
@@ -30,6 +31,7 @@ export class FormInput {
         this.isRequired = isRequired;
         this.tooltip = tooltip;
         this.tooltipIcon = tooltipIcon;
+        this.isVisible = isVisible;
     }
 }
 
@@ -60,19 +62,22 @@ export class Dropdown extends FormInput {
     isMultiSelect:boolean;
     defaultSelectedKey: string;
     defaultSelectedKeys:string[];
+    children: string[];
     constructor(internalId:string, id:number, inputType: InputType, label:string, options:IDropdownOption[], defaultKey:string,
-        multiSelect: boolean, defaultKeys:string[], tooltip:string, tooltipIcon:string) {
-        super(internalId, id, inputType, label, false, tooltip, tooltipIcon)
+        multiSelect: boolean, defaultKeys:string[], tooltip:string, tooltipIcon:string, children: string[], isVisible: boolean = true ) {
+        super(internalId, id, inputType, label, false, tooltip, tooltipIcon, isVisible)
         this.dropdownOptions = options;
         this.isMultiSelect = multiSelect;
         this.defaultSelectedKey = defaultKey;
         this.defaultSelectedKeys = defaultKeys;
         this.inputValue = defaultKey != '' ? [defaultKey] : [];
+        this.children = children;
         this.dropdownOptions.forEach(item => {
             item.ariaLabel = item.text;
             item.data = {
                 "internalId": internalId,
-                "isMultiSelect": multiSelect
+                "isMultiSelect": multiSelect,
+                "children": item["children"]
             };
         });
     }

@@ -24,6 +24,7 @@ export class FormComponent extends DataRenderBaseComponent {
   isPublic: boolean;
   directionalHint = DirectionalHint.topLeftEdge;
 
+
   @ViewChild ('formDropdown', {static: false}) formdropDownRef: ElementRef<IDropdown>;
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private _diagnosticService: DiagnosticService, private _router: Router, protected telemetryService: TelemetryService,
     private detectorControlService: DetectorControlService,
@@ -102,7 +103,9 @@ export class FormComponent extends DataRenderBaseComponent {
                 formInputs[ip]["isMultiSelect"],
                 formInputs[ip]["defaultSelectedKeys"],
                 formInputs[ip]["toolTip"] != undefined ? formInputs[ip]["toolTip"] : "",
-                formInputs[ip]["tooltipIcon"] != "" ? formInputs[ip]["tooltipIcon"] : "fa-info-circle"
+                formInputs[ip]["tooltipIcon"] != "" ? formInputs[ip]["tooltipIcon"] : "fa-info-circle",
+                formInputs[ip]["children"] != undefined ? formInputs[ip]["children"] : [],
+                formInputs[ip]["isVisible"] != undefined ?  formInputs[ip]["isVisible"] : true
               ));
           }
           else {
@@ -319,6 +322,18 @@ export class FormComponent extends DataRenderBaseComponent {
     } else {
         formInput.inputValue = [];
         formInput.inputValue = [event.option['key']];
+        let children = event.option['data']['children'];
+        if(children) {
+            children.forEach(element => {
+                let formInput = form.formInputs.find(ip => ip.inputId == element);
+                formInput.isVisible = true;
+            });
+            let inputsToHide = formInput["children"].filter(item => children.indexOf(item) < 0);
+            inputsToHide.forEach(element => {
+                let formInput = form.formInputs.find(ip => ip.inputId == element);
+                formInput.isVisible = false;
+            });
+        }
     }
   }
 
