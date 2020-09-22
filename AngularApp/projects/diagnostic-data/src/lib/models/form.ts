@@ -45,8 +45,8 @@ export class FormButton extends FormInput {
 
 export class RadioButtonList extends FormInput {
     items: ListItem[] = [];
-    constructor(internalId: string, id: number, inputType: InputType, label: string, items: ListItem[], tooltip: string, tooltipIcon: string) {
-        super(internalId, id, inputType, label, false, tooltip, tooltipIcon);
+    constructor(internalId: string, id: number, inputType: InputType, label: string, items: ListItem[], tooltip: string, tooltipIcon: string, isVisible: boolean = true) {
+        super(internalId, id, inputType, label, false, tooltip, tooltipIcon, isVisible);
         this.items = items;
         items.forEach(x => {
             if (x.isSelected) {

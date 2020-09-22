@@ -4,7 +4,7 @@
     <h3 class="form-title">{{element.formTitle}}</h3>
     <!-- Display form inputs-->
     <ng-template ngFor let-formInput [ngForOf]="element.formInputs">
-      <div class="form-group row" *ngIf="isText(formInput.inputType)">
+      <div class="form-group row" *ngIf="isText(formInput.inputType) && formInput.isVisible">
         <div class="col-sm-8">
           <label class="col-sm-4 col-md-2 col-form-label"> {{formInput.inputLabel}}
             <fab-tooltip-host  *ngIf="formInput.tooltip != ''" [content]="formInput.tooltip" [directionalHint]="directionalHint">
@@ -20,7 +20,7 @@
 
         </div>
       </div>
-      <div class="form-group row" *ngIf="isRadioButtonList(formInput.inputType)">
+      <div class="form-group row" *ngIf="isRadioButtonList(formInput.inputType) && formInput.isVisible">
         <div class="col-sm-8">
           <label class="col-sm-4 col-md-2 col-form-label" [class.col-md-4]="formInput.tooltip != ''" [class.col-md-2]="formInput.tooltip == ''"> {{formInput.inputLabel}}
             <fab-tooltip-host  *ngIf="formInput.tooltip != ''" [content]="formInput.tooltip" [directionalHint]="directionalHint">

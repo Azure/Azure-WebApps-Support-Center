@@ -89,7 +89,8 @@ export class FormComponent extends DataRenderBaseComponent {
               formInputs[ip]["label"],
               formInputs[ip]["items"],
               formInputs[ip]["toolTip"] != undefined ? formInputs[ip]["toolTip"] : "",
-              formInputs[ip]["tooltipIcon"] != "" ? formInputs[ip]["tooltipIcon"] : "fa-info-circle"
+              formInputs[ip]["tooltipIcon"] != "" ? formInputs[ip]["tooltipIcon"] : "fa-info-circle",
+              formInputs[ip]["isVisible"] != undefined ? formInputs[ip]["isVisible"] : true
               ));
           }
           else if(this.isDropdown(formInputs[ip]["inputType"])) {
@@ -116,7 +117,8 @@ export class FormComponent extends DataRenderBaseComponent {
               formInputs[ip]["label"],
               formInputs[ip]["isRequired"],
               formInputs[ip]["toolTip"] != undefined ? formInputs[ip]["toolTip"] : "",
-              formInputs[ip]["tooltipIcon"] != "" ? formInputs[ip]["tooltipIcon"] : "fa-info-circle"));
+              formInputs[ip]["tooltipIcon"] != "" ? formInputs[ip]["tooltipIcon"] : "fa-info-circle",
+              formInputs[ip]["isVisible"] != undefined ?  formInputs[ip]["isVisible"] : true));
           }
         }
       }
