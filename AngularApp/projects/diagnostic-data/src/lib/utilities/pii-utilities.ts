@@ -1,11 +1,5 @@
 export class PIIUtilities {
     public static removePII(text: string) {
-        //IE is not compatiable with some regex syntax
-        const isIE_Browser = /msie\s|trident\//i.test(window.navigator.userAgent);
-        if(isIE_Browser) {
-            return text;
-        }
-
         let res = text;
 
         res = this.maskPhone(res);
