@@ -11,7 +11,7 @@
             <div *ngIf="isAppInsightsEnabled">
               <div *ngIf="!isAppInsightsConnected">
                 <div *ngIf="hasWriteAccess">
-                  <table *ngIf="hasWriteAccess && !isAppInsightsConnected">
+                  <table *ngIf="hasWriteAccess && !isAppInsightsConnected && canCreateApiKeys">
                     <tbody>
                       <tr>
                         <td><i class="fa fa-exclamation-triangle warning-icon-color mr-2"></i>
@@ -32,6 +32,11 @@
                       </tr>
                     </tbody>
                   </table>
+                  <div *ngIf="!canCreateApiKeys">
+                    <i class="fa fa-exclamation-triangle warning-icon-color mr-2 "></i>
+                    Application Insights is enabled for this app but there are already 10 API Keys generated for this
+                    App Insights resource and you cannot generate more API keys for the same AppInsights resource.
+                  </div>
                 </div>
                 <div *ngIf="!hasWriteAccess">
                   <i class="fa fa-exclamation-triangle warning-icon-color mr-2 "></i>

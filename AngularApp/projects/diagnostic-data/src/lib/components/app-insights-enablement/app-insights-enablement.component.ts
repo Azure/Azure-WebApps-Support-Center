@@ -6,6 +6,8 @@ import { BackendCtrlQueryService } from '../../services/backend-ctrl-query.servi
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 import { MessageBarType } from 'office-ui-fabric-react';
 
+const maxApiKeysPerAiResource: number = 10;
+
 @Component({
   selector: 'app-insights-enablement',
   templateUrl: './app-insights-enablement.component.html',
@@ -31,6 +33,7 @@ export class AppInsightsEnablementComponent implements OnInit {
   hasWriteAccess: boolean = false;
   isEnabledInProd: boolean = true;
   messageBarType = MessageBarType.info;
+  canCreateApiKeys:boolean = false;
 
   @Input()
   resourceId: string = "";
@@ -75,12 +78,20 @@ export class AppInsightsEnablementComponent implements OnInit {
                 // AppInsights resource by checking ARM permissions
                 //
 
-                this._appInsightsService.checkAppInsightsAccess(this.appInsightsResourceUri).subscribe(hasAccess => {
-                  this.hasWriteAccess = hasAccess;
-                  this.loadingSettings = false;
-
-                  if (!this.hasWriteAccess) {
+                this._appInsightsService.checkAppInsightsAccess(this.appInsightsResourceUri).subscribe(hasWriteAccess => {
+                  if (!hasWriteAccess) {
+                    this.hasWriteAccess = false;
                     this._appInsightsService.logAppInsightsEvent(this.resourceId, TelemetryEventNames.AppInsightsResourceMissingWriteAccess);
+                  } else {
+                    this._appInsightsService.getAppInsightsApiKeysCount().subscribe(keyCount => {
+                      this.hasWriteAccess = true;
+                      this.loadingSettings = false;
+                      if (keyCount < maxApiKeysPerAiResource) {
+                        this.canCreateApiKeys = true;
+                      } else {
+                        this._appInsightsService.logAppInsightsEvent(this.resourceId, TelemetryEventNames.AppInsightsMaxApiKeysExceeded);
+                      }
+                    });
                   }
 
                 }, errorCheckingAccess => {

@@ -54,5 +54,9 @@ export class AppInsightsQueryService {
     getAppInsightsArmTag(resourceUri: string): Observable<any> {
         return null;
     }
+
+    getAppInsightsApiKeysCount(): Observable<number> {
+        return null;
+    }
 }
 

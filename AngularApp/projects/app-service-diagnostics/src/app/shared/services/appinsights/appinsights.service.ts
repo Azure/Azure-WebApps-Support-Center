@@ -18,7 +18,7 @@ import { ArmResource } from '../../../shared-v2/models/arm';
 import { BackendCtrlService } from '../backend-ctrl.service';
 import { RBACService } from '../rbac.service';
 
-const apiVersion : string = "2018-02-01";
+const apiVersion: string = "2018-02-01";
 
 @Injectable()
 export class AppInsightsService {
@@ -27,7 +27,7 @@ export class AppInsightsService {
     private appInsightsKeyName: string = 'APPSERVICEDIAGNOSTICS_READONLYKEY';
     private appInsightsTagName: string = 'hidden-related:diagnostics/applicationInsightsSettings';
     private appInsightsApiEndpoint: string = 'https://api.applicationinsights.io/v1/apps/';
-    private appInsightsAppSettingName: string = 'APPINSIGHTS_INSTRUMENTATIONKEY'; 
+    private appInsightsAppSettingName: string = 'APPINSIGHTS_INSTRUMENTATIONKEY';
 
     public appId_AppSettingStr: string = 'SUPPORTCNTR_APPINSIGHTS_APPID';
     public appKey_AppSettingStr: string = 'SUPPORTCNTR_APPINSIGHTS_APPKEY';
@@ -193,33 +193,43 @@ export class AppInsightsService {
         }));
     }
 
-    deleteAppInsightsAccessKeyIfExists(headers: HttpHeaders): Observable<any> {
+    getAppInsightsApiKeysLength(headers: HttpHeaders): Observable<number> {
         const url = `${this.armService.armUrl}${this.appInsightsSettings.resourceUri}/ApiKeys?api-version=2015-05-01`;
         return this.http.get(url, { headers: headers }).pipe(
             map((data: any) => {
-                if (data && data.value && data.value.length && data.value.length > 0) {
-                    let existingKey = data.value.find(x => x.name.toLowerCase() === this.appInsightsKeyName.toLowerCase());
-                    if (existingKey) {
-                        return existingKey.id;
-                    }
-                }
-            }),
-            mergeMap(existingKeyId => {
-                if (existingKeyId) {
-                    return this.http.delete(`${this.armService.armUrl}${existingKeyId}?api-version=2015-05-01`, { headers: headers }).pipe(
-                        map(resp => {
-                            return resp;
-                        }));
+                if (data && data.value && data.value.length) {
+                    return data.value.length;
                 } else {
-                    return of("KeyDoesNotExist");
+                    return 0;
                 }
             }));
+    }
+
+    getAppInsightsApiKeysCount(): Observable<number> {
+        return this.authService.getStartupInfo().pipe(
+            map((startupInfo: StartupInfo) => {
+                let headers = this._getHeaders(startupInfo, null);
+                return headers;
+            }),
+            mergeMap((headers: HttpHeaders) => {
+                return this.getAppInsightsApiKeysLength(headers);
+            }));
+    }
+
+    getRandomNumbers() {
+        const typedArray = new Uint8Array(10);
+        const randomValues = window.crypto.getRandomValues(typedArray);
+        return randomValues.join('');
+    }
+
+    getAppInsightsKeyName() {
+        return this.appInsightsKeyName + '_' + this.siteName + '_' + this.getRandomNumbers().toString();
     }
 
     generateAppInsightsAccessKey(): Observable<any> {
         const url = `${this.appInsightsSettings.resourceUri}/ApiKeys`;
         const body: any = {
-            name: this.appInsightsKeyName,
+            name: this.getAppInsightsKeyName(),
             linkedReadProperties: [`${this.appInsightsSettings.resourceUri}/api`],
             linkedWriteProperties: []
         };
@@ -294,13 +304,6 @@ export class AppInsightsService {
     public connectAppInsights(resourceUri: string, appInsightsResourceUri: string, appId: string): Observable<any> {
 
         return this.authService.getStartupInfo().pipe(
-            map((startupInfo: StartupInfo) => {
-                let headers = this._getHeaders(startupInfo, null);
-                return headers;
-            }),
-            mergeMap(headers => {
-                return this.deleteAppInsightsAccessKeyIfExists(headers);
-            }),
             mergeMap(deleteTagResponse => {
                 return this.generateAppInsightsAccessKey().map(keyResponse => {
                     if (keyResponse && keyResponse.apiKey) {
