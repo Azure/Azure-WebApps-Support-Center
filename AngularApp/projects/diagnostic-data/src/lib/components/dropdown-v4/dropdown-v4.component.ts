@@ -107,7 +107,9 @@ export class DropdownV4Component extends DataRenderBaseComponent {
     //each char 10px  
     let length = 0;
     options.forEach(option => {
-      length = Math.max(length, option.text.length);
+      if(option && option.text && option.text.length){
+        length = Math.max(length, option.text.length);
+      }
     });
     return (length + this.label.length) * 11 ;
   }
