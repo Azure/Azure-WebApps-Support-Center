@@ -358,8 +358,14 @@ export class AppInsightsService {
 
     private getUpdatedTags(resourceUri: string, encryptedKey: string, appId: string) {
         return this.getExistingTags(resourceUri).map(existingTags => {
-            existingTags[this.appInsightsTagName] = JSON.stringify({ ApiKey: encryptedKey, AppId: appId });
-            return existingTags;
+            if (existingTags != null) {
+                existingTags[this.appInsightsTagName] = JSON.stringify({ ApiKey: encryptedKey, AppId: appId });
+                return existingTags;
+            } else {
+                let newTags = {};
+                newTags[this.appInsightsTagName] = JSON.stringify({ ApiKey: encryptedKey, AppId: appId });
+                return newTags;
+            }
         });
     }
 

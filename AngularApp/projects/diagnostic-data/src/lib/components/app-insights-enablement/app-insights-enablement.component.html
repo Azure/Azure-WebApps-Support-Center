@@ -27,15 +27,20 @@
                         </td>
                         <td><a
                             href="https://azure.github.io/AppService/2020/04/21/Announcing-Application-Insights-Integration-with-App-Service-Diagnostics.html"
-                            target="_blank"><i _ngcontent-app-id-c44=""
-                              class="fa fa-info-circle info-icon-color fa-lg ml-2" style="color: gray;"></i></a></td>
+                            target="_blank"><i class="fa fa-info-circle info-icon-color fa-lg ml-2"
+                              style="color: gray;"></i></a></td>
                       </tr>
                     </tbody>
                   </table>
                   <div *ngIf="!canCreateApiKeys">
                     <i class="fa fa-exclamation-triangle warning-icon-color mr-2 "></i>
                     Application Insights is enabled for this app but there are already 10 API Keys generated for this
-                    App Insights resource and you cannot generate more API keys for the same AppInsights resource.
+                    App Insights resource and you cannot generate more API keys for the same AppInsights resource. For
+                    more information refer to <a
+                      href='https://dev.applicationinsights.io/documentation/Authorization/Rate-limits'
+                      target="_blank">Limits when using API key authentication</a>. You
+                    can remove the ApiKeys you no longer need by going to connected App Insights resource and choosing
+                    API Keys in the Azure Portal.
                   </div>
                 </div>
                 <div *ngIf="!hasWriteAccess">
@@ -47,16 +52,29 @@
               </div>
               <div *ngIf="isAppInsightsConnected">
                 <ng-container *ngIf="!appInsightsValidated">
-                  <i class="fa fa-exclamation-triangle warning-icon-color"></i>
-                  Application Insights was connected with App Service Diagnostics but the saved configuration is no more
-                  valid. Please connect again.
-                  <fab-primary-button contentClass="ml-2" (click)="connect()">
-                    Connect
-                  </fab-primary-button>
-                  <a target="_blank"
-                    href="https://azure.github.io/AppService/2020/04/21/Announcing-Application-Insights-Integration-with-App-Service-Diagnostics.html">
-                    <i style="color: gray;" class="fa fa-info-circle info-icon-color fa-lg ml-2"></i>
-                  </a>
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <i class="fa fa-exclamation-triangle warning-icon-color mr-2"></i>
+                        </td>
+                        <td>Application Insights was connected with App Service Diagnostics but the saved configuration
+                          is no more
+                          valid. Please connect again.</td>
+                        <td>
+                          <fab-primary-button contentClass="ml-2" (click)="connect()">
+                            Connect
+                          </fab-primary-button>
+                        </td>
+                        <td>
+                          <a target="_blank"
+                            href="https://azure.github.io/AppService/2020/04/21/Announcing-Application-Insights-Integration-with-App-Service-Diagnostics.html">
+                            <i style="color: gray;" class="fa fa-info-circle info-icon-color fa-lg ml-2"></i>
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </ng-container>
                 <ng-container *ngIf="appInsightsValidated">
                   <i class="fa fa-check-circle healthy-icon-color"></i>
