@@ -39,7 +39,7 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
     constructor(private _windowService: WindowService, private _serverFarmService: ServerFarmDataService, private _daasService: DaasService, protected _route: ActivatedRoute, public globals: Globals, public telemetryService: TelemetryService) {
         this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
             if (serverFarm) {
-                if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier === 'Basic' || serverFarm.sku.tier.indexOf('Premium') > -1) {
+                if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier === 'Basic' || serverFarm.sku.tier === 'Isolated' ||  serverFarm.sku.tier.indexOf('Premium') > -1) {
                     this.supportedTier = true;
                 }
             }
