@@ -1,4 +1,5 @@
-<div class="panel insight-panel" tabindex="0" (keyup.enter)="toggleInsightExpanded(insight)">
+<div class="panel insight-panel" tabindex="0" (keyup.enter)="toggleInsightExpanded(insight)" attr.name="{{insight.title}}"
+attr.aria-label="{{insight.title}}" attr.aria-expanded="{{insight.isExpanded}}" role="button">
   <div class="panel-heading">
     <h5 class="panel-title" [class.clickable-header]="insight.innerDiagnosticData"  (click)="toggleInsightExpanded(insight)">
       <div style="display: table;">
