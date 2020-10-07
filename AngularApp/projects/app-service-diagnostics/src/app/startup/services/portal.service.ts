@@ -25,6 +25,15 @@ export class PortalService {
     private shellSrc: string;
     private tokenObservable: ReplaySubject<string>;
 
+    private acceptedOriginsSuffix = [
+        'portal.azure.com',
+        'portal.microsoftazure.de',
+        'portal.azure.cn',
+        'portal.azure.us',
+        'portal.azure.eaglex.ic.gov',
+        'portal.azure.microsoft.scloud',
+    ];
+
     constructor(private _broadcastService: BroadcastService) {
         this.sessionId = '';
 
@@ -156,6 +165,10 @@ export class PortalService {
 
     private iframeReceivedMsg(event: Event): void {
         if (!event || !event.data || event.data.signature !== this.portalSignature) {
+            return;
+        }
+
+        if(!event.origin || !this.acceptedOriginsSuffix.find(o => event.origin.toLowerCase().endsWith(o.toLowerCase()))){
             return;
         }
 
