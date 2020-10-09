@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { Sku } from '../../../shared/models/server-farm';
 import { SiteFilteredItem } from '../models/site-filter';
 import { WebSitesService } from '../services/web-sites.service';
 
@@ -13,7 +14,7 @@ export class WebSiteFilter implements PipeTransform {
             .filter(item =>
                 (item.appType & this._webSiteService.appType) > 0 &&
                 (item.platform & this._webSiteService.platform) > 0 &&
-                (item.sku & this._webSiteService.sku) > 0 &&
+                (item.sku == Sku.All || item.sku & this._webSiteService.sku) > 0 &&
                 (item.hostingEnvironmentKind & this._webSiteService.hostingEnvironmentKind) > 0 &&
                 (item.stack === ''
                     || (overrideStack && (overrideStack === '' || overrideStack.toLowerCase() === 'all'))

@@ -49,7 +49,8 @@ export interface SiteRestartData {
 export enum OperatingSystem {
     windows = 1 << 0,
     linux = 1 << 1,
-    any = 11 << 0
+    HyperV = 1 << 2,
+    any = 111 << 0
 }
 
 export enum HostingEnvironmentKind {

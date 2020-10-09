@@ -15,7 +15,7 @@ export class SitesCategoryService extends CategoryService {
   private _sitesCategories: SiteFilteredItem<Category>[] = [
     {
       appType: AppType.WebApp,
-      platform: OperatingSystem.windows,
+      platform: OperatingSystem.windows | OperatingSystem.HyperV,
       stack: '',
       sku: Sku.All,
       hostingEnvironmentKind: HostingEnvironmentKind.All,
@@ -50,7 +50,7 @@ export class SitesCategoryService extends CategoryService {
     },
     {
       appType: AppType.WebApp,
-      platform: OperatingSystem.windows | OperatingSystem.linux,
+      platform: OperatingSystem.windows | OperatingSystem.linux | OperatingSystem.HyperV,
       stack: '',
       sku: Sku.All,
       hostingEnvironmentKind: HostingEnvironmentKind.All,
@@ -67,7 +67,7 @@ export class SitesCategoryService extends CategoryService {
     },
     {
       appType: AppType.WebApp,
-      platform: OperatingSystem.windows,
+      platform: OperatingSystem.windows | OperatingSystem.HyperV,
       stack: '',
       sku: Sku.All,
       hostingEnvironmentKind: HostingEnvironmentKind.All,
@@ -85,7 +85,7 @@ export class SitesCategoryService extends CategoryService {
     //Windows and Linux
     {
       appType: AppType.WebApp,
-      platform: OperatingSystem.windows | OperatingSystem.linux,
+      platform: OperatingSystem.windows | OperatingSystem.linux | OperatingSystem.HyperV,
       stack: '',
       sku: Sku.All,
       hostingEnvironmentKind: HostingEnvironmentKind.All,

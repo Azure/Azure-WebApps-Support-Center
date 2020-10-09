@@ -86,7 +86,7 @@ export class WebSitesService extends ResourceService {
         return this.appType === AppType.WebApp ? this.platform === OperatingSystem.windows ? 'Web App (Windows)' : 'Web App (Linux)' : 'Function App';
     }
 
-    public get isApplicableForLiveChat(): boolean {        
+    public get isApplicableForLiveChat(): boolean {
         return this.resource
             && (this.appType & AppType.WebApp) > 0 //Do not enable chat for Function apps
             && (this.platform & (OperatingSystem.windows | OperatingSystem.linux)
@@ -125,7 +125,7 @@ export class WebSitesService extends ResourceService {
                         '32440122', //Configuration and Management/Configuring custom domain names
                         '32542208', //Configuration and Management/Backup and Restore
                         '32542210' //Configuration and Management/IP Configuration
-                      ]; 
+                      ];
                 }
                 else {
                     return [];
@@ -161,7 +161,7 @@ export class WebSitesService extends ResourceService {
         });
 
         this.appType = site.kind.toLowerCase().indexOf('functionapp') >= 0 ? AppType.FunctionApp : AppType.WebApp;
-        this.platform = site.kind.toLowerCase().indexOf('linux') >= 0 ? OperatingSystem.linux : OperatingSystem.windows;
+        this.platform = site.kind.toLowerCase().indexOf('xenon') >= 0 ? OperatingSystem.HyperV : site.kind.toLowerCase().indexOf('linux') >= 0 ? OperatingSystem.linux : OperatingSystem.windows;
         this.sku = Sku[site.sku];
         this.hostingEnvironmentKind = this.getHostingEnvirontmentKind(site);
     }
