@@ -57,7 +57,7 @@ export class DropdownV4Component extends DataRenderBaseComponent {
     for (let i: number = 0; i < table.rows.length; i++) {
 
       const row = table.rows[i];
-      this.label = row[labelColumn];
+      this.label = row[labelColumn] ? row[labelColumn] : "";
       const key: string = row[keyColumn];
       const selected: boolean = row[selectedColumn];
       const data: string = row[valueColumn];
@@ -111,6 +111,10 @@ export class DropdownV4Component extends DataRenderBaseComponent {
         length = Math.max(length, option.text.length);
       }
     });
-    return (length + this.label.length) * 11 ;
+    let lableLength = 0;
+    if(this.label && this.label.length > 0) {
+      lableLength = this.label.length;
+    } 
+    return (length + lableLength) * 11 ;
   }
 }
