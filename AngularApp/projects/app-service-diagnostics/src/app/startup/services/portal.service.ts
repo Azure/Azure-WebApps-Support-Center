@@ -179,10 +179,6 @@ export class PortalService {
         console.log('[iFrame] Received validated mesg: ' + methodName, event, event.srcElement, event.srcElement.location, event.srcElement.location.host);
 
         this._checkAcceptOrigins(event).subscribe(foundOrigin => {
-            
-            // if(!event.origin || !originsSuffix.find(o => event.origin.toLocaleLowerCase().endsWith(o.toLowerCase()))){
-            //     return;
-            // }
             if(!foundOrigin){
                 return;
             }
