@@ -8,6 +8,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../src/environments/environment';
 import { map } from 'rxjs/operators';
 
+const publicOrigins = [
+    'portal.azure.com',
+    'portal.microsoftazure.de',
+    'portal.azure.cn',
+    'portal.azure.us',
+];
+
+
 @Injectable()
 export class PortalService {
     public sessionId = '';
@@ -170,9 +178,12 @@ export class PortalService {
         
         console.log('[iFrame] Received validated mesg: ' + methodName, event, event.srcElement, event.srcElement.location, event.srcElement.location.host);
 
-        this._getAcceptOrigins(event).subscribe(originsSuffix => {
+        this._checkAcceptOrigins(event).subscribe(foundOrigin => {
             
-            if(!event.origin || !originsSuffix.find(o => event.origin.toLocaleLowerCase().endsWith(o.toLowerCase()))){
+            // if(!event.origin || !originsSuffix.find(o => event.origin.toLocaleLowerCase().endsWith(o.toLowerCase()))){
+            //     return;
+            // }
+            if(!foundOrigin){
                 return;
             }
             
@@ -287,5 +298,21 @@ export class PortalService {
             'Authorization': `Bearer ${startupInfo.token}`
         });
         return headers;
+    }
+
+    private _checkAcceptOrigins(event:Event):Observable<boolean>{
+        if(!event.origin){
+            return of(false);
+        }
+
+        //If can find from public origins,no need backend call
+        if(publicOrigins.findIndex(o => event.origin.toLocaleLowerCase().endsWith(o.toLowerCase())) > -1){
+            return of(true);
+        }
+
+        return this._getAcceptOrigins(event).pipe(map(originsSuffix => {
+
+            return originsSuffix.findIndex(o => event.origin.toLowerCase().endsWith(o.toLowerCase())) > -1;
+        }));
     }
 }
