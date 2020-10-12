@@ -9,10 +9,7 @@ import { environment } from '../../../../src/environments/environment';
 import { map } from 'rxjs/operators';
 
 const publicOrigins = [
-    'portal.azure.com',
-    'portal.microsoftazure.de',
-    'portal.azure.cn',
-    'portal.azure.us',
+    'portal.azure.com'
 ];
 
 
