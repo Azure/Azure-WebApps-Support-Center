@@ -111,10 +111,10 @@ export class DropdownV4Component extends DataRenderBaseComponent {
         length = Math.max(length, option.text.length);
       }
     });
-    let lableLength = 0;
+    let labelLength = 0;
     if(this.label && this.label.length > 0) {
-      lableLength = this.label.length;
+      labelLength = this.label.length;
     } 
-    return (length + lableLength) * 11 ;
+    return (length + labelLength) * 11 ;
   }
 }
