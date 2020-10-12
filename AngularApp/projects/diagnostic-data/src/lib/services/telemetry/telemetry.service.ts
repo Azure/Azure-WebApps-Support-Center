@@ -99,7 +99,10 @@ export class TelemetryService {
     }
 
     public logException(exception: Error, handledAt?: string, properties?: any, severityLevel?: SeverityLevel) {
-        this.addCommonLoggingProperties(properties);
+        try{
+            this.addCommonLoggingProperties(properties);
+        }catch(e){
+        }
         for (const telemetryProvider of this.telemetryProviders) {
             if (telemetryProvider) {
                 telemetryProvider.logException(exception, handledAt, properties, severityLevel);
@@ -127,11 +130,11 @@ export class TelemetryService {
 
     private findProductName(url: string): string {
         let productName = "";
-        const routeParams = this._activatedRoute.root.firstChild.firstChild.firstChild.snapshot.params;
-        const resourceName = this.isPublic ? routeParams['resourcename'] : routeParams['resourceName'];
         let type = "";
         //match substring which is "providers/*/:resourceName"
         try {
+            const routeParams = this._activatedRoute.root.firstChild.firstChild.firstChild.snapshot.params;
+            const resourceName = this.isPublic ? routeParams['resourcename'] : routeParams['resourceName'];
             const reString = `providers\/.*\/${resourceName}`;
             const re = new RegExp(reString);
             const matched = url.match(re);
