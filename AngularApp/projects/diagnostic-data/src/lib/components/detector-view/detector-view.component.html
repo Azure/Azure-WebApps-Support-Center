@@ -92,6 +92,8 @@
 <loader-view style="margin-top:300px" *ngIf="!detectorDataLocalCopy && !errorState"
   [message]="isCategoryOverview? 'Diagnosing ...' : 'Loading Detector...'"></loader-view>
 
+  <loader-detector-view style="margin-top:900px" *ngIf="!detectorDataLocalCopy && !errorState"></loader-detector-view>
+
 <ng-container *ngIf="!detectorDataLocalCopy && errorState">
   <span class="critical-color" *ngIf="errorState.error && !isPublic"> Error: {{errorState.error}}</span>
   <span class="critical-color" *ngIf="isPublic && errorState || !errorState.error">Sorry, an error occurred. Please

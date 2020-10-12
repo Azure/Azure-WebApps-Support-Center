@@ -101,6 +101,7 @@ import { ParseResourceService } from './services/parse-resource.service';
 import { MarkdownTextComponent } from './components/markdown-text/markdown-text.component';
 import { DataTableV4Component } from './components/data-table-v4/data-table-v4.component';
 import { DocumentsSearchComponent } from './components/documents-search/documents-search.component';
+import { LoaderDetectorViewComponent } from './components/loader-detector-view/loader-detector-view.component';
 
 @NgModule({
   imports: [
@@ -155,12 +156,13 @@ import { DocumentsSearchComponent } from './components/documents-search/document
     DynamicInsightV4Component,
     MarkdownTextComponent,
     DataTableV4Component,
-    DocumentsSearchComponent
+    DocumentsSearchComponent,
+    LoaderDetectorViewComponent
   ],
   entryComponents: [DetectorListAnalysisComponent],
   exports: [
     FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DetectorSearchComponent,
-    DataSummaryComponent, LoaderViewComponent, StatusIconComponent, DetectorControlComponent,
+    DataSummaryComponent, LoaderViewComponent, LoaderDetectorViewComponent, StatusIconComponent, DetectorControlComponent,
     DetectorContainerComponent, InternalPipe, CommAlertComponent, GuageControlComponent, SolutionComponent,
     FormComponent, VerticalDisplayListComponent, VerticalDisplayListItemComponent, SolutionTypeTagComponent, DataContainerComponent,
     ChangeAnalysisOnboardingComponent,
