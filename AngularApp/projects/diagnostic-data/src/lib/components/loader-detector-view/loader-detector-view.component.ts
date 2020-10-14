@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FabSpinnerComponent } from '@angular-react/fabric';
 
 @Component({
     selector: 'loader-detector-view',
@@ -9,7 +10,7 @@ export class LoaderDetectorViewComponent implements OnInit {
 
     message: string = "loading detector view";
     imgSrc: string = "assets/img/loading-detector-view/fetching_logs.svg";
-    loadingString: string = "Fetching properties & logs ...";
+    loadingString: string = "Fetching properties and logs ...";
     delay: number = 2000;
     timer: any = 0;
     i: number = 0;
@@ -17,7 +18,7 @@ export class LoaderDetectorViewComponent implements OnInit {
         {
             duration: 2000,
             imgSrc: "assets/img/loading-detector-view/fetching_logs.svg",
-            loadingString: "Fetching properties & logs ..."
+            loadingString: "Fetching properties and logs ..."
         },
         {
             duration: 2000,
