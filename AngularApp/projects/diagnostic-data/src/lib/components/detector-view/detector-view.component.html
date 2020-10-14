@@ -89,10 +89,7 @@
 
 <cxp-chat-launcher *ngIf="showChatButton()" [trackingId]="cxpChatTrackingId" [chatUrl]="cxpChatUrl"
   [supportTopicId]="supportTopicId"></cxp-chat-launcher>
-<loader-view style="margin-top:300px" *ngIf="!detectorDataLocalCopy && !errorState"
-  [message]="isCategoryOverview? 'Diagnosing ...' : 'Loading Detector...'"></loader-view>
-
-  <loader-detector-view style="margin-top:900px" *ngIf="!detectorDataLocalCopy && !errorState"></loader-detector-view>
+  <loader-detector-view style="margin-top:300px" *ngIf="!detectorDataLocalCopy && !errorState"></loader-detector-view>
 
 <ng-container *ngIf="!detectorDataLocalCopy && errorState">
   <span class="critical-color" *ngIf="errorState.error && !isPublic"> Error: {{errorState.error}}</span>

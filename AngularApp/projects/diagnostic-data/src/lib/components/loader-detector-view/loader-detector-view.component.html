@@ -1,9 +1,13 @@
 <div class="loader-container">
   <div class="fxs-progress">
-      <div class="fxs-progress-dots">
-          <div></div><div></div><div></div>
-          <div class="loader-message">{{message}}</div>
-          <img src="assets/img/loading-detector-view/analyzing_data .svg" />
-      </div>
+    <div class="fxs-progress-image">
+      <img [src]=imgSrc />
+    </div>
+    <div class="fxs-progress-dots">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div class="loader-message">{{loadingString}}</div>
+    </div>
   </div>
 </div>
