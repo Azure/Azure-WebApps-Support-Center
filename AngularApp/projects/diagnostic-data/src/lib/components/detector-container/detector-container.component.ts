@@ -8,6 +8,8 @@ import { VersionService } from '../../services/version.service';
 import { Moment } from 'moment';
 import * as momentNs from 'moment';
 import { XAxisSelection } from '../../models/time-series';
+import { DiagnosticDataConfig, DIAGNOSTIC_DATA_CONFIG } from 'diagnostic-data';
+import { Inject } from '@angular/core';
 const moment = momentNs;
 
 @Component({
@@ -31,6 +33,8 @@ export class DetectorContainerComponent implements OnInit {
   detectorName: string;
   detectorRefreshSubscription: any;
   refreshInstanceIdSubscription: any;
+  isPublic: boolean = true;
+
 
   @Input() detectorSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
@@ -50,7 +54,8 @@ export class DetectorContainerComponent implements OnInit {
   isCategoryOverview: boolean = false;
   private isLegacy: boolean
   constructor(private _route: ActivatedRoute, private _diagnosticService: DiagnosticService,
-    public detectorControlService: DetectorControlService, private versionService: VersionService) {
+    public detectorControlService: DetectorControlService, private versionService: VersionService, @Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig) {
+        this.isPublic = config && config.isPublic;
   }
 
   get isPopoutFromAnalysis(): boolean {
