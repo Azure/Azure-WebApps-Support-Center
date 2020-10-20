@@ -8,7 +8,7 @@ import { VersionService } from '../../services/version.service';
 import { Moment } from 'moment';
 import * as momentNs from 'moment';
 import { XAxisSelection } from '../../models/time-series';
-import { DiagnosticDataConfig, DIAGNOSTIC_DATA_CONFIG } from 'diagnostic-data';
+import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import { Inject } from '@angular/core';
 const moment = momentNs;
 
