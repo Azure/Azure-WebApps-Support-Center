@@ -2,16 +2,18 @@
   <div *ngIf="useLegacy" class="switch2new-context-text">
     <i class="fa fa-info-circle info-banner-icon"></i>
     We have recently launched the new version of App Service Diagnostics.
-    <a (click)="switchView()" tabindex="0" (keyup.enter)="switchView()" aria-label="switch to the new version">Click here to checkout the new version.</a>
+    <a (click)="switchView()" tabindex="0" (keyup.enter)="switchView()" aria-label="switch to the new version">Click
+      here to checkout the new version.</a>
   </div>
   <div *ngIf="!useLegacy" class="switch2old-context-text">
     <i class="fa fa-info-circle info-banner-icon"></i>
     Welcome to the new App Service Diagnostics. Simply explore or check out the <a
       href='https://aka.ms/New-Diagnostics-and-Genie' target="_blank">documentation</a> on the new updates.
-    <a (click)="switchView()" class="old-version-link" tabindex="0" (keyup.enter)="switchView()" aria-label="switch to the old version">Click here to go back to the old version.</a>
+    <a (click)="switchView()" class="old-version-link" tabindex="0" (keyup.enter)="switchView()"
+      aria-label="switch to the old version">Click here to go back to the old version.</a>
   </div>
 </ng-container>
-<div *ngIf="useLegacy else newSolution" class="home-container">
+<div *ngIf="useLegacy else homePage" class="home-container">
   <div class="input-group input-group-lg search-input-group" (keyup.escape)="clearSearch()" role="search"
     *ngIf="!isAKSOnNationalCloud">
     <input tabindex="0" type="search" class="form-control" placeholder="{{searchPlaceHolder}}" [ngModel]="searchValue"
@@ -35,7 +37,7 @@
   </div>
   <div class="main-area">
     <h2>{{homePageText.title}}</h2>
-    <p id="page-description" >{{homePageText.description}}</p>
+    <p id="page-description">{{homePageText.description}}</p>
     <div *ngIf="categories && !useStaticAksText " class="category-container">
       <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
         <category-tile [category]="category"></category-tile>
@@ -111,13 +113,13 @@
   </div>
 </div>
 
-<ng-template #newSolution>
+<!-- <ng-template #newSolution>
   <div class="main-area-v4">
     <div class="home-content">
       <h2 class="home-title">{{homePageText.title}}</h2>
       <p class="home-description-v4">{{homePageText.description}}</p>
       <p class="home-description-v4">If you would like to look at the health check then
-        <a id="healthCheck"(click)="openAvaAndPerf()" tabindex="0" aria-label="Open health check"
+        <a id="healthCheck" (click)="openAvaAndPerf()" tabindex="0" aria-label="Open health check"
           (keydown.enter)="openAvaAndPerf()">click here.</a> You can also ask our interactive chatbot
         <a (click)="openGeniePanel()" tabindex="0" aria-label="Open Genie" (keydown.enter)="openGeniePanel()">Genie</a>
         any questions you may have</p>
@@ -133,6 +135,69 @@
         <category-tile-v4 [category]="category"></category-tile-v4>
       </div>
     </div>
+    <div class="privacy-statement">
+      <a href="https://azure.microsoft.com/support/legal/?amp%3Bclcid=0x9" target="_blank">Privacy</a>
+    </div>
+  </div>
+</ng-template> -->
+
+
+<ng-template #homePage>
+  <fab-command-bar tabindex="0" contentStyle="border-bottom:1px solid gray;font-weight:12px">
+    <items>
+      <fab-command-bar-item key="askGenie" text="Ask chatBot" [iconProps]="{ iconName: 'ChatInviteFriend' }"
+        (click)="openGeniePanel()" data-track-type="run"></fab-command-bar-item>
+      <fab-command-bar-item key="refresh1" text="Refresh" [iconProps]="{ iconName: 'Refresh' }" (click)="refreshPage()">
+      </fab-command-bar-item>
+      <fab-command-bar-item key="sendFeedback" text="Feedback" [iconProps]="{ iconName: 'Emoji2' }"
+        (click)="openFeedbackPanel()"></fab-command-bar-item>
+    </items>
+  </fab-command-bar>
+
+  <div class="main-area-v4">
+    <h3><span style="font-size: 14px;font-weight: 600;">App Service Diagnostics(Preview)</span><span
+        style="font-size: 13px;"> - - Investigate how your app is performing, diagnose issues, and discover how to
+        improve your application. </span>
+    </h3>
+    <div style="display: flex;">
+      <fabric-search-results></fabric-search-results>
+      <div style="margin: auto 0px auto 20px;">Have questions? <a tabindex="0" (click)="openGeniePanel()" (keyup.enter)="openGeniePanel()">Ask chatbot</a></div>
+    </div>
+    
+    <div>
+      <h3 style="font-weight: bold;">Recommendations</h3>
+      <p>Check what we recommended for you to help you optimize your app’s configuration.</p>
+      <div style="border: 1px solid rgba(204, 204, 204, 0.5);border-radius: 2px;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);display: flex;min-height: 37px; width: 615px;">
+        <span span class="fa status-icon fa-exclamation-circle" style="margin: auto 16px;"></span>
+        <div style="margin: auto 0px;">
+          <!-- Need from service -->
+          <span>You have at least 1 critical recommendations about your app’s experience. </span>
+          <a tabindex="0" (click)="openBestPracticeDetector()" (keyup.enter)="openBestPracticeDetector()">View more</a>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3>Troubleshooting categories</h3>  
+      <p>Choose from the troubleshooting categories below to diagnose and solve problems.</p>
+      <div *ngIf="categories" style="display: flex; flex-wrap: wrap;align-content: center;">
+        <div *ngFor="let category of categories" style="margin: 7px 16px 7px 0px;">
+          <category-tile-v4 [category]="category"></category-tile-v4>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3>Popular troubleshooting tools</h3>
+      <p>Choose from the popular troubleshooting tools below to investigate your app’s issues.</p>
+      <!-- quick links -->
+      <div *ngIf="quickLinkFeatures && quickLinkFeatures.length > 0">
+        <div *ngFor="let feature of quickLinkFeatures" >
+          <a tabindex="0" (click)="clickQuickLink(feature)" (keyup.enter)="clickQuickLink(feature)">{{feature.name}}</a>
+        </div>
+      </div>
+    </div>
+
     <div class="privacy-statement">
       <a href="https://azure.microsoft.com/support/legal/?amp%3Bclcid=0x9" target="_blank">Privacy</a>
     </div>

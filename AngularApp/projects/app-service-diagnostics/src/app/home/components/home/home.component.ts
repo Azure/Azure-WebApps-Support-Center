@@ -1,4 +1,4 @@
-import { DetectorControlService, FeatureNavigationService, DetectorResponse, TelemetryEventNames, ResourceDescriptor } from 'diagnostic-data';
+import { DetectorControlService, FeatureNavigationService, DetectorResponse, TelemetryEventNames, ResourceDescriptor, HealthStatus } from 'diagnostic-data';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from '../../../shared-v2/models/category';
@@ -19,6 +19,8 @@ import { Globals } from '../../../globals';
 import { PortalActionService } from '../../../shared/services/portal-action.service';
 import { VersionTestService } from '../../../fabric-ui/version-test.service';
 import { SubscriptionPropertiesService } from '../../../shared/services/subscription-properties.service';
+import { SiteQuickLinkService } from '../../../resources/web-sites/services/site-quick-link.service';
+import { Feature } from '../../../shared-v2/models/features';
 
 @Component({
     selector: 'home',
@@ -40,6 +42,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     homePageText: HomePageText;
     searchPlaceHolder: string;
     providerRegisterUrl: string;
+    quickLinkFeatures: Feature[] = [];
+    InsightStatus = HealthStatus;
     get inputAriaLabel(): string {
         return this.searchValue !== '' ?
             `${this.searchResultCount} Result` + (this.searchResultCount !== 1 ? 's' : '') :
@@ -57,7 +61,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     constructor(private _resourceService: ResourceService, private _categoryService: CategoryService, private _notificationService: NotificationService, private _router: Router,
         private _detectorControlService: DetectorControlService, private _featureService: FeatureService, private _logger: LoggingV2Service, private _authService: AuthService,
         private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute, private armService: ArmService, private _telemetryService: TelemetryService, private _diagnosticService: DiagnosticService, private _portalService: PortalActionService, private globals: Globals,
-        private versionTestService: VersionTestService, private subscriptionPropertiesService: SubscriptionPropertiesService) {
+        private versionTestService: VersionTestService, private subscriptionPropertiesService: SubscriptionPropertiesService, private _siteQuickLinkService: SiteQuickLinkService) {
 
         this.subscriptionId = this._activatedRoute.snapshot.params['subscriptionid'];
         this.versionTestService.isLegacySub.subscribe(isLegacy => this.useLegacy = isLegacy);
@@ -69,7 +73,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             subscriptionId: this.subscriptionId,
             resourceName: this.resourceName,
         };
-        this._telemetryService.logEvent('DiagnosticsViewLoaded',eventProps);
+        this._telemetryService.logEvent('DiagnosticsViewLoaded', eventProps);
 
         if (_resourceService.armResourceConfig && _resourceService.armResourceConfig.homePageText
             && _resourceService.armResourceConfig.homePageText.title && _resourceService.armResourceConfig.homePageText.title.length > 1
@@ -137,6 +141,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
             }
         });
 
+        this._featureService.featureSub.subscribe(features => {
+            const links = this._siteQuickLinkService.quickLinks;
+            const temp = [];
+            for (let link of links) {
+                const feature = features.find(feature => feature.id === link);
+                if (feature) {
+                    temp.push(feature);
+                }
+            }
+            this.quickLinkFeatures = temp;
+        })
     }
 
     switchView() {
@@ -147,7 +162,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             resourceName: this.resourceName,
             switchToLegacy: this.useLegacy.toString(),
         };
-        this._telemetryService.logEvent('SwitchView',eventProps);
+        this._telemetryService.logEvent('SwitchView', eventProps);
     }
 
     ngOnInit() {
@@ -194,18 +209,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
     };
 
     ngAfterViewInit() {
-        this._telemetryService.logPageView(TelemetryEventNames.HomePageLoaded, {"numCategories": this.categories.length.toString()});
-        if (document.getElementById("healthCheck"))
-        {
+        this._telemetryService.logPageView(TelemetryEventNames.HomePageLoaded, { "numCategories": this.categories.length.toString() });
+        if (document.getElementById("healthCheck")) {
             document.getElementById("healthCheck").focus();
         }
     }
 
 
-    public get useStaticAksText() : boolean {
+    public get useStaticAksText(): boolean {
         return this.armService.isMooncake
             && ResourceDescriptor.parseResourceUri(this._resourceService.resourceIdForRouting).provider.toLowerCase() == 'microsoft.containerservice';
-  }
+    }
 
     public get isAKSOnNationalCloud(): boolean {
         return this.armService.isNationalCloud
@@ -279,16 +293,39 @@ export class HomeComponent implements OnInit, AfterViewInit {
         if (category) {
             this._portalService.openBladeDiagnoseCategoryBlade(category.id);
         }
-        this._telemetryService.logEvent('OpenAviPerf',{
-            'Location':'LandingPage'
+        this._telemetryService.logEvent('OpenAviPerf', {
+            'Location': 'LandingPage'
         });
     }
 
     openGeniePanel() {
         this.globals.openGeniePanel = true;
-        this._telemetryService.logEvent('OpenGenie',{
-            'Location':'LandingPage'
+        this._telemetryService.logEvent('OpenGenie', {
+            'Location': 'LandingPage'
         });
+    }
+
+    openFeedbackPanel() {
+        this.globals.openFeedback = true;
+    }
+
+    clickQuickLink(feature: Feature) {
+        feature.clickAction();
+    }
+
+    openBestPracticeDetector() {
+        //For now, open overview page 
+        const props = {};
+        this._telemetryService.logEvent("BestPracticeClicked",{});
+        this._portalService.openBladeDiagnoseCategoryBlade("BestPractices");
+    }
+
+    refreshPage() {
+        const url = this._router.url;
+        // this._router.navigate(['/appsettings'], { relativeTo: this._activatedRoute, skipLocationChange: true }).then(() => this._router.navigate(['../'], { relativeTo: this._activatedRoute }));
+        this._router.routeReuseStrategy.shouldReuseRoute = () => false;
+        this._router.onSameUrlNavigation = 'reload';
+        this._router.navigate(['./'],{relativeTo:this._activatedRoute});
     }
 }
 

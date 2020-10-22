@@ -1,10 +1,5 @@
-<!-- <div class="category-container" (click)="navigateToCategory()" (keyup.enter)="navigateToCategory()" -->
-  <div class="category-container" (click)="openBladeDiagnoseCategoryBlade()" (keyup.enter)="openBladeDiagnoseCategoryBlade()"
+<!-- <div class="category-container" (click)="openBladeDiagnoseCategoryBlade()" (keyup.enter)="openBladeDiagnoseCategoryBlade()"
   (keyup.space)="openBladeDiagnoseCategoryBlade()" tabindex="0" role="button">
-  <!-- <div class="title-container" [style.background-color]="category.color">
-    {{category.name}}
-  </div> -->
-  <!-- <div class="category-body"> -->
   <div>
     <div class="image-container"><img [src]="categoryImgPath" /></div>
     <h2 class="category-title">{{category.name}}</h2>
@@ -12,13 +7,26 @@
     <div>
     <span class="keyword-label">Keywords:</span>
     <div class="keywords">
-          <!-- <div class="keyword"  *ngFor="let keyword of category.keywords">
-            {{keyword}}
-          </div> -->
           <div class="keyword">
             {{keywords}}
           </div>
         </div>
+    </div>
+  </div>
+</div> -->
+
+<div (click)="openBladeDiagnoseCategoryBlade()" (keyup.enter)="openBladeDiagnoseCategoryBlade()"
+  (keyup.space)="openBladeDiagnoseCategoryBlade()" tabindex="0" role="button"
+  style="border: 1px solid rgba(204, 204, 204, 0.5);box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);width: 300px;height: 100%;">
+  <div style="margin-top: 16px; margin-bottom: 16px; display: flex;">
+    <div style="margin: 8px 10px 0px 16px;">
+      <img [src]="categoryImgPath" style="width: 45px;height: 45px;">
+    </div>
+    <div style="margin-right: 13px;">
+      <h3 style="font-size: 14px;font-weight: bold;">{{category.name}}</h3>
+      <p style="font-size: 13px;color: 323130;">{{category.description}}</p>
+      <p style="font-size: 12px;color: 605E5C;">Ex: {{keywords}}</p>
+      <a>Troubleshoot</a>
     </div>
   </div>
 </div>

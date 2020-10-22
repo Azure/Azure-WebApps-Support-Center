@@ -22,7 +22,7 @@ export class FeatureService {
   protected _features: Feature[] = [];
   protected _featureDisplayOrder = [];
   private categories: Category[] = [];
-  private _featureSub: BehaviorSubject<Feature[]> = new BehaviorSubject<Feature[]>([]);
+  public featureSub: BehaviorSubject<Feature[]> = new BehaviorSubject<Feature[]>([]);
   protected isLegacy: boolean;
   constructor(protected _diagnosticApiService: DiagnosticService, protected _contentService: ContentService, protected _router: Router, protected _authService: AuthService,
     protected _logger: TelemetryService, protected _siteService: SiteService, protected _categoryService: CategoryService, protected _activatedRoute: ActivatedRoute, protected _portalActionService: PortalActionService, protected versionTestService: VersionTestService) {
@@ -75,7 +75,7 @@ export class FeatureService {
           }
         });
         this.sortFeatures();
-        this._featureSub.next(this._features);
+        this.featureSub.next(this._features);
       });
 
       this._contentService.getContent().subscribe(articles => {
@@ -114,7 +114,7 @@ export class FeatureService {
   }
 
   getFeaturesForCategorySub(category: Category): Observable<Feature[]> {
-    return this._featureSub.pipe(
+    return this.featureSub.pipe(
       map(features => this.getFeaturesForCategory(category)
       ));
   }

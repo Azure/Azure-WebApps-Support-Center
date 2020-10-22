@@ -27,7 +27,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { CXPChatService } from 'diagnostic-data';
 import { PortalReferrerResolverComponent } from '../shared/components/portal-referrer-resolver/portal-referrer-resolver.component';
 import { CXPChatCallerService } from '../shared-v2/services/cxp-chat-caller.service';
-import { FabSearchBoxModule } from '@angular-react/fabric';
+import { FabCommandBarModule, FabSearchBoxModule } from '@angular-react/fabric';
 import { UncategorizedDetectorsResolver } from './resolvers/uncategorized-detectors.resolver';
 import { DetectorCategorizationService } from '../shared/services/detector-categorized.service';
 import { ToolNames } from '../shared/models/tools-constants';
@@ -53,6 +53,7 @@ import { FabricModule } from '../fabric-ui/fabric.module';
 import { ResourceService } from '../shared-v2/services/resource.service';
 import { JavaFlightRecorderToolComponent } from '../shared/components/tools/java-flight-recorder-tool/java-flight-recorder-tool.component';
 import { CrashMonitoringComponent } from '../shared/components/tools/crash-monitoring/crash-monitoring.component';
+import { SiteQuickLinkService } from '../resources/web-sites/services/site-quick-link.service';
 
 export const HomeRoutes = RouterModule.forChild([
     {
@@ -500,7 +501,8 @@ export const HomeRoutes = RouterModule.forChild([
         FabricModule,
         FormsModule,
         MarkdownModule.forRoot(),
-        FabSearchBoxModule
+        FabSearchBoxModule,
+        FabCommandBarModule
     ],
     declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent, CategoryTileV4Component],
     providers:
@@ -520,6 +522,7 @@ export const HomeRoutes = RouterModule.forChild([
             { provide: GenericDocumentsSearchService, useExisting: DocumentSearchService },
             { provide: CXPChatService, useExisting: CXPChatCallerService },
             { provide: GenericResourceService, useExisting: ResourceService},
+            SiteQuickLinkService
         ],
 })
 export class HomeModule { }

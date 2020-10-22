@@ -57,9 +57,9 @@ export class Globals {
     const childRoute = this.activatedRoute.firstChild.firstChild.firstChild.firstChild;
     let detectorName = "";
 
-    if (childRoute.firstChild.snapshot.params["detectorName"]) {
+    if (childRoute.firstChild && childRoute.firstChild.snapshot.params["detectorName"]) {
       detectorName = childRoute.firstChild.snapshot.params["detectorName"];
-    } else {
+    } else if(childRoute.snapshot.params["category"]){
       detectorName = childRoute.snapshot.params["category"];
     }
     return detectorName;
