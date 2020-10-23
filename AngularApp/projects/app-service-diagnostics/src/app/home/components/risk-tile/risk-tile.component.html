@@ -1,12 +1,19 @@
 <div tabindex="0" (click)="clickTileHandler()" class="risk-tile" role="button">
-  <h3 class="risk-tile-title">{{tileTitle}}</h3>
-  <div style="display: flex;">
-    <div>
-      <span class="fa status-icon fa-exclamation-circle"></span>
-      <span>Critical</span>
-      <span class="fa status-icon fa-exclamation-circle"></span>
-      <span>Warning</span>
+  <h3 class="risk-title risk-section">{{tileTitle}}</h3>
+
+  <div class="risk-section" style="display: flex;">
+    <div class="risk-icon-section">
+      <span class="fa status-icon fa-exclamation-circle risk-icon"></span>
+      <span>3 Critical</span>
     </div>
+    <div class="risk-icon-section">
+      <span class="fa status-icon fa-exclamation-triangle risk-icon"></span>
+      <span>1 Warning</span>
+    </div>
+
   </div>
-  <a>Click here to run all checks</a>
+
+  <div class="risk-section">
+    <a>Click here to run all checks</a>
+  </div>
 </div>

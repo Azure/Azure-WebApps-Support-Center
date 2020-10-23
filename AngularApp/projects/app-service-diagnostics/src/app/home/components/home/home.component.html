@@ -185,10 +185,10 @@
       </div>
     </div>
 
-    <div class="section-container">
+    <div class="section-container" *ngIf="quickLinkFeatures && quickLinkFeatures.length > 0">
       <h3 class="section-title">Popular troubleshooting tools</h3>
       <!-- quick links -->
-      <div *ngIf="quickLinkFeatures && quickLinkFeatures.length > 0">
+      <div>
         <div class="quick-link" *ngFor="let feature of quickLinkFeatures">
           <a tabindex="0" (click)="clickQuickLink(feature)" (keyup.enter)="clickQuickLink(feature)">{{feature.name}}</a>
         </div>
