@@ -54,6 +54,7 @@ import { ResourceService } from '../shared-v2/services/resource.service';
 import { JavaFlightRecorderToolComponent } from '../shared/components/tools/java-flight-recorder-tool/java-flight-recorder-tool.component';
 import { CrashMonitoringComponent } from '../shared/components/tools/crash-monitoring/crash-monitoring.component';
 import { SiteQuickLinkService } from '../resources/web-sites/services/site-quick-link.service';
+import { RiskTileComponent } from './components/risk-tile/risk-tile.component';
 
 export const HomeRoutes = RouterModule.forChild([
     {
@@ -504,7 +505,7 @@ export const HomeRoutes = RouterModule.forChild([
         FabSearchBoxModule,
         FabCommandBarModule
     ],
-    declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent, CategoryTileV4Component],
+    declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent, CategoryTileV4Component, RiskTileComponent],
     providers:
         [
             CategoryTabResolver,

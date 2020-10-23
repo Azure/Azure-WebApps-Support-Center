@@ -1,0 +1,26 @@
+.risk-tile {
+    padding: 15px 20px;
+    width: 300px;
+    height: 100%;
+    border: 1px solid rgba(204, 204, 204, 0.5);
+    border-radius: 2px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+.risk-tile-title {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+.fa-exclamation-circle {
+  color: #ff0000;
+}
+
+.fa-exclamation-triangle {
+  color: #ff9104;
+}
+
+.fa-check-circle {
+  color: #3da907;
+}

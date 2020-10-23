@@ -21,7 +21,7 @@ enum BlurType {
   styleUrls: ['./fabric-search-results.component.scss']
 })
 export class FabricSearchResultsComponent {
-
+  searchPlaceHolder: string = "Search for common problems or tools.";
   searchValue: string = "";
   resultCount: number;
   features: Feature[] = [];

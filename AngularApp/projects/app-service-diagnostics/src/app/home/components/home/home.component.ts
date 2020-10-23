@@ -1,4 +1,4 @@
-import { DetectorControlService, FeatureNavigationService, DetectorResponse, TelemetryEventNames, ResourceDescriptor, HealthStatus } from 'diagnostic-data';
+import { DetectorControlService, FeatureNavigationService, DetectorResponse, TelemetryEventNames, ResourceDescriptor } from 'diagnostic-data';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from '../../../shared-v2/models/category';
@@ -43,7 +43,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     searchPlaceHolder: string;
     providerRegisterUrl: string;
     quickLinkFeatures: Feature[] = [];
-    InsightStatus = HealthStatus;
     get inputAriaLabel(): string {
         return this.searchValue !== '' ?
             `${this.searchResultCount} Result` + (this.searchResultCount !== 1 ? 's' : '') :
@@ -311,13 +310,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     clickQuickLink(feature: Feature) {
         feature.clickAction();
-    }
-
-    openBestPracticeDetector() {
-        //For now, open overview page 
-        const props = {};
-        this._telemetryService.logEvent("BestPracticeClicked",{});
-        this._portalService.openBladeDiagnoseCategoryBlade("BestPractices");
     }
 
     refreshPage() {

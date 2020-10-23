@@ -1,6 +1,6 @@
 <div role="search" class="search-result-container" #fabSearchResult>
   <div class="search-box">
-    <fab-search-box id="fabSearchBox" type="search" placeholder="Search" [value]="searchValue"
+    <fab-search-box id="fabSearchBox" type="search" [placeholder]="searchPlaceHolder" [value]="searchValue"
       [ariaLabel]="inputAriaLabel" (onChange)="updateSearchValue($event)" (onFocus)="onSearchBoxFocus()"
       (onBlur)="onBlurHandler()" (onEscape)="clearSearchWithKey()" aria-controls="search-results">
     </fab-search-box>

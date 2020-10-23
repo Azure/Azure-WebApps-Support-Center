@@ -67,33 +67,51 @@
     box-sizing: border-box;
 }
 
-.home-title{
-  font-size: 16px;
-  line-height: 22px;
-}
 
-.home-description{
-  font-size: 12px;
-  line-height: 22px;
-}
-.home-content{
-  margin: 10px auto;
-  text-align: center;
-  max-width: 875px;
-}
+//For new home page
 
-.home-container-v4 {
-  padding: 30px 40px 30px 0px;
-  height: 100%;
-}
-
-.home-description-v4{
-  font-size: 12px;
-  line-height: 22px;
-  margin-bottom: 3px;
-}
-
-.main-area-v4 {
+.home-main-area {
   padding-top:10px;
   padding-left: 30px;
+}
+
+.home-title-text {
+  font-size: 13;
+}
+
+.home-search {
+  margin: 20px 0px;
+  display: flex;
+}
+
+.home-search-text {
+  margin: auto 20px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #323130;
+}
+
+
+.section-container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.home-tiles {
+  display: flex; 
+  flex-wrap: wrap;
+  align-content: center;
+}
+
+.home-tile-wrapper {
+  margin-top: 7px;
+  margin-bottom: 7px;
+  margin-right: 15px;
+}
+
+.quick-link {
+  margin: 10px 0px;
 }
