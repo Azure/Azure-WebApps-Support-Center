@@ -63,19 +63,11 @@ export class CategoryNavComponent implements OnInit {
             .filter(item =>
                 (item.appType & this._webSiteService.appType) > 0 &&
                 (item.platform & this._webSiteService.platform) > 0 &&
-                (item.sku & this._webSiteService.sku) > 0 &&
+                (item.sku === Sku.All || item.sku === Sku.NotDynamic && this._webSiteService.sku != Sku.Dynamic || item.sku & this._webSiteService.sku) > 0 &&
                 (item.hostingEnvironmentKind & this._webSiteService.hostingEnvironmentKind) > 0 &&
                 (item.stack === '' || item.stack.toLowerCase().indexOf('all') >= 0) &&
                 (!this.alreadyAdded(item.item)))
             .map(item => item);
-    }
-
-    stackMatchedForTools(item: SiteFilteredItem<any>): boolean {
-        return (item.appType & this._webSiteService.appType) > 0 &&
-            (item.platform & this._webSiteService.platform) > 0 &&
-            (item.sku & this._webSiteService.sku) > 0 &&
-            (item.hostingEnvironmentKind & this._webSiteService.hostingEnvironmentKind) > 0 &&
-            (!this.toolsAlreadyAdded(item.item));
     }
 
     alreadyAdded(item: any): boolean {
@@ -153,7 +145,7 @@ export class CategoryNavComponent implements OnInit {
             stack: '',
             item: {
                 title: 'Diagnostic Tools',
-                tools: this.siteFeatureService.diagnosticTools.filter(tool => this.stackMatchedForTools(tool)).map(tool => {
+                tools: this.siteFeatureService.diagnosticTools.map(tool => {
                     let isSelected = () => {
                         return this._route.url.endsWith("/" + tool.item.id);
                     };
@@ -171,7 +163,7 @@ export class CategoryNavComponent implements OnInit {
             stack: '',
             item: {
                 title: 'Support Tools',
-                tools: this.siteFeatureService.supportTools.filter(tool => this.stackMatchedForTools(tool)).map(tool => {
+                tools: this.siteFeatureService.supportTools.map(tool => {
                     let isSelected = () => {
                         return this._route.url.endsWith("/" + tool.item.id);
                     };
@@ -218,8 +210,6 @@ export class CategoryNavComponent implements OnInit {
                         });
                     }
                 });
-
-
 
                 this._diagnosticApiService.getDetectors().subscribe(detectors => {
                     this.detectorDataLocalCopy = detectors;
