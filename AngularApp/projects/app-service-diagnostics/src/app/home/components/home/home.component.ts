@@ -19,8 +19,8 @@ import { Globals } from '../../../globals';
 import { PortalActionService } from '../../../shared/services/portal-action.service';
 import { VersionTestService } from '../../../fabric-ui/version-test.service';
 import { SubscriptionPropertiesService } from '../../../shared/services/subscription-properties.service';
-import { SiteQuickLinkService } from '../../../resources/web-sites/services/site-quick-link.service';
 import { Feature } from '../../../shared-v2/models/features';
+import { QuickLinkService } from '../../../shared-v2/services/quick-link.service';
 
 @Component({
     selector: 'home',
@@ -60,7 +60,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     constructor(private _resourceService: ResourceService, private _categoryService: CategoryService, private _notificationService: NotificationService, private _router: Router,
         private _detectorControlService: DetectorControlService, private _featureService: FeatureService, private _logger: LoggingV2Service, private _authService: AuthService,
         private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute, private armService: ArmService, private _telemetryService: TelemetryService, private _diagnosticService: DiagnosticService, private _portalService: PortalActionService, private globals: Globals,
-        private versionTestService: VersionTestService, private subscriptionPropertiesService: SubscriptionPropertiesService, private _siteQuickLinkService: SiteQuickLinkService) {
+        private versionTestService: VersionTestService, private subscriptionPropertiesService: SubscriptionPropertiesService, private _quickLinkService: QuickLinkService) {
 
         this.subscriptionId = this._activatedRoute.snapshot.params['subscriptionid'];
         this.versionTestService.isLegacySub.subscribe(isLegacy => this.useLegacy = isLegacy);
@@ -126,6 +126,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         if (_resourceService.armResourceConfig) {
             this._categoryService.initCategoriesForArmResource(_resourceService.resource.id);
+            this._quickLinkService.initQuickLinksForArmResource(_resourceService.resource.id);
         }
 
         this._categoryService.categories.subscribe(categories => this.categories = categories);
@@ -140,16 +141,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
             }
         });
 
+
         this._featureService.featureSub.subscribe(features => {
-            const links = this._siteQuickLinkService.quickLinks;
-            const temp = [];
-            for (let link of links) {
-                const feature = features.find(feature => feature.id === link);
-                if (feature) {
-                    temp.push(feature);
+            this._quickLinkService.quickLinks.subscribe(links => {
+                const temp = [];
+                for (let link of links) {
+                    const feature = features.find(feature => feature.id === link);
+                    if (feature) {
+                        temp.push(feature);
+                    }
                 }
-            }
-            this.quickLinkFeatures = temp;
+                this.quickLinkFeatures = temp;
+            });
         })
     }
 
@@ -317,7 +320,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         // this._router.navigate(['/appsettings'], { relativeTo: this._activatedRoute, skipLocationChange: true }).then(() => this._router.navigate(['../'], { relativeTo: this._activatedRoute }));
         this._router.routeReuseStrategy.shouldReuseRoute = () => false;
         this._router.onSameUrlNavigation = 'reload';
-        this._router.navigate(['./'],{relativeTo:this._activatedRoute});
+        this._router.navigate(['./'], { relativeTo: this._activatedRoute });
     }
 }
 

@@ -17,12 +17,14 @@ import { ContentService } from '../../shared-v2/services/content.service';
 import { WebSitesService } from './services/web-sites.service';
 import { LoggingV2Service } from '../../shared-v2/services/logging-v2.service';
 import { CXPChatCallerService } from '../../shared-v2/services/cxp-chat-caller.service';
+import { QuickLinkService } from '../../shared-v2/services/quick-link.service';
+import { SiteQuickLinkService } from './services/site-quick-link.service';
 
 const ResourceRoutes = RouterModule.forChild([
   {
     path: '',
     loadChildren: '../../home/home.module#HomeModule',
-     resolve: { data: ResourceResolver }
+    resolve: { data: ResourceResolver }
   },
   {
     path: 'diagnosticTools',
@@ -63,7 +65,8 @@ const ResourceRoutes = RouterModule.forChild([
     { provide: FeatureService, useExisting: SiteFeatureService },
     { provide: SupportTopicService, useClass: SiteSupportTopicService },
     ResourceResolver,
-    WebSiteFilter
+    WebSiteFilter,
+    { provide: QuickLinkService, useExisting: SiteQuickLinkService }
   ]
 })
 export class WebSitesModule { }

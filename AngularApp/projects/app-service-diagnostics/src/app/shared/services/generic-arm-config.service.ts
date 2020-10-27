@@ -107,7 +107,8 @@ export class GenericArmConfigService {
             color: '',
             createFlowForCategory: true,
             chatEnabled: false
-          }]
+          }],
+          quickLinks: []
         }
 
         //currConfig.homePageText.title
@@ -367,6 +368,12 @@ export class GenericArmConfigService {
             }
           }
         }
+
+        //currConfig.quickLinks
+        if(this.getValue(this.resourceConfig.quickLinks,this.overrideConfig.quickLinks) != null){
+                  currConfig.quickLinks = this.getValue(this.resourceConfig.quickLinks,this.overrideConfig.quickLinks);
+        }
+        
         this.resourceMap.push(currConfig);
         return currConfig;
       })

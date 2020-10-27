@@ -53,7 +53,6 @@ import { FabricModule } from '../fabric-ui/fabric.module';
 import { ResourceService } from '../shared-v2/services/resource.service';
 import { JavaFlightRecorderToolComponent } from '../shared/components/tools/java-flight-recorder-tool/java-flight-recorder-tool.component';
 import { CrashMonitoringComponent } from '../shared/components/tools/crash-monitoring/crash-monitoring.component';
-import { SiteQuickLinkService } from '../resources/web-sites/services/site-quick-link.service';
 import { RiskTileComponent } from './components/risk-tile/risk-tile.component';
 
 export const HomeRoutes = RouterModule.forChild([
@@ -522,8 +521,7 @@ export const HomeRoutes = RouterModule.forChild([
             { provide: GenericContentService, useExisting: ContentService },
             { provide: GenericDocumentsSearchService, useExisting: DocumentSearchService },
             { provide: CXPChatService, useExisting: CXPChatCallerService },
-            { provide: GenericResourceService, useExisting: ResourceService},
-            SiteQuickLinkService
+            { provide: GenericResourceService, useExisting: ResourceService}
         ],
 })
 export class HomeModule { }
