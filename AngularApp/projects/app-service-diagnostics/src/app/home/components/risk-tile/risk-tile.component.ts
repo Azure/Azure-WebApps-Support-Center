@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { HealthStatus, TelemetryService } from 'diagnostic-data'
 import { PortalActionService } from '../../../shared/services/portal-action.service';
 @Component({
@@ -6,18 +6,25 @@ import { PortalActionService } from '../../../shared/services/portal-action.serv
   templateUrl: './risk-tile.component.html',
   styleUrls: ['./risk-tile.component.scss']
 })
-export class RiskTileComponent {
+export class RiskTileComponent implements OnInit{
   InsightStatus = HealthStatus;
-  @Input() categoryId:string;
-  @Input() tileTitle:string;
-
+  title:string = "";
+  @Input() risk:Risk;
   constructor(private telemetryService:TelemetryService,private portalService:PortalActionService) { }
 
-  clickTileHandler(){
-    const props = {};
-    props["CategoryId"] = this.categoryId;
-    this.telemetryService.logEvent("RiskTileClicked",props);
-    this.portalService.openBladeDiagnoseCategoryBlade(this.categoryId);
+
+  ngOnInit(){
+    this.title = this.risk.title;
   }
 
+  clickTileHandler(){
+    this.telemetryService.logEvent("RiskTileClicked",{});
+    this.risk.action();
+  }
+
+}
+
+export interface Risk {
+  title: string;
+  action: () => void
 }

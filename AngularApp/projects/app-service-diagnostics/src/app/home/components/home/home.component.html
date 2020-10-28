@@ -170,8 +170,8 @@
     <div class="section-container">
       <h3 class="section-title">Risk alerts</h3>
       <div class="home-tiles">
-        <div class="home-tile-wrapper">
-          <risk-tile [tileTitle]="'Availability'" [categoryId]="'BestPractices'"></risk-tile>
+        <div *ngFor="let risk of risks" class="home-tile-wrapper">
+          <risk-tile [risk]="risk"></risk-tile>
         </div>
       </div>
     </div>

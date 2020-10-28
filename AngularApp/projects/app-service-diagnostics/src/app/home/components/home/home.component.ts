@@ -21,6 +21,7 @@ import { VersionTestService } from '../../../fabric-ui/version-test.service';
 import { SubscriptionPropertiesService } from '../../../shared/services/subscription-properties.service';
 import { Feature } from '../../../shared-v2/models/features';
 import { QuickLinkService } from '../../../shared-v2/services/quick-link.service';
+import { Risk } from '../risk-tile/risk-tile.component';
 
 @Component({
     selector: 'home',
@@ -43,6 +44,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     searchPlaceHolder: string;
     providerRegisterUrl: string;
     quickLinkFeatures: Feature[] = [];
+    risks: Risk[] = [];
     get inputAriaLabel(): string {
         return this.searchValue !== '' ?
             `${this.searchResultCount} Result` + (this.searchResultCount !== 1 ? 's' : '') :
@@ -206,6 +208,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
         if (!this._detectorControlService.startTime) {
             this._detectorControlService.setDefault();
         }
+
+        this.risks = 
+        [
+            {
+                title:"Availability",
+                action: () => {
+                    this._portalService.openBladeDiagnoseCategoryBlade("BestPractices");
+                }
+            }
+        ];
 
         this._telemetryService.logEvent("telemetry service logging", {});
     };
