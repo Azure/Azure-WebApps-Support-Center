@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { FeatureService } from "../../../shared-v2/services/feature.service";
 import { QuickLinkService } from "../../../shared-v2/services/quick-link.service";
 import { AppType } from "../../../shared/models/portal";
 import { Sku } from "../../../shared/models/server-farm";
@@ -10,8 +11,8 @@ import { WebSiteFilter } from "../pipes/site-filter.pipe";
 @Injectable({ providedIn: "root" })
 
 export class SiteQuickLinkService extends QuickLinkService {
-    constructor(private _websiteFilter: WebSiteFilter) {
-        super();
+    constructor(private _websiteFilter: WebSiteFilter,protected _featureService:FeatureService) {
+        super(_featureService);
         const quickLinks = this._websiteFilter.transform(this._siteQuickLinks);
         let links: string[] = [];
         for (const quickLink of quickLinks) {

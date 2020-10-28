@@ -143,17 +143,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
             }
         });
 
-
         this._featureService.featureSub.subscribe(features => {
-            this._quickLinkService.quickLinks.subscribe(links => {
-                const temp = [];
-                for (let link of links) {
-                    const feature = features.find(feature => feature.id === link);
-                    if (feature) {
-                        temp.push(feature);
-                    }
-                }
-                this.quickLinkFeatures = temp;
+            this._quickLinkService.quickLinksSub.subscribe(quickLinks => {
+                this.quickLinkFeatures = this._filterFeaturesWithQuickLinks(quickLinks, features);
             });
         })
     }
@@ -209,15 +201,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this._detectorControlService.setDefault();
         }
 
-        this.risks = 
-        [
-            {
-                title:"Availability",
-                action: () => {
-                    this._portalService.openBladeDiagnoseCategoryBlade("BestPractices");
+        this.risks =
+            [
+                {
+                    title: "Availability",
+                    action: () => {
+                        this._portalService.openBladeDiagnoseCategoryBlade("BestPractices");
+                    }
                 }
-            }
-        ];
+            ];
 
         this._telemetryService.logEvent("telemetry service logging", {});
     };
@@ -302,14 +294,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this._telemetryService.logTrace('HTTP error in ' + methodName, errorLoggingProps);
     }
 
-    openAvaAndPerf() {
-        const category = this.categories.find(category => category.name === "Availability and Performance");
-        if (category) {
-            this._portalService.openBladeDiagnoseCategoryBlade(category.id);
+    private _filterFeaturesWithQuickLinks(quickLinks: string[], features: Feature[]): Feature[] {
+        let res: Feature[] = [];
+        if (features === null || quickLinks === null) {
+            return res;
         }
-        this._telemetryService.logEvent('OpenAviPerf', {
-            'Location': 'LandingPage'
-        });
+
+        for (let link of quickLinks) {
+            const feature = features.find(feature => feature.id === link);
+            if (feature) {
+                res.push(feature);
+            }
+        }
+        return res;
     }
 
     openGeniePanel() {

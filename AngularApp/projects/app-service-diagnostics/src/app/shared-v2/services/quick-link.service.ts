@@ -2,14 +2,20 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { ArmResourceConfig } from "../../shared/models/arm/armResourceConfig";
 import { GenericArmConfigService } from "../../shared/services/generic-arm-config.service";
+import { FeatureService } from "./feature.service";
 
 
 @Injectable()
 
 export class QuickLinkService {
-    public quickLinks: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
-    private _quickLinks: string[] = [];
-    constructor(private _genericArmConfigService?: GenericArmConfigService) { }
+    public quickLinksSub: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+
+    private set _quickLinks(links: string[]) {
+        this.quickLinksSub.next(links);
+    }
+
+    constructor(protected _featureService: FeatureService, private _genericArmConfigService?: GenericArmConfigService) {}
+    
     public initQuickLinksForArmResource(resourceUri: string) {
         if (this._genericArmConfigService) {
             let currConfig: ArmResourceConfig = this._genericArmConfigService.getArmResourceConfig(resourceUri);
@@ -18,13 +24,14 @@ export class QuickLinkService {
             }
         }
     }
-    protected _addQuickLinks(quickLinks:string[]) {
+
+    protected _addQuickLinks(links: string[]) {
         //Filter out duplicate links
-        const linkSet = new Set<string>([...this._quickLinks]);
-        for(let link of quickLinks){
+        const linkSet = new Set<string>(this._quickLinks);
+        for (let link of links) {
             linkSet.add(link);
         }
         const newLinkArray = Array.from(linkSet);
-        this.quickLinks.next(newLinkArray);
+        this._quickLinks = newLinkArray;
     }
 }
