@@ -33,7 +33,7 @@ export class PortalService {
     private shellSrc: string;
     private tokenObservable: ReplaySubject<string>;
 
-    private acceptedOriginsSuffix:string[] = [];
+    private acceptedOriginsSuffix: string[] = [];
 
     constructor(private _broadcastService: BroadcastService, private _http: HttpClient) {
         this.sessionId = '';
@@ -172,14 +172,14 @@ export class PortalService {
         const data = event.data.data;
         const methodName = event.data.kind;
 
-        
+
         console.log('[iFrame] Received validated mesg: ' + methodName, event, event.srcElement, event.srcElement.location, event.srcElement.location.host);
 
         this._checkAcceptOrigins(event).subscribe(foundOrigin => {
-            if(!foundOrigin){
+            if (!foundOrigin) {
                 return;
             }
-            
+
             const isIFrameForCaseSubmissionSolution = event.srcElement.location.host.toString().includes("appservice-diagnostics-am2");
 
             if (methodName === Verbs.sendStartupInfo) {
@@ -259,25 +259,28 @@ export class PortalService {
         return map;
     }
 
-    private _getAcceptOrigins(event: Event):Observable<string[]> {
+    private _getAcceptOrigins(event: Event): Observable<string[]> {
         const apiEndPoint = environment.backendHost;
         const path = "api/appsettings/AcceptOriginSuffix:Origins"
         const url = `${apiEndPoint}${path}`;
-        if(this.acceptedOriginsSuffix.length > 0){
+        if (this.acceptedOriginsSuffix.length > 0) {
             return of(this.acceptedOriginsSuffix);
         }
-        
-        if(event.data.kind === Verbs.sendStartupInfo){
+
+        if (event.data.kind === Verbs.sendStartupInfo) {
             const startupInfo = <StartupInfo>event.data.data;
             const request = this._http.get<string>(url, {
                 headers: this._getHeaders(startupInfo)
             }).pipe(map(res => {
-                const s = res.replace(/\s/g,"");
-                const originList = s.split(",");
-                this.acceptedOriginsSuffix = originList;
+                let originList: string[] = [];
+                if (res !== null && res !== undefined) {
+                    const s = res.replace(/\s/g, "");
+                    originList = s.split(",");
+                    this.acceptedOriginsSuffix = originList;
+                }
                 return originList;
             }));
-    
+
             return request;
         }
 
@@ -293,13 +296,13 @@ export class PortalService {
         return headers;
     }
 
-    private _checkAcceptOrigins(event:Event):Observable<boolean>{
-        if(!event.origin){
+    private _checkAcceptOrigins(event: Event): Observable<boolean> {
+        if (!event.origin) {
             return of(false);
         }
 
         //If can find from public origins,no need backend call
-        if(publicOrigins.findIndex(o => event.origin.toLocaleLowerCase().endsWith(o.toLowerCase())) > -1){
+        if (publicOrigins.findIndex(o => event.origin.toLocaleLowerCase().endsWith(o.toLowerCase())) > -1) {
             return of(true);
         }
 
