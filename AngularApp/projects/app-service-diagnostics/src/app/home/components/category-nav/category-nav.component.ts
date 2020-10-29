@@ -145,7 +145,7 @@ export class CategoryNavComponent implements OnInit {
             stack: '',
             item: {
                 title: 'Diagnostic Tools',
-                tools: this.siteFeatureService.diagnosticTools.map(tool => {
+                tools: this.siteFeatureService.diagnosticTools.filter(tool => this.stackMatchedForTools(tool)).map(tool => {
                     let isSelected = () => {
                         return this._route.url.endsWith("/" + tool.item.id);
                     };
@@ -163,7 +163,7 @@ export class CategoryNavComponent implements OnInit {
             stack: '',
             item: {
                 title: 'Support Tools',
-                tools: this.siteFeatureService.supportTools.map(tool => {
+                tools: this.siteFeatureService.supportTools.filter(tool => this.stackMatchedForTools(tool)).map(tool => {
                     let isSelected = () => {
                         return this._route.url.endsWith("/" + tool.item.id);
                     };
@@ -261,5 +261,13 @@ export class CategoryNavComponent implements OnInit {
     private getIconImagePath(name: string) {
         const fileName = icons.has(name) ? name : 'default';
         return `${this.imageRootPath}/${fileName}.svg`;
+    }
+
+    private stackMatchedForTools(item: SiteFilteredItem<any>): boolean {	
+        return (item.appType & this._webSiteService.appType) > 0 &&	
+            (item.platform & this._webSiteService.platform) > 0 &&	
+            (item.sku & this._webSiteService.sku) > 0 &&	
+            (item.hostingEnvironmentKind & this._webSiteService.hostingEnvironmentKind) > 0 &&	
+            (!this.toolsAlreadyAdded(item.item));	
     }
 }
