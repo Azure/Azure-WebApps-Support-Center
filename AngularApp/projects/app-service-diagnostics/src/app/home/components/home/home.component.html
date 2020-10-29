@@ -185,10 +185,9 @@
       </div>
     </div>
 
-    <div class="section-container" *ngIf="quickLinkFeatures && quickLinkFeatures.length > 0">
+    <div class="section-container" >
       <h3 class="section-title">Popular troubleshooting tools</h3>
-      <!-- quick links -->
-      <div>
+      <div *ngIf="!loadingQuickLinks else loading">
         <div class="quick-link" *ngFor="let feature of quickLinkFeatures">
           <a tabindex="0" (click)="clickQuickLink(feature)" (keyup.enter)="clickQuickLink(feature)">{{feature.name}}</a>
         </div>
@@ -198,5 +197,12 @@
     <div class="privacy-statement">
       <a href="https://azure.microsoft.com/support/legal/?amp%3Bclcid=0x9" target="_blank">Privacy</a>
     </div>
+  </div>
+</ng-template>
+
+
+<ng-template #loading>
+  <div class="home-spinner">
+    <fab-spinner [ariaLabel]="'Loading Quick Links'"></fab-spinner>
   </div>
 </ng-template>

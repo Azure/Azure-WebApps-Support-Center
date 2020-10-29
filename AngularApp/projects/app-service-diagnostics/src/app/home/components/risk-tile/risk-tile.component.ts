@@ -1,30 +1,95 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { HealthStatus, TelemetryService } from 'diagnostic-data'
-import { PortalActionService } from '../../../shared/services/portal-action.service';
+import { HealthStatus, StatusStyles, TelemetryService } from 'diagnostic-data'
+import { Observable } from 'rxjs';
 @Component({
   selector: 'risk-tile',
   templateUrl: './risk-tile.component.html',
   styleUrls: ['./risk-tile.component.scss']
 })
-export class RiskTileComponent implements OnInit{
-  InsightStatus = HealthStatus;
-  title:string = "";
-  @Input() risk:Risk;
-  constructor(private telemetryService:TelemetryService,private portalService:PortalActionService) { }
-
-
-  ngOnInit(){
-    this.title = this.risk.title;
+export class RiskTileComponent implements OnInit {
+  StatusStyles = StatusStyles;
+  title: string = "";
+  link: string = "";
+  infoList: RiskInfoDisplay[] = [];
+  loading: boolean = true;
+  get loadingAriaLabel() {
+    return `loading ${this.title}`;
   }
 
-  clickTileHandler(){
-    this.telemetryService.logEvent("RiskTileClicked",{});
+  @Input() risk: Risk;
+  constructor(private telemetryService: TelemetryService) { }
+
+
+  ngOnInit() {
+    this.title = this.risk.title;
+    this.link = this.risk.link;
+
+    this.risk.infoObserverable.subscribe(info => {
+      if (info !== null && info !== undefined && Object.keys(info).length > 0) {
+        this.infoList = this._processRiskInfo(info);
+        this.loading = false;
+      }
+    }, e => {
+      this.loading = false;
+      this.infoList = [
+        {
+          message: "No data available",
+          status: HealthStatus.Info
+        }
+      ];
+    });
+  }
+
+  clickTileHandler() {
+    this.telemetryService.logEvent("RiskTileClicked", {});
     this.risk.action();
   }
 
+  private _processRiskInfo(info: RiskInfo): RiskInfoDisplay[] {
+    const statuses = Object.values(info);
+    const map = new Map<HealthStatus, number>();
+
+    for (const status of statuses) {
+      const count = map.has(status) ? map.get(status) : 0;
+      map.set(status, count + 1);
+    }
+
+    //sort from most critical to less critical
+    const sortedStatus = Array.from(map.keys());
+    sortedStatus.sort((s1, s2) => s1 - s2);
+
+    //get 2 most critical ones
+    const res: RiskInfoDisplay[] = [];
+    if (sortedStatus.length >= 1) {
+      res.push(new RiskInfoDisplay(sortedStatus[0], map.get(sortedStatus[0])));
+    }
+
+    if (sortedStatus.length >= 2) {
+      res.push(new RiskInfoDisplay(sortedStatus[1], map.get(sortedStatus[1])));
+    }
+
+    return res;
+  }
 }
 
 export interface Risk {
   title: string;
-  action: () => void
+  action: () => void;
+  link: string;
+  infoObserverable: Observable<RiskInfo>
+}
+
+interface RiskInfo {
+  [key: string]: HealthStatus
+}
+
+class RiskInfoDisplay {
+  message: string
+  status: HealthStatus
+
+  constructor(status: HealthStatus, count: number) {
+    this.status = status;
+    this.message = `${count} ${HealthStatus[status]}`;
+  }
+
 }

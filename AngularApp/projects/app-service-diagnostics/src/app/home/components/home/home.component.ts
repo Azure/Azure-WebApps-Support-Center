@@ -22,6 +22,9 @@ import { SubscriptionPropertiesService } from '../../../shared/services/subscrip
 import { Feature } from '../../../shared-v2/models/features';
 import { QuickLinkService } from '../../../shared-v2/services/quick-link.service';
 import { Risk } from '../risk-tile/risk-tile.component';
+import { delay } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { HealthStatus } from 'diagnostic-data';
 
 @Component({
     selector: 'home',
@@ -45,6 +48,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     providerRegisterUrl: string;
     quickLinkFeatures: Feature[] = [];
     risks: Risk[] = [];
+    loadingQuickLinks: boolean = true;
     get inputAriaLabel(): string {
         return this.searchValue !== '' ?
             `${this.searchResultCount} Result` + (this.searchResultCount !== 1 ? 's' : '') :
@@ -145,7 +149,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         this._featureService.featureSub.subscribe(features => {
             this._quickLinkService.quickLinksSub.subscribe(quickLinks => {
-                this.quickLinkFeatures = this._filterFeaturesWithQuickLinks(quickLinks, features);
+                if (features !== null && quickLinks !== null) {
+                    this.quickLinkFeatures = this._filterFeaturesWithQuickLinks(quickLinks, features);
+                    this.loadingQuickLinks = false;
+                }
             });
         })
     }
@@ -201,13 +208,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this._detectorControlService.setDefault();
         }
 
+        //Need get from globals
         this.risks =
             [
                 {
                     title: "Availability",
                     action: () => {
                         this._portalService.openBladeDiagnoseCategoryBlade("BestPractices");
-                    }
+                    },
+                    link: "Click here to run all checks",
+                    infoObserverable: Observable.of({"autoheal":HealthStatus.Warning,"multipleInstance":HealthStatus.Critical,"sadsadsa":HealthStatus.Success}).pipe(delay(1000 * 5))
                 }
             ];
 
@@ -296,10 +306,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     private _filterFeaturesWithQuickLinks(quickLinks: string[], features: Feature[]): Feature[] {
         let res: Feature[] = [];
-        if (features === null || quickLinks === null) {
-            return res;
-        }
-
         for (let link of quickLinks) {
             const feature = features.find(feature => feature.id === link);
             if (feature) {
@@ -325,8 +331,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     refreshPage() {
-        const url = this._router.url;
-        // this._router.navigate(['/appsettings'], { relativeTo: this._activatedRoute, skipLocationChange: true }).then(() => this._router.navigate(['../'], { relativeTo: this._activatedRoute }));
         this._router.routeReuseStrategy.shouldReuseRoute = () => false;
         this._router.onSameUrlNavigation = 'reload';
         this._router.navigate(['./'], { relativeTo: this._activatedRoute });

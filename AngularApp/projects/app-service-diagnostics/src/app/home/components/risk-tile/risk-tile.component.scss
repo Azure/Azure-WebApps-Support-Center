@@ -14,6 +14,7 @@
 
 .risk-section {
   margin-bottom : 10px;
+  display: flex;
 }
 
 .risk-icon {
@@ -24,16 +25,4 @@
 
 .risk-icon-section {
   margin-right : 20px;
-}
-
-.fa-exclamation-circle {
-  color: #ff0000;
-}
-
-.fa-exclamation-triangle {
-  color: #ff9104;
-}
-
-.fa-check-circle {
-  color: #3da907;
 }

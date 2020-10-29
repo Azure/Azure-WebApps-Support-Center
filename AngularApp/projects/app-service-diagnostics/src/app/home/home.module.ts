@@ -27,7 +27,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { CXPChatService } from 'diagnostic-data';
 import { PortalReferrerResolverComponent } from '../shared/components/portal-referrer-resolver/portal-referrer-resolver.component';
 import { CXPChatCallerService } from '../shared-v2/services/cxp-chat-caller.service';
-import { FabCommandBarModule, FabSearchBoxModule } from '@angular-react/fabric';
+import { FabCommandBarModule, FabSearchBoxModule, FabSpinnerModule } from '@angular-react/fabric';
 import { UncategorizedDetectorsResolver } from './resolvers/uncategorized-detectors.resolver';
 import { DetectorCategorizationService } from '../shared/services/detector-categorized.service';
 import { ToolNames } from '../shared/models/tools-constants';
@@ -502,7 +502,8 @@ export const HomeRoutes = RouterModule.forChild([
         FormsModule,
         MarkdownModule.forRoot(),
         FabSearchBoxModule,
-        FabCommandBarModule
+        FabCommandBarModule,
+        FabSpinnerModule
     ],
     declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent, CategoryTileV4Component, RiskTileComponent],
     providers:

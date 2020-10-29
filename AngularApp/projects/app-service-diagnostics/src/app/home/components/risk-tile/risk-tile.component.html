@@ -1,19 +1,21 @@
 <div tabindex="0" (click)="clickTileHandler()" class="risk-tile" role="button">
   <h3 class="risk-title risk-section">{{title}}</h3>
 
-  <div class="risk-section" style="display: flex;">
-    <div class="risk-icon-section">
-      <span class="fa status-icon fa-exclamation-circle risk-icon"></span>
-      <span>3 Critical</span>
+  <div class="risk-section" *ngIf="!loading else loadingPlaceHolder">
+    <div *ngFor="let info of infoList" class="risk-icon-section">
+      <span class="fa status-icon risk-icon" [ngClass]="StatusStyles.getIconByStatus(info.status)" [ngStyle]="{'color':StatusStyles.getColorByStatus(info.status)}">
+      </span>
+      <span>{{info.message}}</span>
     </div>
-    <div class="risk-icon-section">
-      <span class="fa status-icon fa-exclamation-triangle risk-icon"></span>
-      <span>1 Warning</span>
-    </div>
-
   </div>
 
   <div class="risk-section">
-    <a>Click here to run all checks</a>
+    <a>{{link}}</a>
   </div>
 </div>
+
+<ng-template #loadingPlaceHolder>
+  <div class="risk-section">
+    <fab-spinner [ariaLabel]="loadingAriaLabel"></fab-spinner>
+  </div>
+</ng-template>
