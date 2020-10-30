@@ -127,7 +127,7 @@ export class CategoryNavComponent implements OnInit {
             stack: '',
             item: {
                 title: 'Proactive Tools',
-                tools: this.siteFeatureService.proactiveTools.map(tool => {
+                tools: this.siteFeatureService.proactiveTools.filter(tool => this.stackMatchedForTools(tool)).map(tool => {
                     let isSelected = () => {
                         return this._route.url.endsWith("/" + tool.item.id);
                     };

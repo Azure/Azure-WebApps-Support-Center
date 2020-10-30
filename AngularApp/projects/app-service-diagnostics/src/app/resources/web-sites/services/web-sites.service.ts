@@ -162,7 +162,7 @@ export class WebSitesService extends ResourceService {
 
         this.appType = site.kind.toLowerCase().indexOf('functionapp') >= 0 ? AppType.FunctionApp : AppType.WebApp;
         this.platform = site.kind.toLowerCase().indexOf('xenon') >= 0 ? OperatingSystem.HyperV : site.kind.toLowerCase().indexOf('linux') >= 0 ? OperatingSystem.linux : OperatingSystem.windows;
-        this.sku = Sku[site.sku];
+        this.sku = Sku[site.sku] ? Sku[site.sku] : this.sku;
         this.hostingEnvironmentKind = this.getHostingEnvirontmentKind(site);
     }
 
