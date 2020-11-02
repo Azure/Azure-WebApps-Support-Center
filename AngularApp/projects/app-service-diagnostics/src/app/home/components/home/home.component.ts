@@ -23,6 +23,7 @@ import { Feature } from '../../../shared-v2/models/features';
 import { QuickLinkService } from '../../../shared-v2/services/quick-link.service';
 import { delay, map } from 'rxjs/operators';
 import { RiskHelper, RiskTile } from '../../models/risk';
+import { OperatingSystem } from '../../../shared/models/site';
 
 @Component({
     selector: 'home',
@@ -47,6 +48,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     quickLinkFeatures: Feature[] = [];
     risks: RiskTile[] = [];
     loadingQuickLinks: boolean = true;
+    showRiskSection: boolean = true;
     get inputAriaLabel(): string {
         return this.searchValue !== '' ?
             `${this.searchResultCount} Result` + (this.searchResultCount !== 1 ? 's' : '') :
@@ -206,16 +208,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this._detectorControlService.setDefault();
         }
 
-        this.risks = [
-            {
-                title: "Availability",
-                action:() => {
-                    this._portalService.openBladeDiagnoseCategoryBlade("BestPractices");
-                },
-                linkText: "Click here to run all checks",
-                infoObserverable: this.globals.reliabilityChecksDetailsBehaviorSubject.pipe(map(info => RiskHelper.convertToRiskInfo(info)))
-            }
-        ];
+        this._initializeRiskTiles();
+        
         this._telemetryService.logEvent("telemetry service logging", {});
     };
 
@@ -297,6 +291,31 @@ export class HomeComponent implements OnInit, AfterViewInit {
             statusCode: error.status ? error.status : 500
         };
         this._telemetryService.logTrace('HTTP error in ' + methodName, errorLoggingProps);
+    }
+
+    private _initializeRiskTiles(){
+        this.risks = [
+            {
+                title: "Availability",
+                action:() => {
+                    this._portalService.openBladeDiagnoseCategoryBlade("BestPractices");
+                },
+                linkText: "Click here to run all checks",
+                infoObserverable: this.globals.reliabilityChecksDetailsBehaviorSubject.pipe(map(info => RiskHelper.convertToRiskInfo(info))),
+                showTile: this._checkIsWindowsWebApp()
+            }
+        ];
+
+        //Only show risk section if at least one tile will display
+        this.showRiskSection = this.risks.findIndex(risk => risk.showTile === true) > -1;
+    }
+
+    private _checkIsWindowsWebApp():boolean {
+        let isWindowsWebApp = false;
+        if (this._resourceService && this._resourceService instanceof WebSitesService && (this._resourceService as WebSitesService).appType === AppType.WebApp && (this._resourceService as WebSitesService).platform === OperatingSystem.windows){
+            isWindowsWebApp = true;
+        }
+        return isWindowsWebApp;
     }
 
     private _filterFeaturesWithQuickLinks(quickLinks: string[], features: Feature[]): Feature[] {

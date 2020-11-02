@@ -1,4 +1,4 @@
-<div tabindex="0" (click)="clickTileHandler()" class="risk-tile" role="button">
+<div *ngIf="showTile" tabindex="0" (click)="clickTileHandler()" class="risk-tile" role="button">
   <h3 class="risk-title risk-section">{{title}}</h3>
 
   <div class="risk-section" *ngIf="!loading else loadingPlaceHolder">

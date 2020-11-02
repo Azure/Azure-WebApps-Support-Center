@@ -7,6 +7,7 @@ export interface RiskTile {
     action: () => void;
     linkText: string;
     infoObserverable: Observable<RiskInfo>;
+    showTile:boolean;
 }
 
 export interface RiskInfo {

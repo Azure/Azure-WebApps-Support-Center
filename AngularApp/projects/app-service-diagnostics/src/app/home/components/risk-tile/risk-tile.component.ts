@@ -12,6 +12,7 @@ export class RiskTileComponent implements OnInit {
   linkText: string = "";
   infoList: RiskInfoDisplay[] = [];
   loading: boolean = true;
+  showTile: boolean = true;
   get loadingAriaLabel() {
     return `loading ${this.title}`;
   }
@@ -23,7 +24,7 @@ export class RiskTileComponent implements OnInit {
   ngOnInit() {
     this.title = this.risk.title;
     this.linkText = this.risk.linkText;
-
+    this.showTile = this.risk.showTile;
     this.risk.infoObserverable.subscribe(info => {
       if (info !== null && info !== undefined && Object.keys(info).length > 0) {
         this.infoList = this._processRiskInfo(info);
