@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageBarType, IMessageBarProps, IMessageBarStyles } from 'office-ui-fabric-react';
+import { throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Globals } from '../../../globals';
 import { WebSitesService } from '../../../resources/web-sites/services/web-sites.service';
 import { NotificationService } from '../../../shared-v2/services/notification.service';
@@ -155,6 +157,8 @@ export class RiskAlertsNotificationComponent implements OnInit {
 
                 this.globals.updatereliabilityChecksDetails(riskAlertCheckDetails);
             }
+        },e =>{
+            this.globals.reliabilityChecksDetailsBehaviorSubject.error(e);
         });
     }
 
