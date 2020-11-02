@@ -21,10 +21,11 @@ import { VersionTestService } from '../../../fabric-ui/version-test.service';
 import { SubscriptionPropertiesService } from '../../../shared/services/subscription-properties.service';
 import { Feature } from '../../../shared-v2/models/features';
 import { QuickLinkService } from '../../../shared-v2/services/quick-link.service';
-import { Risk } from '../risk-tile/risk-tile.component';
 import { delay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { HealthStatus } from 'diagnostic-data';
+import { MessageBarType } from 'office-ui-fabric-react';
+import { RiskInfo, RiskTile } from '../../models/risk';
 
 @Component({
     selector: 'home',
@@ -47,7 +48,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     searchPlaceHolder: string;
     providerRegisterUrl: string;
     quickLinkFeatures: Feature[] = [];
-    risks: Risk[] = [];
+    risks: RiskTile[] = [];
     loadingQuickLinks: boolean = true;
     get inputAriaLabel(): string {
         return this.searchValue !== '' ?
@@ -334,6 +335,41 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this._router.routeReuseStrategy.shouldReuseRoute = () => false;
         this._router.onSameUrlNavigation = 'reload';
         this._router.navigate(['./'], { relativeTo: this._activatedRoute });
+    }
+
+    //Transfer to RiskInfo for risk-tile
+    private _transferToRiskInfo(info:any):RiskInfo {
+        let riskInfo:RiskInfo = {};
+        const keys = Object.keys(info);
+        for(let key of keys){
+            let type = info[key].messageType;
+            let status = this._convertMessageTypeToHelathStatus(type);
+
+            riskInfo[key] = status;
+        }
+        return riskInfo;
+    }
+
+    private _convertMessageTypeToHelathStatus(messageBarType:MessageBarType):HealthStatus{
+        switch (messageBarType) {
+            case MessageBarType.error:
+                return HealthStatus.Critical;
+            
+            case MessageBarType.warning:
+                return HealthStatus.Warning;
+            
+            case MessageBarType.severeWarning:
+                return HealthStatus.Warning;
+            
+            case MessageBarType.info:
+                return HealthStatus.Info;
+            
+            case MessageBarType.success:
+                return HealthStatus.Success;
+            
+            default:
+                return HealthStatus.Info;
+        }
     }
 }
 

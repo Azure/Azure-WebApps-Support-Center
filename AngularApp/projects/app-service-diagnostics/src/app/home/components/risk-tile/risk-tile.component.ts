@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { HealthStatus, StatusStyles, TelemetryService } from 'diagnostic-data'
-import { Observable } from 'rxjs';
+import { RiskTile, RiskInfo } from '../../models/risk';
 @Component({
   selector: 'risk-tile',
   templateUrl: './risk-tile.component.html',
@@ -16,7 +16,7 @@ export class RiskTileComponent implements OnInit {
     return `loading ${this.title}`;
   }
 
-  @Input() risk: Risk;
+  @Input() risk: RiskTile;
   constructor(private telemetryService: TelemetryService) { }
 
 
@@ -72,24 +72,12 @@ export class RiskTileComponent implements OnInit {
   }
 }
 
-export interface Risk {
-  title: string;
-  action: () => void;
-  link: string;
-  infoObserverable: Observable<RiskInfo>
-}
-
-interface RiskInfo {
-  [key: string]: HealthStatus
-}
-
 class RiskInfoDisplay {
-  message: string
-  status: HealthStatus
+  message: string;
+  status: HealthStatus;
 
   constructor(status: HealthStatus, count: number) {
-    this.status = status;
-    this.message = `${count} ${HealthStatus[status]}`;
+      this.status = status;
+      this.message = `${count} ${HealthStatus[status]}`;
   }
-
 }
