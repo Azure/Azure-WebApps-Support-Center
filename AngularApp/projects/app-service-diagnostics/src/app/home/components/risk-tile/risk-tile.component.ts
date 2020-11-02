@@ -9,7 +9,7 @@ import { RiskTile, RiskInfo } from '../../models/risk';
 export class RiskTileComponent implements OnInit {
   StatusStyles = StatusStyles;
   title: string = "";
-  link: string = "";
+  linkText: string = "";
   infoList: RiskInfoDisplay[] = [];
   loading: boolean = true;
   get loadingAriaLabel() {
@@ -22,7 +22,7 @@ export class RiskTileComponent implements OnInit {
 
   ngOnInit() {
     this.title = this.risk.title;
-    this.link = this.risk.link;
+    this.linkText = this.risk.linkText;
 
     this.risk.infoObserverable.subscribe(info => {
       if (info !== null && info !== undefined && Object.keys(info).length > 0) {

@@ -21,11 +21,8 @@ import { VersionTestService } from '../../../fabric-ui/version-test.service';
 import { SubscriptionPropertiesService } from '../../../shared/services/subscription-properties.service';
 import { Feature } from '../../../shared-v2/models/features';
 import { QuickLinkService } from '../../../shared-v2/services/quick-link.service';
-import { delay } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { HealthStatus } from 'diagnostic-data';
-import { MessageBarType } from 'office-ui-fabric-react';
-import { RiskInfo, RiskTile } from '../../models/risk';
+import { delay, map } from 'rxjs/operators';
+import { RiskHelper, RiskTile } from '../../models/risk';
 
 @Component({
     selector: 'home',
@@ -209,19 +206,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this._detectorControlService.setDefault();
         }
 
-        //Need get from globals
-        this.risks =
-            [
-                {
-                    title: "Availability",
-                    action: () => {
-                        this._portalService.openBladeDiagnoseCategoryBlade("BestPractices");
-                    },
-                    link: "Click here to run all checks",
-                    infoObserverable: Observable.of({"autoheal":HealthStatus.Warning,"multipleInstance":HealthStatus.Critical,"sadsadsa":HealthStatus.Success}).pipe(delay(1000 * 5))
-                }
-            ];
-
+        this.risks = [
+            {
+                title: "Availability",
+                action:() => {
+                    this._portalService.openBladeDiagnoseCategoryBlade("BestPractices");
+                },
+                linkText: "Click here to run all checks",
+                infoObserverable: this.globals.reliabilityChecksDetailsBehaviorSubject.pipe(map(info => RiskHelper.convertToRiskInfo(info)))
+            }
+        ];
         this._telemetryService.logEvent("telemetry service logging", {});
     };
 
@@ -335,41 +329,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this._router.routeReuseStrategy.shouldReuseRoute = () => false;
         this._router.onSameUrlNavigation = 'reload';
         this._router.navigate(['./'], { relativeTo: this._activatedRoute });
-    }
-
-    //Transfer to RiskInfo for risk-tile
-    private _transferToRiskInfo(info:any):RiskInfo {
-        let riskInfo:RiskInfo = {};
-        const keys = Object.keys(info);
-        for(let key of keys){
-            let type = info[key].messageType;
-            let status = this._convertMessageTypeToHelathStatus(type);
-
-            riskInfo[key] = status;
-        }
-        return riskInfo;
-    }
-
-    private _convertMessageTypeToHelathStatus(messageBarType:MessageBarType):HealthStatus{
-        switch (messageBarType) {
-            case MessageBarType.error:
-                return HealthStatus.Critical;
-            
-            case MessageBarType.warning:
-                return HealthStatus.Warning;
-            
-            case MessageBarType.severeWarning:
-                return HealthStatus.Warning;
-            
-            case MessageBarType.info:
-                return HealthStatus.Info;
-            
-            case MessageBarType.success:
-                return HealthStatus.Success;
-            
-            default:
-                return HealthStatus.Info;
-        }
     }
 }
 
