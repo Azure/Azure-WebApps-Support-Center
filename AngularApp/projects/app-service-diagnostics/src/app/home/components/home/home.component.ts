@@ -348,20 +348,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     refreshPage() {
-        // this._router.routeReuseStrategy.shouldReuseRoute = () => false;
-        // this._router.onSameUrlNavigation = 'reload';
-        // this._router.navigate(['./'], { relativeTo: this._activatedRoute });
         this._telemetryService.logEvent(TelemetryEventNames.RefreshClicked,{
             'Location': TelemetryLocation.LandingPage
         });
         window.location.reload();
-
-        // const url = this._router.url;
-        // this._router.navigate(['./supportTopicId'], { relativeTo: this._activatedRoute, skipLocationChange: true }).then(() => this._router.navigate(['/'], { relativeTo: this._activatedRoute }));
-
-        // this._router.navigate(['./settings'], { relativeTo: this._activatedRoute, skipLocationChange: true }).then(() => {
-        //     this._router.navigate(['../'],{relativeTo:this._activatedRoute});
-        // });
     }
 }
 
