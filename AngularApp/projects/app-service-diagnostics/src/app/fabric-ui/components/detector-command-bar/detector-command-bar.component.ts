@@ -20,6 +20,9 @@ export class DetectorCommandBarComponent implements AfterViewInit{
   }
 
   sendFeedback() {
+    this.telemetryService.logEvent(TelemetryEventNames.OpenFeedbackPanel,{
+      'Location': TelemetryLocation.CategoryPage
+    });
     this.globals.openFeedback = !this.globals.openFeedback;
   }
 

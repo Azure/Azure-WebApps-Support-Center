@@ -337,6 +337,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     openFeedbackPanel() {
+        this._telemetryService.logEvent(TelemetryEventNames.OpenFeedbackPanel),{
+            'Location': TelemetryLocation.LandingPage
+        }
         this.globals.openFeedback = true;
     }
 

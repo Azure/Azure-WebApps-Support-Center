@@ -69,6 +69,7 @@ export const TelemetryEventNames = {
     LoadingDetectorViewStarted: 'LoadingDetectorViewStarted',
     LoadingDetectorViewEnded: 'LoadingDetectorViewEnded',
     OpenGenie: 'OpenGenie',
+    OpenFeedbackPanel: 'OpenFeedbackPanel',
     RefreshClicked: 'RefreshClicked',
     QuickLinkClicked: 'QuickLinkClicked',
     RiskTileClicked: 'RiskTileClicked'
