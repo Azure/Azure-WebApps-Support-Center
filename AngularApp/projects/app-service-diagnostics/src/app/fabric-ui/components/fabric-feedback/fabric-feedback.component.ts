@@ -1,7 +1,8 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { PanelType } from 'office-ui-fabric-react';
-import { TelemetryService, TelemetryEventNames, PIIUtilities } from 'diagnostic-data';
+import { TelemetryService, TelemetryEventNames, PIIUtilities, TelemetryLocation } from 'diagnostic-data';
 import { Globals } from '../../../globals';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -39,7 +40,7 @@ export class FabricFeedbackComponent implements AfterViewInit {
   ];
   submitted: boolean = false;
   rating: number = 0;
-  constructor(protected telemetryService: TelemetryService, public globals: Globals) {
+  constructor(protected telemetryService: TelemetryService, public globals: Globals,private activatedRoute:ActivatedRoute) {
     // this.submitted = false;
   }
 
@@ -49,9 +50,11 @@ export class FabricFeedbackComponent implements AfterViewInit {
       Feedback: PIIUtilities.removePII(this.feedbackText)
     };
     const detectorName = this.globals.getDetectorName();
+    const isHomepage = !this.activatedRoute.root.firstChild.firstChild.firstChild.firstChild.snapshot.params["category"];
     this.ratingEventProperties = {
       'DetectorId': detectorName,
-      'Url': window.location.href
+      'Url': window.location.href,
+      'Location': isHomepage ? TelemetryLocation.LandingPage : TelemetryLocation.CategoryPage
     };
     this.logEvent(TelemetryEventNames.StarRatingSubmitted, eventProps);
     this.submitted = true;

@@ -105,7 +105,7 @@ export class PortalService {
 
 
     initializeIframe(): void {
-        //shellSrc or map in getQuery can be place in session storage
+        //shellSrc store in session storage for homepage refresh
         const queryName = "trustedAuthority";
         if(this.getQueryStringParameter(queryName)){
             sessionStorage.setItem(ShellSrcKey,this.getQueryStringParameter(queryName));
@@ -193,7 +193,7 @@ export class PortalService {
                 const info = <StartupInfo>data;
                 this.sessionId = info.sessionId;
                 info.isIFrameForCaseSubmissionSolution = isIFrameForCaseSubmissionSolution;
-                //resource id need to get from Sessionstorage
+                //resource id need to get from Sessionstorage for homepage refresh
                 if(!info.resourceId){
                     info.resourceId = sessionStorage.getItem(ResourceIdKey);
                 }
