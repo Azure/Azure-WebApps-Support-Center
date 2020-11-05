@@ -1,4 +1,4 @@
-import { DetectorControlService, FeatureNavigationService, DetectorResponse, TelemetryEventNames, ResourceDescriptor } from 'diagnostic-data';
+import { DetectorControlService, FeatureNavigationService, DetectorResponse, TelemetryEventNames, ResourceDescriptor, TelemetryLocation } from 'diagnostic-data';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from '../../../shared-v2/models/category';
@@ -209,7 +209,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         }
 
         this._initializeRiskTiles();
-        
+
         this._telemetryService.logEvent("telemetry service logging", {});
     };
 
@@ -293,12 +293,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this._telemetryService.logTrace('HTTP error in ' + methodName, errorLoggingProps);
     }
 
-    private _initializeRiskTiles(){
+    private _initializeRiskTiles() {
         this.risks = [
             {
                 title: "Availability",
-                action:() => {
-                    this._portalService.openBladeDiagnoseCategoryBlade("BestPractices");
+                action: () => {
+                    this._portalService.openBladeDiagnoseDetectorId("BestPractices","ParentAvailabilityAndPerformance");
                 },
                 linkText: "Click here to run all checks",
                 infoObserverable: this.globals.reliabilityChecksDetailsBehaviorSubject.pipe(map(info => RiskHelper.convertToRiskInfo(info))),
@@ -310,9 +310,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.showRiskSection = this.risks.findIndex(risk => risk.showTile === true) > -1;
     }
 
-    private _checkIsWindowsWebApp():boolean {
+    private _checkIsWindowsWebApp(): boolean {
         let isWindowsWebApp = false;
-        if (this._resourceService && this._resourceService instanceof WebSitesService && (this._resourceService as WebSitesService).appType === AppType.WebApp && (this._resourceService as WebSitesService).platform === OperatingSystem.windows){
+        if (this._resourceService && this._resourceService instanceof WebSitesService && (this._resourceService as WebSitesService).appType === AppType.WebApp && (this._resourceService as WebSitesService).platform === OperatingSystem.windows) {
             isWindowsWebApp = true;
         }
         return isWindowsWebApp;
@@ -331,8 +331,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     openGeniePanel() {
         this.globals.openGeniePanel = true;
-        this._telemetryService.logEvent('OpenGenie', {
-            'Location': 'LandingPage'
+        this._telemetryService.logEvent(TelemetryEventNames.OpenGenie, {
+            'Location': TelemetryLocation.LandingPage
         });
     }
 
@@ -341,13 +341,27 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     clickQuickLink(feature: Feature) {
+        this._telemetryService.logEvent(TelemetryEventNames.QuickLinkClicked,{
+            'id': feature.id
+        });
         feature.clickAction();
     }
 
     refreshPage() {
-        this._router.routeReuseStrategy.shouldReuseRoute = () => false;
-        this._router.onSameUrlNavigation = 'reload';
-        this._router.navigate(['./'], { relativeTo: this._activatedRoute });
+        // this._router.routeReuseStrategy.shouldReuseRoute = () => false;
+        // this._router.onSameUrlNavigation = 'reload';
+        // this._router.navigate(['./'], { relativeTo: this._activatedRoute });
+        this._telemetryService.logEvent(TelemetryEventNames.RefreshClicked,{
+            'Location': TelemetryLocation.LandingPage
+        });
+        window.location.reload();
+
+        // const url = this._router.url;
+        // this._router.navigate(['./supportTopicId'], { relativeTo: this._activatedRoute, skipLocationChange: true }).then(() => this._router.navigate(['/'], { relativeTo: this._activatedRoute }));
+
+        // this._router.navigate(['./settings'], { relativeTo: this._activatedRoute, skipLocationChange: true }).then(() => {
+        //     this._router.navigate(['../'],{relativeTo:this._activatedRoute});
+        // });
     }
 }
 

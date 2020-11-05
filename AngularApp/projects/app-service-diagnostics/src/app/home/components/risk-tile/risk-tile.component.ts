@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { HealthStatus, StatusStyles, TelemetryService } from 'diagnostic-data'
+import { HealthStatus, StatusStyles, TelemetryEventNames, TelemetryService } from 'diagnostic-data'
 import { RiskTile, RiskInfo } from '../../models/risk';
 @Component({
   selector: 'risk-tile',
@@ -42,7 +42,24 @@ export class RiskTileComponent implements OnInit {
   }
 
   clickTileHandler() {
-    this.telemetryService.logEvent("RiskTileClicked", {});
+    const eventProps = {
+      'Name': this.title
+    }
+    
+    //Log status and count
+    if(!this.loading){
+      for(let info of this.infoList){
+        const status = HealthStatus[info.status];
+        const message = info.message;
+        if(message.indexOf(status) > -1){
+          const index = message.indexOf(status);
+          const count = Number.parseInt(message.substring(0,index));
+          eventProps[status] = count;
+        }
+      }
+    }
+
+    this.telemetryService.logEvent(TelemetryEventNames.RiskTileClicked,eventProps);
     this.risk.action();
   }
 

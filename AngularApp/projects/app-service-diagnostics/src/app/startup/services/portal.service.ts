@@ -12,6 +12,8 @@ const publicOrigins = [
     'portal.azure.com'
 ];
 
+const ResourceIdKey = "ResourceId";
+const ShellSrcKey = "ShellSrc";
 
 @Injectable()
 export class PortalService {
@@ -103,7 +105,12 @@ export class PortalService {
 
 
     initializeIframe(): void {
-        this.shellSrc = this.getQueryStringParameter('trustedAuthority');
+        //shellSrc or map in getQuery can be place in session storage
+        const queryName = "trustedAuthority";
+        if(this.getQueryStringParameter(queryName)){
+            sessionStorage.setItem(ShellSrcKey,this.getQueryStringParameter(queryName));
+        }
+        this.shellSrc = this.getQueryStringParameter(queryName) ? this.getQueryStringParameter(queryName) : sessionStorage.getItem(ShellSrcKey);
 
         // This is a required message. It tells the shell that your iframe is ready to receive messages.
         this.postMessage(Verbs.ready, null);
@@ -186,6 +193,10 @@ export class PortalService {
                 const info = <StartupInfo>data;
                 this.sessionId = info.sessionId;
                 info.isIFrameForCaseSubmissionSolution = isIFrameForCaseSubmissionSolution;
+                //resource id need to get from Sessionstorage
+                if(!info.resourceId){
+                    info.resourceId = sessionStorage.getItem(ResourceIdKey);
+                }
                 this.startupInfoObservable.next(info);
                 this.isIFrameForCaseSubmissionSolution.next(isIFrameForCaseSubmissionSolution);
             } else if (methodName === Verbs.sendAppInsightsResource) {
@@ -209,6 +220,8 @@ export class PortalService {
             } else if (methodName == Verbs.sendToken) {
                 const token = data;
                 this.tokenObservable.next(token);
+            } else if (methodName == Verbs.sendResourceId){
+                sessionStorage.setItem(ResourceIdKey,data);
             }
         });
     }
