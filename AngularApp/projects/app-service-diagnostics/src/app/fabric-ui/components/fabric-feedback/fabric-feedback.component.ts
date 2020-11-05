@@ -1,6 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { PanelType } from 'office-ui-fabric-react';
-import { TelemetryService, TelemetryEventNames, PIIUtilities, TelemetryLocation } from 'diagnostic-data';
+import { TelemetryService, TelemetryEventNames, PIIUtilities, TelemetrySource } from 'diagnostic-data';
 import { Globals } from '../../../globals';
 import { ActivatedRoute } from '@angular/router';
 
@@ -54,7 +54,7 @@ export class FabricFeedbackComponent implements AfterViewInit {
     this.ratingEventProperties = {
       'DetectorId': detectorName,
       'Url': window.location.href,
-      'Location': isHomepage ? TelemetryLocation.LandingPage : TelemetryLocation.CategoryPage
+      'Location': isHomepage ? TelemetrySource.LandingPage : TelemetrySource.CategoryPage
     };
     this.logEvent(TelemetryEventNames.StarRatingSubmitted, eventProps);
     this.submitted = true;

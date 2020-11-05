@@ -1,4 +1,4 @@
-import { DetectorControlService, FeatureNavigationService, DetectorResponse, TelemetryEventNames, ResourceDescriptor, TelemetryLocation } from 'diagnostic-data';
+import { DetectorControlService, FeatureNavigationService, DetectorResponse, TelemetryEventNames, ResourceDescriptor, TelemetrySource } from 'diagnostic-data';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from '../../../shared-v2/models/category';
@@ -332,13 +332,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
     openGeniePanel() {
         this.globals.openGeniePanel = true;
         this._telemetryService.logEvent(TelemetryEventNames.OpenGenie, {
-            'Location': TelemetryLocation.LandingPage
+            'Location': TelemetrySource.LandingPage
         });
     }
 
     openFeedbackPanel() {
         this._telemetryService.logEvent(TelemetryEventNames.OpenFeedbackPanel),{
-            'Location': TelemetryLocation.LandingPage
+            'Location': TelemetrySource.LandingPage
         }
         this.globals.openFeedback = true;
     }
@@ -352,7 +352,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     refreshPage() {
         this._telemetryService.logEvent(TelemetryEventNames.RefreshClicked,{
-            'Location': TelemetryLocation.LandingPage
+            'Location': TelemetrySource.LandingPage
         });
         window.location.reload();
     }

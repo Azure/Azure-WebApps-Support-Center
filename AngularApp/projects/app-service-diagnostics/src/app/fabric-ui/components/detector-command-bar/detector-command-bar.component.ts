@@ -2,7 +2,7 @@ import { Component, AfterViewInit } from '@angular/core';
 import { Globals } from '../../../globals';
 import { DetectorControlService } from 'projects/diagnostic-data/src/lib/services/detector-control.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TelemetryService,TelemetryEventNames, TelemetryLocation } from 'diagnostic-data';
+import { TelemetryService,TelemetryEventNames, TelemetrySource } from 'diagnostic-data';
 
 @Component({
   selector: 'detector-command-bar',
@@ -14,14 +14,14 @@ export class DetectorCommandBarComponent implements AfterViewInit{
   constructor(private globals: Globals, private detectorControlService: DetectorControlService, private _route: ActivatedRoute, private router: Router, private telemetryService:TelemetryService) { }
   toggleOpenState() {
     this.telemetryService.logEvent(TelemetryEventNames.OpenGenie,{
-      'Location':TelemetryLocation.CategoryPage
+      'Location':TelemetrySource.CategoryPage
     })
     this.globals.openGeniePanel = !this.globals.openGeniePanel;
   }
 
   sendFeedback() {
     this.telemetryService.logEvent(TelemetryEventNames.OpenFeedbackPanel,{
-      'Location': TelemetryLocation.CategoryPage
+      'Location': TelemetrySource.CategoryPage
     });
     this.globals.openFeedback = !this.globals.openFeedback;
   }
@@ -35,7 +35,7 @@ export class DetectorCommandBarComponent implements AfterViewInit{
 
     const eventProperties = {
       'Category':this._route.snapshot.params['category'],
-      'Location': TelemetryLocation.CategoryPage
+      'Location': TelemetrySource.CategoryPage
     };
     if (childRouteType === "detectors") {
       eventProperties['Detector'] = childRouteSnapshot.params['detectorName'];

@@ -75,7 +75,7 @@ export const TelemetryEventNames = {
     RiskTileClicked: 'RiskTileClicked'
 };
 
-export const TelemetryLocation = {
+export const TelemetrySource = {
     LandingPage: 'LandingPage',
     CategoryPage: 'CategoryPage'
 }
