@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { HealthStatus, StatusStyles, TelemetryEventNames, TelemetryService } from 'diagnostic-data'
+import { HealthStatus, LoadingStatus, StatusStyles, TelemetryEventNames, TelemetryService } from 'diagnostic-data'
 import { RiskTile, RiskInfo } from '../../models/risk';
 @Component({
   selector: 'risk-tile',
@@ -8,11 +8,13 @@ import { RiskTile, RiskInfo } from '../../models/risk';
 })
 export class RiskTileComponent implements OnInit {
   StatusStyles = StatusStyles;
+  LoadingStatus = LoadingStatus;
   title: string = "";
   linkText: string = "";
   infoList: RiskInfoDisplay[] = [];
-  loading: boolean = true;
+  loading = LoadingStatus.Loading;
   showTile: boolean = true;
+  riskProperties = { "TileLoaded": LoadingStatus[LoadingStatus.Loading] };
   get loadingAriaLabel() {
     return `loading ${this.title}`;
   }
@@ -23,47 +25,37 @@ export class RiskTileComponent implements OnInit {
 
   ngOnInit() {
     this.title = this.risk.title;
+    this.riskProperties["Title"] = this.title;
     this.linkText = this.risk.linkText;
     this.showTile = this.risk.showTile;
     this.risk.infoObserverable.subscribe(info => {
       if (info !== null && info !== undefined && Object.keys(info).length > 0) {
-        this.infoList = this._processRiskInfo(info);
-        this.loading = false;
+        this.infoList = this.processRiskInfo(info);
+        this.loading = LoadingStatus.Success;
+        this.riskProperties["TileLoaded"] = LoadingStatus[this.loading];
+        this.logEvent(TelemetryEventNames.RiskTileLoaded, {});
       }
     }, e => {
-      this.loading = false;
+      this.loading = LoadingStatus.Failed;
+      this.riskProperties["TileLoaded"] = LoadingStatus[this.loading];
       this.infoList = [
         {
           message: "No data available",
           status: HealthStatus.Info
         }
       ];
+      this.logEvent(TelemetryEventNames.RiskTileLoaded, {
+        "LoadingError":e
+      });
     });
   }
 
   clickTileHandler() {
-    const eventProps = {
-      'Name': this.title
-    }
-    
-    //Log status and count
-    if(!this.loading){
-      for(let info of this.infoList){
-        const status = HealthStatus[info.status];
-        const message = info.message;
-        if(message.indexOf(status) > -1){
-          const index = message.indexOf(status);
-          const count = Number.parseInt(message.substring(0,index));
-          eventProps[status] = count;
-        }
-      }
-    }
-
-    this.telemetryService.logEvent(TelemetryEventNames.RiskTileClicked,eventProps);
+    this.logEvent(TelemetryEventNames.RiskTileClicked, {});
     this.risk.action();
   }
 
-  private _processRiskInfo(info: RiskInfo): RiskInfoDisplay[] {
+  private processRiskInfo(info: RiskInfo): RiskInfoDisplay[] {
     const statuses = Object.values(info);
     const map = new Map<HealthStatus, number>();
 
@@ -71,6 +63,8 @@ export class RiskTileComponent implements OnInit {
       const count = map.has(status) ? map.get(status) : 0;
       map.set(status, count + 1);
     }
+
+    this.copyStatusToRiskProps(map);
 
     //sort from most critical to less critical
     const sortedStatus = Array.from(map.keys());
@@ -88,6 +82,22 @@ export class RiskTileComponent implements OnInit {
 
     return res;
   }
+
+  private logEvent(eventMessage: string, eventProperties?: any, measurements?: any) {
+    for (const id of Object.keys(this.riskProperties)) {
+      if (this.riskProperties.hasOwnProperty(id)) {
+        eventProperties[id] = String(this.riskProperties[id]);
+      }
+    }
+    this.telemetryService.logEvent(eventMessage, eventProperties, measurements);
+  }
+
+  private copyStatusToRiskProps(map: Map<HealthStatus, number>) {
+    const keys = Array.from(map.keys());
+    for (let status of keys) {
+      this.riskProperties[HealthStatus[status]] = map.get(status);
+    }
+  }
 }
 
 class RiskInfoDisplay {
@@ -95,7 +105,7 @@ class RiskInfoDisplay {
   status: HealthStatus;
 
   constructor(status: HealthStatus, count: number) {
-      this.status = status;
-      this.message = `${count} ${HealthStatus[status]}`;
+    this.status = status;
+    this.message = `${count} ${HealthStatus[status]}`;
   }
 }

@@ -72,7 +72,8 @@ export const TelemetryEventNames = {
     OpenFeedbackPanel: 'OpenFeedbackPanel',
     RefreshClicked: 'RefreshClicked',
     QuickLinkClicked: 'QuickLinkClicked',
-    RiskTileClicked: 'RiskTileClicked'
+    RiskTileClicked: 'RiskTileClicked',
+    RiskTileLoaded: 'RiskTileLoaded',
 };
 
 export const TelemetrySource = {

@@ -1,6 +1,6 @@
 <div *ngIf="showTile" tabindex="0" (click)="clickTileHandler()" class="risk-tile" role="button" (keyup.enter)="clickTileHandler()">
   <h3 class="risk-title risk-section">{{title}}</h3>
-  <div class="risk-section" *ngIf="!loading else loadingPlaceHolder">
+  <div class="risk-section" *ngIf="loading != LoadingStatus.Loading else loadingPlaceHolder">
     <div *ngFor="let info of infoList" class="risk-icon-section">
       <span class="fa status-icon risk-icon" [ngClass]="StatusStyles.getIconByStatus(info.status)" [ngStyle]="{'color':StatusStyles.getColorByStatus(info.status)}">
       </span>
