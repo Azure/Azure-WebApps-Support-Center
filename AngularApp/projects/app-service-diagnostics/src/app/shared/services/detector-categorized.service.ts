@@ -33,7 +33,7 @@ export class DetectorCategorizationService {
         this.detectorlistCategories["AvailabilityAndPerformanceWindows"]=[];
         this.detectorlistCategories["ConfigurationAndManagement"]=[];
         this.detectorlistCategories["SSLandDomains"]=[];
-        this.detectorlistCategories["BestPractices"]=[];
+        this.detectorlistCategories["RiskAssessments"]=[];
         this.detectorlistCategories["navigator"]=[];
         this.detectorlistCategories["DiagnosticTools"]=[];
     }

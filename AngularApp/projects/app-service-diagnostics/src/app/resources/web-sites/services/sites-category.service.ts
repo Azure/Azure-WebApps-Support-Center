@@ -90,8 +90,8 @@ export class SitesCategoryService extends CategoryService {
       sku: Sku.All,
       hostingEnvironmentKind: HostingEnvironmentKind.All,
       item: {
-        id: 'BestPractices',
-        name: 'Risk assessments',
+        id: 'RiskAssessments',
+        name: 'Risk Assessments',
         overviewDetectorId: 'BestPractices',
         description: 'Analyze your app for optimal performance and configurations.',
         keywords: ['Autoscale','AlwaysOn','Density','ARR'],
@@ -160,8 +160,8 @@ export class SitesCategoryService extends CategoryService {
         sku: Sku.All,
         hostingEnvironmentKind: HostingEnvironmentKind.All,
         item: {
-          id: 'BestPracticesFunctionApp',
-          name: 'Risk assessments',
+          id: 'RiskAssessmentsFunctionApp',
+          name: 'Risk Assessments',
           overviewDetectorId: 'BestPracticesFunctionApp',
           description: 'Are you running your Function App in production? Review best practice recommendations to best ensure that you running your production application with the optimal configurations and suggestions.',
           keywords: ['BestPractices', 'AlwaysOn', 'Async Pattern'],

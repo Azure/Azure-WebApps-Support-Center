@@ -296,7 +296,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             {
                 title: "Availability",
                 action: () => {
-                    this._portalService.openBladeDiagnoseDetectorId("BestPractices","ParentAvailabilityAndPerformance");
+                    this._portalService.openBladeDiagnoseDetectorId("RiskAssessments","ParentAvailabilityAndPerformance");
                 },
                 linkText: "Click here to run all checks",
                 infoObserverable: this.globals.reliabilityChecksDetailsBehaviorSubject.pipe(map(info => RiskHelper.convertToRiskInfo(info))),
