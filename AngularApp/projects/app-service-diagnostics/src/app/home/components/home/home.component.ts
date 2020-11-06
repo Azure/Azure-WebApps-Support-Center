@@ -112,9 +112,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 else {
                     this.homePageText = {
                         title: 'App Service Diagnostics (Preview)',
-                        description: 'Use App Service Diagnostics to investigate how your app is performing, diagnose issues, and discover how to\
-            improve your application. Select the problem category that best matches the information or tool that you\'re\
-            interested in:',
+                        description: 'Investigate how your app is performing, diagnose issues, and discover how to improve your application.' ,
                         searchBarPlaceHolder: 'Search App Service Diagnostics'
                     };
                     this.searchPlaceHolder = this.homePageText.searchBarPlaceHolder;
