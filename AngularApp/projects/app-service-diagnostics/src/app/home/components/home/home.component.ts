@@ -213,8 +213,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
         this._telemetryService.logPageView(TelemetryEventNames.HomePageLoaded, { "numCategories": this.categories.length.toString() });
-        if (document.getElementById("healthCheck")) {
-            document.getElementById("healthCheck").focus();
+        
+        if (document.getElementById("homepage-command-bar")) {
+            document.getElementById("homepage-command-bar").focus();
         }
     }
 
