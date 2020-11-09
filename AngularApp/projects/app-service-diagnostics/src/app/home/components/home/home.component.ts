@@ -32,8 +32,6 @@ import { OperatingSystem } from '../../../shared/models/site';
 })
 export class HomeComponent implements OnInit, AfterViewInit {
     useLegacy: boolean = true;
-    initializedPortalVersion: string = "v2";
-    isVnextOnlyResourceType: boolean = false;
     resourceName: string;
     categories: Category[];
     searchValue = '';
@@ -70,9 +68,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         this.subscriptionId = this._activatedRoute.snapshot.params['subscriptionid'];
         this.versionTestService.isLegacySub.subscribe(isLegacy => this.useLegacy = isLegacy);
-
-        this.versionTestService.initializedPortalVersion.subscribe(version => this.initializedPortalVersion = version);
-        this.versionTestService.isVnextOnlyResource.subscribe(isVnextOnly => this.isVnextOnlyResourceType = isVnextOnly);
+        
         this.resourceName = this._resourceService.resource.name;
         let eventProps = {
             subscriptionId: this.subscriptionId,
@@ -151,17 +147,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 }
             });
         })
-    }
-
-    switchView() {
-        this.useLegacy = !this.useLegacy;
-        this.versionTestService.setLegacyFlag(this.useLegacy === true ? 1 : 2);
-        let eventProps = {
-            subscriptionId: this.subscriptionId,
-            resourceName: this.resourceName,
-            switchToLegacy: this.useLegacy.toString(),
-        };
-        this._telemetryService.logEvent('SwitchView', eventProps);
     }
 
     ngOnInit() {

@@ -1,18 +1,3 @@
-<ng-container *ngIf="initializedPortalVersion === 'v3'&&!isVnextOnlyResourceType">
-  <div *ngIf="useLegacy" class="switch2new-context-text">
-    <i class="fa fa-info-circle info-banner-icon"></i>
-    We have recently launched the new version of App Service Diagnostics.
-    <a (click)="switchView()" tabindex="0" (keyup.enter)="switchView()" aria-label="switch to the new version">Click
-      here to checkout the new version.</a>
-  </div>
-  <div *ngIf="!useLegacy" class="switch2old-context-text">
-    <i class="fa fa-info-circle info-banner-icon"></i>
-    Welcome to the new App Service Diagnostics. Simply explore or check out the <a
-      href='https://aka.ms/New-Diagnostics-and-Genie' target="_blank">documentation</a> on the new updates.
-    <a (click)="switchView()" class="old-version-link" tabindex="0" (keyup.enter)="switchView()"
-      aria-label="switch to the old version">Click here to go back to the old version.</a>
-  </div>
-</ng-container>
 <div *ngIf="useLegacy else newHomePage" class="home-container">
   <div class="input-group input-group-lg search-input-group" (keyup.escape)="clearSearch()" role="search"
     *ngIf="!isAKSOnNationalCloud">
