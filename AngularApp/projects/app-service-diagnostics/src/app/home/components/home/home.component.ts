@@ -101,10 +101,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
             else {
                 if (this._resourceService && this._resourceService instanceof WebSitesService && (this._resourceService as WebSitesService).appType === AppType.FunctionApp) {
                     this.homePageText = {
-                        title: 'Azure Functions Diagnostics',
-                        description: 'Use Azure Functions Diagnostics to investigate how your function app is performing, diagnose issues, and discover how to\
-            improve your function app. Select the problem category that best matches the information or tool that you\'re\
-            interested in:',
+                        title: 'Function App Diagnostics (Preview)',
+                        description: 'Investigate how your app is performing, diagnose issues and discover how to improve your application.',
                         searchBarPlaceHolder: 'Search Azure Functions Diagnostics'
                     };
                     this.searchPlaceHolder = this.homePageText.searchBarPlaceHolder;

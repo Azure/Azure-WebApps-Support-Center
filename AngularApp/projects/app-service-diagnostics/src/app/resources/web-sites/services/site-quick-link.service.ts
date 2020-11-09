@@ -33,6 +33,18 @@ export class SiteQuickLinkService extends QuickLinkService {
                 'perfAnalysis',
                 'webappcpu',
             ],
+        },
+        {
+            appType: AppType.FunctionApp,
+            platform: OperatingSystem.windows | OperatingSystem.linux,
+            stack: '',
+            sku: Sku.All,
+            hostingEnvironmentKind: HostingEnvironmentKind.All,
+            item: [
+                'functionappdownanderrors',
+                'functionsettings',
+                'tcpconnections'
+            ]
         }
     ];
 }
