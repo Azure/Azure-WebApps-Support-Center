@@ -49,10 +49,10 @@ export class VersionTestService {
     }
 
     // This is the resource type that we completely migrate to new diagnose and solve experience
-      // Resource types that are currently using new D&S only: windows web app
+      // Resource types that are currently using new D&S only: windows web app, function app
     private isVnextOnlyResourceType(site: Site, resourceType: ResourceType): boolean {
         let isLinuxPlatform = site && site.kind && site.kind.toLowerCase().indexOf('linux') >= 0;
-        return resourceType === ResourceType.Site && site && (site.appType === AppType.WebApp) && !isLinuxPlatform;
+        return resourceType === ResourceType.Site && site && (site.appType === AppType.WebApp || site.appType === AppType.FunctionApp) && !isLinuxPlatform;
     }
 
     // This is the resource type that we migrate to new diagnose and solve experience but still offer the option to switch back to the old experience

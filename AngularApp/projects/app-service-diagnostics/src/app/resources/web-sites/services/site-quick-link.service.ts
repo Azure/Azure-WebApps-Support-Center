@@ -43,7 +43,7 @@ export class SiteQuickLinkService extends QuickLinkService {
             item: [
                 'functionappdownanderrors',
                 'functionsettings',
-                'tcpconnections'
+                'BestPracticesFunctionApp'
             ]
         }
     ];
