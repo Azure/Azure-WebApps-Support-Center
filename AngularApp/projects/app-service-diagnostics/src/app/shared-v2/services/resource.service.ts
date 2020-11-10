@@ -20,6 +20,7 @@ export class ResourceService {
   public error: any;
 
   public reliabilityChecksResults: any = {};
+  protected _refreshReliabilityCheck: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(protected _armService: ArmService, private _genericArmConfigService?: GenericArmConfigService) { }
 
@@ -101,8 +102,12 @@ export class ResourceService {
     }
   }
 
-  public getRiskAlertsResult(): Observable<any> {
+  public getRiskAlertsResult(invalidateCache:boolean = false): Observable<any> {
     return of(null);
+  }
+
+  public updateRiskAlertResult() {
+    this._refreshReliabilityCheck.next(true);
   }
 
   public get isApplicableForLiveChat(): boolean {

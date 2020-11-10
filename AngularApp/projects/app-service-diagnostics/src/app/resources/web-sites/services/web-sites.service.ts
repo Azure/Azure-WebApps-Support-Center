@@ -9,7 +9,7 @@ import { IDiagnosticProperties } from '../../../shared/models/diagnosticproperti
 import { flatMap } from 'rxjs/operators';
 import { PortalReferrerMap } from '../../../shared/models/portal-referrer-map';
 import { DetectorType } from 'diagnostic-data';
-import { of, Observable, BehaviorSubject } from 'rxjs';
+import { of, Observable, merge } from 'rxjs';
 import { ArmResource } from '../../../shared-v2/models/arm';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 
@@ -146,14 +146,16 @@ export class WebSitesService extends ResourceService {
 
 
     public getRiskAlertsResult(): Observable<any> {
-        return this.warmUpCallFinished.pipe(flatMap((res) => {
+        const riskCheckSignal = merge(this.warmUpCallFinished,this._refreshReliabilityCheck);
+        return riskCheckSignal.pipe(flatMap((res) => 
+        {
             if (this.resource && this.azureServiceName === 'Web App (Windows)') {
                 let resourceUri = this.resource.id;
                 let serverFarmId = this.resource.properties.serverFarmId;
 
                 const resourceTasks = forkJoin(
-                    this._armService.getArmResource(`${resourceUri}/config/web`, '2018-02-01'),
-                    this._armService.getResourceWithoutEnvelope<ServerFarm>(serverFarmId)
+                    this._armService.getArmResource(`${resourceUri}/config/web`, '2018-02-01',true),
+                    this._armService.getResourceWithoutEnvelope<ServerFarm>(serverFarmId,null,true)
                 );
 
                 return resourceTasks;

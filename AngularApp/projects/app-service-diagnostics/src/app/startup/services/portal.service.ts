@@ -105,13 +105,7 @@ export class PortalService {
 
 
     initializeIframe(): void {
-        //shellSrc store in session storage for homepage refresh
-        const queryName = "trustedAuthority";
-        if(this.getQueryStringParameter(queryName)){
-            sessionStorage.setItem(ShellSrcKey,this.getQueryStringParameter(queryName));
-        }
-        this.shellSrc = this.getQueryStringParameter(queryName) ? this.getQueryStringParameter(queryName) : sessionStorage.getItem(ShellSrcKey);
-
+        this.shellSrc = this.getQueryStringParameter('trustedAuthority');
         // This is a required message. It tells the shell that your iframe is ready to receive messages.
         this.postMessage(Verbs.ready, null);
         this.postMessage(Verbs.getStartupInfo, null);
@@ -192,11 +186,7 @@ export class PortalService {
             if (methodName === Verbs.sendStartupInfo) {
                 const info = <StartupInfo>data;
                 this.sessionId = info.sessionId;
-                info.isIFrameForCaseSubmissionSolution = isIFrameForCaseSubmissionSolution;
-                //resource id need to get from Sessionstorage for homepage refresh
-                if(!info.resourceId){
-                    info.resourceId = sessionStorage.getItem(ResourceIdKey);
-                }
+                info.isIFrameForCaseSubmissionSolution = isIFrameForCaseSubmissionSolution;                
                 this.startupInfoObservable.next(info);
                 this.isIFrameForCaseSubmissionSolution.next(isIFrameForCaseSubmissionSolution);
             } else if (methodName === Verbs.sendAppInsightsResource) {
@@ -220,8 +210,6 @@ export class PortalService {
             } else if (methodName == Verbs.sendToken) {
                 const token = data;
                 this.tokenObservable.next(token);
-            } else if (methodName == Verbs.sendResourceId){
-                sessionStorage.setItem(ResourceIdKey,data);
             }
         });
     }

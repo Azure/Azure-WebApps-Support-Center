@@ -87,7 +87,6 @@ export class Verbs {
     public static sendStartupInfo = 'send-startup-info';
     public static sendSessionId = 'send-sessionId';
     public static sendToken = 'send-token';
-    public static sendResourceId = 'send-resourceId'
 
     // Blade-specific Requests from iframe
     public static openScaleUpBlade = 'open-scaleup-blade';
