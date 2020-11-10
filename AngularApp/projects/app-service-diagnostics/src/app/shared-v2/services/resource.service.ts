@@ -102,7 +102,7 @@ export class ResourceService {
     }
   }
 
-  public getRiskAlertsResult(invalidateCache:boolean = false): Observable<any> {
+  public getRiskAlertsResult(): Observable<any> {
     return of(null);
   }
 
