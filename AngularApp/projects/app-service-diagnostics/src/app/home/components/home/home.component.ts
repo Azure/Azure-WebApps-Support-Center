@@ -337,11 +337,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this._telemetryService.logEvent(TelemetryEventNames.RefreshClicked,{
             'Location': TelemetrySource.LandingPage
         });
-        // window.location.reload();
         this._resourceService.updateRiskAlertResult();
-        // this._router.navigate(['./supportTopicId'],{relativeTo: this._activatedRoute,skipLocationChange:true}).then(() => {
-        //     this._router.navigate(['../'],{relativeTo: this._activatedRoute});
-        // });
     }
 }
 
