@@ -12,9 +12,6 @@ const publicOrigins = [
     'portal.azure.com'
 ];
 
-const ResourceIdKey = "ResourceId";
-const ShellSrcKey = "ShellSrc";
-
 @Injectable()
 export class PortalService {
     public sessionId = '';

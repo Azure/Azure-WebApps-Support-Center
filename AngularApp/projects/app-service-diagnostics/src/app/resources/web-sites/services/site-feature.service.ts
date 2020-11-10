@@ -33,14 +33,12 @@ export class SiteFeatureService extends FeatureService {
     protected subscriptionPropertiesService: SubscriptionPropertiesService, protected _siteService: SiteService, protected _categoryService: CategoryService, protected _activedRoute: ActivatedRoute, protected _versionTestService: VersionTestService) {
 
     super(_diagnosticApiService, _contentService, _router, _authService, _logger, _siteService, _categoryService, _activedRoute, _portalActionService, _versionTestService);
-
     this._featureDisplayOrder = [{
       category: "Availability and Performance",
       platform: OperatingSystem.windows,
       appType: AppType.WebApp,
       order: ['appdownanalysis', 'perfanalysis', 'webappcpu', 'memoryusage', 'webapprestart'].reverse()
     }];
-
     this._authService.getStartupInfo().subscribe(startupInfo => {
       this.subscriptionId = startupInfo.resourceId.split("subscriptions/")[1].split("/")[0];
       this.addDiagnosticTools(startupInfo.resourceId);
@@ -49,7 +47,15 @@ export class SiteFeatureService extends FeatureService {
   }
 
   sortFeatures() {
-    let featureDisplayOrder = this._featureDisplayOrder;
+    this._featureDisplayOrderSub.subscribe(order => {
+      this._sortFeaturesHelper(order);
+    });
+  }
+
+  private _sortFeaturesHelper(displayOrder:any[]) {
+    
+    // let featureDisplayOrder = this._featureDisplayOrder;
+    let featureDisplayOrder = displayOrder;
     let locationPlacementId = '';
     if(this.subscriptionPropertiesService){
       this.subscriptionPropertiesService.getSubscriptionProperties(this.subscriptionId).subscribe(response => {

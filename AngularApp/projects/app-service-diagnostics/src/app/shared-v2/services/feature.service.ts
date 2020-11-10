@@ -20,10 +20,13 @@ export class FeatureService {
 
   private _detectors: DetectorMetaData[];
   protected _features: Feature[] = [];
-  protected _featureDisplayOrder = [];
   private categories: Category[] = [];
   public featureSub: BehaviorSubject<Feature[]> = new BehaviorSubject<Feature[]>([]);
   protected isLegacy: boolean;
+  protected _featureDisplayOrderSub:BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  protected set _featureDisplayOrder(order: any[]){
+    this._featureDisplayOrderSub.next(order);
+  }
   constructor(protected _diagnosticApiService: DiagnosticService, protected _contentService: ContentService, protected _router: Router, protected _authService: AuthService,
     protected _logger: TelemetryService, protected _siteService: SiteService, protected _categoryService: CategoryService, protected _activatedRoute: ActivatedRoute, protected _portalActionService: PortalActionService, protected versionTestService: VersionTestService) {
     this.versionTestService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy);
