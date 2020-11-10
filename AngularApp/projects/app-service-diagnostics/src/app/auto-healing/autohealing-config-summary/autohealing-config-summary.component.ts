@@ -58,15 +58,13 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
       if (this.actualhealSettings.autoHealRules.triggers.statusCodes != null) {
         for (let index = 0; index < this.actualhealSettings.autoHealRules.triggers.statusCodes.length; index++) {
           const statusCodeRule = this.actualhealSettings.autoHealRules.triggers.statusCodes[index];
-          
-          var statusCodesString = statusCodeRule.status.toString() ;
-          if (statusCodeRule.subStatus > 0)
-          {
+
+          var statusCodesString = statusCodeRule.status.toString();
+          if (statusCodeRule.subStatus > 0) {
             statusCodesString += '.' + statusCodeRule.subStatus.toString();
           }
 
-          if (statusCodeRule.win32Status > 0)
-          {
+          if (statusCodeRule.win32Status > 0) {
             statusCodesString += ' and win-32 status ' + statusCodeRule.win32Status.toString();
           }
 
