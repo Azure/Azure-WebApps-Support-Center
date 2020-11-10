@@ -47,14 +47,12 @@ export class SiteFeatureService extends FeatureService {
   }
 
   sortFeatures() {
-    this._featureDisplayOrderSub.subscribe(order => {
-      this._sortFeaturesHelper(order);
+    this._featureDisplayOrderSub.subscribe(featureOrder => {
+      this._sortFeaturesHelper(featureOrder);
     });
   }
 
   private _sortFeaturesHelper(displayOrder:any[]) {
-    
-    // let featureDisplayOrder = this._featureDisplayOrder;
     let featureDisplayOrder = displayOrder;
     let locationPlacementId = '';
     if(this.subscriptionPropertiesService){
