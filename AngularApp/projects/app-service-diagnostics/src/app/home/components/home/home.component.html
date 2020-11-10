@@ -100,11 +100,11 @@
 
 
 <ng-template #newHomePage>
-  <fab-command-bar id="homepage-command-bar" tabindex="0" contentClass="fab-command-bar-class">
+  <fab-command-bar tabindex="0" contentClass="fab-command-bar-class">
     <items>
       <fab-command-bar-item key="askGenie" text="Ask Genie" [iconProps]="{ iconName: 'ChatInviteFriend' }"
         (click)="openGeniePanel()" data-track-type="run"></fab-command-bar-item>
-      <fab-command-bar-item key="refresh1" text="Refresh" [iconProps]="{ iconName: 'Refresh' }" (click)="refreshPage()">
+      <fab-command-bar-item *ngIf="showRiskSection" key="refresh1" text="Refresh" [iconProps]="{ iconName: 'Refresh' }" (click)="refreshPage()">
       </fab-command-bar-item>
       <fab-command-bar-item key="sendFeedback" text="Feedback" [iconProps]="{ iconName: 'Emoji2' }"
         (click)="openFeedbackPanel()"></fab-command-bar-item>
@@ -113,7 +113,7 @@
 
   <div class="home-main-area">
     <div class="section-container">
-      <h3><span class="section-title">{{homePageText.title}}</span><span class="home-title-text"> - {{homePageText.description}}
+      <h3><span tabindex="0" id="homepage-title" class="section-title">{{homePageText.title}}</span><span class="home-title-text"> - {{homePageText.description}}
           </span>
       </h3>
       <div class="home-search">

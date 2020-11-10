@@ -31,13 +31,11 @@ export class RiskHelper
 
     private static convertMessageTypeToHealthStatus(messageBarType:MessageBarType):HealthStatus{
         switch (messageBarType) {
+            case MessageBarType.severeWarning:
             case MessageBarType.error:
                 return HealthStatus.Critical;
             
             case MessageBarType.warning:
-                return HealthStatus.Warning;
-            
-            case MessageBarType.severeWarning:
                 return HealthStatus.Warning;
             
             case MessageBarType.info:
