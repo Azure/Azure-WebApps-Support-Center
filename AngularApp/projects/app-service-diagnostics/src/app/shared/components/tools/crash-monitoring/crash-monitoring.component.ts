@@ -41,7 +41,7 @@ export class CrashMonitoringComponent implements OnInit {
   maxDate: Date = this.convertUTCToLocalDate(addMonths(this.today, 1))
   minDate: Date = this.convertUTCToLocalDate(this.today)
   startDate: Date = this.minDate;
-  endDate: Date = addDays(this.startDate, 5);
+  endDate: Date = addDays(this.startDate, 15);
   startClock: string;
   endClock: string;
 
@@ -136,7 +136,7 @@ export class CrashMonitoringComponent implements OnInit {
     this.maxDate = this.convertUTCToLocalDate(addMonths(this.today, 1))
     this.minDate = this.convertUTCToLocalDate(this.today)
     this.startDate = this.minDate;
-    this.endDate = addDays(this.startDate, 5);
+    this.endDate = addDays(this.startDate, 15);
     this.startClock = this.getHourAndMinute(this.startDate);
     this.endClock = this.getHourAndMinute(this.endDate);
     this.monitoringEnabled = false;

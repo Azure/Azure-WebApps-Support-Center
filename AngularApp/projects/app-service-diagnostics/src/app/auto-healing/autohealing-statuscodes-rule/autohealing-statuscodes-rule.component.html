@@ -40,8 +40,8 @@
       <tr *ngFor="let singleRule of rule; let i = index">
         <td tabindex="0">{{ singleRule.count }}</td>
         <td tabindex="0">{{ singleRule.status }}</td>
-        <td tabindex="0">{{ singleRule.subStatus }}</td>
-        <td tabindex="0">{{ singleRule.win32Status }}</td>
+        <td tabindex="0">{{ singleRule.subStatus === 0 ? 'any' : singleRule.subStatus }}</td>
+        <td tabindex="0">{{ singleRule.win32Status === 0 ? 'any': singleRule.win32Status }}</td>
         <td tabindex="0">{{ singleRule.timeInterval }}</td>
         <td tabindex="0">
           <button class="image-btn" *ngIf="!editMode" (click)="editStatusCodeRule(i)" title="Edit rule" name="editRule">

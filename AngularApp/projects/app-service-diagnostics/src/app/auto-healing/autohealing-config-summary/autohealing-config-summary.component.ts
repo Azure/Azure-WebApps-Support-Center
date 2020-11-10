@@ -58,7 +58,19 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
       if (this.actualhealSettings.autoHealRules.triggers.statusCodes != null) {
         for (let index = 0; index < this.actualhealSettings.autoHealRules.triggers.statusCodes.length; index++) {
           const statusCodeRule = this.actualhealSettings.autoHealRules.triggers.statusCodes[index];
-          conditions.push(statusCodeRule.count + ' requests end up with HTTP Status  ' + statusCodeRule.status + '.' + statusCodeRule.subStatus + ' and win-32 status  ' + statusCodeRule.win32Status + ' in a duration of  ' + FormatHelper.timespanToSeconds(statusCodeRule.timeInterval) + ' seconds');
+          
+          var statusCodesString = statusCodeRule.status.toString() ;
+          if (statusCodeRule.subStatus > 0)
+          {
+            statusCodesString += '.' + statusCodeRule.subStatus.toString();
+          }
+
+          if (statusCodeRule.win32Status > 0)
+          {
+            statusCodesString += ' and win-32 status ' + statusCodeRule.win32Status.toString();
+          }
+
+          conditions.push(statusCodeRule.count + ' requests end up with HTTP Status ' + statusCodesString + ' in a duration of  ' + FormatHelper.timespanToSeconds(statusCodeRule.timeInterval) + ' seconds');
         }
 
       }

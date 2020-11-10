@@ -191,4 +191,5 @@ export class CrashMonitoringSettings {
     StartTimeUtc: string;
     MaxHours: number;
     MaxDumpCount: number;
+    ExceptionFilter:string;
 }
