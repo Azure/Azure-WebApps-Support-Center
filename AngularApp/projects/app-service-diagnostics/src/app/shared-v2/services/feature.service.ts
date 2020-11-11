@@ -23,8 +23,8 @@ export class FeatureService {
   private categories: Category[] = [];
   public featureSub: BehaviorSubject<Feature[]> = new BehaviorSubject<Feature[]>([]);
   protected isLegacy: boolean;
-  protected _featureDisplayOrderSub:BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  protected set _featureDisplayOrder(order: any[]){
+  protected _featureDisplayOrderSub: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  protected set _featureDisplayOrder(order: any[]) {
     this._featureDisplayOrderSub.next(order);
   }
   constructor(protected _diagnosticApiService: DiagnosticService, protected _contentService: ContentService, protected _router: Router, protected _authService: AuthService,
@@ -112,8 +112,20 @@ export class FeatureService {
     };
   }
 
-  getFeaturesForCategory(category: Category) {
-    return this._features.filter(feature => feature.category === category.name);
+  getFeaturesForCategory(category: Category): Feature[] {
+    //Temporary solution for migrating from "Best Practice" to "Risk Assessment"
+    const bestPractices = "Best Practices";
+    const riskAssessments = "Risk Assessments";
+    if(category.name === bestPractices || riskAssessments){
+      return this._features.filter(feature => feature.category === bestPractices || feature.category === riskAssessments);
+    }
+    
+    return this._features.filter(feature => {
+      if (feature && feature.category) {
+        return feature.category.toLowerCase() === category.name.toLowerCase();
+      }
+      return false;
+    });
   }
 
   getFeaturesForCategorySub(category: Category): Observable<Feature[]> {
