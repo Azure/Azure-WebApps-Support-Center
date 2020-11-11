@@ -30,55 +30,58 @@ export class FeatureService {
   constructor(protected _diagnosticApiService: DiagnosticService, protected _contentService: ContentService, protected _router: Router, protected _authService: AuthService,
     protected _logger: TelemetryService, protected _siteService: SiteService, protected _categoryService: CategoryService, protected _activatedRoute: ActivatedRoute, protected _portalActionService: PortalActionService, protected versionTestService: VersionTestService) {
     this.versionTestService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy);
-    this._categoryService.categories.subscribe(categories => this.categories = categories);
     this._authService.getStartupInfo().subscribe(startupInfo => {
       this._diagnosticApiService.getDetectors().subscribe(detectors => {
-        this._detectors = detectors;
-        detectors.forEach(detector => {
-          if ((detector.category && detector.category.length > 0) ||
-            (detector.description && detector.description.length > 0)) {
-            if (detector.type === DetectorType.Detector) {
-              this._features.push(<Feature>{
-                id: detector.id,
-                description: detector.description,
-                category: detector.category,
-                featureType: FeatureTypes.Detector,
-                name: detector.name,
-                clickAction: this._createFeatureAction(detector.name, detector.category, () => {
-                  //Remove after A/B test
-                  if (this.isLegacy) {
-                    if (detector.id === 'appchanges') {
-                      this._portalActionService.openChangeAnalysisBlade();
+        this._categoryService.categories.subscribe(categories => {
+          this._detectors = detectors;
+          this.categories = categories;
+          detectors.forEach(detector => {
+            if ((detector.category && detector.category.length > 0) ||
+              (detector.description && detector.description.length > 0)) {
+              this._rewriteCategory(detector);
+              if (detector.type === DetectorType.Detector) {
+                this._features.push(<Feature>{
+                  id: detector.id,
+                  description: detector.description,
+                  category: detector.category,
+                  featureType: FeatureTypes.Detector,
+                  name: detector.name,
+                  clickAction: this._createFeatureAction(detector.name, detector.category, () => {
+                    //Remove after A/B test
+                    if (this.isLegacy) {
+                      if (detector.id === 'appchanges') {
+                        this._portalActionService.openChangeAnalysisBlade();
+                      } else {
+                        this._router.navigateByUrl(`resource${startupInfo.resourceId}/detectors/${detector.id}`);
+                      }
                     } else {
-                      this._router.navigateByUrl(`resource${startupInfo.resourceId}/detectors/${detector.id}`);
+                      const categoryId = this.getCategoryIdByCategoryName(detector.category);
+                      this.navigatTo(startupInfo, categoryId, detector.id, DetectorType.Detector);
                     }
-                  } else {
-                    const categoryId = this.getCategoryIdByCategoryName(detector.category);
-                    this.navigatTo(startupInfo, categoryId, detector.id, DetectorType.Detector);
-                  }
-                })
-              });
-            } else {
-              this._features.push(<Feature>{
-                id: detector.id,
-                description: detector.description,
-                category: detector.category,
-                featureType: FeatureTypes.Detector,
-                name: detector.name,
-                clickAction: this._createFeatureAction(detector.name, detector.category, () => {
-                  if (this.isLegacy) {
-                    this._router.navigateByUrl(`resource${startupInfo.resourceId}/analysis/${detector.id}`);
-                  } else {
-                    const categoryId = this.getCategoryIdByCategoryName(detector.category);
-                    this.navigatTo(startupInfo, categoryId, detector.id, DetectorType.Analysis);
-                  }
-                })
-              });
+                  })
+                });
+              } else {
+                this._features.push(<Feature>{
+                  id: detector.id,
+                  description: detector.description,
+                  category: detector.category,
+                  featureType: FeatureTypes.Detector,
+                  name: detector.name,
+                  clickAction: this._createFeatureAction(detector.name, detector.category, () => {
+                    if (this.isLegacy) {
+                      this._router.navigateByUrl(`resource${startupInfo.resourceId}/analysis/${detector.id}`);
+                    } else {
+                      const categoryId = this.getCategoryIdByCategoryName(detector.category);
+                      this.navigatTo(startupInfo, categoryId, detector.id, DetectorType.Analysis);
+                    }
+                  })
+                });
+              }
             }
-          }
+          });
+          this.sortFeatures();
+          this.featureSub.next(this._features);
         });
-        this.sortFeatures();
-        this.featureSub.next(this._features);
       });
 
       this._contentService.getContent().subscribe(articles => {
@@ -113,13 +116,6 @@ export class FeatureService {
   }
 
   getFeaturesForCategory(category: Category): Feature[] {
-    //Temporary solution for migrating from "Best Practice" to "Risk Assessment"
-    const bestPractices = "Best Practices";
-    const riskAssessments = "Risk Assessments";
-    if(category.name === bestPractices || category.name === riskAssessments){
-      return this._features.filter(feature => feature.category === bestPractices || feature.category === riskAssessments);
-    }
-
     return this._features.filter(feature => {
       if (feature && feature.category) {
         return feature.category.toLowerCase() === category.name.toLowerCase();
@@ -206,6 +202,16 @@ export class FeatureService {
     //If it's in Home page,open new category page
     else {
       this._portalActionService.openBladeDiagnoseDetectorId(category, detector, type);
+    }
+  }
+
+  //Temporary solution for migration from "Best Practices" to "Risk Assessments"
+  private _rewriteCategory(detector: DetectorMetaData) {
+    const bestPractices = "Best Practices";
+    const riskAssessments = "Risk Assessments";
+    //If category name is "Best Practice" and only has "Risk Assessment" category then rewrite category to "Risk Assessment"
+    if(detector.category === bestPractices && !this.categories.find(category => category.name === bestPractices) && this.categories.find(category => category.name === riskAssessments)) {
+      detector.category = riskAssessments;
     }
   }
 }
