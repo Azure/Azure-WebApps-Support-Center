@@ -116,10 +116,10 @@ export class FeatureService {
     //Temporary solution for migrating from "Best Practice" to "Risk Assessment"
     const bestPractices = "Best Practices";
     const riskAssessments = "Risk Assessments";
-    if(category.name === bestPractices || riskAssessments){
+    if(category.name === bestPractices || category.name === riskAssessments){
       return this._features.filter(feature => feature.category === bestPractices || feature.category === riskAssessments);
     }
-    
+
     return this._features.filter(feature => {
       if (feature && feature.category) {
         return feature.category.toLowerCase() === category.name.toLowerCase();
