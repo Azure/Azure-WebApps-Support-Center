@@ -42,7 +42,7 @@ export class FabricSearchResultsComponent {
     } else {
       searchResultAriaLabel = `No results were found.`;
     }
-    return `${searchResultAriaLabel} Press Escape to clear search result`;
+    return `${searchResultAriaLabel}, Press Escape to clear search result`;
   }
 
   @HostListener('mousedown', ['$event.target'])
@@ -167,9 +167,10 @@ export class FabricSearchResultsComponent {
     this.showSearchResults = true;
     this.features = this.featureService.getFeatures(this.searchValue);
     //Disable AutoComplete
-    //get element which type is input,class has ms-SearchBox-field,placeholder=Search
-    const input: any = document.querySelector("input.ms-SearchBox-field[placeholder=Search]");
-    input.autocomplete = "off";
+    if(document.querySelector("#fabSearchBox input")){
+      const input = <any>document.querySelector("#fabSearchBox input");
+      input.autocomplete = "off";
+    }
   }
 
   clearSearch() {
