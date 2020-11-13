@@ -51,7 +51,7 @@ export class GenericCategoryFlow extends IMessageFlowProvider {
   }
 
   createMessageFlowForCategory(category: Category): Observable<MessageGroup[]> {
-    if (!category.createFlowForCategory || this.categoriesCreated.indexOf(category) >= 0) { return of([]); }
+    if (!category || !category.createFlowForCategory || this.categoriesCreated.indexOf(category) >= 0) { return of([]); }
 
     this.categoriesCreated.push(category);
 
