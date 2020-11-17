@@ -86,11 +86,12 @@ export class CommAlertComponent implements OnInit {
 
         const allCommsForImpactingIncident = this.azureServiceCommList.filter(x => x.incidentId === this.commAlertToShow.incidentId);
         allCommsForImpactingIncident.forEach(item => {
-            impactedServices = impactedServices.concat(item.impactedServices.map(y => y.name));
+            if(item && item.impactedServices){
+                impactedServices = impactedServices.concat(item.impactedServices.map(y => y.name));
 
-            const regions = item.impactedServices.map(z => z.regions);
-            impactedRegions = impactedRegions.concat(...regions);
-
+                const regions = item.impactedServices.map(z => z.regions);
+                impactedRegions = impactedRegions.concat(...regions);
+            }
         });
 
         const impactedServicesArray = impactedServices.filter((value, index, arr) => arr.indexOf(value) === index);
