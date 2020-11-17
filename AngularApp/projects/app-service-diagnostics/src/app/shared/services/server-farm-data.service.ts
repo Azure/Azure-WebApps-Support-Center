@@ -43,7 +43,7 @@ export class ServerFarmDataService {
                         }),
                         mergeMap((hasPermission: boolean) => {
                             this.hasServerFarmAccess.next(hasPermission);
-                            return this._armService.getResourceWithoutEnvelope<ServerFarm>(this.currentSite.serverFarmId);
+                            return this._armService.getResourceWithoutEnvelope<ServerFarm>(!!this.currentSite.serverFarmId ? this.currentSite.serverFarmId : this.siteResourceId);
                         }),
                         mergeMap((serverFarm: ServerFarm) => {
                             serverFarm = this.addAdditionalProperties(serverFarm);

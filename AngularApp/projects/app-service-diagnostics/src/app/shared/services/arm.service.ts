@@ -121,7 +121,7 @@ export class ArmService {
     }
 
     createUrl(resourceUri: string, apiVersion?: string) {
-        if(resourceUri === "/"){
+        if(!resourceUri || resourceUri === "/"){
             throw new Error("Empty ResourceUri for ARM Call");
         }
         return `${this.armUrl}${resourceUri}${resourceUri.indexOf('?') >= 0 ? '&' : '?'}` +
