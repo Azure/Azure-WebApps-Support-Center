@@ -5,6 +5,8 @@ import { StorageAccount } from '../../../models/storage';
 import { DaasService } from '../../../services/daas.service';
 import { SiteService } from '../../../services/site.service';
 import { DaasValidationResult } from '../../../models/daas';
+import { interval, Subscription } from 'rxjs';
+import { ArmService } from '../../../services/arm.service';
 
 @Component({
   selector: 'configure-storage-account',
@@ -13,7 +15,7 @@ import { DaasValidationResult } from '../../../models/daas';
 })
 export class ConfigureStorageAccountComponent implements OnInit {
 
-  constructor(private _storageService: StorageService, private _daasService: DaasService, private _siteService: SiteService) { }
+  constructor(private _storageService: StorageService, private _daasService: DaasService, private _siteService: SiteService, private _armService: ArmService) { }
 
   @Input() siteToBeDiagnosed: SiteDaasInfo;
   @Input() sessionInProgress: boolean;
@@ -35,6 +37,8 @@ export class ConfigureStorageAccountComponent implements OnInit {
   editMode: boolean = false;
   validationResult: DaasValidationResult = new DaasValidationResult();
   error: any;
+  subscriptionOperationStatus: Subscription;
+  pollCount: number = 0;
 
   ngOnInit() {
     this._storageService.getStorageAccounts(this.siteToBeDiagnosed.subscriptionId).subscribe(resp => {
@@ -85,20 +89,10 @@ export class ConfigureStorageAccountComponent implements OnInit {
     } else {
       this.creatingStorageAccount = true;
       this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
-        .subscribe(storageAccount => {
-          if (!storageAccount) {
-            this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
-              .subscribe(storageAccount => {
-                this.creatingStorageAccount = false;
-                if (storageAccount != null && storageAccount.id) {
-                  this.setBlobSasUri(storageAccount.id, this.newStorageAccountName);
-                }
-              },
-                error => {
-                  this.creatingStorageAccount = false;
-                  this.error = error;
-                });
-          }
+        .subscribe(location => {
+          this.subscriptionOperationStatus = interval(10000).subscribe(res => {
+            this.checkAccountStatus(location);
+          });
 
         },
           error => {
@@ -107,6 +101,23 @@ export class ConfigureStorageAccountComponent implements OnInit {
           });
     }
 
+  }
+
+  checkAccountStatus(location: string) {
+    this.pollCount++;
+    if (this.pollCount > 20) {
+      this.creatingStorageAccount = false;
+      this.error = "The operation to create the storage account timed out. Please retry after some time or use an existing storage account";
+      this.subscriptionOperationStatus.unsubscribe();
+      return;
+    }
+    this._armService.getResourceFullUrl(location, true).subscribe((storageAccount: StorageAccount) => {
+      if (storageAccount != null) {
+        this.subscriptionOperationStatus.unsubscribe();
+        this.creatingStorageAccount = false;
+        this.setBlobSasUri(storageAccount.id, storageAccount.name);
+      }
+    });
   }
 
   setBlobSasUri(storageAccountId: string, storageAccountName: string) {

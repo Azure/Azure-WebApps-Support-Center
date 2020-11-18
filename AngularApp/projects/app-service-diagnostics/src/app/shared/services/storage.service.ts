@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { ResponseMessageCollectionEnvelope, ResponseMessageEnvelope } from '../models/responsemessageenvelope';
 import { StorageAccount, StorageKeys, NewStorageAccount, SasUriPostBody, SasUriPostResponse } from '../models/storage';
 import moment = require('moment');
+import { HttpResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -38,13 +39,16 @@ export class StorageService {
       }));
   }
 
-  createStorageAccount(subscriptionId: string, resourceGroupName: string, accountName: string, location: string): Observable<any> {
+  createStorageAccount(subscriptionId: string, resourceGroupName: string, accountName: string, location: string): Observable<string> {
     let url = this._uriElementsService.createStorageAccountsUrl(subscriptionId, resourceGroupName, accountName.toLowerCase());
     let requestBody = new NewStorageAccount();
     requestBody.location = location;
-    return this._armClient.putResourceWithoutEnvelope<any, NewStorageAccount>(url, requestBody, this.apiVersion)
-      .pipe(map(response => {
-        return response;
+    return this._armClient.putResourceFullResponse(url, requestBody, true, this.apiVersion).pipe(
+      map((response: HttpResponse<{}>) => {
+        let locationHeader = response.headers.get('Location');
+        if (locationHeader != null) {
+          return locationHeader;
+        }
       }));
   }
 

@@ -8,6 +8,7 @@ import { SharedStorageAccountService, StorageAccountProperties } from '../../../
 import { StorageAccount } from '../../../shared/models/storage';
 import { DaasService } from '../../../shared/services/daas.service';
 import { ArmService } from '../../../shared/services/arm.service';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'create-storage-account-panel',
@@ -32,6 +33,8 @@ export class CreateStorageAccountPanelComponent implements OnInit {
   resourceGroup: string = "";
   subscriptionName: string = "";
   private apiVersion: string = "2019-06-01";
+  subscriptionOperationStatus: Subscription;
+  pollCount: number = 0;
 
   storageAccounts: IDropdownOption[] = [];
   choiceGroupOptions: IChoiceGroupOption[] = [
@@ -115,20 +118,10 @@ export class CreateStorageAccountPanelComponent implements OnInit {
     if (this.createNewMode) {
       this.creatingStorageAccount = true;
       this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
-        .subscribe(storageAccount => {
-          if (!storageAccount) {
-            this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
-              .subscribe(storageAccount => {
-                this.creatingStorageAccount = false;
-                this.setBlobSasUri(storageAccount.id, storageAccount.name);
-              },
-                error => {
-                  this.creatingStorageAccount = false;
-                  this.error = error;
-                  this.errorMessage = "Failed to create a storage account";
-                });
-          }
-
+        .subscribe(location => {
+          this.subscriptionOperationStatus = interval(10000).subscribe(res => {
+            this.checkAccountStatus(location);
+          });
         },
           error => {
             this.creatingStorageAccount = false;
@@ -139,6 +132,23 @@ export class CreateStorageAccountPanelComponent implements OnInit {
       this.setBlobSasUri(this.selectedStorageAccount.id, this.selectedStorageAccount.name);
     }
 
+  }
+
+  checkAccountStatus(location: string) {
+    this.pollCount++;
+    if (this.pollCount > 20) {
+      this.creatingStorageAccount = false;
+      this.error = "The operation to create the storage account timed out. Please retry after some time or use an existing storage account";
+      this.subscriptionOperationStatus.unsubscribe();
+      return;
+    }
+    this._armService.getResourceFullUrl(location, true).subscribe((storageAccount: StorageAccount) => {
+      if (storageAccount != null) {
+        this.subscriptionOperationStatus.unsubscribe();
+        this.creatingStorageAccount = false;
+        this.setBlobSasUri(storageAccount.id, storageAccount.name);
+      }
+    });
   }
 
   setBlobSasUri(storageAccountId: string, storageAccountName: string) {
