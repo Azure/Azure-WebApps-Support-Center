@@ -49,7 +49,6 @@ import { JavaMemoryDumpToolComponent } from './components/tools/java-memorydump-
 import { JavaThreadDumpToolComponent } from './components/tools/java-threaddump-tool/java-threaddump-tool.component';
 import { IncidentNotificationComponent } from './components/incident-notification/incident-notification.component';
 import { HttpLogAnalysisToolComponent } from './components/tools/http-loganalysis-tool/http-loganalysis-tool.component';
-import { PhpProcessAnalyzerToolComponent } from './components/tools/php-processanalyzer-tool/php-processanalyzer-tool.component';
 import { PhpLogsAnalyzerToolComponent } from './components/tools/php-logsanalyzer-tool/php-logsanalyzer-tool.component';
 import { ConnectionDiagnoserToolComponent } from './components/tools/connection-diagnoser-tool/connection-diagnoser-tool.component';
 import { NetworkTraceToolComponent } from './components/tools/network-trace-tool/network-trace-tool.component';
@@ -170,7 +169,6 @@ import { RiskAlertsPanelComponent } from './components/risk-alerts-panel/risk-al
         JavaThreadDumpToolComponent,
         IncidentNotificationComponent,
         HttpLogAnalysisToolComponent,
-        PhpProcessAnalyzerToolComponent,
         PhpLogsAnalyzerToolComponent,
         ConnectionDiagnoserToolComponent,
         NetworkTraceToolComponent,
@@ -287,7 +285,6 @@ import { RiskAlertsPanelComponent } from './components/risk-alerts-panel/risk-al
         JavaThreadDumpToolComponent,
         IncidentNotificationComponent,
         HttpLogAnalysisToolComponent,
-        PhpProcessAnalyzerToolComponent,
         PhpLogsAnalyzerToolComponent,
         ConnectionDiagnoserToolComponent,
         NetworkTraceToolComponent,

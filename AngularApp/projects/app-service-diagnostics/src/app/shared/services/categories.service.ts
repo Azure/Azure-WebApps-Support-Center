@@ -278,17 +278,6 @@ export class CategoriesService {
         });
 
         tools.Subcategories.push({
-            Name: ToolNames.PHPProcessAnalyzer,
-            BgColor: 'rgb(0, 148, 153)',
-            TextColor: 'White',
-            Href: 'tools/phpprocessanalyzer',
-            OperatingSystem: OperatingSystem.windows,
-            AppType: AppType.WebApp | AppType.FunctionApp,
-            Sku: Sku.NotDynamic,
-            AppStack : 'PHP'
-        });
-
-        tools.Subcategories.push({
             Name: ToolNames.JavaMemoryDump,
             BgColor: 'rgb(153, 69, 0)',
             TextColor: 'White',

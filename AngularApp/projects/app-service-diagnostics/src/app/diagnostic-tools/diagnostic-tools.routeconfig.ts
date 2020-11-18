@@ -5,7 +5,6 @@ import { JavaThreadDumpToolComponent } from '../shared/components/tools/java-thr
 import { JavaMemoryDumpToolComponent } from '../shared/components/tools/java-memorydump-tool/java-memorydump-tool.component';
 import { HttpLogAnalysisToolComponent } from '../shared/components/tools/http-loganalysis-tool/http-loganalysis-tool.component';
 import { PhpLogsAnalyzerToolComponent } from '../shared/components/tools/php-logsanalyzer-tool/php-logsanalyzer-tool.component';
-import { PhpProcessAnalyzerToolComponent } from '../shared/components/tools/php-processanalyzer-tool/php-processanalyzer-tool.component';
 import { ConnectionDiagnoserToolComponent } from '../shared/components/tools/connection-diagnoser-tool/connection-diagnoser-tool.component';
 import { AutohealingComponent } from '../auto-healing/autohealing.component';
 import { NetworkTraceToolComponent } from '../shared/components/tools/network-trace-tool/network-trace-tool.component';
@@ -141,15 +140,6 @@ export const DiagnosticToolsRoutes: Route[] = [
         component: PhpLogsAnalyzerToolComponent,
         data: {
             navigationTitle: ToolNames.PHPLogAnalyzer,
-            cacheComponent: true
-        }
-    },
-    // PHP Process Analyzer
-    {
-        path: 'phpprocessanalyzer',
-        component: PhpProcessAnalyzerToolComponent,
-        data: {
-            navigationTitle: ToolNames.PHPProcessAnalyzer,
             cacheComponent: true
         }
     },

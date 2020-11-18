@@ -42,7 +42,6 @@ export const icons: Set<string> = new Set(
         ToolIds.DatabaseTester,
         ToolIds.NetworkTrace,
         ToolIds.PHPLogAnalyzer,
-        ToolIds.PHPProcessAnalyzer,
         ToolIds.JavaMemoryDump,
         ToolIds.JavaThreadDump,
         ToolIds.JavaFlightRecorder,

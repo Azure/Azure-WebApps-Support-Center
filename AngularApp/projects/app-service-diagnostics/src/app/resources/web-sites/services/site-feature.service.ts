@@ -372,28 +372,6 @@ export class SiteFeatureService extends FeatureService {
         platform: OperatingSystem.windows,
         sku: Sku.NotDynamic,
         hostingEnvironmentKind: HostingEnvironmentKind.All,
-        stack: 'PHP',
-        item: {
-          id: ToolIds.PHPProcessAnalyzer,
-          name: ToolNames.PHPProcessAnalyzer,
-          category: 'Diagnostic Tools',
-          description: '',
-          featureType: FeatureTypes.Tool,
-          clickAction: this._createFeatureAction(ToolNames.PHPProcessAnalyzer, 'Diagnostic Tools', () => {
-            //Need remove after A/B test
-            if (this.isLegacy) {
-              this._router.navigateByUrl(`resource${resourceId}/tools/phpprocessanalyzer`);
-            } else {
-              this.navigateTo(resourceId, ToolIds.PHPProcessAnalyzer);
-            }
-          })
-        }
-      },
-      {
-        appType: AppType.WebApp | AppType.FunctionApp,
-        platform: OperatingSystem.windows,
-        sku: Sku.NotDynamic,
-        hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: 'Java',
         item: {
           id: ToolIds.JavaMemoryDump,
