@@ -186,7 +186,7 @@ export class ArmService {
                 }));
 
             }),
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         return this._cache.get(url, request, invalidateCache, logData);
@@ -203,7 +203,7 @@ export class ArmService {
             headers: this.getHeaders()
         }).pipe(
             retry(2),
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         return this._cache.get(url, request, invalidateCache);
@@ -215,7 +215,7 @@ export class ArmService {
         const request = this._http.get<T>(url, {
             headers: this.getHeaders()
         }).pipe(
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         return this._cache.get(url, request, invalidateCache);
@@ -230,7 +230,7 @@ export class ArmService {
 
         const request = this._http.post<S>(url, bodyString, { headers: this.getHeaders() }).pipe(
             retry(2),
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         let cacheKey: string = appendBodyToCacheKey ? url + bodyString : url;
@@ -241,7 +241,7 @@ export class ArmService {
     deleteResource<T>(resourceUri: string, apiVersion?: string, invalidateCache: boolean = false): Observable<any> {
         const url = this.createUrl(resourceUri, apiVersion);
         return this._http.delete(url, { headers: this.getHeaders() }).pipe(
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
     }
 
@@ -253,7 +253,7 @@ export class ArmService {
         }
 
         const request = this._http.post<T>(url, bodyString, { headers: this.getHeaders() }).pipe(
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         return this._cache.get(url, request, invalidateCache);
@@ -267,7 +267,7 @@ export class ArmService {
         }
 
         const request = this._http.put(url, bodyString, { headers: this.getHeaders() }).pipe(
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         return this._cache.get(url, request, invalidateCache);
@@ -281,7 +281,7 @@ export class ArmService {
         }
 
         const request = this._http.patch(url, bodyString, { headers: this.getHeaders() }).pipe(
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         // Always invalidate cache for write calls as we dont want to just hit cache.
@@ -297,7 +297,7 @@ export class ArmService {
         }
 
         const request = this._http.put(url, bodyString, { headers: this.getHeaders() }).pipe(
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         return this._cache.get(url, request, invalidateCache);
@@ -310,7 +310,7 @@ export class ArmService {
             headers: this.getHeaders(),
             observe: 'response'
         }).pipe(
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         return this._cache.get(resourceUri, request, invalidateCache);
@@ -323,7 +323,7 @@ export class ArmService {
             headers: this.getHeaders(),
             observe: 'response'
         }).pipe(
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         return this._cache.get(resourceUri, request, invalidateCache);
@@ -336,7 +336,7 @@ export class ArmService {
             headers: this.getHeaders(),
             observe: 'response'
         }).pipe(
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         return this._cache.get(resourceUri, request, invalidateCache);
@@ -349,7 +349,7 @@ export class ArmService {
             headers: this.getHeaders(),
             observe: 'response'
         }).pipe(
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         return this._cache.get(resourceUri, request, invalidateCache);
@@ -359,7 +359,7 @@ export class ArmService {
         const request = this._http.get<T>(resourceUri, {
             headers: this.getHeaders()
         }).pipe(
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         return this._cache.get(resourceUri, request, invalidateCache);
@@ -461,7 +461,7 @@ export class ArmService {
 
         const request = this._http.get(url, { headers: this.getHeaders(null, additionalHeaders) }).pipe(
             map<ResponseMessageCollectionEnvelope<ResponseMessageEnvelope<T>>, ResponseMessageEnvelope<T>[]>(r => r.value),
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
 
         return this._cache.get(url, request, invalidateCache, logData);
