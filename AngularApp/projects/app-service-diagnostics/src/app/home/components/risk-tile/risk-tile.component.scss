@@ -1,4 +1,11 @@
-.risk-tile {
+@import "../../../../../src/styles/common/variables";
+
+
+.risk-tile :hover {
+  background-color: $tile-homepage-hover-background;
+}
+
+.risk-tile-container {
     padding: 10px 20px 0px 20px;
     width: 300px;
     height: 100%;
@@ -28,4 +35,21 @@
 
 .risk-icon-section {
   margin-right : 20px;
+}
+
+
+.fa-exclamation-circle {
+  color: #E00B1C;
+}
+
+.fa-exclamation-triangle {
+  color: #DB7500
+}
+
+.fa-check-circle {
+  color: #57A300;
+}
+
+.fa-info-circle {
+  color: #015CDA;
 }

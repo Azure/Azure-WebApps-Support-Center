@@ -1,3 +1,5 @@
+@import "../../../../styles/global.scss";
+
 .home-container {
     padding: 30px 40px;
     height: 100%;
@@ -81,8 +83,8 @@
 
 
 .section-container {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
 .home-tiles {
@@ -104,4 +106,8 @@
 .home-spinner {
   display: flex;
   margin-top: 20px;
+}
+
+.home-main-area a {
+  color: #0078D4;;
 }

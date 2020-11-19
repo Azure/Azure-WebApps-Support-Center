@@ -1,12 +1,14 @@
-<div (click)="openBladeDiagnoseCategoryBlade()" (keyup.enter)="openBladeDiagnoseCategoryBlade()"
-  (keyup.space)="openBladeDiagnoseCategoryBlade()" tabindex="0" role="button" class="category-tile">
-  <div>
-    <img class="tile-image" [src]="categoryImgPath">
-  </div>
-  <div class="tile-content">
-    <h3 class="tile-title">{{category.name}}</h3>
-    <p class="tile-description">{{category.description}}</p>
-    <p class="tile-keywords">Ex: {{keywords}}</p>
-    <a>Troubleshoot</a>
+<div class="category-tile">
+  <div (click)="openBladeDiagnoseCategoryBlade()" (keyup.enter)="openBladeDiagnoseCategoryBlade()"
+    (keyup.space)="openBladeDiagnoseCategoryBlade()" tabindex="0" role="button" class="category-tile-container">
+    <div>
+      <img class="tile-image" [src]="categoryImgPath">
+    </div>
+    <div class="tile-content">
+      <h3 class="tile-title">{{category.name}}</h3>
+      <p class="tile-description">{{category.description}}</p>
+      <p class="tile-keywords">Ex: {{keywords}}</p>
+      <a>Troubleshoot</a>
+    </div>
   </div>
 </div>

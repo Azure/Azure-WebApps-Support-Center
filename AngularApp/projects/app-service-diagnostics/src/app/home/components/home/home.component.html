@@ -113,9 +113,9 @@
 
   <div class="home-main-area">
     <div class="section-container">
-      <h3><span tabindex="0" id="homepage-title" class="section-title">{{homePageText.title}}</span><span class="home-title-text"> - {{homePageText.description}}
+      <h2><span tabindex="0" id="homepage-title" class="blade-title">{{homePageText.title}}</span><span class="blade-description"> - {{homePageText.description}}
           </span>
-      </h3>
+      </h2>
       <div class="home-search">
         <fabric-search-results></fabric-search-results>
         <div class="home-search-text">Have questions? <a tabindex="0" (click)="openGeniePanel()"
@@ -125,7 +125,7 @@
 
 
     <div *ngIf="showRiskSection" class="section-container">
-      <h3 class="section-title">Risk alerts</h3>
+      <h2 class="section-title">Risk alerts</h2>
       <div class="home-tiles">
         <ng-container *ngFor="let risk of risks">
           <risk-tile [risk]="risk"></risk-tile>
@@ -134,7 +134,7 @@
     </div>
 
     <div class="section-container">
-      <h3 class="section-title">Troubleshooting categories</h3>
+      <h2 class="section-title">Troubleshooting categories</h2>
       <div *ngIf="categories" class="home-tiles">
         <div *ngFor="let category of categories" class="home-tile-wrapper">
           <category-tile-v4 [category]="category"></category-tile-v4>
@@ -143,7 +143,7 @@
     </div>
 
     <div class="section-container" >
-      <h3 class="section-title">Popular troubleshooting tools</h3>
+      <h2 class="section-title">Popular troubleshooting tools</h2>
       <div *ngIf="!loadingQuickLinks else loading">
         <div class="quick-link" *ngFor="let feature of quickLinkFeatures">
           <a tabindex="0" (click)="clickQuickLink(feature)" (keyup.enter)="clickQuickLink(feature)">{{feature.name}}</a>

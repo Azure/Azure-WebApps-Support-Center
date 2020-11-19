@@ -7,17 +7,13 @@
     padding-left:30px;
 }
 
-.category-title{
-    font-size: 18px;
-    line-height: 22px;
-    font-weight: 600;
-    font-family: 'Segoe UI';
-}
+// .category-title {
+//     @extend .blade-header;
+// }
 
-.category-description {
-    font-size: 16px;
-    line-height: 22px;
-}
+// .category-description {
+//     @extend .blade-description
+// }
 
 .search-box{
     width:330px;
