@@ -1,9 +1,14 @@
 <div *ngIf="detectorDataLocalCopy">
   <div *ngIf="((!hideDetectorHeader && !analysisMode) || isPopoutFromAnalysis) && !isInCaseSubmission()">
     <section class="content-header">
-      <h2><span class="blade-title" tabindex="0" id="detector-name"
-          *ngIf="!isSystemInvoker && !insideDetectorList">{{detectorDataLocalCopy.metadata.name}}</span></h2>
-      <div class="blade-description">{{detectorDataLocalCopy.metadata.description}}</div>
+      <h2>
+        <span class="blade-title" tabindex="0" id="detector-name" *ngIf="!isSystemInvoker && !insideDetectorList">
+          {{detectorDataLocalCopy.metadata.name}}
+        </span>
+        <span class="blade-description">
+           - {{detectorDataLocalCopy.metadata.description}}
+        </span>
+      </h2>
       <section *ngIf="!isPublic">
         <div class="description">By
           <span style="padding:2px; color: #0066c0;">
