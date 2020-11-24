@@ -18,14 +18,11 @@
         <div *ngFor="let feedbackIcon of feedbackIcons;let i = index" (click)="setRating(i)"
           [ngClass]="{'selected-icon':rating - 1 === i}" class="feedback-icon" style="padding: 5px;"
           (keyup.enter)="setRating(i)" tabindex="0">
-          <fab-tooltip-host [content]="feedbackIcon.name">
-            <fab-icon [iconName]="feedbackIcon.id" [ariaLabel]="feedbackIcon.name"></fab-icon>
-          </fab-tooltip-host>
-          <!-- <fab-icon [iconName]="feedbackIcon.id" [ariaLabel]="feedbackIcon.name"></fab-icon>
-        <div class="tooltiptext">{{feedbackIcon.text}}</div> -->
+          <fab-icon [iconName]="feedbackIcon.id" [ariaLabel]="feedbackIcon.name"></fab-icon>
+        <div class="tooltiptext">{{feedbackIcon.text}}</div>
         </div>
       </div>
-      <label for="feedback-textarea">Tell us about your experience</label>
+      <label for="feedback-textarea">Tell us about your experience.</label>
       <textarea id="feedback-textarea" [(ngModel)]="feedbackText" tabindex="0" rows="7" cols="35"></textarea>
     </div>
   </fab-panel>

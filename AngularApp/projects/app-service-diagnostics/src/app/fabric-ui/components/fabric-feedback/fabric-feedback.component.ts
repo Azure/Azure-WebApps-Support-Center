@@ -58,7 +58,8 @@ export class FabricFeedbackComponent implements AfterViewInit, OnInit,OnDestroy 
     this.ratingEventProperties = {
       'DetectorId': detectorName,
       'Url': window.location.href,
-      'Location': isHomepage ? TelemetrySource.LandingPage : TelemetrySource.CategoryPage
+      'Location': isHomepage ? TelemetrySource.LandingPage : TelemetrySource.CategoryPage,
+      'MayContact': this.checked
     };
     this.logEvent(TelemetryEventNames.StarRatingSubmitted, eventProps);
     
