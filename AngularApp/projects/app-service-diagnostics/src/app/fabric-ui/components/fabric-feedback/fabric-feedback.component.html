@@ -1,47 +1,60 @@
-<fab-panel [isOpen]="globals.openFeedback" [type]="type" [customWidth]="'355px'" [isHiddenOnDismiss]="true"
-  [isLightDismiss]="true" [hasCloseButton]="true" [closeButtonAriaLabel]="'close'" (onDismissed)="dismissedHandler()">
-  <div>
-    <div [ngStyle]="{'display':submitted === false ? 'block': 'none'}">
-      <h3>Send us feedback</h3>
-      <p>Thank you for taking the time to give us feedback</p>
-      <div style="display:inline-flex">
-        <svg class="svg-icon" viewBox="0 0 6 6" role="presentation" focusable="false"
-          xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="6px" height="6px">
-          <g>
-            <path
-              d="M3.543 2.352l2.08-.716L6 2.687l-2.076.675L5.21 5.158l-.942.676-1.242-1.867-1.264 1.867-.97-.676 1.305-1.796L0 2.687.38 1.63l2.058.743V.233h1.105v2.119z"
-              class="msportalfx-svg-c22"></path>
-          </g>
-        </svg>
-        <label aria-required="true">Are you satisfied with your experience?</label>
+<div class="panel-text">
+  <fab-panel [isOpen]="globals.openFeedback" [type]="type" [customWidth]="panelWidth" [isHiddenOnDismiss]="true"
+    [hasCloseButton]="true" [closeButtonAriaLabel]="'close'" (onDismissed)="dismissedFeedbackHandler()"
+    (onOpen)="onOpenFeedbackPanel()" [renderFooterContent]="feedbackFooter" [isFooterAtBottom]="true">
+    <!-- Feedback Panel Header -->
+    <div style="margin-bottom: 40px;">
+      <div class="feedback-panel-header">
+        <h3>Feedback</h3>
+        <p>{{siteName}}</p>
       </div>
-      <div style="display: flex; font-size: 25px;" id="feedback-icons">
+    </div>
+
+    <!-- Feedback Panel Content -->
+    <div>
+      <p>Thank you for taking the time to give us feedback</p>
+      <label aria-required="true">Are you satisfied with your experience?</label>
+      <div class="feedback-panel-icons" id="feedback-icons">
         <div *ngFor="let feedbackIcon of feedbackIcons;let i = index" (click)="setRating(i)"
-          [ngClass]="{'selected-icon':rating - 1 === i}"
-          class="feedback-icon"
-          style="padding: 5px;" (keyup.enter)="setRating(i)" tabindex="0">
-          <fab-icon [iconName]="feedbackIcon.id" [ariaLabel]="feedbackIcon.name"></fab-icon>
-          <div class="tooltiptext">{{feedbackIcon.text}}</div>
+          [ngClass]="{'selected-icon':rating - 1 === i}" class="feedback-icon" style="padding: 5px;"
+          (keyup.enter)="setRating(i)" tabindex="0">
+          <fab-tooltip-host [content]="feedbackIcon.name">
+            <fab-icon [iconName]="feedbackIcon.id" [ariaLabel]="feedbackIcon.name"></fab-icon>
+          </fab-tooltip-host>
+          <!-- <fab-icon [iconName]="feedbackIcon.id" [ariaLabel]="feedbackIcon.name"></fab-icon>
+        <div class="tooltiptext">{{feedbackIcon.text}}</div> -->
         </div>
       </div>
-      <textarea [(ngModel)]="feedbackText" placeholder="Tell us about your experience..." tabindex="0" rows="7"
-        cols="40"></textarea>
-      <div class="feedback-submit">
-        <fab-primary-button (onClick)="submitFeedback()" [disabled]="rating == 0 &&feedbackText === ''">Submit feedback</fab-primary-button>
+      <label for="feedback-textarea">Tell us about your experience</label>
+      <textarea id="feedback-textarea" [(ngModel)]="feedbackText" tabindex="0" rows="7" cols="35"></textarea>
+    </div>
+  </fab-panel>
+
+  <fab-panel [isOpen]="submitted" [isLightDismiss]="true" [type]="type" [customWidth]="panelWidth"
+    [isHiddenOnDismiss]="true" [hasCloseButton]="true" [closeButtonAriaLabel]="'close'" [styles]="submittedPanelStyles"
+    [isBlocking]="false" (onDismissed)="dismissedSubmittedHandler()" (onOpen)="onOpenSubmittedPanel()">
+    <div class="submitted-panel-text">
+      <div>
+        <span class="fa fa-check-circle submitted-panel-icon"></span> Feedback sent !
+      </div>
+      <div>{{currentTime}}</div>
+    </div>
+    <p>Thank you for your feedback</p>
+  </fab-panel>
+</div>
+
+<ng-template #feedbackFooter>
+  <hr class="feedback-panel-divider">
+  <div>
+    <div class="panel-text">
+      <fab-checkbox [label]="checkLabel" [ariaLabel]="checkLabel" [(checked)]="checked"></fab-checkbox>
+      <div class="feedback-panel-link">
+        <a href="https://privacy.microsoft.com/en-US/privacystatement" target="_blank">Privacy</a>
       </div>
     </div>
-
-    <div [ngStyle]="{'display':submitted === true ? 'block': 'none'}">
-      <p>Thank you for your feedback!</p>
-      <div *ngIf="rating >= 3">
-        <!-- <p>Share your experience with App Service Diagnostics !</p> -->
-        <!-- <button>Tweet</button> -->
-      </div>
-
-      <div *ngIf="rating < 3">
-        <p>Get help from our interactive chatbot Genie and find answers to the problem of your application.</p>
-        <div (click)="openGenieHandler()" class="feedback-btn">Ask Genie</div>
-      </div>
+    <div>
+      <fab-primary-button (onClick)="submitFeedback()" [disabled]="rating == 0 &&feedbackText === ''">Submit feedback
+      </fab-primary-button>
     </div>
   </div>
-</fab-panel>
+</ng-template>

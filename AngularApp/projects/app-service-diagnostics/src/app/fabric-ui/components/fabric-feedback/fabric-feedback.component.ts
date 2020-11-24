@@ -1,8 +1,10 @@
-import { Component, AfterViewInit } from '@angular/core';
-import { PanelType } from 'office-ui-fabric-react';
+import { Component, AfterViewInit, ViewChild, TemplateRef, AfterContentInit, OnInit, OnDestroy } from '@angular/core';
+import { DirectionalHint, ICheckProps, IPanelProps, PanelType } from 'office-ui-fabric-react';
 import { TelemetryService, TelemetryEventNames, PIIUtilities, TelemetrySource } from 'diagnostic-data';
 import { Globals } from '../../../globals';
 import { ActivatedRoute } from '@angular/router';
+import * as momentNs from 'moment';
+import { SiteService } from '../../../shared/services/site.service';
 
 
 @Component({
@@ -10,39 +12,41 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './fabric-feedback.component.html',
   styleUrls: ['./fabric-feedback.component.scss']
 })
-export class FabricFeedbackComponent implements AfterViewInit {
+export class FabricFeedbackComponent implements AfterViewInit, OnInit,OnDestroy {
   type: PanelType = PanelType.custom;
-  // dismissSubject: Subject<void> = new Subject<void>();
+  siteName: string = "";
   ratingEventProperties: any;
   feedbackText: string = "";
-  feedbackIcons: {id:string,text:string}[] = 
-  [
+  panelWidth: string = "315px";
+  feedbackIcons: { id: string, text: string }[] =
+    [
       {
-        id:"EmojiDisappointed",
-        text:"very dissatisfied"
-      }, 
-      {
-        id:"Sad",
-        text:"dissatisfied "
+        id: "Sad",
+        text: "dissatisfied "
       },
       {
-        id:"EmojiNeutral",
-        text:"ok"
+        id: "EmojiNeutral",
+        text: "ok"
       },
       {
-        id:"Emoji2",
-        text:"satisfied"
-      },
-      {
-        id:"Emoji",
-        text:"very satisfied"
+        id: "Emoji2",
+        text: "satisfied"
       }
-  ];
+    ];
   submitted: boolean = false;
   rating: number = 0;
-  constructor(protected telemetryService: TelemetryService, public globals: Globals,private activatedRoute:ActivatedRoute) {
-    // this.submitted = false;
+  checked: boolean = false;
+  submittedPanelTimer: any = null;
+  checkLabel: string = "Microsoft can email you about your feedback";
+  tooltipDirectionalHint = DirectionalHint.rightBottomEdge;
+
+  submittedPanelStyles: IPanelProps["styles"] = {
+    root: {
+      height: "120px"
+    }
   }
+  currentTime: string = "";
+  constructor(protected telemetryService: TelemetryService, public globals: Globals, private activatedRoute: ActivatedRoute,private siteService:SiteService) { }
 
   submitFeedback() {
     const eventProps = {
@@ -57,6 +61,8 @@ export class FabricFeedbackComponent implements AfterViewInit {
       'Location': isHomepage ? TelemetrySource.LandingPage : TelemetrySource.CategoryPage
     };
     this.logEvent(TelemetryEventNames.StarRatingSubmitted, eventProps);
+    
+    this.reset();
     this.submitted = true;
   }
 
@@ -73,11 +79,6 @@ export class FabricFeedbackComponent implements AfterViewInit {
     this.telemetryService.logEvent(eventMessage, eventProperties, measurements);
   }
 
-  openGenieHandler() {
-    this.globals.openFeedback = false;
-    this.globals.openGeniePanel = true;
-  }
-
   ngOnInit() {
     this.reset();
   }
@@ -85,10 +86,10 @@ export class FabricFeedbackComponent implements AfterViewInit {
   ngAfterViewInit() {
     setTimeout(() => {
       const eles = document.querySelectorAll("#feedback-icons i");
-      if(eles && eles.length > 0) {
-        eles.forEach((ele,index) => {
-          ele.setAttribute("role","button");
-          ele.setAttribute("name",this.feedbackIcons[index].text);
+      if (eles && eles.length > 0) {
+        eles.forEach((ele, index) => {
+          ele.setAttribute("role", "button");
+          ele.setAttribute("name", this.feedbackIcons[index].text);
         });
       }
     });
@@ -97,12 +98,31 @@ export class FabricFeedbackComponent implements AfterViewInit {
   reset() {
     this.rating = 0;
     this.feedbackText = "";
-    this.submitted = false;
+    this.checked = false;
+    this.globals.openFeedback = false;
   }
 
 
-  dismissedHandler() {
-    this.globals.openFeedback = false;
+  dismissedFeedbackHandler() {
     this.reset();
+  }
+
+  dismissedSubmittedHandler() {
+    this.submitted = false;
+  }
+
+  onOpenSubmittedPanel() {
+    this.currentTime = momentNs(Date.now()).format("hh:mm A");
+    this.submittedPanelTimer = setTimeout(() => {
+      this.dismissedSubmittedHandler();
+    },3000);
+  }
+
+  onOpenFeedbackPanel() {
+    this.siteName = this.activatedRoute.root.firstChild.firstChild.snapshot.params['resourcename'];
+  }
+
+  ngOnDestroy() {
+    this.submittedPanelTimer = null;
   }
 }

@@ -1,55 +1,23 @@
+$panel-padding-left: 20px;
+$panel-padding-right: 20px;
+
 .selected-icon {
-    // border: 1px dotted blue;
-    color: rgb(255, 185, 0);
+    color: #0078D4;
     position: relative;
+    border-color: #0058ad;
+    background-color: #d7ecf9;
+    border: 1px solid transparent;
+    border-radius: 20%;
 }
-
-// .feedback-info {
-//     border:1px solid #f0f6ff;
-//     background-color: #f0f6ff;
-//     height: 50px;
-//     border-radius: 2px;
-//     vertical-align: middle;
-//     display: flex;
-//     align-items: center;
-// }
-
-// .feedback-info-icon {
-//     color: #015cda;
-//     font-size: 15px;
-//     padding: 5px;
-// }
 
 .feedback-icon:hover {
     cursor: pointer;
 }
 
-.feedback-btn {
-    border: 1px solid #31b0d5;
-    width: 75px;
-    border-radius: 10px;
-    text-align: center;
-    color: #31b0d5;
-}
-
-.feedback-btn:hover {
-    cursor: pointer;
-}
-
-.feedback-submit {
-    position: absolute;
-    bottom: 10px;
-    left:10px
-}
-
-.svg-icon {
-    fill:red;
-}
-
 .feedback-icon .tooltiptext {
     display:none;
     background: white;
-    color: black;
+    // color: black;
 }
 
 .feedback-icon:hover .tooltiptext {
@@ -60,7 +28,66 @@
     z-index: 999;
     margin-top: 6px;
     position: absolute;
-    border: 1px solid black;
+    // border: 1px solid black;
     padding: 3px;
     font-size: 12px;
+}
+
+.panel-text {
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.feedback-panel-header {
+    position: absolute; 
+    left: $panel-padding-left; 
+    right: $panel-padding-right; 
+    top:0px; 
+    height: 32px;
+}
+
+.feedback-panel-header > h3 {
+    font-size: 24px; 
+    line-height: 32px; 
+    font-weight: 600;
+}
+
+.feedback-panel-icons {
+    margin-top: 10px; 
+    margin-bottom: 10px;
+    display: flex; 
+    font-size: 25px;
+}
+
+
+.feedback-panel-divider {
+    border-top: 1px solid #C8C6C4;
+}
+
+.feedback-panel-link {
+    margin-top: 6px;
+    margin-bottom: 12px;
+    color: #0078D4;
+}
+
+.submitted-panel-text {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0px;
+    font-size: 14px;
+}
+
+.submitted-panel-icon {
+    color: #57A300;
+    margin-right: 10px;
+}
+
+::ng-deep .ms-Panel-content {
+    padding-left: $panel-padding-left;
+    padding-right: $panel-padding-right;
+}
+
+::ng-deep .ms-Panel-footerInner {
+    padding-left: $panel-padding-left;
+    padding-right: $panel-padding-right;
 }
