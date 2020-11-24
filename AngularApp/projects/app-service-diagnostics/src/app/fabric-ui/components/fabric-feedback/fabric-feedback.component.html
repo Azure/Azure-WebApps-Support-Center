@@ -1,4 +1,4 @@
-<div class="panel-text">
+<div>
   <fab-panel [isOpen]="globals.openFeedback" [type]="type" [customWidth]="panelWidth" [isHiddenOnDismiss]="true"
     [hasCloseButton]="true" [closeButtonAriaLabel]="'close'" (onDismissed)="dismissedFeedbackHandler()"
     (onOpen)="onOpenFeedbackPanel()" [renderFooterContent]="feedbackFooter" [isFooterAtBottom]="true">
@@ -11,8 +11,8 @@
     </div>
 
     <!-- Feedback Panel Content -->
-    <div>
-      <p>Thank you for taking the time to give us feedback</p>
+    <div class="panel-text">
+      <p>Thank you for giving us feedback!</p>
       <label aria-required="true">Are you satisfied with your experience?</label>
       <div class="feedback-panel-icons" id="feedback-icons">
         <div *ngFor="let feedbackIcon of feedbackIcons;let i = index" (click)="setRating(i)"
@@ -30,9 +30,9 @@
   <fab-panel [isOpen]="submitted" [isLightDismiss]="true" [type]="type" [customWidth]="panelWidth"
     [isHiddenOnDismiss]="true" [hasCloseButton]="true" [closeButtonAriaLabel]="'close'" [styles]="submittedPanelStyles"
     [isBlocking]="false" (onDismissed)="dismissedSubmittedHandler()" (onOpen)="onOpenSubmittedPanel()">
-    <div class="submitted-panel-text">
+    <div class="submitted-panel-text panel-text">
       <div>
-        <span class="fa fa-check-circle submitted-panel-icon"></span> Feedback sent !
+        <span class="fa fa-check-circle submitted-panel-icon"></span> Feedback sent!
       </div>
       <div>{{currentTime}}</div>
     </div>

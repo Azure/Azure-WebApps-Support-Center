@@ -52,9 +52,13 @@ $panel-padding-right: 20px;
     font-weight: 600;
 }
 
+.feedback-panel-header > p {
+    color: #605E5C;
+}
+
 .feedback-panel-icons {
-    margin-top: 10px; 
-    margin-bottom: 10px;
+    margin-top: 5px; 
+    margin-bottom: 5px;
     display: flex; 
     font-size: 25px;
 }
