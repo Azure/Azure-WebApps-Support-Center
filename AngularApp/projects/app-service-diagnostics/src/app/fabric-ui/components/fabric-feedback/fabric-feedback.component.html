@@ -4,10 +4,11 @@
     (onOpen)="onOpenFeedbackPanel()" [renderFooterContent]="feedbackFooter" [isFooterAtBottom]="true">
     <!-- Feedback Panel Header -->
     <div style="margin-bottom: 40px;">
-      <div class="feedback-panel-header">
-        <h3>Feedback</h3>
-        <p>{{siteName}}</p>
-      </div>
+        <h3 class="feedback-panel-header" style="top: 0px; font-size: 24px; font-weight: 600;">Feedback</h3>
+        <p class="feedback-panel-header" style="top: 35px">{{siteName}}</p>
+        <div class="hover-item panel-close" (click)="dismissedFeedbackHandler()">
+          <div class="tooltiptext" style="margin-top: 35px;">close</div>
+        </div>
     </div>
 
     <!-- Feedback Panel Content -->
@@ -16,7 +17,7 @@
       <label aria-required="true">Are you satisfied with your experience?</label>
       <div class="feedback-panel-icons" id="feedback-icons">
         <div *ngFor="let feedbackIcon of feedbackIcons;let i = index" (click)="setRating(i)"
-          [ngClass]="{'selected-icon':rating - 1 === i}" class="feedback-icon" style="padding: 5px;"
+          [ngClass]="{'selected-icon':rating - 1 === i}" class="feedback-icon hover-item" style="padding: 5px;"
           (keyup.enter)="setRating(i)" tabindex="0">
           <fab-icon [iconName]="feedbackIcon.id" [ariaLabel]="feedbackIcon.name"></fab-icon>
         <div class="tooltiptext">{{feedbackIcon.text}}</div>

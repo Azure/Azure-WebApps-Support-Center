@@ -5,6 +5,7 @@ import { Globals } from '../../../globals';
 import { ActivatedRoute } from '@angular/router';
 import * as momentNs from 'moment';
 import { SiteService } from '../../../shared/services/site.service';
+import { Guid } from '../../../shared/utilities/guid';
 
 
 @Component({
@@ -59,7 +60,8 @@ export class FabricFeedbackComponent implements AfterViewInit, OnInit,OnDestroy 
       'DetectorId': detectorName,
       'Url': window.location.href,
       'Location': isHomepage ? TelemetrySource.LandingPage : TelemetrySource.CategoryPage,
-      'MayContact': this.checked
+      'MayContact': this.checked,
+      'FeedbackId': Guid.newShortGuid()
     };
     this.logEvent(TelemetryEventNames.StarRatingSubmitted, eventProps);
     

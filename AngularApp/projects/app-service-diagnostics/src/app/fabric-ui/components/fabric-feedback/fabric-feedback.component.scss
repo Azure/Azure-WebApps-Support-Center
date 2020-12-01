@@ -10,17 +10,17 @@ $panel-padding-right: 20px;
     border-radius: 20%;
 }
 
-.feedback-icon:hover {
+.hover-item:hover {
     cursor: pointer;
 }
 
-.feedback-icon .tooltiptext {
+.hover-item .tooltiptext {
     display:none;
     background: white;
     // color: black;
 }
 
-.feedback-icon:hover .tooltiptext {
+.hover-item:hover .tooltiptext {
     display: block;
     opacity: 1;
     background: white!important;
@@ -33,6 +33,17 @@ $panel-padding-right: 20px;
     font-size: 12px;
 }
 
+.panel-close :hover {
+    cursor: pointer;
+}
+
+.panel-close {
+    position: absolute;
+    top:10px;right:10px;
+    height: 35px; 
+    width: 35px;
+}
+
 .panel-text {
     font-size: 12px;
     line-height: 16px;
@@ -42,7 +53,6 @@ $panel-padding-right: 20px;
     position: absolute; 
     left: $panel-padding-left; 
     right: $panel-padding-right; 
-    top:0px; 
     height: 32px;
 }
 
