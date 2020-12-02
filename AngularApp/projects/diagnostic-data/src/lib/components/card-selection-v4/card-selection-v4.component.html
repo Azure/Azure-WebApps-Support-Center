@@ -1,18 +1,12 @@
-<div style="margin-top: 25px;">
-  <!-- <h2>Select the statement that best describes your problem:</h2> -->
-
-  <div class="card-flex">
-    <div *ngFor="let card of cardSelections; let i = index"
-      class="card-container"  (click)="selectCard(card)"  tabindex="0" (keyup.enter)="selectCard(card)" role="button">
-      <div class="card-header">
-        {{card.title}}
+<div style="margin-top: 25px;" class="card-tiles">
+  <div *ngFor="let card of cardSelections" class="card-tile">
+    <div (click)="selectCard(card)" tabindex="0" (keyup.enter)="selectCard(card)" role="button" class="card-tile-container">
+      <div *ngIf="isPublic">
+        <img class="card-tile-image" [src]="getImagePath(card.linkValue)">
       </div>
-      <br />
-      <div class="card-description">
-        <!-- <ul>
-          <li *ngFor="let desc of card.descriptions">{{desc}}</li>
-        </ul> -->
-        <p *ngFor="let desc of card.descriptions">{{desc}}</p>
+      <div>
+        <h3 class="card-tile-title">{{card.title}}</h3>
+        <p class="card-tile-description" *ngFor="let desc of card.descriptions">{{desc}}</p>
       </div>
     </div>
   </div>

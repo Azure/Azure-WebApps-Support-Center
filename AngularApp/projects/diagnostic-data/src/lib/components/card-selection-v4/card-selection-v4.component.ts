@@ -7,6 +7,7 @@ import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagn
 import { FeatureNavigationService } from '../../services/feature-navigation.service';
 import { DiagnosticData } from '../../models/detector';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
+import { icons } from 'projects/app-service-diagnostics/src/app/fabric-ui/icons-constants';
 
 
 
@@ -83,5 +84,11 @@ export class CardSelectionV4Component extends DataRenderBaseComponent {
       eventProps['Detector'] = card.linkValue;
     }
     this.logEvent(TelemetryEventNames.ToolCardClicked, eventProps);
+  }
+
+  getImagePath(name: string) {
+    const imageFileName = icons.has(name) ? name : "default";
+    const path = `assets/img/detectors/${imageFileName}.svg`;
+    return path;
   }
 }
