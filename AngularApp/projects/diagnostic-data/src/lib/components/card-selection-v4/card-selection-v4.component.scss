@@ -1,17 +1,17 @@
+@import "../../../../../app-service-diagnostics/src/app/fabric-ui/components/category-tile-v4/category-tile-v4.component.scss";
+
+//Style is align with category tiles in home page
+
 .card-tiles {
   display: flex; 
   flex-wrap: wrap;
   align-content: center;
+  margin-top: 25px;
 }
 
 
 .card-tile-container {
-    border: 1px solid rgba(204, 204, 204, 0.5);
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    height: 100%;
-    padding: 16px 10px;
-    display: flex;
+    @extend .category-tile-container
 }
 
 .card-tile {
@@ -21,23 +21,18 @@
 }
 
 .card-tile :hover {
-    background-color: #f3f2f1;
+    background-color: $tile-homepage-hover-background;
 }
 
 .card-tile-image {
-    width: 45px;
-    height: 45px;
-    margin-top: 10px;
-    margin-right: 10px;
+    @extend .tile-image
 }
 
 
 .card-tile-title {
-    font-size: 14px;
-    font-weight: 600;
+    @extend .tile-title
 }
 
 .card-tile-description {
-    font-size: 13px;
-    font-weight: 400;
+    @extend .tile-description
 }

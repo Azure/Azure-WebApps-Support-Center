@@ -1,4 +1,4 @@
-<div style="margin-top: 25px;" class="card-tiles">
+<div class="card-tiles">
   <div *ngFor="let card of cardSelections" class="card-tile">
     <div (click)="selectCard(card)" tabindex="0" (keyup.enter)="selectCard(card)" role="button" class="card-tile-container">
       <div *ngIf="isPublic">
