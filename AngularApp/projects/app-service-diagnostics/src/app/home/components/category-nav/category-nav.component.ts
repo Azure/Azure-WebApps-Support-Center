@@ -10,7 +10,7 @@ import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { Tile } from '../../../shared/components/tile-list/tile-list.component';
 import { Feature } from '../../../shared-v2/models/features';
 import { AuthService } from '../../../startup/services/auth.service';
-import { DiagnosticService, DetectorMetaData, DetectorType, DetectorResponse } from 'diagnostic-data';
+import { DiagnosticService, DetectorMetaData, icons } from 'diagnostic-data';
 import { filter } from 'rxjs/operators';
 import { CollapsibleMenuItem, CollapsibleMenuItemComponent } from '../collapsible-menu-item/collapsible-menu-item.component';
 import { DetectorCategorizationService } from '../../../shared/services/detector-categorized.service';
@@ -20,7 +20,6 @@ import { WebSitesService } from '../../../resources/web-sites/services/web-sites
 import { AppType } from '../../../shared/models/portal';
 import { OperatingSystem, HostingEnvironmentKind } from '../../../shared/models/site';
 import { Sku } from '../../../shared/models/server-farm';
-import { icons } from '../../../fabric-ui/icons-constants';
 
 @Component({
     selector: 'category-nav',

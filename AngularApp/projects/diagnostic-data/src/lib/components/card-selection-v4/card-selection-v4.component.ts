@@ -7,7 +7,7 @@ import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagn
 import { FeatureNavigationService } from '../../services/feature-navigation.service';
 import { DiagnosticData } from '../../models/detector';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
-import { icons } from 'projects/app-service-diagnostics/src/app/fabric-ui/icons-constants';
+import { icons } from '../../utilities/icons-constants';
 
 
 

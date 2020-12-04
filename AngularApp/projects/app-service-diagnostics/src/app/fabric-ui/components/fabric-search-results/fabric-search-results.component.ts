@@ -4,10 +4,9 @@ import { FeatureService } from "../../../shared-v2/services/feature.service";
 import { LoggingV2Service } from "../../../shared-v2/services/logging-v2.service";
 import { NotificationService } from "../../../shared-v2/services/notification.service";
 import { Globals } from "../../../globals";
-import { icons } from "../../icons-constants";
 import { SelectionMode } from 'office-ui-fabric-react/lib/DetailsList'
 import { Router } from "@angular/router";
-import { TelemetryService } from "diagnostic-data";
+import { TelemetryService,icons } from "diagnostic-data";
 
 enum BlurType {
   //click other place to close panel

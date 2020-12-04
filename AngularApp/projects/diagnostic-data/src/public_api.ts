@@ -43,3 +43,4 @@ export * from './lib/models/styles';
 export * from './lib/components/detector-list-analysis/detector-list-analysis.component'
 
 export * from './lib/utilities/pii-utilities';
+export * from './lib/utilities/icons-constants';
