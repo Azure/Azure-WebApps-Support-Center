@@ -128,7 +128,7 @@ export class CategoryNavComponent implements OnInit {
                 title: 'Proactive Tools',
                 tools: this.siteFeatureService.proactiveTools.filter(tool => this.stackMatchedForTools(tool)).map(tool => {
                     let isSelected = () => {
-                        return this._route.url.endsWith("/" + tool.item.id);
+                        return this.checkIsSelected(tool.item.id);
                     };
                     let icon = this.getIconImagePath(tool.item.id);
                     return new CollapsibleMenuItem(tool.item.name, tool.item.clickAction, isSelected, icon);
@@ -146,7 +146,7 @@ export class CategoryNavComponent implements OnInit {
                 title: 'Diagnostic Tools',
                 tools: this.siteFeatureService.diagnosticTools.filter(tool => this.stackMatchedForTools(tool)).map(tool => {
                     let isSelected = () => {
-                        return this._route.url.endsWith("/" + tool.item.id);
+                        return this.checkIsSelected(tool.item.id);
                     };
                     let icon = this.getIconImagePath(tool.item.id);
                     return new CollapsibleMenuItem(tool.item.name, tool.item.clickAction, isSelected, icon);
@@ -164,7 +164,7 @@ export class CategoryNavComponent implements OnInit {
                 title: 'Support Tools',
                 tools: this.siteFeatureService.supportTools.filter(tool => this.stackMatchedForTools(tool)).map(tool => {
                     let isSelected = () => {
-                        return this._route.url.endsWith("/" + tool.item.id);
+                        return this.checkIsSelected(tool.item.id);
                     };
                     let icon = this.getIconImagePath(tool.item.id);
                     return new CollapsibleMenuItem(tool.item.name, tool.item.clickAction, isSelected, icon);
@@ -268,5 +268,12 @@ export class CategoryNavComponent implements OnInit {
             (item.sku & this._webSiteService.sku) > 0 &&	
             (item.hostingEnvironmentKind & this._webSiteService.hostingEnvironmentKind) > 0 &&	
             (!this.toolsAlreadyAdded(item.item));	
+    }
+
+    private checkIsSelected(id:string) {
+        //check if base url is ends with id
+        const url = this._route.url;
+        const baseUrl = url.split('?')[0];
+        return baseUrl.endsWith('/' + id);
     }
 }
