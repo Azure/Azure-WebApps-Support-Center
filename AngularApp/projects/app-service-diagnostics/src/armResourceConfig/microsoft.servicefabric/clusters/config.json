@@ -11,7 +11,7 @@
 	"isSearchEnabled": true,
 	"isApplicableForLiveChat": false,
 	"categories": [{
-			"id": "ClusterInsights",
+			"id": "ClusterAnalysis",
 			"name": "Cluster Insights",
 			"description": "Get recommendations for your configuration, find supportability issues, and identify possible improvements for reliability, select this category.",
 			"keywords": ["Node Health", "Deployments", "Performance", "Scaling", "Upgrade", "Supportability"],
