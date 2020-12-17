@@ -124,8 +124,17 @@ export class ArmService {
         if(!resourceUri || resourceUri === "/"){
             throw new Error("Empty ResourceUri for ARM Call");
         }
-        return `${this.armUrl}${resourceUri}${resourceUri.indexOf('?') >= 0 ? '&' : '?'}` +
-            `api-version=${this.getApiVersion(resourceUri, apiVersion)}`;
+
+        const uri = `${this.armUrl}${resourceUri}${resourceUri.indexOf('?') >= 0 ? '&' : '?'}` +
+        `api-version=${this.getApiVersion(resourceUri, apiVersion)}`
+        
+        //Temporary solution for checking dependency call for missing api version exception, will remove after resolve exception
+        const exceptionUri = "management.azure.com/?clientOptimizations=undefined&l=en.en-us&trustedAuthority=https:%2F%2Fportal.azure.com&shellVersion=undefined#";
+        if(uri.includes(exceptionUri)){
+            throw new Error("ARM Call Cause MissingApiVersionParameter Exception");
+        }
+
+        return uri;
     }
 
     getResource<T>(resourceUri: string, apiVersion?: string, invalidateCache: boolean = false): Observable<{} | ResponseMessageEnvelope<T>> {
