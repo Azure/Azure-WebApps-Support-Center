@@ -2,7 +2,7 @@
 	"homePageText": {
 		"title": "Azure Service Fabric Diagnostics",
 		"description": "Use Azure Service Fabric Diagnostics to investigate how your app is performing, diagnose issues, and discover how to improve its reliability. Select the problem category that best matches the information or tool that you're interested in:",
-		"searchBarPlaceHolder": "Search Azure Service Fabric"
+		"searchBarPlaceHolder": "Search for common problems or error codes"
 	},
 	"matchRegEx": "/Microsoft.ServiceFabric/clusters/",
 	"searchSuffix": "SF",
@@ -13,8 +13,8 @@
 	"categories": [{
 			"id": "ClusterAnalysis",
 			"name": "Cluster Insights",
-			"description": "Get recommendations for your configuration, find supportability issues, and identify possible improvements for reliability, select this category.",
-			"keywords": ["Node Health", "Deployments", "Performance", "Scaling", "Upgrade", "Supportability"],
+			"description": "Get recommendations for your configuration, find common issues, and identify possible improvements for reliability.",
+			"keywords": ["Health", "Deployment", "Performance", "Scaling", "Upgrade", "Update", "Configuration", "Reliability", "Security"],
 			"color": "rgb(186, 211, 245)",
 			"createFlowForCategory": true,
 			"chatEnabled": false
