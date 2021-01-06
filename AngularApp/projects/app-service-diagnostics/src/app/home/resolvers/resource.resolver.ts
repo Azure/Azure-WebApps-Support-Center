@@ -41,7 +41,7 @@ export class ResourceResolver implements Resolve<Observable<{} | ArmResource>> {
 
     //All dependencies call from below Uri is returning 400, block ARM call
     private checkResourceUriMissingApiParam(resourceUri: string): boolean {
-        const missingApiParamUri = "management.azure.com/?clientOptimizations=undefined&l=en.en-us&trustedAuthority=https:%2F%2Fportal.azure.com&shellVersion=undefined#";
+        const missingApiParamUri = "management.azure.com/?clientOptimizations";
         if(resourceUri.includes(missingApiParamUri)) {
             const error = new Error("MissingApiVersionParameter handled at resolver");
             this.telemetryService.logException(
