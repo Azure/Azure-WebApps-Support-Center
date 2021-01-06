@@ -41,7 +41,7 @@ export class FabricSearchResultsComponent {
     } else {
       searchResultAriaLabel = `No results were found.`;
     }
-    return `${searchResultAriaLabel}, Press Escape to clear search result`;
+    return `${searchResultAriaLabel} Press Escape to clear search result`;
   }
 
   @HostListener('mousedown', ['$event.target'])
