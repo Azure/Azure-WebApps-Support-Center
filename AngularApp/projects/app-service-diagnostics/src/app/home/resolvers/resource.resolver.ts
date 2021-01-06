@@ -22,21 +22,8 @@ export class ResourceResolver implements Resolve<Observable<{} | ArmResource>> {
             .map(x => x.path)
             .join('/');
 
-        //All dependencies call from below Uri is returning 400, block ARM call
-        const missingApiParamUri = "management.azure.com/?clientOptimizations=undefined&l=en.en-us&trustedAuthority=https:%2F%2Fportal.azure.com&shellVersion=undefined#";
-        if(resourceUri.includes(missingApiParamUri)) {
-            const error = new Error("MissingApiVersionParameter handled at resolver");
-            this.telemetryService.logException(
-                error,
-                "resource.resolver",
-                {
-                    "resourceUri" : resourceUri,  
-                }
-            );
-            return of({});
-        }
         
-        if (!this.checkResourceUri(resourceUri)) {
+        if (!this.checkResourceUriEmpty(resourceUri) || !this.checkResourceUriMissingApiParam(resourceUri)) {
             const url = state.url;
             const startIndex = url.indexOf("subscriptions/") > -1 ? url.indexOf("subscriptions/") : 0;
             const endIndex = url.indexOf("/categories") > -1 ? url.indexOf("/categories") : url.length;
@@ -48,7 +35,24 @@ export class ResourceResolver implements Resolve<Observable<{} | ArmResource>> {
         return this._resourceService.registerResource(resourceUri);
     }
 
-    private checkResourceUri(resourceUri: string): boolean {
+    private checkResourceUriEmpty(resourceUri: string): boolean {
         return resourceUri !== "" && resourceUri !== "/";
+    }
+
+    //All dependencies call from below Uri is returning 400, block ARM call
+    private checkResourceUriMissingApiParam(resourceUri: string): boolean {
+        const missingApiParamUri = "management.azure.com/?clientOptimizations=undefined&l=en.en-us&trustedAuthority=https:%2F%2Fportal.azure.com&shellVersion=undefined#";
+        if(resourceUri.includes(missingApiParamUri)) {
+            const error = new Error("MissingApiVersionParameter handled at resolver");
+            this.telemetryService.logException(
+                error,
+                "resource.resolver",
+                {
+                    "resourceUri" : resourceUri,  
+                }
+            );
+            return true;
+        }
+        return false;   
     }
 }
