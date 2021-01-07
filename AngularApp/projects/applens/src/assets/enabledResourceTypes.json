@@ -326,6 +326,14 @@
             "versionPrefix": "", 
             "pesId": "14749",  
             "azureCommImpactedServicesList": "Azure Virtual Machines"  
-        }
+        },
+        { 
+             "service": "ResourceService",  
+             "resourceType": "Microsoft.AzurePortal/sessions",  
+             "templateFileName": "AzurePortal",  
+             "imgSrc": "assets/img/AzurePortal.svg",  
+             "versionPrefix": "",  
+             "azureCommImpactedServicesList": "azurePortal"  
+         }
     ]
 }
