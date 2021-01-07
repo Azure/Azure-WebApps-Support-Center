@@ -334,6 +334,14 @@
              "imgSrc": "assets/img/AzurePortal.svg",  
              "versionPrefix": "",  
              "azureCommImpactedServicesList": "azurePortal"  
+         },
+        { 
+             "service": "ResourceService",  
+             "resourceType": "microsoft.insights/components",  
+             "templateFileName": "AppInsights",  
+             "imgSrc": "assets/img/AppInsights-Logo.svg",  
+             "versionPrefix": "",  
+             "azureCommImpactedServicesList": "appInsights"  
          }
     ]
 }
