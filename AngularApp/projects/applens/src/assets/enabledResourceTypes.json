@@ -95,7 +95,7 @@
             "templateFileName": "ApiManagementService",
             "imgSrc": "assets/img/Azure-ApiManagement-Logo.png",
             "versionPrefix": "",
-            "azureCommImpactedServicesList": "",
+            "azureCommImpactedServicesList": "API Management",
             "pesId": "15551",
             "staticSelfHelpContent": "microsoft.apim",
             "searchSuffix": "AZURE API MANAGEMENT SERVICE"
