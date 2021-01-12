@@ -23,11 +23,15 @@ export class ResourceResolver implements Resolve<Observable<{} | ArmResource>> {
             .join('/');
 
         
-        if (!this.checkResourceUriEmpty(resourceUri) || !this.checkResourceUriMissingApiParam(resourceUri)) {
+        if (this.checkResourceUriIsEmpty(resourceUri) || this.checkResourceUriMissingApiParam(resourceUri)) {
             const url = state.url;
             const startIndex = url.indexOf("subscriptions/") > -1 ? url.indexOf("subscriptions/") : 0;
-            const endIndex = url.indexOf("/categories") > -1 ? url.indexOf("/categories") : url.length;
-
+            let endIndex = url.length;
+            if(url.indexOf('/categories') > -1) {
+                endIndex = url.indexOf("/categories");
+            }else if (url.indexOf('/supportTopicId') > -1){
+                endIndex = url.indexOf('/supportTopicId');
+            }
             resourceUri = url.substring(startIndex, endIndex);
         }
         
@@ -35,8 +39,8 @@ export class ResourceResolver implements Resolve<Observable<{} | ArmResource>> {
         return this._resourceService.registerResource(resourceUri);
     }
 
-    private checkResourceUriEmpty(resourceUri: string): boolean {
-        return resourceUri !== "" && resourceUri !== "/";
+    private checkResourceUriIsEmpty(resourceUri: string): boolean {
+        return resourceUri === "" || resourceUri === "/";
     }
 
     //All dependencies call from below Uri is returning 400, block ARM call
