@@ -76,7 +76,7 @@ export class DaasValidatorComponent implements OnInit {
 
       if (serverFarm != null) {
         this.checkingSkuSucceeded = true;
-        if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier.indexOf('Premium') > -1 || serverFarm.sku.tier === 'Isolated') {
+        if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier.indexOf('Premium') > -1 || serverFarm.sku.tier.indexOf('Isolated') > -1) {
           this.supportedTier = true;
         } else {
           return;

@@ -60,7 +60,7 @@ export class NetworkTraceToolComponent implements OnInit {
                         if (serverFarm) {
                             this.checkingValidity = false;
                             // Specifically not checking for Isolated as Network Trace tool is not working on ASE currently
-                            if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier === 'Basic' || serverFarm.sku.tier === 'Isolated' || serverFarm.sku.tier.indexOf('Premium') > -1) {
+                            if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier === 'Basic' || serverFarm.sku.tier.indexOf('Isolated') > -1 || serverFarm.sku.tier.indexOf('Premium') > -1) {
                                 this._siteService.getSiteAppSettings(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.siteToBeDiagnosed.siteName, this.siteToBeDiagnosed.slot).subscribe(settingsResponse => {
                                     if (settingsResponse && settingsResponse.properties) {
                                         if (settingsResponse.properties['WEBSITE_LOCAL_CACHE_OPTION']) {
