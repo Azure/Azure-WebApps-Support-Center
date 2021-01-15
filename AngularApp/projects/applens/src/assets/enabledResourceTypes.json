@@ -342,6 +342,14 @@
              "imgSrc": "assets/img/AppInsights-Logo.svg",  
              "versionPrefix": "",  
              "azureCommImpactedServicesList": "appInsights"  
+         },
+        { 
+             "service": "ResourceService",  
+             "resourceType": "microsoft.operationalinsights/workspaces",  
+             "templateFileName": "LogAnalytics",  
+             "imgSrc": "assets/img/LogAnalytics-Logo.svg",  
+             "versionPrefix": "",  
+             "azureCommImpactedServicesList": "logAnalytics"  
          }
     ]
 }
