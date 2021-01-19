@@ -21,9 +21,12 @@ export class ResourceResolver implements Resolve<Observable<{} | ArmResource>> {
             .filter(x => x.path !== 'new' && x.path !== 'categories')
             .map(x => x.path)
             .join('/');
-
         
-        if (this.checkResourceUriIsEmpty(resourceUri) || this.checkResourceUriMissingApiParam(resourceUri)) {
+        if(this.checkResourceUriMissingApiParam(resourceUri)) {
+            return of({});
+        }
+        
+        if (this.checkResourceUriIsEmpty(resourceUri)) {
             const url = state.url;
             const startIndex = url.indexOf("subscriptions/") > -1 ? url.indexOf("subscriptions/") : 0;
             let endIndex = url.length;
