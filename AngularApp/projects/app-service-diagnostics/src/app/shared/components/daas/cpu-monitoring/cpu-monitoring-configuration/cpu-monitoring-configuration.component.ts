@@ -42,7 +42,7 @@ export class CpuMonitoringConfigurationComponent implements OnInit, OnChanges {
 
 
   sliderOptionsCpuThreshold: Options = {
-    floor: 75, ceil: 95, step: 5, showTicks: true,
+    floor: 50, ceil: 95, step: 5, showTicks: true,
     translate: (value: number): string => {
       return value + "%";
     }
