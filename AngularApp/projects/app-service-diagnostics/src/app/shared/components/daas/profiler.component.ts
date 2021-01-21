@@ -21,7 +21,7 @@ export class ProfilerComponent extends DaasComponent implements OnInit, OnDestro
     selectedInstance: string;
     WizardSteps: StepWizardSingleStep[] = [];
     error: any;
-    collectStackTraces: boolean = false;
+    collectStackTraces: boolean = true;
     appInfo: DaasAppInfo;
     checkingAppInfo: boolean = false;
     isAspnetCoreLowerVersion: boolean = false;

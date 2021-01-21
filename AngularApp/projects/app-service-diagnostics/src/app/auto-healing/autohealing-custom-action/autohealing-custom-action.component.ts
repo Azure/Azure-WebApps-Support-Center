@@ -123,10 +123,12 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges, Afte
   }
 
   chooseDiagnoser(val) {
-    this.diagnoser = val;
-    this.daasValidatorRef.diagnoserName = this.diagnoser.Name;
-    this.daasValidatorRef.validateDiagnoser();
-    this.updateDaasAction(false);
+    if (val != null) {
+      this.diagnoser = val;
+      this.daasValidatorRef.diagnoserName = this.diagnoser.Name;
+      this.daasValidatorRef.validateDiagnoser();
+      this.updateDaasAction(false);
+    }
   }
 
   chooseDiagnoserAction(val) {
