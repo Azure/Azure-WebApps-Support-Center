@@ -12,14 +12,8 @@
         <span class="loading-message">Checking connection settings for the Web App</span>
     </div>
     <div style="margin-top:10px">
-        <div tabindex="0" *ngIf="!retrievingInfo && total === 0">
+        <div tabindex="0" *ngIf="!retrievingInfo && total === 0 && !error">
             No connection settings found for this Web App.
-        </div>
-
-        <div *ngIf="!retrievingInfo">
-            <button tabindex="0" class="btn btn-link pull-right" (keyup.enter)="checkConnectionStrings()"
-                (keyup.enter)="checkConnectionStrings()" (click)="checkConnectionStrings()">
-                <i class="fa fa-refresh refresh-icon"></i> Refresh</button>
         </div>
 
         <div tabindex="0" style="margin-left:5px;margin-bottom:10px;" *ngIf="!retrievingInfo && total > 0">
@@ -118,7 +112,7 @@
         </div>
         <div class="focus-box focus-box-warning" style="margin-top:20px" *ngIf="error">
             <div tabindex="0">
-                <strong>Error</strong> - {{ error.message }}
+                <strong>Error</strong> - {{ error.message ? error.message : error }}
             </div>
         </div>
     </div>

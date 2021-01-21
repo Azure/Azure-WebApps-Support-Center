@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { SiteDaasInfo } from '../../../models/solution-metadata';
-import { Session, DatabaseTestConnectionResult, ConnectionDatabaseType } from '../../../models/daas';
+import { Component, OnInit } from '@angular/core';
+import { DatabaseTestConnectionResult, ConnectionDatabaseType } from '../../../models/daas';
 import { SiteInfoMetaData } from '../../../models/site';
 import { SiteService } from '../../../services/site.service';
 import { DaasService } from '../../../services/daas.service';
-import { WindowService } from '../../../../startup/services/window.service';
 import { AvailabilityLoggingService } from '../../../services/logging/availability.logging.service';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
     templateUrl: 'connection-diagnoser-tool.component.html',
@@ -20,7 +20,7 @@ export class ConnectionDiagnoserToolComponent implements OnInit {
     succeeded: number = 0;
     total: number = 0;
 
-    constructor(private _siteService: SiteService, private _daasService: DaasService, private _windowService: WindowService, private _logger: AvailabilityLoggingService) {
+    constructor(private _siteService: SiteService, private _daasService: DaasService, private _logger: AvailabilityLoggingService) {
 
         this._siteService.currentSiteMetaData.subscribe(siteInfo => {
             if (siteInfo) {
@@ -30,7 +30,25 @@ export class ConnectionDiagnoserToolComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.checkConnectionStrings();
+
+        //
+        // Before calling the DaaS API, let's make sure that the current user
+        // has access to view the App Settings. If they cannot view the app settings
+        // then most likely, they not have permissions to view them
+        //
+        this.checkAppSettingsAccess().subscribe(ignoreResponse => {
+            this.checkConnectionStrings();
+        }, error => {
+            this.error = `Failed with error ${JSON.stringify(error)} while checking site configuration`;
+            this.retrievingInfo = false;
+        });
+    }
+
+    checkAppSettingsAccess(): Observable<any> {
+        return this._siteService.getSiteAppSettings(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.siteToBeDiagnosed.siteName, this.siteToBeDiagnosed.slot)
+            .pipe(map(settingsResponse => {
+                return settingsResponse;
+            }));
     }
 
     checkConnectionStrings() {
