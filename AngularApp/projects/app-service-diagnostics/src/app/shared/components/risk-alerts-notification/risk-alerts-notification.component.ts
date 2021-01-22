@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { TelemetryService } from 'diagnostic-data';
+import { TelemetryEventNames, TelemetryService,TelemetrySource } from 'diagnostic-data';
 import { MessageBarType, IMessageBarProps, IMessageBarStyles } from 'office-ui-fabric-react';
 import { throwError } from 'rxjs';
 import { catchError, filter, map } from 'rxjs/operators';
@@ -177,7 +177,9 @@ export class RiskAlertsNotificationComponent implements OnInit {
 
     openRiskAlertsPanel() {
         this.globals.openRiskAlertsPanel = true;
-        this.telemetryService.logEvent("openRiskAlertsPanel");
+        this.telemetryService.logEvent(TelemetryEventNames.OpenRiskAlertPanel,{
+            'Location': TelemetrySource.CaseSubmissionFlow
+        });
     }
 }
 

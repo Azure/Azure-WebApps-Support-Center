@@ -59,6 +59,13 @@
       </fab-message-bar>
       <br />
     </ng-container>
+    <ng-container *ngIf="!isInCaseSubmissionFlow">
+      <fab-message-bar [messageBarType]="summaryType" dismissButtonAriaLabel="Close" [truncated]="true" overflowButtonAriaLabel="See more">
+        <b>Run All Checks For Risks Alerts</b>
+        <a href="" (click)="openRiskAlertDetector($event)"> Check Recommendations for App Availability</a>
+      </fab-message-bar>
+      <br />
+    </ng-container>
     <fab-message-bar [messageBarType]="summaryType" dismissButtonAriaLabel="Close" [truncated]="true"
       overflowButtonAriaLabel="See more">
       <b>Learn about more configurations for high availability:</b>

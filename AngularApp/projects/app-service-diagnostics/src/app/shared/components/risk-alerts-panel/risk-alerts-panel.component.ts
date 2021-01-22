@@ -3,6 +3,8 @@ import { TelemetryService } from 'diagnostic-data';
 import { IPanelProps, IPanelStyles, MessageBarType, PanelType } from 'office-ui-fabric-react';
 import { Globals } from '../../../globals';
 import { NotificationService } from '../../../shared-v2/services/notification.service';
+import { AuthService } from '../../../startup/services/auth.service';
+import { PortalActionService } from '../../services/portal-action.service';
 import { riskAlertDetail } from '../risk-alerts-notification/risk-alerts-notification.component';
 
 @Component({
@@ -24,8 +26,16 @@ export class RiskAlertsPanelComponent implements OnInit {
     workDistributionDetail: riskAlertDetail;
     appDensityCheckDetail: riskAlertDetail;
     summaryType: MessageBarType = MessageBarType.info;
+    isInCaseSubmissionFlow: boolean = false;
+    constructor(public globals: Globals, public notificationService: NotificationService, public telemetryService: TelemetryService,private portalActionService:PortalActionService,private authService: AuthService) {
+        this.authService.getStartupInfo().subscribe(startupInfo => {
+            this.isInCaseSubmissionFlow = startupInfo.source !== undefined && startupInfo.source.toLowerCase() === ("CaseSubmissionV2-NonContext").toLowerCase();
 
-    constructor(public globals: Globals, public notificationService: NotificationService, public telemetryService: TelemetryService) { }
+            if(!this.isInCaseSubmissionFlow) {
+                this.styles = {};
+            }
+        });
+    }
 
     ngOnInit() {
         this.globals.reliabilityChecksDetailsBehaviorSubject.subscribe((reliabilityChecks) => {
@@ -43,5 +53,11 @@ export class RiskAlertsPanelComponent implements OnInit {
 
     logOpenLinkEvent(linkDescription: string, linkAddress: string) {
         this.telemetryService.logEvent("openRiskAlertLink", {Description: linkDescription, link: linkAddress});
+    }
+
+    openRiskAlertDetector(event:Event) {
+        event.preventDefault();
+        this.telemetryService.logEvent("OpenRiskAlertDetector");
+        this.portalActionService.openBladeDiagnoseDetectorId("RiskAssessments","ParentAvailabilityAndPerformance");
     }
 }
