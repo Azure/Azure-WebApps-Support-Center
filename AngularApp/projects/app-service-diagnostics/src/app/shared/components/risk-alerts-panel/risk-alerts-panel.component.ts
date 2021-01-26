@@ -29,7 +29,7 @@ export class RiskAlertsPanelComponent implements OnInit {
     isInCaseSubmissionFlow: boolean = false;
     constructor(public globals: Globals, public notificationService: NotificationService, public telemetryService: TelemetryService,private portalActionService:PortalActionService,private authService: AuthService) {
         this.authService.getStartupInfo().subscribe(startupInfo => {
-            this.isInCaseSubmissionFlow = startupInfo.source !== undefined && startupInfo.source.toLowerCase() === ("CaseSubmissionV2-NonContext").toLowerCase();
+            this.isInCaseSubmissionFlow = startupInfo && startupInfo.source !== undefined && startupInfo.source.toLowerCase() === ("CaseSubmissionV2-NonContext").toLowerCase();
 
             if(!this.isInCaseSubmissionFlow) {
                 this.styles = {};
