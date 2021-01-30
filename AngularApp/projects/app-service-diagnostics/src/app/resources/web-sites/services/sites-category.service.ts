@@ -204,16 +204,6 @@ export class SitesCategoryService extends CategoryService {
   }
 
   private _getDiagnosticToolsCategory(siteId: string): SiteFilteredItem<Category> {
-    const appType = this._resourceService.appType;
-    const appSku = this._resourceService.sku;    
-
-    let diagToolKeywords: string[] = ['Profiler', 'Memory Dump', 'Auto-Heal'];
-
-    //Add one more keyword to Dedicated Function App category page for better looking
-    if(appType === AppType.FunctionApp && appSku !== Sku.Dynamic) {
-      diagToolKeywords.push('Event Logs');
-    }
-
     return <SiteFilteredItem<Category>>{
       appType: AppType.WebApp | AppType.FunctionApp,
       platform: OperatingSystem.windows,
@@ -225,7 +215,7 @@ export class SitesCategoryService extends CategoryService {
         name: 'Diagnostic Tools',
         overviewDetectorId:'DiagnosticTools',
         description: 'Run language-specific tools for deeper investigation.',
-        keywords: diagToolKeywords,
+        keywords: ['Profiler', 'Memory Dump', 'Auto-Heal','Event Logs'],
         color: 'rgb(170, 192, 208)',
         createFlowForCategory: false,
         overridePath: `resource${siteId}/diagnosticTools`
