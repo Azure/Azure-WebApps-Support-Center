@@ -43,11 +43,11 @@ export class RiskAlertsNotificationComponent implements OnInit {
         const healthCheckEnabledDescription = "Health Check feature is currently configured for this web app. This will help minimize potential downtime.";
         const healthCheckLearnMore: string = "https://docs.microsoft.com/en-us/azure/azure-monitor/platform/autoscale-get-started#route-traffic-to-healthy-instances-app-service"
 
-        const workerDistributionCriticalTitle: string = "Distritubting your web app accross multiple instances";
+        const workerDistributionCriticalTitle: string = "Distributing your web app across multiple instances";
         const workerDistributionCriticalDescription: string = "The webapp is currently configured to run on only one instance. Since you have only one instance you can expect downtime because when the App Service platform is upgraded, the instance on which your web app is running will be upgraded. Therefore, your web app process will be restarted and will experience downtime. ";
-        const workerDistributionWarningTitle: string = "Distritubting your web app accross multiple instances";
-        const workerDistributionWarningDescription: string = "The webapp is currently configured to run on two instances.<br/><br/>Since you have only two instances you can expect a downtime of upto 50% because when the App Service platform is upgraded, the instance on which your web app is hosted will be upgraded. Therefore, your web app process will be restarted and may experience some downtime as each instance is restarted sequentially.";
-        const workerDistributionSuccessTitle: string = "Distritubting your web app accross multiple instances";
+        const workerDistributionWarningTitle: string = "Distributing your web app across multiple instances";
+        const workerDistributionWarningDescription: string = "The webapp is currently configured to run on two instances. Since you have only two instances you can expect a downtime of upto 50% because when the App Service platform is upgraded, the instance on which your web app is hosted will be upgraded. Therefore, your web app process will be restarted and may experience some downtime as each instance is restarted sequentially.";
+        const workerDistributionSuccessTitle: string = "Distributing your web app across multiple instances";
         const workerDistributionSuccessDescription: string = "Great, your web app is running on more than two instances. This is optimal because instances in different upgrade domains will not be upgraded at the same time. While one worker instance is getting upgraded the other is still active to serve web requests.";
         const workerDistributionLearnMore: string = "https://azure.github.io/AppService/2020/05/15/Robust-Apps-for-the-cloud.html#use-multiple-instances";
 
