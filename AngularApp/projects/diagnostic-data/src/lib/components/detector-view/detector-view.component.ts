@@ -686,11 +686,15 @@ export class DetectorViewComponent implements OnInit {
     }
   }
   protected logEvent(eventMessage: string, eventProperties?: any, measurements?: any) {
-    for (const id of Object.keys(this.detectorEventProperties)) {
-      if (this.detectorEventProperties.hasOwnProperty(id)) {
-        eventProperties[id] = String(this.detectorEventProperties[id]);
-      }
+    if (!!this.detectorEventProperties)
+    {
+        for (const id of Object.keys(this.detectorEventProperties)) {
+            if (this.detectorEventProperties.hasOwnProperty(id)) {
+              eventProperties[id] = String(this.detectorEventProperties[id]);
+            }
+          }
     }
+
     this.telemetryService.logEvent(eventMessage, eventProperties, measurements);
   }
 

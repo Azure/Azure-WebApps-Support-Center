@@ -20,7 +20,8 @@ export class CategoryChatComponent implements OnInit {
       this._categoryService.categories.subscribe(categories => {
         this.category = categories.find(category => category.id === this._activatedRoute.snapshot.params.category);
         this._chatState.category = this.category;
-        this.startingKey = `welcome-${this.category.id}`;
+        let categoryId = this.category != undefined && this.category.id != undefined ? this.category.id : "";
+        this.startingKey = `welcome-${categoryId}`;
       });
     });
   }
