@@ -22,7 +22,9 @@ export class AutoHealTriggers {
     requests: RequestsBasedTrigger;
     privateBytesInKB: number;
     statusCodes: StatusCodesBasedTrigger[];
+    statusCodesRange: StatusCodesRangeBasedTrigger[];
     slowRequests: SlowRequestsBasedTrigger;
+    slowRequestsWithPath: SlowRequestsBasedTrigger[];
 
 }
 
@@ -32,14 +34,20 @@ export class RequestsBasedTrigger {
 }
 
 export class StatusCodesBasedTrigger extends RequestsBasedTrigger {
-
     status: number;
     subStatus: number;
     win32Status: number;
+    path: string;
+}
+
+export class StatusCodesRangeBasedTrigger extends RequestsBasedTrigger {
+    path: string;
+    statusCodes: string;
 }
 
 export class SlowRequestsBasedTrigger extends RequestsBasedTrigger {
     timeTaken: string;
+    path: string;
 }
 
 export class AutoHealActions {
@@ -52,4 +60,24 @@ export class AutoHealActions {
 export class AutoHealCustomAction {
     exe: string;
     parameters: string;
+}
+
+export class StatusCodeRules {
+    statusCodes: StatusCodesBasedTrigger[];
+    statusCodesRange: StatusCodesRangeBasedTrigger[];
+
+    constructor(_statusCodes: StatusCodesBasedTrigger[], _statusCodesRange: StatusCodesRangeBasedTrigger[]) {
+        this.statusCodes = _statusCodes;
+        this.statusCodesRange = _statusCodesRange;
+    }
+}
+
+export class SlowRequestsRules {
+    slowRequests: SlowRequestsBasedTrigger;
+    slowRequestsWithPath: SlowRequestsBasedTrigger[];
+
+    constructor(_slowRequests: SlowRequestsBasedTrigger, _slowRequestsWithPath: SlowRequestsBasedTrigger[]) {
+        this.slowRequests = _slowRequests;
+        this.slowRequestsWithPath = _slowRequestsWithPath;
+    }
 }

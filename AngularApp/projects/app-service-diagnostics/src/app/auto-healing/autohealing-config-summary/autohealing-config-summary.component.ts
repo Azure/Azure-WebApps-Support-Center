@@ -55,6 +55,19 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
         conditions.push(this.actualhealSettings.autoHealRules.triggers.slowRequests.count + ' requests take more than  ' + FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.slowRequests.timeTaken) + ' seconds in a duration of  ' + FormatHelper.timespanToSeconds(this.actualhealSettings.autoHealRules.triggers.slowRequests.timeInterval) + ' seconds');
       }
 
+      if (this.actualhealSettings.autoHealRules.triggers.slowRequestsWithPath != null) {
+        for (let index = 0; index < this.actualhealSettings.autoHealRules.triggers.slowRequestsWithPath.length; index++) {
+          const slowRequestRule = this.actualhealSettings.autoHealRules.triggers.slowRequestsWithPath[index];
+
+          let requestPath = "";
+          if (slowRequestRule.path) {
+            requestPath = " matching path '" + slowRequestRule.path + "' ";
+          }
+
+          conditions.push(slowRequestRule.count + ' requests ' + requestPath + 'take more than  ' + FormatHelper.timespanToSeconds(slowRequestRule.timeTaken) + ' seconds in a duration of  ' + FormatHelper.timespanToSeconds(slowRequestRule.timeInterval) + ' seconds');
+        }
+      }
+
       if (this.actualhealSettings.autoHealRules.triggers.statusCodes != null) {
         for (let index = 0; index < this.actualhealSettings.autoHealRules.triggers.statusCodes.length; index++) {
           const statusCodeRule = this.actualhealSettings.autoHealRules.triggers.statusCodes[index];
@@ -68,9 +81,26 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
             statusCodesString += ' and win-32 status ' + statusCodeRule.win32Status.toString();
           }
 
-          conditions.push(statusCodeRule.count + ' requests end up with HTTP Status ' + statusCodesString + ' in a duration of  ' + FormatHelper.timespanToSeconds(statusCodeRule.timeInterval) + ' seconds');
-        }
+          let requestPath = "";
+          if (statusCodeRule.path) {
+            requestPath = " matching path '" + statusCodeRule.path + "' ";
+          }
 
+          conditions.push(statusCodeRule.count + ' requests ' + requestPath + 'end up with HTTP Status ' + statusCodesString + ' in a duration of  ' + FormatHelper.timespanToSeconds(statusCodeRule.timeInterval) + ' seconds');
+        }
+      }
+
+      if (this.actualhealSettings.autoHealRules.triggers.statusCodesRange != null) {
+        for (let index = 0; index < this.actualhealSettings.autoHealRules.triggers.statusCodesRange.length; index++) {
+          const statusCodeRule = this.actualhealSettings.autoHealRules.triggers.statusCodesRange[index];
+
+          let requestPath = "";
+          if (statusCodeRule.path) {
+            requestPath = " matching path '" + statusCodeRule.path + "' ";
+          }
+
+          conditions.push(statusCodeRule.count + ' requests ' + requestPath + 'end up with HTTP Status in range (' + statusCodeRule.statusCodes  + ') in a duration of  ' + FormatHelper.timespanToSeconds(statusCodeRule.timeInterval) + ' seconds');
+        }
       }
 
       let action: string = '';

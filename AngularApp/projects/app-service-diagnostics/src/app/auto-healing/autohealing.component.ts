@@ -4,7 +4,7 @@ import { SiteInfoMetaData } from '../shared/models/site';
 import { SiteService } from '../shared/services/site.service';
 import { AutohealingService } from '../shared/services/autohealing.service';
 import { FormatHelper } from '../shared/utilities/formattingHelper';
-import { AutoHealSettings, AutoHealCustomAction, AutoHealRules, AutoHealActions, AutoHealTriggers, AutoHealActionType } from '../shared/models/autohealing';
+import { AutoHealSettings, AutoHealCustomAction, AutoHealRules, AutoHealActions, AutoHealTriggers, AutoHealActionType, StatusCodeRules, SlowRequestsRules } from '../shared/models/autohealing';
 import { AvailabilityLoggingService } from '../shared/services/logging/availability.logging.service';
 
 @Component({
@@ -39,6 +39,8 @@ export class AutohealingComponent implements OnInit {
   detectorHasData: boolean = false;
   validationWarning: string[];
   selectedTab: string = 'autoHealing';
+  statusCodeRules: StatusCodeRules = null;
+  slowRequestRules: SlowRequestsRules = null;
 
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, private _logger: AvailabilityLoggingService, protected _route: ActivatedRoute) {
   }
@@ -66,6 +68,8 @@ export class AutohealingComponent implements OnInit {
     this.originalAutoHealSettings = JSON.parse(this.originalSettings);
     this.updateConditionsAndActions();
     this.updateSummaryText();
+    this.statusCodeRules = this.getStatusCodeRules();
+    this.slowRequestRules = this.getSlowRequestRules();
   }
 
   updateConditionsAndActions() {
@@ -132,9 +136,12 @@ export class AutohealingComponent implements OnInit {
   checkTriggersValid(triggers: AutoHealTriggers): boolean {
     let isValid = false;
     if ((triggers.privateBytesInKB != null && triggers.privateBytesInKB > 0)
-      || triggers.requests != null && triggers.requests.count > 0
-      || triggers.slowRequests != null && triggers.slowRequests.count > 0
-      || triggers.statusCodes != null && triggers.statusCodes.length > 0) {
+      || (triggers.requests != null && triggers.requests.count > 0)
+      || (triggers.slowRequests != null && triggers.slowRequests.count > 0)
+      || (triggers.statusCodes != null && triggers.statusCodes.length > 0)
+      || (triggers.statusCodesRange != null && triggers.statusCodesRange.length > 0)
+      || (triggers.slowRequestsWithPath != null && triggers.slowRequestsWithPath.length > 0))
+       {
       isValid = true;
     }
     return isValid;
@@ -246,7 +253,8 @@ export class AutohealingComponent implements OnInit {
   triggerRuleUpdated(ruleEvent, triggerRule: number) {
     switch (triggerRule) {
       case 0: {
-        this.autohealingSettings.autoHealRules.triggers.slowRequests = ruleEvent;
+        this.autohealingSettings.autoHealRules.triggers.slowRequests = ruleEvent.slowRequests;
+        this.autohealingSettings.autoHealRules.triggers.slowRequestsWithPath = ruleEvent.slowRequestsWithPath;
         break;
       }
       case 1: {
@@ -259,7 +267,8 @@ export class AutohealingComponent implements OnInit {
       }
 
       case 3: {
-        this.autohealingSettings.autoHealRules.triggers.statusCodes = ruleEvent;
+        this.autohealingSettings.autoHealRules.triggers.statusCodes = ruleEvent.statusCodes;
+        this.autohealingSettings.autoHealRules.triggers.statusCodesRange = ruleEvent.statusCodesRange;
         break;
       }
     }
@@ -274,10 +283,10 @@ export class AutohealingComponent implements OnInit {
     this.actions = [];
     const self = this;
 
-    this.triggers.push({ Name: 'Request Duration', Icon: 'fa fa-hourglass-half', checkRuleConfigured: () => self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.slowRequests != null, IsConfigured: false });
+    this.triggers.push({ Name: 'Request Duration', Icon: 'fa fa-hourglass-half', checkRuleConfigured: () => self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && (self.autohealingSettings.autoHealRules.triggers.slowRequests != null || (self.autohealingSettings.autoHealRules.triggers.slowRequestsWithPath != null && self.autohealingSettings.autoHealRules.triggers.slowRequestsWithPath.length > 0)), IsConfigured: false });
     this.triggers.push({ Name: 'Memory Limit', Icon: 'fa fa-microchip', checkRuleConfigured: () => self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0, IsConfigured: false });
     this.triggers.push({ Name: 'Request Count', Icon: 'fa fa-bar-chart', checkRuleConfigured: () => self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.requests != null, IsConfigured: false });
-    this.triggers.push({ Name: 'Status Codes', Icon: 'fa fa-list', checkRuleConfigured: () => self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.statusCodes && this.autohealingSettings.autoHealRules.triggers.statusCodes.length > 0, IsConfigured: false });
+    this.triggers.push({ Name: 'Status Codes', Icon: 'fa fa-list', checkRuleConfigured: () => self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && ((self.autohealingSettings.autoHealRules.triggers.statusCodes && this.autohealingSettings.autoHealRules.triggers.statusCodes.length > 0) || (self.autohealingSettings.autoHealRules.triggers.statusCodesRange && this.autohealingSettings.autoHealRules.triggers.statusCodesRange.length > 0)), IsConfigured: false });
 
     this.triggers.forEach(triggerRule => {
       triggerRule.IsConfigured = triggerRule.checkRuleConfigured();
@@ -307,6 +316,18 @@ export class AutohealingComponent implements OnInit {
     this.triggerSelected = -1;
     this.actionCollapsed = true;
     this.minProcessExecutionTimeExpanded = false;
+  }
+
+  getStatusCodeRules() : StatusCodeRules {
+    if (this.autohealingSettings != null && this.autohealingSettings.autoHealRules != null && this.autohealingSettings.autoHealRules.triggers != null) {
+      return new StatusCodeRules(this.autohealingSettings.autoHealRules.triggers.statusCodes, this.autohealingSettings.autoHealRules.triggers.statusCodesRange);
+    }
+  }
+
+  getSlowRequestRules():SlowRequestsRules{
+    if (this.autohealingSettings != null && this.autohealingSettings.autoHealRules != null && this.autohealingSettings.autoHealRules.triggers != null) {
+      return new SlowRequestsRules(this.autohealingSettings.autoHealRules.triggers.slowRequests, this.autohealingSettings.autoHealRules.triggers.slowRequestsWithPath);
+    }
   }
 
   validateAutoHealRules() {

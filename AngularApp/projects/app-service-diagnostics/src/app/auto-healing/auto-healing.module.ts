@@ -11,6 +11,9 @@ import { AutohealingComponent } from './autohealing.component';
 import { ProactiveAutohealingComponent } from './proactive-autohealing/proactive-autohealing.component';
 import { AvailabilityModule } from '../availability/availability.module';
 import { DiagnosticDataModule } from 'diagnostic-data';
+import {
+  FabChoiceGroupModule
+} from '@angular-react/fabric';
 
 @NgModule({
   declarations: [
@@ -27,7 +30,8 @@ import { DiagnosticDataModule } from 'diagnostic-data';
   imports: [
     SharedModule,
     AvailabilityModule,
-    DiagnosticDataModule
+    DiagnosticDataModule,
+    FabChoiceGroupModule
   ],
   exports: [
     AutohealingComponent

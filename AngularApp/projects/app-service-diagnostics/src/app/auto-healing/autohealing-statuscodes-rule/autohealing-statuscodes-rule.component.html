@@ -1,5 +1,6 @@
 <div>
-  If your app is failing with HTTP Server errors, you can configure a rule to mitigate the issue or collect diagnostic data
+  If your app is failing with HTTP Server errors, you can configure a rule to mitigate the issue or collect diagnostic
+  data
   to identify the root cause of the problem. You can configure rules on more than one HTTP Status code condition.
 
   <div class="rule-button">
@@ -13,23 +14,22 @@
 </div>
 
 <div *ngIf="rule">
-  <table class="table table-bordered" *ngIf="rule!==null && rule.length > 0" style="margin-top:20px">
+  <table class="table table-bordered"
+    *ngIf="rule != null && ((rule.statusCodes != null && rule.statusCodes.length > 0) || (rule.statusCodesRange != null && rule.statusCodesRange.length > 0))"
+    style="margin-top:20px">
     <thead>
       <tr>
         <th tabindex="0">
           Count
         </th>
         <th tabindex="0">
-          Status Code
-        </th>
-        <th tabindex="0">
-          Sub-Status
-        </th>
-        <th tabindex="0">
-          Win32-Status
+          Status Code(s)
         </th>
         <th tabindex="0">
           Interval
+        </th>
+        <th tabindex="0">
+          Path
         </th>
         <th tabindex="0">
           Action
@@ -37,17 +37,36 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let singleRule of rule; let i = index">
+      <tr *ngFor="let singleRule of rule.statusCodes; let i = index">
         <td tabindex="0">{{ singleRule.count }}</td>
-        <td tabindex="0">{{ singleRule.status }}</td>
-        <td tabindex="0">{{ singleRule.subStatus === 0 ? 'any' : singleRule.subStatus }}</td>
-        <td tabindex="0">{{ singleRule.win32Status === 0 ? 'any': singleRule.win32Status }}</td>
+        <td tabindex="0">
+          {{ getStatusCodeWithSubStatus(singleRule) }}
+        </td>
         <td tabindex="0">{{ singleRule.timeInterval }}</td>
+        <td tabindex="0">{{ singleRule.path }}</td>
         <td tabindex="0">
           <button class="image-btn" *ngIf="!editMode" (click)="editStatusCodeRule(i)" title="Edit rule" name="editRule">
             <i class="fa fa-edit"></i>
           </button>
-          <button class="image-btn" *ngIf="!editMode" (click)="deleteStatusCodeRule(i)" title="Delete rule" name="deleteRule">
+          <button class="image-btn" *ngIf="!editMode" (click)="deleteStatusCodeRule(i)" title="Delete rule"
+            name="deleteStatusCodeRule">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+      <tr *ngFor="let singleRule of rule.statusCodesRange; let i = index">
+        <td tabindex="0">{{ singleRule.count }}</td>
+        <td tabindex="0">
+          {{ singleRule.statusCodes }}
+        </td>
+        <td tabindex="0">{{ singleRule.timeInterval }}</td>
+        <td tabindex="0">{{ singleRule.path }}</td>
+        <td tabindex="0">
+          <button class="image-btn" *ngIf="!editMode" (click)="editRangeRule(i)" title="Edit rule" name="editRangeRule">
+            <i class="fa fa-edit"></i>
+          </button>
+          <button class="image-btn" *ngIf="!editMode" (click)="deleteRangeRule(i)" title="Delete rule"
+            name="deleteRangeRule">
             <i class="fa fa-trash"></i>
           </button>
         </td>
@@ -56,65 +75,146 @@
   </table>
 
   <div *ngIf="editMode" style="margin-top:20px" class="form-group">
-    <div class="row">
+
+    <div class="row" *ngIf="showRuleOptions">
       <div class="col-sm-6">
-        <label for="requestCountStatusCodes">After how many requests you want this condition to kick in?</label>
+        <label for="ruleOptions">Do you want to set this rule for a specific status code or a range of status
+          codes?</label>
       </div>
-      <div class="col-sm-4">
-        <input aria-required="true" type="number" id="requestCountStatusCodes" aria-describedby="requestCountStatusCodesHelp" placeholder="Enter request count"
-          [(ngModel)]="currentRule.count" min="1" max="4294967295">
-        <span style="color:red">*</span>
-        <div *ngIf="currentRule.count <=0" class="alert alert-danger" style="margin-top:5px">
-          Request count should be more than zero
+      <div class="col-sm-6">
+        <fab-choice-group id="ruleOptions" [options]="choiceGroupOptions" defaultSelectedKey="singleStatusRule">
+        </fab-choice-group>
+      </div>
+    </div>
+
+    <div *ngIf="!rangeRule ; else rangeRuleTemplate">
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="requestCount">After how many requests you want this condition to kick in?</label>
+        </div>
+        <div class="col-sm-4">
+          <input aria-required="true" type="number" id="requestCount" placeholder="Enter request count"
+            [(ngModel)]="currentStatusCodeRule.count" min="1" max="4294967295">
+          <span style="color:red">*</span>
+          <div *ngIf="currentStatusCodeRule.count <=0" class="alert alert-danger" style="margin-top:5px">
+            Request count should be more than zero
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="statusCode">What should be the status code for these requests?</label>
+        </div>
+        <div class="col-sm-4">
+          <input aria-required="true" type="number" id="statusCode" placeholder="e.g. 500" min="100" max="500"
+            [(ngModel)]="currentStatusCodeRule.status">
+          <span style="color:red">*</span>
+          <div *ngIf="currentStatusCodeRule.status < 100 || currentStatusCodeRule.status > 530"
+            class="alert alert-danger" style="margin-top:5px">
+            Valid HTTP Status codes range from HTTP 100 to HTTP 530 only.
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="subStatusCode">What should be the sub-status code for these requests?</label>
+        </div>
+
+        <div class="col-sm-4">
+          <input aria-required="false" type="number" min="0" max="500" id="subStatusCode" placeholder="e.g. 0"
+            [(ngModel)]="currentStatusCodeRule.subStatus">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="win32StatusCode">What should be the win32-status code for these requests?</label>
+        </div>
+        <div class="col-sm-4">
+          <input aria-required="false" type="number" min="0" max="4294967295" id="win32StatusCode" placeholder="e.g. 0"
+            [(ngModel)]="currentStatusCodeRule.win32Status">
+          <span style="color:red">*</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="durationStatusCode">What is the time interval (in seconds) in which the above condition should be
+            met?</label>
+        </div>
+        <div class="col-sm-4">
+          <timespan ControlId="durationStatusCode" [(timeSpan)]="currentStatusCodeRule.timeInterval"
+            placeholder="e.g. 60">
+          </timespan>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="requestPath">What is the request path (leave blank for all requests)?</label>
+        </div>
+        <div class="col-sm-4">
+          <input type="text" aria-required="false" id="requestPath" placeholder="e.g. /default*.aspx"
+            [(ngModel)]="currentStatusCodeRule.path">
+          <div *ngIf="!isValidUrlPattern(currentStatusCodeRule.path)" class="alert alert-danger" style="margin-top:5px">
+            Path can contain letters, alphabets, *, -, period, _ and forward slashes only
+          </div>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-sm-6">
-        <label for="statusCode">What should be the status code for these requests?</label>
-      </div>
-      <div class="col-sm-4">
-        <input aria-required="true" type="number" id="statusCode" placeholder="e.g. 500" min="100" max="500" [(ngModel)]="currentRule.status">
-        <span style="color:red">*</span>
-        <div *ngIf="currentRule.status < 100 || currentRule.status > 530" class="alert alert-danger" style="margin-top:5px">
-          Valid HTTP Status codes range from HTTP 100 to HTTP 530 only.
+
+    <ng-template #rangeRuleTemplate>
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="requestCount">After how many requests you want this condition to kick in?</label>
+        </div>
+        <div class="col-sm-4">
+          <input aria-required="true" type="number" id="requestCount" placeholder="Enter request count"
+            [(ngModel)]="currentRangeRule.count" min="1" max="4294967295">
+          <span style="color:red">*</span>
+          <div *ngIf="currentRangeRule.count <=0" class="alert alert-danger" style="margin-top:5px">
+            Request count should be more than zero
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-6">
-        <label for="subStatusCode">What should be the sub-status code for these requests?</label>
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="statusCodesRange">What is the range of status codes for this rule?</label>
+        </div>
+        <div class="col-sm-4">
+          <input type="text" aria-required="true" id="statusCodesRange" placeholder="e.g. 400-500"
+            [(ngModel)]="currentRangeRule.statusCodes">
+          <span style="color:red">*</span>
+          <div *ngIf="statusCodeRangeError.length > 0" class="alert alert-danger" style="margin-top:5px">
+            {{statusCodeRangeError}}
+          </div>
+        </div>
       </div>
-
-      <div class="col-sm-4">
-        <input aria-required="false" type="number" min="0" max="500" id="subStatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.subStatus">
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="durationStatusCode">What is the time interval (in seconds) in which the above condition should be
+            met?</label>
+        </div>
+        <div class="col-sm-4">
+          <timespan ControlId="durationStatusCode" [(timeSpan)]="currentRangeRule.timeInterval" placeholder="e.g. 60">
+          </timespan>
+        </div>
       </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-6">
-        <label for="win32StatusCode">What should be the win32-status code for these requests?</label>
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="requestPath">What is the request path (leave blank for all requests)?</label>
+        </div>
+        <div class="col-sm-4">
+          <input type="text" aria-required="false" id="requestPath" placeholder="e.g. /default*.aspx"
+            [(ngModel)]="currentRangeRule.path">
+          <div *ngIf="!isValidUrlPattern(currentRangeRule.path)" class="alert alert-danger" style="margin-top:5px">
+            Path can contain letters, alphabets, asterisk, dashes, period, underscore and forward slashes only
+          </div>
+        </div>
       </div>
-      <div class="col-sm-4">
-        <input aria-required="false" type="number" min="0" max="4294967295" id="win32StatusCode" placeholder="e.g. 0" [(ngModel)]="currentRule.win32Status">
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-6">
-        <label for="durationStatusCode">What is the time interval (in seconds) in which the above condition should be met?</label>
-      </div>
-      <div class="col-sm-4">
-        <timespan ControlId="durationStatusCode" [(timeSpan)]="currentRule.timeInterval" placeholder="e.g. 60"></timespan>
-      </div>
-    </div>
+    </ng-template>
 
     <div class="row">
       <div class="col-sm-4">
         <button type="button" class="btn btn-primary btn-sm" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
       </div>
     </div>
-
   </div>
 </div>

@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { AutohealingRuleComponent } from '../autohealing-rule/autohealing-rule.component';
-import { StatusCodesBasedTrigger } from '../../shared/models/autohealing';
+import { StatusCodeRules, StatusCodesBasedTrigger, StatusCodesRangeBasedTrigger } from '../../shared/models/autohealing';
 import { FormatHelper } from '../../shared/utilities/formattingHelper';
+import { IChoiceGroupOption } from 'office-ui-fabric-react';
 
 @Component({
   selector: 'autohealing-statuscodes-rule',
@@ -10,56 +11,169 @@ import { FormatHelper } from '../../shared/utilities/formattingHelper';
 })
 export class AutohealingStatuscodesRuleComponent extends AutohealingRuleComponent {
 
-  currentRule: StatusCodesBasedTrigger;
-  currentEditIndex: number = -1;
+  showRuleOptions: boolean = true;
+  currentRangeRule: StatusCodesRangeBasedTrigger;
+  currentStatusCodeRule: StatusCodesBasedTrigger;
+  statusCodeIndex: number = -1;
+  rangeIndex: number = -1;
+  rangeRule: boolean = false;
+  statusCodeRangeError: string = '';
+
+  choiceGroupOptions: IChoiceGroupOption[] = [
+    { key: 'singleStatusRule', text: 'Single HTTP Status', defaultChecked: true, onClick: () => { this.rangeRule = false; this.updateInMemoryRules(this.rangeRule); } },
+    { key: 'rangeRule', text: 'HTTP Status Range', onClick: () => { this.rangeRule = true; this.updateInMemoryRules(this.rangeRule); } }
+  ];
 
   constructor() {
     super();
   }
 
   addNewRule() {
-    this.currentRule = new StatusCodesBasedTrigger();
-    if (!this.rule) {
-      this.rule = [];
+
+    //
+    // when someone is adding a new rule,
+    // default to a StatusCodeRule
+    //
+    this.rangeRule = false;
+    this.updateInMemoryRules(this.rangeRule);
+
+    if (this.rule == null) {
+      let statusCodesArray: StatusCodesBasedTrigger[] = [];
+      let statusCodesRangeArray: StatusCodesRangeBasedTrigger[] = [];
+      this.rule = new StatusCodeRules(statusCodesArray, statusCodesRangeArray);
     }
     this.editMode = true;
-    this.currentEditIndex = -1;
+  }
+
+  updateInMemoryRules(rangeRule: boolean) {
+    if (rangeRule) {
+      this.currentRangeRule = new StatusCodesRangeBasedTrigger();
+      this.statusCodeIndex = -1;
+    } else {
+      this.currentStatusCodeRule = new StatusCodesBasedTrigger();
+      this.rangeIndex = -1;
+    }
   }
 
   deleteStatusCodeRule(i: number) {
     if (i > -1) {
-      this.rule.splice(i, 1);
+      this.rule.statusCodes.splice(i, 1);
       this.ruleChange.emit(this.rule);
     }
   }
 
   editStatusCodeRule(i: number) {
     if (i > -1) {
-      this.currentRule = {...this.rule[i]};
+      this.currentStatusCodeRule = { ...this.rule.statusCodes[i] };
       this.editMode = true;
-      this.currentEditIndex = i;
+      this.statusCodeIndex = i;
+      this.showRuleOptions = false;
+      this.rangeRule = false;
     }
+  }
 
+  deleteRangeRule(i: number) {
+    if (i > -1) {
+      this.rule.statusCodesRange.splice(i, 1);
+      this.ruleChange.emit(this.rule);
+    }
+  }
+
+  editRangeRule(i: number) {
+    if (i > -1) {
+      this.currentRangeRule = { ...this.rule.statusCodesRange[i] };
+      this.editMode = true;
+      this.rangeIndex = i;
+      this.showRuleOptions = false;
+      this.rangeRule = true;
+    }
   }
 
   saveRule() {
     this.editMode = false;
-    if (this.currentRule.subStatus == null) {
-      this.currentRule.subStatus = 0;
-    }
-    if (this.currentRule.win32Status == null) {
-      this.currentRule.win32Status = 0;
-    }
-    if (this.currentEditIndex < 0) {
-      this.rule.push(this.currentRule);
+    this.showRuleOptions = true;
+    if (this.rangeRule) {
+      if (this.rangeIndex < 0) {
+        this.rule.statusCodesRange.push(this.currentRangeRule);
+      } else {
+        this.rule.statusCodesRange[this.rangeIndex] = this.currentRangeRule;
+      }
     } else {
-      this.rule[this.currentEditIndex] = this.currentRule;
+      if (this.currentStatusCodeRule.subStatus == null) {
+        this.currentStatusCodeRule.subStatus = 0;
+      }
+      if (this.currentStatusCodeRule.win32Status == null) {
+        this.currentStatusCodeRule.win32Status = 0;
+      }
+
+      if (this.statusCodeIndex < 0) {
+        this.rule.statusCodes.push(this.currentStatusCodeRule);
+      } else {
+        this.rule.statusCodes[this.statusCodeIndex] = this.currentStatusCodeRule;
+      }
     }
 
     this.ruleChange.emit(this.rule);
   }
 
   isValid(): boolean {
-    return (this.currentRule.count > 0 && this.currentRule.status > 100 && this.currentRule.status < 530 && (this.currentRule.timeInterval && FormatHelper.timespanToSeconds(this.currentRule.timeInterval) > 0));
+    if (this.rangeRule) {
+      if (!this.isValidUrlPattern(this.currentRangeRule.path)) {
+        return false;
+      }
+      return this.isValidStatusCodesRange(this.currentRangeRule.statusCodes) && this.currentRangeRule.count > 0 && FormatHelper.timespanToSeconds(this.currentRangeRule.timeInterval) > 0;
+    } else {
+      if (!this.isValidUrlPattern(this.currentStatusCodeRule.path)) {
+        return false;
+      }
+      return this.currentStatusCodeRule.count > 0 && this.currentStatusCodeRule.status > 100 && this.currentStatusCodeRule.status < 530 && (this.currentStatusCodeRule.timeInterval && FormatHelper.timespanToSeconds(this.currentStatusCodeRule.timeInterval) > 0);
+    }
+  }
+
+  getStatusCodeWithSubStatus(rule: StatusCodesBasedTrigger): string {
+    if (rule.subStatus == 0 && rule.win32Status == 0) {
+      return rule.status.toString();
+    } else {
+      if (rule.win32Status == 0) {
+        return rule.status.toString() + "." + rule.subStatus.toString();
+      } else {
+        return rule.status.toString() + "." + rule.subStatus + "." + rule.win32Status.toString();
+      }
+    }
+  }
+
+  isValidStatusCodesRange(range: string): boolean {
+    this.statusCodeRangeError = '';
+    if (range.indexOf('.') > -1) {
+      this.statusCodeRangeError = "HTTP Status code range cannot contain '.'";
+      return false;
+    }
+
+    let rangeArray = range.split('-');
+    if (rangeArray.length != 2) {
+      this.statusCodeRangeError = "HTTP Status code range must contain one '-'";
+      return false;
+    }
+
+    let start = Number(rangeArray[0]);
+    let end = Number(rangeArray[1]);
+
+    if (Number.isInteger(start) && Number.isInteger(end)) {
+      if (start >= 100 && end >= 100 && start <= 530 && end <= 530) {
+
+        if (start < end) {
+          this.statusCodeRangeError = "";
+          return true;
+        } else {
+          this.statusCodeRangeError = "HTTP Status start range cannot be lower than HTTP Status end range";
+        }
+
+      } else {
+        this.statusCodeRangeError = "Valid HTTP Status codes range from HTTP 100 to HTTP 530 only";
+      }
+    } else {
+      this.statusCodeRangeError = "HTTP Status code range specified is not a numberic value";
+    }
+    return false;
   }
 }
