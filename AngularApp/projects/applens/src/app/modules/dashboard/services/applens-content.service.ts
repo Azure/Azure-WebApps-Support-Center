@@ -5,6 +5,7 @@ import 'rxjs/add/observable/of';
 import { HttpClient } from '@angular/common/http';
 import { mergeMap } from 'rxjs/operators';
 import { ResourceService } from '../../../shared/services/resource.service';
+import {globalExcludedSites} from "diagnostic-data";
 
 @Injectable()
 export class ApplensContentService {
@@ -40,7 +41,7 @@ export class ApplensContentService {
         return of(searchResults);
     }
 
-    public searchWeb(questionString: string, resultsCount: string = '3', useStack: boolean = true, preferredSites: string[] = [], excludedSites: string[] = []): Observable<any> {
+    public searchWeb(questionString: string, resultsCount: string = '3', useStack: boolean = true, preferredSites: string[] = [], excludedSites: string[] = globalExcludedSites): Observable<any> {
 
         const searchSuffix = this._resourceService.searchSuffix;
         var preferredSitesSuffix = preferredSites.map(site => `site:${site}`).join(" OR ");

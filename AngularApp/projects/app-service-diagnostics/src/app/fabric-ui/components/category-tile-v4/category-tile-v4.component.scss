@@ -9,8 +9,19 @@
     display: flex;
 }
 
+.category-tile {
+    height: 100%;
+}
+
 .category-tile :hover {
     background-color: $tile-homepage-hover-background;
+}
+
+.tile-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .tile-image {

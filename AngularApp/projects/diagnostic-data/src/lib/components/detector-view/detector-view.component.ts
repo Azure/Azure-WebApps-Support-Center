@@ -145,6 +145,15 @@ export class DetectorViewComponent implements OnInit {
     this.loadDetector();
     this.errorSubject.subscribe((data: any) => {
       this.errorState = data;
+      if (!!this.errorState)
+      {
+        let errorDetails = {
+            'isPublic': this.isPublic.toString(),
+            'errorDetails': JSON.stringify(this.errorState)
+          };
+
+        this.logEvent("DetectorLoadingError", errorDetails);
+      }
     });
 
     // If it is using the new route, don't show those buttons
@@ -677,11 +686,15 @@ export class DetectorViewComponent implements OnInit {
     }
   }
   protected logEvent(eventMessage: string, eventProperties?: any, measurements?: any) {
-    for (const id of Object.keys(this.detectorEventProperties)) {
-      if (this.detectorEventProperties.hasOwnProperty(id)) {
-        eventProperties[id] = String(this.detectorEventProperties[id]);
-      }
+    if (!!this.detectorEventProperties)
+    {
+        for (const id of Object.keys(this.detectorEventProperties)) {
+            if (this.detectorEventProperties.hasOwnProperty(id)) {
+              eventProperties[id] = String(this.detectorEventProperties[id]);
+            }
+          }
     }
+
     this.telemetryService.logEvent(eventMessage, eventProperties, measurements);
   }
 

@@ -11,8 +11,12 @@ export class WebHostingEnvironmentsService extends ResourceService {
     public get azureServiceName(): string {
         return "ASE";
     }
-    
+
     public getPesId(): Observable<string> {
         return of("16533");
+    }
+
+    public getAseVersion(): Observable<string> {
+        return of(this.resource.kind);
     }
 }

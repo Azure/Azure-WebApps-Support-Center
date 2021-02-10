@@ -133,6 +133,8 @@ import { CollapsibleListFabricComponent } from './components/collapsible-list/co
 import { RiskAlertsNotificationComponent } from './components/risk-alerts-notification/risk-alerts-notification.component';
 import { RiskAlertsPanelComponent } from './components/risk-alerts-panel/risk-alerts-panel.component';
 import { IntegratedSolutionsViewComponent } from './components/integrated-solutions-view/integrated-solutions-view.component';
+import { Asev3CustomViewComponent } from './components/asev3-custom-view/asev3-custom-view.component';
+import { MarkdownModule } from 'ngx-markdown';
 
 @NgModule({
     declarations: [
@@ -204,7 +206,8 @@ import { IntegratedSolutionsViewComponent } from './components/integrated-soluti
         CollapsibleListFabricComponent,
         RiskAlertsNotificationComponent,
         RiskAlertsPanelComponent,
-        IntegratedSolutionsViewComponent
+        IntegratedSolutionsViewComponent,
+        Asev3CustomViewComponent
     ],
     imports: [
         HttpClientModule,
@@ -246,6 +249,7 @@ import { IntegratedSolutionsViewComponent } from './components/integrated-soluti
         FabTagPickerModule,
         FabProgressIndicatorModule,
         FabContextualMenuModule,
+        MarkdownModule.forRoot(),
     ],
     exports: [
         CommonModule,

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DiagnosticApiService } from './diagnostic-api.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Commit } from '../models/commit';
 import { Dependency } from '../models/package';
 import { map } from 'rxjs/operators';
@@ -23,7 +23,9 @@ export class GithubApiService {
   }
 
   public getMetadataFile(id: string): Observable<string> {
-    return this._diagnosticApiService.get<string>(`api/github/package/${id}/metadata`, true);
+      if (id && id.length>0)
+        return this._diagnosticApiService.get<string>(`api/github/package/${id}/metadata`, true);
+      return of("");
   }
 
   public getSystemInvokerFile(id: string): Observable<string> {

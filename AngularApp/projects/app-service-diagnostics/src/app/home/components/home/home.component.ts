@@ -284,7 +284,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                         "Location" : TelemetrySource.LandingPage
                     });
                 },
-                linkText: "Click here to run all checks",
+                linkText: "Click here to view more details",
                 infoObserverable: this.globals.reliabilityChecksDetailsBehaviorSubject.pipe(map(info => RiskHelper.convertToRiskInfo(info))),
                 showTile: this._checkIsWindowsWebApp()
             }

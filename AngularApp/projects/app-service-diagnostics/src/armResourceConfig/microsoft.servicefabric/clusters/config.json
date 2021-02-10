@@ -17,7 +17,7 @@
         "supportTopicIds": []
     },
 	"categories": [{
-			"id": "ClusterAnalysis",
+			"id": "Cluster Insights",
 			"name": "Cluster Insights",
 			"description": "Get recommendations for your configuration, find common issues, and identify possible improvements for reliability.",
 			"keywords": ["Health", "Deployment", "Performance", "Scaling", "Upgrade", "Update", "Configuration", "Reliability", "Security"],

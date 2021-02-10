@@ -103,7 +103,7 @@ export class SupportTopicService {
                             catchError(err => {
                                 // If there is an error getting keystone detector, render the matched dector without key stone solution
                                 this._telemetryService.logEvent("KeystoneLoadingFailed", {
-                                    "details": err.ToString()
+                                    "details": JSON.stringify(err)
                                 });
 
                                 return observableOf({ path: detectorPath, queryParams: queryParamsDic });

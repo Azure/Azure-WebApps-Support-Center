@@ -5,7 +5,7 @@ interface PreferredSitesConfig {
 export var detectorSearchEnabledPesIds: string[] = ["14748", "16072", "16170", "15551"];
 export var detectorSearchEnabledPesIdsInternal: string[] = ["14748", "16072", "16170", "16450", "15791", "15551"];
 
-var globalExcludedSites = ["aws.amazon.com", "twitter.com"];
+export var globalExcludedSites = ["aws.amazon.com", "twitter.com"];
 
 var productPreferredSitesConfig: PreferredSitesConfig = {
     //WEB APP WINDOWS
