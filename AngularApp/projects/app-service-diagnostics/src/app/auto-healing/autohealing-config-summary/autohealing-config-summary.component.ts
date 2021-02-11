@@ -61,7 +61,7 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
 
           let requestPath = "";
           if (slowRequestRule.path) {
-            requestPath = " matching path '" + slowRequestRule.path + "' ";
+            requestPath = ` matching path '${slowRequestRule.path}' `;
           }
 
           conditions.push(slowRequestRule.count + ' requests ' + requestPath + 'take more than  ' + FormatHelper.timespanToSeconds(slowRequestRule.timeTaken) + ' seconds in a duration of  ' + FormatHelper.timespanToSeconds(slowRequestRule.timeInterval) + ' seconds');
@@ -99,7 +99,7 @@ export class AutohealingConfigSummaryComponent implements OnInit, OnChanges {
             requestPath = " matching path '" + statusCodeRule.path + "' ";
           }
 
-          conditions.push(statusCodeRule.count + ' requests ' + requestPath + 'end up with HTTP Status in range (' + statusCodeRule.statusCodes  + ') in a duration of  ' + FormatHelper.timespanToSeconds(statusCodeRule.timeInterval) + ' seconds');
+          conditions.push(statusCodeRule.count + ' requests ' + requestPath + 'end up with HTTP Status in range (' + statusCodeRule.statusCodes + ') in a duration of  ' + FormatHelper.timespanToSeconds(statusCodeRule.timeInterval) + ' seconds');
         }
       }
 

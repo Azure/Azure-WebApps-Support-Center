@@ -140,8 +140,7 @@ export class AutohealingComponent implements OnInit {
       || (triggers.slowRequests != null && triggers.slowRequests.count > 0)
       || (triggers.statusCodes != null && triggers.statusCodes.length > 0)
       || (triggers.statusCodesRange != null && triggers.statusCodesRange.length > 0)
-      || (triggers.slowRequestsWithPath != null && triggers.slowRequestsWithPath.length > 0))
-       {
+      || (triggers.slowRequestsWithPath != null && triggers.slowRequestsWithPath.length > 0)) {
       isValid = true;
     }
     return isValid;
@@ -318,13 +317,13 @@ export class AutohealingComponent implements OnInit {
     this.minProcessExecutionTimeExpanded = false;
   }
 
-  getStatusCodeRules() : StatusCodeRules {
+  getStatusCodeRules(): StatusCodeRules {
     if (this.autohealingSettings != null && this.autohealingSettings.autoHealRules != null && this.autohealingSettings.autoHealRules.triggers != null) {
       return new StatusCodeRules(this.autohealingSettings.autoHealRules.triggers.statusCodes, this.autohealingSettings.autoHealRules.triggers.statusCodesRange);
     }
   }
 
-  getSlowRequestRules():SlowRequestsRules{
+  getSlowRequestRules(): SlowRequestsRules {
     if (this.autohealingSettings != null && this.autohealingSettings.autoHealRules != null && this.autohealingSettings.autoHealRules.triggers != null) {
       return new SlowRequestsRules(this.autohealingSettings.autoHealRules.triggers.slowRequests, this.autohealingSettings.autoHealRules.triggers.slowRequestsWithPath);
     }
