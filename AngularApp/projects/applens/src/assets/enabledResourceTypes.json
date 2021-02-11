@@ -350,6 +350,14 @@
              "imgSrc": "assets/img/LogAnalytics-Logo.svg",  
              "versionPrefix": "",  
              "azureCommImpactedServicesList": "logAnalytics"  
+         },
+        { 
+             "service": "ResourceService",  
+             "resourceType": "Microsoft.Web/staticSites",  
+             "templateFileName": "StaticSites",  
+             "imgSrc": "assets/img/StaticSites-Logo.svg",  
+             "versionPrefix": "",  
+             "azureCommImpactedServicesList": "staticSites"  
          }
     ]
 }
