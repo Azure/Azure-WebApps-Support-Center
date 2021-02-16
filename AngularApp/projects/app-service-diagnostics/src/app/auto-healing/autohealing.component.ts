@@ -6,6 +6,8 @@ import { AutohealingService } from '../shared/services/autohealing.service';
 import { FormatHelper } from '../shared/utilities/formattingHelper';
 import { AutoHealSettings, AutoHealCustomAction, AutoHealRules, AutoHealActions, AutoHealTriggers, AutoHealActionType, StatusCodeRules, SlowRequestsRules } from '../shared/models/autohealing';
 import { AvailabilityLoggingService } from '../shared/services/logging/availability.logging.service';
+import { Globals } from '../globals';
+import { TelemetryService } from 'diagnostic-data';
 
 @Component({
   selector: 'autohealing',
@@ -42,7 +44,9 @@ export class AutohealingComponent implements OnInit {
   statusCodeRules: StatusCodeRules = null;
   slowRequestRules: SlowRequestsRules = null;
 
-  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, private _logger: AvailabilityLoggingService, protected _route: ActivatedRoute) {
+  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, 
+    private globals: Globals, private telemetryService: TelemetryService,
+    private _logger: AvailabilityLoggingService, protected _route: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -328,6 +332,12 @@ export class AutohealingComponent implements OnInit {
       return new SlowRequestsRules(this.autohealingSettings.autoHealRules.triggers.slowRequests, this.autohealingSettings.autoHealRules.triggers.slowRequestsWithPath);
     }
   }
+
+  toggleSessionPanel() {
+    this.globals.openSessionPanel = !this.globals.openSessionPanel;
+    this.telemetryService.logEvent("OpenSesssionsPanel");
+    this.telemetryService.logPageView("SessionsPanelView");
+}
 
   validateAutoHealRules() {
     this.validationWarning = [];
