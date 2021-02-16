@@ -161,37 +161,7 @@ export class CreateStorageAccountPanelComponent implements OnInit {
           return;
         }
         let storageKey = resp.keys[0].value;
-
-        // TODO : Remove call to daasService.setBlobSasUri and change to below method
-        // once the backend deployment of ANT90 is complete.
-        // this.generateSasKey(storageAccountId, storageAccountName, storageKey);
-
-        this._daasService.setBlobSasUri(this.siteToBeDiagnosed, storageAccountName, storageKey).subscribe(resp => {
-          if (resp) {
-            this._daasService.getBlobSasUri(this.siteToBeDiagnosed).subscribe(resp => {
-              this.generatingSasUri = false;
-              if (resp.BlobSasUri && resp.BlobSasUri.length > 0) {
-                let storageAccountProperties: StorageAccountProperties = new StorageAccountProperties();
-                storageAccountProperties.name = storageAccountName;
-                storageAccountProperties.sasUri = "";
-                this._sharedStorageAccountService.emitChange(storageAccountProperties);
-                this.globals.openCreateStorageAccountPanel = false;
-              }
-            },
-              error => {
-                this.generatingSasUri = false;
-                this.error = error;
-              });
-          } else {
-            this.generatingSasUri = false;
-            this.error = "Failed to set BlobSasUri for the current app."
-          }
-        },
-          error => {
-            this.generatingSasUri = false;
-            this.errorMessage = "Failed to set BlobSasUri for the current app. ";
-            this.error = error;
-          });
+        this.generateSasKey(storageAccountId, storageAccountName, storageKey);
       }
     },
       error => {
@@ -207,8 +177,16 @@ export class CreateStorageAccountPanelComponent implements OnInit {
         let storageAccountProperties: StorageAccountProperties = new StorageAccountProperties();
         storageAccountProperties.name = storageAccountName;
         storageAccountProperties.sasUri = `https://${storageAccountName}.blob.${this._armService.storageUrl}/${this._daasService.defaultContainerName}?${generatedSasUri}`;
-        this._sharedStorageAccountService.emitChange(storageAccountProperties);
-        this.globals.openCreateStorageAccountPanel = false;
+        this._daasService.setBlobSasUriAppSetting(this.siteToBeDiagnosed, storageAccountProperties.sasUri).subscribe(resp => {
+          this.generatingSasUri = false;
+          this._sharedStorageAccountService.emitChange(storageAccountProperties);
+          this.globals.openCreateStorageAccountPanel = false;
+        }, error => {
+          this.errorMessage = "Failed while updating SAS Key app setting";
+          this.generatingSasUri = false;
+          this.error = error;
+        });
+
       }
     }, error => {
       this.errorMessage = "Failed while generating SAS Key";

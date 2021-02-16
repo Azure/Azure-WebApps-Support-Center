@@ -1,14 +1,15 @@
 
-import { map } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { SiteDaasInfo } from '../models/solution-metadata';
 import { ArmService } from './arm.service';
 import { AuthService } from '../../startup/services/auth.service';
 import { UriElementsService } from './urielements.service';
-import { Session, DiagnoserDefinition, DatabaseTestConnectionResult, MonitoringSession, MonitoringLogsPerInstance, ActiveMonitoringSession, DaasAppInfo, DaasSettings } from '../models/daas';
+import { Session, DiagnoserDefinition, DatabaseTestConnectionResult, MonitoringSession, MonitoringLogsPerInstance, ActiveMonitoringSession, DaasAppInfo, DaasSettings, DaasSasUri } from '../models/daas';
 import { SiteInfoMetaData } from '../models/site';
+import { SiteService } from './site.service';
 
 const BlobContainerName: string = "memorydumps";
 
@@ -16,7 +17,8 @@ const BlobContainerName: string = "memorydumps";
 export class DaasService {
 
     public currentSite: SiteDaasInfo;
-    constructor(private _armClient: ArmService, private _authService: AuthService, private _http: HttpClient, private _uriElementsService: UriElementsService) {
+    constructor(private _armClient: ArmService, private _authService: AuthService,
+        private _http: HttpClient, private _uriElementsService: UriElementsService, private _siteService: SiteService) {
     }
 
     getDaasSessions(site: SiteDaasInfo): Observable<Session[]> {
@@ -151,9 +153,51 @@ export class DaasService {
         return <Observable<boolean>>(this._armClient.postResource(resourceUri, settings, null, true));
     }
 
-    getBlobSasUri(site: SiteDaasInfo): Observable<DaasSettings> {
+    setBlobSasUriAppSetting(site: SiteDaasInfo, blobSasUri: string): Observable<any> {
+        return this._siteService.getSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot).pipe(
+            map(settingsResponse => {
+                if (settingsResponse && settingsResponse.properties) {
+                    if (blobSasUri) {
+                        settingsResponse.properties['WEBSITE_DAAS_STORAGE_SASURI'] = blobSasUri;
+                    } else {
+                        if (settingsResponse.properties['WEBSITE_DAAS_STORAGE_SASURI']) {
+                            delete settingsResponse.properties['WEBSITE_DAAS_STORAGE_SASURI'];
+                        }
+                    }
+                    this._siteService.updateSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot, settingsResponse).subscribe(updateResponse => {
+                        return updateResponse;
+                    });
+                }
+            }));
+    }
+
+    getBlobSasUri(site: SiteDaasInfo): Observable<DaasSasUri> {
+        return this._siteService.getSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot).pipe(
+            map(settingsResponse => {
+                if (settingsResponse && settingsResponse.properties && settingsResponse.properties["WEBSITE_DAAS_STORAGE_SASURI"] != null) {
+                    let daasSasUri: DaasSasUri = { IsAppSetting: true, SasUri: settingsResponse.properties["WEBSITE_DAAS_STORAGE_SASURI"] };
+                    return daasSasUri;
+                }
+            }),
+            mergeMap((daasSasUri: DaasSasUri) => {
+                if (daasSasUri && daasSasUri.SasUri) {
+                    return of(daasSasUri);
+                } else {
+                    return this._getSasUriFromDaasApi(site);
+                }
+            }));
+    }
+
+    private _getSasUriFromDaasApi(site: SiteDaasInfo): Observable<DaasSasUri> {
         const resourceUri: string = this._uriElementsService.getBlobSasUriUrl(site);
-        return <Observable<DaasSettings>>(this._armClient.getResourceWithoutEnvelope<DaasSettings>(resourceUri, null, true));
+        return this._armClient.getResourceWithoutEnvelope<DaasSettings>(resourceUri, null, true).pipe(
+            map((resp: DaasSettings) => {
+                let daasSasUri: DaasSasUri = { IsAppSetting: false, SasUri: "" };
+                if (resp && resp.BlobSasUri) {
+                    daasSasUri.SasUri = resp.BlobSasUri;
+                }
+                return daasSasUri;
+            }));
     }
 
     putStdoutSetting(resourceUrl: string, enabled: boolean): Observable<{ Stdout: string }> {

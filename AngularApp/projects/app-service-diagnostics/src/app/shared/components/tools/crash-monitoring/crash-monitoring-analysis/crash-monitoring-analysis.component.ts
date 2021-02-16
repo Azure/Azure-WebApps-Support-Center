@@ -3,7 +3,7 @@ import { DiagnosticService, RenderingType, DataTableResponseObject, TelemetryEve
 import { DaasService } from '../../../../services/daas.service';
 import { SiteService } from '../../../../services/site.service';
 import * as momentNs from 'moment';
-import { CrashMonitoringSettings, DaasSettings } from '../../../../models/daas';
+import { CrashMonitoringSettings, DaasSasUri, DaasSettings } from '../../../../models/daas';
 import moment = require('moment');
 import { Subscription, interval, Observable } from 'rxjs';
 import { SiteDaasInfo } from '../../../../models/solution-metadata';
@@ -39,7 +39,7 @@ export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges, OnDe
   savingSettings: boolean = false;
   crashMonitoringHistory: CrashMonitoringData[] = [];
   refreshingHistory: boolean = true;
-  blobSasUriObservable: Observable<DaasSettings>;
+  blobSasUriObservable: Observable<DaasSasUri>;
 
   // For tooltip display
   directionalHint = DirectionalHint.rightTopEdge;
@@ -69,11 +69,13 @@ export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges, OnDe
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
       this.siteToBeDiagnosed = site;
       this.blobSasUriObservable = this._daasService.getBlobSasUri(site);
-      this.blobSasUriObservable.subscribe(resp => {
-        if (resp.BlobSasUri) {
-          this.blobSasUri = resp.BlobSasUri;
-        }
-      });
+
+      if (!this.blobSasUri) {
+
+        this.blobSasUriObservable.subscribe(daasSasUri => {
+          this.blobSasUri = daasSasUri.SasUri;
+        });
+      }
     });
     this.refreshHistory();
   }
@@ -109,14 +111,14 @@ export class CrashMonitoringAnalysisComponent implements OnInit, OnChanges, OnDe
         if (this.blobSasUri) {
           this.loadDetectorData(rawTable);
         } else {
-          this.blobSasUriObservable.subscribe(resp => {
-            if (resp.BlobSasUri) {
-              this.blobSasUri = resp.BlobSasUri;
-              this.loadDetectorData(rawTable);
-            }
-          })
-        }
 
+          if (!this.blobSasUri) {
+            this.blobSasUriObservable.subscribe(daasSasUri => {
+                this.blobSasUri = daasSasUri.SasUri;
+                this.loadDetectorData(rawTable);
+            });
+          }
+        }
       });
     }
   }

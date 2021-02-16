@@ -9,10 +9,11 @@ import { Globals } from '../../../../globals'
 import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
 import { SharedStorageAccountService } from 'projects/app-service-diagnostics/src/app/shared-v2/services/shared-storage-account.service';
 import { CrashMonitoringSettings } from '../../../models/daas';
-import moment = require('moment');
 import { DirectionalHint } from 'office-ui-fabric-react/lib/Tooltip';
 import { ITooltipOptions } from '@angular-react/fabric';
 import { CrashMonitoringAnalysisComponent } from './crash-monitoring-analysis/crash-monitoring-analysis.component';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'crash-monitoring',
@@ -61,7 +62,6 @@ export class CrashMonitoringComponent implements OnInit {
   crashMonitoringSettings: CrashMonitoringSettings = null;
   collapsed: boolean = false;
   blobSasUriEnvironmentVariable: string = "";
-  toolBlocked: boolean = false;
 
   // For tooltip display
   directionalHint = DirectionalHint.rightTopEdge;
@@ -89,46 +89,37 @@ export class CrashMonitoringComponent implements OnInit {
   ngOnInit() {
     this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
       this.siteToBeDiagnosed = site;
-      this._siteService.getSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot).subscribe(settingsResponse => {
-        if (settingsResponse && settingsResponse.properties) {
-          if (settingsResponse.properties["WEBSITE_LOCAL_CACHE_OPTION"] != null
-            && settingsResponse.properties["WEBSITE_LOCAL_CACHE_OPTION"].toString().toLowerCase() === "Always".toLowerCase()) {
-            this.toolBlocked = true;
-            return;
+      this.status = toolStatus.CheckingBlobSasUri;
+      this.getStorageAccountName().subscribe(storageAccountName => {
+        this.chosenStorageAccount = storageAccountName;
+        this._siteService.getCrashMonitoringSettings(site).subscribe(crashMonitoringSettings => {
+          if (crashMonitoringSettings != null) {
+            this.crashMonitoringSettings = crashMonitoringSettings;
+            this.populateSettings(crashMonitoringSettings);
+            this.monitoringEnabled = true;
+            this.collapsed = true;
           }
-        }
-        this.status = toolStatus.CheckingBlobSasUri;
-        this._daasService.getBlobSasUri(this.siteToBeDiagnosed).subscribe(resp => {
-          this.status = toolStatus.CheckingBlobSasUri;
-          let configuredSasUri = "";
-          if (resp.BlobSasUri) {
-            configuredSasUri = resp.BlobSasUri;
-            this.chosenStorageAccount = this.getStorageAccountNameFromSasUri(configuredSasUri);
-          }
-
-          this._siteService.getCrashMonitoringSettings(site).subscribe(crashMonitoringSettings => {
-            if (crashMonitoringSettings != null) {
-              this.crashMonitoringSettings = crashMonitoringSettings;
-              this.populateSettings(crashMonitoringSettings);
-              this.monitoringEnabled = true;
-              this.collapsed = true;
-            }
-            this.status = toolStatus.Loaded;
-          });
-
-        },
-          error => {
-            this.errorMessage = "Failed while checking configured storage account";
-            this.status = toolStatus.Error;
-            this.error = error;
-          });
-      });
+          this.status = toolStatus.Loaded;
+        });
+      },
+        error => {
+          this.errorMessage = "Failed while checking configured storage account";
+          this.status = toolStatus.Error;
+          this.error = error;
+        });
 
       this.startClock = this.getHourAndMinute(this.startDate);
       this.endClock = this.getHourAndMinute(this.endDate);
 
       this.initDumpOptions();
     });
+  }
+
+  getStorageAccountName(): Observable<string> {
+    return this._daasService.getBlobSasUri(this.siteToBeDiagnosed).pipe(
+      map(daasSasUri => {
+        return this.getStorageAccountNameFromSasUri(daasSasUri.SasUri);
+      }));
   }
 
   resetGlobals() {
