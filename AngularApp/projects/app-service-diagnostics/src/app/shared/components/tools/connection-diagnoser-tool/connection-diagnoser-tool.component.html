@@ -90,7 +90,8 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr *ngIf="!connection.DummyValueExistsInWebConfig && connection.IsEnvironmentVariable">
+                            <!-- connection.DatabaseType 3 is 'Custom' -->
+                            <tr *ngIf="!connection.DummyValueExistsInWebConfig && connection.IsEnvironmentVariable && connection.DatabaseType === 3">
                                 <th scope="row" tabindex="0">
                                     Warning
                                 </th>
@@ -98,9 +99,7 @@
                                     We found that the connection string is defined only as an environment variable and
                                     no
                                     dummy value exists in the web.config.
-                                    Any C# code attempting to retrieve this connnecting string value via call to
-                                    ConfigurationManager.ConnectionStrings
-                                    property will fail. For more information, click
+                                    Any C# code attempting to retrieve this connnecting string might fail. For more information, click
                                     <a target="_blank"
                                         href='https://azure.microsoft.com/en-us/blog/windows-azure-web-sites-how-application-strings-and-connection-strings-work/'>here</a>.
                                 </td>
