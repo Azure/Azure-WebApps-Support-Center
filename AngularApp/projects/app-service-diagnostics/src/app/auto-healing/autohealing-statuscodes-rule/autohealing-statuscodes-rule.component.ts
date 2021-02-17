@@ -126,7 +126,7 @@ export class AutohealingStatuscodesRuleComponent extends AutohealingRuleComponen
       if (!this.isValidUrlPattern(this.currentStatusCodeRule.path)) {
         return false;
       }
-      return this.currentStatusCodeRule.count > 0 && this.currentStatusCodeRule.status > 100 && this.currentStatusCodeRule.status < 530 && (this.currentStatusCodeRule.timeInterval && FormatHelper.timespanToSeconds(this.currentStatusCodeRule.timeInterval) > 0);
+      return this.currentStatusCodeRule.count > 0 && this.currentStatusCodeRule.status > 100 && this.currentStatusCodeRule.status < 530 && (this.currentStatusCodeRule.timeInterval && this.currentStatusCodeRule.timeInterval && FormatHelper.timespanToSeconds(this.currentStatusCodeRule.timeInterval) > 0);
     }
   }
 
@@ -144,7 +144,7 @@ export class AutohealingStatuscodesRuleComponent extends AutohealingRuleComponen
 
   isValidStatusCodesRange(range: string): boolean {
     this.statusCodeRangeError = '';
-    if (range.indexOf('.') > -1) {
+    if (range && range.indexOf('.') > -1) {
       this.statusCodeRangeError = "HTTP Status code range cannot contain '.'";
       return false;
     }
