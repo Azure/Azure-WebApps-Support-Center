@@ -10,6 +10,8 @@ import { DaasService } from '../../../shared/services/daas.service';
 import { ArmService } from '../../../shared/services/arm.service';
 import { interval, Subscription } from 'rxjs';
 
+const BlobContainerName: string = "memorydumps";
+
 @Component({
   selector: 'create-storage-account-panel',
   templateUrl: './create-storage-account-panel.component.html',
@@ -119,9 +121,22 @@ export class CreateStorageAccountPanelComponent implements OnInit {
       this.creatingStorageAccount = true;
       this._storageService.createStorageAccount(this.siteToBeDiagnosed.subscriptionId, this.siteToBeDiagnosed.resourceGroupName, this.newStorageAccountName, this._siteService.currentSiteStatic.location)
         .subscribe(location => {
-          this.subscriptionOperationStatus = interval(10000).subscribe(res => {
-            this.checkAccountStatus(location);
-          });
+
+          // 
+          // If someone tries to recreate an account with the same name,
+          // the API will return a 200 but there will be no location header
+          // We should treat it as success as the storage account already
+          // exists
+          //
+
+          if (location != null) {
+            this.subscriptionOperationStatus = interval(10000).subscribe(res => {
+              this.checkAccountStatus(location);
+            });
+          } else {
+            this.creatingStorageAccount = false;
+          }
+
         },
           error => {
             this.creatingStorageAccount = false;
@@ -153,9 +168,8 @@ export class CreateStorageAccountPanelComponent implements OnInit {
 
   setBlobSasUri(storageAccountId: string, storageAccountName: string) {
     this.generatingSasUri = true;
-    this._storageService.createStorageContainer(this.siteToBeDiagnosed.subscriptionId,
-      this.siteToBeDiagnosed.resourceGroupName,
-      storageAccountName, "memorydumps").subscribe(containerResp => {
+    this._storageService.createContainerIfNotExists(storageAccountId, BlobContainerName).subscribe(containerCreated => {
+      if (containerCreated) {
         this._storageService.getStorageAccountKey(storageAccountId).subscribe(resp => {
           if (resp.keys && resp.keys.length > 0) {
             if (resp.keys[0].value == null) {
@@ -172,12 +186,17 @@ export class CreateStorageAccountPanelComponent implements OnInit {
             this.generatingSasUri = false;
             this.error = error;
           });
-      },
-        error => {
-          this.errorMessage = "Failed while creating storage account container";
-          this.generatingSasUri = false;
-          this.error = error;
-        });
+      } else {
+        this.errorMessage = "Failed to create storage account container";
+        this.error = "Either the container does not exist or it is marked as deleted. Please try using a different storage account or retry the operation";
+        this.generatingSasUri = false;
+      }
+    },
+      error => {
+        this.errorMessage = "Failed while creating storage account container";
+        this.generatingSasUri = false;
+        this.error = error;
+      });
 
   }
 

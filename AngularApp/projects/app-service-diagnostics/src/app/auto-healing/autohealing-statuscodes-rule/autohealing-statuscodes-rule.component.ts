@@ -143,8 +143,12 @@ export class AutohealingStatuscodesRuleComponent extends AutohealingRuleComponen
   }
 
   isValidStatusCodesRange(range: string): boolean {
+    if (!range) {
+      return false;
+    }
+    
     this.statusCodeRangeError = '';
-    if (range && range.indexOf('.') > -1) {
+    if (range.indexOf('.') > -1) {
       this.statusCodeRangeError = "HTTP Status code range cannot contain '.'";
       return false;
     }

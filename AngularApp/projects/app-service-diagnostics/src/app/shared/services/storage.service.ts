@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { ArmService } from './arm.service';
 import { UriElementsService } from './urielements.service';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { ResponseMessageCollectionEnvelope, ResponseMessageEnvelope } from '../models/responsemessageenvelope';
 import { StorageAccount, StorageKeys, NewStorageAccount, SasUriPostBody, SasUriPostResponse, NewContainer } from '../models/storage';
 import moment = require('moment');
 import { HttpResponse } from '@angular/common/http';
+import { ArmResource } from '../../shared-v2/models/arm';
 
 @Injectable({
   providedIn: 'root'
@@ -53,13 +54,30 @@ export class StorageService {
   }
 
   //https://docs.microsoft.com/en-us/rest/api/storagerp/blobcontainers/create
-  createStorageContainer(subscriptionId: string, resourceGroupName: string, accountName: string, containerName: string): Observable<any> {
-    let url = this._uriElementsService.createStorageContainerUrl(subscriptionId, resourceGroupName, accountName.toLowerCase(), containerName.toLowerCase());
-    let requestBody = new NewContainer();
-    return this._armClient.putResourceFullResponse(url, requestBody, true, this.apiVersion).pipe(
-      map(response => {
-        return response;
-      }));
+  createContainerIfNotExists(storageAccountId: string, containerName: string): Observable<boolean> {
+    let url = this._uriElementsService.getStorageContainerUrl(storageAccountId, containerName.toLowerCase());
+
+    return this._armClient.getResourceFullResponse<ArmResource>(url, true, this.apiVersion).pipe(
+      map(containerResp => {
+        if (containerResp.ok && containerResp.body.properties && !containerResp.body.properties.deleted) {
+          return true;
+        }
+      }), catchError(error => {
+
+        //
+        // If the container does not exist or if it is marked as
+        // deleted we will get an error and we can try creating it 
+        //
+
+        let requestBody = new NewContainer();
+        return this._armClient.putResourceFullResponse(url, requestBody, true, this.apiVersion).pipe(
+          map(response => {
+            if (response && response.ok) {
+              return true;
+            }
+          }));
+      })
+    );
   }
 
   // https://docs.microsoft.com/en-us/rest/api/storagerp/storageaccounts/listaccountsas

@@ -15,7 +15,7 @@ export class UriElementsService {
     private _listAccountSas: string = '/ListAccountSas';
     private _listStorageKeys: string = '/listKeys';
     private _createStorageAccountFormatUrl: string = '/storageAccounts/{accountName}';
-    private _createContainerFormatUrl:string = '/blobServices/default/containers/{containerName}';
+    private _storageContainerFormatUrl: string = '/blobServices/default/containers/{containerName}';
 
     private _siteRestartUrlFormat: string = '/restart';
     private _listAppSettingsUrlFormat: string = '/config/appsettings/list';
@@ -234,10 +234,8 @@ export class UriElementsService {
             .replace('{resourceGroup}', resourceGroup) + this._createStorageAccountFormatUrl.replace('{accountName}', accountName);
     }
 
-    createStorageContainerUrl(subscriptionId: string, resourceGroup: string, accountName: string, containerName: string): string {
-        return this._storageAccountResourceProviderPrefix.replace('{subscriptionId}', subscriptionId)
-            .replace('{resourceGroup}', resourceGroup) + this._createStorageAccountFormatUrl.replace('{accountName}', accountName)
-            + this._createContainerFormatUrl.replace('{containerName}', containerName);
+    getStorageContainerUrl(storageAccountId: string, containerName: string): string {
+        return storageAccountId+ this._storageContainerFormatUrl.replace('{containerName}', containerName);
     }
 
     createSasUri(storageResourceUri: string): string {
