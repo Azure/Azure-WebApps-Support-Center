@@ -22,6 +22,10 @@ export class NewStorageAccount {
     location: string;
 }
 
+export class NewContainer {
+    properties: any = { publicAccess: "None" };
+}
+
 export class StorageAccountSku {
     name: string = "Standard_GRS";
 }

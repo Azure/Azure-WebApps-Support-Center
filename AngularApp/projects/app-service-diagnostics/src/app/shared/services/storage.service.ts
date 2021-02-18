@@ -4,7 +4,7 @@ import { UriElementsService } from './urielements.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ResponseMessageCollectionEnvelope, ResponseMessageEnvelope } from '../models/responsemessageenvelope';
-import { StorageAccount, StorageKeys, NewStorageAccount, SasUriPostBody, SasUriPostResponse } from '../models/storage';
+import { StorageAccount, StorageKeys, NewStorageAccount, SasUriPostBody, SasUriPostResponse, NewContainer } from '../models/storage';
 import moment = require('moment');
 import { HttpResponse } from '@angular/common/http';
 
@@ -49,6 +49,16 @@ export class StorageService {
         if (locationHeader != null) {
           return locationHeader;
         }
+      }));
+  }
+
+  //https://docs.microsoft.com/en-us/rest/api/storagerp/blobcontainers/create
+  createStorageContainer(subscriptionId: string, resourceGroupName: string, accountName: string, containerName: string): Observable<any> {
+    let url = this._uriElementsService.createStorageContainerUrl(subscriptionId, resourceGroupName, accountName.toLowerCase(), containerName.toLowerCase());
+    let requestBody = new NewContainer();
+    return this._armClient.putResourceFullResponse(url, requestBody, true, this.apiVersion).pipe(
+      map(response => {
+        return response;
       }));
   }
 

@@ -153,22 +153,32 @@ export class CreateStorageAccountPanelComponent implements OnInit {
 
   setBlobSasUri(storageAccountId: string, storageAccountName: string) {
     this.generatingSasUri = true;
-    this._storageService.getStorageAccountKey(storageAccountId).subscribe(resp => {
-      if (resp.keys && resp.keys.length > 0) {
-        if (resp.keys[0].value == null) {
+    this._storageService.createStorageContainer(this.siteToBeDiagnosed.subscriptionId,
+      this.siteToBeDiagnosed.resourceGroupName,
+      storageAccountName, "memorydumps").subscribe(containerResp => {
+        this._storageService.getStorageAccountKey(storageAccountId).subscribe(resp => {
+          if (resp.keys && resp.keys.length > 0) {
+            if (resp.keys[0].value == null) {
+              this.generatingSasUri = false;
+              this.error = "Failed to retrieve keys for this storage account. Please choose a different storage account or create a new one";
+              return;
+            }
+            let storageKey = resp.keys[0].value;
+            this.generateSasKey(storageAccountId, storageAccountName, storageKey);
+          }
+        },
+          error => {
+            this.errorMessage = "Failed while getting storage account key";
+            this.generatingSasUri = false;
+            this.error = error;
+          });
+      },
+        error => {
+          this.errorMessage = "Failed while creating storage account container";
           this.generatingSasUri = false;
-          this.error = "Failed to retrieve keys for this storage account. Please choose a different storage account or create a new one";
-          return;
-        }
-        let storageKey = resp.keys[0].value;
-        this.generateSasKey(storageAccountId, storageAccountName, storageKey);
-      }
-    },
-      error => {
-        this.errorMessage = "Failed while getting storage account key";
-        this.generatingSasUri = false;
-        this.error = error;
-      });
+          this.error = error;
+        });
+
   }
 
   generateSasKey(storageAccountId: string, storageAccountName: string, storageKey: string) {
