@@ -62,6 +62,7 @@ export class UriElementsService {
     private _diagnosticsMonitoringSingleSession = this._diagnosticsMonitoringPath + "/{sessionId}";
     private _diagnosticsMonitoringAnalyzeSession = this._diagnosticsMonitoringPath + "/analyze?sessionId={sessionId}";
     private _diagnosticsSettingsPath = this._diagnosticsPath + 'settings';
+    private _diagnosticsValidateSasUriPath = this._diagnosticsSettingsPath + "/validatesasuri";
     private _networkTraceStartPath = '/networkTrace/start';
     private _webjobsPath: string = '/webjobs';
 
@@ -140,6 +141,10 @@ export class UriElementsService {
 
     getBlobSasUriUrl(site: SiteDaasInfo) {
         return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsSettingsPath;
+    }
+
+    getValidateBlobSasUriUrl(site: SiteDaasInfo) {
+        return this._getSiteResourceUrl(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot) + this._diagnosticsValidateSasUriPath;
     }
 
     getStdoutSettingUrl(resourceUrl: string) {

@@ -32,6 +32,7 @@ export class CrashMonitoringComponent implements OnInit {
       this.blobSasUriEnvironmentVariable = newStorageAccount.sasUri;
       if (this.chosenStorageAccount) {
         this.validationError = "";
+        this.storageConfiguredAsAppSetting = true;
       }
     })
   }
@@ -54,6 +55,7 @@ export class CrashMonitoringComponent implements OnInit {
   validationError: string = "";
   updatingStorageAccounts: boolean = false;
   chosenStorageAccount: string = "";
+  storageConfiguredAsAppSetting: boolean = false;
 
   chosenStartDateTime: Date;
   chosenEndDateTime: Date;
@@ -118,6 +120,7 @@ export class CrashMonitoringComponent implements OnInit {
   getStorageAccountName(): Observable<string> {
     return this._daasService.getBlobSasUri(this.siteToBeDiagnosed).pipe(
       map(daasSasUri => {
+        this.storageConfiguredAsAppSetting = daasSasUri.IsAppSetting;
         return this.getStorageAccountNameFromSasUri(daasSasUri.SasUri);
       }));
   }
@@ -152,6 +155,9 @@ export class CrashMonitoringComponent implements OnInit {
   }
 
   getStorageAccountNameFromSasUri(blobSasUri: string): string {
+    if (!blobSasUri) {
+      return blobSasUri;
+    }
     let blobUrl = new URL(blobSasUri);
     return blobUrl.host.split('.')[0];
   }
@@ -191,7 +197,7 @@ export class CrashMonitoringComponent implements OnInit {
   validateSettings(): boolean {
     this.validationError = ""
     let isValid: boolean = true;
-    if (!this.chosenStorageAccount) {
+    if (!this.chosenStorageAccount || !this.storageConfiguredAsAppSetting) {
       this.validationError = "Please choose a storage account to save the memory dumps";
       return false;
     }

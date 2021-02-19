@@ -33,12 +33,12 @@
 
               </div>
               <div class="col-md-2">
-                <span *ngIf="chosenStorageAccount"> {{ chosenStorageAccount }}
+                <span> {{ monitoringEnabled || storageConfiguredAsAppSetting ? chosenStorageAccount : ""}}
                 </span>
                 <div class="mt-1 mb-4" (click)="toggleStorageAccountPanel()"
                   (keyup.enter)="toggleStorageAccountPanel()">
                   <a role="button" name="Change storage account" aria-label="Change storage account">
-                    {{ chosenStorageAccount ? 'Change' : 'Select' }}</a>
+                    {{ chosenStorageAccount && (monitoringEnabled || storageConfiguredAsAppSetting) ? 'Change' : 'Select' }}</a>
                 </div>
               </div>
             </div>

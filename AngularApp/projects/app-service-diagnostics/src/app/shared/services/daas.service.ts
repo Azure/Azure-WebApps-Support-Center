@@ -7,7 +7,7 @@ import { SiteDaasInfo } from '../models/solution-metadata';
 import { ArmService } from './arm.service';
 import { AuthService } from '../../startup/services/auth.service';
 import { UriElementsService } from './urielements.service';
-import { Session, DiagnoserDefinition, DatabaseTestConnectionResult, MonitoringSession, MonitoringLogsPerInstance, ActiveMonitoringSession, DaasAppInfo, DaasSettings, DaasSasUri } from '../models/daas';
+import { Session, DiagnoserDefinition, DatabaseTestConnectionResult, MonitoringSession, MonitoringLogsPerInstance, ActiveMonitoringSession, DaasAppInfo, DaasSettings, DaasSasUri, ValidateSasUriResponse } from '../models/daas';
 import { SiteInfoMetaData } from '../models/site';
 import { SiteService } from './site.service';
 
@@ -185,6 +185,14 @@ export class DaasService {
                 } else {
                     return this._getSasUriFromDaasApi(site);
                 }
+            }));
+    }
+
+    validateSasUri(site: SiteDaasInfo): Observable<ValidateSasUriResponse> {
+        const resourceUri: string = this._uriElementsService.getValidateBlobSasUriUrl(site);
+        return this._armClient.getResourceWithoutEnvelope<ValidateSasUriResponse>(resourceUri, null, true).pipe(
+            map((resp: ValidateSasUriResponse) => {
+                return resp;
             }));
     }
 

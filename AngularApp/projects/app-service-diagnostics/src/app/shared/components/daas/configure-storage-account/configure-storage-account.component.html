@@ -3,7 +3,7 @@
   Checking for configured blob storage...
 </div>
 
-<div class="outline-box" *ngIf="!checkingBlobSasUriConfigured && !error">
+<div class="outline-box" *ngIf="!checkingBlobSasUriConfigured && !error && !validateSasUriResponse">
   <div *ngIf="chosenStorageAccount">
     <div tabindex="0">
       Storage account: <span class="highlight-blue">{{ chosenStorageAccount }}</span>
@@ -28,4 +28,29 @@
 
 <div class="focus-box focus-box-warning" style="margin-top:20px;word-wrap: break-word" *ngIf="error">
   <strong>Error</strong> - {{ error }}
+</div>
+
+<div class="focus-box focus-box-warning" style="margin-top:20px;word-wrap: break-word" *ngIf="validateSasUriResponse">
+  <div class="mt-1 mb-3">
+    The Storage account configuration for this app is in an invalid state. This can happen if the SAS URI has expired or
+    the Storage account is deleted. The below information can help in identifying the problem with the configured
+    storage account
+  </div>
+  <div>
+    <ul *ngIf="validateSasUriResponse.Exception">
+      <li>
+        Exception:{{ validateSasUriResponse.Exception }}
+      </li>
+      <ng-container *ngIf="validateSasUriResponse.ExtendedError">
+        <ng-container *ngFor="let item of validateSasUriResponse.ExtendedError | keyvalue">
+          <li *ngIf="item.value">
+            {{item.key}}:{{ isString(item.value) ? item.value : JSON.stringify(item.value) }}
+          </li>
+        </ng-container>
+      </ng-container>
+    </ul>
+  </div>
+
+  <button tabindex="0" type="button" class="btn btn-primary btn-sm mt-3 mb-2" [disabled]="sessionInProgress"
+    (click)="toggleStorageAccountPanel()">Reconfigure Storage Account</button>
 </div>
