@@ -38,6 +38,9 @@
   </div>
   <div>
     <ul *ngIf="validateSasUriResponse.Exception">
+      <li *ngIf="validateSasUriResponse.StorageAccount">
+        Account: <strong>{{ validateSasUriResponse.StorageAccount }}</strong>
+      </li>
       <li>
         Exception:{{ validateSasUriResponse.Exception }}
       </li>

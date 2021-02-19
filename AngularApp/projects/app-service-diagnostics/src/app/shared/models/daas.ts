@@ -203,6 +203,7 @@ export class CrashMonitoringSettings {
 export interface ValidateSasUriResponse {
     Exception: string;
     IsValid: boolean;
+    StorageAccount:string;
     SpecifiedAt: string;
     ExtendedError: StorageExtendError;
 }
