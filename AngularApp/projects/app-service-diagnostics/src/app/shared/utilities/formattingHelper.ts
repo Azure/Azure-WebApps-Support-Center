@@ -1,7 +1,7 @@
 export class FormatHelper {
 
     static timespanToSeconds(timeInterval: string): number {
-        if (timeInterval.indexOf(':') < 0) {
+        if (!timeInterval || timeInterval.indexOf(':') < 0) {
             return 0;
         }
         const a = timeInterval.split(':'); // split it at the colons
@@ -41,5 +41,5 @@ export class FormatHelper {
         let durationString = (inDays > 0 ? inDays.toString() + ' day(s)' : (inHours > 0 ? inHours.toString() + ' hour(s)' : inMinutes.toString() + ' minute(s)'));
         return durationString;
       }
-    
+
 }
