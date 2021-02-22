@@ -44,7 +44,7 @@ export class AutohealingComponent implements OnInit {
   statusCodeRules: StatusCodeRules = null;
   slowRequestRules: SlowRequestsRules = null;
 
-  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService, 
+  constructor(private _siteService: SiteService, private _autohealingService: AutohealingService,
     private globals: Globals, private telemetryService: TelemetryService,
     private _logger: AvailabilityLoggingService, protected _route: ActivatedRoute) {
   }
@@ -337,7 +337,17 @@ export class AutohealingComponent implements OnInit {
     this.globals.openSessionPanel = !this.globals.openSessionPanel;
     this.telemetryService.logEvent("OpenSesssionsPanel");
     this.telemetryService.logPageView("SessionsPanelView");
-}
+  }
+
+  generateSasRecommendation() {
+    return this.originalAutoHealSettings && this.originalAutoHealSettings.autoHealEnabled &&
+      this.originalAutoHealSettings.autoHealRules && this.originalAutoHealSettings.autoHealRules.actions
+      && this.originalAutoHealSettings.autoHealRules.actions && this.originalAutoHealSettings.autoHealRules.actions.customAction
+      && this.originalAutoHealSettings.autoHealRules.actions.customAction.exe
+      && this.originalAutoHealSettings.autoHealRules.actions.customAction.exe.toLowerCase().indexOf("daasconsole.exe") > -1
+      && this.originalAutoHealSettings.autoHealRules.actions.customAction.parameters
+      && this.originalAutoHealSettings.autoHealRules.actions.customAction.parameters.toLowerCase().indexOf("blobsasuri") > -1
+  }
 
   validateAutoHealRules() {
     this.validationWarning = [];

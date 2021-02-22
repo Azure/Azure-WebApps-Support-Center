@@ -163,6 +163,13 @@
         </table>
       </div>
       <div *ngIf="!retrievingAutohealSettings  && !errorMessage" class="saveSection autohealtile-content">
+        <div *ngIf="!saveEnabled && generateSasRecommendation()" class="error-details">
+          <i class="fa health-icon fa-times-circle unhealthy-icon-color" aria-hidden="true"></i>
+          Please reconfigure the storage account by clicking on the Custom Action section above. This 
+          ensures that SAS URI gets stored as an environment variable which is more secure than passing 
+          the SAS URI as a parameter to the DaaSConsole executable.
+        </div>
+
         <button type="button" class="btn btn-sm btn-primary" [disabled]="!saveEnabled" (click)="saveChanges()">Save</button>
         <button type="button" class="btn btn-sm btn-primary" [disabled]="!saveEnabled" (click)="reset()">Cancel</button>
         <button type="button" class="btn btn-sm btn-primary" (click)="toggleSessionPanel()">View All Sessions</button>

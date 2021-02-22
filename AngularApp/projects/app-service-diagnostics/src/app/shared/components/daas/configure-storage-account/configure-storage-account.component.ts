@@ -61,7 +61,7 @@ export class ConfigureStorageAccountComponent implements OnInit {
     this.checkingBlobSasUriConfigured = true;
 
     this._daasService.getBlobSasUri(this.siteToBeDiagnosed).subscribe(daasSasUri => {
-      if (daasSasUri.SasUri) {
+      if (daasSasUri.SasUri && daasSasUri.IsAppSetting) {
         this._daasService.validateSasUri(this.siteToBeDiagnosed).subscribe(resp => {
           this.checkingBlobSasUriConfigured = false;
           if (resp.IsValid) {
