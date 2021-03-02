@@ -1,5 +1,5 @@
 import { Component, ViewChild, AfterContentInit, TemplateRef, OnInit, AfterViewInit } from '@angular/core';
-import { DiagnosticData, DataTableRendering } from '../../models/detector';
+import { DiagnosticData, DataTableRendering, TableFilter } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { SelectionMode, IColumn, IListProps, ISelection, Selection, IStyle, DetailsListLayoutMode } from 'office-ui-fabric-react';
 import { FabDetailsListComponent } from '@angular-react/fabric';
@@ -28,6 +28,10 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     }
     if (this.renderingProperties.allowColumnSearch) {
       this.allowColumnSearch = this.renderingProperties.allowColumnSearch;
+    }
+
+    if(this.renderingProperties.tableFilters && this.renderingProperties.tableFilters.length > 0) {
+      this.tableFilters = this.renderingProperties.tableFilters;
     }
 
     if (this.renderingProperties.descriptionColumnName) {
@@ -79,6 +83,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   searchTimeout: any;
   searchAriaLabel = "Filter by all columns";
   heightThreshold = window.innerHeight * 0.5;
+  tableFilters: TableFilter[] = [];
   @ViewChild(FabDetailsListComponent, { static: true }) fabDetailsList: FabDetailsListComponent;
   @ViewChild('emptyTableFooter', { static: true }) emptyTableFooter: TemplateRef<any>
   protected processData(data: DiagnosticData) {

@@ -145,6 +145,17 @@ export interface DataTableRendering extends Rendering {
     tableOptions: any;
     height:any;
     allowColumnSearch:boolean;
+    tableFilters:TableFilter[];
+}
+
+enum FilterSelectionOption {
+    single = 0,
+    multiple
+}
+
+export interface TableFilter {
+    selectionOption: FilterSelectionOption,
+    columnName: string
 }
 
 export interface TimeSeriesRendering extends Rendering {
