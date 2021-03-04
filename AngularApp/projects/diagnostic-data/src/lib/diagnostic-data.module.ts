@@ -104,6 +104,7 @@ import { DocumentsSearchComponent } from './components/documents-search/document
 import { LoaderDetectorViewComponent } from './components/loader-detector-view/loader-detector-view.component';
 import { KeystoneInsightComponent } from './components/keystone-insight/keystone-insight.component';
 import { SolutionViewContainerComponent } from './components/solution-view-container/solution-view-container.component';
+import { FabDataTableFilterComponent } from './components/fab-data-table-filter/fab-data-table-filter.component';
 
 @NgModule({
   imports: [
@@ -163,7 +164,8 @@ import { SolutionViewContainerComponent } from './components/solution-view-conta
     DocumentsSearchComponent,
     LoaderDetectorViewComponent,
     KeystoneInsightComponent,
-    SolutionViewContainerComponent
+    SolutionViewContainerComponent,
+    FabDataTableFilterComponent
   ],
   entryComponents: [DetectorListAnalysisComponent],
   exports: [

@@ -1,7 +1,7 @@
 import { Component, ViewChild, AfterContentInit, TemplateRef, OnInit, AfterViewInit } from '@angular/core';
 import { DiagnosticData, DataTableRendering, TableFilter } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { SelectionMode, IColumn, IListProps, ISelection, Selection, IStyle, DetailsListLayoutMode } from 'office-ui-fabric-react';
+import { SelectionMode, IColumn, IListProps, ISelection, Selection, IStyle, DetailsListLayoutMode, ICalloutProps } from 'office-ui-fabric-react';
 import { FabDetailsListComponent } from '@angular-react/fabric';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 
@@ -16,6 +16,13 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   }
 
   ngAfterContentInit() {
+    if(this.renderingProperties.tableFilters && this.renderingProperties.tableFilters.length > 0) {
+      this.tableFilters = this.renderingProperties.tableFilters;
+      for(const filter of this.tableFilters) {
+        this.filtersMap.set(filter.columnName,new Set<string>());
+      }
+    }
+
     this.createFabricDataTableObjects();
 
     this.fabDetailsList.selectionMode = this.renderingProperties.descriptionColumnName ? SelectionMode.single : SelectionMode.none;
@@ -28,10 +35,6 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     }
     if (this.renderingProperties.allowColumnSearch) {
       this.allowColumnSearch = this.renderingProperties.allowColumnSearch;
-    }
-
-    if(this.renderingProperties.tableFilters && this.renderingProperties.tableFilters.length > 0) {
-      this.tableFilters = this.renderingProperties.tableFilters;
     }
 
     if (this.renderingProperties.descriptionColumnName) {
@@ -84,6 +87,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   searchAriaLabel = "Filter by all columns";
   heightThreshold = window.innerHeight * 0.5;
   tableFilters: TableFilter[] = [];
+  filtersMap: Map<string,Set<string>> = new Map<string,Set<string>>();
   @ViewChild(FabDetailsListComponent, { static: true }) fabDetailsList: FabDetailsListComponent;
   @ViewChild('emptyTableFooter', { static: true }) emptyTableFooter: TemplateRef<any>
   protected processData(data: DiagnosticData) {
@@ -112,7 +116,12 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       const rowObject: any = {};
 
       for (let i: number = 0; i < this.diagnosticData.table.columns.length; i++) {
-        rowObject[this.diagnosticData.table.columns[i].columnName] = row[i];
+        const columnName = this.diagnosticData.table.columns[i].columnName
+        rowObject[columnName] = row[i];
+
+        if(this.filtersMap.has(columnName)){
+          this.filtersMap.get(columnName).add(row[i]);
+        }
       }
 
       this.rows.push(rowObject);
@@ -182,6 +191,8 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   estimateTableHeight(): number {
     return 25 * this.rowsClone.length;
   }
+
+
 }
 
 
