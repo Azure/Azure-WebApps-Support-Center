@@ -1,13 +1,13 @@
 <data-container [title]="renderingProperties.title" [description]="renderingProperties.description">
   <div style="display: flex;">
     <div *ngIf="allowColumnSearch" class="text-field">
-      <fab-text-field (onChange)=updateFilter($event) [rows]="1" [placeholder]="searchAriaLabel"
+      <fab-text-field (onChange)=updateTableBySearch($event) [rows]="1" [placeholder]="searchAriaLabel"
         [ariaLabel]="searchAriaLabel"></fab-text-field>
     </div>
     <!-- Filters -->
     <div *ngIf="tableFilters.length > 0" style="display: flex;">
       <div *ngFor="let filter of tableFilters">
-        <fab-data-table-filter></fab-data-table-filter>
+        <fab-data-table-filter [tableFilter]=filter [options]="getOptionsWithColName(filter.columnName)" (onFilterUpdate)="updateFilter(filter.columnName,$event)"></fab-data-table-filter>
       </div>
     </div>
   </div>

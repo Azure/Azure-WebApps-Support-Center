@@ -16,10 +16,10 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   }
 
   ngAfterContentInit() {
-    if(this.renderingProperties.tableFilters && this.renderingProperties.tableFilters.length > 0) {
+    if (this.renderingProperties.tableFilters && this.renderingProperties.tableFilters.length > 0) {
       this.tableFilters = this.renderingProperties.tableFilters;
-      for(const filter of this.tableFilters) {
-        this.filtersMap.set(filter.columnName,new Set<string>());
+      for (const filter of this.tableFilters) {
+        this.filtersMap.set(filter.columnName, new Set<string>());
       }
     }
 
@@ -87,7 +87,11 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   searchAriaLabel = "Filter by all columns";
   heightThreshold = window.innerHeight * 0.5;
   tableFilters: TableFilter[] = [];
-  filtersMap: Map<string,Set<string>> = new Map<string,Set<string>>();
+  searchValue: string = "";
+  //All options for filters to display
+  filtersMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+  //Options that selected by each filter
+  filterSelectionMap: Map<string, Set<string>> = new Map<string, Set<string>>();
   @ViewChild(FabDetailsListComponent, { static: true }) fabDetailsList: FabDetailsListComponent;
   @ViewChild('emptyTableFooter', { static: true }) emptyTableFooter: TemplateRef<any>
   protected processData(data: DiagnosticData) {
@@ -119,7 +123,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
         const columnName = this.diagnosticData.table.columns[i].columnName
         rowObject[columnName] = row[i];
 
-        if(this.filtersMap.has(columnName)){
+        if (this.filtersMap.has(columnName)) {
           this.filtersMap.get(columnName).add(row[i]);
         }
       }
@@ -131,8 +135,41 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   }
 
 
-  //For now use one search bar for all columns 
-  updateFilter(e: { event: Event, newValue?: string }) {
+  //For now use one search bar with filters
+  updateTable() {
+    //For single search bar
+    const temp = [];
+    for (const row of this.rowsClone) {
+
+      // for (const col of this.columns) {
+      //   const cellValue: string = row[col.name].toString();
+      //   if (cellValue.toString().toLowerCase().indexOf(this.searchValue.toLowerCase()) !== -1 && this.checkForFilter(row)) {
+      //     temp.push(row);
+      //   }
+      // }
+      if(this.checkRowWithSearchValue(row) && this.checkRowForFilter(row)){
+        temp.push(row);
+      }
+    }
+    this.rows = temp;
+    //Update rows order with column sorting
+    const column = this.columns.find(col => col.isSorted === true);
+    if (column) {
+      this.sortColumn(column, column.isSortedDescending);
+    }
+  }
+
+  checkRowWithSearchValue(row:any) :boolean {
+    for(const col of this.columns) {
+      const cellValue: string = row[col.name].toString();
+      if(cellValue.toString().toLowerCase().indexOf(this.searchValue.toLowerCase()) !== -1) return true;
+    }
+    return false;
+  }
+
+  updateTableBySearch(e: { event: Event, newValue?: string }) {
+    // this.searchValue = e.newValue.toLowerCase();
+    this.searchValue = e.newValue;
     const val = e.newValue.toLowerCase();
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
@@ -142,23 +179,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
         'SearchValue': val
       });
     }, 5000);
-
-    //For single search bar
-    const temp = [];
-    for (const row of this.rowsClone) {
-      for (const col of this.columns) {
-        const cellValue: string = row[col.name].toString();
-        if (cellValue.toString().toLowerCase().indexOf(val) !== -1) {
-          temp.push(row);
-        }
-      }
-    }
-    this.rows = temp;
-    //Update rows order with column sorting
-    const column = this.columns.find(col => col.isSorted === true);
-    if (column) {
-      this.sortColumn(column, column.isSortedDescending);
-    }
+    this.updateTable();
   }
 
   clickColumn(e: { ev: Event, column: IColumn }) {
@@ -192,7 +213,28 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     return 25 * this.rowsClone.length;
   }
 
+  getOptionsWithColName(name: string): string[] {
+    const optionSet = this.filtersMap.get(name);
+    return Array.from(optionSet);
+  }
 
+  updateFilter(name: string, options: Set<string>) {
+    this.filterSelectionMap.set(name, options);
+    //call updateTable to update table rows with latest filter
+    this.telemetryService.logEvent(
+      "TableFilterUpdated"
+    );
+    this.updateTable();
+  }
+
+  private checkRowForFilter(row:any) :boolean {
+    //Only if filterSelectionMap has the column name and value for the cell value does not include in the set, return false
+    const keys = Array.from(this.filterSelectionMap.keys());
+    for(let key of keys) {
+      if(row[key] !== undefined && !this.filterSelectionMap.get(key).has(row[key])) return false;
+    }
+    return true;
+  }
 }
 
 

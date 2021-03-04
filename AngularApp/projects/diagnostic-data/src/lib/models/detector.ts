@@ -148,13 +148,13 @@ export interface DataTableRendering extends Rendering {
     tableFilters:TableFilter[];
 }
 
-enum FilterSelectionOption {
-    single = 0,
-    multiple
+export enum TableFilterSelectionOption {
+    Single = 0,
+    Multiple
 }
 
 export interface TableFilter {
-    selectionOption: FilterSelectionOption,
+    selectionOption: TableFilterSelectionOption,
     columnName: string
 }
 

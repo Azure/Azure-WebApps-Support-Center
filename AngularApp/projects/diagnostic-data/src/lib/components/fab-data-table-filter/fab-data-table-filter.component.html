@@ -1,3 +1,19 @@
-<p>
-  fab-data-table-filter works!
-</p>
+<fab-default-button>{{name}}</fab-default-button>
+
+<ng-container *ngIf="filterOption === TableFilterSelectionOption.Multiple else singleSelection">
+  <div>
+    <fab-checkbox [label]="'All'" [ariaLabel]="'All'" [checked]="getSelectedAllStatus()"
+      (checkedChange)="toggleSelectAll($event)"></fab-checkbox>
+    <fab-checkbox *ngFor="let option of optionsWithFormattedName;let i = index" [label]="option.formattedName" [ariaLabel]="option.formattedName"
+      [checked]="getCheckedStatus(i)" (checkedChange)="toggleSelectOption($event,i)"></fab-checkbox>
+  </div>
+</ng-container>
+
+<fab-primary-button (onClick)="updateTableWithOptions()">Apply</fab-primary-button>
+
+<!-- Single Selection -->
+<ng-template #singleSelection>
+  <div>
+    <fab-choice-group [options]="optionsForSingleChoice"></fab-choice-group>
+  </div>
+</ng-template>
