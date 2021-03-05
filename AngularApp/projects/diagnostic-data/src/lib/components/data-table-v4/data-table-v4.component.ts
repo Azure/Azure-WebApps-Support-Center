@@ -147,7 +147,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       //     temp.push(row);
       //   }
       // }
-      if(this.checkRowWithSearchValue(row) && this.checkRowForFilter(row)){
+      if (this.checkRowWithSearchValue(row) && this.checkRowForFilter(row)) {
         temp.push(row);
       }
     }
@@ -159,10 +159,10 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     }
   }
 
-  checkRowWithSearchValue(row:any) :boolean {
-    for(const col of this.columns) {
+  checkRowWithSearchValue(row: any): boolean {
+    for (const col of this.columns) {
       const cellValue: string = row[col.name].toString();
-      if(cellValue.toString().toLowerCase().indexOf(this.searchValue.toLowerCase()) !== -1) return true;
+      if (cellValue.toString().toLowerCase().indexOf(this.searchValue.toLowerCase()) !== -1) return true;
     }
     return false;
   }
@@ -222,16 +222,17 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     this.filterSelectionMap.set(name, options);
     //call updateTable to update table rows with latest filter
     this.telemetryService.logEvent(
-      "TableFilterUpdated"
+      "TableFilterUpdated",
+      { "FilterName": name }
     );
     this.updateTable();
   }
 
-  private checkRowForFilter(row:any) :boolean {
+  private checkRowForFilter(row: any): boolean {
     //Only if filterSelectionMap has the column name and value for the cell value does not include in the set, return false
     const keys = Array.from(this.filterSelectionMap.keys());
-    for(let key of keys) {
-      if(row[key] !== undefined && !this.filterSelectionMap.get(key).has(row[key])) return false;
+    for (let key of keys) {
+      if (row[key] !== undefined && !this.filterSelectionMap.get(key).has(row[key])) return false;
     }
     return true;
   }

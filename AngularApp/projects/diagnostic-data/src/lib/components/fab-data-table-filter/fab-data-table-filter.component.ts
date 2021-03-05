@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { IChoiceGroup, IChoiceGroupOption } from 'office-ui-fabric-react';
+import { DirectionalHint, IChoiceGroup, IChoiceGroupOption } from 'office-ui-fabric-react';
 import { TableFilterSelectionOption, TableFilter } from '../../models/detector';
 
 @Component({
@@ -19,6 +19,10 @@ export class FabDataTableFilterComponent implements OnInit {
 
   //For single choice
   optionsForSingleChoice: IChoiceGroupOption[] = [];
+  selectedKey:string = "";
+
+  //directionHint = DirectionalHint.bottomAutoEdge;
+  isCallOutVisible: boolean = false;
   constructor() { }
 
   ngOnInit() {
@@ -31,6 +35,7 @@ export class FabDataTableFilterComponent implements OnInit {
 
     if (this.filterOption === TableFilterSelectionOption.Single) {
       this.initForSingleSelect();
+      // this.selectedKey = this.optionsWithFormattedName[0].formattedName;
     }
   }
 
@@ -77,6 +82,7 @@ export class FabDataTableFilterComponent implements OnInit {
         defaultChecked: index === 0,
         onClick: () => {
           this.selected.clear();
+          this.selectedKey = option.formattedName;
           this.selected.add(option.name);
         },
       });
@@ -85,6 +91,7 @@ export class FabDataTableFilterComponent implements OnInit {
 
   updateTableWithOptions() {
     this.onFilterUpdate.emit(this.selected);
+    this.closeCallout();
   }
 
   private formatOptionName(name: string): string {
@@ -93,6 +100,14 @@ export class FabDataTableFilterComponent implements OnInit {
     formattedString = formattedString.replace(/&nbsp;/g,"");
     formattedString = formattedString.replace(/<i.*><\/i>/g,"");
     return formattedString;
+  }
+
+  toggleCallout() {
+    this.isCallOutVisible = !this.isCallOutVisible;
+  }
+
+  closeCallout() {
+    this.isCallOutVisible = false;
   }
 
 }
