@@ -11,6 +11,12 @@ export class FabDataTableFilterComponent implements OnInit {
   TableFilterSelectionOption = TableFilterSelectionOption;
   @Input() tableFilter: TableFilter;
   @Input() options: string[];
+  //To generate unique element id for call out
+  filterId: string;
+  filterSelector:string;
+  @Input() index:number;
+  @Input() tableId:number;
+
   @Output() onFilterUpdate: EventEmitter<Set<string>> = new EventEmitter<Set<string>>();
   name: string = "";
   filterOption: TableFilterSelectionOption = TableFilterSelectionOption.Single;
@@ -19,15 +25,18 @@ export class FabDataTableFilterComponent implements OnInit {
 
   //For single choice
   optionsForSingleChoice: IChoiceGroupOption[] = [];
-  selectedKey:string = "";
-
+  selectedKey: string = "";
+  displayName: string = "";
   //directionHint = DirectionalHint.bottomAutoEdge;
   isCallOutVisible: boolean = false;
   constructor() { }
 
   ngOnInit() {
-    this.name = this.tableFilter.columnName;
+    this.displayName = this.tableFilter.columnName;
     this.filterOption = this.tableFilter.selectionOption;
+
+    this.filterId = `fab-data-table-filter-${this.tableId}-${this.index}`;
+    this.filterSelector = `#${this.filterId}`;
 
     this.options.forEach(option => {
       this.optionsWithFormattedName.push({ name: option, formattedName: this.formatOptionName(option) });
@@ -91,14 +100,19 @@ export class FabDataTableFilterComponent implements OnInit {
 
   updateTableWithOptions() {
     this.onFilterUpdate.emit(this.selected);
+
+    //Update text shown on button once clicked
+    if(this.filterOption === TableFilterSelectionOption.Single){
+      this.displayName = `${this.tableFilter.columnName} : ${this.selectedKey}`
+    }
     this.closeCallout();
   }
 
   private formatOptionName(name: string): string {
     let formattedString = name;
     //remove empty space and <i> tag
-    formattedString = formattedString.replace(/&nbsp;/g,"");
-    formattedString = formattedString.replace(/<i.*><\/i>/g,"");
+    formattedString = formattedString.replace(/&nbsp;/g, "");
+    formattedString = formattedString.replace(/<i.*><\/i>/g, "");
     return formattedString;
   }
 
@@ -109,5 +123,4 @@ export class FabDataTableFilterComponent implements OnInit {
   closeCallout() {
     this.isCallOutVisible = false;
   }
-
 }

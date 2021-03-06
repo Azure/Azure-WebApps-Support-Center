@@ -10,8 +10,8 @@ export interface DetectorResponse {
     dataset: DiagnosticData[];
     metadata: DetectorMetaData;
     status: Status;
-  dataProvidersMetadata: DataProviderMetadata[];
-  suggestedUtterances: any;
+    dataProvidersMetadata: DataProviderMetadata[];
+    suggestedUtterances: any;
 }
 
 export interface Status {
@@ -78,7 +78,7 @@ export interface SupportTopic {
     pesId: string;
 }
 
-export enum DetectorType{
+export enum DetectorType {
     Detector = "Detector",
     Analysis = "Analysis",
     CategoryOverview = "CategoryOverview"
@@ -129,7 +129,7 @@ export class DataTableDataType {
     static Int64: string = 'Int64';
     static String: string = 'String';
 
-    static NumberTypes: string[] = [ DataTableDataType.Double, DataTableDataType.Int64, DataTableDataType.Int32, DataTableDataType.Int16 ];
+    static NumberTypes: string[] = [DataTableDataType.Double, DataTableDataType.Int64, DataTableDataType.Int32, DataTableDataType.Int16];
 }
 
 export interface Rendering {
@@ -143,19 +143,29 @@ export interface DataTableRendering extends Rendering {
     descriptionColumnName: string;
     displayColumnNames: string[];
     tableOptions: any;
-    height:any;
-    allowColumnSearch:boolean;
-    tableFilters:TableFilter[];
+    height: any;
+    allowColumnSearch: boolean;
+    // tableFilters:TableFilter[];
+    columnOptions: TableColumnOption[];
 }
 
 export enum TableFilterSelectionOption {
-    Single = 0,
+    None = 0,
+    Single,
     Multiple
 }
 
 export interface TableFilter {
     selectionOption: TableFilterSelectionOption,
     columnName: string
+}
+
+export interface TableColumnOption {
+    name: string;
+    minWidth: number;
+    maxWidth: number;
+    selectionOption: TableFilterSelectionOption,
+    visible: boolean;
 }
 
 export interface TimeSeriesRendering extends Rendering {
@@ -205,13 +215,13 @@ export interface MarkdownRendering extends Rendering {
 }
 
 export interface RecommendedUtterance {
-  sampleUtterance: SampleUtterance;
-  score: number;
+    sampleUtterance: SampleUtterance;
+    score: number;
 }
 
 interface SampleUtterance {
-  text: string;
-  links: string[];
+    text: string;
+    links: string[];
 }
 
 export class DownTime {

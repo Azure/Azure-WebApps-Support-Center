@@ -1,9 +1,12 @@
 import { Component, ViewChild, AfterContentInit, TemplateRef, OnInit, AfterViewInit } from '@angular/core';
-import { DiagnosticData, DataTableRendering, TableFilter } from '../../models/detector';
+import { DiagnosticData, DataTableRendering, TableFilter, TableFilterSelectionOption, TableColumnOption } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { SelectionMode, IColumn, IListProps, ISelection, Selection, IStyle, DetailsListLayoutMode, ICalloutProps } from 'office-ui-fabric-react';
 import { FabDetailsListComponent } from '@angular-react/fabric';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
+
+const columnMinWidth: number = 100;
+const columnMaxWidth: number = 250;
 
 @Component({
   selector: 'data-table-v4',
@@ -16,8 +19,13 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   }
 
   ngAfterContentInit() {
-    if (this.renderingProperties.tableFilters && this.renderingProperties.tableFilters.length > 0) {
-      this.tableFilters = this.renderingProperties.tableFilters;
+    if (this.renderingProperties.columnOptions && this.renderingProperties.columnOptions.length > 0) {
+      this.renderingProperties.columnOptions.forEach((option) => {
+        if (option.selectionOption !== undefined && option.selectionOption !== TableFilterSelectionOption.None) {
+          this.tableFilters.push({ columnName: option.name, selectionOption: option.selectionOption });
+        }
+      });
+
       for (const filter of this.tableFilters) {
         this.filtersMap.set(filter.columnName, new Set<string>());
       }
@@ -88,6 +96,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   heightThreshold = window.innerHeight * 0.5;
   tableFilters: TableFilter[] = [];
   searchValue: string = "";
+  tableId: number = Math.floor(Math.random() * 100);
   //All options for filters to display
   filtersMap: Map<string, Set<string>> = new Map<string, Set<string>>();
   //Options that selected by each filter
@@ -109,11 +118,11 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
         isSorted: false,
         isResizable: true,
         isMultiline: true,
-        minWidth: 100,
-        maxWidth: 250
+        minWidth: this.getMinOrMaxColumnWidth(column.columnName,true),
+        maxWidth: this.getMinOrMaxColumnWidth(column.columnName,false),
       });
 
-    this.columns = columns.filter((item) => item.name !== this.renderingProperties.descriptionColumnName);
+    this.columns = columns.filter((item) => item.name !== this.renderingProperties.descriptionColumnName && this.checkColumIsVisible(item.name));
     this.rows = [];
 
     this.diagnosticData.table.rows.forEach(row => {
@@ -135,7 +144,6 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   }
 
 
-  //For now use one search bar with filters
   updateTable() {
     //For single search bar
     const temp = [];
@@ -235,6 +243,31 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       if (row[key] !== undefined && !this.filterSelectionMap.get(key).has(row[key])) return false;
     }
     return true;
+  }
+
+  private getColumnOption(name: string): TableColumnOption {
+    if (!this.renderingProperties.columnOptions ||
+      !this.renderingProperties.columnOptions.find(option => option.name === name)) {
+      return null;
+    }
+    const option = this.renderingProperties.columnOptions.find(o => o.name === name);
+    return option;
+  }
+
+  private checkColumIsVisible(name: string): boolean {
+    const option = this.getColumnOption(name);
+    return option === null ? true : option.visible;
+  }
+
+  private getMinOrMaxColumnWidth(name: string, isMinWidth: boolean = true): number {
+    let width = isMinWidth ? columnMinWidth : columnMaxWidth;
+    const option = this.getColumnOption(name);
+    if(isMinWidth && option && option.minWidth) {
+      width = option.minWidth
+    }else if(!isMinWidth && option && option.maxWidth) {
+      width = option.maxWidth;
+    }
+    return width;
   }
 }
 

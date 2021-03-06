@@ -1,22 +1,23 @@
-<fab-default-button (click)="toggleCallout()">{{name}}</fab-default-button>
-<!-- <fab-callout *ngIf="isCallOutVisible" (onDismiss)="closeCallout()" [target]="'fab-default-button'"> -->
-<div *ngIf="isCallOutVisible"
+<fab-default-button [id]="filterId" (click)="toggleCallout()">{{displayName}}</fab-default-button>
+<fab-callout  *ngIf="isCallOutVisible" (onDismiss)="closeCallout()" [setInitialFocus]="true" [target]="filterSelector">
+  <!-- <div *ngIf="isCallOutVisible"
   style="position: absolute;z-index: 1000;background: #ffffff;border-radius: 2px;box-shadow: 0 8px 16px rgba(0,0,0,.16);"
-  (keyup.escape)="closeCallout()">
+  (keyup.escape)="closeCallout()"> -->
   <div style="max-height: 300px; overflow-y: scroll;">
-    <ng-container *ngIf="filterOption === TableFilterSelectionOption.Multiple else singleSelection" >
+    <ng-container *ngIf="filterOption === TableFilterSelectionOption.Multiple else singleSelection">
       <fab-checkbox [label]="'All'" [ariaLabel]="'All'" [checked]="getSelectedAllStatus()"
         (checkedChange)="toggleSelectAll($event)"></fab-checkbox>
       <fab-checkbox *ngFor="let option of optionsWithFormattedName;let i = index" [label]="option.formattedName"
-        [ariaLabel]="option.formattedName" [checked]="getCheckedStatus(i)" (checkedChange)="toggleSelectOption($event,i)">
+        [ariaLabel]="option.formattedName" [checked]="getCheckedStatus(i)"
+        (checkedChange)="toggleSelectOption($event,i)">
       </fab-checkbox>
     </ng-container>
   </div>
   <fab-primary-button (onClick)="updateTableWithOptions()" (keyup.enter)="updateTableWithOptions()">Apply
   </fab-primary-button>
   <fab-default-button (onClick)="closeCallout()" (keyup.enter)="closeCallout()">Cancel</fab-default-button>
-  <!-- </fab-callout> -->
-</div>
+</fab-callout>
+<!-- </div> -->
 
 <!-- Single Selection -->
 <ng-template #singleSelection>
