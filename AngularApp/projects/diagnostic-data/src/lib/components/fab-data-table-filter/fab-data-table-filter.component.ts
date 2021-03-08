@@ -35,6 +35,8 @@ export class FabDataTableFilterComponent implements OnInit {
     this.displayName = this.tableFilter.columnName;
     this.filterOption = this.tableFilter.selectionOption;
 
+    this.options.sort();
+
     this.filterId = `fab-data-table-filter-${this.tableId}-${this.index}`;
     this.filterSelector = `#${this.filterId}`;
 
