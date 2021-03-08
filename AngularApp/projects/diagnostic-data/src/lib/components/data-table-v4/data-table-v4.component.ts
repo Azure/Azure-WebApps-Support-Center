@@ -148,13 +148,6 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     //For single search bar
     const temp = [];
     for (const row of this.rowsClone) {
-
-      // for (const col of this.columns) {
-      //   const cellValue: string = row[col.name].toString();
-      //   if (cellValue.toString().toLowerCase().indexOf(this.searchValue.toLowerCase()) !== -1 && this.checkForFilter(row)) {
-      //     temp.push(row);
-      //   }
-      // }
       if (this.checkRowWithSearchValue(row) && this.checkRowForFilter(row)) {
         temp.push(row);
       }
