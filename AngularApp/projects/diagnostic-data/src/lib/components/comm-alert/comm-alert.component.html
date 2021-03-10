@@ -1,7 +1,7 @@
 <ng-container *ngIf="commAlertToShow">
   <fab-message-bar [messageBarType]="commAlertStatus" isMultiline="false"
     dismissButtonAriaLabel="Close" [truncated]="true" [styles]="messageBarStyles" overflowButtonAriaLabel="See more">
-    {{commAlertTitle}} <a class="view-more" (click)="isAlertExpanded = !isAlertExpanded" >View more</a>.</fab-message-bar>
+    {{commAlertTitle}} <a class="view-more" (click)="isAlertExpanded = !isAlertExpanded" tabindex="0" aria-label="View more" (keyup.enter)="isAlertExpanded = !isAlertExpanded" >View more</a>.</fab-message-bar>
 </ng-container>
 
 <fab-panel [isOpen]="isAlertExpanded" [type]="type" [customWidth]="width" [isHiddenOnDismiss]="true" [styles]="panelStyles"

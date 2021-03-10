@@ -19,6 +19,8 @@ import { LoggingV2Service } from '../../shared-v2/services/logging-v2.service';
 import { CXPChatCallerService } from '../../shared-v2/services/cxp-chat-caller.service';
 import { QuickLinkService } from '../../shared-v2/services/quick-link.service';
 import { SiteQuickLinkService } from './services/site-quick-link.service';
+import { RiskAlertService } from '../../shared-v2/services/risk-alert.service';
+import { SiteRiskAlertService } from './services/site-risk-alert.service';
 
 const ResourceRoutes = RouterModule.forChild([
   {
@@ -66,7 +68,8 @@ const ResourceRoutes = RouterModule.forChild([
     { provide: SupportTopicService, useClass: SiteSupportTopicService },
     ResourceResolver,
     WebSiteFilter,
-    { provide: QuickLinkService, useExisting: SiteQuickLinkService }
+    { provide: QuickLinkService, useExisting: SiteQuickLinkService },
+    { provide: RiskAlertService, useExisting: SiteRiskAlertService }
   ]
 })
 export class WebSitesModule { }

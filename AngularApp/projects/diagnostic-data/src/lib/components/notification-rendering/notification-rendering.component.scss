@@ -1,40 +1,45 @@
-.insight-container {
-    margin-bottom: 10px;
-}
-
-.insight-container:last-child {
+.notification-container {
     margin-bottom: 0px;
 }
 
-.insight-panel {
-    border-left-width: 4px;
-    background-color: #f3f3f3;
-    border-radius: 3px;
+.notification-container:last-child {
+    margin-bottom: 0px;
 }
 
-.success-insight-panel {
-    border-left-color: #3da907;
+
+.notification-panel {
+    border-top-width: 1px;
+    border-top-style: solid;
+    padding: 0px 5px 10px 10px;
+    width: 100%;
+    font-family: 'Segoe UI','Open Sans','Helvetica Neue',sans-serif;
+    color: #444;
+    border: 1px solid transparent;
+    border-bottom-color: #cccccbcc;
 }
 
-.warning-insight-panel {
-    border-left-color: #ff9104;
+.notification-panel-heading {
+    padding: 10px 15px;
 }
 
-.critical-insight-panel {
-    border-left-color: red;
+.notification-body {
+    font-size: 13px!important;
+    line-height: normal;
+    line-height: 18px;
+    max-height: 144px;
+    overflow: hidden;
+    position: relative;
+    padding-top: 5px;
+    text-overflow: ellipsis;
+    width: 100%;
+    font-family: 'Segoe UI','Open Sans','Helvetica Neue',sans-serif;
+    color: #444;
 }
 
-.info-insight-panel {
-    border-left-color: #3a9bc7
-}
-
-.insight-expand-icon {
-    font-weight: bold;
-    float:left;
-    font-size:18px;
-    min-height: 1px;
-    min-width: 1.5%;
-    margin-right:10px;
+.fxs-notificationmenu-notification-title {
+    display: flex;
+    padding-bottom: 2px;
+    max-width: 450px;
 }
 
 .card-header {
@@ -58,7 +63,7 @@ table {
 }
 
 .status-icon {
-    margin-right: 25px;
+    margin-right: 10px;
 }
 
 .fa-exclamation-circle {
@@ -166,10 +171,4 @@ td {
 
 .con-tooltip > a:visited{
     color: #015cda
-}
-
-.insight-rating {
-    padding-left: 10px;
-    padding-right: 10px;
-    display: inline-block;
 }

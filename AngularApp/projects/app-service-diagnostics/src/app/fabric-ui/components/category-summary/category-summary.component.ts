@@ -15,6 +15,7 @@ import { DiagnosticService, DetectorMetaData, DetectorType, TelemetryService, Te
 import { filter, tap } from 'rxjs/operators';
 import { PortalActionService } from '../../../shared/services/portal-action.service';
 import { Globals } from '../../../globals';
+import { ResourceService } from '../../../shared-v2/services/resource.service';
 
 @Component({
     selector: 'category-summary',
@@ -67,10 +68,13 @@ export class CategorySummaryComponent implements OnInit {
       }
     constructor(protected _diagnosticApiService: DiagnosticService, private _route: Router, private _injector: Injector, private _activatedRoute: ActivatedRoute, private categoryService: CategoryService,
         private _chatState: CategoryChatStateService, private _genericApiService: GenericApiService
-        , private _featureService: FeatureService, protected _authService: AuthService, private _portalActionService: PortalActionService, private globals: Globals, private _telemetryService: TelemetryService) {
+        , private _featureService: FeatureService, protected _authService: AuthService, private _portalActionService: PortalActionService, private globals: Globals, private _telemetryService: TelemetryService,private _resourceService:ResourceService) {
     }
 
     ngOnInit() {
+        if(this._resourceService.armResourceConfig){
+            this.categoryService.initCategoriesForArmResource(this._resourceService.resource.id);
+        }
         this.categoryService.categories.subscribe(categories => {
           let decodedCategoryName  = "";
           this._activatedRoute.params.subscribe(parmas => {

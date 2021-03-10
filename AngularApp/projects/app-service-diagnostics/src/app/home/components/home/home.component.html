@@ -110,6 +110,7 @@
         (click)="openFeedbackPanel()"></fab-command-bar-item>
     </items>
   </fab-command-bar>
+  <risk-alerts-notification></risk-alerts-notification>
 
   <div class="home-main-area">
     <div class="home-title-container">
@@ -127,8 +128,8 @@
     <div *ngIf="showRiskSection" class="section-container">
       <h2 class="section-title">Risk alerts</h2>
       <div class="home-tiles">
-        <ng-container *ngFor="let risk of risks">
-          <risk-tile [risk]="risk"></risk-tile>
+        <ng-container *ngFor="let riskAlertConfig of riskAlertConfigs">
+          <risk-tile [riskAlertConfig]="riskAlertConfig"></risk-tile>
         </ng-container>
       </div>
     </div>
@@ -163,3 +164,5 @@
     <fab-spinner [ariaLabel]="'Loading Quick Links'"></fab-spinner>
   </div>
 </ng-template>
+
+<risk-alerts-panel></risk-alerts-panel>

@@ -1,3 +1,4 @@
+import { HealthStatus } from "diagnostic-data";
 import { Category } from "../../../shared-v2/models/category";
 import { MessageGroup } from "../../../supportbot/models/message-group";
 
@@ -14,6 +15,8 @@ export class ArmResourceConfig {
     liabilityCheckConfig?: LiabilityCheckConfig;
     quickLinks?: string[];
     keystoneDetectorId?: string;
+    riskAlertConfigs?: RiskAlertConfig[];
+    notificationConfig?: NotificationConfig;
 }
 
 export interface ArmApiConfig {
@@ -40,4 +43,17 @@ export class HomePageText {
 // Define whether liablity check is enabled and what checks should be done
 export interface LiabilityCheckConfig {
     isLiabilityCheckEnabled?: boolean;
+}
+
+export class baseNotificationConfig {
+    title: string;
+    enableForCaseSubmissionFlow?: boolean = true;
+}
+
+export class RiskAlertConfig extends baseNotificationConfig {
+    riskAlertDetectorId: string;
+}
+
+export class NotificationConfig extends baseNotificationConfig {
+    notificationDetectorId: string;
 }

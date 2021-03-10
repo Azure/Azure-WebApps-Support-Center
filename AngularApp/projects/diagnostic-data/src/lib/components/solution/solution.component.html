@@ -1,5 +1,4 @@
-<div class="solution-container">
-
+<div *ngIf="!isIbizaSolution else newSolution" class="solution-container">
   <div *ngIf="solution.DescriptionMarkdown" class="my-2 mx-0">
     <markdown [data]="solution.DescriptionMarkdown"></markdown>
   </div>
@@ -55,4 +54,8 @@
     <span class="mr-3">App: <span class="app-name">{{appName}}</span></span>
     <button (click)="performAction()" type="button" class="custom-button">{{solution.Title}}</button>
   </div>
+</ng-template>
+
+<ng-template #newSolution>
+  <div (click)="performAction()" type="button" class="custom-solution-button" tabindex="0" (keyup.enter)="performAction()">{{solution.Title}}</div>
 </ng-template>

@@ -1,4 +1,5 @@
 import * as momentNs from 'moment';
+import { Solution } from '../components/solution/solution';
 
 export interface ArmObject {
     id: string;
@@ -109,7 +110,8 @@ export enum RenderingType {
     SummaryCard,
     SearchComponent,
     AppInsightEnablement,
-    KeystoneComponent
+    KeystoneComponent,
+    Notification
 }
 
 export enum TimeSeriesType {
@@ -196,6 +198,12 @@ export interface InsightsRendering extends Rendering {
     nameColumnName: string;
     valueColumnName: string;
     typeColumnName: string;
+}
+
+export interface NotificationRendering extends Rendering {
+    status: HealthStatus;
+    solution: Solution;
+    expanded: boolean;
 }
 
 export interface DynamicInsightRendering extends Rendering {

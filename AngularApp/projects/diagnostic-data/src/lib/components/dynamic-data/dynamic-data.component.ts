@@ -39,6 +39,7 @@ import { DynamicInsightV4Component } from '../dynamic-insight-v4/dynamic-insight
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { DataTableV4Component } from '../data-table-v4/data-table-v4.component';
 import { KeystoneInsightComponent } from '../keystone-insight/keystone-insight.component';
+import { NotificationRenderingComponent } from '../notification-rendering/notification-rendering.component';
 
 @Component({
   selector: 'dynamic-data',
@@ -48,7 +49,7 @@ import { KeystoneInsightComponent } from '../keystone-insight/keystone-insight.c
     TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent,
     InsightsComponent, TimeSeriesInstanceGraphComponent, DynamicInsightComponent, MarkdownViewComponent,
     DetectorListComponent, DropdownComponent, CardSelectionComponent, SolutionComponent, GuageControlComponent, FormComponent,
-    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent, DetectorListAnalysisComponent, ConnectAppInsightsComponent, DetectorSearchComponent, SummaryCardsComponent, InsightsV4Component, DropdownV4Component, CardSelectionV4Component,DynamicInsightV4Component,DataTableV4Component, KeystoneInsightComponent,
+    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent, DetectorListAnalysisComponent, ConnectAppInsightsComponent, DetectorSearchComponent, SummaryCardsComponent, InsightsV4Component, DropdownV4Component, CardSelectionV4Component,DynamicInsightV4Component,DataTableV4Component, KeystoneInsightComponent, NotificationRenderingComponent
   ]
 })
 export class DynamicDataComponent implements OnInit {
@@ -67,6 +68,7 @@ export class DynamicDataComponent implements OnInit {
   @Input() detector: string = '';
   @Input() compilationPackage: CompilationProperties;
   @Input() isAnalysisView: boolean = false;
+  @Input() isRiskAlertDetector: boolean = false;
   private _instanceRef: DataRenderBaseComponent = null;
   private _xAxisPlotBands: xAxisPlotBand[] = null;
   @Input() public set xAxisPlotBands(value:xAxisPlotBand[]) {
@@ -180,6 +182,8 @@ export class DynamicDataComponent implements OnInit {
         return ConnectAppInsightsComponent;
       case RenderingType.KeystoneComponent:
           return KeystoneInsightComponent;
+      case RenderingType.Notification:
+            return NotificationRenderingComponent;
       default:
         return null;
     }

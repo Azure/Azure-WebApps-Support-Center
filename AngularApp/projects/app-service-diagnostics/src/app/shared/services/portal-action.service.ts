@@ -17,11 +17,13 @@ export class PortalActionService {
 
     public currentSite: ResponseMessageEnvelope<Site>;
     private isLegacy:boolean;
+    private resourceId: string;
     constructor(private _windowService: WindowService, private _portalService: PortalService, private _armService: ArmService,
         private _authService: AuthService,private _versionTestService:VersionTestService) {
         this._versionTestService.isLegacySub.subscribe(isLegacy => this.isLegacy = isLegacy);
         this._authService.getStartupInfo().pipe(
             mergeMap((startUpInfo: StartupInfo) => {
+                this.resourceId = startUpInfo && startUpInfo.resourceId ? startUpInfo.resourceId : "";
                 return this._armService.getResource<Site>(startUpInfo.resourceId);
             }),
             filter((response: {}): response is ResponseMessageEnvelope<Site> => true)
@@ -36,7 +38,7 @@ export class PortalActionService {
             detailBlade: 'SCIFrameBlade',
             extension: 'WebsitesExtension',
             detailBladeInputs: {
-                id: this.currentSite.id,
+                id: this.currentSite && this.currentSite.id ? this.currentSite.id : this.resourceId,
                 categoryId: category,
                 optionalParameters: [{
                     key: "categoryId",
@@ -54,7 +56,7 @@ export class PortalActionService {
             detailBlade: 'SCIFrameBlade',
             extension: 'WebsitesExtension',
             detailBladeInputs: {
-                id: this.currentSite.id,
+                id: this.currentSite && this.currentSite.id ? this.currentSite.id : this.resourceId,
                 categoryId: category,
                 optionalParameters: [{
                     key: "categoryId",

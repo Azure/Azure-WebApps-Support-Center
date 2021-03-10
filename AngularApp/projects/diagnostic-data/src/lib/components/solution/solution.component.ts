@@ -13,8 +13,8 @@ import { ActionType, Solution } from './solution';
     styleUrls: ['./solution.component.scss']
 })
 export class SolutionComponent extends DataRenderBaseComponent {
-
     @Input("data") solution: Solution;
+    @Input() isIbizaSolution: boolean = false;
     renderingProperties: Rendering;
     actionStatus: string;
     confirmationMessage: string;

@@ -79,7 +79,8 @@ export const TelemetryEventNames = {
     IncidentAssistancePage: 'IncidentAssistancePage',
     IncidentAssistanceLoaded: 'IncidentAssistanceLoaded',
     IncidentValidationCheck: 'IncidentValidationCheck',
-    IncidentUpdateOperation: 'IncidentUpdateOperation'
+    IncidentUpdateOperation: 'IncidentUpdateOperation',
+    RiskAlertNotificationLoaded: 'RiskAlertNotificationLoaded',
 };
 
 export const TelemetrySource = {
