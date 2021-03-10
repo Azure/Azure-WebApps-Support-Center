@@ -55,7 +55,7 @@ export class RiskTileComponent implements OnInit {
     }
 
     ngAfterViewInit() {
-        this.logEvent(TelemetryEventNames.RiskTileLoaded);
+        this.logEvent(TelemetryEventNames.RiskTileLoaded, {});
     }
 
     clickTileHandler() {

@@ -61,7 +61,7 @@ export class RiskAlertsNotificationComponent implements OnInit {
                 this.showNotification = !!this._riskAlertService.notificationMessageBar && !!this._riskAlertService.notificationMessageBar.id && this._riskAlertService.notificationMessageBar.showNotification;
                 this.notificationMessageBarText = !!this._riskAlertService.notificationMessageBar && this._riskAlertService.notificationMessageBar.notificationMessage ? this._riskAlertService.notificationMessageBar.notificationMessage : this.notificationMessageBarText;
                 this.notificationMessageBarLinkText = !!this._riskAlertService.notificationMessageBar && this._riskAlertService.notificationMessageBar.linkText ? this._riskAlertService.notificationMessageBar.linkText : this.notificationMessageBarLinkText;
-                this.notificationStatusType = RiskHelper.convertHealthStatusToMessageType(this._riskAlertService.notificationMessageBar.status);
+                this.notificationStatusType = !!this._riskAlertService.notificationMessageBar && !!this._riskAlertService.notificationMessageBar.status ?  RiskHelper.convertHealthStatusToMessageType(this._riskAlertService.notificationMessageBar.status) : this.notificationStatusType;
             });
         }, e => {
             this.telemetryService.logEvent("RiskNotificationLoadingFailure", { "error": JSON.stringify(e) });
