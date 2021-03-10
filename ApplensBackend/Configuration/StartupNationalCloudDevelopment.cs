@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace AppLensV3.Configuration
 {
@@ -21,7 +22,7 @@ namespace AppLensV3.Configuration
         {
         }
 
-        public override void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public override void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogger<StartupNationalCloud> logger)
         {
             app.UseCors(cors =>
                 cors
