@@ -78,6 +78,7 @@ namespace AppLensV3.Configuration
                 options.RetainedFileCountLimit = 5;
             });
 
+
             services.AddMemoryCache();
             // Add auth policies as they are applied on controllers
             services.AddAuthorization(options =>
@@ -158,7 +159,17 @@ namespace AppLensV3.Configuration
                     var error = context.Features.Get<IExceptionHandlerPathFeature>();
                     if (error != null)
                     {
-                        logger.LogError(error.Error, $"{DateTime.UtcNow.ToString("o")} - Error while processing request from {error.Path}", null);
+                        var path = error.Path;
+                        if (error.Path.StartsWith("/api/invoke"))
+                        {
+                            StringValues headerVals;
+                            if (context.Request.Headers.TryGetValue("x-ms-path-query", out headerVals))
+                            {
+                                path = headerVals[0];
+                            }
+                        }
+
+                        logger.LogError(error.Error, $"{DateTime.UtcNow.ToString("o")} - Error while processing request from {path}", null);
                         await context.Response.WriteAsync(error.Error.ToString());
                     }
                 });
