@@ -13,9 +13,9 @@ export class FabDataTableFilterComponent implements OnInit {
   @Input() options: string[];
   //To generate unique element id for call out
   filterId: string;
-  filterSelector:string;
-  @Input() index:number;
-  @Input() tableId:number;
+  filterSelector: string;
+  @Input() index: number;
+  @Input() tableId: number;
 
   @Output() onFilterUpdate: EventEmitter<Set<string>> = new EventEmitter<Set<string>>();
   name: string = "";
@@ -27,12 +27,11 @@ export class FabDataTableFilterComponent implements OnInit {
   optionsForSingleChoice: IChoiceGroupOption[] = [];
   selectedKey: string = "";
   displayName: string = "";
-  //directionHint = DirectionalHint.bottomAutoEdge;
   isCallOutVisible: boolean = false;
   constructor() { }
 
   ngOnInit() {
-    this.displayName = this.tableFilter.columnName;
+    this.displayName = `${this.tableFilter.columnName} : all`;
     this.filterOption = this.tableFilter.selectionOption;
 
     this.options.sort();
@@ -46,17 +45,13 @@ export class FabDataTableFilterComponent implements OnInit {
 
     if (this.filterOption === TableFilterSelectionOption.Single) {
       this.initForSingleSelect();
-      // this.selectedKey = this.optionsWithFormattedName[0].formattedName;
     }
   }
 
   //For multiple selection
   toggleSelectAll(checked: boolean) {
     if (checked) {
-      //Selected All
-      for (let option of this.options) {
-        this.selected.add(option);
-      }
+      this.selected = new Set(this.options);
     } else {
       //Deselected All
       this.selected.clear();
@@ -78,10 +73,7 @@ export class FabDataTableFilterComponent implements OnInit {
   }
 
   getSelectedAllStatus(): boolean {
-    for (let option of this.options) {
-      if (!this.selected.has(option)) return false;
-    }
-    return true;
+    return this.options.length === this.selected.size;
   }
 
   //For single selection
@@ -101,12 +93,8 @@ export class FabDataTableFilterComponent implements OnInit {
   }
 
   updateTableWithOptions() {
-    this.onFilterUpdate.emit(this.selected);
-
-    //Update text shown on button once clicked
-    if(this.filterOption === TableFilterSelectionOption.Single){
-      this.displayName = `${this.tableFilter.columnName} : ${this.selectedKey}`
-    }
+    this.updateDisplayName();
+    this.emitSelectedOption();
     this.closeCallout();
   }
 
@@ -124,5 +112,31 @@ export class FabDataTableFilterComponent implements OnInit {
 
   closeCallout() {
     this.isCallOutVisible = false;
+  }
+
+  updateDisplayName() {
+    if (this.filterOption === TableFilterSelectionOption.Single) {
+      this.displayName = `${this.tableFilter.columnName} : ${this.selectedKey}`;
+    } else if (this.filterOption === TableFilterSelectionOption.Multiple) {
+      if (this.selected.size === 0 || this.selected.size === this.options.length) {
+        //Selected nothing will be same as selected all as for display
+        this.displayName = `${this.tableFilter.columnName} : all`;
+      } else if (this.selected.size == 1) {
+        const selectedName = Array.from(this.selected)[0];
+        const formattedSelectionName = this.optionsWithFormattedName.find(o => selectedName === o.name).formattedName;
+        this.displayName = `${this.tableFilter.columnName} : ${formattedSelectionName}`;
+      } else if (this.selected.size < this.options.length) {
+        this.displayName = `${this.tableFilter.columnName} : ${this.selected.size} of ${this.options.length} selected`;
+      }
+    }
+  }
+
+  emitSelectedOption() {
+    //For multiple selection,if selected nothing then it will show as selected nothing ,but for updating table it will be same as selected everything
+    if (this.filterOption === TableFilterSelectionOption.Multiple && this.selected.size === 0) {
+      this.onFilterUpdate.emit(new Set(this.options));
+    } else {
+      this.onFilterUpdate.emit(this.selected);
+    }
   }
 }
