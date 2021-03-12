@@ -29,7 +29,7 @@ export class VersionTestService {
     // overrideUseLegacy = 1, we switch to the old experience.
     // overrideUseLegacy = 2, we switch to the new experience.
     public overrideUseLegacy: BehaviorSubject<number> = new BehaviorSubject(0);
-    constructor(private _authService: AuthService, private _siteService: SiteService,private _genericArmConfigService?:GenericArmConfigService) {
+    constructor(private _authService: AuthService, private _siteService: SiteService) {
         this._authService.getStartupInfo().subscribe(startupInfo => {
             const resourceType = this._authService.resourceType;
             const resourceId = startupInfo.resourceId;
