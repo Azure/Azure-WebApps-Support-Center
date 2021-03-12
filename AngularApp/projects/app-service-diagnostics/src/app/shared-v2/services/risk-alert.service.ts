@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { DetectorResponse, HealthStatus, LoadingStatus, Rendering, RenderingType, TelemetryService, NotificationUtils } from "diagnostic-data";
 import { DiagnosticService, DetectorControlService, TelemetryEventNames, TelemetrySource } from 'diagnostic-data';
-import { BehaviorSubject, forkJoin, Observable, observable } from "rxjs";
+import { BehaviorSubject, forkJoin, Observable, observable, of } from "rxjs";
 import { NotificationMessageBar, RiskHelper, RiskInfo, RiskTile } from "../../home/models/risk";
 import { ArmResourceConfig, RiskAlertConfig, NotificationConfig } from "../../shared/models/arm/armResourceConfig";
 import { GenericArmConfigService } from "../../shared/services/generic-arm-config.service";
@@ -82,7 +82,7 @@ export class RiskAlertService {
     public getRiskAlertNotificationResponse(isInCaseSubmissionFlow: boolean = false): Observable<any[]> {
         try {
             if (this.riskAlertConfigs == null && this.notificationMessageBar == null)
-                return;
+                return of(null);
 
             let tasks = this.riskAlertConfigs.filter(config => !isInCaseSubmissionFlow || isInCaseSubmissionFlow && config.enableForCaseSubmissionFlow != null && config.enableForCaseSubmissionFlow === true).map(riskAlertConfig => {
                 let riskAlertObservable = this._diagnosticService.getDetector(riskAlertConfig.riskAlertDetectorId, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString).pipe(map(

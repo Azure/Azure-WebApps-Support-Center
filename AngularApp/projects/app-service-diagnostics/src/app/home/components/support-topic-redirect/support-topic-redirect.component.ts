@@ -29,12 +29,11 @@ export class SupportTopicRedirectComponent implements OnInit {
     //     }
     //   });
 
-        if (this._riskAlertService.getRiskAlertNotificationResponse(true))
-        {
-            this._riskAlertService.getRiskAlertNotificationResponse(true).subscribe((res)=>{
-                this._riskAlertService.riskPanelContentsSub.next(this._riskAlertService.risksPanelContents);
-            });
-        }
+
+    this._riskAlertService.getRiskAlertNotificationResponse(true).subscribe((res)=>{
+        this._riskAlertService.riskPanelContentsSub.next(this._riskAlertService.risksPanelContents);
+    });
+
     });
 
     // Logging subscription location placement id in case detector opened from Case Submission flow directly
