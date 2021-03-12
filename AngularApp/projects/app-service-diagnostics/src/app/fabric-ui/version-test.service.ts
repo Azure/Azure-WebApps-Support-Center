@@ -9,10 +9,10 @@ import { Site } from '../shared/models/site';
 import { GenericArmConfigService } from '../shared/services/generic-arm-config.service';
 import { ResourceDescriptor } from 'diagnostic-data';
 
-const allowV3ProviderSet = new Set([
+const allowV3ProviderList = [
     "microsoft.apimanagement",
     "microsoft.signalrservice"
-]);
+];
 
 
 @Injectable({
@@ -51,7 +51,8 @@ export class VersionTestService {
                         this.isLegacySub.next(shouldUseLegacy);
                         this.isVnextOnlyResource.next(isVnextOnlyResourceType);
                     }else {
-                        const shouldUseLegacy = !allowV3ProviderSet.has(provider.toLowerCase());
+                        //For other resources, check if it's in allowV3ProviderSet
+                        const shouldUseLegacy = allowV3ProviderList.findIndex(p => provider.toLowerCase() === p.toLowerCase()) === -1;
                         this.isLegacySub.next(shouldUseLegacy);
                     }
                 });
