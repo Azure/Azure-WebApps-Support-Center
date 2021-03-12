@@ -144,7 +144,7 @@
     </div>
 
     <div class="section-container" >
-      <h2 class="section-title">Popular troubleshooting tools</h2>
+      <h2 *ngIf="!loadingQuickLinks && quickLinkFeatures.length > 0" class="section-title">Popular troubleshooting tools</h2>
       <div *ngIf="!loadingQuickLinks else loading">
         <div class="quick-link" *ngFor="let feature of quickLinkFeatures">
           <a tabindex="0" (click)="clickQuickLink(feature)" (keyup.enter)="clickQuickLink(feature)">{{feature.name}}</a>

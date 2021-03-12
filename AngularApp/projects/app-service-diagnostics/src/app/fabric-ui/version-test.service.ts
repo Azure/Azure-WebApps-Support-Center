@@ -6,6 +6,14 @@ import { ResourceType, AppType } from '../shared/models/portal';
 import { SiteService } from '../shared/services/site.service';
 import { BehaviorSubject } from 'rxjs';
 import { Site } from '../shared/models/site';
+import { GenericArmConfigService } from '../shared/services/generic-arm-config.service';
+import { ResourceDescriptor } from 'diagnostic-data';
+
+const allowV3ProviderSet = new Set([
+    "microsoft.apimanagement",
+    "microsoft.signalrservice"
+]);
+
 
 @Injectable({
     providedIn:'root'
@@ -21,7 +29,7 @@ export class VersionTestService {
     // overrideUseLegacy = 1, we switch to the old experience.
     // overrideUseLegacy = 2, we switch to the new experience.
     public overrideUseLegacy: BehaviorSubject<number> = new BehaviorSubject(0);
-    constructor(private _authService: AuthService, private _siteService: SiteService) {
+    constructor(private _authService: AuthService, private _siteService: SiteService,private _genericArmConfigService?:GenericArmConfigService) {
         this._authService.getStartupInfo().subscribe(startupInfo => {
             const resourceType = this._authService.resourceType;
             const resourceId = startupInfo.resourceId;
@@ -30,14 +38,22 @@ export class VersionTestService {
             this.isVnextSub = true;
             this._siteService.currentSite.subscribe(site => {
                 this.overrideUseLegacy.subscribe(overrideValue => {
-                    const isVnextOnlyResourceType = this.isVnextOnlyResourceType(site, resourceType);
-                    const isVnextResourceType = this.isVnextResourceType(site, resourceType);
-                    // Initialize with the new version if the subscription falls in vnext sub groups and the resource is web app
-                    this.initializedPortalVersion.next(this.isVnextSub && isVnextResourceType ? "v3" : "v2");
-                    // The current expericence can still be override if customer click on the link to switch to a different version
-                    const shouldUseLegacy = overrideValue !== 0 ? overrideValue === 1 : (!this.isVnextSub||!isVnextResourceType);
-                    this.isLegacySub.next(shouldUseLegacy);
-                    this.isVnextOnlyResource.next(isVnextOnlyResourceType);
+                    const resourceDescriptor = ResourceDescriptor.parseResourceUri(resourceId);
+                    const provider = resourceDescriptor.provider;
+                    if(provider.toLowerCase() === "microsoft.web") {
+                        const isVnextOnlyResourceType = this.isVnextOnlyResourceType(site, resourceType);
+                        const isVnextResourceType = this.isVnextResourceType(site, resourceType);
+                        // Initialize with the new version if the subscription falls in vnext sub groups and the resource is web app
+                        this.initializedPortalVersion.next(this.isVnextSub && isVnextResourceType ? "v3" : "v2");
+                        // The current expericence can still be override if customer click on the link to switch to a different version
+                        const shouldUseLegacy = overrideValue !== 0 ? overrideValue === 1 : (!this.isVnextSub||!isVnextResourceType);
+
+                        this.isLegacySub.next(shouldUseLegacy);
+                        this.isVnextOnlyResource.next(isVnextOnlyResourceType);
+                    }else {
+                        const shouldUseLegacy = !allowV3ProviderSet.has(provider.toLowerCase());
+                        this.isLegacySub.next(shouldUseLegacy);
+                    }
                 });
             });
         });
