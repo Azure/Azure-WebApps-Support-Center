@@ -38,9 +38,7 @@ export class VersionTestService {
             this.isVnextSub = true;
             this._siteService.currentSite.subscribe(site => {
                 this.overrideUseLegacy.subscribe(overrideValue => {
-                    const resourceDescriptor = ResourceDescriptor.parseResourceUri(resourceId);
-                    const provider = resourceDescriptor.provider;
-                    if(provider.toLowerCase() === "microsoft.web") {
+                    if(resourceType === ResourceType.Site) {
                         const isVnextOnlyResourceType = this.isVnextOnlyResourceType(site, resourceType);
                         const isVnextResourceType = this.isVnextResourceType(site, resourceType);
                         // Initialize with the new version if the subscription falls in vnext sub groups and the resource is web app
@@ -51,6 +49,8 @@ export class VersionTestService {
                         this.isLegacySub.next(shouldUseLegacy);
                         this.isVnextOnlyResource.next(isVnextOnlyResourceType);
                     }else {
+                        const resourceDescriptor = ResourceDescriptor.parseResourceUri(resourceId);
+                        const provider = resourceDescriptor.provider;
                         //For other resources, check if it's in allowV3ProviderSet
                         const shouldUseLegacy = allowV3ProviderList.findIndex(p => provider.toLowerCase() === p.toLowerCase()) === -1;
                         this.isLegacySub.next(shouldUseLegacy);
