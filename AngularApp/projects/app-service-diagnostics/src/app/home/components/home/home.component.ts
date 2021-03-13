@@ -53,6 +53,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     loadingQuickLinks: boolean = true;
     showRiskSection: boolean = true;
     showRiskNotificationMessage: boolean = false;
+    isArmResource: boolean = false;
+    initializedPortalVersion = 'v3';
     get inputAriaLabel(): string {
         return this.searchValue !== '' ?
             `${this.searchResultCount} Result` + (this.searchResultCount !== 1 ? 's' : '') :
@@ -74,7 +76,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         this.subscriptionId = this._activatedRoute.snapshot.params['subscriptionid'];
         this.versionTestService.isLegacySub.subscribe(isLegacy => this.useLegacy = isLegacy);
-
+        this.versionTestService.initializedPortalVersion.subscribe(v => this.initializedPortalVersion = v);
         this.resourceName = this._resourceService.resource.name;
         let eventProps = {
             subscriptionId: this.subscriptionId,
@@ -86,6 +88,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             && _resourceService.armResourceConfig.homePageText.title && _resourceService.armResourceConfig.homePageText.title.length > 1
             && _resourceService.armResourceConfig.homePageText.description && _resourceService.armResourceConfig.homePageText.description.length > 1
             && _resourceService.armResourceConfig.homePageText.searchBarPlaceHolder && _resourceService.armResourceConfig.homePageText.searchBarPlaceHolder.length > 1) {
+            this.isArmResource = true;
             this.homePageText = _resourceService.armResourceConfig.homePageText;
             this.searchPlaceHolder = this.homePageText.searchBarPlaceHolder;
         }
@@ -337,6 +340,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
             'Location': TelemetrySource.LandingPage
         });
         this._resourceService.updateRiskAlertResult();
+    }
+
+    switchView() {
+        this.useLegacy = !this.useLegacy;
+        this.versionTestService.setLegacyFlag(this.useLegacy === true ? 1 : 2);
+        let eventProps = {
+            subscriptionId: this.subscriptionId,
+            resourceName: this.resourceName,
+            switchToLegacy: this.useLegacy.toString(),
+        };
+        this._telemetryService.logEvent('SwitchView',eventProps);
     }
 }
 

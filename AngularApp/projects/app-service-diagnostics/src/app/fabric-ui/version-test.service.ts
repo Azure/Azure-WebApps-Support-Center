@@ -6,7 +6,6 @@ import { ResourceType, AppType } from '../shared/models/portal';
 import { SiteService } from '../shared/services/site.service';
 import { BehaviorSubject } from 'rxjs';
 import { Site } from '../shared/models/site';
-import { GenericArmConfigService } from '../shared/services/generic-arm-config.service';
 import { ResourceDescriptor } from 'diagnostic-data';
 
 const allowV3ProviderList = [
@@ -52,7 +51,8 @@ export class VersionTestService {
                         const resourceDescriptor = ResourceDescriptor.parseResourceUri(resourceId);
                         const provider = resourceDescriptor.provider;
                         //For other resources, check if it's in allowV3ProviderSet
-                        const shouldUseLegacy = allowV3ProviderList.findIndex(p => provider.toLowerCase() === p.toLowerCase()) === -1;
+                        const shouldUseLegacy = overrideValue !== 0 ? overrideValue === 1 : allowV3ProviderList.findIndex(p => provider.toLowerCase() === p.toLowerCase()) === -1;
+                        this.initializedPortalVersion.next("v3");
                         this.isLegacySub.next(shouldUseLegacy);
                     }
                 });
