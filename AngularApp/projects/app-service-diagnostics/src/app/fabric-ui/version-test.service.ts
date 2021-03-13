@@ -9,8 +9,8 @@ import { Site } from '../shared/models/site';
 import { ResourceDescriptor } from 'diagnostic-data';
 
 export const allowV3PResourceTypeList: { type: string, allowSwitchBack: boolean }[] = [
-    { type: "microsoft.apimanagement/service", allowSwitchBack: true },
-    { type: "microsoft.signalrservice/signalr", allowSwitchBack: true }
+    { type: "microsoft.apimanagement/service", allowSwitchBack: false },
+    { type: "microsoft.signalrservice/signalr", allowSwitchBack: false }
 ];
 
 
