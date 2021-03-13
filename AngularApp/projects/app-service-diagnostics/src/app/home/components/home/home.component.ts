@@ -17,7 +17,7 @@ import { DiagnosticService } from 'diagnostic-data';
 import { HttpResponse } from '@angular/common/http';
 import { Globals } from '../../../globals';
 import { PortalActionService } from '../../../shared/services/portal-action.service';
-import { VersionTestService } from '../../../fabric-ui/version-test.service';
+import { allowV3PResourceTypeList, VersionTestService } from '../../../fabric-ui/version-test.service';
 import { SubscriptionPropertiesService } from '../../../shared/services/subscription-properties.service';
 import { Feature } from '../../../shared-v2/models/features';
 import { QuickLinkService } from '../../../shared-v2/services/quick-link.service';
@@ -53,7 +53,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
     loadingQuickLinks: boolean = true;
     showRiskSection: boolean = true;
     showRiskNotificationMessage: boolean = false;
-    isArmResource: boolean = false;
+    private _showSwitchBanner: boolean = false;
+    get showSwitchBanner():boolean {
+        const typeSwitchItem = allowV3PResourceTypeList.find(item => this._resourceService.resource.type.toLowerCase() === item.type.toLowerCase());
+        const allowResourceTypeSwitch = typeSwitchItem === undefined ? false : typeSwitchItem.allowSwitchBack;
+        return allowResourceTypeSwitch && this._showSwitchBanner;
+    }
     initializedPortalVersion = 'v3';
     get inputAriaLabel(): string {
         return this.searchValue !== '' ?
@@ -88,7 +93,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             && _resourceService.armResourceConfig.homePageText.title && _resourceService.armResourceConfig.homePageText.title.length > 1
             && _resourceService.armResourceConfig.homePageText.description && _resourceService.armResourceConfig.homePageText.description.length > 1
             && _resourceService.armResourceConfig.homePageText.searchBarPlaceHolder && _resourceService.armResourceConfig.homePageText.searchBarPlaceHolder.length > 1) {
-            this.isArmResource = true;
+            this._showSwitchBanner = true;
             this.homePageText = _resourceService.armResourceConfig.homePageText;
             this.searchPlaceHolder = this.homePageText.searchBarPlaceHolder;
         }

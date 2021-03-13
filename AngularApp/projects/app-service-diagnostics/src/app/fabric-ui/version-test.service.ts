@@ -8,14 +8,14 @@ import { BehaviorSubject } from 'rxjs';
 import { Site } from '../shared/models/site';
 import { ResourceDescriptor } from 'diagnostic-data';
 
-const allowV3ProviderList = [
-    "microsoft.apimanagement",
-    "microsoft.signalrservice"
+export const allowV3PResourceTypeList: { type: string, allowSwitchBack: boolean }[] = [
+    { type: "microsoft.apimanagement/service", allowSwitchBack: true },
+    { type: "microsoft.signalrservice/signalr", allowSwitchBack: true }
 ];
 
 
 @Injectable({
-    providedIn:'root'
+    providedIn: 'root'
 })
 export class VersionTestService {
     public isLegacySub: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
@@ -37,22 +37,23 @@ export class VersionTestService {
             this.isVnextSub = true;
             this._siteService.currentSite.subscribe(site => {
                 this.overrideUseLegacy.subscribe(overrideValue => {
-                    if(resourceType === ResourceType.Site) {
+                    if (resourceType === ResourceType.Site) {
                         const isVnextOnlyResourceType = this.isVnextOnlyResourceType(site, resourceType);
                         const isVnextResourceType = this.isVnextResourceType(site, resourceType);
                         // Initialize with the new version if the subscription falls in vnext sub groups and the resource is web app
                         this.initializedPortalVersion.next(this.isVnextSub && isVnextResourceType ? "v3" : "v2");
                         // The current expericence can still be override if customer click on the link to switch to a different version
-                        const shouldUseLegacy = overrideValue !== 0 ? overrideValue === 1 : (!this.isVnextSub||!isVnextResourceType);
+                        const shouldUseLegacy = overrideValue !== 0 ? overrideValue === 1 : (!this.isVnextSub || !isVnextResourceType);
 
                         this.isLegacySub.next(shouldUseLegacy);
                         this.isVnextOnlyResource.next(isVnextOnlyResourceType);
-                    }else {
+                    } else {
                         const resourceDescriptor = ResourceDescriptor.parseResourceUri(resourceId);
-                        const provider = resourceDescriptor.provider;
+                        const type = `${resourceDescriptor.provider}/${resourceDescriptor.type}`;
                         //For other resources, check if it's in allowV3ProviderSet
-                        const shouldUseLegacy = overrideValue !== 0 ? overrideValue === 1 : allowV3ProviderList.findIndex(p => provider.toLowerCase() === p.toLowerCase()) === -1;
-                        this.initializedPortalVersion.next("v3");
+                        const isAllowUseNewUI = allowV3PResourceTypeList.findIndex(item => type.toLowerCase() === item.type.toLowerCase()) > -1;
+                        const shouldUseLegacy = overrideValue !== 0 ? overrideValue === 1 : !isAllowUseNewUI;
+                        this.initializedPortalVersion.next(isAllowUseNewUI ? "v3" : "v2");
                         this.isLegacySub.next(shouldUseLegacy);
                     }
                 });
@@ -66,7 +67,7 @@ export class VersionTestService {
     }
 
     // This is the resource type that we completely migrate to new diagnose and solve experience
-      // Resource types that are currently using new D&S only: windows web app, function app
+    // Resource types that are currently using new D&S only: windows web app, function app
     private isVnextOnlyResourceType(site: Site, resourceType: ResourceType): boolean {
         let isLinuxPlatform = site && site.kind && site.kind.toLowerCase().indexOf('linux') >= 0;
         return resourceType === ResourceType.Site && site && (site.appType === AppType.WebApp || site.appType === AppType.FunctionApp) && !isLinuxPlatform;
@@ -88,6 +89,6 @@ export class VersionTestService {
 
         // roughly split of percentageToRelease of subscriptions to use new feature.
         let firstDigit = "0x" + subscriptionId.substr(0, 1);
-        return (16 -parseInt(firstDigit, 16))/16 <= percentageToRelease;
+        return (16 - parseInt(firstDigit, 16)) / 16 <= percentageToRelease;
     }
 }
