@@ -1,7 +1,7 @@
 {
     "homePageText": {
         "title": "Azure SignalR Services Diagnostics",
-        "description": "Use Azure SignalR Service Diagnostics to investigate how your service is performing, diagnose issues, and discover how to improve its reliability. Select the problem category that best matches the information or tool that you're interested in:",
+        "description": "Investigate how your service is performing, diagnose issues, and discover how to improve its reliability.",
         "searchBarPlaceHolder": "Search for common problems, tools and more"
     },
 
