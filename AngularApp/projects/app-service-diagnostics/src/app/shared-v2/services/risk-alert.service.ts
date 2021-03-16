@@ -18,6 +18,7 @@ import { Globals } from "../../globals";
 export class RiskAlertService {
     public riskAlertsSub: BehaviorSubject<RiskAlertConfig[]> = new BehaviorSubject<RiskAlertConfig[]>([]);
     public riskPanelContentsSub: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+    public isRiskTileRefreshing: BehaviorSubject<boolean> = new BehaviorSubject<any>(false);
     riskAlertNotifications: {} = {};
     risksPanelContents = {};
     currentRiskPanelContentId: string = "";
@@ -79,13 +80,17 @@ export class RiskAlertService {
         }
     }
 
-    public getRiskAlertNotificationResponse(isInCaseSubmissionFlow: boolean = false): Observable<any[]> {
+    public getRiskAlertNotificationResponse(isInCaseSubmissionFlow: boolean = false, refresh: boolean = false): Observable<any[]> {
         try {
+            if (refresh)
+            {
+                this.isRiskTileRefreshing.next(true);
+            }
             if (this.riskAlertConfigs == null && this.notificationMessageBar == null)
                 return of(null);
 
             let tasks = this.riskAlertConfigs.filter(config => !isInCaseSubmissionFlow || isInCaseSubmissionFlow && config.enableForCaseSubmissionFlow != null && config.enableForCaseSubmissionFlow === true).map(riskAlertConfig => {
-                let riskAlertObservable = this._diagnosticService.getDetector(riskAlertConfig.riskAlertDetectorId, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString).pipe(map(
+                let riskAlertObservable = this._diagnosticService.getDetector(riskAlertConfig.riskAlertDetectorId, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString, refresh).pipe(map(
                     res => {
                         const notificationList = res.dataset.filter(set => (<Rendering>set.renderingProperties).type === RenderingType.Notification);
                         const statusColumnIndex = 0;
@@ -116,7 +121,7 @@ export class RiskAlertService {
 
             if (!!this.notificationMessageBar && !!this.notificationMessageBar.id) {
 
-                let notificationObservable = this._diagnosticService.getDetector(this.notificationMessageBar.id, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString).pipe(map(
+                let notificationObservable = this._diagnosticService.getDetector(this.notificationMessageBar.id, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString, refresh).pipe(map(
                     res => {
                         if (res != null && res.metadata != null && res.dataset != null) {
                             const notificationList = res.dataset.filter(set => (<Rendering>set.renderingProperties).type === RenderingType.Notification);

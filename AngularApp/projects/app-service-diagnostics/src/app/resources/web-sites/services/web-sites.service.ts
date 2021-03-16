@@ -25,7 +25,6 @@ export class WebSitesService extends ResourceService {
     public appType: AppType = AppType.WebApp;
     public sku: Sku = Sku.All;
     public hostingEnvironmentKind: HostingEnvironmentKind = HostingEnvironmentKind.All;
-    public reliabilityChecksResults: any = {};
 
     constructor(protected _armService: ArmService, private _appAnalysisService: AppAnalysisService) {
         super(_armService);
@@ -132,30 +131,6 @@ export class WebSitesService extends ResourceService {
     public getSitePremierAddOns(resourceUri: string): Observable<any> {
         return this._armService.getArmResource(`${resourceUri}/premieraddons`, '2018-02-01');
     }
-
-
-    public getRiskAlertsResult(): Observable<any> {
-        const riskCheckSignal = merge(this.warmUpCallFinished,this._refreshReliabilityCheck);
-        return riskCheckSignal.pipe(flatMap((res) =>
-        {
-            if (this.resource && this.azureServiceName === 'Web App (Windows)') {
-                let resourceUri = this.resource.id;
-                let serverFarmId = this.resource.properties.serverFarmId;
-
-                const resourceTasks = forkJoin(
-                    this._armService.getArmResource(`${resourceUri}/config/web`, '2018-02-01',true),
-                    this._armService.getResourceWithoutEnvelope<ServerFarm>(serverFarmId,null,true)
-                );
-
-                return resourceTasks;
-            }
-            else {
-                return of(null);
-            }
-
-        }));
-    }
-
 
     protected makeWarmUpCalls() {
         super.makeWarmUpCalls();

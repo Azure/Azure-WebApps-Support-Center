@@ -344,7 +344,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this._telemetryService.logEvent(TelemetryEventNames.RefreshClicked,{
             'Location': TelemetrySource.LandingPage
         });
-        this._resourceService.updateRiskAlertResult();
+
+      this._riskAlertService.getRiskAlertNotificationResponse(false, true).subscribe(()=>
+      {
+          this._riskAlertService.riskPanelContentsSub.next(this._riskAlertService.risksPanelContents);
+          this._riskAlertService.isRiskTileRefreshing.next(false);
+      });
     }
 
     switchView() {

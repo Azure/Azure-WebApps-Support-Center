@@ -26,7 +26,6 @@ export class RiskAlertsNotificationComponent implements OnInit {
     notificationStatusType: MessageBarType = MessageBarType.severeWarning;
     riskAlertNotificationStatusType: MessageBarType = MessageBarType.severeWarning;
     riskAlertChecksHealthy: boolean = false;
-    reliabilityChecksResults: any = {};
     riskAlertDetectorId: string = "";
     riskAlertMessage: string = "We detected missing configurations in your application that will increase risk of a downtime.";
     styles: IMessageBarStyles = {

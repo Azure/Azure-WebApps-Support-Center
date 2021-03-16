@@ -19,9 +19,6 @@ export class ResourceService {
   public warmUpCallFinished: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   public error: any;
 
-  public reliabilityChecksResults: any = {};
-  protected _refreshReliabilityCheck: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-
   constructor(protected _armService: ArmService, private _genericArmConfigService?: GenericArmConfigService) { }
 
   private _initialize() {
@@ -107,14 +104,6 @@ export class ResourceService {
     else {
       return false;
     }
-  }
-
-  public getRiskAlertsResult(): Observable<any> {
-    return of(null);
-  }
-
-  public updateRiskAlertResult() {
-    this._refreshReliabilityCheck.next(true);
   }
 
   public get isApplicableForLiveChat(): boolean {

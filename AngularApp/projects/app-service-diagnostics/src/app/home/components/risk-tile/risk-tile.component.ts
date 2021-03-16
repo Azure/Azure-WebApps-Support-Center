@@ -47,7 +47,10 @@ export class RiskTileComponent implements OnInit {
                 ];
             }
 
-            this.loading = this.riskTile.loadingStatus;
+            this._riskAlertService.isRiskTileRefreshing.subscribe((isRefreshing) => {
+                this.loading = isRefreshing ? LoadingStatus.Loading: this.riskTile.loadingStatus;;
+            })
+
             this.riskProperties["TileLoaded"] = LoadingStatus[this.loading];
             this.riskProperties["InfoList"] = JSON.stringify(this.infoList);
         });
