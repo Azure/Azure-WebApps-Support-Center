@@ -31,11 +31,11 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges, Afte
   updatedCustomAction: AutoHealCustomAction = new AutoHealCustomAction();
 
 
-  Diagnosers = [{ Name: 'Memory Dump', Description: 'Collects memory dumps of the process and the child processes hosting your app and analyzes them for errors' },
-  { Name: 'CLR Profiler', Description: 'Profiles ASP.NET application code to identify exceptions and performance issues' },
-  { Name: 'CLR Profiler With Thread Stacks', Description: 'Profiles ASP.NET application code to identify exceptions and performance issues and dumps stacks to identify deadlocks' },
-  { Name: 'JAVA Memory Dump', Description: 'Collects a binary memory dump using jMap of all java.exe processes running for this web app' },
-  { Name: 'JAVA Thread Dump', Description: 'Collects jStack output of all java.exe processes running for this app and analyzes the same' }];
+  Diagnosers = [{ Name: 'Memory Dump', Enabled: true, Description: 'Collects memory dumps of the process and the child processes hosting your app and analyzes them for errors' },
+  { Name: 'CLR Profiler', Enabled: true, Description: 'Profiles ASP.NET application code to identify exceptions and performance issues' },
+  { Name: 'CLR Profiler With Thread Stacks', Enabled: false, Description: 'Profiles ASP.NET application code to identify exceptions and performance issues and dumps stacks to identify deadlocks' },
+  { Name: 'JAVA Memory Dump', Enabled: true, Description: 'Collects a binary memory dump using jMap of all java.exe processes running for this web app' },
+  { Name: 'JAVA Thread Dump', Enabled: true, Description: 'Collects jStack output of all java.exe processes running for this app and analyzes the same' }];
   DiagnoserOptions = [
     { option: 'CollectKillAnalyze', Description: 'With this option, the above selected tool\'s data will collected, analyzed and the process will be recycled.' },
     { option: 'CollectLogs', Description: 'With this option, only the above selected tool\'s data will collected. No analysis will be performed and process will not be restarted.' },
@@ -123,7 +123,7 @@ export class AutohealingCustomActionComponent implements OnInit, OnChanges, Afte
   }
 
   chooseDiagnoser(val) {
-    if (val != null) {
+    if (val != null && val.Enabled) {
       this.diagnoser = val;
       this.daasValidatorRef.diagnoserName = this.diagnoser.Name;
       this.daasValidatorRef.validateDiagnoser();

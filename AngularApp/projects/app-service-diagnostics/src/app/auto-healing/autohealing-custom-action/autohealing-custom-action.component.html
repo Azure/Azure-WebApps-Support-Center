@@ -20,7 +20,7 @@
             <div class="detail-cards">
               <ng-container *ngFor="let item of Diagnosers;let i = index">
                 <button class="detail-card" (click)="chooseDiagnoser(item)"
-                  [ngClass]="{'detail-card-active': item.Name === diagnoser.Name}">
+                  [ngClass]="{'detail-card-active': item.Name === diagnoser.Name && item.Enabled , 'detail-card-disabled': item.Enabled === false}">
                   <h4>{{item.Name}}</h4>
                   <p>{{ item.Description }}</p>
                 </button>
