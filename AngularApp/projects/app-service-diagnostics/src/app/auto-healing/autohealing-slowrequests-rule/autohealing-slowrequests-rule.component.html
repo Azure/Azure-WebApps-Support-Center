@@ -61,7 +61,7 @@
     </tbody>
   </table>
 
-  <div *ngIf="editMode && currentRule" class="form-group">
+  <div *ngIf="editMode && currentRule!=null" class="form-group">
     <div class="row">
       <div class="col-sm-6">
         <label for="requestsCountSlow">After how many slow requests you want this condition to kick in?</label>
