@@ -83,7 +83,7 @@ export class CategorySummaryComponent implements OnInit {
             this._chatState.category = this.category;
             this.categoryName = this.category ? this.category.name : "";
 
-            this.resourceName = this._activatedRoute.snapshot.params.resourcename;
+            this.resourceName = this._activatedRoute.snapshot.parent.params.resourcename;
             this._portalActionService.updateDiagnoseCategoryBladeTitle(`${this.resourceName} | ` + this.categoryName);
           });
         });
