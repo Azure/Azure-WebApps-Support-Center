@@ -327,7 +327,7 @@ export class DaasComponent implements OnInit, OnDestroy {
                 this.sessionStatus = 1;
                 this.updateInstanceInformation();
 
-                const submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.diagnoserName, this.instancesToDiagnose, this.collectionMode === 1, this.validationResult.BlobSasUri)
+                const submitNewSession = this._daasService.submitDaasSession(this.siteToBeDiagnosed, this.diagnoserName, this.instancesToDiagnose, this.collectionMode === 1, this.validationResult.SasUriAsAppSetting ? "" : this.validationResult.BlobSasUri)
                     .subscribe(result => {
                         this.sessionId = result;
                         this.subscription = interval(10000).subscribe(res => {
