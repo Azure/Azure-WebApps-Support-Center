@@ -358,6 +358,16 @@
              "imgSrc": "assets/img/StaticSites-Logo.svg",  
              "versionPrefix": "",  
              "azureCommImpactedServicesList": "staticSites"  
+         },
+        { 
+             "service": "ResourceService",  
+             "resourceType": "Microsoft.DocumentDB/databaseAccounts",  
+             "templateFileName": "CosmosDB",  
+             "imgSrc": "assets/img/CosmosDB-Logo.svg",  
+             "versionPrefix": "",  
+             "pesId": "15585"
+             "staticSelfHelpContent": "microsoft.cosmosdb",
+             "azureCommImpactedServicesList": "Azure Cosmos DB"  
          }
     ]
 }
