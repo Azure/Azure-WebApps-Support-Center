@@ -365,7 +365,7 @@
              "templateFileName": "CosmosDB",  
              "imgSrc": "assets/img/CosmosDB-Logo.svg",  
              "versionPrefix": "",  
-             "pesId": "15585"
+             "pesId": "15585",
              "staticSelfHelpContent": "microsoft.cosmosdb",
              "azureCommImpactedServicesList": "Azure Cosmos DB"  
          }
