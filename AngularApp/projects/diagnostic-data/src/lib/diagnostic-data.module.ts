@@ -107,6 +107,10 @@ import { SolutionViewContainerComponent } from './components/solution-view-conta
 import { FabDataTableFilterComponent } from './components/fab-data-table-filter/fab-data-table-filter.component';
 import { NotificationRenderingComponent } from './components/notification-rendering/notification-rendering.component';
 import { FabTabComponent } from './components/fab-tab/fab-tab.component';
+import { SectionsComponent } from './components/sections/sections.component';
+import { CollapsibleListComponent } from './components/collapsible-list/collapsible-list.component';
+import { CollapsibleListFabricComponent } from './components/collapsible-list/collapsible-list-fabric/collapsible-list-fabric.component';
+import { CollapsibleListItemComponent } from './components/collapsible-list/collapsible-list-item.component';
 
 @NgModule({
   imports: [
@@ -173,6 +177,10 @@ import { FabTabComponent } from './components/fab-tab/fab-tab.component';
     FabDataTableFilterComponent,
     NotificationRenderingComponent,
     FabTabComponent,
+    SectionsComponent,
+    CollapsibleListComponent,
+    CollapsibleListFabricComponent,
+    CollapsibleListItemComponent
   ],
   entryComponents: [DetectorListAnalysisComponent],
   exports: [
@@ -193,6 +201,9 @@ import { FabTabComponent } from './components/fab-tab/fab-tab.component';
     WebSearchComponent,
     SolutionViewContainerComponent,
     FabTabComponent,
+    CollapsibleListComponent,
+    CollapsibleListFabricComponent,
+    CollapsibleListItemComponent
   ],
 })
 export class DiagnosticDataModule {

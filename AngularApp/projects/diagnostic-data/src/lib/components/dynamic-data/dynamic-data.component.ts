@@ -41,6 +41,7 @@ import { DataTableV4Component } from '../data-table-v4/data-table-v4.component';
 import { KeystoneInsightComponent } from '../keystone-insight/keystone-insight.component';
 import { NotificationRenderingComponent } from '../notification-rendering/notification-rendering.component';
 import { FabTabComponent } from '../fab-tab/fab-tab.component';
+import { SectionsComponent } from '../sections/sections.component';
 
 @Component({
   selector: 'dynamic-data',
@@ -50,7 +51,7 @@ import { FabTabComponent } from '../fab-tab/fab-tab.component';
     TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent,
     InsightsComponent, TimeSeriesInstanceGraphComponent, DynamicInsightComponent, MarkdownViewComponent,
     DetectorListComponent, DropdownComponent, CardSelectionComponent, SolutionComponent, GuageControlComponent, FormComponent,
-    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent, DetectorListAnalysisComponent, ConnectAppInsightsComponent, DetectorSearchComponent, SummaryCardsComponent, InsightsV4Component, DropdownV4Component, CardSelectionV4Component,DynamicInsightV4Component,DataTableV4Component, KeystoneInsightComponent, NotificationRenderingComponent, FabTabComponent
+    ChangeAnalysisOnboardingComponent, ChangesetsViewComponent, AppDependenciesComponent, AppInsightsMarkdownComponent, DetectorListAnalysisComponent, ConnectAppInsightsComponent, DetectorSearchComponent, SummaryCardsComponent, InsightsV4Component, DropdownV4Component, CardSelectionV4Component,DynamicInsightV4Component,DataTableV4Component, KeystoneInsightComponent, NotificationRenderingComponent, FabTabComponent,SectionsComponent
   ]
 })
 export class DynamicDataComponent implements OnInit {
@@ -188,6 +189,8 @@ export class DynamicDataComponent implements OnInit {
         return NotificationRenderingComponent;
       case RenderingType.Tab:
         return FabTabComponent;
+      case RenderingType.Section:
+        return SectionsComponent;
       default:
         return null;
     }

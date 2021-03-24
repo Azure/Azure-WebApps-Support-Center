@@ -113,6 +113,7 @@ export enum RenderingType {
     KeystoneComponent,
     Notification,
     Tab,
+    Section
 }
 
 export enum TimeSeriesType {
@@ -148,7 +149,6 @@ export interface DataTableRendering extends Rendering {
     tableOptions: any;
     height: any;
     allowColumnSearch: boolean;
-    // tableFilters:TableFilter[];
     columnOptions: TableColumnOption[];
 }
 
@@ -227,6 +227,11 @@ export interface TabRendering extends Rendering {
     itemCount?: number;
     icon: string;
     needsAttention: boolean;
+}
+
+export interface SectionRendering extends Rendering {
+    isExpand: boolean;
+    diagnosticData: DiagnosticData[]
 }
 
 export interface RecommendedUtterance {
