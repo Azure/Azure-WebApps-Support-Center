@@ -52,7 +52,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     riskAlertConfigs: RiskAlertConfig[];
     loadingQuickLinks: boolean = true;
     showRiskSection: boolean = true;
-    showRiskNotificationMessage: boolean = false;
     private _showSwitchBanner: boolean = false;
     get showSwitchBanner():boolean {
         const typeSwitchItem = allowV3PResourceTypeList.find(item => this._resourceService.resource.type.toLowerCase() === item.type.toLowerCase());
@@ -203,7 +202,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         if (!this._detectorControlService.startTime) {
             this._detectorControlService.setDefault();
         }
-       this.showRiskNotificationMessage = !!this._riskAlertService.notificationMessageBar && !!this._riskAlertService.notificationMessageBar.id && this._riskAlertService.notificationMessageBar.showNotification;
+
         this._riskAlertService.getRiskAlertNotificationResponse().subscribe(()=>
         {
             this._riskAlertService.riskPanelContentsSub.next(this._riskAlertService.risksPanelContents);

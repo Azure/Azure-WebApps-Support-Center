@@ -83,5 +83,11 @@
     "apim-proxy-policy-errors-recategory",
     "apim-proxy-performance-recategory"
   ],
-  "pesId": "15551"
+  "pesId": "15551",
+  "notificationConfig": {
+    "title": "Notifications",
+    "notificationDetectorId": "apim-notification",
+    "enableForCaseSubmissionFlow": true,
+    "showNotification": true
+  }
 }

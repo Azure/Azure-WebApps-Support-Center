@@ -56,4 +56,5 @@ export class RiskAlertConfig extends baseNotificationConfig {
 
 export class NotificationConfig extends baseNotificationConfig {
     notificationDetectorId: string;
+    showNotification: boolean = false;
 }

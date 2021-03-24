@@ -579,6 +579,34 @@ export class GenericArmConfigService {
           throw error;
         }
 
+          //currConfig.riskAlertConfigs
+          try {
+            if (this.getValue(this.resourceConfig.riskAlertConfigs, this.overrideConfig.riskAlertConfigs) != null) {
+              currConfig.riskAlertConfigs = this.getValue(this.resourceConfig.riskAlertConfigs, this.overrideConfig.riskAlertConfigs);
+            }
+          } catch (error) {
+            this.logException(error, null, {
+              "resourceUri": resourceUri,
+              "reason": `${TelemetryEventNames.ArmConfigMergeError}: Error while merging armConfig.`,
+              "field": "riskAlertConfigs"
+            });
+            throw error;
+          }
+
+            //currConfig.notificationConfig
+        try {
+            if (this.getValue(this.resourceConfig.notificationConfig, this.overrideConfig.notificationConfig) != null) {
+              currConfig.notificationConfig = this.getValue(this.resourceConfig.notificationConfig, this.overrideConfig.notificationConfig);
+            }
+          } catch (error) {
+            this.logException(error, null, {
+              "resourceUri": resourceUri,
+              "reason": `${TelemetryEventNames.ArmConfigMergeError}: Error while merging armConfig.`,
+              "field": "notificationConfig"
+            });
+            throw error;
+          }
+
         this.resourceMap.push(currConfig);
         return currConfig;
       })

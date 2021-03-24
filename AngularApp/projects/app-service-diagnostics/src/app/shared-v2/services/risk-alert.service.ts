@@ -71,7 +71,7 @@ export class RiskAlertService {
             this.notificationMessageBar
                 =
                 {
-                    showNotification: false,
+                    showNotification: notificationConfig.showNotification,
                     id: notificationConfig.notificationDetectorId,
                     panelTitle: notificationConfig.title,
                     status: HealthStatus.Info,
@@ -82,42 +82,44 @@ export class RiskAlertService {
 
     public getRiskAlertNotificationResponse(isInCaseSubmissionFlow: boolean = false, refresh: boolean = false): Observable<any[]> {
         try {
-            if (refresh)
-            {
+            if (refresh) {
                 this.isRiskTileRefreshing.next(true);
             }
             if (this.riskAlertConfigs == null && this.notificationMessageBar == null)
                 return of(null);
 
-            let tasks = this.riskAlertConfigs.filter(config => !isInCaseSubmissionFlow || isInCaseSubmissionFlow && config.enableForCaseSubmissionFlow != null && config.enableForCaseSubmissionFlow === true).map(riskAlertConfig => {
-                let riskAlertObservable = this._diagnosticService.getDetector(riskAlertConfig.riskAlertDetectorId, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString, refresh).pipe(map(
-                    res => {
-                        const notificationList = res.dataset.filter(set => (<Rendering>set.renderingProperties).type === RenderingType.Notification);
-                        const statusColumnIndex = 0;
-                        notificationList.sort((s1, s2) => HealthStatus[<string>s1.table.rows[0][statusColumnIndex]] - HealthStatus[<string>s2.table.rows[0][statusColumnIndex]]);
+            let tasks = [];
+            if (this.riskAlertConfigs != null && this.riskAlertConfigs.length > 0) {
+                tasks = this.riskAlertConfigs.filter(config => !isInCaseSubmissionFlow || isInCaseSubmissionFlow && config.enableForCaseSubmissionFlow != null && config.enableForCaseSubmissionFlow === true).map(riskAlertConfig => {
+                    let riskAlertObservable = this._diagnosticService.getDetector(riskAlertConfig.riskAlertDetectorId, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString, refresh).pipe(map(
+                        res => {
+                            const notificationList = res.dataset.filter(set => (<Rendering>set.renderingProperties).type === RenderingType.Notification);
+                            const statusColumnIndex = 0;
+                            notificationList.sort((s1, s2) => HealthStatus[<string>s1.table.rows[0][statusColumnIndex]] - HealthStatus[<string>s2.table.rows[0][statusColumnIndex]]);
 
-                        res.dataset = notificationList;
-                        let currentStatus = HealthStatus.Info;
-                        if (this.riskAlertNotifications.hasOwnProperty(riskAlertConfig.riskAlertDetectorId)) {
-                            if (res.dataset && res.dataset.length > 0 && res.dataset[0].table != null && res.dataset[0].table.rows.length > 0) {
-                                currentStatus = HealthStatus[<string>res.dataset[0].table.rows[0][0]];
-                                if (currentStatus < this.notificationStatus) {
-                                    this.notificationStatus = currentStatus;
-                                    this.caseSubmissionRiskNotificationId = riskAlertConfig.riskAlertDetectorId;
+                            res.dataset = notificationList;
+                            let currentStatus = HealthStatus.Info;
+                            if (this.riskAlertNotifications.hasOwnProperty(riskAlertConfig.riskAlertDetectorId)) {
+                                if (res.dataset && res.dataset.length > 0 && res.dataset[0].table != null && res.dataset[0].table.rows.length > 0) {
+                                    currentStatus = HealthStatus[<string>res.dataset[0].table.rows[0][0]];
+                                    if (currentStatus < this.notificationStatus) {
+                                        this.notificationStatus = currentStatus;
+                                        this.caseSubmissionRiskNotificationId = riskAlertConfig.riskAlertDetectorId;
+                                    }
                                 }
+
+                                this.riskAlertNotifications[riskAlertConfig.riskAlertDetectorId].notificationMessage = !!res && !!res.metadata && !!res.metadata.description ? res.metadata.description : "";
+                                this.riskAlertNotifications[riskAlertConfig.riskAlertDetectorId].status = currentStatus;
+                                this.riskAlertNotifications[riskAlertConfig.riskAlertDetectorId].riskInfo = RiskHelper.convertResponseToRiskInfo(res);
+                                this.riskAlertNotifications[riskAlertConfig.riskAlertDetectorId].loadingStatus = LoadingStatus.Success;
                             }
 
-                            this.riskAlertNotifications[riskAlertConfig.riskAlertDetectorId].notificationMessage = !!res && !!res.metadata && !!res.metadata.description ? res.metadata.description : "";
-                            this.riskAlertNotifications[riskAlertConfig.riskAlertDetectorId].status = currentStatus;
-                            this.riskAlertNotifications[riskAlertConfig.riskAlertDetectorId].riskInfo = RiskHelper.convertResponseToRiskInfo(res);
-                            this.riskAlertNotifications[riskAlertConfig.riskAlertDetectorId].loadingStatus = LoadingStatus.Success;
-                        }
+                            this.risksPanelContents[riskAlertConfig.riskAlertDetectorId] = res;
+                        }));
 
-                        this.risksPanelContents[riskAlertConfig.riskAlertDetectorId] = res;
-                    }));
-
-                return riskAlertObservable;
-            });
+                    return riskAlertObservable;
+                });
+            }
 
             if (!!this.notificationMessageBar && !!this.notificationMessageBar.id) {
 
