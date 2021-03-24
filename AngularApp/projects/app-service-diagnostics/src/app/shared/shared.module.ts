@@ -17,8 +17,6 @@ import { DefaultSolutionsComponent } from './components/default-solutions/defaul
 import { MetricGraphComponent } from './components/metric-graph/metric-graph.component';
 import { InstanceViewGraphComponent } from './components/instance-view-graph/instance-view-graph.component';
 import { FeedbackFormComponent } from './components/feedback-form/feedback-form.component';
-import { CollapsibleListItemComponent } from './components/collapsible-list/collapsible-list-item.component';
-import { CollapsibleListComponent } from './components/collapsible-list/collapsible-list.component';
 import { SupportToolsComponent } from './components/support-tools/support-tools.component';
 import { ExpandableSummaryComponent } from './components/expandable-summary/expandable-summary.component';
 import { LiveAgentChatComponent } from './components/liveagent-chat/liveagent-chat.component';
@@ -129,7 +127,6 @@ import {
     FabContextualMenuModule
 } from '@angular-react/fabric';
 import { CrashMonitoringAnalysisComponent } from './components/tools/crash-monitoring/crash-monitoring-analysis/crash-monitoring-analysis.component';
-import { CollapsibleListFabricComponent } from './components/collapsible-list/collapsible-list-fabric/collapsible-list-fabric.component';
 import { RiskAlertsNotificationComponent } from './components/risk-alerts-notification/risk-alerts-notification.component';
 import { RiskAlertsPanelComponent } from './components/risk-alerts-panel/risk-alerts-panel.component';
 import { IntegratedSolutionsViewComponent } from './components/integrated-solutions-view/integrated-solutions-view.component';
@@ -156,8 +153,6 @@ import { IntegratedSolutionsViewComponent } from './components/integrated-soluti
         InstanceViewGraphComponent,
         SolutionsExpandableComponent,
         FeedbackFormComponent,
-        CollapsibleListComponent,
-        CollapsibleListItemComponent,
         SupportToolsComponent,
         ExpandableSummaryComponent,
         StepWizardComponent,
@@ -201,7 +196,6 @@ import { IntegratedSolutionsViewComponent } from './components/integrated-soluti
         JavaFlightRecorderToolComponent,
         CrashMonitoringComponent,
         CrashMonitoringAnalysisComponent,
-        CollapsibleListFabricComponent,
         RiskAlertsNotificationComponent,
         RiskAlertsPanelComponent,
         IntegratedSolutionsViewComponent
@@ -272,8 +266,6 @@ import { IntegratedSolutionsViewComponent } from './components/integrated-soluti
         InstanceViewGraphComponent,
         SolutionsExpandableComponent,
         FeedbackFormComponent,
-        CollapsibleListComponent,
-        CollapsibleListItemComponent,
         SupportToolsComponent,
         ExpandableSummaryComponent,
         StepWizardComponent,
