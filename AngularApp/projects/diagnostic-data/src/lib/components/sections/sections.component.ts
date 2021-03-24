@@ -9,8 +9,8 @@ import { DataRenderBaseComponent } from '../data-render-base/data-render-base.co
 })
 export class SectionsComponent extends DataRenderBaseComponent {
   sections: SectionRendering[] = [];
-  
-  
+
+
 
   protected processData(data: DiagnosticData) {
     super.processData(data);
@@ -21,16 +21,19 @@ export class SectionsComponent extends DataRenderBaseComponent {
     const titleColumn = 0;
     const dataColumn = 1;
     const isExpandColumn = 2;
+
+    if (!table || !table.rows) return;
+
     for (let i = 0; i < table.rows.length; i++) {
       const row = table.rows[i];
-      
+
       const title = row[titleColumn];
       const isExpand = row[isExpandColumn].toLowerCase() === "true";
       const diagnosticDataList = <DiagnosticData[]>JSON.parse(row[dataColumn]);
 
 
       const section = <SectionRendering>{
-        title : title,
+        title: title,
         diagnosticData: diagnosticDataList,
         isExpand: isExpand
       }
