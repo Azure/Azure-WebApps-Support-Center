@@ -81,6 +81,7 @@ export class SiteRiskAlertService extends RiskAlertService {
         title: "Notifications",
         notificationDetectorId: "webappemergingnotification",
         enableForCaseSubmissionFlow: true,
+        showNotification: true,
     };
 
     // This is to show platform level notification that we want to inform customers.
