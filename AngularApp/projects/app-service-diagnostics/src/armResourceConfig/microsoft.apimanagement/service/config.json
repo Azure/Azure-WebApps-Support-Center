@@ -87,7 +87,6 @@
   "notificationConfig": {
     "title": "Notifications",
     "notificationDetectorId": "apim-notification",
-    "enableForCaseSubmissionFlow": true,
-    "showNotification": true
+    "enableForCaseSubmissionFlow": true
   }
 }

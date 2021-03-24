@@ -71,7 +71,7 @@ export class RiskAlertService {
             this.notificationMessageBar
                 =
                 {
-                    showNotification: notificationConfig.showNotification,
+                    showNotification: false,
                     id: notificationConfig.notificationDetectorId,
                     panelTitle: notificationConfig.title,
                     status: HealthStatus.Info,
