@@ -17,6 +17,7 @@ using AppLensV3.Models;
 using Microsoft.ApplicationInsights.Extensibility;
 using AppLensV3.Services.ApplensTelemetryInitializer;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using AppLensV3.Services.AppSvcUxDiagnosticDataService;
 
 namespace AppLensV3
 {
@@ -119,6 +120,8 @@ namespace AppLensV3
             {
                 services.AddTransient<IFilterProvider, LocalFilterProvider>();
             }
+
+            services.AddSingleton<IAppSvcUxDiagnosticDataService, LocationPlacementIdService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

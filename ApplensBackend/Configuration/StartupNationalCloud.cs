@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Logging.AzureAppServices;
+using AppLensV3.Services.AppSvcUxDiagnosticDataService;
 
 namespace AppLensV3.Configuration
 {
@@ -146,6 +147,8 @@ namespace AppLensV3.Configuration
                     setup.Filters.Add(new AllowAnonymousFilter());
                 });
             }
+
+            services.AddSingleton<IAppSvcUxDiagnosticDataService, NullableAppSvcUxDiagnosticDataService>();
         }
 
         public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogger<StartupNationalCloud> logger)

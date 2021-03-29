@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AppLensV3.Services.LocationPlacementIdService
+namespace AppLensV3.Services.AppSvcUxDiagnosticDataService
 {
-    interface ILocationPlacementIdService
+    public interface IAppSvcUxDiagnosticDataService
     {
         Task<string[]> GetLocationPlacementIdAsync(string subscriptionId);
     }
