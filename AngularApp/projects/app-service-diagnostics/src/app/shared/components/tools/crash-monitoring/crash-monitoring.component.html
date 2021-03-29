@@ -37,7 +37,7 @@
                 </span>
                 <div class="mt-1 mb-4" (click)="toggleStorageAccountPanel()"
                   (keyup.enter)="toggleStorageAccountPanel()">
-                  <a role="button" name="Change storage account" aria-label="Change storage account">
+                  <a tabindex="0" role="button" name="Change storage account" aria-label="Change storage account">
                     {{ chosenStorageAccount && (monitoringEnabled || storageConfiguredAsAppSetting) ? 'Change' : 'Select' }}</a>
                 </div>
               </div>
