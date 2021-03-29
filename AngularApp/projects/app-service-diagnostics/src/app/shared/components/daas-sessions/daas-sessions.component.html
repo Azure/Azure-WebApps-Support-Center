@@ -103,7 +103,7 @@
                 </div>
                 <div class="panel-body" *ngIf="session.Expanded">
                     <div>
-                        <div *ngIf="session.DeletingFailure" class="alert alert-danger">
+                        <div *ngIf="session.DeletingFailure" class="alert alert-danger" role="alert">
                             {{ session.DeletingFailure}}
                         </div>
                         <div class="table-responsive">

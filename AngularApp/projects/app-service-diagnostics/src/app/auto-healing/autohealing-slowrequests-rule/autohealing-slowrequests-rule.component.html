@@ -70,7 +70,7 @@
         <input aria-required="true" type="number" id="requestsCountSlow" placeholder="Enter count"
           [(ngModel)]="currentRule.count" min="1" max="4294967295">
         <span style="color:red">*</span>
-        <div *ngIf="currentRule.count <=0" class="alert alert-danger" style="margin-top:5px">
+        <div *ngIf="currentRule.count <=0" class="alert alert-danger" role="alert" style="margin-top:5px" role="alert">
           Request count should be more than zero
         </div>
       </div>
@@ -92,7 +92,7 @@
       </div>
       <div class="col-sm-4">
         <timespan ControlId="durationSlow" [(timeSpan)]="currentRule.timeInterval" placeholder="e.g. 300"></timespan>
-        <div *ngIf="showIntervalRecommendation" class="alert alert-danger" style="margin-top:5px">
+        <div *ngIf="showIntervalRecommendation" class="alert alert-danger" role="alert" style="margin-top:5px" role="alert">
           It is recommended that the time interval is higher than the minimum duration setting.
         </div>
       </div>
@@ -104,7 +104,7 @@
       <div class="col-sm-4">
         <input type="text" aria-required="false" id="requestPath" placeholder="e.g. /default*.aspx"
           [(ngModel)]="currentRule.path">
-          <div *ngIf="!isValidUrlPattern(currentRule.path)" class="alert alert-danger" style="margin-top:5px">
+          <div *ngIf="!isValidUrlPattern(currentRule.path)" class="alert alert-danger" role="alert" style="margin-top:5px" role="alert">
             Path can contain letters, alphabets, asterisk, dashes, period, underscore and forward slashes only
           </div>
       </div>
