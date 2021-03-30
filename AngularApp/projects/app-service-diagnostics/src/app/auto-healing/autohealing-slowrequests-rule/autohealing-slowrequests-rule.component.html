@@ -4,7 +4,7 @@
   a rule to mitigate the issue or collect diagnostic data to identify the root cause of the problem.
 
   <div class="rule-button">
-    <button type="button" class="btn btn-primary btn-sm" (click)="addNewRule()">
+    <button #addRuleButton type="button" class="btn btn-primary btn-sm" (click)="addNewRule()">
       Add Slow Request rule
     </button>
   </div>
@@ -36,8 +36,8 @@
             name="editRuleSlowRequest">
             <i class="fa fa-edit"></i>
           </button>
-          <button role="button" class="image-btn" *ngIf="!editMode" (click)="deleteSingeRule()" title="Delete rule"
-            name="deleteRuleSlowRequest">
+          <button role="button" class="image-btn" *ngIf="!editMode" (click)="deleteSingleRule();addRuleButton.focus()"
+            title="Delete rule" name="deleteRuleSlowRequest">
             <i class="fa fa-trash"></i>
           </button>
         </td>
@@ -52,8 +52,8 @@
             name="editRuleSlowRequestRange">
             <i class="fa fa-edit"></i>
           </button>
-          <button role="button" class="image-btn" *ngIf="!editMode" (click)="deleteSlowRequestRule(i)"
-            title="Delete rule" name="deleteRuleSlowRequest">
+          <button role="button" class="image-btn" *ngIf="!editMode"
+            (click)="deleteSlowRequestRule(i);addRuleButton.focus()" title="Delete rule" name="deleteRuleSlowRequest">
             <i class="fa fa-trash"></i>
           </button>
         </td>
@@ -92,9 +92,6 @@
       </div>
       <div class="col-sm-4">
         <timespan ControlId="durationSlow" [(timeSpan)]="currentRule.timeInterval" placeholder="e.g. 300"></timespan>
-        <div *ngIf="showIntervalRecommendation" class="alert alert-danger" role="alert" style="margin-top:5px" role="alert">
-          It is recommended that the time interval is higher than the minimum duration setting.
-        </div>
       </div>
     </div>
     <div class="row">
@@ -104,15 +101,21 @@
       <div class="col-sm-4">
         <input type="text" aria-required="false" id="requestPath" placeholder="e.g. /default*.aspx"
           [(ngModel)]="currentRule.path">
-          <div *ngIf="!isValidUrlPattern(currentRule.path)" class="alert alert-danger" role="alert" style="margin-top:5px" role="alert">
-            Path can contain letters, alphabets, asterisk, dashes, period, underscore and forward slashes only
-          </div>
+        <div *ngIf="!isValidUrlPattern(currentRule.path)" class="alert alert-danger" role="alert" style="margin-top:5px"
+          role="alert">
+          Path can contain letters, alphabets, asterisk, dashes, period, underscore and forward slashes only
+        </div>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-sm-4">
-        <button type="button" class="btn btn-primary btn-sm" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
+      <div class="col-sm-6">
+        <div *ngIf="showIntervalRecommendation" class="alert alert-danger" role="alert" style="margin-top:5px"
+          role="alert">
+          Time interval should be higher than the minimum duration setting.
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" [disabled]="!isValid()"
+          (click)="saveRule();addRuleButton.focus()">Ok</button>
       </div>
     </div>
   </div>

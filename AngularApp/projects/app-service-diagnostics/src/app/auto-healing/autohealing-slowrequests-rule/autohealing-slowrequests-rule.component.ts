@@ -32,25 +32,21 @@ export class AutohealingSlowrequestsRuleComponent extends AutohealingRuleCompone
   }
 
   isValid(): boolean {
-    this.showIntervalRecommendation = false;
     if (this.currentRule && this.currentRule.timeInterval && this.currentRule.timeInterval !== '' && this.currentRule.timeTaken && this.currentRule.timeTaken != '') {
       let isValid: boolean = this.currentRule.count > 0 && FormatHelper.timespanToSeconds(this.currentRule.timeInterval) > 0 && FormatHelper.timespanToSeconds(this.currentRule.timeTaken) > 0 && this.isValidUrlPattern(this.currentRule.path);
-      if (isValid) {
-        this.showIntervalRecommendation = this.currentRule.timeInterval < this.currentRule.timeTaken
-      }
       return isValid;
     } else {
       return false;
     }
   }
 
-  deleteSingeRule() {
+  deleteSingleRule() {
     this.rule.slowRequests = null;
     this.ruleChange.emit(this.rule);
   }
 
   editSingleRule() {
-    this.currentRule = this.ruleCopy.slowRequests;
+    this.currentRule = this.getClone(this.ruleCopy.slowRequests);
     this.editMode = true;
     this.editingSingleRule = true;
   }
@@ -72,6 +68,12 @@ export class AutohealingSlowrequestsRuleComponent extends AutohealingRuleCompone
   }
 
   saveRule() {
+
+    this.showIntervalRecommendation = this.currentRule.timeInterval < this.currentRule.timeTaken;
+    if (this.showIntervalRecommendation) {
+      return;
+    }
+
     this.editMode = false;
 
     //

@@ -4,7 +4,7 @@
   to identify the root cause of the problem. You can configure rules on more than one HTTP Status code condition.
 
   <div class="rule-button">
-    <button type="button" class="btn btn-primary btn-sm" (click)="addNewRule()">
+    <button type="button" #addRuleButton class="btn btn-primary btn-sm" (click)="addNewRule()">
       Add Status Codes rule
     </button>
   </div>
@@ -48,7 +48,7 @@
           <button class="image-btn" *ngIf="!editMode" (click)="editStatusCodeRule(i)" title="Edit rule" name="editRule">
             <i class="fa fa-edit"></i>
           </button>
-          <button class="image-btn" *ngIf="!editMode" (click)="deleteStatusCodeRule(i)" title="Delete rule"
+          <button class="image-btn" *ngIf="!editMode" (click)="deleteStatusCodeRule(i);addRuleButton.focus()" title="Delete rule"
             name="deleteStatusCodeRule">
             <i class="fa fa-trash"></i>
           </button>
@@ -65,7 +65,7 @@
           <button class="image-btn" *ngIf="!editMode" (click)="editRangeRule(i)" title="Edit rule" name="editRangeRule">
             <i class="fa fa-edit"></i>
           </button>
-          <button class="image-btn" *ngIf="!editMode" (click)="deleteRangeRule(i)" title="Delete rule"
+          <button class="image-btn" *ngIf="!editMode" (click)="deleteRangeRule(i);addRuleButton.focus()" title="Delete rule"
             name="deleteRangeRule">
             <i class="fa fa-trash"></i>
           </button>
@@ -212,7 +212,7 @@
 
     <div class="row">
       <div class="col-sm-4">
-        <button type="button" class="btn btn-primary btn-sm" [disabled]="!isValid()" (click)="saveRule()">Ok</button>
+        <button type="button" class="btn btn-primary btn-sm" [disabled]="!isValid()" (click)="saveRule();addRuleButton.focus()">Ok</button>
       </div>
     </div>
   </div>
