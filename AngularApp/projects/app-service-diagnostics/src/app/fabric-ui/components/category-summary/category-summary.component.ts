@@ -71,11 +71,7 @@ export class CategorySummaryComponent implements OnInit {
       }
 
     public _checkIsWindowsWebApp(): boolean {
-        let isWindowsWebApp = false;
-        if (this._resourceService && this._resourceService instanceof WebSitesService && (this._resourceService as WebSitesService).appType === AppType.WebApp && (this._resourceService as WebSitesService).platform === OperatingSystem.windows) {
-            isWindowsWebApp = true;
-        }
-        return isWindowsWebApp;
+        return this._resourceService && this._resourceService instanceof WebSitesService && (this._resourceService as WebSitesService).appType === AppType.WebApp && (this._resourceService as WebSitesService).platform === OperatingSystem.windows;
     }
 
     constructor(protected _diagnosticApiService: DiagnosticService, private _route: Router, private _injector: Injector, private _activatedRoute: ActivatedRoute, private categoryService: CategoryService,
