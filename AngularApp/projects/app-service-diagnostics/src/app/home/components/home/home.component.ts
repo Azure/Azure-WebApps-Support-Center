@@ -82,7 +82,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.subscriptionId = this._activatedRoute.snapshot.params['subscriptionid'];
         this.versionTestService.isLegacySub.subscribe(isLegacy => this.useLegacy = isLegacy);
         this.versionTestService.initializedPortalVersion.subscribe(v => this.initializedPortalVersion = v);
-        this.resourceName = this._resourceService.resource.name;
+        this.resourceName = this._resourceService.resource ? this._resourceService.resource.name : "";
         let eventProps = {
             subscriptionId: this.subscriptionId,
             resourceName: this.resourceName,
