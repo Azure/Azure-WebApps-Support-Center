@@ -16,6 +16,9 @@ import { filter, tap } from 'rxjs/operators';
 import { PortalActionService } from '../../../shared/services/portal-action.service';
 import { Globals } from '../../../globals';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
+import { WebSitesService } from '../../../resources/web-sites/services/web-sites.service';
+import { AppType } from '../../../shared/models/portal';
+import { OperatingSystem } from '../../../shared/models/site';
 
 @Component({
     selector: 'category-summary',
@@ -66,6 +69,15 @@ export class CategorySummaryComponent implements OnInit {
         const categoryIndex = event.option.key;
         this.selectedCategoryIndex = categoryIndex;
       }
+
+    public _checkIsWindowsWebApp(): boolean {
+        let isWindowsWebApp = false;
+        if (this._resourceService && this._resourceService instanceof WebSitesService && (this._resourceService as WebSitesService).appType === AppType.WebApp && (this._resourceService as WebSitesService).platform === OperatingSystem.windows) {
+            isWindowsWebApp = true;
+        }
+        return isWindowsWebApp;
+    }
+
     constructor(protected _diagnosticApiService: DiagnosticService, private _route: Router, private _injector: Injector, private _activatedRoute: ActivatedRoute, private categoryService: CategoryService,
         private _chatState: CategoryChatStateService, private _genericApiService: GenericApiService
         , private _featureService: FeatureService, protected _authService: AuthService, private _portalActionService: PortalActionService, private globals: Globals, private _telemetryService: TelemetryService,private _resourceService:ResourceService) {
