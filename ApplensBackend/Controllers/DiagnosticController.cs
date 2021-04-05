@@ -39,7 +39,7 @@ namespace AppLensV3.Controllers
     public class DiagnosticController : Controller
     {
         IConfiguration config;
-        private readonly string[] blackListedAscRegions;
+        private readonly string[] forbiddenAscRegions;
         private readonly string forbiddenDiagAscHeaderValue;
 
         private class InvokeHeaders
@@ -63,7 +63,13 @@ namespace AppLensV3.Controllers
             Env = env;
             DiagnosticClient = diagnosticClient;
             EmailNotificationService = emailNotificationService;
-            blackListedAscRegions = configuration.GetValue<string>("BlackListedAscRegions", string.Empty).Replace(" ", string.Empty).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            forbiddenAscRegions = configuration.GetValue<string>("ForbiddenAscRegions", string.Empty).Replace(" ", string.Empty).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            if (!forbiddenAscRegions.Any())
+            {
+                // will remove once production config is updated to use the more racially neutral term `ForbiddenAscRegions`
+                forbiddenAscRegions = configuration.GetValue<string>("BlackListedAscRegions", string.Empty).Replace(" ", string.Empty).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            }
+
             forbiddenDiagAscHeaderValue = configuration.GetValue<string>("DiagAscHeaderValue");
             this.config = configuration;
             this.resourceConfigService = resConfigService;
@@ -221,12 +227,12 @@ namespace AppLensV3.Controllers
         private async Task<string> GetLocationPlacementId(InvokeHeaders invokeHeaders)
         {
 
-            // fetch some subscription details that we log from app service diagnostics into appsvcux cluster
+            // fetch some subscription details that we log from app service diagnostics appsvcux kusto cluster
             var m = Regex.Match(invokeHeaders.Path, @"\/subscriptions\/(.*)\/resourceGroups", RegexOptions.IgnoreCase);
             var subscriptionId = m.Groups.Count >= 2 ? m.Groups[1].Value : null;
 
             Microsoft.Extensions.Primitives.StringValues locationHeaderValue;
-            if (Request.Headers.TryGetValue("x-ms-location", out locationHeaderValue) && blackListedAscRegions.Any(region => locationHeaderValue.Any(value => value.Contains(region))))
+            if (Request.Headers.TryGetValue("x-ms-location", out locationHeaderValue) && forbiddenAscRegions.Any(region => locationHeaderValue.Any(value => value.Contains(region))))
             {
                 try
                 {

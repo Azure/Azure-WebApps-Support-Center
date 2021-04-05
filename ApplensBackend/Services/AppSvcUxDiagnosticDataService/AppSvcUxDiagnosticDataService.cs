@@ -74,7 +74,6 @@ namespace AppLensV3.Services.AppSvcUxDiagnosticDataService
         private async Task<SubscriptionPropertiesDictionary> GetSubscriptionProperties()
         {
             SubscriptionPropertiesDictionary sd = null;
-            Trace.WriteLine("Executed");
             const string _appServiceDiagnosticsLocationPlacementIdQuery = @"
 ClientTelemetryNew
 | project TIMESTAMP, action, actionModifier, data
@@ -107,10 +106,10 @@ ClientTelemetryNew
         {
             public void AddProperty(string subscriptionId, string name, string value)
             {
-                AddOrUpdate(subscriptionId, new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>(name, value) }, (k, v) =>
+                AddOrUpdate(subscriptionId, new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>(name, value) }, (k, propertiesList) =>
                 {
-                    v.Add(new KeyValuePair<string, string>(name, value));
-                    return v;
+                    propertiesList.Add(new KeyValuePair<string, string>(name, value));
+                    return propertiesList;
                 });
             }
 
