@@ -40,7 +40,7 @@ namespace AppLensV3.Controllers
     {
         IConfiguration config;
         private readonly string[] blackListedAscRegions;
-        private readonly string diagAscHeaderValue;
+        private readonly string forbiddenDiagAscHeaderValue;
 
         private class InvokeHeaders
         {
@@ -64,7 +64,7 @@ namespace AppLensV3.Controllers
             DiagnosticClient = diagnosticClient;
             EmailNotificationService = emailNotificationService;
             blackListedAscRegions = configuration.GetValue<string>("BlackListedAscRegions", string.Empty).Replace(" ", string.Empty).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            diagAscHeaderValue = configuration.GetValue<string>("DiagAscHeaderValue");
+            forbiddenDiagAscHeaderValue = configuration.GetValue<string>("DiagAscHeaderValue");
             this.config = configuration;
             AppSvcUxDiagnosticDataService = appSvcUxDiagnosticDataService;
         }
@@ -212,22 +212,25 @@ namespace AppLensV3.Controllers
             {
                 try
                 {
-                    var subscriptionLocationPlacementIdentifiers = await AppSvcUxDiagnosticDataService.GetLocationPlacementIdAsync(subscriptionId);
-                    if (subscriptionLocationPlacementIdentifiers != null && subscriptionLocationPlacementIdentifiers.Any(locationPlacementId => locationPlacementId.Equals(diagAscHeaderValue, StringComparison.CurrentCultureIgnoreCase)))
+                    var subscriptionLocationPlacementIdentifiersTask = AppSvcUxDiagnosticDataService.GetLocationPlacementIdAsync(subscriptionId);
+
+                    // dont block request thread to wait on this.
+                    if (subscriptionLocationPlacementIdentifiersTask != null && subscriptionLocationPlacementIdentifiersTask.IsCompleted)
                     {
-                        return string.Join(",", subscriptionLocationPlacementIdentifiers);
-                    }
-                    else
-                    {
-                        return diagAscHeaderValue;
+                        var subscriptionLocationPlacementIdentifiers = await subscriptionLocationPlacementIdentifiersTask;
+                        if (subscriptionLocationPlacementIdentifiers != null && subscriptionLocationPlacementIdentifiers.All(locationPlacementId => locationPlacementId.Equals(forbiddenDiagAscHeaderValue, StringComparison.CurrentCultureIgnoreCase) == false))
+                        {
+                            return string.Join(",", subscriptionLocationPlacementIdentifiers);
+                        }
                     }
                 }
                 catch (LocationPlacementIdException ex)
                 {
                     // silently ignore
                     Trace.TraceWarning($"Failed to get locationPlacementId subscription information. Defer to fallback method using region approach {ex.Message}");
-                    return diagAscHeaderValue;
                 }
+
+                return forbiddenDiagAscHeaderValue;
             }
 
             return null;

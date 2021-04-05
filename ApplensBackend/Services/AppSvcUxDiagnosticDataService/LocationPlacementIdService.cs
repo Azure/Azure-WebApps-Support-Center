@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace AppLensV3.Services.AppSvcUxDiagnosticDataService
 {
@@ -12,33 +14,46 @@ namespace AppLensV3.Services.AppSvcUxDiagnosticDataService
     {
         private IKustoQueryService _kustoClient;
         private const string _appServiceDiagnosticsLocationPlacementIdQuery = @"";
-        private Task<SubscriptionPropertiesDictionary> subscriptionPropertiesTask;
-        private DateTime lastPersistDate;
+        private Task<SubscriptionPropertiesDictionary> _subscriptionPropertiesTask;
+        private IConfiguration _configuration;
+        private DateTime _lastPersistDate;
+        private static int _fetchingData = 0;
 
         private bool IsStaleData
         {
             get
             {
-                return (DateTime.UtcNow - lastPersistDate) > TimeSpan.FromHours(6);
+                return (DateTime.UtcNow - _lastPersistDate) > TimeSpan.FromMinutes(_configuration.GetValue<int>("LocationPlacementIdService:KustoIntervalInMinutes", 360));
             }
         }
 
-        public LocationPlacementIdService(IKustoQueryService kustoClient)
+        public LocationPlacementIdService(IKustoQueryService kustoClient, IConfiguration configuration)
         {
             _kustoClient = kustoClient;
+            _configuration = configuration;
+            _subscriptionPropertiesTask = GetSubscriptionProperties();
         }
 
         public async Task<string[]> GetLocationPlacementIdAsync(string subscriptionId)
         {
             try
             {
-                if (subscriptionPropertiesTask == null || IsStaleData)
+                if (IsStaleData)
                 {
-                    lastPersistDate = DateTime.UtcNow;
-                    subscriptionPropertiesTask = GetSubscriptionProperties();
+                    if (Interlocked.Exchange(ref _fetchingData, 1) == 0)
+                    {
+                        if (IsStaleData)
+                        {
+                            _lastPersistDate = DateTime.UtcNow;
+                            _subscriptionPropertiesTask = GetSubscriptionProperties();
+                        }
+
+                        //Release the lock
+                        Interlocked.Exchange(ref _fetchingData, 0);
+                    }
                 }
 
-                var sd = await subscriptionPropertiesTask;
+                var sd = await _subscriptionPropertiesTask;
                 string[] locationPlacementIds = null;
                 sd.TryGetProperty(subscriptionId, "locationPlacementId", out locationPlacementIds);
                 return locationPlacementIds;
@@ -49,12 +64,17 @@ namespace AppLensV3.Services.AppSvcUxDiagnosticDataService
             }
         }
 
+        private async Task Initialize()
+        {
+        }
+
         /// <summary>
         /// We log subscripton data in the AppSvcUX cluster from our app service diagnostics codebase.
         /// </summary>
         private async Task<SubscriptionPropertiesDictionary> GetSubscriptionProperties()
         {
             SubscriptionPropertiesDictionary sd = null;
+            Trace.WriteLine("Executed");
             const string _appServiceDiagnosticsLocationPlacementIdQuery = @"
 ClientTelemetryNew
 | project TIMESTAMP, action, actionModifier, data
