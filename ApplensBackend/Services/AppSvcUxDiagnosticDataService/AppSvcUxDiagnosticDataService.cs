@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace AppLensV3.Services.AppSvcUxDiagnosticDataService
 {
-    public class LocationPlacementIdService : IAppSvcUxDiagnosticDataService
+    public class AppSvcUxDiagnosticDataService : IAppSvcUxDiagnosticDataService
     {
         private IKustoQueryService _kustoClient;
         private const string _appServiceDiagnosticsLocationPlacementIdQuery = @"";
@@ -27,7 +27,7 @@ namespace AppLensV3.Services.AppSvcUxDiagnosticDataService
             }
         }
 
-        public LocationPlacementIdService(IKustoQueryService kustoClient, IConfiguration configuration)
+        public AppSvcUxDiagnosticDataService(IKustoQueryService kustoClient, IConfiguration configuration)
         {
             _kustoClient = kustoClient;
             _configuration = configuration;

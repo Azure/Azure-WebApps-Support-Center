@@ -9,7 +9,7 @@ namespace AppLensV3.Services.AppSvcUxDiagnosticDataService
     {
         public Task<string[]> GetLocationPlacementIdAsync(string subscriptionId)
         {
-            return Task.FromResult(new string[0]);
+            return null;
         }
     }
 }

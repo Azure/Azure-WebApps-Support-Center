@@ -123,7 +123,7 @@ namespace AppLensV3
                 services.AddTransient<IFilterProvider, LocalFilterProvider>();
             }
 
-            services.AddSingleton<IAppSvcUxDiagnosticDataService, LocationPlacementIdService>();
+            services.AddSingleton<IAppSvcUxDiagnosticDataService, AppSvcUxDiagnosticDataService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
