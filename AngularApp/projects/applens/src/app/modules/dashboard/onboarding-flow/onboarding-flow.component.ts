@@ -46,6 +46,7 @@ export class OnboardingFlowComponent implements OnInit {
   fileName: string;
   editorOptions: any;
   code: string;
+  originalCode: string;
   reference: object = {};
   configuration: object = {};
   resourceId: string;
@@ -72,6 +73,7 @@ export class OnboardingFlowComponent implements OnInit {
 
   modalPublishingButtonText: string;
   modalPublishingButtonDisabled: boolean;
+  publishAccessControlResponse: any;
 
   alertClass: string;
   alertMessage: string;
@@ -91,7 +93,6 @@ export class OnboardingFlowComponent implements OnInit {
     private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService,
     private _detectorControlService: DetectorControlService, private _adalService: AdalService,
     public ngxSmartModalService: NgxSmartModalService, private _telemetryService: TelemetryService) {
-
     this.editorOptions = {
       theme: 'vs',
       language: 'csharp',
@@ -121,6 +122,7 @@ export class OnboardingFlowComponent implements OnInit {
 
     this.userName = Object.keys(this._adalService.userInfo.profile).length > 0 ? this._adalService.userInfo.profile.upn : '';
     this.emailRecipients = this.userName.replace('@microsoft.com', '');
+    this.publishAccessControlResponse = {};
   }
 
   ngOnInit() {
@@ -345,10 +347,28 @@ export class OnboardingFlowComponent implements OnInit {
       return newDetectorId;
     }
   }
-  confirmPublish() {
-    if (!this.publishButtonDisabled) {
+  
+  checkAccessAndConfirmPublish() {
+
+    var isOriginalCodeMarkedPublic : boolean = this.IsDetectorMarkedPublic(this.originalCode);
+    this.diagnosticApiService.verfifyPublishingDetectorAccess(`${this.resourceService.ArmResource.provider}/${this.resourceService.ArmResource.resourceTypeName}`, this.publishingPackage.codeString, isOriginalCodeMarkedPublic).subscribe(data => {
+
+      this.publishAccessControlResponse = data;
+      if(data.hasAccess === false)
+      {
+        this.ngxSmartModalService.getModal('publishAccessDeniedModal').open();
+      }
+      else
+      {
+        if (!this.publishButtonDisabled) {
+          this.ngxSmartModalService.getModal('publishModal').open();
+        }        
+      }
+      
+    }, err => {
+      this._telemetryService.logEvent("ErrorValidatingPublishingAccess", {error: JSON.stringify(err)});
       this.ngxSmartModalService.getModal('publishModal').open();
-    }
+    });
   }
 
   prepareMetadata() {
@@ -368,8 +388,9 @@ export class OnboardingFlowComponent implements OnInit {
     this.runButtonDisabled = true;
     this.modalPublishingButtonDisabled = true;
     this.modalPublishingButtonText = "Publishing";
-
-    this.diagnosticApiService.publishDetector(this.emailRecipients, this.publishingPackage).subscribe(data => {
+    var isOriginalCodeMarkedPublic : boolean = this.IsDetectorMarkedPublic(this.originalCode);
+    this.diagnosticApiService.publishDetector(this.emailRecipients, this.publishingPackage, `${this.resourceService.ArmResource.provider}/${this.resourceService.ArmResource.resourceTypeName}`, isOriginalCodeMarkedPublic).subscribe(data => {
+      this.originalCode = this.publishingPackage.codeString;
       this.deleteProgress();
       this.utteranceInput = "";
       this.runButtonDisabled = false;
@@ -389,6 +410,14 @@ export class OnboardingFlowComponent implements OnInit {
       this.ngxSmartModalService.getModal('publishModal').close();
       this.showAlertBox('alert-danger', 'Publishing failed. Please try again after some time.');
     });
+  }
+
+  publishingAccessDeniedEmailOwners() {
+    var toList: string = this.publishAccessControlResponse.resourceOwners.join("; ");
+    var subject: string = `[Applens Detector Publish Request] - id: ${this.queryResponse.invocationOutput.metadata.id}, Name: ${this.queryResponse.invocationOutput.metadata.name}`;
+    var body: string = `${this._adalService.userInfo.profile.given_name} - Please attach the detector code file and remove this line. %0D%0A%0D%0AHi,%0D%0AI'd like to update the attached detector at following location:%0D%0A%0D%0A Applens Detector url: ${window.location}`;
+
+    window.open(`mailTo:${toList}?subject=${subject}&body=${body}`, '_blank');
   }
 
   private UpdateConfiguration(queryResponse: QueryResponse<DetectorResponse>) {
@@ -516,6 +545,7 @@ export class OnboardingFlowComponent implements OnInit {
     forkJoin(detectorFile, configuration, this.diagnosticApiService.getGists()).subscribe(res => {
       this.codeLoaded = true;
       this.code = res[0];
+      this.originalCode = this.code;
       if (res[1] !== null) {
         this.gists = Object.keys(this.configuration['dependencies']);
         this.gists.forEach((name, index) => {
@@ -533,5 +563,17 @@ export class OnboardingFlowComponent implements OnInit {
         this.ngxSmartModalService.getModal('devModeModal').open();
       }
     });
+  }
+
+  // Loose way to identify if the detector code is marked public or not
+  // Unfortunately, we dont return this flag in the API response.
+  private IsDetectorMarkedPublic(codeString: string) : boolean {
+    if(codeString)
+    {
+      var trimmedCode = codeString.toLowerCase().replace(/\s/g, "");
+      return trimmedCode.includes('internalonly=false)') || trimmedCode.includes('internalonly:false)');
+    }
+
+    return false;
   }
 }

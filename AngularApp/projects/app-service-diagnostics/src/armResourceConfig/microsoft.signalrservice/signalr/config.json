@@ -1,50 +1,48 @@
 {
     "homePageText": {
         "title": "Azure SignalR Services Diagnostics",
-        "description": "Use Azure SignalR Service Diagnostics to investigate how your service is performing, diagnose issues, and discover how to improve its reliability. Select the problem category that best matches the information or tool that you're interested in:",
+        "description": "Investigate how your service is performing, diagnose issues, and discover how to improve its reliability.",
         "searchBarPlaceHolder": "Search for common problems, tools and more"
     },
 
     "matchRegEx": "/Microsoft.SignalRService/SignalR/",
-    "searchSuffix": "signalr",
+    "searchSuffix": "AZURE SIGNALR SERVICE",
     "azureServiceName": "Azure SignalR Services",
     "armApiConfig": {
-		"armApiVersion": "2020-05-01"
-	},
+        "armApiVersion": "2020-05-01"
+    },
     "isSearchEnabled": true,
-	"keystoneDetectorId": "",
+    "keystoneDetectorId": "",
     "liveChatConfig": {
         "isApplicableForLiveChat": false,
         "supportTopicIds": []
     },
     "categories": [
         {
-            "id": "OverallCheck",
-            "name": "Overall Check",
-            "description": "An overall check run to help quickly identify some possible common issues. ",
-            "keywords": [ "Overall Check" ],
-            "color": "rgb(186, 211, 245)",
-            "createFlowForCategory": false,
-            "chatEnabled": false
-        },
-        {
-            "id": "AvailabilityAndPerformance",
+            "id": "AvailabilityAndPerformanceSignalR",
             "name": "Availability And Performance",
-            "description": "Investigate issues with your azure signalr service. Find out the common causes and investigate in detail. ",
-            "keywords": [ "Config Sever", "App Health", "Availability" ],
+            "description": "Investigate common issues impacting the health of your SignalR Service. ",
+            "keywords": [ "Error Rate", "Maintenance", "Deployment", "SKU", "SDK" ],
             "color": "rgb(186, 211, 245)",
             "createFlowForCategory": false,
-            "chatEnabled": false
+            "chatEnabled": false,
+            "overviewDetectorId": "AvailabilityAndPerformanceOverview"
         },
         {
-            "id": "ResourcesUsage",
+            "id": "ResourcesUsageSignalR",
             "name": "Resources Usage",
-            "description": "Are you trying to figure out your resource usage? You can see your SKU plan and your resource usage here. ",
-            "keywords": [ "Resources" ],
+            "description": "Find out the resource usage on your SignalR Service.",
+            "keywords": [ "Resources", "Connection Count", "Message Count" ],
             "color": "rgb(249, 213, 180)",
             "createFlowForCategory": false,
-            "chatEnabled": false
+            "chatEnabled": false,
+            "overviewDetectorId": "ResourceUsageOverview"
         }
+    ],
+    "quickLinks": [
+        "SignalRChecks",
+        "SignalrSdkVersion",
+        "SignalrMaintenceState"
     ],
     "pesId": "16477"
 }

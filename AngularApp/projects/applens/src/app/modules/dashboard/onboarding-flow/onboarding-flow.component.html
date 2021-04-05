@@ -94,6 +94,41 @@
     </div>
   </ngx-smart-modal>
 
+  <ngx-smart-modal #publishAccessDeniedModal identifier="publishAccessDeniedModal" [customClass]="'wide-modal'" class="publishAccessDenied">
+    <div class="modal-header">
+      <img src="assets/img/access-denied.svg" width="70" height="70" class="modal-logo" />
+      <div class="modal-title-container">
+        <h4 class="modal-title">Access Denied</h4>
+        <span class="modal-sub-title">Unable to Publish Public Detectors</span>
+      </div>
+    </div>
+    <div class="modal-content">
+     
+      <div class="content-row">
+        <span>
+          The following team has restricted access to publish public-facing detectors. 
+          <br />
+          Please reach out to the owners in case you want to publish your changes for this detector.    
+        </span>    
+        <li class="bullet-point">
+          <span>{{publishAccessControlResponse.serviceName}}</span>
+          <span style="color: rgb(95, 95, 95);">  ({{publishAccessControlResponse.resourceType}})</span>
+        </li>
+      </div>
+
+      <div class="content-row">
+        You need to be part of following group(s):
+        <li *ngFor="let item of publishAccessControlResponse.allowedGroupsToPublish" class="bullet-point">
+          <span>{{item}}</span>
+        </li>
+      </div>
+
+      <div class="content-row">
+        <button type="button" class="btn btn-primary" (click)="publishingAccessDeniedEmailOwners()">Email Owners</button>
+      </div> 
+    </div>
+  </ngx-smart-modal>
+
   <div *ngIf="showAlert" class="alert alert-container" [ngClass]="alertClass" role="alert">
     {{alertMessage}}
   </div>
@@ -112,7 +147,7 @@
                 {{fileName}}
               </div>
 
-              <div (click)="confirmPublish()" class="action-button publish-button"
+              <div (click)="checkAccessAndConfirmPublish()" class="action-button publish-button"
                 [class.disabled]="publishButtonDisabled">
                 <i class="fa fa-cloud-upload"></i>
                 {{publishButtonText}}

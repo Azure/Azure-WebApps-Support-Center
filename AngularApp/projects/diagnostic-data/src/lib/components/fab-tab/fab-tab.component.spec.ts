@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Asev3CustomViewComponent } from './asev3-custom-view.component';
+import { FabTabComponent } from './fab-tab.component';
 
-describe('Asev3CustomViewComponent', () => {
-  let component: Asev3CustomViewComponent;
-  let fixture: ComponentFixture<Asev3CustomViewComponent>;
+describe('FabTabComponent', () => {
+  let component: FabTabComponent;
+  let fixture: ComponentFixture<FabTabComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ Asev3CustomViewComponent ]
+      declarations: [ FabTabComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(Asev3CustomViewComponent);
+    fixture = TestBed.createComponent(FabTabComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

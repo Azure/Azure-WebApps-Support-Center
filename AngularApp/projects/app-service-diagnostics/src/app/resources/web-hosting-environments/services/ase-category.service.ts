@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Category } from '../../../shared-v2/models/category';
 import { CategoryService } from '../../../shared-v2/services/category.service';
-import { WebHostingEnvironmentsService } from './web-hosting-environments.service';
 
 @Injectable()
 export class AseCategoryService extends CategoryService {
+
   private _aseCategories: Category[] = [
     {
         id: 'Networking',
@@ -28,17 +28,8 @@ export class AseCategoryService extends CategoryService {
     }
   ];
 
-  constructor(private _resourceService: WebHostingEnvironmentsService) {
+  constructor() {
     super();
-    this._resourceService.getAseVersion().subscribe((aseVersion) => {
-        if (aseVersion.toLowerCase() === "asev3")
-        {
-            this._aseCategories.forEach((aseCategory) => {
-                aseCategory.overridePath = `resource${this._resourceService.resourceIdForRouting}/categoriesv3/${aseCategory.id}/Asev3Customview`;
-            })
-        }
-    });
-
     this._addCategories(this._aseCategories);
   }
 }

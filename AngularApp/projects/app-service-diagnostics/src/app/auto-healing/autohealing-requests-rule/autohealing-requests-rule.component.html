@@ -49,7 +49,7 @@
     <div class="col-sm-4">
       <input aria-required="true" type="number" id="requestCount" placeholder="Enter count" [(ngModel)]="ruleCopy.count" min="1" max="4294967295">
       <span style="color:red">*</span>
-      <div *ngIf="ruleCopy.count <=0" class="alert alert-danger" style="margin-top:5px">
+      <div *ngIf="ruleCopy.count <=0" class="alert alert-danger" role="alert" style="margin-top:5px">
         Request count should be more than zero
       </div>
     </div>

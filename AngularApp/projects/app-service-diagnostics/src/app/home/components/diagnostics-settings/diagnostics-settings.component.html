@@ -30,7 +30,7 @@
             <span class="fa insight-expand-icon" [class.fa-angle-right]="hasContent() && !isExpanded"
               [class.fa-angle-down]="hasContent() && isExpanded" (click)="isExpanded = !isExpanded"></span>
               <i class="asp-icon"></i>
-            {{servicePlan.name ? servicePlan.name : ''}} 
+            {{servicePlan && servicePlan.name ? servicePlan.name : ''}}
           </th>
           <td>App Service Plan</td>
           <td>{{servicePlan.properties.resourceGroup}}</td>

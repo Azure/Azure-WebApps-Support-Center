@@ -158,14 +158,33 @@ export class DiagnosticApiService {
     return this._cacheService.get(this.getCacheKey(method, path), request, true);
   }
 
-  public publishPackage(resourceId: string, emailRecipients: string, packageToPublish: Package): Observable<any> {
+  public  verfifyPublishingDetectorAccess(resourceType: string, detectorCode: string, isOriginalCodeMarkedPublic: boolean) : Observable<any> {
+    let url: string = `${this.diagnosticApi}api/publishingaccess`;
+    var body = 
+    {
+      'resourceType': resourceType,
+      'codeString': detectorCode,
+      'isOriginalCodeMarkedPublic': isOriginalCodeMarkedPublic
+    };
+
+    return this._httpClient.post(url, body, {
+      headers: this._getHeaders()
+    });
+  }
+
+
+  public publishPackage(resourceId: string, emailRecipients: string, packageToPublish: Package, resourceType: string, isOriginalCodeMarkedPublic: boolean): Observable<any> {
     let path = `${resourceId}/diagnostics/publish`;
     var modifiedByAlias = this._adalService.userInfo.profile ? this._adalService.userInfo.profile.upn : 'user';
     modifiedByAlias = modifiedByAlias.replace('@microsoft.com', '');
     let additionalHeaders = new Map<string, string>();
     additionalHeaders.set('x-ms-modifiedBy', modifiedByAlias);
     additionalHeaders.set('x-ms-emailRecipients', emailRecipients);
-    return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true, true, true, false, additionalHeaders);
+
+    var body = packageToPublish;
+    body['resourceType'] = resourceType;
+    body['isOriginalCodeMarkedPublic'] = isOriginalCodeMarkedPublic;
+    return this.invoke<any>(path, HttpMethod.POST, body, false, true, true, true, false, additionalHeaders);
   }
 
   public getChangelist(id: string): Observable<any> {

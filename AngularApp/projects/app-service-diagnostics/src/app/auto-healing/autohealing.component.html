@@ -41,7 +41,7 @@
         Retrieving autoHealing settings...
       </div>
 
-      <div *ngIf="errorMessage" class="alert alert-danger" style="margin-top:5px">
+      <div *ngIf="errorMessage" class="alert alert-danger" role="alert" style="margin-top:5px">
         {{ errorMessage }}
       </div>
 
@@ -177,7 +177,7 @@
           <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
           Saving AutoHeal settings...
         </div>
-        <div *ngIf="errorMessageSaving" class="alert alert-danger" style="margin-top:5px">
+        <div *ngIf="errorMessageSaving" class="alert alert-danger" role="alert" style="margin-top:5px">
           {{ errorMessageSaving }}
         </div>
         <div *ngIf="changesSaved" class="inline" style="color:#0058ad">

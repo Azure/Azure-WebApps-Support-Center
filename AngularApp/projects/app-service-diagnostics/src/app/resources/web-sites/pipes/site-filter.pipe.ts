@@ -28,7 +28,9 @@ export class WebSiteFilter implements PipeTransform {
         if (item.title && this.tempArray.indexOf(item.title) > -1) {
             return true;
         }
+
         this.tempArray.push(item.title);
+
         return false;
     }
 }

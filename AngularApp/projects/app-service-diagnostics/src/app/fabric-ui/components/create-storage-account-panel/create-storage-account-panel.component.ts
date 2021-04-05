@@ -61,16 +61,25 @@ export class CreateStorageAccountPanelComponent implements OnInit {
           this.subscriptionName = subscriptionResponse.displayName;
         }
       });
-      this._storageService.getStorageAccounts(this.siteToBeDiagnosed.subscriptionId).subscribe(resp => {
-        this.loadingStroageAccounts = false;
-        let storageAccounts = resp;
-        this.initStorageAccounts(storageAccounts, this.getSiteLocation());
+      this._siteService.currentSite.subscribe(currentSite => {
+        let location = currentSite.location;
+        let siteName = currentSite.name;
+
+        this._storageService.getStorageAccounts(this.siteToBeDiagnosed.subscriptionId).subscribe(resp => {
+          this.loadingStroageAccounts = false;
+          let storageAccounts = resp;
+          this.initStorageAccounts(storageAccounts, this.getSiteLocation(location));
+        },
+          error => {
+            this.errorMessage = "Failed to retrieve storage accounts";
+            this.error = error;
+          });
+        this.newStorageAccountName = this._storageService.getNewStorageAccoutName(siteName);
       },
         error => {
-          this.errorMessage = "Failed to retrieve storage accounts";
+          this.errorMessage = "Failed to retrieve information about site. Please retry";
           this.error = error;
         });
-      this.newStorageAccountName = this._storageService.getNewStorageAccoutName(this._siteService.currentSiteStatic.name);
     });
   }
 
@@ -99,8 +108,7 @@ export class CreateStorageAccountPanelComponent implements OnInit {
     }
   }
 
-  getSiteLocation() {
-    let location = this._siteService.currentSiteStatic.location;
+  getSiteLocation(location: string): string {
     location = location.replace(/\s/g, "").toLowerCase();
     return location;
   }

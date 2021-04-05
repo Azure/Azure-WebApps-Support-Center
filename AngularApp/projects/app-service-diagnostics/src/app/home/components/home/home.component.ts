@@ -1,4 +1,4 @@
-import { DetectorControlService, FeatureNavigationService, DetectorResponse, TelemetryEventNames, ResourceDescriptor, TelemetrySource } from 'diagnostic-data';
+import { DetectorControlService, FeatureNavigationService, DetectorResponse, TelemetryEventNames, ResourceDescriptor, TelemetrySource, LoadingStatus } from 'diagnostic-data';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from '../../../shared-v2/models/category';
@@ -7,7 +7,7 @@ import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
 import { NotificationService } from '../../../shared-v2/services/notification.service';
 import { ResourceService } from '../../../shared-v2/services/resource.service';
-import { HomePageText } from '../../../shared/models/arm/armResourceConfig';
+import { HomePageText, RiskAlertConfig } from '../../../shared/models/arm/armResourceConfig';
 import { ArmService } from '../../../shared/services/arm.service';
 import { AuthService } from '../../../startup/services/auth.service';
 import { TelemetryService } from 'diagnostic-data';
@@ -17,13 +17,15 @@ import { DiagnosticService } from 'diagnostic-data';
 import { HttpResponse } from '@angular/common/http';
 import { Globals } from '../../../globals';
 import { PortalActionService } from '../../../shared/services/portal-action.service';
-import { VersionTestService } from '../../../fabric-ui/version-test.service';
+import { allowV3PResourceTypeList, VersionTestService } from '../../../fabric-ui/version-test.service';
 import { SubscriptionPropertiesService } from '../../../shared/services/subscription-properties.service';
 import { Feature } from '../../../shared-v2/models/features';
 import { QuickLinkService } from '../../../shared-v2/services/quick-link.service';
 import { delay, map } from 'rxjs/operators';
 import { RiskHelper, RiskTile } from '../../models/risk';
 import { OperatingSystem } from '../../../shared/models/site';
+import { RiskAlertService } from '../../../shared-v2/services/risk-alert.service';
+import { mergeMap } from 'rxjs-compat/operator/mergeMap';
 
 @Component({
     selector: 'home',
@@ -44,9 +46,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
     searchPlaceHolder: string;
     providerRegisterUrl: string;
     quickLinkFeatures: Feature[] = [];
-    risks: RiskTile[] = [];
+    riskAlertNotifications: {} = {};
+    risksPanelContents={};
+    currentRiskPanelContentId: string = null;
+    riskAlertConfigs: RiskAlertConfig[];
     loadingQuickLinks: boolean = true;
     showRiskSection: boolean = true;
+    private _showSwitchBanner: boolean = false;
+    get showSwitchBanner():boolean {
+        const typeSwitchItem = allowV3PResourceTypeList.find(item => this._resourceService.resource.type.toLowerCase() === item.type.toLowerCase());
+        const allowResourceTypeSwitch = typeSwitchItem === undefined ? false : typeSwitchItem.allowSwitchBack;
+        return allowResourceTypeSwitch && this._showSwitchBanner;
+    }
+    initializedPortalVersion = 'v3';
     get inputAriaLabel(): string {
         return this.searchValue !== '' ?
             `${this.searchResultCount} Result` + (this.searchResultCount !== 1 ? 's' : '') :
@@ -64,12 +76,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
     constructor(private _resourceService: ResourceService, private _categoryService: CategoryService, private _notificationService: NotificationService, private _router: Router,
         private _detectorControlService: DetectorControlService, private _featureService: FeatureService, private _logger: LoggingV2Service, private _authService: AuthService,
         private _navigator: FeatureNavigationService, private _activatedRoute: ActivatedRoute, private armService: ArmService, private _telemetryService: TelemetryService, private _diagnosticService: DiagnosticService, private _portalService: PortalActionService, private globals: Globals,
-        private versionTestService: VersionTestService, private subscriptionPropertiesService: SubscriptionPropertiesService, private _quickLinkService: QuickLinkService) {
+        private versionTestService: VersionTestService, private subscriptionPropertiesService: SubscriptionPropertiesService, private _quickLinkService: QuickLinkService, private _riskAlertService: RiskAlertService) {
 
         this.subscriptionId = this._activatedRoute.snapshot.params['subscriptionid'];
         this.versionTestService.isLegacySub.subscribe(isLegacy => this.useLegacy = isLegacy);
-        
-        this.resourceName = this._resourceService.resource.name;
+        this.versionTestService.initializedPortalVersion.subscribe(v => this.initializedPortalVersion = v);
+        this.resourceName = this._resourceService.resource ? this._resourceService.resource.name : "";
         let eventProps = {
             subscriptionId: this.subscriptionId,
             resourceName: this.resourceName,
@@ -80,6 +92,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             && _resourceService.armResourceConfig.homePageText.title && _resourceService.armResourceConfig.homePageText.title.length > 1
             && _resourceService.armResourceConfig.homePageText.description && _resourceService.armResourceConfig.homePageText.description.length > 1
             && _resourceService.armResourceConfig.homePageText.searchBarPlaceHolder && _resourceService.armResourceConfig.homePageText.searchBarPlaceHolder.length > 1) {
+            this._showSwitchBanner = true;
             this.homePageText = _resourceService.armResourceConfig.homePageText;
             this.searchPlaceHolder = this.homePageText.searchBarPlaceHolder;
         }
@@ -125,6 +138,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         if (_resourceService.armResourceConfig) {
             this._categoryService.initCategoriesForArmResource(_resourceService.resource.id);
             this._quickLinkService.initQuickLinksForArmResource(_resourceService.resource.id);
+            this._riskAlertService.initRiskAlertsForArmResource(_resourceService.resource.id);
         }
 
         this._categoryService.categories.subscribe(categories => this.categories = categories);
@@ -147,7 +161,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 }
             });
         })
-    }
+        }
 
     ngOnInit() {
         this.providerRegisterUrl = `/subscriptions/${this.subscriptionId}/providers/Microsoft.ChangeAnalysis/register`;
@@ -189,8 +203,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this._detectorControlService.setDefault();
         }
 
-        this._initializeRiskTiles();
+        this._riskAlertService.getRiskAlertNotificationResponse().subscribe(()=>
+        {
+            this._riskAlertService.riskPanelContentsSub.next(this._riskAlertService.risksPanelContents);
+        });
 
+        this.riskAlertNotifications = this._riskAlertService.riskAlertNotifications;
+        this.riskAlertConfigs = this._riskAlertService.riskAlertConfigs;
+        this.showRiskSection = this._isRiskAlertEnabled();
         this._telemetryService.logEvent("telemetry service logging", {});
     };
 
@@ -274,32 +294,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this._telemetryService.logTrace('HTTP error in ' + methodName, errorLoggingProps);
     }
 
-    private _initializeRiskTiles() {
-        this.risks = [
-            {
-                title: "Availability",
-                action: () => {
-                    this.globals.openRiskAlertsPanel = true;
-                    this._telemetryService.logEvent(TelemetryEventNames.OpenRiskAlertPanel,{
-                        "Location" : TelemetrySource.LandingPage
-                    });
-                },
-                linkText: "Click here to view more details",
-                infoObserverable: this.globals.reliabilityChecksDetailsBehaviorSubject.pipe(map(info => RiskHelper.convertToRiskInfo(info))),
-                showTile: this._checkIsWindowsWebApp()
-            }
-        ];
-
-        //Only show risk section if at least one tile will display
-        this.showRiskSection = this.risks.findIndex(risk => risk.showTile === true) > -1;
-    }
-
     private _checkIsWindowsWebApp(): boolean {
         let isWindowsWebApp = false;
         if (this._resourceService && this._resourceService instanceof WebSitesService && (this._resourceService as WebSitesService).appType === AppType.WebApp && (this._resourceService as WebSitesService).platform === OperatingSystem.windows) {
             isWindowsWebApp = true;
         }
         return isWindowsWebApp;
+    }
+
+    private _isRiskAlertEnabled(): boolean {
+        return this.riskAlertConfigs != null && this.riskAlertConfigs.length > 0;
     }
 
     private _filterFeaturesWithQuickLinks(quickLinks: string[], features: Feature[]): Feature[] {
@@ -339,7 +343,23 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this._telemetryService.logEvent(TelemetryEventNames.RefreshClicked,{
             'Location': TelemetrySource.LandingPage
         });
-        this._resourceService.updateRiskAlertResult();
+
+      this._riskAlertService.getRiskAlertNotificationResponse(false, true).subscribe(()=>
+      {
+          this._riskAlertService.riskPanelContentsSub.next(this._riskAlertService.risksPanelContents);
+          this._riskAlertService.isRiskTileRefreshing.next(false);
+      });
+    }
+
+    switchView() {
+        this.useLegacy = !this.useLegacy;
+        this.versionTestService.setLegacyFlag(this.useLegacy === true ? 1 : 2);
+        let eventProps = {
+            subscriptionId: this.subscriptionId,
+            resourceName: this.resourceName,
+            switchToLegacy: this.useLegacy.toString(),
+        };
+        this._telemetryService.logEvent('SwitchView',eventProps);
     }
 }
 

@@ -1,8 +1,8 @@
 <div *ngIf="showComponent">
     <div style="display: flex; font-size: 25px;">
         <div *ngFor="let feedbackIcon of feedbackIcons;let i = index" (click)="setRating(i)"
-            [ngClass]="{'selected-icon':rating - 1 === i}" style="padding: 5px;">
-            <fab-icon [iconName]="feedbackIcon"></fab-icon>
+            [ngClass]="{'selected-icon':rating - 1 === i}" style="padding: 5px;" (keyup.enter)="setRating(i)" tabindex="0">
+            <fab-icon [iconName]="feedbackIcon.id" [ariaLabel]="feedbackIcon.text"></fab-icon>
         </div>
     </div>
     <div class="row" [ngClass]="{'animated fadeOut': showComponent === false}"

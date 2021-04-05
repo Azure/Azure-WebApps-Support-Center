@@ -305,7 +305,7 @@
             "imgSrc": "assets/img/Azure-SignalRService-Logo.svg",
             "versionPrefix": "",
             "azureCommImpactedServicesList": "SignalRService",
-            "pesId": "",
+            "pesId": "16477",
             "staticSelfHelpContent": "",
             "searchSuffix": "AZURE SIGNAL SERVICE"
         },
@@ -358,6 +358,16 @@
              "imgSrc": "assets/img/StaticSites-Logo.svg",  
              "versionPrefix": "",  
              "azureCommImpactedServicesList": "staticSites"  
+         },
+        { 
+             "service": "ResourceService",  
+             "resourceType": "Microsoft.DocumentDB/databaseAccounts",  
+             "templateFileName": "CosmosDB",  
+             "imgSrc": "assets/img/CosmosDB-Logo.svg",  
+             "versionPrefix": "",  
+             "pesId": "15585",
+             "staticSelfHelpContent": "microsoft.cosmosdb",
+             "azureCommImpactedServicesList": "Azure Cosmos DB"  
          }
     ]
 }

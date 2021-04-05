@@ -21,7 +21,7 @@ export class DiagosticSessionsPanelComponent implements OnInit {
       this.siteToBeDiagnosed = site;
     });
 
-    this.scmPath = this.webSiteService.resource.properties.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
+    this.scmPath = this.webSiteService.resource ? this.webSiteService.resource.properties.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0) : "";
   }
 
   ngOnInit() {

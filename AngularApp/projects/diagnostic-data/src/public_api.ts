@@ -31,6 +31,7 @@ export * from './lib/components/fab-nav/fab-nav.module';
 export * from './lib/models/detector';
 export * from './lib/models/insight';
 export * from './lib/models/keystone';
+export * from './lib/models/notification';
 export * from './lib/models/loading';
 export * from './lib/models/communication';
 export * from './lib/models/compiler-response';

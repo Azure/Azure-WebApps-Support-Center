@@ -15,7 +15,7 @@ using Microsoft.Extensions.Caching.Memory;
 namespace AppLensV3.Controllers
 {
     [Route("api/icm/")]
-    [Authorize(Policy = "ApplensAccess")]
+    [Authorize(Policy = "DefaultAccess")]
     public class IncidentAssistanceController : Controller
     {
         private readonly IIncidentAssistanceService _incidentAssistanceService;

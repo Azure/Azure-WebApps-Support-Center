@@ -12,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
 using AppLensV3.Authorization;
 using System.Collections.Generic;
-using AppLensV3.Services.CosmosDBHandler;
 using AppLensV3.Models;
 using Microsoft.ApplicationInsights.Extensibility;
 using AppLensV3.Services.ApplensTelemetryInitializer;
@@ -40,6 +39,7 @@ namespace AppLensV3
         }
 
         public IConfiguration Configuration { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -65,7 +65,9 @@ namespace AppLensV3
             services.AddSingleton<ISelfHelpContentService, SelfHelpContentService>();
             services.AddSingleton<IFreshChatClientService, FreshChatClientService>();
             services.AddSingleton<ICosmosDBHandler<TemporaryAccessUser>, CosmosDBHandler<TemporaryAccessUser>>();
+            services.AddSingleton<ICosmosDBHandler<ResourceConfig>, CosmosDBHandler<ResourceConfig>>();
             services.AddSingleton<IIncidentAssistanceService, IncidentAssistanceService>();
+            services.AddSingleton<IResourceConfigService, ResourceConfigService>();
 
             services.AddMemoryCache();
             services.AddMvc();

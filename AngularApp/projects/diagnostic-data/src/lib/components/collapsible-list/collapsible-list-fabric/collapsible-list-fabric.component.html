@@ -1,5 +1,5 @@
 <div *ngIf="title" class="row collapsable-list">
-  <button class="btn-outer" [attr.aria-expanded]="collapsed ?'false':'true'" (click)="collapsed = !collapsed"
+  <button class="btn-outer" [attr.aria-expanded]="collapsed ?'false':'true'" (click)="clickHandler()"
     class="list-header">
     <span class="btn-inner" tabindex="-1">
       <div style="float:left" class="custom-caret" [class.custom-caret-down]="collapsed">

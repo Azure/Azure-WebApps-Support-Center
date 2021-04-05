@@ -69,8 +69,8 @@
   </div>
 
 
-  <div *ngFor="let data of detectorDataLocalCopy.dataset  | renderfilter:isAnalysisView" class="dynamic-data-container">
-    <dynamic-data [isAnalysisView]="isAnalysisView" [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime"
+  <div *ngFor="let data of detectorDataLocalCopy.dataset  | renderfilter:isAnalysisView" [ngClass]="{'dynamic-data-container': !isRiskAlertDetector}">
+    <dynamic-data [isRiskAlertDetector]="isRiskAlertDetector" [isAnalysisView]="isAnalysisView" [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime"
       [detectorEventProperties]="detectorEventProperties" [developmentMode]="developmentMode" [executionScript]="script"
       [detector]="detector" [xAxisPlotBands]="xAxisPlotBands" [zoomBehavior]="zoomBehavior"
       (XAxisSelection)="onXAxisSelection($event)" [compilationPackage]="compilationPackage"></dynamic-data>

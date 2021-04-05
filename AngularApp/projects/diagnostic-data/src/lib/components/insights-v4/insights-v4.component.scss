@@ -118,7 +118,7 @@ td {
 .tooltip::after {
   content: " ";
   width: 0;
-  height: 0;  
+  height: 0;
   border-style: solid;
   border-width: 12px 12.5px 0 12.5px;
   border-color: #333 transparent transparent transparent;
@@ -135,11 +135,11 @@ td {
 }
 @keyframes tooltipmove {
   0%{
-    transform: translateY(6px);	
+    transform: translateY(6px);
   }
 
   100%{
-    transform: translateY(1px);	
+    transform: translateY(1px);
   }
 
 }

@@ -33,6 +33,7 @@ export class ArmService {
     private readonly routeToLiberation = '2';
     private readonly routeToDiagnosticRole = '1';
     private armEndpoint: string = '';
+    private isInCaseSubmissionFlow = false;
     constructor(private _http: HttpClient, private _authService: AuthService, private _cache: CacheService, private _router: Router, private _genericArmConfigService?: GenericArmConfigService,
         private telemetryService?: PortalKustoTelemetryService) {
         this._authService.getStartupInfo().subscribe((startupInfo: StartupInfo) => {
@@ -42,6 +43,7 @@ export class ArmService {
             let resourceId = startupInfo.resourceId;
             let subscriptionId = resourceId.split('/')[2];
             this.diagRoleVersion = this.routeToLiberation;
+            this.isInCaseSubmissionFlow = startupInfo && startupInfo.source !== undefined && startupInfo.source.toLowerCase() === ("CaseSubmissionV2-NonContext").toLowerCase();
         });
     }
 
@@ -121,16 +123,20 @@ export class ArmService {
     }
 
     createUrl(resourceUri: string, apiVersion?: string) {
-        if(!resourceUri || resourceUri === "/"){
-            throw new Error("Empty ResourceUri for ARM Call");
-        }
-
         const uri = `${this.armUrl}${resourceUri}${resourceUri.indexOf('?') >= 0 ? '&' : '?'}` +
         `api-version=${this.getApiVersion(resourceUri, apiVersion)}`
         
         //Temporary solution for checking dependency call for missing api version exception, will remove after resolve exception
         const exceptionUri = "management.azure.com/?clientOptimizations=undefined&l=en.en-us&trustedAuthority=https:%2F%2Fportal.azure.com&shellVersion=undefined#";
         if(uri.includes(exceptionUri)){
+            if(this.telemetryService){
+                this.telemetryService.logEvent("MissingApiVersionParameter",{
+                    "resourceUri": resourceUri,
+                    "uri": uri,
+                    "armUrl": this.armUrl,
+                    "isInCaseSubmissionFlow" : `${this.isInCaseSubmissionFlow}` 
+                });
+            }
             throw new Error("ARM Call Cause MissingApiVersionParameter Exception");
         }
 

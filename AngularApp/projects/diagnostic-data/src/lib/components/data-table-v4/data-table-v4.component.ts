@@ -1,9 +1,12 @@
 import { Component, ViewChild, AfterContentInit, TemplateRef, OnInit, AfterViewInit } from '@angular/core';
-import { DiagnosticData, DataTableRendering } from '../../models/detector';
+import { DiagnosticData, DataTableRendering, TableFilter, TableFilterSelectionOption, TableColumnOption } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { SelectionMode, IColumn, IListProps, ISelection, Selection, IStyle, DetailsListLayoutMode } from 'office-ui-fabric-react';
+import { SelectionMode, IColumn, IListProps, ISelection, Selection, IStyle, DetailsListLayoutMode, ICalloutProps } from 'office-ui-fabric-react';
 import { FabDetailsListComponent } from '@angular-react/fabric';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
+
+const columnMinWidth: number = 100;
+const columnMaxWidth: number = 250;
 
 @Component({
   selector: 'data-table-v4',
@@ -16,6 +19,18 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   }
 
   ngAfterContentInit() {
+    if (this.renderingProperties.columnOptions && this.renderingProperties.columnOptions.length > 0) {
+      this.renderingProperties.columnOptions.forEach((option) => {
+        if (this.validateFilterOption(option)) {
+          this.tableFilters.push({ columnName: option.name, selectionOption: option.selectionOption });
+        }
+      });
+
+      for (const filter of this.tableFilters) {
+        this.filtersMap.set(filter.columnName, new Set<string>());
+      }
+    }
+
     this.createFabricDataTableObjects();
 
     this.fabDetailsList.selectionMode = this.renderingProperties.descriptionColumnName ? SelectionMode.single : SelectionMode.none;
@@ -64,7 +79,8 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       } else if (selectionCount === 1) {
         const row = this.selection.getSelection()[0];
         if (this.renderingProperties.descriptionColumnName) {
-          this.selectionText = row[this.renderingProperties.descriptionColumnName];
+          const selectionText = row[this.renderingProperties.descriptionColumnName];
+          this.selectionText = selectionText !== undefined ? selectionText : "";
         }
       }
     }
@@ -79,6 +95,13 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   searchTimeout: any;
   searchAriaLabel = "Filter by all columns";
   heightThreshold = window.innerHeight * 0.5;
+  tableFilters: TableFilter[] = [];
+  searchValue: string = "";
+  tableId: number = Math.floor(Math.random() * 100);
+  //All options for filters to display
+  filtersMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+  //Options that selected by each filter
+  filterSelectionMap: Map<string, Set<string>> = new Map<string, Set<string>>();
   @ViewChild(FabDetailsListComponent, { static: true }) fabDetailsList: FabDetailsListComponent;
   @ViewChild('emptyTableFooter', { static: true }) emptyTableFooter: TemplateRef<any>
   protected processData(data: DiagnosticData) {
@@ -96,18 +119,23 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
         isSorted: false,
         isResizable: true,
         isMultiline: true,
-        minWidth: 100,
-        maxWidth: 250
+        minWidth: this.getMinOrMaxColumnWidth(column.columnName, true),
+        maxWidth: this.getMinOrMaxColumnWidth(column.columnName, false),
       });
 
-    this.columns = columns.filter((item) => item.name !== this.renderingProperties.descriptionColumnName);
+    this.columns = columns.filter((item) => item.name !== this.renderingProperties.descriptionColumnName && this.checkColumIsVisible(item.name));
     this.rows = [];
 
     this.diagnosticData.table.rows.forEach(row => {
       const rowObject: any = {};
 
       for (let i: number = 0; i < this.diagnosticData.table.columns.length; i++) {
-        rowObject[this.diagnosticData.table.columns[i].columnName] = row[i];
+        const columnName = this.diagnosticData.table.columns[i].columnName
+        rowObject[columnName] = row[i];
+
+        if (this.filtersMap.has(columnName)) {
+          this.filtersMap.get(columnName).add(row[i]);
+        }
       }
 
       this.rows.push(rowObject);
@@ -117,8 +145,33 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   }
 
 
-  //For now use one search bar for all columns 
-  updateFilter(e: { event: Event, newValue?: string }) {
+  updateTable() {
+    //For single search bar
+    const temp = [];
+    for (const row of this.rowsClone) {
+      if (this.checkRowWithSearchValue(row) && this.checkRowForFilter(row)) {
+        temp.push(row);
+      }
+    }
+    this.rows = temp;
+    //Update rows order with column sorting
+    const column = this.columns.find(col => col.isSorted === true);
+    if (column) {
+      this.sortColumn(column, column.isSortedDescending);
+    }
+  }
+
+  checkRowWithSearchValue(row: any): boolean {
+    for (const col of this.columns) {
+      const cellValue: string = row[col.name].toString();
+      if (cellValue.toString().toLowerCase().indexOf(this.searchValue.toLowerCase()) !== -1) return true;
+    }
+    return false;
+  }
+
+  updateTableBySearch(e: { event: Event, newValue?: string }) {
+    // this.searchValue = e.newValue.toLowerCase();
+    this.searchValue = e.newValue;
     const val = e.newValue.toLowerCase();
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
@@ -128,23 +181,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
         'SearchValue': val
       });
     }, 5000);
-
-    //For single search bar
-    const temp = [];
-    for (const row of this.rowsClone) {
-      for (const col of this.columns) {
-        const cellValue: string = row[col.name].toString();
-        if (cellValue.toString().toLowerCase().indexOf(val) !== -1) {
-          temp.push(row);
-        }
-      }
-    }
-    this.rows = temp;
-    //Update rows order with column sorting
-    const column = this.columns.find(col => col.isSorted === true);
-    if (column) {
-      this.sortColumn(column, column.isSortedDescending);
-    }
+    this.updateTable();
   }
 
   clickColumn(e: { ev: Event, column: IColumn }) {
@@ -176,6 +213,63 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
 
   estimateTableHeight(): number {
     return 25 * this.rowsClone.length;
+  }
+
+  getOptionsWithColName(name: string): string[] {
+    const optionSet = this.filtersMap.get(name);
+    return Array.from(optionSet);
+  }
+
+  updateFilter(name: string, options: Set<string>) {
+    this.filterSelectionMap.set(name, options);
+    //call updateTable to update table rows with latest filter
+    this.telemetryService.logEvent(
+      "TableFilterUpdated",
+      { "FilterName": name }
+    );
+    this.updateTable();
+  }
+
+  private checkRowForFilter(row: any): boolean {
+    //Only if filterSelectionMap has the column name and value for the cell value does not include in the set, return false
+    const keys = Array.from(this.filterSelectionMap.keys());
+    for (let key of keys) {
+      if (row[key] !== undefined && !this.filterSelectionMap.get(key).has(row[key])) return false;
+    }
+    return true;
+  }
+
+  private getColumnOption(name: string): TableColumnOption {
+    if (!this.renderingProperties.columnOptions ||
+      !this.renderingProperties.columnOptions.find(option => option.name === name)) {
+      return null;
+    }
+    const option = this.renderingProperties.columnOptions.find(o => o.name === name);
+    return option;
+  }
+
+  private checkColumIsVisible(name: string): boolean {
+    const option = this.getColumnOption(name);
+    return option === null ? true : option.visible;
+  }
+
+  private getMinOrMaxColumnWidth(name: string, isMinWidth: boolean = true): number {
+    let width = isMinWidth ? columnMinWidth : columnMaxWidth;
+    const option = this.getColumnOption(name);
+    if (isMinWidth && option && option.minWidth) {
+      width = option.minWidth
+    } else if (!isMinWidth && option && option.maxWidth) {
+      width = option.maxWidth;
+    }
+    return width;
+  }
+
+  private validateFilterOption(option: TableColumnOption): boolean {
+    if (option.selectionOption === undefined || option.selectionOption === TableFilterSelectionOption.None) {
+      return false;
+    }
+    const columns = this.diagnosticData.table.columns;
+    return columns.findIndex(col => col.columnName === option.name) > -1;
   }
 }
 

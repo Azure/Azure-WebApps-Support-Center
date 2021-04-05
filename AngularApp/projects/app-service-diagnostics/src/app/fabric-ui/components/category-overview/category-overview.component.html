@@ -1,8 +1,8 @@
 <div class="category-container" style="width:100%">
   <div>
-    <h2><span  class="blade-title">{{category.name}}</span><span class="blade-description"> - {{category.description}}</span></h2>
-    <p  class="category-description"
-    *ngIf="categoryId!=='navigator' && categoryId!=='DiagnosticTools'">
+    <h2><span class="blade-title">{{categoryName}}</span><span class="blade-description"> -
+        {{categoryDescription}}</span></h2>
+    <p class="category-description" *ngIf="categoryId!=='navigator' && categoryId!=='DiagnosticTools'">
       If you have a specific problem you want to investigate, click a topic in the left navigation or click Ask Genie.
     </p>
   </div>

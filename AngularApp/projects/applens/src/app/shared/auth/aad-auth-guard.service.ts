@@ -8,6 +8,7 @@ import { DiagnosticApiService } from '../services/diagnostic-api.service';
 import { ApplensAppinsightsTelemetryService } from '../services/applens-appinsights-telemetry.service';
 
 const loginRedirectKey = 'login_redirect';
+const postAuthRedirectKey = 'post_auth_redirect';
 
 @Injectable()
 export class AadAuthGuard implements CanActivate {
@@ -33,7 +34,7 @@ export class AadAuthGuard implements CanActivate {
                 this._router.navigateByUrl(returnUrl);
                 localStorage.removeItem(loginRedirectKey);
             }
-            if (this.isAuthorized) {
+            if (this.isAuthorized || state.url.startsWith("/icm/")) {
                 return true;
             }
             return this._diagnosticApiService.hasApplensAccess().pipe(map(res => {
@@ -48,6 +49,7 @@ export class AadAuthGuard implements CanActivate {
             }),
                 catchError(err => {
                     this.isAuthorized = false;
+                    this.saveReturnUrlToStorage(state);
                     if (err.status == 403) {
                         this._router.navigate(['unauthorized']);
                     }
@@ -59,6 +61,12 @@ export class AadAuthGuard implements CanActivate {
                     }
                     return observableThrowError(false);
                 }));
+        }
+    }
+
+    saveReturnUrlToStorage(state: RouterStateSnapshot) {
+        if (state.url.indexOf('#') === -1) {
+            localStorage.setItem(postAuthRedirectKey, state.url);
         }
     }
 

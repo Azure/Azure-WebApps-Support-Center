@@ -82,7 +82,7 @@
                                     <div *ngIf="connection.Succeeded" style="color:#137c39">
                                         <strong>We could connect successfully to this connection.</strong>
                                     </div>
-                                    <div *ngIf="!connection.Succeeded">
+                                    <div *ngIf="!connection.Succeeded && connection.ExceptionDetails">
                                         <div style="color:rgb(160, 12, 12)">
                                             <strong>{{ connection.ExceptionDetails.ClassName }}</strong>:
                                             {{ connection.ExceptionDetails.Message}}

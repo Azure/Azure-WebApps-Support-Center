@@ -17,7 +17,6 @@
 
   <div id="app-content" [ngClass]="{'panel-body-withtab':isLegacy, 'panel-body-notab':!isLegacy}" class="panel-body" style="scroll-behavior: smooth;">
     <notification></notification>
-    <risk-alerts-notification></risk-alerts-notification>
     <div class="tab-content container-fluid" [ngClass]="{'panel-body-nopadding':!isLegacy, 'panel-body-padding':isLegacy}">
       <ng-content></ng-content>
     </div>

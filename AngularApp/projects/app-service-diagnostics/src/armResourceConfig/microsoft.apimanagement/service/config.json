@@ -5,7 +5,7 @@
     "searchBarPlaceHolder": "Search for common problems or tools"
   },
   "matchRegEx": "/Microsoft.ApiManagement/service/",
-  "searchSuffix": "API Management",
+  "searchSuffix": "AZURE API MANAGEMENT SERVICE",
   "azureServiceName": "API Management",
   "armApiConfig": {
     "armApiVersion": "2018-06-01-preview"
@@ -18,7 +18,7 @@
   },
   "categories": [
     {
-      "id": "Availability and Performance",
+      "id": "availabilityandperformanceapim",
       "name": "Availability and Performance",
       "description": "Check your API service's health and discover performance issues",
       "keywords": [
@@ -29,10 +29,11 @@
       ],
       "color": "rgb(208, 175, 239)",
       "createFlowForCategory": true,
-      "chatEnabled": false
+      "chatEnabled": false,
+      "overviewDetectorId": "apim-availability-and-performance"
     },
     {
-      "id": "API Policies",
+      "id": "apipoliciesapim",
       "name": "API Policies",
       "description": "Find out if your API policies are misconfigured",
       "keywords": [
@@ -43,10 +44,11 @@
       ],
       "color": "rgb(249, 213, 180)",
       "createFlowForCategory": true,
-      "chatEnabled": false
+      "chatEnabled": false,
+      "overviewDetectorId": "Apim-proxy-policy-errors-recategory"
     },
     {
-      "id": "Gateway Performance",
+      "id": "gatewayperformanceapim",
       "name": "Gateway Performance",
       "description": "Analyze your API Gateway performance and discover issues",
       "keywords": [
@@ -57,10 +59,11 @@
       ],
       "color": "rgb(208, 228, 176)",
       "createFlowForCategory": true,
-      "chatEnabled": false
+      "chatEnabled": false,
+      "overviewDetectorId": "apim-proxy-response-recategory"
     },
     {
-      "id": "Service Upgrade",
+      "id": "serviceupgradeapim",
       "name": "Service Upgrade",
       "description": "Check your service SKU and discover your service upgrade events",
       "keywords": [
@@ -71,13 +74,19 @@
       ],
       "color": "rgb(186, 211, 245)",
       "createFlowForCategory": true,
-      "chatEnabled": false
+      "chatEnabled": false,
+      "overviewDetectorId": "apim-service-sku-recategory"
     }
   ],
   "quickLinks": [
-    "apim-platform-health",
-    "apim-proxy-policy-errors",
-    "apim-proxy-performance"
+    "apim-platform-health-new-category",
+    "apim-proxy-policy-errors-recategory",
+    "apim-proxy-performance-recategory"
   ],
-  "pesId": "15551"
+  "pesId": "15551",
+  "notificationConfig": {
+    "title": "Notifications",
+    "notificationDetectorId": "apim-notification",
+    "enableForCaseSubmissionFlow": true
+  }
 }

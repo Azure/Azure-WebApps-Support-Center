@@ -15,6 +15,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { filter } from 'rxjs-compat/operator/filter';
 import { map } from 'rxjs/operators';
 
+const exclusiveDetectorTypes: DetectorType[] = [
+  DetectorType.CategoryOverview
+];
+
 @Injectable()
 export class FeatureService {
 
@@ -36,8 +40,7 @@ export class FeatureService {
           this._detectors = detectors;
           this.categories = categories;
           detectors.forEach(detector => {
-            if ((detector.category && detector.category.length > 0) ||
-              (detector.description && detector.description.length > 0)) {
+            if (this.validateDetectorMetadata(detector)) {
               this._rewriteCategory(detector);
               if (detector.type === DetectorType.Detector) {
                 this._features.push(<Feature>{
@@ -159,10 +162,10 @@ export class FeatureService {
   }
 
   private getCategoryIdByCategoryName(name: string): string {
-    //Default set to "*",so it will still route to category-summary 
+    //Default set to "*",so it will still route to category-summary
     let categoryId: string = this.categories.length > 0 ? this.categories[0].id : "*";
-    const currentCategoryId = this._activatedRoute.root.firstChild.firstChild.firstChild.firstChild.snapshot.params["category"];
-    //If category name is "XXX Tools" and has Diagnostic Tools category,then should belong to Diagnostic Tool Category.For now this should be working in Windows Web App 
+    const currentCategoryId = this._activatedRoute.root.firstChild.firstChild.firstChild.firstChild.firstChild.snapshot.params["category"];
+    //If category name is "XXX Tools" and has Diagnostic Tools category,then should belong to Diagnostic Tool Category.For now this should be working in Windows Web App
     if ((name === "Diagnostic Tools" || name === "Support Tools" || name === "Proactive Tools") && this.categories.find(category => category.name === "Diagnostic Tools")) {
       const category = this.categories.find(category => category.name === "Diagnostic Tools");
       categoryId = category.id;
@@ -189,7 +192,7 @@ export class FeatureService {
       this._portalActionService.openChangeAnalysisBlade();
       return;
     }
-    const isHomepage = !this._activatedRoute.root.firstChild.firstChild.firstChild.firstChild.snapshot.params["category"];
+    const isHomepage = this._router.url.toLowerCase().endsWith(startupInfo.resourceId.toLowerCase());
     //If it's in category overview page
     if (!isHomepage) {
       if (type === DetectorType.Detector) {
@@ -210,8 +213,14 @@ export class FeatureService {
     const bestPractices = "Best Practices";
     const riskAssessments = "Risk Assessments";
     //If category name is "Best Practice" and only has "Risk Assessment" category then rewrite category to "Risk Assessment"
-    if(detector.category === bestPractices && !this.categories.find(category => category.name === bestPractices) && this.categories.find(category => category.name === riskAssessments)) {
+    if (detector.category === bestPractices && !this.categories.find(category => category.name === bestPractices) && this.categories.find(category => category.name === riskAssessments)) {
       detector.category = riskAssessments;
     }
+  }
+
+  private validateDetectorMetadata(detector: DetectorMetaData): boolean {
+    if (exclusiveDetectorTypes.findIndex(type => detector.type === type) > -1) return false;
+
+    return (detector.category && detector.category.length > 0) || (detector.description && detector.description.length > 0)
   }
 }

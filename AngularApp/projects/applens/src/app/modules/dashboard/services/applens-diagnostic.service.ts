@@ -142,11 +142,17 @@ export class ApplensDiagnosticService {
       endTime);
   }
 
-  publishDetector(emailRecipients: string, pkg: Package) : Observable<any> {
+  verfifyPublishingDetectorAccess(resourceType: string, detectorCode: string, isOriginalCodeMarkedPublic: boolean) : Observable<any> {
+    return this._diagnosticApi.verfifyPublishingDetectorAccess(resourceType, detectorCode, isOriginalCodeMarkedPublic);
+  }
+
+  publishDetector(emailRecipients: string, pkg: Package, resourceType: string, isOriginalCodeMarkedPublic: boolean) : Observable<any> {
     return this._diagnosticApi.publishPackage(
       this._resourceService.getCurrentResourceId(true),
       emailRecipients,
-      pkg
+      pkg,
+      resourceType,
+      isOriginalCodeMarkedPublic
     );
   }
 

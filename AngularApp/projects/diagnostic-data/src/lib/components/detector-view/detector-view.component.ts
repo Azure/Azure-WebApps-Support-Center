@@ -97,6 +97,7 @@ export class DetectorViewComponent implements OnInit {
   @Input() hideDetectorHeader: boolean = false;
   @Input() isCategoryOverview: boolean = false;
   @Input() isKeystoneView: boolean = false;
+  @Input() isRiskAlertDetector: boolean = false;
   feedbackButtonLabel: string = 'Send Feedback';
 
   downTimes: DownTime[] = [];

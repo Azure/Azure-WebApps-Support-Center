@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { SharedV2Module } from '../shared-v2/shared-v2.module';
-import { GenericSupportTopicService, GenericContentService, GenericResourceService , GenericDocumentsSearchService} from 'diagnostic-data';
+import { GenericSupportTopicService, GenericContentService, GenericResourceService, GenericDocumentsSearchService } from 'diagnostic-data';
 import { HomeComponent } from './components/home/home.component';
 import { CategoryChatComponent } from './components/category-chat/category-chat.component';
 import { CategoryTileComponent } from './components/category-tile/category-tile.component';
@@ -54,325 +54,425 @@ import { JavaFlightRecorderToolComponent } from '../shared/components/tools/java
 import { CrashMonitoringComponent } from '../shared/components/tools/crash-monitoring/crash-monitoring.component';
 import { RiskTileComponent } from './components/risk-tile/risk-tile.component';
 import { IntegratedSolutionsViewComponent } from '../shared/components/integrated-solutions-view/integrated-solutions-view.component';
-import { Asev3CustomViewComponent } from '../shared/components/asev3-custom-view/asev3-custom-view.component';
+import { HomeContainerComponent } from './components/home-container/home-container.component';
 
 export const HomeRoutes = RouterModule.forChild([
     {
         path: '',
-        component: HomeComponent,
-        data: {
-            navigationTitle: 'Home',
-            cacheComponent: true
-        },
-        pathMatch: 'full',
-    },
-    {
-        path: 'categoriesv3/:category',
-        component: CategoryChatComponent,
-        data: {
-            cacheComponent: true
-        },
-        resolve: {
-            navigationTitle: CategoryTabResolver,
-            messageList: CategoryChatResolver
-        },
-        pathMatch: 'full',
-    },
-    {
-        path: 'categoriesv3/:category/Asev3Customview',
-        component: Asev3CustomViewComponent,
-        resolve: {
-            navigationTitle: CategoryTabResolver
-        }
-    }
-    ,
-    {
-        path: 'categories/:category',
-        component: CategorySummaryComponent,
+        component: HomeContainerComponent,
         data: {
             cacheComponent: true
         },
         children: [
             {
-                path: 'overview',
-                component: CategoryOverviewComponent,
+                path: '',
+                component: HomeComponent,
                 data: {
-                    cacheComponent: true,
-                    navigationTitle: CategoryTabResolver,
+                    navigationTitle: 'Home',
+                    cacheComponent: true
                 },
+                pathMatch: 'full',
             },
             {
-                path: '',
-                redirectTo: 'overview',
-                pathMatch: 'full',
+                path: 'categoriesv3/:category',
+                component: CategoryChatComponent,
                 data: {
                     cacheComponent: true
                 },
+                resolve: {
+                    navigationTitle: CategoryTabResolver,
+                    messageList: CategoryChatResolver
+                }
             },
             {
-                path: 'analysis/:analysisId',
-                component: GenericAnalysisComponent,
+                path: 'categories/:category',
+                component: CategorySummaryComponent,
                 data: {
-                    cacheComponent: false
+                    cacheComponent: true
                 },
+                children: [
+                    {
+                        path: 'overview',
+                        component: CategoryOverviewComponent,
+                        data: {
+                            cacheComponent: true,
+                            navigationTitle: CategoryTabResolver,
+                        },
+                    },
+                    {
+                        path: '',
+                        redirectTo: 'overview',
+                        pathMatch: 'full',
+                        data: {
+                            cacheComponent: true
+                        },
+                    },
+                    {
+                        path: 'analysis/:analysisId',
+                        component: GenericAnalysisComponent,
+                        data: {
+                            cacheComponent: false
+                        },
+                        children: [
+                            {
+                                path: 'detectors/:detectorName',
+                                component: GenericDetectorComponent,
+                                data: {
+                                    analysisMode: true,
+                                    cacheComponent: false
+                                },
+                                resolve: {
+                                    time: TimeControlResolver,
+                                    navigationTitle: TabTitleResolver,
+                                }
+                            }
+                        ],
+                        resolve: {
+                            time: TimeControlResolver,
+                            navigationTitle: TabTitleResolver,
+                        }
+                    },
+                    {
+                        path: 'analysis/:analysisId/search',
+                        component: GenericAnalysisComponent,
+                        data: {
+                            cacheComponent: true
+                        },
+                        children: [
+                            {
+                                path: '',
+                                component: GenericDetectorComponent,
+                                data: {
+                                    analysisMode: true,
+                                    cacheComponent: true
+                                }
+                            }
+                        ],
+                        resolve: {
+                            time: TimeControlResolver,
+                            navigationTitle: TabTitleResolver,
+                        }
+                    },
+                    {
+                        path: 'detectors/:detectorName',
+                        component: GenericDetectorComponent,
+                        data: {
+                            cacheComponent: true
+                        },
+                        resolve: {
+                            time: TimeControlResolver,
+                            navigationTitle: TabTitleResolver,
+                            uncategorizedDetector: UncategorizedDetectorsResolver,
+                        }
+                    },
+                    {
+                        path: 'analysis/:analysisId/search/detectors/:detectorName',
+                        component: GenericAnalysisComponent,
+                        data: {
+                            cacheComponent: true
+                        },
+                        children: [
+                            {
+                                path: '',
+                                component: GenericDetectorComponent,
+                                data: {
+                                    analysisMode: true,
+                                    cacheComponent: true
+                                }
+                            }
+                        ],
+                        resolve: {
+                            time: TimeControlResolver,
+                            navigationTitle: TabTitleResolver,
+                        }
+                    },
+                    {
+                        path: 'tools/profiler',
+                        component: ProfilerToolComponent,
+                        data: {
+                            navigationTitle: ToolNames.Profiler,
+                            cacheComponent: true
+                        }
+                    },
+                    // Memory Dump
+                    {
+                        path: 'tools/memorydump',
+                        component: MemoryDumpToolComponent,
+                        data: {
+                            navigationTitle: ToolNames.MemoryDump,
+                            cacheComponent: true
+                        }
+                    },
+                    // Java Thread Dump
+                    {
+                        path: 'tools/javathreaddump',
+                        component: JavaThreadDumpToolComponent,
+                        data: {
+                            navigationTitle: ToolNames.JavaThreadDump,
+                            cacheComponent: true
+                        }
+                    },
+                    // Java Memory Dump
+                    {
+                        path: 'tools/javamemorydump',
+                        component: JavaMemoryDumpToolComponent,
+                        data: {
+                            navigationTitle: ToolNames.JavaMemoryDump,
+                            cacheComponent: true
+                        }
+                    },
+                    // Java Flight Recorder
+                    {
+                        path: 'tools/javaflightrecorder',
+                        component: JavaFlightRecorderToolComponent,
+                        data: {
+                            navigationTitle: ToolNames.JavaFlightRecorder,
+                            cacheComponent: true
+                        }
+                    },
+                    // HTTP Log Analyzer
+                    {
+                        path: 'tools/httploganalyzer',
+                        component: HttpLogAnalysisToolComponent,
+                        data: {
+                            navigationTitle: ToolNames.HttpLogAnalyzer,
+                            cacheComponent: true
+                        }
+                    },
+                    // PHP Log Analyzer
+                    {
+                        path: 'tools/phploganalyzer',
+                        component: PhpLogsAnalyzerToolComponent,
+                        data: {
+                            navigationTitle: ToolNames.PHPLogAnalyzer,
+                            cacheComponent: true
+                        }
+                    },
+                    // Database Test Tool(connection string)
+                    {
+                        path: 'tools/databasetester',
+                        component: ConnectionDiagnoserToolComponent,
+                        data: {
+                            navigationTitle: ToolNames.DatabaseTester,
+                            cacheComponent: true
+                        }
+                    },
+                    // CPU Monitoring tool
+                    {
+                        path: 'tools/cpumonitoring',
+                        component: CpuMonitoringToolComponent,
+                        data: {
+                            navigationTitle: ToolNames.CpuMonitoring,
+                            cacheComponent: true
+                        }
+                    },
+                    // Crash Monitoring tool
+                    {
+                        path: 'tools/crashmonitoring',
+                        component: CrashMonitoringComponent,
+                        data: {
+                            navigationTitle: ToolNames.CrashMonitoring,
+                            cacheComponent: true
+                        }
+                    },
+                    // Autohealing
+                    {
+                        path: 'tools/mitigate',
+                        component: AutohealingComponent,
+                        data: {
+                            navigationTitle: ToolNames.AutoHealing,
+                            detectorComponent: AutohealingDetectorComponent
+                        }
+                    },
+                    // Network Trace
+                    {
+                        path: 'tools/networktrace',
+                        component: NetworkTraceToolComponent,
+                        data: {
+                            navigationTitle: ToolNames.NetworkTrace,
+                            cacheComponent: true
+                        }
+                    },
+                    // Diagnostics
+                    {
+                        path: 'tools/daas',
+                        component: DaasMainComponent,
+                        data: {
+                            navigationTitle: ToolNames.Diagnostics,
+                            cacheComponent: true
+                        }
+                    },
+                    // Event Viewer
+                    {
+                        path: 'tools/eventviewer',
+                        component: EventViewerComponent,
+                        data: {
+                            navigationTitle: ToolNames.EventViewer,
+                            cacheComponent: true
+                        }
+                    },
+                    // Freb Viewer
+                    {
+                        // path: 'tools/frebviewer',
+                        path: 'tools/freblogs',
+                        component: FrebViewerComponent,
+                        data: {
+                            navigationTitle: ToolNames.FrebViewer,
+                            cacheComponent: true
+                        }
+                    },
+                    //Metrics per Instance (Apps)
+                    {
+                        // path: 'tools/metricsperinstance',
+                        path: 'tools/sitemetrics',
+                        resolve: {
+                            reroute: MetricsPerInstanceAppsResolver
+                        },
+                    },
+                    //Metrics per Instance (App Service Plan)
+                    {
+                        // path: 'tools/metricsperinstanceappserviceplan',
+                        path: 'tools/appserviceplanmetrics',
+                        resolve: {
+                            reroute: MetricsPerInstanceAppServicePlanResolver
+                        },
+                    },
+                    //Advanced Application Restart
+                    {
+                        // path: 'tools/applicationrestart',
+                        path: 'tools/advancedapprestart',
+                        resolve: {
+                            reroute: AdvanceApplicationRestartResolver
+                        },
+                    },
+                    //Security Scanning
+                    {
+                        // path: 'tools/securityscanning',
+                        path: 'tools/tinfoil',
+                        resolve: {
+                            reroute: SecurityScanningResolver
+                        },
+                    },
+                    // App settings page
+                    {
+                        path: 'settings',
+                        component: DiagnosticsSettingsComponent,
+                        data: {
+                            navigationTitle: 'App Service Diagnostics Settings'
+                        }
+                    },
+                ],
+                resolve: {
+                    navigationTitle: CategoryTabResolver,
+                    // messageList: CategoryChatResolver
+                }
+            },
+            {
+                path: 'integratedSolutions',
+                component: IntegratedSolutionsViewComponent,
                 children: [
                     {
                         path: 'detectors/:detectorName',
                         component: GenericDetectorComponent,
                         data: {
-                            analysisMode: true,
-                            cacheComponent: false
+                            cacheComponent: true
                         },
                         resolve: {
                             time: TimeControlResolver,
                             navigationTitle: TabTitleResolver,
                         }
-                    }
-                ],
-                resolve: {
-                    time: TimeControlResolver,
-                    navigationTitle: TabTitleResolver,
-                }
-            },
-            {
-                path: 'analysis/:analysisId/search',
-                component: GenericAnalysisComponent,
-                data: {
-                    cacheComponent: true
-                },
-                children: [
+                    },
                     {
-                        path: '',
-                        component: GenericDetectorComponent,
+                        path: 'analysis/:analysisId',
+                        component: GenericAnalysisComponent,
                         data: {
-                            analysisMode: true,
-                            cacheComponent: true
+                            cacheComponent: false
+                        },
+                        children: [
+                            {
+                                path: 'detectors/:detectorName',
+                                component: GenericDetectorComponent,
+                                data: {
+                                    analysisMode: true,
+                                    cacheComponent: false
+                                },
+                                resolve: {
+                                    time: TimeControlResolver,
+                                    navigationTitle: TabTitleResolver,
+                                }
+                            },
+                        ],
+                        resolve: {
+                            time: TimeControlResolver,
+                            navigationTitle: TabTitleResolver,
                         }
-                    }
-                ],
-                resolve: {
-                    time: TimeControlResolver,
-                    navigationTitle: TabTitleResolver,
-                }
-            },
-            {
-                path: 'detectors/:detectorName',
-                component: GenericDetectorComponent,
-                data: {
-                    cacheComponent: true
-                },
-                resolve: {
-                    time: TimeControlResolver,
-                    navigationTitle: TabTitleResolver,
-                    uncategorizedDetector: UncategorizedDetectorsResolver,
-                }
-            },
-            {
-                path: 'analysis/:analysisId/search/detectors/:detectorName',
-                component: GenericAnalysisComponent,
-                data: {
-                    cacheComponent: true
-                },
-                children: [
+                    },
                     {
-                        path: '',
-                        component: GenericDetectorComponent,
+                        path: 'analysis/:analysisId/search',
+                        component: GenericAnalysisComponent,
                         data: {
-                            analysisMode: true,
                             cacheComponent: true
+                        },
+                        children: [
+                            {
+                                path: '',
+                                component: GenericDetectorComponent,
+                                data: {
+                                    analysisMode: true,
+                                    cacheComponent: true
+                                }
+                            }
+                        ],
+                        resolve: {
+                            time: TimeControlResolver,
+                            navigationTitle: TabTitleResolver,
                         }
-                    }
-                ],
-                resolve: {
-                    time: TimeControlResolver,
-                    navigationTitle: TabTitleResolver,
-                }
-            },
-            {
-                path: 'tools/profiler',
-                component: ProfilerToolComponent,
-                data: {
-                    navigationTitle: ToolNames.Profiler,
-                    cacheComponent: true
-                }
-            },
-            // Memory Dump
-            {
-                path: 'tools/memorydump',
-                component: MemoryDumpToolComponent,
-                data: {
-                    navigationTitle: ToolNames.MemoryDump,
-                    cacheComponent: true
-                }
-            },
-            // Java Thread Dump
-            {
-                path: 'tools/javathreaddump',
-                component: JavaThreadDumpToolComponent,
-                data: {
-                    navigationTitle: ToolNames.JavaThreadDump,
-                    cacheComponent: true
-                }
-            },
-            // Java Memory Dump
-            {
-                path: 'tools/javamemorydump',
-                component: JavaMemoryDumpToolComponent,
-                data: {
-                    navigationTitle: ToolNames.JavaMemoryDump,
-                    cacheComponent: true
-                }
-            },
-            // Java Flight Recorder
-            {
-                path: 'tools/javaflightrecorder',
-                component: JavaFlightRecorderToolComponent,
-                data: {
-                    navigationTitle: ToolNames.JavaFlightRecorder,
-                    cacheComponent: true
-                }
-            },
-            // HTTP Log Analyzer
-            {
-                path: 'tools/httploganalyzer',
-                component: HttpLogAnalysisToolComponent,
-                data: {
-                    navigationTitle: ToolNames.HttpLogAnalyzer,
-                    cacheComponent: true
-                }
-            },
-            // PHP Log Analyzer
-            {
-                path: 'tools/phploganalyzer',
-                component: PhpLogsAnalyzerToolComponent,
-                data: {
-                    navigationTitle: ToolNames.PHPLogAnalyzer,
-                    cacheComponent: true
-                }
-            },
-            // Database Test Tool(connection string)
-            {
-                path: 'tools/databasetester',
-                component: ConnectionDiagnoserToolComponent,
-                data: {
-                    navigationTitle: ToolNames.DatabaseTester,
-                    cacheComponent: true
-                }
-            },
-            // CPU Monitoring tool
-            {
-                path: 'tools/cpumonitoring',
-                component: CpuMonitoringToolComponent,
-                data: {
-                    navigationTitle: ToolNames.CpuMonitoring,
-                    cacheComponent: true
-                }
-            },
-            // Crash Monitoring tool
-            {
-                path: 'tools/crashmonitoring',
-                component: CrashMonitoringComponent,
-                data: {
-                    navigationTitle: ToolNames.CrashMonitoring,
-                    cacheComponent: true
-                }
-            },
-            // Autohealing
-            {
-                path: 'tools/mitigate',
-                component: AutohealingComponent,
-                data: {
-                    navigationTitle: ToolNames.AutoHealing,
-                    detectorComponent: AutohealingDetectorComponent
-                }
-            },
-            // Network Trace
-            {
-                path: 'tools/networktrace',
-                component: NetworkTraceToolComponent,
-                data: {
-                    navigationTitle: ToolNames.NetworkTrace,
-                    cacheComponent: true
-                }
-            },
-            // Diagnostics
-            {
-                path: 'tools/daas',
-                component: DaasMainComponent,
-                data: {
-                    navigationTitle: ToolNames.Diagnostics,
-                    cacheComponent: true
-                }
-            },
-            // Event Viewer
-            {
-                path: 'tools/eventviewer',
-                component: EventViewerComponent,
-                data: {
-                    navigationTitle: ToolNames.EventViewer,
-                    cacheComponent: true
-                }
-            },
-            // Freb Viewer
-            {
-                // path: 'tools/frebviewer',
-                path: 'tools/freblogs',
-                component: FrebViewerComponent,
-                data: {
-                    navigationTitle: ToolNames.FrebViewer,
-                    cacheComponent: true
-                }
-            },
-            //Metrics per Instance (Apps)
-            {
-                // path: 'tools/metricsperinstance',
-                path: 'tools/sitemetrics',
-                resolve: {
-                    reroute: MetricsPerInstanceAppsResolver
-                },
-            },
-            //Metrics per Instance (App Service Plan)
-            {
-                // path: 'tools/metricsperinstanceappserviceplan',
-                path: 'tools/appserviceplanmetrics',
-                resolve: {
-                    reroute: MetricsPerInstanceAppServicePlanResolver
-                },
-            },
-            //Advanced Application Restart
-            {
-                // path: 'tools/applicationrestart',
-                path: 'tools/advancedapprestart',
-                resolve: {
-                    reroute: AdvanceApplicationRestartResolver
-                },
-            },
-            //Security Scanning
-            {
-                // path: 'tools/securityscanning',
-                path: 'tools/tinfoil',
-                resolve: {
-                    reroute: SecurityScanningResolver
-                },
-            },
-            // App settings page
-            {
-                path: 'settings',
-                component: DiagnosticsSettingsComponent,
-                data: {
-                    navigationTitle: 'App Service Diagnostics Settings'
-                }
-            },
-        ],
-        resolve: {
-            navigationTitle: CategoryTabResolver,
-            // messageList: CategoryChatResolver
-        }
-    },
-    {
-        path: 'integratedSolutions',
-        component: IntegratedSolutionsViewComponent,
-        children: [
+                    },
+                    {
+                        path: 'analysis/:analysisId/search/detectors/:detectorName',
+                        component: GenericAnalysisComponent,
+                        data: {
+                            cacheComponent: true
+                        },
+                        children: [
+                            {
+                                path: '',
+                                component: GenericDetectorComponent,
+                                data: {
+                                    analysisMode: true,
+                                    cacheComponent: true
+                                }
+                            }
+                        ],
+                        resolve: {
+                            time: TimeControlResolver,
+                            navigationTitle: TabTitleResolver,
+                        }
+                    },
+                    {
+                        path: 'analysis/:analysisId/detectors',
+                        component: GenericAnalysisComponent,
+                        data: {
+                            cacheComponent: true
+                        },
+                        children: [
+                            {
+                                path: '',
+                                component: GenericDetectorComponent,
+                                data: {
+                                    analysisMode: true,
+                                    cacheComponent: true
+                                }
+                            }
+                        ],
+                        resolve: {
+                            time: TimeControlResolver,
+                            navigationTitle: TabTitleResolver,
+                        }
+                    },
+                ]
+            }
+            ,
             {
                 path: 'detectors/:detectorName',
                 component: GenericDetectorComponent,
@@ -472,129 +572,29 @@ export const HomeRoutes = RouterModule.forChild([
                     navigationTitle: TabTitleResolver,
                 }
             },
-        ]
-    }
-    ,
-    {
-        path: 'detectors/:detectorName',
-        component: GenericDetectorComponent,
-        data: {
-            cacheComponent: true
-        },
-        resolve: {
-            time: TimeControlResolver,
-            navigationTitle: TabTitleResolver,
-        }
-    },
-    {
-        path: 'analysis/:analysisId',
-        component: GenericAnalysisComponent,
-        data: {
-            cacheComponent: false
-        },
-        children: [
             {
-                path: 'detectors/:detectorName',
-                component: GenericDetectorComponent,
+                path: 'supportTopicId',
+                component: SupportTopicRedirectComponent
+            },
+            {
+                path: 'settings',
+                component: DiagnosticsSettingsComponent,
                 data: {
-                    analysisMode: true,
-                    cacheComponent: false
-                },
-                resolve: {
-                    time: TimeControlResolver,
-                    navigationTitle: TabTitleResolver,
+                    navigationTitle: 'App Service Diagnostics Settings'
                 }
             },
-        ],
-        resolve: {
-            time: TimeControlResolver,
-            navigationTitle: TabTitleResolver,
-        }
-    },
-    {
-        path: 'analysis/:analysisId/search',
-        component: GenericAnalysisComponent,
-        data: {
-            cacheComponent: true
-        },
-        children: [
             {
-                path: '',
-                component: GenericDetectorComponent,
+                path: 'portalReferrerResolver',
+                component: PortalReferrerResolverComponent,
                 data: {
-                    analysisMode: true,
                     cacheComponent: true
+                },
+                resolve: {
+                    time: TimeControlResolver
                 }
             }
-        ],
-        resolve: {
-            time: TimeControlResolver,
-            navigationTitle: TabTitleResolver,
-        }
+        ]
     },
-    {
-        path: 'analysis/:analysisId/search/detectors/:detectorName',
-        component: GenericAnalysisComponent,
-        data: {
-            cacheComponent: true
-        },
-        children: [
-            {
-                path: '',
-                component: GenericDetectorComponent,
-                data: {
-                    analysisMode: true,
-                    cacheComponent: true
-                }
-            }
-        ],
-        resolve: {
-            time: TimeControlResolver,
-            navigationTitle: TabTitleResolver,
-        }
-    },
-    {
-        path: 'analysis/:analysisId/detectors',
-        component: GenericAnalysisComponent,
-        data: {
-            cacheComponent: true
-        },
-        children: [
-            {
-                path: '',
-                component: GenericDetectorComponent,
-                data: {
-                    analysisMode: true,
-                    cacheComponent: true
-                }
-            }
-        ],
-        resolve: {
-            time: TimeControlResolver,
-            navigationTitle: TabTitleResolver,
-        }
-    },
-    {
-        path: 'supportTopicId',
-        component: SupportTopicRedirectComponent
-    },
-    {
-        path: 'settings',
-        component: DiagnosticsSettingsComponent,
-        data: {
-            navigationTitle: 'App Service Diagnostics Settings'
-        }
-    },
-    {
-        path: 'portalReferrerResolver',
-        component: PortalReferrerResolverComponent,
-        data: {
-            cacheComponent: true
-        },
-        resolve: {
-            time: TimeControlResolver
-        }
-    }
 ]);
 
 @NgModule({
@@ -612,7 +612,7 @@ export const HomeRoutes = RouterModule.forChild([
         FabCommandBarModule,
         FabSpinnerModule
     ],
-    declarations: [HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent, CategoryTileV4Component, RiskTileComponent],
+    declarations: [HomeContainerComponent, HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent, CategoryTileV4Component, RiskTileComponent],
     providers:
         [
             CategoryTabResolver,
@@ -629,7 +629,7 @@ export const HomeRoutes = RouterModule.forChild([
             { provide: GenericContentService, useExisting: ContentService },
             { provide: GenericDocumentsSearchService, useExisting: DocumentSearchService },
             { provide: CXPChatService, useExisting: CXPChatCallerService },
-            { provide: GenericResourceService, useExisting: ResourceService}
+            { provide: GenericResourceService, useExisting: ResourceService }
         ],
 })
 export class HomeModule { }

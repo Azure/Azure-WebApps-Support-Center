@@ -6,7 +6,6 @@ import { BotLoggingService } from '../../../shared/services/logging/bot.logging.
 import { ButtonActionType, MessageSender } from '../../models/message-enums';
 import { CategoryChatStateService } from '../../../shared-v2/services/category-chat-state.service';
 import { Globals } from '../../../globals';
-// import { Globals } from 'dist/diagnostic-data/lib/services/genie.service';
 import { GenieMessageProcessor } from '../../message-processor.service';
 
 @Component({

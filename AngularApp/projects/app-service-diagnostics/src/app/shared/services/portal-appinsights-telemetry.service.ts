@@ -50,7 +50,7 @@ export class PortalAppInsightsTelemetryService implements ITelemetryProvider {
                             autoTrackPageVisitTime: true,
                         }
                     };
-                    
+
                     this.appInsights = new ApplicationInsights(snippet);
                     this.appInsights.loadAppInsights();
                     this.appInsights.addTelemetryInitializer((envelop: ITelemetryItem) => {
@@ -67,7 +67,7 @@ export class PortalAppInsightsTelemetryService implements ITelemetryProvider {
                         }
                     });
 
-                    this.logEvent("Application Insights initialized for diagnostics client");    
+                    this.logEvent("Application Insights initialized for diagnostics client");
                 })
             })
         })

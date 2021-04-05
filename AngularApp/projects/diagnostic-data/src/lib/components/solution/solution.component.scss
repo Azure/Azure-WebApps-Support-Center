@@ -9,6 +9,28 @@ html, body {
   margin-bottom: 2em;
 }
 
+.custom-solution-button {
+    margin-left: 0px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: #0078d4;
+    border-color: #0078d4;
+    color: #fff;
+    fill: white;
+    font-size: 13px;
+    box-sizing: border-box;
+    height: 24px;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid;
+    padding: 0 20px;
+    margin: 0;
+  }
+
 .solution-action {
   display: inline-block;
   border-radius: 2px;

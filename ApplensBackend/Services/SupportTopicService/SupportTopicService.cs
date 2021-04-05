@@ -16,7 +16,7 @@ namespace AppLensV3.Services
         private IKustoQueryService _kustoQueryService;
 
         private string _supportTopicsQuery = @"
-        cluster('azsupport').database('AzureSupportability').ActiveSupportTopicTree
+        cluster('azsupportfollower.westus2').database('AzureSupportability').ActiveSupportTopicTree
         | where ProductId in ('{PRODUCTID}') 
         | where Timestamp > ago(3d)
         | summarize by ProductId, SupportTopicId = SupportTopicL3Id, ProductName, SupportTopicL2Name, SupportTopicL3Name
@@ -39,7 +39,7 @@ namespace AppLensV3.Services
             string kustoQuery = _supportTopicsQuery
                 .Replace("{PRODUCTID}", productId);
 
-            DataTable dt = await _kustoQueryService.ExecuteQueryAsync("azsupport", "AzureSupportability", kustoQuery);
+            DataTable dt = await _kustoQueryService.ExecuteQueryAsync("azsupportfollower.westus2", "AzureSupportability", kustoQuery);
 
             List<SupportTopic> supportTopicsList = new List<SupportTopic>();
 

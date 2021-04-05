@@ -1,8 +1,8 @@
-.diagnoser-option{    
+.diagnoser-option {
     padding: 10px;
     border-radius: 5px;
     background-color: #eeeeee;
-    margin-top:10px;
+    margin-top: 10px;
 }
 
 .detail-card {
@@ -30,18 +30,28 @@
     color: whitesmoke;
 }
 
+.detail-card-disabled {
+    background-color: #0058ada8;
+    color: whitesmoke;
+    pointer-events: none;
+}
+
+.detail-card-disabled:hover {
+    border: none !important;
+}
+
 .diagnostic-options {
     border: 1px #0058ad solid;
     border-radius: 0px 0px 5px 5px;
     padding: 0px 0px 0px 10px;
-    margin-left:1px;
+    margin-left: 1px;
 }
 
 .text-muted {
     color: #666;
 }
 
-h4{
+h4 {
     font-size: 12px;
 }
 p {
@@ -49,13 +59,13 @@ p {
     font-size: 12px;
 }
 
-.diagnostic-options-heading{
-    margin-top:10px;  
+.diagnostic-options-heading {
+    margin-top: 10px;
     background-color: #0058ad;
-    width:100px;
+    width: 100px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    color:white;
+    color: white;
     padding-left: 7px;
     margin-left: 1px;
 }
@@ -66,12 +76,12 @@ label {
     /* color: #595959; */
 }
 
-.final-action{
-    background-color:#eeeeee;
-    border-radius:5px;
+.final-action {
+    background-color: #eeeeee;
+    border-radius: 5px;
 }
 
-.custom-action-note{
+.custom-action-note {
     color: #0058ad;
     font-size: smaller;
     margin-top: 5px;

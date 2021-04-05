@@ -231,6 +231,11 @@ export class SiteService {
                             delete settingsResponse.properties['WEBSITE_CRASHMONITORING_SETTINGS'];
                             if (settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED']) {
                                 delete settingsResponse.properties['WEBSITE_CRASHMONITORING_ENABLED'];
+
+                                if (settingsResponse.properties['WEBSITE_CRASHMONITORING_USE_DEBUGDIAG']) {
+                                    delete settingsResponse.properties['WEBSITE_CRASHMONITORING_USE_DEBUGDIAG'];
+                                }
+
                                 this.updateSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot, settingsResponse).subscribe(updateResponse => {
                                     return updateResponse;
                                 });
@@ -250,6 +255,8 @@ export class SiteService {
                         if (blobSasUri) {
                             settingsResponse.properties['WEBSITE_DAAS_STORAGE_SASURI'] = blobSasUri;
                         }
+                        settingsResponse.properties['WEBSITE_CRASHMONITORING_USE_DEBUGDIAG'] = true;
+
                         this.updateSiteAppSettings(site.subscriptionId, site.resourceGroupName, site.siteName, site.slot, settingsResponse).subscribe(updateResponse => {
                             return updateResponse;
                         });

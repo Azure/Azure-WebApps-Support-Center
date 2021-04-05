@@ -8,69 +8,21 @@
           <div
             style="position: absolute; left:25px; right: 32px; top:0px; height: 32px; font-family: 'segoe UI'; font-size: 18px; line-height: 24px; font-weight: 600;display: flex; align-items: flex-end"
             tabindex="0" aria-label="Availability risk alerts">
-            Availability risk alerts</div>
+            {{riskPanelTitle}}</div>
         </div>
       </div>
     </div>
-    <ng-container *ngIf="workDistributionDetail">
-      <fab-message-bar [messageBarType]="workDistributionDetail.messageType"
-        [isMultiline]="workDistributionDetail.expand" dismissButtonAriaLabel="Close" [truncated]="true"
-        overflowButtonAriaLabel="See more">
-        <p><b>{{workDistributionDetail.title}} </b> </p>{{workDistributionDetail.description}}
-        <br /><br />
-        <b>Learn More:</b> <a
-          href='{{workDistributionDetail.learnMore}}'
-          target='_blank' (click)="logOpenLinkEvent('Worker Distribution', workDistributionDetail.learnMore)">
-          Scale instance count manually or automatically</a>
-      </fab-message-bar>
-      <br />
+    <ng-container *ngIf="!isContentEmpty(riskPanelContents) else loaderView">
+      <div *ngFor="let item of riskPanelContents | keyvalue">
+        <detector-view *ngIf="currentRiskPanelContentId === item.key" [analysisMode]="false" [isKeystoneView]="false"
+          [isAnalysisView]="false" [detectorResponse]="item.value" [error]="error" [startTime]="startTime"
+          [endTime]="endTime" [developmentMode]="false" [detector]="item.key" [hideDetectorHeader]="true"
+          [isRiskAlertDetector]="true">
+        </detector-view>
+      </div>
     </ng-container>
-    <ng-container *ngIf="autoHealDetail">
-      <fab-message-bar [messageBarType]="autoHealDetail.messageType" [isMultiline]="autoHealDetail.expand"
-        dismissButtonAriaLabel="Close" [truncated]="true" overflowButtonAriaLabel="See more">
-        <p><b>{{autoHealDetail.title}} </b> </p>{{autoHealDetail.description}}
-        <br /><br />
-        <b>Learn More:</b> <a
-          href='{{autoHealDetail.learnMore}}'
-          target='_blank' (click)="logOpenLinkEvent('Auto Heal', autoHealDetail.learnMore)">
-          Auto-Healing Experience in App Service Diagnostics</a>
-      </fab-message-bar>
-      <br />
-    </ng-container>
-    <ng-container *ngIf="healthCheckDetail">
-      <fab-message-bar [messageBarType]="healthCheckDetail.messageType" [isMultiline]="healthCheckDetail.expand"
-        dismissButtonAriaLabel="Close" [truncated]="true" overflowButtonAriaLabel="See more">
-        <p><b>{{healthCheckDetail.title}} </b> </p>{{healthCheckDetail.description}}
-        <br /><br />
-        <b>Learn More:</b> <a href='{{healthCheckDetail.learnMore}}'
-          target='_blank' (click)="logOpenLinkEvent('Health Check', healthCheckDetail.learnMore)">
-          Health Check (Preview)</a>
-      </fab-message-bar>
-      <br />
-    </ng-container>
-    <ng-container *ngIf="appDensityCheckDetail">
-      <fab-message-bar [messageBarType]="appDensityCheckDetail.messageType" [isMultiline]="appDensityCheckDetail.expand"
-        dismissButtonAriaLabel="Close" [truncated]="true" overflowButtonAriaLabel="See more">
-        <p><b>{{appDensityCheckDetail.title}} </b> </p>{{appDensityCheckDetail.description}}
-        <br /><br />
-        <b>Learn More:</b> <a href='{{appDensityCheckDetail.learnMore}}'
-          target='_blank' (click)="logOpenLinkEvent('App Density Check', appDensityCheckDetail.learnMore)">
-          Azure App Service plan overview</a>
-      </fab-message-bar>
-      <br />
-    </ng-container>
-    <ng-container *ngIf="!isInCaseSubmissionFlow">
-      <fab-message-bar [messageBarType]="summaryType" dismissButtonAriaLabel="Close" [truncated]="true" overflowButtonAriaLabel="See more">
-        <b>Run All Checks For Risks Alerts</b>
-        <a href="" (click)="openRiskAlertDetector($event)"> Check Recommendations for App Availability</a>
-      </fab-message-bar>
-      <br />
-    </ng-container>
-    <fab-message-bar [messageBarType]="summaryType" dismissButtonAriaLabel="Close" [truncated]="true"
-      overflowButtonAriaLabel="See more">
-      <b>Learn about more configurations for high availability:</b>
-      <a href="https://azure.github.io/AppService/2020/05/15/Robust-Apps-for-the-cloud.html" target='_blank' (click)="logOpenLinkEvent('Best practice summary', 'https://azure.github.io/AppService/2020/05/15/Robust-Apps-for-the-cloud.html')">
-        The Ultimate Guide to Running Healthy Apps in the Cloud</a>
-    </fab-message-bar>
+    <ng-template #loaderView>
+      <loader-detector-view style="margin-top:300px"></loader-detector-view>
+    </ng-template>
   </div>
 </fab-panel>

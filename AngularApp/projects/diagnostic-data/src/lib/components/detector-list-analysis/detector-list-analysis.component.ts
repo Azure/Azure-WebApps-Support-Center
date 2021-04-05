@@ -462,6 +462,21 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
                         this.showPreLoadingError = true;
                     });
             }
+            else
+            {
+                if (this.withinGenie)
+                {
+
+                        let dataOutput = {};
+                        dataOutput["status"] = true;
+                        dataOutput["data"] = {
+                            'detectors': []
+                        };
+
+                        this.onComplete.emit(dataOutput);
+
+                }
+            }
         });
     }
 

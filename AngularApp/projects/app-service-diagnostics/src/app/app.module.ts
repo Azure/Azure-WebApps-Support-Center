@@ -42,10 +42,10 @@ import { ResourcesModule } from './resources/resources.module';
 import { WebSitesModule } from './resources/web-sites/web-sites.module';
 import { VersionTestService } from './fabric-ui/version-test.service';
 import { BackendCtrlService } from './shared/services/backend-ctrl.service';
-import { GenieModule } from './genie/genie.module';
 import { PortalActionService} from './shared/services/portal-action.service';
 import { FabricModule } from './fabric-ui/fabric.module';
 import { QuickLinkService } from './shared-v2/services/quick-link.service';
+import { RiskAlertService } from './shared-v2/services/risk-alert.service';
 
 @NgModule({
   imports: [
@@ -74,7 +74,6 @@ import { QuickLinkService } from './shared-v2/services/quick-link.service';
     ),
     CustomMaterialModule,
     HighchartsChartModule,
-    GenieModule,
     FabricModule
   ],
   declarations: [
@@ -108,7 +107,8 @@ import { QuickLinkService } from './shared-v2/services/quick-link.service';
     { provide: VersionService, useExisting: VersionTestService },
     { provide: BackendCtrlQueryService, useExisting: BackendCtrlService },
     { provide: PortalActionGenericService, useExisting: PortalActionService},
-    QuickLinkService
+    QuickLinkService,
+    RiskAlertService
   ],
   bootstrap: [AppComponent]
 })

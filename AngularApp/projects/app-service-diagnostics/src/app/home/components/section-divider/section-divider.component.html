@@ -1,4 +1,4 @@
-<div [id]="label" class="section-divider" tabindex="0" (keyup.enter)="sectionHeaderClick()" [attr.aria-label]="label" role="button" [class.overview-header]="isOverview" [class.not-expandable]="!collapsible" [class.selected]="isSelected()"
+<div [id]="label" class="section-divider" tabindex="0" (keyup.enter)="sectionHeaderClick()" [attr.aria-label]="label" [class.overview-header]="isOverview" [class.not-expandable]="!collapsible" [class.selected]="isSelected()"
   (click)="sectionHeaderClick()" >
   <div>
     <ng-content select=".menu-icon"></ng-content>

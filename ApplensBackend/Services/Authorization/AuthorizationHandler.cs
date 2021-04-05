@@ -1,20 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
+using AppLensV3.Helpers;
+using AppLensV3.Models;
+using AppLensV3.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Hosting;
-using AppLensV3.Services.CosmosDBHandler;
-using AppLensV3.Models;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AppLensV3.Authorization
 {
@@ -220,7 +218,7 @@ namespace AppLensV3.Authorization
 
         private async Task<Boolean> CheckTemporaryAccess(string userId)
         {
-            var result = await _cosmosDBHandler.GetItemAsync(userId);
+            var result = await _cosmosDBHandler.GetItemAsync(userId, "TemporaryAccessUser");
             if (result != null && ((long)DateTime.UtcNow.Subtract(result.AccessStartDate).TotalSeconds) < temporaryAccessExpiryInSeconds)
             {
                 HttpContext context = _httpContextAccessor.HttpContext;
@@ -239,22 +237,10 @@ namespace AppLensV3.Authorization
         /// <param name="userId">UserId.</param>
         /// <param name="securityGroupObjectId">Security Group Object Id.</param>
         /// <returns>Boolean.</returns>
-        private async Task<Boolean> CheckSecurityGroupMembership(string userId, string securityGroupObjectId)
+        private async Task<bool> CheckSecurityGroupMembership(string userId, string securityGroupObjectId)
         {
-            var requestUrl = string.Format(graphUrl, userId);
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
-            Dictionary<string, Array> requestParams = new Dictionary<string, Array>();
-            string[] groupIds = securityGroupObjectId.Split(",");
-            requestParams.Add("groupIds", groupIds);
-            string authorizationToken = await AuthorizationTokenService.Instance.GetAuthorizationTokenAsync();
-            request.Headers.Add("Authorization", authorizationToken);
-            request.Content = new StringContent(JsonConvert.SerializeObject(requestParams), Encoding.UTF8, "application/json");
-
-            HttpResponseMessage responseMsg = await _httpClient.SendAsync(request);
-            var res = await responseMsg.Content.ReadAsStringAsync();
-            dynamic groupIdsResponse = JsonConvert.DeserializeObject(res);
-            string[] groupIdsReturned = groupIdsResponse.value.ToObject<string[]>();
-            if (groupIdsReturned.Length > 0)
+            bool isUserPartOfSecurityGroup = await Utilities.CheckUserGroupMembership(userId, securityGroupObjectId);
+            if (isUserPartOfSecurityGroup)
             {
                 AddUserToCache(securityGroupObjectId, userId, DateTime.UtcNow);
                 return true;

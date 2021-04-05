@@ -19,6 +19,8 @@ export class CategoryOverviewComponent implements OnInit {
     categoryId: string = "";
     category: Category;
     categoryOverviewDetector: string = "";
+    categoryName: string = "";
+    categoryDescription: string = "";
 
     onValidate(value: string, event: Event): string | void {
         value = this._removeSuffix(value, suffix);
@@ -49,13 +51,16 @@ export class CategoryOverviewComponent implements OnInit {
         let categoryParam = this._activatedRoute.parent.snapshot.params.category.toLowerCase();
         this._categoryService.categories.subscribe(categories => {
             this.category = categories.find(category => categoryParam === category.id.toLowerCase() || category.name.replace(/\s/g, '').toLowerCase() === categoryParam);
+            if (!!this.category) {
+                this.categoryId = this.category.id;
+                this.categoryOverviewDetector = this.category.overviewDetectorId;
+                this.categoryName = this.category.name;
+                this.categoryDescription = this.category.description;
+            }
         });
-
-        this.categoryId = this.category.id;
-        this.categoryOverviewDetector =  this.category.overviewDetectorId;
     }
 
-    ngAfterViewInit () {
-        this._telemetryService.logPageView(TelemetryEventNames.CategoryOverviewPageLoaded, {"categoryId": this.categoryId});
+    ngAfterViewInit() {
+        this._telemetryService.logPageView(TelemetryEventNames.CategoryOverviewPageLoaded, { "categoryId": this.categoryId });
     }
 }

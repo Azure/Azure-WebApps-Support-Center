@@ -291,3 +291,31 @@ span.rotate {
     visibility: visible;
     opacity: 1;
 }
+
+.publishAccessDenied .modal-header {
+    background-color: rgb(240,240,240);
+    border-bottom: 1px solid #dcdcdc;
+}
+.publishAccessDenied .modal-header .modal-logo {
+    display: inline-block;
+    vertical-align: top; 
+    margin-right: 20px;
+}
+.publishAccessDenied .modal-header .modal-title-container {
+    display: inline-block;
+    padding-top: 12px;
+}
+.publishAccessDenied .modal-header .modal-title-container .modal-sub-title {
+    color: rgb(95, 95, 95);
+    font-size: 13px;
+}
+.publishAccessDenied .modal-content {
+    padding: 20px;
+}
+.publishAccessDenied .modal-content .content-row {
+    margin-top: 15px !important;
+}
+.publishAccessDenied .modal-content .content-row .bullet-point {
+    margin-left:20px;
+    margin-top:2px;
+}

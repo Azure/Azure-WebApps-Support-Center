@@ -1,0 +1,26 @@
+<fab-default-button [id]="filterId" (click)="toggleCallout()" contentStyle="color: #323130; border-radius: 12px; margin:0px 5px;background:rgba(0, 120, 212, 0.1);font-size:13;font-weight:600;" [ariaLabel]="displayName">{{displayName}}</fab-default-button>
+<fab-callout  *ngIf="isCallOutVisible" (onDismiss)="closeCallout()" [setInitialFocus]="true" [target]="filterSelector">
+  <div class="filter-callout-container" (keyup.escape)="closeCallout()">
+    <ng-container *ngIf="filterOption === TableFilterSelectionOption.Multiple else singleSelection">
+      <fab-checkbox [label]="'All'" [ariaLabel]="'All'" [checked]="getSelectedAllStatus()"
+        (checkedChange)="toggleSelectAll($event)"></fab-checkbox>
+      <fab-checkbox *ngFor="let option of optionsWithFormattedName;let i = index" [label]="option.formattedName"
+        [ariaLabel]="option.formattedName" [checked]="getCheckedStatus(i)"
+        (checkedChange)="toggleSelectOption($event,i)">
+      </fab-checkbox>
+    </ng-container>
+  </div>
+  <div class="filter-callout-footer">
+    <fab-primary-button (onClick)="updateTableWithOptions()" (keyup.enter)="updateTableWithOptions()" [ariaLabel]="'Apply'">Apply
+    </fab-primary-button>
+    <fab-default-button contentStyle="margin-left: 8px;" (onClick)="closeCallout()" (keyup.enter)="closeCallout()" [ariaLabel]="'Cancel'">Cancel</fab-default-button>
+  </div>
+</fab-callout>
+
+
+<!-- Single Selection -->
+<ng-template #singleSelection>
+  <div>
+    <fab-choice-group [options]="optionsForSingleChoice" [selectedKey]="selectedKey"></fab-choice-group>
+  </div>
+</ng-template>

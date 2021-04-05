@@ -1,11 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { TelemetryService } from 'diagnostic-data';
+import { Component, Input, OnInit } from '@angular/core';
+import { DetectorControlService, TelemetryService } from 'diagnostic-data';
+import { DetectorResponse } from 'diagnostic-data';
+import { Moment } from 'moment';
 import { IPanelProps, IPanelStyles, MessageBarType, PanelType } from 'office-ui-fabric-react';
 import { Globals } from '../../../globals';
 import { NotificationService } from '../../../shared-v2/services/notification.service';
+import { RiskAlertService } from '../../../shared-v2/services/risk-alert.service';
 import { AuthService } from '../../../startup/services/auth.service';
 import { PortalActionService } from '../../services/portal-action.service';
-import { riskAlertDetail } from '../risk-alerts-notification/risk-alerts-notification.component';
+
 
 @Component({
     selector: 'risk-alerts-panel',
@@ -14,25 +17,28 @@ import { riskAlertDetail } from '../risk-alerts-notification/risk-alerts-notific
 })
 export class RiskAlertsPanelComponent implements OnInit {
     type: PanelType = PanelType.custom;
-    width: string = "850px";
+    width: string = "525px";
     styles: any = {
         root: {
             marginTop: '50px',
         }
     }
+    riskPanelContents: any = {};
+    error: string = "";
+    endTime: Moment = this.detectorControlService.endTime;
+    startTime: Moment = this.detectorControlService.startTime;
+    riskPanelTitle: string = "Notifications";
+    currentRiskPanelContentId: string;
+    viewResponse: DetectorResponse;
 
-    autoHealDetail: riskAlertDetail;
-    healthCheckDetail: riskAlertDetail;
-    workDistributionDetail: riskAlertDetail;
-    appDensityCheckDetail: riskAlertDetail;
     summaryType: MessageBarType = MessageBarType.info;
     isInCaseSubmissionFlow: boolean = false;
-    constructor(public globals: Globals, public notificationService: NotificationService, public telemetryService: TelemetryService,private portalActionService:PortalActionService,private authService: AuthService) {
-        if(authService) {
+
+    constructor(public globals: Globals, public notificationService: NotificationService, public telemetryService: TelemetryService, private portalActionService: PortalActionService, private authService: AuthService, private _riskAlertService: RiskAlertService, public detectorControlService: DetectorControlService) {
+        if (authService) {
             this.authService.getStartupInfo().subscribe(startupInfo => {
                 this.isInCaseSubmissionFlow = startupInfo && startupInfo.source !== undefined && startupInfo.source.toLowerCase() === ("CaseSubmissionV2-NonContext").toLowerCase();
-    
-                if(!this.isInCaseSubmissionFlow) {
+                if (!this.isInCaseSubmissionFlow) {
                     this.styles = {};
                 }
             });
@@ -40,12 +46,18 @@ export class RiskAlertsPanelComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.globals.reliabilityChecksDetailsBehaviorSubject.subscribe((reliabilityChecks) => {
-            this.autoHealDetail = reliabilityChecks.autoHeal;
-            this.healthCheckDetail = reliabilityChecks.healthCheck;
-            this.workDistributionDetail = reliabilityChecks.workerDistribution;
-            this.appDensityCheckDetail = reliabilityChecks.appDensity;
-        })
+        this._riskAlertService.riskPanelContentsSub.subscribe((risksPanelContents) => {
+            this.riskPanelContents = risksPanelContents;
+            this._riskAlertService.currentRiskPanelContentIdSub.subscribe((currentRiskAlertDetectorId) => {
+                this.riskPanelTitle = this._riskAlertService.riskAlertNotifications && this._riskAlertService.riskAlertNotifications.hasOwnProperty(currentRiskAlertDetectorId) ? this._riskAlertService.riskAlertNotifications[currentRiskAlertDetectorId].title + " risk alerts" : this._riskAlertService.notificationMessageBar && this._riskAlertService.notificationMessageBar.panelTitle ? this._riskAlertService.notificationMessageBar.panelTitle : this.riskPanelTitle;
+                this.currentRiskPanelContentId = currentRiskAlertDetectorId;
+            });
+        });
+
+    }
+
+    isContentEmpty(contents: any) {
+        return contents == null || Object.keys(contents) == null || Object.keys(contents).length === 0;
     }
 
     dismissedHandler() {
@@ -54,12 +66,12 @@ export class RiskAlertsPanelComponent implements OnInit {
     }
 
     logOpenLinkEvent(linkDescription: string, linkAddress: string) {
-        this.telemetryService.logEvent("openRiskAlertLink", {Description: linkDescription, link: linkAddress});
+        this.telemetryService.logEvent("openRiskAlertLink", { Description: linkDescription, link: linkAddress });
     }
 
-    openRiskAlertDetector(event:Event) {
+    openRiskAlertDetector(event: Event) {
         event.preventDefault();
         this.telemetryService.logEvent("OpenRiskAlertDetector");
-        this.portalActionService.openBladeDiagnoseDetectorId("RiskAssessments","ParentAvailabilityAndPerformance");
+        this.portalActionService.openBladeDiagnoseDetectorId("RiskAssessments", "ParentAvailabilityAndPerformance");
     }
 }

@@ -10,7 +10,7 @@
     <i class="fa fa-circle-o-notch fa-spin spin-icon" aria-hidden="true"></i>
     Retrieving proactive autoheal settings...
   </div>
-  <div *ngIf="errorMessage" class="alert alert-danger" style="margin-top:5px">
+  <div *ngIf="errorMessage" class="alert alert-danger" role="alert" style="margin-top:5px">
     {{ errorMessage }}
   </div>
   <div *ngIf="!retrievingProactiveSettings">

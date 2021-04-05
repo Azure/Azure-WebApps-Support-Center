@@ -10,6 +10,8 @@ import { FormatHelper } from '../../utilities/formattingHelper';
 import { ActivatedRoute } from '@angular/router';
 import { Globals } from '../../../globals';
 import { TelemetryService } from 'diagnostic-data';
+import { ITooltipOptions } from '@angular-react/fabric';
+import { DirectionalHint } from 'office-ui-fabric-react';
 
 @Component({
     selector: 'daas-sessions',
@@ -36,10 +38,29 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
     allSessions: string = '../../diagnosticTools';
     subscription: Subscription;
 
+    // For tooltip display
+    directionalHint = DirectionalHint.rightTopEdge;
+    toolTipStyles = { 'backgroundColor': 'black', 'color': 'white', 'border': '0px' };
+
+    toolTipOptionsValue: ITooltipOptions = {
+        calloutProps: {
+            styles: {
+                beak: this.toolTipStyles,
+                beakCurtain: this.toolTipStyles,
+                calloutMain: this.toolTipStyles
+            }
+        },
+        styles: {
+            content: this.toolTipStyles,
+            root: this.toolTipStyles,
+            subText: this.toolTipStyles
+        }
+    }
+
     constructor(private _windowService: WindowService, private _serverFarmService: ServerFarmDataService, private _daasService: DaasService, protected _route: ActivatedRoute, public globals: Globals, public telemetryService: TelemetryService) {
         this._serverFarmService.siteServerFarm.subscribe(serverFarm => {
             if (serverFarm) {
-                if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier === 'Basic' || serverFarm.sku.tier.indexOf('Isolated') > -1 ||  serverFarm.sku.tier.indexOf('Premium') > -1) {
+                if (serverFarm.sku.tier === 'Standard' || serverFarm.sku.tier === 'Basic' || serverFarm.sku.tier.indexOf('Isolated') > -1 || serverFarm.sku.tier.indexOf('Premium') > -1) {
                     this.supportedTier = true;
                 }
             }
@@ -77,18 +98,16 @@ export class DaasSessionsComponent implements OnChanges, OnDestroy {
     checkSessions() {
         this._daasService.getDaasSessionsWithDetails(this.siteToBeDiagnosed).pipe(retry(2))
             .subscribe(sessions => {
-                if (sessions != null) {
+                if (sessions != null && Array.isArray(sessions)) {
                     const newSessions = sessions.map(this.reducedSession);
-                    if (this.sessions != null)
-                    {
+                    if (this.sessions != null) {
                         const existingSessions = this.sessions.map(this.reducedSession);
                         let anySessionUpdated = newSessions.filter(newSession => existingSessions.findIndex(session => JSON.stringify(session) === JSON.stringify(newSession)) === -1).length > 0;
                         if (newSessions.length !== existingSessions.length || anySessionUpdated) {
                             this.sessions = this.setExpanded(sessions);
                         }
                     }
-                    else
-                    {
+                    else {
                         this.sessions = this.setExpanded(sessions);
                     }
                 }

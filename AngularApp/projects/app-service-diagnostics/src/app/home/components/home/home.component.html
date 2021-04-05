@@ -1,3 +1,11 @@
+<ng-container *ngIf="initializedPortalVersion === 'v3'&&showSwitchBanner">
+  <div *ngIf="useLegacy" class="switch2new-context-text">
+    <i class="fa fa-info-circle info-banner-icon"></i>
+    We have recently launched the new version of {{homePageText.title}}.
+    <a (click)="switchView()" tabindex="0" (keyup.enter)="switchView()" aria-label="switch to the new version">Click here to checkout the new version.</a>
+  </div>
+</ng-container>
+
 <div *ngIf="useLegacy else newHomePage" class="home-container">
   <div class="input-group input-group-lg search-input-group" (keyup.escape)="clearSearch()" role="search"
     *ngIf="!isAKSOnNationalCloud">
@@ -110,6 +118,15 @@
         (click)="openFeedbackPanel()"></fab-command-bar-item>
     </items>
   </fab-command-bar>
+  <risk-alerts-notification></risk-alerts-notification>
+
+  <ng-container *ngIf="initializedPortalVersion === 'v3'&&showSwitchBanner">
+    <div *ngIf="!useLegacy" class="switch2old-context-text">
+      <i class="fa fa-info-circle info-banner-icon"></i>
+      Welcome to the new {{homePageText.title}}.
+      <a (click)="switchView()" class="old-version-link" tabindex="0" (keyup.enter)="switchView()" aria-label="switch to the old version">Click here to go back to the old version.</a>
+    </div>
+  </ng-container>
 
   <div class="home-main-area">
     <div class="home-title-container">
@@ -127,8 +144,8 @@
     <div *ngIf="showRiskSection" class="section-container">
       <h2 class="section-title">Risk alerts</h2>
       <div class="home-tiles">
-        <ng-container *ngFor="let risk of risks">
-          <risk-tile [risk]="risk"></risk-tile>
+        <ng-container *ngFor="let riskAlertConfig of riskAlertConfigs">
+          <risk-tile [riskAlertConfig]="riskAlertConfig"></risk-tile>
         </ng-container>
       </div>
     </div>
@@ -143,7 +160,7 @@
     </div>
 
     <div class="section-container" >
-      <h2 class="section-title">Popular troubleshooting tools</h2>
+      <h2 *ngIf="!loadingQuickLinks && quickLinkFeatures.length > 0" class="section-title">Popular troubleshooting tools</h2>
       <div *ngIf="!loadingQuickLinks else loading">
         <div class="quick-link" *ngFor="let feature of quickLinkFeatures">
           <a tabindex="0" (click)="clickQuickLink(feature)" (keyup.enter)="clickQuickLink(feature)">{{feature.name}}</a>
@@ -163,3 +180,5 @@
     <fab-spinner [ariaLabel]="'Loading Quick Links'"></fab-spinner>
   </div>
 </ng-template>
+
+<risk-alerts-panel></risk-alerts-panel>

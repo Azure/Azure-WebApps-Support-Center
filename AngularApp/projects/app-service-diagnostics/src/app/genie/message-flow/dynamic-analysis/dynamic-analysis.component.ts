@@ -6,6 +6,9 @@ import { SearchAnalysisMode } from 'projects/diagnostic-data/src/lib/models/sear
 import { ContentService } from '../../../shared-v2/services/content.service';
 import { CategoryChatStateService } from '../../../shared-v2/services/category-chat-state.service';
 import { LoggingV2Service } from '../../../shared-v2/services/logging-v2.service';
+import { TelemetryService, TelemetryEventNames } from 'diagnostic-data';
+import { v4 as uuid } from 'uuid';
+import { ReplaySubject } from 'rxjs';
 
 @Component({
     selector: 'dynamic-analysis',
@@ -26,16 +29,16 @@ export class DynamicAnalysisComponent implements OnInit, AfterViewInit, IChatMes
     loading: boolean = true;
     searchMode: SearchAnalysisMode = SearchAnalysisMode.Genie;
     viewUpdated: boolean = false;
+    webSearchId: string = null;
 
-    constructor(private _routerLocal: Router, private _activatedRouteLocal: ActivatedRoute, private injector: Injector, private _contentService: ContentService, private _chatState: CategoryChatStateService, private _logger: LoggingV2Service) { }
-    noSearchResult: boolean = undefined;
-    showDocumentSearchResult: boolean = false;
+    constructor(private _routerLocal: Router, private _activatedRouteLocal: ActivatedRoute, private injector: Injector, private _contentService: ContentService, private _chatState: CategoryChatStateService, private _logger: LoggingV2Service, private _telemetryService: TelemetryService) { }
+    noSearchResult: boolean = false;
     showFeedback: boolean = undefined;
     feedbackText: string = "";
     readonly Feedback: string = 'Feedback';
     ratingEventProperties: { [name: string]: string };
     content: any[];
-    hasDocumentSearchResult: boolean = false;
+    analysisListSubject: ReplaySubject<any> = new ReplaySubject<any>(1);
 
     ngOnInit() {
         this.searchMode = SearchAnalysisMode.Genie;
@@ -48,8 +51,8 @@ export class DynamicAnalysisComponent implements OnInit, AfterViewInit, IChatMes
         };
 
         this._contentService.searchWeb(this.keyword, this.documentResultCount).subscribe(searchResults => {
+            this.webSearchId = uuid();
             if (searchResults && searchResults.webPages && searchResults.webPages.value && searchResults.webPages.value.length > 0) {
-                this.hasDocumentSearchResult = true;
                 this.content = searchResults.webPages.value.map(result => {
                     return {
                         title: result.name,
@@ -57,17 +60,45 @@ export class DynamicAnalysisComponent implements OnInit, AfterViewInit, IChatMes
                         link: result.url
                     };
                 });
+                this._telemetryService.logEvent(TelemetryEventNames.WebQueryResults, {
+                    searchId: this.webSearchId,
+                    searchMode: "1",
+                    query: this.keyword,
+                    results: JSON.stringify(this.content),
+                    ts: Math.floor((new Date()).getTime() / 1000).toString()
+                });
 
                 setTimeout(() => {
                     this.onViewUpdate.emit();
                 }, 100);
                 this.viewUpdated = true;
             }
+
+            this.analysisListSubject.subscribe((dataOutput) => {
+                let nextKey = "";
+                if ((dataOutput == undefined || dataOutput.data == undefined || dataOutput.data.detectors == undefined || dataOutput.data.detectors.length === 0) && (this.content == undefined || this.content.length == 0)) {
+                    this.noSearchResult = true;
+                }
+                else {
+                    this.noSearchResult = false;
+                    nextKey = "feedback";
+                }
+
+                let statusValue = {
+                    status: dataOutput && dataOutput.status ? dataOutput.status : false,
+                    data: {
+                        hasResult: !this.noSearchResult,
+                        next_key: nextKey,
+                    }
+                };
+                this.onComplete.emit(statusValue);
+            });
         });
     }
 
 
     openArticle(article: any) {
+        this._telemetryService.logEvent(TelemetryEventNames.WebQueryResultClicked, { searchId: this.webSearchId, searchMode: "1", article: JSON.stringify(article), ts: Math.floor((new Date()).getTime() / 1000).toString() });
         window.open(article.link, '_blank');
     }
 
@@ -76,33 +107,13 @@ export class DynamicAnalysisComponent implements OnInit, AfterViewInit, IChatMes
     }
 
     ngAfterViewInit() {
-        if (!this.viewUpdated || !this.hasDocumentSearchResult) {
+        if (!this.viewUpdated) {
             this.onViewUpdate.emit();
         }
     }
 
     updateStatus(dataOutput) {
-        let nextKey = "";
-        if ((dataOutput.data == undefined || dataOutput.data.detectors == undefined || dataOutput.data.detectors.length === 0) && (this.content == undefined || this.content.length == 0)) {
-            this.noSearchResult = true;
-        }
-        else {
-            this.noSearchResult = false;
-            if (dataOutput.data.successfulViewModels != undefined && dataOutput.data.issueDetectedViewModels != undefined && dataOutput.data.successfulViewModels.length + dataOutput.data.issueDetectedViewModels.length < 7) {
-                this.showDocumentSearchResult = true;
-            }
-            nextKey = "feedback";
-        }
-
-        let statusValue = {
-            status: dataOutput.status,
-            data: {
-                hasResult: !this.noSearchResult,
-                next_key: nextKey,
-                outputData: dataOutput.data
-            }
-        };
-        this.onComplete.emit(statusValue);
+        this.analysisListSubject.next(dataOutput);
     }
 
     addHelpfulFeedback() {

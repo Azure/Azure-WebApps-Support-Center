@@ -40,6 +40,7 @@ namespace AppLensV3.Helpers
         internal const string DefaultGraphEndpoint = "https://graph.microsoft.com/";
         internal const string GraphApiEndpointFormat = "https://graph.microsoft.com/v1.0/{0}";
         internal const string GraphUserApiEndpointFormat = "https://graph.microsoft.com/v1.0/users/{0}@microsoft.com";
+        internal const string GraphApiCheckMemberGroupsFormat = "https://graph.microsoft.com/v1.0/users/{0}/checkMemberGroups";
         internal const string GraphUserImageApiEndpointFormat = "https://graph.microsoft.com/v1.0/users/{0}@microsoft.com/photo/$value";
     }
 

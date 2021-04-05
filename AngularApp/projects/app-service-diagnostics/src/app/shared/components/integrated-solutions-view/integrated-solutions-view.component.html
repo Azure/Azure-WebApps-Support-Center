@@ -1,3 +1,4 @@
+<risk-alerts-notification [isKeystoneSolutionView]="keystoneSolutionView"></risk-alerts-notification>
 <div *ngIf="keystoneSolutionView else genericSolutionView" class="keystone-solution-container">
   <div class="solution-header">We think we found you a solution!</div>
   <div class="solution-description">Customers with similar issues recently were able to solve it by following the
@@ -14,3 +15,5 @@
 <ng-template #genericSolutionView>
   <router-outlet></router-outlet>
 </ng-template>
+
+<risk-alerts-panel></risk-alerts-panel>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using AppLensV3.Services.CosmosDBHandler;
+using AppLensV3.Services;
 using AppLensV3.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
@@ -38,7 +38,7 @@ namespace AppLensV3.Controllers
                 userId = upn.ToString();
                 if (userId != null)
                 {
-                    var result = await _cosmosDBHandler.GetItemAsync(userId);
+                    var result = await _cosmosDBHandler.GetItemAsync(userId, "TemporaryAccessUser");
                     if (result == null)
                     {
                         TemporaryAccessUser newUser = new TemporaryAccessUser()

@@ -83,7 +83,7 @@ import { AppDependenciesComponent } from './components/app-dependencies/app-depe
 import { HighchartsChartModule } from 'highcharts-angular';
 import { HighchartsGraphComponent } from './components/highcharts-graph/highcharts-graph.component';
 import { FabNavModule } from './components/fab-nav/fab-nav.module';
-import { FabPanelModule, FabIconModule, FabChoiceGroupModule, FabSearchBoxModule, FabDropdownModule, FabDetailsListModule, FabTextFieldModule, FabMessageBarModule, FabButtonModule, FabTooltipModule, FabSpinnerModule } from '@angular-react/fabric';
+import { FabPanelModule, FabIconModule, FabChoiceGroupModule, FabSearchBoxModule, FabDropdownModule, FabDetailsListModule, FabTextFieldModule, FabMessageBarModule, FabButtonModule, FabTooltipModule, FabSpinnerModule, FabCalloutModule, FabCheckboxModule, FabPivotModule } from '@angular-react/fabric';
 import { SummaryCardsComponent } from './components/summary-cards/summary-cards.component';
 import { InsightsV4Component } from './components/insights-v4/insights-v4.component';
 import { CardSelectionV4Component } from './components/card-selection-v4/card-selection-v4.component';
@@ -104,6 +104,13 @@ import { DocumentsSearchComponent } from './components/documents-search/document
 import { LoaderDetectorViewComponent } from './components/loader-detector-view/loader-detector-view.component';
 import { KeystoneInsightComponent } from './components/keystone-insight/keystone-insight.component';
 import { SolutionViewContainerComponent } from './components/solution-view-container/solution-view-container.component';
+import { FabDataTableFilterComponent } from './components/fab-data-table-filter/fab-data-table-filter.component';
+import { NotificationRenderingComponent } from './components/notification-rendering/notification-rendering.component';
+import { FabTabComponent } from './components/fab-tab/fab-tab.component';
+import { SectionsComponent } from './components/sections/sections.component';
+import { CollapsibleListComponent } from './components/collapsible-list/collapsible-list.component';
+import { CollapsibleListFabricComponent } from './components/collapsible-list/collapsible-list-fabric/collapsible-list-fabric.component';
+import { CollapsibleListItemComponent } from './components/collapsible-list/collapsible-list-item.component';
 
 @NgModule({
   imports: [
@@ -126,7 +133,10 @@ import { SolutionViewContainerComponent } from './components/solution-view-conta
     FabMessageBarModule,
     FabButtonModule,
     FabTooltipModule,
-    FabSpinnerModule
+    FabSpinnerModule,
+    FabCalloutModule,
+    FabCheckboxModule,
+    FabPivotModule,
   ],
   providers: [
     ClipboardService
@@ -163,7 +173,14 @@ import { SolutionViewContainerComponent } from './components/solution-view-conta
     DocumentsSearchComponent,
     LoaderDetectorViewComponent,
     KeystoneInsightComponent,
-    SolutionViewContainerComponent
+    SolutionViewContainerComponent,
+    FabDataTableFilterComponent,
+    NotificationRenderingComponent,
+    FabTabComponent,
+    SectionsComponent,
+    CollapsibleListComponent,
+    CollapsibleListFabricComponent,
+    CollapsibleListItemComponent
   ],
   entryComponents: [DetectorListAnalysisComponent],
   exports: [
@@ -182,7 +199,11 @@ import { SolutionViewContainerComponent } from './components/solution-view-conta
     AppInsightsEnablementComponent,
     ConnectAppInsightsComponent,
     WebSearchComponent,
-    SolutionViewContainerComponent
+    SolutionViewContainerComponent,
+    FabTabComponent,
+    CollapsibleListComponent,
+    CollapsibleListFabricComponent,
+    CollapsibleListItemComponent
   ],
 })
 export class DiagnosticDataModule {

@@ -1,4 +1,5 @@
 import * as momentNs from 'moment';
+import { Solution } from '../components/solution/solution';
 
 export interface ArmObject {
     id: string;
@@ -10,8 +11,8 @@ export interface DetectorResponse {
     dataset: DiagnosticData[];
     metadata: DetectorMetaData;
     status: Status;
-  dataProvidersMetadata: DataProviderMetadata[];
-  suggestedUtterances: any;
+    dataProvidersMetadata: DataProviderMetadata[];
+    suggestedUtterances: any;
 }
 
 export interface Status {
@@ -78,7 +79,7 @@ export interface SupportTopic {
     pesId: string;
 }
 
-export enum DetectorType{
+export enum DetectorType {
     Detector = "Detector",
     Analysis = "Analysis",
     CategoryOverview = "CategoryOverview"
@@ -109,7 +110,10 @@ export enum RenderingType {
     SummaryCard,
     SearchComponent,
     AppInsightEnablement,
-    KeystoneComponent
+    KeystoneComponent,
+    Notification,
+    Tab,
+    Section
 }
 
 export enum TimeSeriesType {
@@ -129,7 +133,7 @@ export class DataTableDataType {
     static Int64: string = 'Int64';
     static String: string = 'String';
 
-    static NumberTypes: string[] = [ DataTableDataType.Double, DataTableDataType.Int64, DataTableDataType.Int32, DataTableDataType.Int16 ];
+    static NumberTypes: string[] = [DataTableDataType.Double, DataTableDataType.Int64, DataTableDataType.Int32, DataTableDataType.Int16];
 }
 
 export interface Rendering {
@@ -143,8 +147,28 @@ export interface DataTableRendering extends Rendering {
     descriptionColumnName: string;
     displayColumnNames: string[];
     tableOptions: any;
-    height:any;
-    allowColumnSearch:boolean;
+    height: any;
+    allowColumnSearch: boolean;
+    columnOptions: TableColumnOption[];
+}
+
+export enum TableFilterSelectionOption {
+    None = 0,
+    Single,
+    Multiple
+}
+
+export interface TableFilter {
+    selectionOption: TableFilterSelectionOption,
+    columnName: string
+}
+
+export interface TableColumnOption {
+    name: string;
+    minWidth: number;
+    maxWidth: number;
+    selectionOption: TableFilterSelectionOption,
+    visible: boolean;
 }
 
 export interface TimeSeriesRendering extends Rendering {
@@ -177,6 +201,12 @@ export interface InsightsRendering extends Rendering {
     typeColumnName: string;
 }
 
+export interface NotificationRendering extends Rendering {
+    status: HealthStatus;
+    solution: Solution;
+    expanded: boolean;
+}
+
 export interface DynamicInsightRendering extends Rendering {
     status: HealthStatus;
     innerRendering: Rendering;
@@ -193,14 +223,25 @@ export interface MarkdownRendering extends Rendering {
     isContainerNeeded: boolean;
 }
 
+export interface TabRendering extends Rendering {
+    itemCount?: number;
+    icon: string;
+    needsAttention: boolean;
+}
+
+export interface SectionRendering extends Rendering {
+    isExpand: boolean;
+    diagnosticData: DiagnosticData[]
+}
+
 export interface RecommendedUtterance {
-  sampleUtterance: SampleUtterance;
-  score: number;
+    sampleUtterance: SampleUtterance;
+    score: number;
 }
 
 interface SampleUtterance {
-  text: string;
-  links: string[];
+    text: string;
+    links: string[];
 }
 
 export class DownTime {

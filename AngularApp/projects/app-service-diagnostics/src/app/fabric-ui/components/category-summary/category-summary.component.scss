@@ -1,9 +1,25 @@
- .body-content {
-        display: flex!important;
-      height: calc(100vh - 100px);
-    }
-
+ //Hide side nav and content take over whole page
   section.sidebar {
+    display: none;
+  }
+
+  section.content {
+    width: 100%;
+    top: 0px;
+    bottom: 0px;
+    left: 265px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .body-content {
+    display: flex!important;
+  }
+  
+  //display side nav for 100% zooming
+  @media(min-width: 640px) and (min-height: 500px) {
+    section.sidebar {
+      display: block;
       min-width: 265px;
       position: fixed;
       top: 0px;
@@ -13,16 +29,24 @@
       overflow-x: hidden;
     }
 
-  section.content {
-    position: fixed;
-    min-width: calc(100% - 265px);
-    width: 80%;
-    top: 0px;
-    bottom: 0px;
-    left: 265px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    section.content {
+      position: fixed;
+      min-width: calc(100% - 265px);
+      width: 80%;
+      top: 0px;
+      bottom: 0px;
+      left: 265px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .body-content {
+      display: flex!important;
+      height: calc(100vh - 100px);
+    }
   }
+
+
 
   section.content-hide-nav{
     min-width: 100%;

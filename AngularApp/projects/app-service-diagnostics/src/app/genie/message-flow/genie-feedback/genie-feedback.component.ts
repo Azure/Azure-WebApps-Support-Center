@@ -17,7 +17,21 @@ export class GenieFeedbackComponent extends ButtonMessageComponent {
     @Input() ratingEventProperties: any={};
     dimissObservable: Observable<void>;
     feedbackText: string = "";
-    feedbackIcons: string[] = ["EmojiDisappointed", "Sad", "EmojiNeutral", "Emoji2", "Emoji"];
+    feedbackIcons: { id: string, text: string }[] =
+    [
+      {
+        id: "Sad",
+        text: "dissatisfied "
+      },
+      {
+        id: "EmojiNeutral",
+        text: "ok"
+      },
+      {
+        id: "Emoji2",
+        text: "satisfied"
+      }
+    ];
     rating: number = 0;
     ratingSelected: boolean = false;
     invalidRating: boolean = false;
@@ -63,7 +77,7 @@ export class GenieFeedbackComponent extends ButtonMessageComponent {
         this.rating = index + 1;
         this.ratingSelected = true;
     }
-    
+
     isEmptyOrSpaces(str) {
         return str === null || str.match(/^ *$/) !== null;
     }
@@ -82,7 +96,7 @@ export class GenieFeedbackComponent extends ButtonMessageComponent {
         {
             this.showComponent = false;
             this._logger.LogGenieFeedbackMessage(this.context, String(this.rating), this.feedbackMessage, this.category);
-    
+
             const eventProps = {
                 Rating: String(this.rating),
                 Feedback: this.feedbackText
@@ -97,7 +111,7 @@ export class GenieFeedbackComponent extends ButtonMessageComponent {
             });
             this.invalidRating = false;
         }
-        else 
+        else
         {
             this.invalidRating = true;
         }

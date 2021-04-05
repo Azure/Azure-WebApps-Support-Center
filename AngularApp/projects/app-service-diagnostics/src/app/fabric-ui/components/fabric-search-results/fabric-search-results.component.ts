@@ -20,7 +20,7 @@ enum BlurType {
   styleUrls: ['./fabric-search-results.component.scss']
 })
 export class FabricSearchResultsComponent {
-  searchPlaceHolder: string = "Search for common problems or tools.";
+  searchPlaceHolder: string = "Search for common problems or tools";
   searchValue: string = "";
   resultCount: number;
   features: Feature[] = [];
@@ -34,14 +34,12 @@ export class FabricSearchResultsComponent {
   get inputAriaLabel(): string {
     const resultCount = this.features.length;
     let searchResultAriaLabel = "";
-    if (this.searchValue === "") {
-      searchResultAriaLabel = "";
-    } else if (resultCount >= 1) {
-      searchResultAriaLabel = resultCount > 1 ? `${resultCount} Results` : `${resultCount} Result`;
+    if (resultCount >= 1) {
+      searchResultAriaLabel = resultCount > 1 ? `Found ${resultCount} Results` : `Found ${resultCount} Result`;
     } else {
       searchResultAriaLabel = `No results were found.`;
     }
-    return `${searchResultAriaLabel} Press Escape to clear search result`;
+    return `${searchResultAriaLabel}, Press Escape to clear search bar`;
   }
 
   @HostListener('mousedown', ['$event.target'])
@@ -66,7 +64,12 @@ export class FabricSearchResultsComponent {
   @HostListener('keydown.Tab', ['$event.target'])
   onKeyDown(ele: HTMLElement) {
     if (ele.tagName === "INPUT") {
-      this.clickSearchBox = BlurType.None;
+      if(this.isInCategory) {
+        this.clickSearchBox = BlurType.Blur;
+        this.onBlurHandler();
+      } else {
+        this.clickSearchBox = BlurType.None;
+      }
     }
     //If in genie or detailLists then blur after tab
     else if (ele.innerText === "Ask chatbot Genie" ||
@@ -100,7 +103,7 @@ export class FabricSearchResultsComponent {
 
   @ViewChild('fabSearchResult',{static:true}) fabSearchResult:ElementRef
   constructor(public featureService: FeatureService, private _logger: LoggingV2Service,private _notificationService: NotificationService, private globals: Globals,private router:Router,private render:Renderer2,private telemetryService:TelemetryService) {
-    this.isInCategory = this.router.url.includes('categories');
+    this.isInCategory = this.router.url.includes('/categories');
 
     this.render.listen('window','click',(e:Event) => {
       if (!this.fabSearchResult.nativeElement.contains(e.target)){

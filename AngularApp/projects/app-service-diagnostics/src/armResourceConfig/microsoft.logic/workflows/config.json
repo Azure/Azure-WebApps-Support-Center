@@ -1,7 +1,7 @@
 {
 	"homePageText": {
 		"title": "Logic Apps Diagnostics",
-		"description": "Use Logic Apps Diagnostics to investigate how your app is performing, diagnose issues, and discover how to improve its reliability. Select the problem category that best matches the information or tool that you're interested in:",
+		"description": "Investigate how your app is performing, diagnose issues, and discover how to improve its reliability.",
 		"searchBarPlaceHolder": "Search Logic Apps Diagnostics"
 	},
 	"matchRegEx": "/Microsoft.Logic/workflows/",
@@ -17,22 +17,24 @@
 		"supportTopicIds": []
 	},
 	"categories": [{
-			"id": "Diagnostics",
-			"name": "Diagnostics",
-			"description": "Is your logic app experiencing problems or slowness? To get an overview about the most recent runs and their steps, troubleshoot, and identify possible improvements, select this category.",
-			"keywords": ["Overview", "Runs", "Performance", "Triggers"],
+			"id": "performancela",
+			"name": "Performance",
+			"description": "Troubleshoot performance issues on your most recent runs",
+			"keywords": ["Health Overview", "Runs", "Triggers", "Throttling"],
 			"color": "rgb(186, 211, 245)",
 			"createFlowForCategory": true,
-			"chatEnabled": false
+			"chatEnabled": false,
+            "overviewDetectorId": "la_pubgeneral"
 		},
 		{
-			"id": "Connector Actions Health",
-			"name": "Connector Actions Health",
-			"description": "Are you seeing any action failures in your logic app? Review connector actions health to get the details on connector errors, timeouts, or any other unexpected behavior.",
-			"keywords": ["Actions", "Timeouts", "Connector", "4xx Errors", "5xx Errors", "SQL, Storage, and more"],
+			"id": "connectorhealthla",
+			"name": "Connector Health",
+			"description": "Investigate the health of your connectors",
+			"keywords": ["Actions", "Timeouts", "4xx Errors", "5xx Errors", "SQL"],
 			"color": "rgb(249, 213, 180)",
 			"createFlowForCategory": true,
-			"chatEnabled": false
+			"chatEnabled": false,
+            "overviewDetectorId": "la_waconnectorhealth"
 		}
 	],
 	"pesId": "15791"
