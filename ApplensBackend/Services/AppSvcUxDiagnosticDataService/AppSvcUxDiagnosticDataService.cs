@@ -64,10 +64,6 @@ namespace AppLensV3.Services.AppSvcUxDiagnosticDataService
             }
         }
 
-        private async Task Initialize()
-        {
-        }
-
         /// <summary>
         /// We log subscripton data in the AppSvcUX cluster from our app service diagnostics codebase.
         /// </summary>
