@@ -7,8 +7,7 @@ import { BroadcastEvent } from '../models/broadcast-event';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../src/environments/environment';
 import { catchError, map, retry } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { TelemetryEventNames } from 'diagnostic-data'
+import { TelemetryEventNames } from 'diagnostic-data';
 
 const publicOrigins = [
     'portal.azure.com'
@@ -36,7 +35,7 @@ export class PortalService {
     private origin: string;
     private acceptedOriginsSuffix: string[] = [];
 
-    constructor(private _broadcastService: BroadcastService, private _http: HttpClient, private _router: Router) {
+    constructor(private _broadcastService: BroadcastService, private _http: HttpClient) {
         this.sessionId = '';
 
         this.startupInfoObservable = new ReplaySubject<StartupInfo>(1);
@@ -338,7 +337,7 @@ export class PortalService {
         this.logAction('diagnostic-data', eventMessage, {
             ...properties,
             'measurements': measurements,
-            'url': this._router.url,
+            'url': window.location.href,
             'origin': this.origin
         });
     }
