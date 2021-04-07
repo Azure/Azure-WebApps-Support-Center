@@ -95,7 +95,7 @@ export class PortalService {
             return this.setBladeReturnValueObservable;
         }
         else {
-            this.logEvent(TelemetryEventNames.PortalIFrameLoadException, {
+            this.logEvent(TelemetryEventNames.PortalIFrameLoadingException, {
                 detail: 'NULL data cannot be set as blade return value.'
             });
             return null;
@@ -114,7 +114,7 @@ export class PortalService {
 
         this._broadcastService.subscribe<ErrorEvent>(BroadcastEvent.Error, error => {
             if (error.details) {
-                this.logEvent(TelemetryEventNames.PortalIFrameLoadException, {
+                this.logEvent(TelemetryEventNames.PortalIFrameLoadingException, {
                     detail: 'broadcast get error',
                     error: error.details
                 });
@@ -277,7 +277,7 @@ export class PortalService {
                 }
                 return originList;
             }), retry(2), catchError(error => {
-                this.logEvent(TelemetryEventNames.PortalIFrameLoadException, {
+                this.logEvent(TelemetryEventNames.PortalIFrameLoadingException, {
                     detail: "cannot get origin list from backend appsetting",
                     error: JSON.stringify(error)
                 });
@@ -310,7 +310,7 @@ export class PortalService {
         }
 
         if (!event.origin) {
-            this.logEvent(TelemetryEventNames.PortalIFrameLoadException, {
+            this.logEvent(TelemetryEventNames.PortalIFrameLoadingException, {
                 detail: "iFrame event does not include origin property"
             });
             return of(false);
@@ -324,7 +324,7 @@ export class PortalService {
         return this._getAcceptOrigins(event).pipe(map(originsSuffix => {
             const originIndex = originsSuffix.findIndex(o => event.origin.toLowerCase().endsWith(o.toLowerCase()));
             if (originIndex === -1) {
-                this.logEvent(TelemetryEventNames.PortalIFrameLoadException, {
+                this.logEvent(TelemetryEventNames.PortalIFrameLoadingException, {
                     detail: "cannot find origin from origin list"
                 });
             }
