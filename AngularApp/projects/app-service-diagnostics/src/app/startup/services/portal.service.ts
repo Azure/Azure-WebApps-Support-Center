@@ -165,7 +165,6 @@ export class PortalService {
 
         const data = event.data.data;
         const methodName = event.data.kind;
-        console.log(`portal.service, ${methodName}`);
 
         console.log('[iFrame] Received validated mesg: ' + methodName, event, event.srcElement, event.srcElement.location, event.srcElement.location.host);
 
