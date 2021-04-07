@@ -1,12 +1,14 @@
 import { Injectable, isDevMode } from '@angular/core';
-import { Observable, of, ReplaySubject } from 'rxjs';
+import { Observable, of, ReplaySubject, throwError } from 'rxjs';
 import { StartupInfo, Event, Data, Verbs, Action, LogEntryLevel, Message, OpenBladeInfo, KeyValuePair } from '../../shared/models/portal';
 import { ErrorEvent } from '../../shared/models/error-event';
 import { BroadcastService } from './broadcast.service';
 import { BroadcastEvent } from '../models/broadcast-event';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../src/environments/environment';
-import { map } from 'rxjs/operators';
+import { catchError, map, retry } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { TelemetryEventNames } from 'diagnostic-data'
 
 const publicOrigins = [
     'portal.azure.com'
@@ -31,10 +33,10 @@ export class PortalService {
 
     private shellSrc: string;
     private tokenObservable: ReplaySubject<string>;
-
+    private origin: string;
     private acceptedOriginsSuffix: string[] = [];
 
-    constructor(private _broadcastService: BroadcastService, private _http: HttpClient) {
+    constructor(private _broadcastService: BroadcastService, private _http: HttpClient, private _router: Router) {
         this.sessionId = '';
 
         this.startupInfoObservable = new ReplaySubject<StartupInfo>(1);
@@ -94,7 +96,9 @@ export class PortalService {
             return this.setBladeReturnValueObservable;
         }
         else {
-            this.logMessage(LogEntryLevel.Error, 'NULL data cannot be set as blade return value.');
+            this.logEvent(TelemetryEventNames.PortalIFrameLoadException, {
+                detail: 'NULL data cannot be set as blade return value.'
+            });
             return null;
         }
     }
@@ -111,7 +115,10 @@ export class PortalService {
 
         this._broadcastService.subscribe<ErrorEvent>(BroadcastEvent.Error, error => {
             if (error.details) {
-                this.logMessage(LogEntryLevel.Error, error.details);
+                this.logEvent(TelemetryEventNames.PortalIFrameLoadException,{
+                    detail:'broadcast get error',
+                    error: error.details
+                });
             }
         });
     }
@@ -152,16 +159,6 @@ export class PortalService {
         this.postMessage(Verbs.setDirtyState, JSON.stringify(dirty));
     }
 
-    logMessage(level: LogEntryLevel, message: string, ...restArgs: any[]) {
-        const messageStr = JSON.stringify(<Message>{
-            level: level,
-            message: message,
-            restArgs: restArgs
-        });
-
-        this.postMessage(Verbs.logMessage, messageStr);
-    }
-
     private iframeReceivedMsg(event: Event): void {
         if (!event || !event.data || event.data.signature !== this.portalSignature) {
             return;
@@ -169,7 +166,7 @@ export class PortalService {
 
         const data = event.data.data;
         const methodName = event.data.kind;
-
+        console.log(`portal.service, ${methodName}`);
 
         console.log('[iFrame] Received validated mesg: ' + methodName, event, event.srcElement, event.srcElement.location, event.srcElement.location.host);
 
@@ -183,9 +180,12 @@ export class PortalService {
             if (methodName === Verbs.sendStartupInfo) {
                 const info = <StartupInfo>data;
                 this.sessionId = info.sessionId;
-                info.isIFrameForCaseSubmissionSolution = isIFrameForCaseSubmissionSolution;                
+                info.isIFrameForCaseSubmissionSolution = isIFrameForCaseSubmissionSolution;
                 this.startupInfoObservable.next(info);
                 this.isIFrameForCaseSubmissionSolution.next(isIFrameForCaseSubmissionSolution);
+                this.logEvent(TelemetryEventNames.PortalIFrameLoadingSuccess,{
+                    'portalSessionId': this.sessionId
+                });
             } else if (methodName === Verbs.sendAppInsightsResource) {
                 const aiResource = data;
                 this.appInsightsResourceObservable.next(aiResource);
@@ -277,6 +277,13 @@ export class PortalService {
                     this.acceptedOriginsSuffix = originList;
                 }
                 return originList;
+            }), retry(2), catchError(error => {
+                this.logEvent(TelemetryEventNames.PortalIFrameLoadException, {
+                    detail: "cannot get origin list from backend appsetting",
+                    error: JSON.stringify(error)
+                });
+
+                return throwError(error);
             }));
 
             return request;
@@ -295,18 +302,44 @@ export class PortalService {
     }
 
     private _checkAcceptOrigins(event: Event): Observable<boolean> {
-        if (!event.origin) {
-            return of(false);
+        if (event.data.kind === Verbs.sendStartupInfo) {
+            const info = <StartupInfo>(event.data.data);
+            this.sessionId = info.sessionId;
+            this.logEvent(TelemetryEventNames.PortalIFrameLoadingStart, {
+                'portalSessionId': this.sessionId
+            });
         }
 
+        if (!event.origin) {
+            this.logEvent(TelemetryEventNames.PortalIFrameLoadException, {
+                detail: "iFrame event does not include origin property"
+            });
+            return of(false);
+        }
+        this.origin = event.origin;
         //If can find from public origins,no need backend call
         if (publicOrigins.findIndex(o => event.origin.toLocaleLowerCase().endsWith(o.toLowerCase())) > -1) {
             return of(true);
         }
 
         return this._getAcceptOrigins(event).pipe(map(originsSuffix => {
-
-            return originsSuffix.findIndex(o => event.origin.toLowerCase().endsWith(o.toLowerCase())) > -1;
+            const originIndex = originsSuffix.findIndex(o => event.origin.toLowerCase().endsWith(o.toLowerCase()));
+            if (originIndex === -1) {
+                this.logEvent(TelemetryEventNames.PortalIFrameLoadException, {
+                    detail: "cannot find origin from origin list"
+                });
+            }
+            return originIndex > -1;
         }));
+    }
+
+    //log into Kusto for portal event
+    private logEvent(eventMessage: string, properties: { [name: string]: string }, measurements?: any) {
+        this.logAction('diagnostic-data', eventMessage, {
+            ...properties,
+            'measurements': measurements,
+            'url': this._router.url,
+            'origin': this.origin
+        });
     }
 }

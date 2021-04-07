@@ -81,6 +81,9 @@ export const TelemetryEventNames = {
     IncidentValidationCheck: 'IncidentValidationCheck',
     IncidentUpdateOperation: 'IncidentUpdateOperation',
     RiskAlertNotificationLoaded: 'RiskAlertNotificationLoaded',
+    PortalIFrameLoadException: 'PortalIFrameOpenException',
+    PortalIFrameLoadingSuccess: 'PortalIFrameLoadingSuccess',
+    PortalIFrameLoadingStart: 'PortalIFrameLoadingStart'
 };
 
 export const TelemetrySource = {
