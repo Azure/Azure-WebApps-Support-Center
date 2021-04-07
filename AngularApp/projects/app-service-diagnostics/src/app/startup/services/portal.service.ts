@@ -114,8 +114,8 @@ export class PortalService {
 
         this._broadcastService.subscribe<ErrorEvent>(BroadcastEvent.Error, error => {
             if (error.details) {
-                this.logEvent(TelemetryEventNames.PortalIFrameLoadException,{
-                    detail:'broadcast get error',
+                this.logEvent(TelemetryEventNames.PortalIFrameLoadException, {
+                    detail: 'broadcast get error',
                     error: error.details
                 });
             }
@@ -182,7 +182,7 @@ export class PortalService {
                 info.isIFrameForCaseSubmissionSolution = isIFrameForCaseSubmissionSolution;
                 this.startupInfoObservable.next(info);
                 this.isIFrameForCaseSubmissionSolution.next(isIFrameForCaseSubmissionSolution);
-                this.logEvent(TelemetryEventNames.PortalIFrameLoadingSuccess,{
+                this.logEvent(TelemetryEventNames.PortalIFrameLoadingSuccess, {
                     'portalSessionId': this.sessionId
                 });
             } else if (methodName === Verbs.sendAppInsightsResource) {
@@ -334,11 +334,15 @@ export class PortalService {
 
     //log into Kusto for portal event
     private logEvent(eventMessage: string, properties: { [name: string]: string }, measurements?: any) {
-        this.logAction('diagnostic-data', eventMessage, {
+        const eventProp = {
             ...properties,
             'measurements': measurements,
             'url': window.location.href,
             'origin': this.origin
-        });
+        };
+        if (!eventProp["portalSessionId"] && this.sessionId !== "") {
+            eventProp["portalSessionId"] = this.sessionId;
+        }
+        this.logAction('diagnostic-data', eventMessage, eventProp);
     }
 }
