@@ -112,7 +112,7 @@ export class PortalService {
 
         this._broadcastService.subscribe<ErrorEvent>(BroadcastEvent.Error, error => {
             if (error.details) {
-                this.logException('broadcast get error',{error: error.details});
+                this.logException('broadcast get error', { error: error.details });
             }
         });
     }
@@ -154,8 +154,8 @@ export class PortalService {
             level: level,
             message: message
         }
-        if(properties) {
-             const restArgs  = Object.entries(properties).map(entry => {
+        if (properties) {
+            const restArgs = Object.entries(properties).map(entry => {
                 let obj = {};
                 obj[entry[0]] = JSON.stringify(entry[1]);
                 return obj;
@@ -197,7 +197,7 @@ export class PortalService {
                 this.logEvent(TelemetryEventNames.PortalIFrameLoadingSuccess, {
                     'portalSessionId': this.sessionId
                 });
-                this.logMessage(LogEntryLevel.Verbose,TelemetryEventNames.PortalIFrameLoadingSuccess,{
+                this.logMessage(LogEntryLevel.Verbose, TelemetryEventNames.PortalIFrameLoadingSuccess, {
                     'portalSessionId': this.sessionId
                 });
             } else if (methodName === Verbs.sendAppInsightsResource) {
@@ -292,7 +292,7 @@ export class PortalService {
                 }
                 return originList;
             }), retry(2), catchError(error => {
-                this.logException("cannot get origin list from backend appsetting",{error: JSON.stringify(error)});
+                this.logException("cannot get origin list from backend appsetting", { error: JSON.stringify(error) });
 
                 return throwError(error);
             }));
@@ -319,7 +319,7 @@ export class PortalService {
             this.logEvent(TelemetryEventNames.PortalIFrameLoadingStart, {
                 'portalSessionId': this.sessionId
             });
-            this.logMessage(LogEntryLevel.Verbose,TelemetryEventNames.PortalIFrameLoadingStart,{
+            this.logMessage(LogEntryLevel.Verbose, TelemetryEventNames.PortalIFrameLoadingStart, {
                 'portalSessionId': this.sessionId
             });
         }
@@ -362,6 +362,6 @@ export class PortalService {
             detail: exceptionMessage,
             ...properties
         });
-        this.logMessage(LogEntryLevel.Error, exceptionMessage,properties);
+        this.logMessage(LogEntryLevel.Error, exceptionMessage, properties);
     }
 }
