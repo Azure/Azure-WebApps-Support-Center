@@ -220,6 +220,7 @@ export class FeatureService {
 
   private validateDetectorMetadata(detector: DetectorMetaData): boolean {
     if (exclusiveDetectorTypes.findIndex(type => detector.type === type) > -1) return false;
+    if(this._features.findIndex(f => f.id === detector.id) > -1) return false;
 
     return (detector.category && detector.category.length > 0) || (detector.description && detector.description.length > 0)
   }
