@@ -95,9 +95,7 @@ export class PortalService {
             return this.setBladeReturnValueObservable;
         }
         else {
-            this.logEvent(TelemetryEventNames.PortalIFrameLoadingException, {
-                detail: 'NULL data cannot be set as blade return value.'
-            });
+            this.logException("NULL data cannot be set as blade return value");
             return null;
         }
     }
@@ -114,10 +112,7 @@ export class PortalService {
 
         this._broadcastService.subscribe<ErrorEvent>(BroadcastEvent.Error, error => {
             if (error.details) {
-                this.logEvent(TelemetryEventNames.PortalIFrameLoadingException, {
-                    detail: 'broadcast get error',
-                    error: error.details
-                });
+                this.logException('broadcast get error',{error: error.details});
             }
         });
     }
@@ -154,6 +149,24 @@ export class PortalService {
         this.postMessage(Verbs.logAction, actionStr);
     }
 
+    logMessage(level: LogEntryLevel, message: string, properties?: { [name: string]: string }) {
+        const info: Message = {
+            level: level,
+            message: message
+        }
+        if(properties) {
+             const restArgs  = Object.entries(properties).map(entry => {
+                let obj = {};
+                obj[entry[0]] = JSON.stringify(entry[1]);
+                return obj;
+            });
+
+            info["restArgs"] = restArgs;
+        }
+
+        this.postMessage(Verbs.logMessage, JSON.stringify(info));
+    }
+
     setDirtyState(dirty: boolean): void {
         this.postMessage(Verbs.setDirtyState, JSON.stringify(dirty));
     }
@@ -182,6 +195,9 @@ export class PortalService {
                 this.startupInfoObservable.next(info);
                 this.isIFrameForCaseSubmissionSolution.next(isIFrameForCaseSubmissionSolution);
                 this.logEvent(TelemetryEventNames.PortalIFrameLoadingSuccess, {
+                    'portalSessionId': this.sessionId
+                });
+                this.logMessage(LogEntryLevel.Verbose,TelemetryEventNames.PortalIFrameLoadingSuccess,{
                     'portalSessionId': this.sessionId
                 });
             } else if (methodName === Verbs.sendAppInsightsResource) {
@@ -276,10 +292,7 @@ export class PortalService {
                 }
                 return originList;
             }), retry(2), catchError(error => {
-                this.logEvent(TelemetryEventNames.PortalIFrameLoadingException, {
-                    detail: "cannot get origin list from backend appsetting",
-                    error: JSON.stringify(error)
-                });
+                this.logException("cannot get origin list from backend appsetting",{error: JSON.stringify(error)});
 
                 return throwError(error);
             }));
@@ -306,12 +319,13 @@ export class PortalService {
             this.logEvent(TelemetryEventNames.PortalIFrameLoadingStart, {
                 'portalSessionId': this.sessionId
             });
+            this.logMessage(LogEntryLevel.Verbose,TelemetryEventNames.PortalIFrameLoadingStart,{
+                'portalSessionId': this.sessionId
+            });
         }
 
         if (!event.origin) {
-            this.logEvent(TelemetryEventNames.PortalIFrameLoadingException, {
-                detail: "iFrame event does not include origin property"
-            });
+            this.logException("iFrame event does not include origin property");
             return of(false);
         }
         this.origin = event.origin;
@@ -323,9 +337,7 @@ export class PortalService {
         return this._getAcceptOrigins(event).pipe(map(originsSuffix => {
             const originIndex = originsSuffix.findIndex(o => event.origin.toLowerCase().endsWith(o.toLowerCase()));
             if (originIndex === -1) {
-                this.logEvent(TelemetryEventNames.PortalIFrameLoadingException, {
-                    detail: "cannot find origin from origin list"
-                });
+                this.logException("cannot find origin from origin list");
             }
             return originIndex > -1;
         }));
@@ -343,5 +355,13 @@ export class PortalService {
             eventProp["portalSessionId"] = this.sessionId;
         }
         this.logAction('diagnostic-data', eventMessage, eventProp);
+    }
+
+    private logException(exceptionMessage: string, properties?: { [name: string]: string }) {
+        this.logEvent(TelemetryEventNames.PortalIFrameLoadingException, {
+            detail: exceptionMessage,
+            ...properties
+        });
+        this.logMessage(LogEntryLevel.Error, exceptionMessage,properties);
     }
 }
