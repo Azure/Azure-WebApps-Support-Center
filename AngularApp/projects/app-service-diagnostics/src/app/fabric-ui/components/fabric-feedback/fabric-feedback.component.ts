@@ -16,7 +16,7 @@ export class FabricFeedbackComponent implements AfterViewInit, OnInit, OnDestroy
   type: PanelType = PanelType.custom;
   siteName: string = "";
   ratingEventProperties: any;
-  feedbackPanelConfig: { defaultFeedbackText?: string, notResetOnDismissed?: boolean, detectorName?: string, url?: string };
+  feedbackPanelConfig: { defaultFeedbackText?: string, notResetOnDismissed?: boolean, detectorName?: string, url?: string } = {};
   feedbackText: string = "";
   panelWidth: string = "315px";
   feedbackIcons: { id: string, text: string }[] =
@@ -127,7 +127,7 @@ export class FabricFeedbackComponent implements AfterViewInit, OnInit, OnDestroy
   }
 
   onOpenFeedbackPanel() {
-    if (this.feedbackPanelConfig == null || this.feedbackPanelConfig.url != window.location.href.split("?")[0]) {
+    if (this.feedbackPanelConfig.url != window.location.href.split("?")[0]) {
       var globals = this.globals;
       if (globals.messagesData.feedbackPanelConfig != null && globals.messagesData.feedbackPanelConfig.url == window.location.href.split("?")[0]) {
         this.feedbackPanelConfig = globals.messagesData.feedbackPanelConfig;
