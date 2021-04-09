@@ -158,7 +158,7 @@ export class SiteFeatureService extends FeatureService {
     this.proactiveTools = [
       {
         appType: AppType.WebApp | AppType.FunctionApp,
-        platform: OperatingSystem.windows,
+        platform: OperatingSystem.windows | OperatingSystem.linux,
         sku: Sku.NotDynamic,
         hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',

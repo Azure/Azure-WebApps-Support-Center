@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SiteInfoMetaData } from '../shared/models/site';
+import { OperatingSystem, SiteInfoMetaData } from '../shared/models/site';
 import { SiteService } from '../shared/services/site.service';
 import { AutohealingService } from '../shared/services/autohealing.service';
 import { FormatHelper } from '../shared/utilities/formattingHelper';
@@ -8,6 +8,7 @@ import { AutoHealSettings, AutoHealCustomAction, AutoHealRules, AutoHealActions,
 import { AvailabilityLoggingService } from '../shared/services/logging/availability.logging.service';
 import { Globals } from '../globals';
 import { TelemetryService } from 'diagnostic-data';
+import { WebSitesService } from '../resources/web-sites/services/web-sites.service';
 
 @Component({
   selector: 'autohealing',
@@ -43,10 +44,15 @@ export class AutohealingComponent implements OnInit {
   selectedTab: string = 'autoHealing';
   statusCodeRules: StatusCodeRules = null;
   slowRequestRules: SlowRequestsRules = null;
+  isWindowsApp: boolean = true;
 
   constructor(private _siteService: SiteService, private _autohealingService: AutohealingService,
     private globals: Globals, private telemetryService: TelemetryService,
-    private _logger: AvailabilityLoggingService, protected _route: ActivatedRoute) {
+    private _logger: AvailabilityLoggingService, protected _route: ActivatedRoute,
+    private _webSiteService: WebSitesService) {
+    if (this._webSiteService.platform !== OperatingSystem.windows) {
+      this.isWindowsApp = false;
+    }
   }
 
   ngOnInit() {
@@ -287,7 +293,9 @@ export class AutohealingComponent implements OnInit {
     const self = this;
 
     this.triggers.push({ Name: 'Request Duration', Icon: 'fa fa-hourglass-half', checkRuleConfigured: () => self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && (self.autohealingSettings.autoHealRules.triggers.slowRequests != null || (self.autohealingSettings.autoHealRules.triggers.slowRequestsWithPath != null && self.autohealingSettings.autoHealRules.triggers.slowRequestsWithPath.length > 0)), IsConfigured: false });
-    this.triggers.push({ Name: 'Memory Limit', Icon: 'fa fa-microchip', checkRuleConfigured: () => self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0, IsConfigured: false });
+    if (this.isWindowsApp) {
+      this.triggers.push({ Name: 'Memory Limit', Icon: 'fa fa-microchip', checkRuleConfigured: () => self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.privateBytesInKB > 0, IsConfigured: false });
+    }
     this.triggers.push({ Name: 'Request Count', Icon: 'fa fa-bar-chart', checkRuleConfigured: () => self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && self.autohealingSettings.autoHealRules.triggers.requests != null, IsConfigured: false });
     this.triggers.push({ Name: 'Status Codes', Icon: 'fa fa-list', checkRuleConfigured: () => self.autohealingSettings != null && self.autohealingSettings.autoHealRules != null && self.autohealingSettings.autoHealRules.triggers != null && ((self.autohealingSettings.autoHealRules.triggers.statusCodes && this.autohealingSettings.autoHealRules.triggers.statusCodes.length > 0) || (self.autohealingSettings.autoHealRules.triggers.statusCodesRange && this.autohealingSettings.autoHealRules.triggers.statusCodesRange.length > 0)), IsConfigured: false });
 
@@ -296,8 +304,12 @@ export class AutohealingComponent implements OnInit {
     });
 
     this.actions.push({ Name: 'Recycle Process', Icon: 'fa fa-recycle' });
-    this.actions.push({ Name: 'Log an Event', Icon: 'fa fa-book' });
-    this.actions.push({ Name: 'Custom Action', Icon: 'fa fa-bolt' });
+
+    if (this.isWindowsApp) {
+      this.actions.push({ Name: 'Log an Event', Icon: 'fa fa-book' });
+      this.actions.push({ Name: 'Custom Action', Icon: 'fa fa-bolt' });
+    }
+
   }
 
   updateSummaryText() {
@@ -352,9 +364,9 @@ export class AutohealingComponent implements OnInit {
   validateAutoHealRules() {
     this.validationWarning = [];
 
-    const appDomainRestartWarning: string = 'Saving mitigation settings will restart the application domain for the web app and this can cause logged-in user information, sessions, and in-memory cache to be cleared. Hence, it is advised to make these changes during non-business hours.';
+    const restartWarning: string = 'Saving mitigation settings will restart the app and this can cause logged-in user information, sessions, and in-memory cache to be cleared. Hence, it is advised to make these changes during non-business hours.';
     const minProcessExecutionTimeNotSet: string = 'To avoid mitigation actions to kick in immediately after process starts, it is advisable to set the startup time to at least 600 seconds (10 minutes). This will ensure that mitigation actions don\'t kick in during app\'s cold start.';
-    const actionSetToRecycle: string = 'Even though the recycle happens in an overlapped recycling manner, please ensure that the rules configured don\'t end up recycling your process too many times to avoid any performance hits or app downtimes during the cold start of the application.';
+    const actionSetToRecycle: string = 'Please ensure that the rules configured don\'t end up recycling your process too many times to avoid any performance hits or app downtimes during the cold start of the application.';
     const diagnosticToolChosenCustom: string = 'You have chosen a custom action to execute whenever mitigation kicks in.';
     const diagnosticToolChosen: string = ' If this is a production app, please ensure that you try this out on a deployment slot first to protect against any downtimes to your application.';
     const diagnosticJavaToolChosen: string = 'The Java diagnostic tools use either jMap or jStack process to collect dumps. Both of these tools freeze the process while collecting data. As a result, the app cannot serve any requests during this time and performance will be impacted. It may take longer to collect these dumps if the process is consuming high memory or has a high number of active threads.';
@@ -365,7 +377,7 @@ export class AutohealingComponent implements OnInit {
 
     if (this.autohealingSettings != null && this.autohealingSettings.autoHealEnabled && this.autohealingSettings.autoHealRules != null && this.autohealingSettings.autoHealRules.actions != null && this.autohealingSettings.autoHealRules.triggers != null) {
 
-      this.validationWarning.push(appDomainRestartWarning);
+      this.validationWarning.push(restartWarning);
 
       if (this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime == null
         || (this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime != null && FormatHelper.timespanToSeconds(this.autohealingSettings.autoHealRules.actions.minProcessExecutionTime) < 600)) {

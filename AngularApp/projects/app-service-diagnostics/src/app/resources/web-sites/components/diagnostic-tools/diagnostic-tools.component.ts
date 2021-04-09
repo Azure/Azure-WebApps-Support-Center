@@ -24,6 +24,7 @@ export class DiagnosticToolsComponent {
 
   stackFound: boolean = false;
   stack: string;
+  isWindowsApp: boolean = true;
 
   siteToBeDiagnosed: SiteDaasInfo;
   scmPath: string;
@@ -37,17 +38,22 @@ export class DiagnosticToolsComponent {
   ];
 
   constructor(private _sitesFeatureService: SiteFeatureService, public webSiteService: WebSitesService, private _siteService: SiteService, private _resourceService: ResourceService, private _authServiceInstance: AuthService, private _telemetryService: TelemetryService) {
-    this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
-      this.siteToBeDiagnosed = site;
-    });
+
+    if (this.webSiteService.platform !== OperatingSystem.windows) {
+      this.isWindowsApp = false;
+    } else {
+      this._siteService.getSiteDaasInfoFromSiteMetadata().subscribe(site => {
+        this.siteToBeDiagnosed = site;
+      });
+    }
 
     this.scmPath = this.webSiteService.resource.properties.enabledHostNames.find(hostname => hostname.indexOf('.scm.') > 0);
 
     this.toolCategories.push(<SiteFilteredItem<any>>{
       appType: AppType.WebApp | AppType.FunctionApp,
-      platform: OperatingSystem.windows,
+      platform: OperatingSystem.windows | OperatingSystem.linux,
       sku: Sku.NotDynamic,
-      hostingEnvironmentKind:HostingEnvironmentKind.All,
+      hostingEnvironmentKind: HostingEnvironmentKind.All,
       stack: '',
       item: {
         title: 'Proactive Tools',
@@ -71,7 +77,7 @@ export class DiagnosticToolsComponent {
       appType: AppType.WebApp | AppType.FunctionApp,
       platform: OperatingSystem.windows,
       sku: Sku.NotDynamic,
-      hostingEnvironmentKind:HostingEnvironmentKind.All,
+      hostingEnvironmentKind: HostingEnvironmentKind.All,
       stack: '',
       item: {
         title: 'Diagnostic Tools',
@@ -95,7 +101,7 @@ export class DiagnosticToolsComponent {
       appType: AppType.WebApp,
       platform: OperatingSystem.windows,
       sku: Sku.NotDynamic,
-      hostingEnvironmentKind:HostingEnvironmentKind.All,
+      hostingEnvironmentKind: HostingEnvironmentKind.All,
       stack: '',
       item: {
         title: 'Support Tools',
@@ -120,22 +126,22 @@ export class DiagnosticToolsComponent {
     }
 
     this._authServiceInstance.getStartupInfo().subscribe(startUpInfo => {
-        if (startUpInfo) {
-          const resourceId = startUpInfo.resourceId ? startUpInfo.resourceId : '';
-          const ticketBladeWorkflowId = startUpInfo.workflowId ? startUpInfo.workflowId : '';
-          const supportTopicId = startUpInfo.supportTopicId ? startUpInfo.supportTopicId : '';
-          const sessionId = startUpInfo.sessionId ? startUpInfo.sessionId : '';
+      if (startUpInfo) {
+        const resourceId = startUpInfo.resourceId ? startUpInfo.resourceId : '';
+        const ticketBladeWorkflowId = startUpInfo.workflowId ? startUpInfo.workflowId : '';
+        const supportTopicId = startUpInfo.supportTopicId ? startUpInfo.supportTopicId : '';
+        const sessionId = startUpInfo.sessionId ? startUpInfo.sessionId : '';
 
-          const eventProperties: { [name: string]: string } = {
-            'ResourceId': resourceId,
-            'TicketBladeWorkflowId': ticketBladeWorkflowId,
-            'SupportTopicId': supportTopicId,
-            'PortalSessionId': sessionId,
-            'AzureServiceName': this._resourceService.azureServiceName,
-          };
-          this._telemetryService.eventPropertiesSubject.next(eventProperties);
-        }
-      });
+        const eventProperties: { [name: string]: string } = {
+          'ResourceId': resourceId,
+          'TicketBladeWorkflowId': ticketBladeWorkflowId,
+          'SupportTopicId': supportTopicId,
+          'PortalSessionId': sessionId,
+          'AzureServiceName': this._resourceService.azureServiceName,
+        };
+        this._telemetryService.eventPropertiesSubject.next(eventProperties);
+      }
+    });
   }
 
   selectStack(stack: string) {

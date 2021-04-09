@@ -206,7 +206,7 @@ export class SitesCategoryService extends CategoryService {
   private _getDiagnosticToolsCategory(siteId: string): SiteFilteredItem<Category> {
     return <SiteFilteredItem<Category>>{
       appType: AppType.WebApp | AppType.FunctionApp,
-      platform: OperatingSystem.windows,
+      platform: OperatingSystem.windows | OperatingSystem.linux,
       stack: '',
       sku: Sku.NotDynamic,
       hostingEnvironmentKind: HostingEnvironmentKind.All,
@@ -214,8 +214,8 @@ export class SitesCategoryService extends CategoryService {
         id: 'DiagnosticTools',
         name: 'Diagnostic Tools',
         overviewDetectorId:'DiagnosticTools',
-        description: 'Run language-specific tools for deeper investigation.',
-        keywords: ['Profiler', 'Memory Dump', 'Auto-Heal','Event Logs'],
+        description: 'Run proactive tools to automatically mitigate the app.',
+        keywords: ['Auto-Heal'],
         color: 'rgb(170, 192, 208)',
         createFlowForCategory: false,
         overridePath: `resource${siteId}/diagnosticTools`
