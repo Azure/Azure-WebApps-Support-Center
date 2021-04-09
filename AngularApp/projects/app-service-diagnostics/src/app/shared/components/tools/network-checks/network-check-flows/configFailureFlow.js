@@ -21,7 +21,7 @@ export var configFailureFlow = {
                     dropdownView.dropdowns.push(vnetDropdown);
                     vnets = await diagProvider.getArmResourceAsync(`/subscriptions/${subscription.subscriptionId}/providers/Microsoft.Network/virtualNetworks`, "2018-07-01");
                     dropdownView.dropdowns.length = 1;
-                    vnets = vnets.value.sort((s1, s2) => s1.name.toLowerCase() > s2.name.toLowerCase() ? 1 : -1);
+                    vnets = vnets.value.filter(v => v && v.name != null).sort((s1, s2) => s1.name.toLowerCase() > s2.name.toLowerCase() ? 1 : -1);
 
                     if (vnets.length > 0) {
                         vnetDropdown = {
@@ -40,7 +40,8 @@ export var configFailureFlow = {
                 } else if (dropdownIdx == 1) {
                     dropdownView.dropdowns.length = 2;
                     var vnet = vnets[selectedIdx];
-                    subnets = vnet.properties.subnets.sort((s1, s2) => s1.name.toLowerCase() > s2.name.toLowerCase() ? 1 : -1);
+                    subnets = vnet.properties == null ? [] : vnet.properties.subnets.filter(s => s && s.name != null);
+                    subnets = subnets.sort((s1, s2) => s1.name.toLowerCase() > s2.name.toLowerCase() ? 1 : -1);
                     var subnetDropdown = null;
                     if (subnets.length > 0) {
                         subnetDropdown = {
@@ -76,7 +77,7 @@ export var configFailureFlow = {
 
         diagProvider.getArmResourceAsync("subscriptions")
             .then(s => {
-                subscriptions = s.value.sort((s1, s2) => s1.displayName.toLowerCase() > s2.displayName.toLowerCase() ? 1 : -1);
+                subscriptions = s.value.filter(s => s && s.displayName != null).sort((s1, s2) => s1.displayName.toLowerCase() > s2.displayName.toLowerCase() ? 1 : -1);
                 subscriptionDropdown.options = subscriptions.map(s => s.displayName);
                 subscriptionDropdown.placeholder = "Please select...";
                 dropdownView.dropdowns.length = 0;
@@ -135,7 +136,7 @@ async function checkSubnetAvailabilityAsync(siteInfo, diagProvider, subnetData) 
                         if (subnetResourceId == selectedSubnet) {
                             let subnetData = await GetSubnet(diagProvider, subnetResourceId);
 
-                            if (subnetData["properties"] && subnetData["properties"]["serviceAssociationLinks"] != null) {
+                            if (subnetData && subnetData["properties"] && subnetData["properties"]["serviceAssociationLinks"] != null) {
                                 var sal = subnetData["properties"]["serviceAssociationLinks"];
                                 var linkedAsp = sal[0] && sal[0]["properties"] && sal[0]["properties"]["link"] || '';
                                 if (siteResourceUri.toLowerCase() == siteArmId.toLowerCase()) {
@@ -176,7 +177,7 @@ async function checkSubnetAvailabilityAsync(siteInfo, diagProvider, subnetData) 
 
                             views.push(new InfoStepView({
                                 infoType: 1,
-                                title: "The App Service Plan is already using Regional VNet integration’",
+                                title: "The App Service Plan is already using Regional VNet integration",
                                 markdown: msg
                             }));
 
