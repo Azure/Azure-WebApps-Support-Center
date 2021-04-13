@@ -55,7 +55,7 @@ export interface Action {
 export interface Message {
     level: LogEntryLevel;
     message: string;
-    restArgs?: any[];
+    restArgs: any[];
 }
 
 export interface OpenBladeInfo {
