@@ -20,9 +20,6 @@
           [isResizable]="col.isResizable" [isMultiline]="col.isMultiline" [ariaLabel]="col.name">
           <render>
             <ng-template let-item="item" let-column="column" let-rowIndex="index">
-              <!-- <ng-container *ngIf="isMarkdown(item[column.name]) else embedHTML">
-                <markdown-text [markdownData]="item[column.name]"></markdown-text>
-              </ng-container> -->
               <ng-container 
                 [ngTemplateOutlet]="isMarkdown(item[column.name]) ? markdownText : embeddedHTML"
                 [ngTemplateOutletContext]="{data:item[column.name]}"
