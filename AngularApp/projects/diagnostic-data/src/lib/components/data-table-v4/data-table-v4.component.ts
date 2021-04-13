@@ -271,6 +271,11 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     const columns = this.diagnosticData.table.columns;
     return columns.findIndex(col => col.columnName === option.name) > -1;
   }
+
+  isMarkdown(s: any) {
+    const str = `${s}`;
+    return str.trim().startsWith('<markdown>') && str.endsWith('</markdown>');
+  }
 }
 
 
