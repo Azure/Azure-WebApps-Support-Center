@@ -149,22 +149,14 @@ export class PortalService {
         this.postMessage(Verbs.logAction, actionStr);
     }
 
-    logMessage(level: LogEntryLevel, message: string, properties?: { [name: string]: string }) {
-        const info: Message = {
+    logMessage(level: LogEntryLevel, message: string, ...restArgs: any[]) {
+        const messageStr = JSON.stringify(<Message>{
             level: level,
-            message: message
-        }
-        if (properties) {
-            const restArgs = Object.entries(properties).map(entry => {
-                let obj = {};
-                obj[entry[0]] = JSON.stringify(entry[1]);
-                return obj;
-            });
+            message: message,
+            restArgs: restArgs
+        });
 
-            info["restArgs"] = restArgs;
-        }
-
-        this.postMessage(Verbs.logMessage, JSON.stringify(info));
+        this.postMessage(Verbs.logMessage, messageStr);
     }
 
     setDirtyState(dirty: boolean): void {
@@ -194,9 +186,6 @@ export class PortalService {
                 info.isIFrameForCaseSubmissionSolution = isIFrameForCaseSubmissionSolution;
                 this.startupInfoObservable.next(info);
                 this.isIFrameForCaseSubmissionSolution.next(isIFrameForCaseSubmissionSolution);
-                this.logEvent(TelemetryEventNames.PortalIFrameLoadingSuccess, {
-                    'portalSessionId': this.sessionId
-                });
                 this.logMessage(LogEntryLevel.Verbose, TelemetryEventNames.PortalIFrameLoadingSuccess, {
                     'portalSessionId': this.sessionId
                 });
@@ -316,9 +305,6 @@ export class PortalService {
         if (event.data.kind === Verbs.sendStartupInfo) {
             const info = <StartupInfo>(event.data.data);
             this.sessionId = info.sessionId;
-            this.logEvent(TelemetryEventNames.PortalIFrameLoadingStart, {
-                'portalSessionId': this.sessionId
-            });
             this.logMessage(LogEntryLevel.Verbose, TelemetryEventNames.PortalIFrameLoadingStart, {
                 'portalSessionId': this.sessionId
             });
@@ -343,25 +329,7 @@ export class PortalService {
         }));
     }
 
-    //log into Kusto for portal event
-    private logEvent(eventMessage: string, properties: { [name: string]: string }, measurements?: any) {
-        const eventProp = {
-            ...properties,
-            'measurements': measurements,
-            'url': window.location.href,
-            'origin': this.origin
-        };
-        if (!eventProp["portalSessionId"] && this.sessionId !== "") {
-            eventProp["portalSessionId"] = this.sessionId;
-        }
-        this.logAction('diagnostic-data', eventMessage, eventProp);
-    }
-
-    private logException(exceptionMessage: string, properties?: { [name: string]: string }) {
-        this.logEvent(TelemetryEventNames.PortalIFrameLoadingException, {
-            detail: exceptionMessage,
-            ...properties
-        });
-        this.logMessage(LogEntryLevel.Error, exceptionMessage, properties);
+    private logException(exceptionMessage: string, ...resArgs: any[]) {
+        this.logMessage(LogEntryLevel.Error, exceptionMessage, resArgs);
     }
 }
