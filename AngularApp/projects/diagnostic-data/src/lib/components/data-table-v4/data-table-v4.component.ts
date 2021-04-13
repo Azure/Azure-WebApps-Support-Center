@@ -273,8 +273,9 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   }
 
   isMarkdown(s: any) {
-    const str = `${s}`;
-    return str.trim().startsWith('<markdown>') && str.endsWith('</markdown>');
+    let str = `${s}`;
+    str = str.trim();
+    return str.startsWith('<markdown>') && str.endsWith('</markdown>');
   }
 }
 
