@@ -6,7 +6,7 @@ import { NotificationService } from "../../../shared-v2/services/notification.se
 import { Globals } from "../../../globals";
 import { SelectionMode } from 'office-ui-fabric-react/lib/DetailsList'
 import { Router } from "@angular/router";
-import { TelemetryService,icons } from "diagnostic-data";
+import { TelemetryService, icons } from "diagnostic-data";
 
 enum BlurType {
   //click other place to close panel
@@ -30,7 +30,7 @@ export class FabricSearchResultsComponent {
   //Only ture when press ESC and no word in search box,collapse search result.
   isEscape: boolean = false;
   selectionMode = SelectionMode.none;
-  isInCategory:boolean;
+  isInCategory: boolean;
   get inputAriaLabel(): string {
     const resultCount = this.features.length;
     let searchResultAriaLabel = "";
@@ -55,7 +55,7 @@ export class FabricSearchResultsComponent {
     }
     else if (this.isInCategory) {
       this.clickSearchBox = BlurType.Blur;
-    } 
+    }
     else {
       this.clickSearchBox = BlurType.Blur;
     }
@@ -64,7 +64,7 @@ export class FabricSearchResultsComponent {
   @HostListener('keydown.Tab', ['$event.target'])
   onKeyDown(ele: HTMLElement) {
     if (ele.tagName === "INPUT") {
-      if(this.isInCategory) {
+      if (this.isInCategory) {
         this.clickSearchBox = BlurType.Blur;
         this.onBlurHandler();
       } else {
@@ -83,13 +83,13 @@ export class FabricSearchResultsComponent {
   }
 
   //Remove after no longer use search in command bar
-  @HostListener('keydown.arrowright',['$event.target'])
-  onArrowLeft(ele:HTMLElement) {
+  @HostListener('keydown.arrowright', ['$event.target'])
+  onArrowLeft(ele: HTMLElement) {
     if (this.isInCategory) {
       this.clickSearchBox = BlurType.None;
       const list = <any[]>Array.from(ele.parentElement.children);
       const index = list.findIndex(e => ele === e);
-      if (ele.tagName === "A" &&  this.features.length > 0 && index === this.features.length - 1) {
+      if (ele.tagName === "A" && this.features.length > 0 && index === this.features.length - 1) {
         this.clickSearchBox = BlurType.Blur;
         this.onBlurHandler();
       }
@@ -101,17 +101,17 @@ export class FabricSearchResultsComponent {
     }
   }
 
-  @ViewChild('fabSearchResult',{static:true}) fabSearchResult:ElementRef
-  constructor(public featureService: FeatureService, private _logger: LoggingV2Service,private _notificationService: NotificationService, private globals: Globals,private router:Router,private render:Renderer2,private telemetryService:TelemetryService) {
+  @ViewChild('fabSearchResult', { static: true }) fabSearchResult: ElementRef
+  constructor(public featureService: FeatureService, private _logger: LoggingV2Service, private _notificationService: NotificationService, private globals: Globals, private router: Router, private render: Renderer2, private telemetryService: TelemetryService) {
     this.isInCategory = this.router.url.includes('/categories');
 
-    this.render.listen('window','click',(e:Event) => {
-      if (!this.fabSearchResult.nativeElement.contains(e.target)){
+    this.render.listen('window', 'click', (e: Event) => {
+      if (!this.fabSearchResult.nativeElement.contains(e.target)) {
         this.clickOutside();
       }
     });
-    this.render.listen('window','keydown.Tab',(e:Event) => {
-      if (!this.fabSearchResult.nativeElement.contains(e.target)){
+    this.render.listen('window', 'keydown.Tab', (e: Event) => {
+      if (!this.fabSearchResult.nativeElement.contains(e.target)) {
         this.clickOutside();
       }
     });
@@ -124,7 +124,7 @@ export class FabricSearchResultsComponent {
   }
 
   private _logSearch() {
-    this.telemetryService.logEvent('Search',{
+    this.telemetryService.logEvent('Search', {
       'SearchValue': this.searchValue,
       'Location': this.isInCategory ? 'CategoryOverview' : 'LandingPage'
     });
@@ -132,8 +132,8 @@ export class FabricSearchResultsComponent {
 
   private _logSearchSelection(feature: Feature) {
     this._logSearch();
-    this.telemetryService.logEvent('SearchItemClicked',{
-      'SearchValue':this.searchValue,
+    this.telemetryService.logEvent('SearchItemClicked', {
+      'SearchValue': this.searchValue,
       'SelectionId': feature.id,
       'SelectionName': feature.name,
       'Location': this.isInCategory ? 'CategoryOverview' : 'LandingPage'
@@ -169,7 +169,7 @@ export class FabricSearchResultsComponent {
     this.showSearchResults = true;
     this.features = this.featureService.getFeatures(this.searchValue);
     //Disable AutoComplete
-    if(document.querySelector("#fabSearchBox input")){
+    if (document.querySelector("#fabSearchBox input")) {
       const input = <any>document.querySelector("#fabSearchBox input");
       input.autocomplete = "off";
     }
@@ -212,16 +212,20 @@ export class FabricSearchResultsComponent {
     this.navigateToFeature(selected.item);
   }
 
-  escapeHandler(){
+  escapeHandler() {
     (<HTMLInputElement>document.querySelector('#fabSearchBox input')).focus();
   }
-  clickOutside(){
+  clickOutside() {
     this.clickSearchBox = BlurType.Blur;
     this.onBlurHandler();
   }
 
-  getResultAriaLabel(index:number):string {
-    const featureName = this.features[index].name;
-    return `${index + 1} of ${this.features.length},${featureName}`;
+  getResultAriaLabel(index: number): string {
+    const feature = this.features[index];
+    if (feature && feature.name) {
+      return `${index + 1} of ${this.features.length},${feature.name}`;
+    } else {
+      return `${index + 1} of ${this.features.length}`;
+    }
   }
 }
