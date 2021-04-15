@@ -149,14 +149,21 @@ export class PortalService {
         this.postMessage(Verbs.logAction, actionStr);
     }
 
-    logMessage(level: LogEntryLevel, message: string, ...restArgs: any[]) {
-        const messageStr = JSON.stringify(<Message>{
+    logMessage(level: LogEntryLevel, message: string, properties?: { [name: string]: string }) {
+        const info: Message = {
             level: level,
-            message: message,
-            restArgs: restArgs
-        });
+            message: message
+        }
+        if (properties) {
+            const restArgs = Object.entries(properties).map(entry => {
+                let obj = {};
+                obj[entry[0]] = JSON.stringify(entry[1]);
+                return obj;
+            });
+            info.restArgs = restArgs;
+        }
 
-        this.postMessage(Verbs.logMessage, messageStr);
+        this.postMessage(Verbs.logMessage, JSON.stringify(info));
     }
 
     setDirtyState(dirty: boolean): void {
@@ -189,6 +196,7 @@ export class PortalService {
                 this.logMessage(LogEntryLevel.Verbose, TelemetryEventNames.PortalIFrameLoadingSuccess, {
                     'portalSessionId': this.sessionId
                 });
+                this.logEvent(TelemetryEventNames.PortalIFrameLoadingSuccess,{});
             } else if (methodName === Verbs.sendAppInsightsResource) {
                 const aiResource = data;
                 this.appInsightsResourceObservable.next(aiResource);
@@ -308,6 +316,7 @@ export class PortalService {
             this.logMessage(LogEntryLevel.Verbose, TelemetryEventNames.PortalIFrameLoadingStart, {
                 'portalSessionId': this.sessionId
             });
+            this.logEvent(TelemetryEventNames.PortalIFrameLoadingStart,{});
         }
 
         if (!event.origin) {
@@ -329,7 +338,23 @@ export class PortalService {
         }));
     }
 
-    private logException(exceptionMessage: string, ...resArgs: any[]) {
-        this.logMessage(LogEntryLevel.Error, exceptionMessage, resArgs);
+    private logException(exceptionMessage: string, properties?: {[name:string]:string}) {
+        properties = properties || {};
+        this.logMessage(LogEntryLevel.Error, exceptionMessage, properties);
+        this.logEvent(TelemetryEventNames.PortalIFrameLoadingException,properties);
+    }
+
+    //log into Kusto for portal event
+    private logEvent(eventMessage: string, properties: { [name: string]: string }, measurements?: any) {
+        const eventProp = {
+            ...properties,
+            'measurements': measurements,
+            'url': window.location.href,
+            'origin': this.origin
+        };
+        if (!eventProp["portalSessionId"] && this.sessionId !== "") {
+            eventProp["portalSessionId"] = this.sessionId;
+        }
+        this.logAction('diagnostic-data', eventMessage, eventProp);
     }
 }
