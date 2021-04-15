@@ -107,11 +107,11 @@
                     <div *ngIf="getSelectedInstanceCount() === 0" style="font-size: smaller;color: red;margin-top: 5px;margin-right: 10px;">* Choose at least one instance</div>
                 <div *ngIf="!isAspnetCore" style="margin-top:5px">
                     <input type="checkbox" [attr.aria-label]="'Add thread report'" [(ngModel)]="collectStackTraces"
-                        [disabled]="sessionInProgress || true" /> Add
+                        [disabled]="sessionInProgress" /> Add
                     thread report
                     <div class="tool-tip" style="z-index:2">
                         <i class="fa fa-info-circle" style="color:rgb(84, 143, 255)"></i>
-                        <!-- <span class="tool-tip-text">If this option is enabled, then along with the profiler trace, a
+                        <span class="tool-tip-text">If this option is enabled, then along with the profiler trace, a
                             thread report of all the threads
                             in the process is also collected at the end of the profiler trace. This is useful
                             especially
@@ -122,9 +122,6 @@
                                 CAUTION: This option is NOT recommended if you are experiencing high CPU on the
                                 instance.
                             </div>
-                        </span> -->
-                        <span class="tool-tip-text">This functionality is currenly disabled due to a backend bug in the Diagnostics as a Service component 
-                            of Azure App Service. The functionality will be enabled back after the bug is fixed.
                         </span>
                     </div>
                 </div>
