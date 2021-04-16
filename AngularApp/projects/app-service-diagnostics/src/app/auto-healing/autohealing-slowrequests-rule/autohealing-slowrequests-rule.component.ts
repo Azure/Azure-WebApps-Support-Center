@@ -46,7 +46,7 @@ export class AutohealingSlowrequestsRuleComponent extends AutohealingRuleCompone
   }
 
   editSingleRule() {
-    this.currentRule = this.getClone(this.ruleCopy.slowRequests);
+    this.currentRule = this.getClone(this.rule.slowRequests);
     this.editMode = true;
     this.editingSingleRule = true;
   }
