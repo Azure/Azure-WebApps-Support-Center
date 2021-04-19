@@ -64,17 +64,19 @@
           <div class="header2">1. Define Conditions</div>
           <div class="autohealtile-content">
             <ng-container *ngFor="let trigger of triggers; let i = index;">
-              <div class="autohealtile" tabindex="0" (click)="updateTriggerStatus(i)" role="button"
-                (keyup.space)="updateTriggerStatus(i)" (keyup.enter)="updateTriggerStatus(i)"
-                [class.active]="triggerSelected ===  i" [class.activeAction]="triggers[i].IsConfigured"
-                [attr.aria-pressed]="triggerSelected ===  i">
-                <div class="autohealtile-icon">
-                  <div class="icon-template">
-                    <i [class]="trigger.Icon"></i>
+              <ng-container *ngIf="triggers[i].IsEnabled">
+                <div class="autohealtile" tabindex="0" (click)="updateTriggerStatus(i)" role="button"
+                  (keyup.space)="updateTriggerStatus(i)" (keyup.enter)="updateTriggerStatus(i)"
+                  [class.active]="triggerSelected ===  i" [class.activeAction]="triggers[i].IsConfigured"
+                  [attr.aria-pressed]="triggerSelected ===  i">
+                  <div class="autohealtile-icon">
+                    <div class="icon-template">
+                      <i [class]="trigger.Icon"></i>
+                    </div>
+                    <div>{{ trigger.Name }}</div>
                   </div>
-                  <div>{{ trigger.Name }}</div>
                 </div>
-              </div>
+              </ng-container>
             </ng-container>
 
             <div class="forminput" *ngIf="triggerSelected >= 0">
