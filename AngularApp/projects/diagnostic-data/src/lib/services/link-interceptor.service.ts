@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TelemetryService } from './telemetry/telemetry.service';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { TelemetryEventNames } from './telemetry/telemetry.common';
 
 const isAbsolute = new RegExp('(?:^[a-z][a-z0-9+.-]*:|\/\/)', 'i');
@@ -12,11 +12,11 @@ export class LinkInterceptorService {
 
   constructor() { }
 
-  interceptLinkClick(e: Event, router: Router, detector: string, telemetryService: TelemetryService) {
+  interceptLinkClick(e: Event, router: Router, detector: string, telemetryService: TelemetryService, activatedRoute: ActivatedRoute) {
     if (e.target && (e.target as any).tagName === 'A') {
 
       const el = (e.target as HTMLElement);
-      const linkURL = el.getAttribute && el.getAttribute('href');
+      let linkURL = el.getAttribute && el.getAttribute('href');
       const linkText = el && el.innerText;
 
       // Send telemetry event for clicking hyerlink
@@ -29,9 +29,10 @@ export class LinkInterceptorService {
       telemetryService.logEvent(TelemetryEventNames.LinkClicked, linkClickedProps);
       let navigationExtras: NavigationExtras = {
         queryParamsHandling: 'preserve',
-        preserveFragment: true
+        preserveFragment: true,
+        relativeTo: activatedRoute
       };
-
+      
       if (linkURL && !isAbsolute.test(linkURL)) {
         e.preventDefault();
         router.navigate([linkURL], navigationExtras);
