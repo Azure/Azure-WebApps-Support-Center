@@ -33,7 +33,7 @@
       [attr.aria-selected]="selectedTab === 'proactiveAutoHealing'" aria-controls="proactiveAutoHealingTabControls">
       Proactive Auto-Heal
     </button>
-    <button *ngIf="isWindowsApp" type="button" class="btn btn-sm topmenu-button" role="tab"
+    <button type="button" class="btn btn-sm topmenu-button" role="tab"
       [ngClass]="{'btn-primary':selectedTab === 'autoHealingHistory'}" (click)="selectedTab = 'autoHealingHistory'"
       (keyup.space)="selectedTab = 'autoHealingHistory'" (keyup.enter)="selectedTab = 'autoHealingHistory'"
       [attr.aria-selected]="selectedTab === 'autoHealingHistory'" aria-controls="autoHealingHistoryTabControls">
@@ -206,8 +206,8 @@
       <proactive-autohealing></proactive-autohealing>
     </div>
   </div>
-  <div id="autoHealingHistoryTabControls" *ngIf="selectedTab === 'autoHealingHistory' && isWindowsApp"
-    [attr.aria-expanded]="selectedTab === 'autoHealingHistory'" style="border: 1px solid #adb0b7">
+  <div id="autoHealingHistoryTabControls" *ngIf="selectedTab === 'autoHealingHistory'"
+    [attr.aria-expanded]="selectedTab === 'autoHealingHistory'" style="border: 1px solid #adb0b7;min-height: 300px;">
     <detector-container detector="AutoHeal">
     </detector-container>
   </div>
