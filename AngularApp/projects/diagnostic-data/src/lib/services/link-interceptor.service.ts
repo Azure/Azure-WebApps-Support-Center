@@ -16,7 +16,7 @@ export class LinkInterceptorService {
     if (e.target && (e.target as any).tagName === 'A') {
 
       const el = (e.target as HTMLElement);
-      let linkURL = el.getAttribute && el.getAttribute('href');
+      const linkURL = el.getAttribute && el.getAttribute('href');
       const linkText = el && el.innerText;
 
       // Send telemetry event for clicking hyerlink
@@ -32,7 +32,7 @@ export class LinkInterceptorService {
         preserveFragment: true,
         relativeTo: activatedRoute
       };
-      
+
       if (linkURL && !isAbsolute.test(linkURL)) {
         e.preventDefault();
         router.navigate([linkURL], navigationExtras);
