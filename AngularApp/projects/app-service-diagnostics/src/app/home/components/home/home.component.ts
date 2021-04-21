@@ -97,7 +97,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this.searchPlaceHolder = this.homePageText.searchBarPlaceHolder;
         }
         else {
-            if (this._resourceService.resource.type === 'Microsoft.Web/hostingEnvironments') {
+            if (this._resourceService && this._resourceService.resource && this._resourceService.resource.type === 'Microsoft.Web/hostingEnvironments') {
                 this.homePageText = {
                     title: 'App Service Environment Diagnostics',
                     description: 'Use App Service Environment Diagnostics to investigate how your App Service Environment is performing, diagnose issues, and discover how to\
