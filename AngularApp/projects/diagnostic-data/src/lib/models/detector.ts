@@ -140,6 +140,7 @@ export interface Rendering {
     type: RenderingType;
     title: string;
     description: string;
+    isVisible: boolean;
 }
 
 export interface DataTableRendering extends Rendering {
