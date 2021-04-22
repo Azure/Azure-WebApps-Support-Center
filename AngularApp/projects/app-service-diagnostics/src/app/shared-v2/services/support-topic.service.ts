@@ -76,10 +76,10 @@ export class SupportTopicService {
                         detector.supportTopicList.findIndex(supportTopic => supportTopic.id === supportTopicId) >= 0);
 
                     if (matchingDetector) {
-                        if (matchingDetector.type === DetectorType.Detector) {
-                            detectorPath = `/detectors/${matchingDetector.id}`;
-                        } else if (matchingDetector.type === DetectorType.Analysis) {
+                        if (matchingDetector.type === DetectorType.Analysis) {
                             detectorPath = `/analysis/${matchingDetector.id}`;
+                        } else {
+                            detectorPath = `/detectors/${matchingDetector.id}`;
                         }
                     }
                     else if (this.supportTopicConfig.hasOwnProperty(this.pesId) && this.supportTopicConfig[this.pesId].findIndex(spId => spId === supportTopicId) >= 0) {
