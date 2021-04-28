@@ -169,7 +169,7 @@ export class WebSearchComponent extends DataRenderBaseComponent implements OnIni
                 title: result.title.replace(";"," "),
                 description: result.description.replace(";", " "),
                 link: result.link,
-                articleSurfacedBy : result.resultSurfacedBy || "Bing"
+                articleSurfacedBy : result.articleSurfacedBy || "Bing"
             };
         })), ts: Math.floor((new Date()).getTime() / 1000).toString() });
     }
