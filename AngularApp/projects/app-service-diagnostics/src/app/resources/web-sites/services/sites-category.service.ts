@@ -197,7 +197,11 @@ export class SitesCategoryService extends CategoryService {
       }
       );
     }
-    this._sitesCategories.push(this._getDiagnosticToolsCategory(this._resourceService.resourceIdForRouting));
+
+    if (this._resourceService.platform === OperatingSystem.windows ||
+      this._resourceService.platform === OperatingSystem.linux) {
+      this._sitesCategories.push(this._getDiagnosticToolsCategory(this._resourceService.resourceIdForRouting));
+    }
     this._addCategories(
       this._websiteFilter.transform(this._sitesCategories)
     );

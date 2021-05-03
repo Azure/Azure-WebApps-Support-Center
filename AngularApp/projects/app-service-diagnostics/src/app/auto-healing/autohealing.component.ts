@@ -301,11 +301,13 @@ export class AutohealingComponent implements OnInit {
       triggerRule.IsConfigured = triggerRule.checkRuleConfigured();
     });
 
-    this.actions.push({ Name: 'Recycle Process', Icon: 'fa fa-recycle' });
 
     if (this.isWindowsApp) {
+      this.actions.push({ Name: 'Recycle Process', Icon: 'fa fa-recycle' });
       this.actions.push({ Name: 'Log an Event', Icon: 'fa fa-book' });
       this.actions.push({ Name: 'Custom Action', Icon: 'fa fa-bolt' });
+    } else {
+      this.actions.push({ Name: 'Recycle Container', Icon: 'fa fa-recycle' });
     }
 
   }
