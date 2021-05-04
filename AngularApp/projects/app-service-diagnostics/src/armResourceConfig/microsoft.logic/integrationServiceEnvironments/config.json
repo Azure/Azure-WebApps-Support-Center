@@ -17,7 +17,7 @@
 		"supportTopicIds": []
 	},
 	"categories": [{
-			"id": "Provisioning Diagnostics",
+			"id": "provisioningdiagnosticsapim",
 			"name": "Provisioning Diagnostics",
 			"description": "Get a step-by-step analysis of the provisioning process.",
 			"keywords": ["Provisioning Failures", "Deployment", "VNet", "Debug Logs"],
