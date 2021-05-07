@@ -46,7 +46,13 @@ export class SiteService extends ResourceService {
     }
 
     public updatePesIdAndImgSrc() {
-        if (this._siteObject.Kind && this._siteObject.Kind.toString().toLowerCase().indexOf("functionapp") !== -1) {
+        if (this._siteObject.Kind && this._siteObject.Kind.toString().toLowerCase().indexOf("workflowapp") !== -1) {
+            this.pesId = '17378';
+            this.imgSrc = 'assets/img/Azure-LogicApps-Logo.png';
+            this.staticSelfHelpContent = 'microsoft.workflow';
+            this.searchSuffix = "AZURE LOGIC APP";
+        } 
+        else if (this._siteObject.Kind && this._siteObject.Kind.toString().toLowerCase().indexOf("functionapp") !== -1) {
             this.pesId = '16072';
             this.imgSrc = 'assets/img/Azure-Functions-Logo.png';
             this.staticSelfHelpContent = 'microsoft.function';
@@ -56,6 +62,6 @@ export class SiteService extends ResourceService {
             this.pesId = '16170';   
             this.imgSrc = 'assets/img/Azure-Tux-Logo.png';
             this.searchSuffix = "AZURE LINUX WEB APP";
-        }
+        }  
     }
 }

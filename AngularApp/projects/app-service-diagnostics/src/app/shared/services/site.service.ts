@@ -33,9 +33,19 @@ export class SiteService {
                     this.currentSiteStatic = site.properties;
                     this.currentSiteStatic.id = site.id;
                     this.currentSiteStatic.tags = site.tags;
-                    this.currentSiteStatic.appType = site.kind && site.kind.toLowerCase().indexOf('functionapp') >= 0 ? AppType.FunctionApp : AppType.WebApp;
                     this.currentSiteStatic.location = site.location;
                     this.currentSite.next(this.currentSiteStatic);
+                    if (site.kind && site.kind.toLowerCase().indexOf('workflowapp') >= 0)
+                    {
+                         this.currentSiteStatic.appType = AppType.WorkflowApp
+                    } 
+                    else if (site.kind && site.kind.toLowerCase().indexOf('functionapp') >= 0)
+                    {
+                         this.currentSiteStatic.appType = AppType.FunctionApp;
+                    } 
+                    else {
+                         this.currentSiteStatic.appType = AppType.WebApp;
+                    }
                 });
             }
         });

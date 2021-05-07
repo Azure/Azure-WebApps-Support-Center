@@ -31,7 +31,8 @@ export enum ResourceType {
 
 export enum AppType {
     WebApp = 1 << 0,
-    FunctionApp = 1 << 1
+    FunctionApp = 1 << 1,
+    WorkflowApp = 1 << 2
 }
 
 export interface Event {
