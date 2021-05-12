@@ -198,13 +198,6 @@ export class SitesCategoryService extends CategoryService {
       );
     }
 
-    // Commenting this out till we identify which tools work for Hyper-V
-
-    // if (this._resourceService.platform === OperatingSystem.windows ||
-    //   this._resourceService.platform === OperatingSystem.linux) {
-    //   this._sitesCategories.push(this._getDiagnosticToolsCategory(this._resourceService.resourceIdForRouting));
-    // }
-
     this._sitesCategories.push(this._getDiagnosticToolsCategory(this._resourceService.resourceIdForRouting));
 
     this._addCategories(
@@ -215,7 +208,7 @@ export class SitesCategoryService extends CategoryService {
   private _getDiagnosticToolsCategory(siteId: string): SiteFilteredItem<Category> {
     return <SiteFilteredItem<Category>>{
       appType: AppType.WebApp | AppType.FunctionApp,
-      platform: OperatingSystem.windows | OperatingSystem.linux,
+      platform: OperatingSystem.any,
       stack: '',
       sku: Sku.NotDynamic,
       hostingEnvironmentKind: HostingEnvironmentKind.All,

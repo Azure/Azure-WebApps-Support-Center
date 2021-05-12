@@ -118,7 +118,7 @@ export class CategoryNavComponent implements OnInit {
 
         this.toolCategories.push(<SiteFilteredItem<any>>{
             appType: AppType.WebApp | AppType.FunctionApp,
-            platform: OperatingSystem.windows,
+            platform: OperatingSystem.windows | OperatingSystem.HyperV,
             sku: Sku.NotDynamic,
             hostingEnvironmentKind: HostingEnvironmentKind.All,
             stack: '',
@@ -154,7 +154,7 @@ export class CategoryNavComponent implements OnInit {
 
         this.toolCategories.push(<SiteFilteredItem<any>>{
             appType: AppType.WebApp,
-            platform: OperatingSystem.windows,
+            platform: OperatingSystem.windows | OperatingSystem.HyperV,
             sku: Sku.NotDynamic,
             hostingEnvironmentKind: HostingEnvironmentKind.All,
             stack: '',
