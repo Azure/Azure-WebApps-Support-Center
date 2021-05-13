@@ -19,8 +19,6 @@ export class CollapsibleMenuItemComponent implements OnInit {
   @Input() level: number = 0;
 
   children: CollapsibleMenuItem[];
-
-  truncatedLable: string = "";
   hasChildren: boolean;
   matchesSearchTerm: boolean = true;
   imagePlaceHolder: string = '../../../../assets/img/detectors/default.svg';
@@ -31,7 +29,6 @@ export class CollapsibleMenuItemComponent implements OnInit {
   ngOnInit() {
     this.children = this.menuItem.subItems;
     this.hasChildren = this.menuItem.subItems && this.menuItem.subItems.length > 0;
-    this.truncatedLable = this.menuItem.label.length > 24 ? this.menuItem.label.substr(0, 24) + ".." : this.menuItem.label;
   }
 
   handleClick() {

@@ -7,7 +7,7 @@
                 [class.fa-caret-right]="!menuItem.expanded" [class.fa-caret-down]="menuItem.expanded"></i>
             <img class="category-icon" [src]="menuItem.icon" />
             <span class="menu-label" style="font-size: 13px!important;"
-                [innerHtml]="truncatedLable | searchmatch:searchValueLocal"></span>
+                [innerHtml]="menuItem.label | searchmatch:searchValueLocal"></span>
         </div>
     </div>
   </fab-tooltip-host>

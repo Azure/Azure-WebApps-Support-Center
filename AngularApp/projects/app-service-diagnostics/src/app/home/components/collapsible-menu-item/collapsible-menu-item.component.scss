@@ -50,10 +50,18 @@
     color: #ffb353;
 }
 
+.menu-label {
+    display: inline-block;
+    width: 180px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .category-icon {
-    width:30px!important; 
+    width:30px!important;
     padding-right:10px;
-    margin-top: 0px;
+    margin-top: -10px;
 }
 
 .menu-item .tooltiptext {
