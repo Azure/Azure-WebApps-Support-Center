@@ -33,7 +33,6 @@ export class FabDataTableFilterComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.displayName = `${this.tableFilter.columnName} : ${all}`;
     this.filterOption = this.tableFilter.selectionOption;
 
     this.options.sort();
@@ -47,6 +46,9 @@ export class FabDataTableFilterComponent implements OnInit {
 
     if (this.filterOption === TableFilterSelectionOption.Single) {
       this.initForSingleSelect();
+      this.displayName = `${this.tableFilter.columnName} : ${this.selectedKey}`;
+    } else if (this.filterOption === TableFilterSelectionOption.Multiple) {
+      this.displayName = `${this.tableFilter.columnName} : ${all}`;
     }
   }
 
@@ -79,16 +81,10 @@ export class FabDataTableFilterComponent implements OnInit {
   }
 
   //For single selection
-  initForSingleSelect() {    
-    this.selectedKey = all;
-    this.optionsForSingleChoice.push({
-      key: all,
-      text: "All",
-      onClick: () => {
-        this.selected = new Set(this.options);
-        this.selectedKey = all;
-      }
-    });
+  initForSingleSelect() {
+    this.selectedKey = this.optionsWithFormattedName[0].formattedName;
+    this.selected.add(this.optionsWithFormattedName[0].name);
+
     this.optionsWithFormattedName.forEach(option => {
       this.optionsForSingleChoice.push({
         key: option.formattedName,
