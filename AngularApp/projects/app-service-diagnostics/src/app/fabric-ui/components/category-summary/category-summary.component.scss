@@ -15,12 +15,12 @@
   .body-content {
     display: flex!important;
   }
-  
+
   //display side nav for 100% zooming
-  @media(min-width: 640px) and (min-height: 500px) {
+  @media(min-width: 640px){
     section.sidebar {
       display: block;
-      min-width: 265px;
+      width: 265px;
       position: fixed;
       top: 0px;
       bottom: 0px;
