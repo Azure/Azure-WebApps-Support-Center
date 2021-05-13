@@ -31,12 +31,14 @@ export class ResourceRedirectComponent implements OnInit {
             const ticketBladeWorkflowId = info.workflowId ? info.workflowId : '';
             const supportTopicId = info.supportTopicId ? info.supportTopicId : '';
             const sessionId = info.sessionId ? info.sessionId : '';
+            const effectiveLocale = !!info.effectiveLocale ? info.effectiveLocale.toLowerCase() : "";
 
             const eventProperties: { [name: string]: string } = {
                 'ResourceId': resourceId,
                 'TicketBladeWorkflowId': ticketBladeWorkflowId,
                 'SupportTopicId': supportTopicId,
                 'PortalSessionId': sessionId,
+                'EffectiveLocale': effectiveLocale,
             };
             this._telemetryService.eventPropertiesSubject.next(eventProperties);
         }

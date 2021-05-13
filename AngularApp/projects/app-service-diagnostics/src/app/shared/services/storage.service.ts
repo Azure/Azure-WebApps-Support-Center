@@ -83,7 +83,7 @@ export class StorageService {
   // https://docs.microsoft.com/en-us/rest/api/storagerp/storageaccounts/listaccountsas
   generateSasKey(storageAccountResourceUri: string, storageAccountkey: string): Observable<string> {
     let postBody = new SasUriPostBody();
-    postBody.signedServices = "b";
+    postBody.signedServices = "bqt";
     postBody.signedResourceTypes = "co";
     postBody.signedPermission = "rwdl";
     postBody.signedProtocol = "http,https";

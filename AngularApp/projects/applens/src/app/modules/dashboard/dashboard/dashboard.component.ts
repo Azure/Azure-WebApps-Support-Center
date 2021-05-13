@@ -132,6 +132,11 @@ export class DashboardComponent implements OnDestroy {
         this.keys = Object.keys(this.resource);
       }
     });
+
+    if (!!this._activatedRoute && !!this._activatedRoute.snapshot && !!this._activatedRoute.snapshot.queryParams && !!this._activatedRoute.snapshot.queryParams['l'])
+    {
+        this._diagnosticApiService.effectiveLocale = this._activatedRoute.snapshot.queryParams['l'].toString().toLowerCase();
+    }
   }
 
   reloadHome() {

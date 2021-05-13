@@ -52,6 +52,8 @@ export class DetectorControlService {
 
   private _refresh: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
+  public _effectiveLocale: string="";
+
   private detectorQueryParams: BehaviorSubject<string> = new BehaviorSubject<string>("");
 
   public _refreshInstanceId: BehaviorSubject<string> = new BehaviorSubject<string>("");
@@ -305,6 +307,10 @@ export class DetectorControlService {
 
   public get detectorQueryParamsString(): string {
     return this.detectorQueryParams.value;
+  }
+
+  public get effectiveLocale(): string {
+      return this._effectiveLocale;
   }
 
 }

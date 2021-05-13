@@ -5,7 +5,6 @@ import { CategoryService } from '../../../shared-v2/services/category.service';
 import { Category } from '../../../shared-v2/models/category';
 import { CategoryChatStateService } from '../../../shared-v2/services/category-chat-state.service';
 import { INavProps, INavLink, INav, autobind, INavStyles } from 'office-ui-fabric-react';
-import { GenericApiService } from '../../../shared/services/generic-api.service';
 import { CategoriesService } from '../../../shared/services/categories.service';
 import { FeatureService } from '../../../shared-v2/services/feature.service';
 import { Tile } from '../../../shared/components/tile-list/tile-list.component';
@@ -75,8 +74,7 @@ export class CategorySummaryComponent implements OnInit {
     }
 
     constructor(protected _diagnosticApiService: DiagnosticService, private _route: Router, private _injector: Injector, private _activatedRoute: ActivatedRoute, private categoryService: CategoryService,
-        private _chatState: CategoryChatStateService, private _genericApiService: GenericApiService
-        , private _featureService: FeatureService, protected _authService: AuthService, private _portalActionService: PortalActionService, private globals: Globals, private _telemetryService: TelemetryService,private _resourceService:ResourceService) {
+        private _chatState: CategoryChatStateService, private _featureService: FeatureService, protected _authService: AuthService, private _portalActionService: PortalActionService, private globals: Globals, private _telemetryService: TelemetryService,private _resourceService:ResourceService) {
     }
 
     ngOnInit() {

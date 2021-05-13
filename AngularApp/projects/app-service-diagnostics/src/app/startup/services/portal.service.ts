@@ -265,6 +265,7 @@ export class PortalService {
             const pair = parameterList[i].split('=');
             map[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
         }
+
         return map;
     }
 

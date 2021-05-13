@@ -1,7 +1,7 @@
 {
 	"homePageText": {
 		"title": "ISE Diagnostics (Preview)",
-		"description": "Use ISE Diagnostics (Preview) to investigate common issues. Select the problem category that best matches the information or tool that you're interested in:",
+		"description": "Investigate how your app is performing, diagnose issues, and discover how to improve its reliability.",
 		"searchBarPlaceHolder": "Search ISE Diagnostics"
 	},
 	"matchRegEx": "/Microsoft.Logic/integrationServiceEnvironments/",
@@ -17,13 +17,14 @@
 		"supportTopicIds": []
 	},
 	"categories": [{
-			"id": "Provisioning Diagnostics",
+			"id": "provisioningdiagnosticsise",
 			"name": "Provisioning Diagnostics",
-			"description": "Is your ISE experiencing problems during provisioning? Select this category for a step-by-step analysis of the provisioning process.",
+			"description": "Get a step-by-step analysis of the provisioning process.",
 			"keywords": ["Provisioning Failures", "Deployment", "VNet", "Debug Logs"],
 			"color": "rgb(186, 211, 245)",
 			"createFlowForCategory": true,
-			"chatEnabled": false		
+			"chatEnabled": false,
+            "overviewDetectorId": "ise_provisioning_health_check_public"
 		}
 	],
 	"pesId": "17030"

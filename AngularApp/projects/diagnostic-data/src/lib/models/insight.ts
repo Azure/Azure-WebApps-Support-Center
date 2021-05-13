@@ -69,7 +69,7 @@ export class InsightUtils {
             const nameColumnValue = row[nameColumnIndex];
 
             let solutionsValue = null;
-            if (solutionsIndex < row.length) {
+            if (solutionsIndex < row.length && row[solutionsIndex] !== "") {
                 solutionsValue = <Solution[]>JSON.parse(row[solutionsIndex]);
             }
 

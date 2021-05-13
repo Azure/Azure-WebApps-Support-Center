@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     showRiskSection: boolean = true;
     private _showSwitchBanner: boolean = false;
     get showSwitchBanner():boolean {
-        const typeSwitchItem = allowV3PResourceTypeList.find(item => this._resourceService.resource.type.toLowerCase() === item.type.toLowerCase());
+        const typeSwitchItem = allowV3PResourceTypeList.find(item => this._resourceService.resource && this._resourceService.resource.type.toLowerCase() === item.type.toLowerCase());
         const allowResourceTypeSwitch = typeSwitchItem === undefined ? false : typeSwitchItem.allowSwitchBack;
         return allowResourceTypeSwitch && this._showSwitchBanner;
     }
@@ -97,7 +97,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this.searchPlaceHolder = this.homePageText.searchBarPlaceHolder;
         }
         else {
-            if (this._resourceService && this._resourceService.resource && this._resourceService.resource.type === 'Microsoft.Web/hostingEnvironments') {
+            if (this._resourceService && !!this._resourceService.resource && this._resourceService.resource.type === 'Microsoft.Web/hostingEnvironments') {
                 this.homePageText = {
                     title: 'App Service Environment Diagnostics',
                     description: 'Use App Service Environment Diagnostics to investigate how your App Service Environment is performing, diagnose issues, and discover how to\
@@ -182,7 +182,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             }
         });
 
-        if (this._resourceService.resource.type === 'Microsoft.Web/sites') {
+        if (this._resourceService && !!this._resourceService.resource && this._resourceService.resource.type === 'Microsoft.Web/sites') {
             if (locationPlacementId.toLowerCase() !== 'geos_2020-01-01') {
                 // Register Change Analysis Resource Provider.
                 this.armService.postResourceFullResponse(this.providerRegisterUrl, {}, true, '2018-05-01').subscribe((response: HttpResponse<{}>) => {

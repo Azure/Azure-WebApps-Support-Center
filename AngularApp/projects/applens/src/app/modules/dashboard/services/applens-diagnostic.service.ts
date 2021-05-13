@@ -15,7 +15,7 @@ export class ApplensDiagnosticService {
   getDetector(detector: string, startTime: string, endTime: string, refresh: boolean = false, internalView: boolean = true, formQueryParams?: string,overrideResourceUri?: string): Observable<DetectorResponse> {
     let resourceId = overrideResourceUri ? overrideResourceUri : this._resourceService.getCurrentResourceId(true);
     if(!resourceId.startsWith('/')) resourceId = '/' + resourceId;
-    
+
     let versionPrefix = this._resourceService.versionPrefix;
     if(versionPrefix.endsWith('/')) versionPrefix = versionPrefix.substring(versionPrefix.length - 1);
     return this._diagnosticApi.getDetector(
@@ -42,17 +42,16 @@ export class ApplensDiagnosticService {
 
   getDetectors(overrideResourceUri:string = "",internalClient: boolean = true,query?: string): Observable<DetectorMetaData[]> {
     var queryParams: any[] = null;
-    
+
     let resourceId = overrideResourceUri ? overrideResourceUri : this._resourceService.getCurrentResourceId(true);
     if(!resourceId.startsWith('/')) resourceId = '/' + resourceId;
-    
+
     let versionPrefix = this._resourceService.versionPrefix;
     if(versionPrefix.endsWith('/')) versionPrefix = versionPrefix.substring(0,versionPrefix.length - 1);
-    
     if (query != null)
       queryParams = [{ "key": "text", "value": encodeURIComponent(query) }];
       return this._diagnosticApi.getDetectors(
-        versionPrefix, 
+        versionPrefix,
         resourceId,
         null,
         queryParams,
@@ -64,7 +63,7 @@ export class ApplensDiagnosticService {
     if (query != null)
       queryParams = [{ "key": "text", "value": encodeURIComponent(query) }];
       return this._diagnosticApi.getDetectors(
-        this._resourceService.versionPrefix, 
+        this._resourceService.versionPrefix,
         this._resourceService.getCurrentResourceId(true),
         null,
         queryParams,

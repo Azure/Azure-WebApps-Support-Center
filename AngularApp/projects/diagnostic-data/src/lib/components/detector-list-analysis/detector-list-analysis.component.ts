@@ -498,7 +498,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
         if (this.showWebSearchTimeout) {
             clearTimeout(this.showWebSearchTimeout);
         }
-        this.showWebSearchTimeout = setTimeout(() => { this.showWebSearch = true; }, 10000);
+        this.showWebSearchTimeout = setTimeout(() => { this.showWebSearch = true; }, 3000);
         this.issueDetectedViewModels = [];
         const requests: Observable<any>[] = [];
 

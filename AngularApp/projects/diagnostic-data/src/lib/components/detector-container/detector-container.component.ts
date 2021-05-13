@@ -22,8 +22,6 @@ export class DetectorContainerComponent implements OnInit {
   detectorResponse: DetectorResponse = null;
   error: any;
 
-  startTimeToUse: Moment;
-  endTimeToUse: Moment;
   startTimeChildDetector: Moment = null;
   endTimeChildDetector: Moment = null;
 

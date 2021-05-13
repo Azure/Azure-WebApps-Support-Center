@@ -197,7 +197,9 @@ export class SitesCategoryService extends CategoryService {
       }
       );
     }
+
     this._sitesCategories.push(this._getDiagnosticToolsCategory(this._resourceService.resourceIdForRouting));
+
     this._addCategories(
       this._websiteFilter.transform(this._sitesCategories)
     );
@@ -206,7 +208,7 @@ export class SitesCategoryService extends CategoryService {
   private _getDiagnosticToolsCategory(siteId: string): SiteFilteredItem<Category> {
     return <SiteFilteredItem<Category>>{
       appType: AppType.WebApp | AppType.FunctionApp,
-      platform: OperatingSystem.windows | OperatingSystem.linux,
+      platform: OperatingSystem.any,
       stack: '',
       sku: Sku.NotDynamic,
       hostingEnvironmentKind: HostingEnvironmentKind.All,

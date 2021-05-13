@@ -10,7 +10,6 @@ import { delay, map } from 'rxjs/operators';
 import { Globals } from "../../globals";
 
 
-
 @Injectable({
     providedIn: 'root'
 })
@@ -122,8 +121,7 @@ export class RiskAlertService {
             }
 
             if (!!this.notificationMessageBar && !!this.notificationMessageBar.id) {
-
-                let notificationObservable = this._diagnosticService.getDetector(this.notificationMessageBar.id, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString, refresh).pipe(map(
+                let notificationObservable = this._diagnosticService.getDetector(this.notificationMessageBar.id, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString,  refresh).pipe(map(
                     res => {
                         if (res != null && res.metadata != null && res.dataset != null) {
                             const notificationList = res.dataset.filter(set => (<Rendering>set.renderingProperties).type === RenderingType.Notification);

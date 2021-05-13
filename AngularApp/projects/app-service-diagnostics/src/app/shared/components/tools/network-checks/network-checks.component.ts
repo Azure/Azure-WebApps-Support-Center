@@ -115,7 +115,7 @@ export class NetworkCheckComponent implements OnInit, AfterViewInit {
                         options: flows.map(f => f.title),
                         placeholder: "Please select..."
                     }],
-                    expandByDefault: false,
+                    expandByDefault: true,
                     async callback(dropdownIdx: number, selectedIdx: number): Promise<void> {
                         mgr.reset(state);
                         var flow = flows[selectedIdx];
@@ -123,6 +123,9 @@ export class NetworkCheckComponent implements OnInit, AfterViewInit {
                         globals.messagesData.feedbackPanelConfig.detectorName = "NetworkCheckingTool." + flow.id;
                         telemetryService.logEvent("NetworkCheck.FlowSelected", { flowId: flow.id });
                         mgr.setFlow(flow);
+                    },
+                    onDismiss: ()=>{
+                        telemetryService.logEvent("NetworkCheck.DropdownExpanded", {});
                     }
                 });
                 var state = mgr.addView(dropDownView);

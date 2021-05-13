@@ -19,6 +19,7 @@ export class DiagnosticApiService {
   public GeomasterServiceAddress: string = null;
   public GeomasterName: string = null;
   public Location: string = null;
+  public effectiveLocale: string = "";
 
   constructor(private _httpClient: HttpClient, private _cacheService: CacheService,
     private _adalService: AdalService, private _telemetryService: TelemetryService, private _router: Router) { }
@@ -36,7 +37,6 @@ export class DiagnosticApiService {
     if (additionalQueryParams != undefined) {
       path += additionalQueryParams;
     }
-
     return this.invoke<DetectorResponse>(path, HttpMethod.POST, body, true, refresh, true, internalView);
   }
 
@@ -160,7 +160,7 @@ export class DiagnosticApiService {
 
   public  verfifyPublishingDetectorAccess(resourceType: string, detectorCode: string, isOriginalCodeMarkedPublic: boolean) : Observable<any> {
     let url: string = `${this.diagnosticApi}api/publishingaccess`;
-    var body = 
+    var body =
     {
       'resourceType': resourceType,
       'codeString': detectorCode,
@@ -311,6 +311,11 @@ export class DiagnosticApiService {
     return `${HttpMethod[method]}-${path}`;
   }
 
+  private isLocalizationApplicable(locale: string): boolean
+  {
+    return locale != null && locale != "" && locale != "en" && !locale.startsWith("en");
+  }
+
   private _getHeaders(path?: string, method?: HttpMethod, internalClient: boolean = true, internalView: boolean = true, additionalHeaders?: Map<string, string>): HttpHeaders {
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');
@@ -338,6 +343,11 @@ export class DiagnosticApiService {
 
     if (this.Location) {
       headers = headers.set('x-ms-location', encodeURI(this.Location));
+    }
+
+    if (this.isLocalizationApplicable(this.effectiveLocale))
+    {
+        headers = headers.set('x-ms-localization-language', encodeURI(this.effectiveLocale.toLowerCase()));
     }
 
     if (additionalHeaders) {

@@ -1,4 +1,4 @@
-<data-container [title]="renderingProperties.title" [description]="renderingProperties.description">
+<data-container [title]="renderingProperties.title">
   <div style="display: flex;">
     <div *ngIf="allowColumnSearch" class="text-field">
       <fab-text-field (onChange)=updateTableBySearch($event) [rows]="1" [placeholder]="searchAriaLabel"
@@ -11,6 +11,11 @@
       </div>
     </div>
   </div>
+  
+  <div *ngIf="renderingProperties.description" style="margin-bottom: 18px;">
+    <markdown-text [markdownData]="renderingProperties.description"></markdown-text>
+  </div>
+  
   <div [attr.data-is-scrollable]="true" style="overflow: auto;">
     <fab-details-list [items]="rows">
       <columns>

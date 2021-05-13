@@ -368,6 +368,16 @@
              "pesId": "15585",
              "staticSelfHelpContent": "microsoft.cosmosdb",
              "azureCommImpactedServicesList": "Azure Cosmos DB"  
+         },
+        { 
+             "service": "ResourceService",  
+             "resourceType": "Microsoft.Kubernetes/connectedClusters",  
+             "templateFileName": "ArcK8s",  
+             "imgSrc": "assets/img/ArcK8s-Logo.svg",  
+             "versionPrefix": "",  
+             "pesId": "17112",
+             "staticSelfHelpContent": "microsoft.kubernetes",
+             "azureCommImpactedServicesList": "Azure Arc enabled Kubernetes"  
          }
     ]
 }

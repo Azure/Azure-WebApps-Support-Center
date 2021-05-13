@@ -6,11 +6,11 @@
       <div style="margin-bottom: 10px">
         <div
           style="position: absolute; left:25px; right: 32px; top:0px; height: 32px; font-family: 'segoe UI'; font-size: 18px; line-height: 24px; font-weight: 600;display: flex; align-items: flex-end"
-          tabindex="0" aria-label="Hi my name is genie">
+          tabindex="0" aria-label="App Service Diagnostics Genie">
           App Service Diagnostics: Genie</div>
         <div
           style="color:#605E5C; position: absolute; left:25px; right: 32px; top:35px; height: 19px; font-family: 'segoe UI'; font-size: 10px; line-height: 14px; display: block"
-          tabindex="0" aria-label="HelpBot">
+          tabindex="0" aria-label="An interactive self-serve diagnostics tool">
           An interactive self-serve diagnostics tool</div>
         <div style="position: absolute; top:10px; right: 10px; align-items: flex-end; cursor: pointer; "
           class="button-container" (keydown.enter)="closeGeniePanel()" (click)="closeGeniePanel()">
@@ -37,7 +37,7 @@
           placeholder="Type your question" aria-label="Type your question"></textarea>
         <div class="search-button-container">
             <span (click)="onSearchEnter($event)" (keydown.enter)="onSearchEnter($event)" tabindex="0"
-              aria-label="Send Message"><i class="fa fa-paper-plane search-box-icon"></i></span>
+              aria-label="Send Message" role="button"><i class="fa fa-paper-plane search-box-icon"></i></span>
             <span *ngIf="isMessageEmpty" tabindex="0" aria-label="Message is empty" class="empty-message-warning">Message is empty</span>
         </div>
       </div>

@@ -158,7 +158,7 @@ export class SiteFeatureService extends FeatureService {
     this.proactiveTools = [
       {
         appType: AppType.WebApp | AppType.FunctionApp,
-        platform: OperatingSystem.windows | OperatingSystem.linux,
+        platform: OperatingSystem.windows | OperatingSystem.linux | OperatingSystem.HyperV,
         sku: Sku.NotDynamic,
         hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
@@ -460,7 +460,7 @@ export class SiteFeatureService extends FeatureService {
     this.supportTools = [
       {
         appType: AppType.WebApp,
-        platform: OperatingSystem.windows,
+        platform: OperatingSystem.windows | OperatingSystem.HyperV,
         sku: Sku.NotDynamic,
         hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
@@ -477,7 +477,7 @@ export class SiteFeatureService extends FeatureService {
       },
       {
         appType: AppType.WebApp,
-        platform: OperatingSystem.windows,
+        platform: OperatingSystem.windows  | OperatingSystem.HyperV,
         sku: Sku.Paid,
         hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',
@@ -538,7 +538,7 @@ export class SiteFeatureService extends FeatureService {
       },
       {
         appType: AppType.WebApp,
-        platform: OperatingSystem.windows,
+        platform: OperatingSystem.windows | OperatingSystem.HyperV,
         sku: Sku.Paid,
         hostingEnvironmentKind: HostingEnvironmentKind.All,
         stack: '',

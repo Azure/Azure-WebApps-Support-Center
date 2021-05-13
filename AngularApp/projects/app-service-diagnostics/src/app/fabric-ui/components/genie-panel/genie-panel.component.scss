@@ -20,7 +20,7 @@
     visibility: visible;
     opacity: 1;
   }
-  
+
 
   .search-box-container {
     position: absolute;
@@ -28,19 +28,23 @@
     height: 68px;
     background: #F8F8F8;
     /* Light Theme / Drop Shadow - Level 1 */
-    
+
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     bottom: 0px; left: 0px; right: 37px
   }
 
+  .search-box-container textarea::placeholder{
+    color:#605e5c;
+  }
+
   .genie-search-box {
-    height: 31px; 
-    border-radius: 15px;  
+    height: 31px;
+    border-radius: 15px;
     margin: 2%;
     border: 1px gray!important;
     text-indent: 15px;
     padding-top: 5px;
-    width: 80%; 
+    width: 80%;
     float: left;
   }
 
