@@ -44,7 +44,7 @@ export class ResourceRedirectComponent implements OnInit {
         }
 
         if (info && info.resourceId && info.token) {
-          if (info.optionalParameters && info.optionalParameters.find(param => param.key === "categoryId")) {
+          if (Array.isArray(info.optionalParameters) && info.optionalParameters.find(param => param.key === "categoryId")) {
             //  Open the new experience since we are navigating to a specific category
             this._versionTestService.setLegacyFlag(2);
           }
