@@ -1,15 +1,7 @@
 <div>
   <fab-panel [isOpen]="globals.openFeedback" [type]="type" [customWidth]="panelWidth" [isHiddenOnDismiss]="true"
     [hasCloseButton]="true" [closeButtonAriaLabel]="'close'" (onDismissed)="dismissedFeedbackHandler()"
-    (onOpen)="onOpenFeedbackPanel()" [renderFooterContent]="feedbackFooter" [isFooterAtBottom]="true">
-    <!-- Feedback Panel Header -->
-    <div style="margin-bottom: 40px;">
-        <h3 class="feedback-panel-header" style="top: 0px; font-size: 24px; font-weight: 600;">Feedback</h3>
-        <p class="feedback-panel-header" style="top: 35px">{{siteName}}</p>
-        <div class="hover-item panel-close" (click)="dismissedFeedbackHandler()">
-          <div class="tooltiptext" style="margin-top: 35px;">close</div>
-        </div>
-    </div>
+    (onOpen)="onOpenFeedbackPanel()" [renderFooterContent]="feedbackFooter" [isFooterAtBottom]="true" [headerText]="'Feedback'" [isLightDismiss]="true" (onLightDismissClick)="dismissedFeedbackHandler()">
 
     <!-- Feedback Panel Content -->
     <div class="panel-text">
