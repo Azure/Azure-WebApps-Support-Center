@@ -228,4 +228,9 @@ export class FabricSearchResultsComponent {
       return `${index + 1} of ${this.features.length}`;
     }
   }
+
+  truncateDisplayName(s:string):string {
+    if(s.length <= 25) return s;
+    return `${s.substring(0,25)}...`;
+  }
 }
