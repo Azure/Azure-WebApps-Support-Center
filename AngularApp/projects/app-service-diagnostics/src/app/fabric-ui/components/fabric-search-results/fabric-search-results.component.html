@@ -52,10 +52,10 @@
               [attr.aria-label]="getResultAriaLabel(index)">
               <div>
                 <img style="height: 20px;width: 20px;margin-right: 5px;" [src]="getIconImagePath(feature.id)" alt="">
-                <span class="feature-title">{{truncateDisplayName(feature.name)}}</span>
+                <span class="feature-title" aria-label="feature.name">{{truncateDisplayName(feature.name)}}</span>
               </div>
               <div>
-                <span class="feature-category">{{truncateDisplayName(feature.category)}}</span>
+                <span class="feature-category" aria-label="feature.category">{{truncateDisplayName(feature.category)}}</span>
               </div>
             </div>
           </ng-template>
