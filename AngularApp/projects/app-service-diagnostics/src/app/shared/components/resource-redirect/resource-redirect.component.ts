@@ -58,7 +58,7 @@ export class ResourceRedirectComponent implements OnInit {
 
           let path = 'resource' + info.resourceId.toLowerCase();
           var caseSubject = null;
-          if (info.optionalParameters) {
+          if (Array.isArray(info.optionalParameters)) {
             var caseSubjectParam = info.optionalParameters.find(param => param.key === "caseSubject");
             if (caseSubjectParam) {
               caseSubject = caseSubjectParam.value;
@@ -88,7 +88,7 @@ export class ResourceRedirectComponent implements OnInit {
           if (!this._useLegacyVersion) {
             // This additional info is used to open a specific detector/tool under the right category in a new SCIFrameblade
             // To Open the detector or diagnostic tool under the right category
-            if (info.optionalParameters) {
+            if (Array.isArray(info.optionalParameters)) {
               let categoryIdParam = info.optionalParameters.find(param => param.key === "categoryId");
               if (categoryIdParam) {
                 let categoryId = categoryIdParam.value;
