@@ -25,7 +25,6 @@ import { delay, map } from 'rxjs/operators';
 import { RiskHelper, RiskTile } from '../../models/risk';
 import { OperatingSystem } from '../../../shared/models/site';
 import { RiskAlertService } from '../../../shared-v2/services/risk-alert.service';
-import { mergeMap } from 'rxjs-compat/operator/mergeMap';
 
 @Component({
     selector: 'home',
@@ -52,6 +51,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
     riskAlertConfigs: RiskAlertConfig[];
     loadingQuickLinks: boolean = true;
     showRiskSection: boolean = true;
+
+    resourcePrefix="Web App (Windows).";
+
     private _showSwitchBanner: boolean = false;
     get showSwitchBanner():boolean {
         const typeSwitchItem = allowV3PResourceTypeList.find(item => this._resourceService.resource && this._resourceService.resource.type.toLowerCase() === item.type.toLowerCase());
@@ -88,6 +90,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         };
         this._telemetryService.logEvent('DiagnosticsViewLoaded', eventProps);
 
+        this.resourcePrefix = !!_resourceService.azureServiceName ? _resourceService.azureServiceName + ".": this.resourcePrefix;
         if (_resourceService.armResourceConfig && _resourceService.armResourceConfig.homePageText
             && _resourceService.armResourceConfig.homePageText.title && _resourceService.armResourceConfig.homePageText.title.length > 1
             && _resourceService.armResourceConfig.homePageText.description && _resourceService.armResourceConfig.homePageText.description.length > 1
@@ -141,6 +144,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 description: 'Explore ways to diagnose and troubleshoot the common problems of your cluster from CRUD operations to connection problems. Click on any of the documents below to start troubleshooting.',
                 searchBarPlaceHolder: 'Search a keyword that best describes your issue'
             };
+            this.resourcePrefix = "Static Azure Kubernetes Service.";
         }
 
         if (_resourceService.armResourceConfig) {

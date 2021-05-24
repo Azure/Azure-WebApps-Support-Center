@@ -1,6 +1,7 @@
 import { Component, OnInit, isDevMode } from '@angular/core';
 import { Router } from '@angular/router';
 import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'sc-app',
@@ -15,7 +16,8 @@ export class AppComponent implements OnInit {
         this._newVersionEnabled = value;
      }
 
-    constructor(private _router: Router) {
+    constructor(private _router: Router, private translate: TranslateService) {
+        translate.setDefaultLang('en');
     }
 
     ngOnInit() {

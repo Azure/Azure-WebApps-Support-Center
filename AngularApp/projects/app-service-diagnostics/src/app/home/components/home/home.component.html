@@ -29,11 +29,11 @@
     </ng-container>
   </div>
   <div class="main-area">
-    <h2>{{homePageText.title}}</h2>
-    <p id="page-description">{{homePageText.description}}</p>
+    <h2>{{ resourcePrefix+'homepage.title' | translate}}</h2>
+    <p id="page-description">{{ resourcePrefix+'homepage.description' | translate}}</p>
     <div *ngIf="categories && !useStaticAksText " class="category-container">
       <div *ngFor="let category of categories" style="display: inline-block;padding: 20px 40px 20px 0px">
-        <category-tile [category]="category"></category-tile>
+        <category-tile [category]="category" [resourcePrefix]="resourcePrefix"></category-tile>
       </div>
     </div>
     <markdown ngPreserveWhitespaces *ngIf="useStaticAksText">
@@ -110,11 +110,11 @@
 <ng-template #newHomePage>
   <fab-command-bar tabindex="0" contentClass="fab-command-bar-class">
     <items>
-      <fab-command-bar-item key="askGenie" text="Ask Genie" [iconProps]="{ iconName: 'ChatInviteFriend' }"
+      <fab-command-bar-item key="askGenie" [text]="'detector-command-bar.Ask Genie' | translate" [iconProps]="{ iconName: 'ChatInviteFriend' }"
         (click)="openGeniePanel()" data-track-type="run"></fab-command-bar-item>
-      <fab-command-bar-item *ngIf="showRiskSection" key="refresh1" text="Refresh" [iconProps]="{ iconName: 'Refresh' }" (click)="refreshPage()">
+      <fab-command-bar-item *ngIf="showRiskSection" key="refresh1" [text]="'detector-command-bar.Refresh' | translate" [iconProps]="{ iconName: 'Refresh' }" (click)="refreshPage()">
       </fab-command-bar-item>
-      <fab-command-bar-item key="sendFeedback" text="Feedback" [iconProps]="{ iconName: 'Emoji2' }"
+      <fab-command-bar-item key="sendFeedback" [text]="'detector-command-bar.Feedback' | translate" [iconProps]="{ iconName: 'Emoji2' }"
         (click)="openFeedbackPanel()"></fab-command-bar-item>
     </items>
   </fab-command-bar>
@@ -124,25 +124,25 @@
     <div *ngIf="!useLegacy" class="switch2old-context-text">
       <i class="fa fa-info-circle info-banner-icon"></i>
       Welcome to the new {{homePageText.title}}.
-      <a (click)="switchView()" class="old-version-link" tabindex="0" (keyup.enter)="switchView()" aria-label="switch to the old version">Click here to go back to the old version.</a>
+      <a (click)="switchView()" class="old-version-link" tabindex="0" (keyup.enter)="switchView()" aria-label="switch to the old version">{{Click here to go back to the old version.</a>
     </div>
   </ng-container>
 
   <div class="home-main-area">
     <div class="home-title-container">
-      <h2><span tabindex="0" id="homepage-title" class="blade-title">{{homePageText.title}}</span><span class="blade-description"> - {{homePageText.description}}
+      <h2><span tabindex="0" id="homepage-title" class="blade-title">{{ resourcePrefix+"homepage.title" | translate}}</span><span class="blade-description"> - {{ resourcePrefix+"homepage.description" | translate}}
           </span>
       </h2>
       <div class="home-search">
         <fabric-search-results></fabric-search-results>
-        <div class="home-search-text">Have questions? <a tabindex="0" (click)="openGeniePanel()"
-            (keyup.enter)="openGeniePanel()">Ask Genie</a></div>
+        <div class="home-search-text">{{"homepage.Have questions?" | translate}} <a tabindex="0" (click)="openGeniePanel()"
+            (keyup.enter)="openGeniePanel()">{{"Ask Genie"|translate}}</a></div>
       </div>
     </div>
 
 
     <div *ngIf="showRiskSection" class="section-container">
-      <h2 class="section-title">Risk alerts</h2>
+      <h2 class="section-title" translate>{{"homepage.Risk alerts"|translate}}</h2>
       <div class="home-tiles">
         <ng-container *ngFor="let riskAlertConfig of riskAlertConfigs">
           <risk-tile [riskAlertConfig]="riskAlertConfig"></risk-tile>
@@ -151,16 +151,16 @@
     </div>
 
     <div class="section-container">
-      <h2 class="section-title">Troubleshooting categories</h2>
+      <h2 class="section-title" translate>{{"homepage.Troubleshooting categories"|translate}}</h2>
       <div *ngIf="categories" class="home-tiles">
         <div *ngFor="let category of categories" class="home-tile-wrapper">
-          <category-tile-v4 [category]="category"></category-tile-v4>
+          <category-tile-v4 [category]="category" [resourcePrefix]="resourcePrefix"></category-tile-v4>
         </div>
       </div>
     </div>
 
     <div class="section-container" >
-      <h2 *ngIf="!loadingQuickLinks && quickLinkFeatures.length > 0" class="section-title">Popular troubleshooting tools</h2>
+      <h2 *ngIf="!loadingQuickLinks && quickLinkFeatures.length > 0" class="section-title" translate>{{"homepage.Popular troubleshooting tools"|translate}}</h2>
       <div *ngIf="!loadingQuickLinks else loading">
         <div class="quick-link" *ngFor="let feature of quickLinkFeatures">
           <a tabindex="0" (click)="clickQuickLink(feature)" (keyup.enter)="clickQuickLink(feature)">{{feature.name}}</a>
@@ -169,7 +169,7 @@
     </div>
 
     <div class="privacy-statement">
-      <a href="https://azure.microsoft.com/support/legal/?amp%3Bclcid=0x9" target="_blank">Privacy</a>
+      <a href="https://azure.microsoft.com/support/legal/?amp%3Bclcid=0x9" target="_blank">{{"homepage.Privacy"|translate}}</a>
     </div>
   </div>
 </ng-template>

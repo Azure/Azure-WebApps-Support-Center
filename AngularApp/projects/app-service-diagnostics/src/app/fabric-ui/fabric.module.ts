@@ -57,6 +57,7 @@ import { DiagosticSessionsPanelComponent } from './components/diagostic-sessions
 import { SharedModule } from '../shared/shared.module';
 import { CreateStorageAccountPanelComponent } from './components/create-storage-account-panel/create-storage-account-panel.component';
 import { CallstackPanelComponent } from './components/callstack-panel/callstack-panel.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
     declarations: [
@@ -118,10 +119,10 @@ import { CallstackPanelComponent } from './components/callstack-panel/callstack-
         FabPeoplePickerModule,
         FabTagPickerModule,
         FabProgressIndicatorModule,
-        // FabNavModule,
         FabContextualMenuModule,
         DiagnosticDataModule,
-        SharedModule
+        SharedModule,
+        TranslateModule
     ],
     exports: [
         FabricSearchResultsComponent,

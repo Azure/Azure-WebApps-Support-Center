@@ -15,11 +15,11 @@
       </render-icon>
 
     </fab-command-bar-item>
-    <fab-command-bar-item key="askGenie" text="Ask Genie" [iconProps]="{ iconName: 'ChatInviteFriend' }"
-      (click)="toggleOpenState()" data-track-type="run"></fab-command-bar-item>
-    <fab-command-bar-item key="refresh1" text="Refresh" [iconProps]="{ iconName: 'Refresh' }" (click)="refreshPage()">
+    <fab-command-bar-item key="askGenie"  [text]="'detector-command-bar.Ask Genie' | translate" [iconProps]="{ iconName: 'ChatInviteFriend' }"
+      (click)="toggleOpenState()" data-track-type="run">{{'detector-command-bar.Ask Genie' | translate}}</fab-command-bar-item>
+    <fab-command-bar-item key="refresh1" [text]="'detector-command-bar.Refresh' | translate" [iconProps]="{ iconName: 'Refresh' }" (click)="refreshPage()">
     </fab-command-bar-item>
-    <fab-command-bar-item key="sendFeedback" text="Feedback" [iconProps]="{ iconName: 'Emoji2' }"
+    <fab-command-bar-item key="sendFeedback" [text]="'detector-command-bar.Feedback' | translate" [iconProps]="{ iconName: 'Emoji2' }"
       (click)="sendFeedback()"></fab-command-bar-item>
   </items>
 

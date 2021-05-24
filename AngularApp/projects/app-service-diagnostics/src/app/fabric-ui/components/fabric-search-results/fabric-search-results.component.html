@@ -1,6 +1,6 @@
 <div role="search" class="search-result-container" #fabSearchResult>
   <div class="search-box">
-    <fab-search-box id="fabSearchBox" type="search" [placeholder]="searchPlaceHolder" [value]="searchValue"
+    <fab-search-box id="fabSearchBox" type="search" [placeholder]="'detector-command-bar.searchPlaceHolder' | translate" [value]="searchValue"
       [ariaLabel]="inputAriaLabel" (onChange)="updateSearchValue($event)" (onFocus)="onSearchBoxFocus()"
       (onBlur)="onBlurHandler()" (onEscape)="clearSearchWithKey()" aria-controls="search-results">
     </fab-search-box>
@@ -33,7 +33,7 @@
       <div class="result-count" style="padding-bottom: 8px;">
         {{inputAriaLabel}}
         <a *ngIf="features.length === 0" tabindex="0" (mousedown)="openGeniePanel()"
-          (keyup.enter)="openGeniePanel()">Ask chatbot Genie</a>
+          (keyup.enter)="openGeniePanel()">{{"fabric-search-results| Ask chatbot Genie" | translate}}</a>
       </div>
     </div>
   </div>

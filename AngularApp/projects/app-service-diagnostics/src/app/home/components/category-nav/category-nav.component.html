@@ -2,11 +2,11 @@
   <section class="sidebar">
     <div class="menu" [ngClass]="'light-theme'">
       <div id="scroll-container">
-        <section-divider [label]="'Overview'" [isOverview]="true" [routePath]="'overview'">
+        <section-divider [label]="'Overview'| translate" [isOverview]="true" [routePath]="'overview'">
           <collapsible-menu-item *ngFor="let detector of detectorList" [menuItem]="detector"
             [class.selected]="isSelected"></collapsible-menu-item>
         </section-divider>
-        <section-divider *ngIf="orphanDetectorList&&orphanDetectorList.length>0" [label]="'Others'" [routePath]="'Others'">
+        <section-divider *ngIf="orphanDetectorList&&orphanDetectorList.length>0" [label]="'Others'|translate" [routePath]="'Others'">
           <collapsible-menu-item *ngFor="let orphanDetector of orphanDetectorList" [menuItem]="orphanDetector"
             [class.selected]="isSelected"></collapsible-menu-item>
         </section-divider>

@@ -1,12 +1,12 @@
 <div class="category-container" (click)="navigateToCategory()" (keyup.enter)="navigateToCategory()"
   (keyup.space)="navigateToCategory()" tabindex="0" role="button">
   <div class="title-container" [style.background-color]="category.color">
-    {{category.name}}
+    {{ resourcePrefix + "category." + category.id + ".name" | translate}}
   </div>
   <div class="category-body">
-    <p>{{category.description}}</p>
+    <p>{{resourcePrefix + "category." + category.id + ".description" | translate}}</p>
     <div>
-        <span class="keyword-label">Keywords</span>
+        <span class="keyword-label">{{ "Keywords" | translate}}</span>
         <div class="keywords">
           <div class="keyword" [style.border-color]="category.color" *ngFor="let keyword of category.keywords">
             {{keyword}}
@@ -14,5 +14,4 @@
         </div>
       </div>
   </div>
-
 </div>

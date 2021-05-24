@@ -3,7 +3,7 @@
     <fab-choice-group [options]="choiceGroupOptions" [defaultSelectedKey]="defaultSelectedKey">
     </fab-choice-group>
     <div *ngIf="showTimePicker" class="row">
-      <div style="padding:15px">UTC Start Time (mm/dd/yy) </div>
+      <div style="padding:15px">{{"UTC Start Time (mm/dd/yy)" |translate}}  </div>
       <fab-date-picker contentClass="col-md-8" [strings]="dates" [minDate]="minDate" [maxDate]="maxDate"
         placeholder="Select a date..." ariaLabel="Select start date" allowTextInput="true"
         showMonthPickerAsOverlay="true" (onSelectDate)="onSelectStartDateHandler($event)" [formatDate]="formatDate"
@@ -14,7 +14,7 @@
         [getErrorMessage]="getErrorMessageOnTextField" [ariaLabel]="'startTime'">
       </fab-masked-text-field>
 
-      <div style="padding:15px; margin-top:30px">UTC End Time (mm/dd/yy) </div>
+      <div style="padding:15px; margin-top:30px">{{"UTC End Time (mm/dd/yy)" |translate}} </div>
       <fab-date-picker contentClass="col-md-8" [strings]="dates" [minDate]="minDate" [maxDate]="maxDate"
         placeholder="Select a date..." ariaLabel="Select end date" allowTextInput="true" showMonthPickerAsOverlay="true"
         (onSelectDate)="onSelectEndDateHandler($event)" [formatDate]="formatDate" [value]="endDate">
@@ -27,10 +27,10 @@
     <div *ngIf="timeDiffError != ''" style="color:red;">{{timeDiffError}}</div>
     <div style="padding:15px 0px">
       <fab-primary-button contentStyle="margin-right:10px" (onClick)="applyTimeRange()">
-        Apply
+        {{"Apply"|translate}}
       </fab-primary-button>
       <fab-default-button (onClick)="cancelTimeRange()">
-        Cancel
+        {{"Cancel"|translate}}
       </fab-default-button>
     </div>
   </div>

@@ -1,16 +1,17 @@
 <div (click)="clickTileHandler()" class="risk-tile">
   <div class="risk-tile-container" tabindex="0" role="button" (keyup.enter)="clickTileHandler()">
-    <h3 class="risk-title risk-section">{{title}}</h3>
+    <h3 class="risk-title risk-section">{{ title | translate}}</h3>
     <div class="risk-section" *ngIf="loading != LoadingStatus.Loading else loadingPlaceHolder">
       <div *ngFor="let info of infoList" class="risk-icon-section">
         <span class="fa status-icon risk-icon" [ngClass]="StatusStyles.getIconByStatus(info.status)">
         </span>
-        <span>{{info.message}}</span>
+        <span>{{info.statusCount}}</span>
+        <span> {{info.statusMessage | translate}}</span>
       </div>
     </div>
 
     <div class="risk-section">
-      <a>{{linkText}}</a>
+      <a>{{ linkText | translate}}</a>
     </div>
   </div>
 </div>

@@ -17,6 +17,7 @@ const imageRootPath = '../../../../assets/img/landing-home';
 export class CategoryTileV4Component implements OnInit {
 
   @Input() category: Category;
+  @Input() resourcePrefix: string="";
   categoryImgPath: string;
   keywords: string;
   constructor(private _portalService: PortalActionService, private _router: Router, private _activatedRoute: ActivatedRoute, private _notificationService: NotificationService, private _logger: LoggingV2Service, private _diagnosticService: DiagnosticService, private _resourceService: ResourceService,private _telemetryService:TelemetryService) { }

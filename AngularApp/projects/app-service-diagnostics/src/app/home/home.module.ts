@@ -56,6 +56,7 @@ import { CrashMonitoringComponent } from '../shared/components/tools/crash-monit
 import { RiskTileComponent } from './components/risk-tile/risk-tile.component';
 import { IntegratedSolutionsViewComponent } from '../shared/components/integrated-solutions-view/integrated-solutions-view.component';
 import { HomeContainerComponent } from './components/home-container/home-container.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 export const HomeRoutes = RouterModule.forChild([
     {
@@ -620,7 +621,8 @@ export const HomeRoutes = RouterModule.forChild([
         MarkdownModule.forRoot(),
         FabSearchBoxModule,
         FabCommandBarModule,
-        FabSpinnerModule
+        FabSpinnerModule,
+        TranslateModule
     ],
     declarations: [HomeContainerComponent, HomeComponent, CategoryChatComponent, CategoryTileComponent, SearchResultsComponent, SupportTopicRedirectComponent, DiagnosticsSettingsComponent, CategoryTileV4Component, RiskTileComponent],
     providers:

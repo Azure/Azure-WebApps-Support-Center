@@ -41,8 +41,9 @@ export class RiskTileComponent implements OnInit {
             else {
                 this.infoList = [
                     {
-                        message: "No data available",
-                        status: HealthStatus.Info
+                        statusMessage: "No data available",
+                        status: HealthStatus.Info,
+                        statusCount: "",
                     }
                 ];
             }
@@ -114,11 +115,13 @@ export class RiskTileComponent implements OnInit {
 }
 
 class RiskInfoDisplay {
-    message: string;
+    statusCount: string;
     status: HealthStatus;
+    statusMessage: string;
 
     constructor(status: HealthStatus, count: number) {
         this.status = status;
-        this.message = `${count} ${HealthStatus[status]}`;
+        this.statusCount = `${count}`
+        this.statusMessage = `${HealthStatus[status]}`;
     }
 }

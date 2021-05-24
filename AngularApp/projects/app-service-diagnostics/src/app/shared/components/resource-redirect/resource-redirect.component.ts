@@ -7,6 +7,7 @@ import { StartupInfo } from '../../models/portal';
 import { DemoSubscriptions } from '../../../betaSubscriptions';
 import { DetectorType, TelemetryService } from 'diagnostic-data';
 import { VersionTestService } from '../../../fabric-ui/version-test.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'resource-redirect',
@@ -16,12 +17,17 @@ import { VersionTestService } from '../../../fabric-ui/version-test.service';
 export class ResourceRedirectComponent implements OnInit {
   private _newVersionEnabled = true;
   private _useLegacyVersion = true;
-  constructor(private _authService: AuthService, private _router: Router, private _windowService: WindowService, private _versionTestService: VersionTestService, private _telemetryService: TelemetryService) { }
+  constructor(private _authService: AuthService, private _router: Router, private _windowService: WindowService, private _versionTestService: VersionTestService, private _telemetryService: TelemetryService, private translate: TranslateService) { }
 
   ngOnInit() {
     this._versionTestService.isLegacySub.subscribe(useLegacyVersion => this._useLegacyVersion = useLegacyVersion);
     this.navigateToExperience();
   }
+
+  useLanguage(language: string): void {
+    language = language.split("-")[0];
+    this.translate.use(language);
+}
 
   navigateToExperience() {
     this._authService.getStartupInfo()
@@ -32,6 +38,11 @@ export class ResourceRedirectComponent implements OnInit {
             const supportTopicId = info.supportTopicId ? info.supportTopicId : '';
             const sessionId = info.sessionId ? info.sessionId : '';
             const effectiveLocale = !!info.effectiveLocale ? info.effectiveLocale.toLowerCase() : "";
+
+            if (!!info.effectiveLocale)
+            {
+                this.useLanguage(effectiveLocale);
+            }
 
             const eventProperties: { [name: string]: string } = {
                 'ResourceId': resourceId,

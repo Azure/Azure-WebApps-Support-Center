@@ -5,10 +5,10 @@
       <img class="tile-image" [src]="categoryImgPath" alt="" >
     </div>
     <div class="tile-content">
-      <h3 class="tile-title">{{category.name}}</h3>
-      <p class="tile-description">{{category.description}}</p>
-      <p class="tile-keywords">Ex: {{keywords}}</p>
-      <a>Troubleshoot</a>
+      <h3 class="tile-title">{{ resourcePrefix + "category." + category.id + ".name" | translate}}</h3>
+      <p class="tile-description">{{ resourcePrefix + "category." + category.id + ".description" | translate}}</p>
+      <p class="tile-keywords">{{"Keywords" | translate}}: {{ resourcePrefix + "category." + category.id + ".keywords" |translate}}</p>
+      <a>{{"Troubleshoot"|translate}}</a>
     </div>
   </div>
 </div>

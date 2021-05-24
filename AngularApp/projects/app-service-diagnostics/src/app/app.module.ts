@@ -5,7 +5,7 @@ import {
   KustoTelemetryService, AppInsightsTelemetryService, UnhandledExceptionHandlerService
 } from 'diagnostic-data';
 import { SiteService } from 'projects/app-service-diagnostics/src/app/shared/services/site.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -46,6 +46,9 @@ import { PortalActionService} from './shared/services/portal-action.service';
 import { FabricModule } from './fabric-ui/fabric.module';
 import { QuickLinkService } from './shared-v2/services/quick-link.service';
 import { RiskAlertService } from './shared-v2/services/risk-alert.service';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+
 
 @NgModule({
   imports: [
@@ -74,7 +77,14 @@ import { RiskAlertService } from './shared-v2/services/risk-alert.service';
     ),
     CustomMaterialModule,
     HighchartsChartModule,
-    FabricModule
+    FabricModule,
+    TranslateModule.forRoot({
+        loader: {
+            provide: TranslateLoader,
+            useFactory: HttpLoaderFactory,
+            deps: [HttpClient]
+        }
+    })
   ],
   declarations: [
     AppComponent,
@@ -113,3 +123,8 @@ import { RiskAlertService } from './shared-v2/services/risk-alert.service';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+// required for AOT compilation
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+    return new TranslateHttpLoader(http);
+}

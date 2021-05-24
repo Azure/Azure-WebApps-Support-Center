@@ -1,12 +1,12 @@
 <div>
   <fab-panel [isOpen]="globals.openFeedback" [type]="type" [customWidth]="panelWidth" [isHiddenOnDismiss]="true"
     [hasCloseButton]="true" [closeButtonAriaLabel]="'close'" (onDismissed)="dismissedFeedbackHandler()"
-    (onOpen)="onOpenFeedbackPanel()" [renderFooterContent]="feedbackFooter" [isFooterAtBottom]="true" [headerText]="'Feedback'" [isLightDismiss]="true" (onLightDismissClick)="dismissedFeedbackHandler()">
+    (onOpen)="onOpenFeedbackPanel()" [renderFooterContent]="feedbackFooter" [isFooterAtBottom]="true" [headerText]="'fabric-feedback.Feedback'|translate" [isLightDismiss]="true" (onLightDismissClick)="dismissedFeedbackHandler()">
 
     <!-- Feedback Panel Content -->
     <div class="panel-text">
-      <p>Thank you for giving us feedback!</p>
-      <label aria-required="true">Are you satisfied with your experience?</label>
+      <p>{{"fabric-feedback.Thank you for giving us feedback!" | translate }}</p>
+      <label aria-required="true">{{"fabric-feedback.Are you satisfied with your experience?" | translate }}</label>
       <div class="feedback-panel-icons" id="feedback-icons">
         <div *ngFor="let feedbackIcon of feedbackIcons;let i = index" (click)="setRating(i)"
           [ngClass]="{'selected-icon':rating - 1 === i}" class="feedback-icon hover-item" style="padding: 5px;"
@@ -15,7 +15,7 @@
         <div class="tooltiptext">{{feedbackIcon.text}}</div>
         </div>
       </div>
-      <label for="feedback-textarea">Tell us about your experience.</label>
+      <label for="feedback-textarea">{{"fabric-feedback.Tell us about your experience" | translate }}</label>
       <textarea id="feedback-textarea" [(ngModel)]="feedbackText" tabindex="0" rows="7" cols="35"></textarea>
     </div>
   </fab-panel>
@@ -25,11 +25,11 @@
     [isBlocking]="false" (onDismissed)="dismissedSubmittedHandler()" (onOpen)="onOpenSubmittedPanel()">
     <div class="submitted-panel-text panel-text">
       <div>
-        <span class="fa fa-check-circle submitted-panel-icon"></span> Feedback sent!
+        <span class="fa fa-check-circle submitted-panel-icon"></span> {{"fabric-feedback.Feedback sent!" | translate }}
       </div>
       <div>{{currentTime}}</div>
     </div>
-    <p>Thank you for your feedback</p>
+    <p>{{"fabric-feedback.Thank you for your feedback" | translate }}</p>
   </fab-panel>
 </div>
 
@@ -37,13 +37,13 @@
   <hr class="feedback-panel-divider">
   <div>
     <div class="panel-text">
-      <fab-checkbox [label]="checkLabel" [ariaLabel]="checkLabel" [(checked)]="checked"></fab-checkbox>
+      <fab-checkbox [label]="'fabric-feedback.checkLabel'|translate" [ariaLabel]="checkLabel" [(checked)]="checked"></fab-checkbox>
       <div class="feedback-panel-link">
-        <a href="https://privacy.microsoft.com/en-US/privacystatement" target="_blank">Privacy</a>
+        <a href="https://privacy.microsoft.com/en-US/privacystatement" target="_blank">{{"Privacy" | translate }}</a>
       </div>
     </div>
     <div>
-      <fab-primary-button (onClick)="submitFeedback()" [disabled]="rating == 0 &&feedbackText === ''">Submit feedback
+      <fab-primary-button (onClick)="submitFeedback()" [disabled]="rating == 0 &&feedbackText === ''">{{"fabric-feedback.Submit feedback" | translate}}
       </fab-primary-button>
     </div>
   </div>

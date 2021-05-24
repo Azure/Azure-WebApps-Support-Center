@@ -1,9 +1,9 @@
 <div class="category-container" style="width:100%">
   <div>
-    <h2><span class="blade-title">{{categoryName}}</span><span class="blade-description"> -
-        {{categoryDescription}}</span></h2>
+    <h2><span class="blade-title">{{categoryName | translate}}</span><span class="blade-description"> -
+        {{categoryDescription | translate}}</span></h2>
     <p class="category-description" *ngIf="categoryId!=='navigator' && categoryId!=='DiagnosticTools'">
-      If you have a specific problem you want to investigate, click a topic in the left navigation or click Ask Genie.
+      {{"category-overview.If you have a specific problem you want to investigate, click a topic in the left navigation or click Ask Genie."|translate}}
     </p>
   </div>
   <div style="margin-left: -20px;margin-top: 10px;">

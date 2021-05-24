@@ -22,7 +22,9 @@
     "e2e": "ng e2e",
     "lib": "ng build diagnostic-data --watch",
     "generate-report": "ng build app-service-diagnostics --prod",
-    "bundle-report": "webpack-bundle-analyzer ../Backend/wwwroot/stats.json -p 8889"
+    "bundle-report": "webpack-bundle-analyzer ../Backend/wwwroot/stats.json -p 8889",
+    "extract-translations": "ngx-translate-extract --input projects/app-service-diagnostics --output projects/app-service-diagnostics/src/assets/i18n/en.json --clean --sort --format namespaced-json --marker _",
+    "extract-translations applens": "ngx-translate-extract --input projects/applens --output projects/applens/src/assets/i18n/*.json --clean --sort --format namespaced-json --marker _"
   },
   "dependencies": {
     "@angular-react/core": "1.0.1",
@@ -39,8 +41,11 @@
     "@angular/platform-browser-dynamic": "8.0.2",
     "@angular/router": "8.0.2",
     "@angular/upgrade": "8.0.2",
+    "@biesbjerg/ngx-translate-extract-marker": "^1.0.0",
     "@microsoft/applicationinsights-web": "^2.5.4",
     "@ng-select/ng-select": "^2.16.0",
+    "@ngx-translate/core": "^12.0.0",
+    "@ngx-translate/http-loader": "^4.0.0",
     "@swimlane/ngx-datatable": "^15.0.2",
     "@types/react": "~16.7.13",
     "@types/react-dom": "^16.0.11",
@@ -88,6 +93,7 @@
     "@angular/cli": "8.0.2",
     "@angular/compiler-cli": "8.0.2",
     "@angular/language-service": "^8.0.2",
+    "@biesbjerg/ngx-translate-extract": "^7.0.4",
     "@types/jasmine": "~2.8.3",
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",

@@ -35,6 +35,7 @@ import { GenericCategoryFlow } from './message-flow/v2-flows/generic-category.fl
 import { AvailabilityPerformanceFlow } from './message-flow/v2-flows/availability-performance.flow';
 import { HealthCheckV3Component } from './message-flow/health-check-v3/health-check-v3.component';
 import { LinuxAvailabilityPerformanceFlow } from './message-flow/v2-flows/linux-availability-performance.flow';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
     declarations: [
@@ -62,7 +63,8 @@ import { LinuxAvailabilityPerformanceFlow } from './message-flow/v2-flows/linux-
         AvailabilityModule,
         SolutionsModule,
         SharedV2Module,
-        DiagnosticDataModule
+        DiagnosticDataModule,
+        TranslateModule
     ],
     exports: [
         HomepageComponent,

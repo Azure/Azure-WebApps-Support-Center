@@ -539,6 +539,8 @@ export class GenericArmConfigService {
               if (mergedCategories.length > 0) {
                 currConfig.categories = mergedCategories;
               }
+
+
             }
           }
         } catch (error) {
