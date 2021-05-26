@@ -76,7 +76,7 @@
     "rxjs": "6.2.2",
     "rxjs-compat": "6.2.2",
     "tsickle": "^0.37.0",
-    "ua-parser-js": "^0.7.19",
+    "ua-parser-js": "^0.7.24",
     "vis": "^4.21.0",
     "web-animations-js": "^2.3.1",
     "zone.js": "~0.8.4"
