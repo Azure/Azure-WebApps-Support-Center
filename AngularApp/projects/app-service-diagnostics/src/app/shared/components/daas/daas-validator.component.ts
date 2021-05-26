@@ -49,22 +49,22 @@ export class DaasValidatorComponent implements OnInit {
     combineLatest(
       this._serverFarmService.siteServerFarm.pipe(catchError(err => {
         this.checkingSupportedTier = false;
-        this.error = `Failed with error ${JSON.stringify(err)} while checking web app's tier`;
+        this.error = `Failed with an error while checking app's tier - ${JSON.stringify(err)}`;
         return of(err);
       })),
       this._siteService.getAlwaysOnSetting(this.siteToBeDiagnosed).pipe(catchError(err => {
         this.alwaysOnEnabled = false;
-        this.error = `Failed with error ${JSON.stringify(err)} while checking always on setting`;
+        this.error = `Failed with an error while checking Always On setting - ${JSON.stringify(err)}`;
         return of(err);
       })),
       this._daasService.getDiagnosers(this.siteToBeDiagnosed).pipe(
         retry(2),
         catchError(err => {
-          this.error = `Failed with error ${JSON.stringify(err)} while retrieving DaaS settings`;
+          this.error = `Failed with an error while retrieving DaaS settings - ${JSON.stringify(err)}`;
           return of(err);
         })),
       this.validateAppSettings(this.siteToBeDiagnosed).pipe(catchError(err => {
-        this.error = `Failed with error ${JSON.stringify(err)} while checking App Settings`;
+        this.error = `Failed with an error while checking App Settings - ${JSON.stringify(err)}`;
         return of(err);
       }))
     ).subscribe(results => {

@@ -129,18 +129,18 @@ export class ArmService {
 
     createUrl(resourceUri: string, apiVersion?: string) {
         const uri = `${this.armUrl}${resourceUri}${resourceUri.indexOf('?') >= 0 ? '&' : '?'}` +
-        `api-version=${this.getApiVersion(resourceUri, apiVersion)}`
+            `api-version=${this.getApiVersion(resourceUri, apiVersion)}`
 
         //Temporary solution for checking dependency call for missing api version exception, will remove after resolve exception
         const exceptionUri = "management.azure.com/?clientOptimizations=undefined&l=en.en-us&trustedAuthority=https:%2F%2Fportal.azure.com&shellVersion=undefined#";
-        if(uri.includes(exceptionUri)){
-            if(this.telemetryService){
-                this.telemetryService.logEvent("MissingApiVersionParameter",{
+        if (uri.includes(exceptionUri)) {
+            if (this.telemetryService) {
+                this.telemetryService.logEvent("MissingApiVersionParameter", {
                     "resourceUri": resourceUri,
                     "uri": uri,
                     "armUrl": this.armUrl,
-                    "isInCaseSubmissionFlow" : `${this.isInCaseSubmissionFlow}`,
-                    "effectivLocale" : `${this.effectiveLocale}`
+                    "isInCaseSubmissionFlow": `${this.isInCaseSubmissionFlow}`,
+                    "effectivLocale": `${this.effectiveLocale}`
                 });
             }
             throw new Error("ARM Call Cause MissingApiVersionParameter Exception");
@@ -207,30 +207,30 @@ export class ArmService {
                 }));
 
             }),
-            map(r=> this.getDecodedDetectorResponseMessageEnvelope<T>(url, resourceUri, r)),
-            catchError(this.handleError.bind(this))            
+            map(r => this.getDecodedDetectorResponseMessageEnvelope<T>(url, resourceUri, r)),
+            catchError(this.handleError.bind(this))
         );
 
         return this._cache.get(url, request, invalidateCache, logData);
     }
 
-    getDecodedDetectorResponseMessageEnvelope<T>(url:string, resourceId:string, response:ResponseMessageEnvelope<T>):ResponseMessageEnvelope<T>{
-        let isDetectorsCall = url.toLowerCase().indexOf("/detectors/") > 0 || url.toLowerCase().indexOf("/detectors?") > 0 ;
-        if(isDetectorsCall && this._genericArmConfigService && this._genericArmConfigService.isArmApiResponseBase64Encoded(resourceId)){
+    getDecodedDetectorResponseMessageEnvelope<T>(url: string, resourceId: string, response: ResponseMessageEnvelope<T>): ResponseMessageEnvelope<T> {
+        let isDetectorsCall = url.toLowerCase().indexOf("/detectors/") > 0 || url.toLowerCase().indexOf("/detectors?") > 0;
+        if (isDetectorsCall && this._genericArmConfigService && this._genericArmConfigService.isArmApiResponseBase64Encoded(resourceId)) {
             const loggingError = new Error();
             const loggingProps = {};
             loggingProps['Name'] = 'PartnerResponseBase64DecodingFailure';
-            if(response && response.properties && (((response.properties) as any).value)) {
-                let encodedDetectorResponse:string = ((response.properties) as any).value;
-                let decodedDetectorResponseString:string = '';
+            if (response && response.properties && (((response.properties) as any).value)) {
+                let encodedDetectorResponse: string = ((response.properties) as any).value;
+                let decodedDetectorResponseString: string = '';
                 try {
                     decodedDetectorResponseString = atob(encodedDetectorResponse); //Decode the base64 response here
                 } catch (error) {
                     //The string to be decoded is not properly base64 encoded.
-                    loggingError.message = `Failed to decode ${(url.toLowerCase().indexOf("/detectors?") > 0)?'List':'Get'} Detector response.`;
+                    loggingError.message = `Failed to decode ${(url.toLowerCase().indexOf("/detectors?") > 0) ? 'List' : 'Get'} Detector response.`;
                     loggingProps['Assertion condition'] = 'Base64 decoding failed';
                     loggingProps['String being decoded'] = encodedDetectorResponse;
-                    if( error instanceof DOMException && error.name && error.name == "InvalidCharacterError") {
+                    if (error instanceof DOMException && error.name && error.name == "InvalidCharacterError") {
                         loggingProps['Error Name'] = error.name;
                         loggingProps['Error Message'] = error.message;
                     }
@@ -242,7 +242,7 @@ export class ArmService {
                     return null;
                 }
                 try {
-                    let decodedDetectorResponse:T = JSON.parse(decodedDetectorResponseString) as T;
+                    let decodedDetectorResponse: T = JSON.parse(decodedDetectorResponseString) as T;
                     response.properties = decodedDetectorResponse;
                     return response;
                 } catch (error) {
@@ -250,7 +250,7 @@ export class ArmService {
                     loggingError.message = 'Failed to parse decoded JSON';
                     loggingProps['Assertion condition'] = 'JSON parsing of decoded response failed';
                     loggingProps['String being parsed'] = decodedDetectorResponseString;
-                    if(error instanceof SyntaxError) {
+                    if (error instanceof SyntaxError) {
                         loggingProps['Error Name'] = error.name;
                         loggingProps['Error Message'] = error.message;
                     }
@@ -261,7 +261,7 @@ export class ArmService {
                     this.telemetryService.logException(loggingError, null, loggingProps);
                     return null;
                 }
-                
+
             }
             else {
                 loggingError.message = 'Encoded response not found.';
@@ -486,6 +486,8 @@ export class ArmService {
         }
         if (error.message) {
             errorReturn += ' ' + error.message;
+        } else if (error.Message) {
+            errorReturn += ' ' + error.Message;
         } else if (error.description) {
             errorReturn += ' ' + error.description;
         } else if (error.Description) {
@@ -494,6 +496,8 @@ export class ArmService {
 
         if (errorReturn === '') {
             errorReturn = JSON.stringify(error);
+        } else {
+            errorReturn = errorReturn.trim();
         }
         return errorReturn;
     }
@@ -572,11 +576,11 @@ export class ArmService {
 
         const request = this._http.get(url, { headers: this.getHeaders(null, additionalHeaders) }).pipe(
             map<ResponseMessageCollectionEnvelope<ResponseMessageEnvelope<T>>, ResponseMessageEnvelope<T>[]>(r => {
-                if(isDetectorsCall && this._genericArmConfigService && this._genericArmConfigService.isArmApiResponseBase64Encoded(resourceId)) {
-                    let decodedResponseArray:ResponseMessageEnvelope<T>[] = [];
-                    r.value.forEach(response =>{
-                        let decodedResponse:ResponseMessageEnvelope<T> = this.getDecodedDetectorResponseMessageEnvelope(url, resourceId, response);
-                        if(decodedResponse) {
+                if (isDetectorsCall && this._genericArmConfigService && this._genericArmConfigService.isArmApiResponseBase64Encoded(resourceId)) {
+                    let decodedResponseArray: ResponseMessageEnvelope<T>[] = [];
+                    r.value.forEach(response => {
+                        let decodedResponse: ResponseMessageEnvelope<T> = this.getDecodedDetectorResponseMessageEnvelope(url, resourceId, response);
+                        if (decodedResponse) {
                             decodedResponseArray.push(decodedResponse);
                         }
                     });
@@ -614,14 +618,14 @@ export class ArmService {
             });
         }
 
-        if (this.isLocalizationApplicable){
+        if (this.isLocalizationApplicable) {
             headers = headers.set('x-ms-localization-language', encodeURI(this.effectiveLocale));
         }
 
         return headers;
     }
 
-    clearCache():void {
+    clearCache(): void {
         this._cache.clear();
     }
 }

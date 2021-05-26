@@ -1,5 +1,5 @@
 <div *ngIf="!checkingSupportedTier && checkingSkuSucceeded && !supportedTier">
-  <div class="focus-box focus-box-warning" style="margin-top:20px;margin-left:10px">
+  <div class="focus-box focus-box-warning mt-2 ml-2 mr-3">
     <div>
       <strong>Error</strong> - This tool is supported only on <b>Standard, Premium </b> and <b>Isolated</b> SKU's only
       with <strong>AlwaysOn</strong> setting enabled to TRUE
@@ -11,7 +11,7 @@
 </div>
 
 <div *ngIf="error !=='' && !checkingSupportedTier">
-  <div class="focus-box focus-box-warning" style="margin-top:20px;margin-left:10px">
+  <div class="focus-box focus-box-warning mt-2 ml-2 mr-3">
     <div>
       <strong>Error</strong> - {{ error }}
     </div>
