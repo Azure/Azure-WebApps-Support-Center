@@ -64,6 +64,7 @@ export class SiteService extends ResourceService {
             this.pesId = '16170';
             this.imgSrc = 'assets/img/Azure-Tux-Logo.png';
             this.searchSuffix = "AZURE LINUX WEB APP";
+            this.templateFileName = "LinuxApp";
         }
     }
 }
