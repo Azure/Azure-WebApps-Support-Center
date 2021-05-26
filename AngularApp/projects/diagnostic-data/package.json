@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "react": "16.3.2",
-    "react-dom": "16.3.2",
+    "react-dom": "16.13.1",
     "@types/react": "16.3.11",
     "@types/react-dom": "16.0.5",
     "@angular-react/core": "1.0.1",
