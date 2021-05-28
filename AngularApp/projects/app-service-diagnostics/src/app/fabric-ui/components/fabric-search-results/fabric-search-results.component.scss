@@ -88,4 +88,10 @@
     margin: -11px -8px -11px -5px;
 }
 
+.item-word-wrap {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 

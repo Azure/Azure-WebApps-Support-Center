@@ -50,12 +50,12 @@
           <ng-template let-feature="item" let-index="index">
             <div class="result-item remove-results-padding" tabindex="0" (mousedown)="navigateToFeature(feature)"
               [attr.aria-label]="getResultAriaLabel(index)">
-              <div>
-                <img style="height: 20px;width: 20px;margin-right: 5px;" [src]="getIconImagePath(feature.id)" alt="">
-                <span class="feature-title" aria-label="feature.name">{{truncateDisplayName(feature.name)}}</span>
+              <div class="item-word-wrap" style="width: 65%;">
+                <img style="height: 20px;width: 20px;margin-right: 5px;" [src]="getIconImagePath(feature.id)" [attr.alt]="feature.name">
+                <span class="feature-title">{{feature.name}}</span>
               </div>
-              <div>
-                <span class="feature-category" aria-label="feature.category">{{truncateDisplayName(feature.category)}}</span>
+              <div class="item-word-wrap" style="width: 30%;">
+                <span class="feature-category">{{feature.category}}</span>
               </div>
             </div>
           </ng-template>
