@@ -2,7 +2,7 @@ import { Component, ViewChild, AfterContentInit, TemplateRef, OnInit, AfterViewI
 import { DiagnosticData, DataTableRendering, TableFilter, TableFilterSelectionOption, TableColumnOption } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { SelectionMode, IColumn, IListProps, ISelection, Selection, IStyle, DetailsListLayoutMode, ICalloutProps } from 'office-ui-fabric-react';
-import { FabDetailsListComponent } from '@angular-react/fabric';
+import { FabDetailsListComponent, FabSearchBoxComponent } from '@angular-react/fabric';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 
 const columnMinWidth: number = 100;
@@ -103,7 +103,8 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   //Options that selected by each filter
   filterSelectionMap: Map<string, Set<string>> = new Map<string, Set<string>>();
   @ViewChild(FabDetailsListComponent, { static: true }) fabDetailsList: FabDetailsListComponent;
-  @ViewChild('emptyTableFooter', { static: true }) emptyTableFooter: TemplateRef<any>
+  @ViewChild('emptyTableFooter', { static: true }) emptyTableFooter: TemplateRef<any>;
+  @ViewChild(FabSearchBoxComponent, { static: false }) fabSearchBox: any;
   protected processData(data: DiagnosticData) {
     super.processData(data);
     this.renderingProperties = <DataTableRendering>data.renderingProperties;
@@ -169,7 +170,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     return false;
   }
 
-  updateTableBySearch(e: { event: Event, newValue?: string }) {
+  updateSearchValue(e: { event: Event, newValue?: string }) {
     // this.searchValue = e.newValue.toLowerCase();
     this.searchValue = e.newValue;
     const val = e.newValue.toLowerCase();
@@ -182,6 +183,11 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       });
     }, 5000);
     this.updateTable();
+  }
+
+  focusSearchBox() {
+    const input = this.fabSearchBox.elementRef.nativeElement.firstChild.lastElementChild;
+    input.autocomplete = "off";
   }
 
   clickColumn(e: { ev: Event, column: IColumn }) {

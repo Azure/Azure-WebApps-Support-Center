@@ -1,8 +1,7 @@
 <data-container [title]="renderingProperties.title">
   <div style="display: flex;align-items: baseline;">
     <div *ngIf="allowColumnSearch" class="text-field">
-      <fab-text-field (onChange)=updateTableBySearch($event) [rows]="1" [placeholder]="searchAriaLabel"
-        [ariaLabel]="searchAriaLabel"></fab-text-field>
+        <fab-search-box #fabSearchBox [value]="searchValue" (onChange)="updateSearchValue($event)" (onFocus)="focusSearchBox()" [placeholder]="searchAriaLabel"></fab-search-box>
     </div>
     <!-- Filters -->
     <div *ngIf="tableFilters.length > 0" style="display: flex;">
