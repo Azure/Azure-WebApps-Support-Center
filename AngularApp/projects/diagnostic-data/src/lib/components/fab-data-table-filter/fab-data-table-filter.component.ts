@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DirectionalHint, IChoiceGroup, IChoiceGroupOption } from 'office-ui-fabric-react';
+import { DirectionalHint, IButtonStyles, IChoiceGroup, IChoiceGroupOption } from 'office-ui-fabric-react';
 import { TableFilterSelectionOption, TableFilter } from '../../models/detector';
 
 const all = "all";
@@ -30,6 +30,18 @@ export class FabDataTableFilterComponent implements OnInit {
   selectedKey: string = "";
   displayName: string = "";
   isCallOutVisible: boolean = false;
+
+  buttonStyle: IButtonStyles = {
+    root: {
+      color: "#323130",
+      borderRadius: "12px",
+      margin: " 0px 5px",
+      background: "rgba(0, 120, 212, 0.1)",
+      fontSize: "13",
+      fontWeight: "600",
+      height: "80%"
+    }
+  }
   constructor() { }
 
   ngOnInit() {
