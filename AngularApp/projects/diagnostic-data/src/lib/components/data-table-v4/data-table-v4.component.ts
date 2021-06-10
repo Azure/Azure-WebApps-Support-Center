@@ -93,7 +93,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   columns: IColumn[] = [];
   allowColumnSearch: boolean = false;
   searchTimeout: any;
-  searchAriaLabel = "Filter by all columns";
+  searchAriaLabel = "Search By keywords";
   heightThreshold = window.innerHeight * 0.5;
   tableFilters: TableFilter[] = [];
   searchValue: string = "";
