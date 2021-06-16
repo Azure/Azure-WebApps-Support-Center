@@ -75,7 +75,7 @@
             </div>
           </div>
         </div>
-        <div class="mt-3">
+        <div class="mt-3" *ngIf="diagnoser && diagnoser.Name">
           <daas-validator #daasValidatorRef [siteToBeDiagnosed]="siteToBeDiagnosed" [diagnoserName]="diagnoser.Name"
             (DaasValidated)="onDaasValidated($event)"></daas-validator>
         </div>
