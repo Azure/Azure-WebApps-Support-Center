@@ -85,6 +85,10 @@ export class WebSitesService extends ResourceService {
             if (this.appType !== AppType.FunctionApp && this.platform == OperatingSystem.windows) {
                 return of("test_keystone_detector");
             }
+            else if (this.appType == AppType.WorkflowApp)
+            {
+                return of("la_standard_keystone");
+            }
             else {
                 return of(null);
             }
