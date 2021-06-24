@@ -22,16 +22,21 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     if (this.renderingProperties.columnOptions && this.renderingProperties.columnOptions.length > 0) {
       this.renderingProperties.columnOptions.forEach((option) => {
         if (this.validateFilterOption(option)) {
-          this.tableFilters.push({ columnName: option.name, selectionOption: option.selectionOption });
+          this.tableFilters.push({ name: option.name, selectionOption: option.selectionOption, defaultSelection: option.defaultSelection });
         }
       });
+    }
 
-      for (const filter of this.tableFilters) {
-        this.filtersMap.set(filter.columnName, new Set<string>());
+    for (const filter of this.tableFilters) {
+      this.filtersMap.set(filter.name, new Set<string>());
+      if (filter.defaultSelection && filter.defaultSelection.length > 0) {
+        const set = new Set(filter.defaultSelection);
+        this.filterSelectionMap.set(filter.name, set);
       }
     }
 
     this.createFabricDataTableObjects();
+    this.updateTable();
 
     this.fabDetailsList.selectionMode = this.renderingProperties.descriptionColumnName ? SelectionMode.single : SelectionMode.none;
     this.fabDetailsList.selection = this.selection;

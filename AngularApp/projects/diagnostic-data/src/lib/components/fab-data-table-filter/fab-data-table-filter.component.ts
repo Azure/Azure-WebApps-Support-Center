@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FabCheckboxComponent } from '@angular-react/fabric';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { DirectionalHint, IButtonStyles, IChoiceGroup, IChoiceGroupOption } from 'office-ui-fabric-react';
 import { TableFilterSelectionOption, TableFilter } from '../../models/detector';
 
@@ -23,7 +24,9 @@ export class FabDataTableFilterComponent implements OnInit {
   name: string = "";
   filterOption: TableFilterSelectionOption = TableFilterSelectionOption.Single;
   selected: Set<string> = new Set<string>();
-  optionsWithFormattedName: { name: string, formattedName: string }[] = [];
+  optionsWithFormattedName: { name: string, formattedName: string, defaultSelection: boolean }[] = [];
+
+  @ViewChild("checkBoxAll", { static: false }) checkbox: FabCheckboxComponent;
 
   //For single choice
   optionsForSingleChoice: IChoiceGroupOption[] = [];
@@ -53,14 +56,15 @@ export class FabDataTableFilterComponent implements OnInit {
     this.filterSelector = `#${this.filterId}`;
 
     this.options.forEach(option => {
-      this.optionsWithFormattedName.push({ name: option, formattedName: this.formatOptionName(option) });
+      this.optionsWithFormattedName.push({ name: option, formattedName: this.formatOptionName(option), defaultSelection: this.checkIsDefaultSelected(option) });
     });
 
     if (this.filterOption === TableFilterSelectionOption.Single) {
       this.initForSingleSelect();
-      this.displayName = `${this.tableFilter.columnName} : ${this.selectedKey}`;
+      this.displayName = `${this.tableFilter.name} : ${this.selectedKey}`;
     } else if (this.filterOption === TableFilterSelectionOption.Multiple) {
-      this.displayName = `${this.tableFilter.columnName} : ${all}`;
+      this.initForMultipleSelection();
+      this.updateMultipleSelectionText();
     }
   }
 
@@ -94,8 +98,14 @@ export class FabDataTableFilterComponent implements OnInit {
 
   //For single selection
   initForSingleSelect() {
-    this.selectedKey = this.optionsWithFormattedName[0].formattedName;
-    this.selected.add(this.optionsWithFormattedName[0].name);
+    //If has defaultSelection and can be found then make it as default select, otherwise use first one
+    let option = this.optionsWithFormattedName[0];
+    if (this.optionsWithFormattedName.find(o => o.defaultSelection === true)) {
+      option = this.optionsWithFormattedName.find(o => o.defaultSelection === true);
+    }
+
+    this.selectedKey = option.formattedName;
+    this.selected.add(option.name);
 
     this.optionsWithFormattedName.forEach(option => {
       this.optionsForSingleChoice.push({
@@ -110,8 +120,14 @@ export class FabDataTableFilterComponent implements OnInit {
     });
   }
 
+  initForMultipleSelection() {
+    this.optionsWithFormattedName.forEach(o => {
+      if (o.defaultSelection) this.selected.add(o.name);
+    })
+  }
+
   updateTableWithOptions() {
-    this.updateDisplayName();
+    this.updateText();
     this.emitSelectedOption();
     this.closeCallout();
   }
@@ -124,6 +140,11 @@ export class FabDataTableFilterComponent implements OnInit {
     return formattedString;
   }
 
+  private checkIsDefaultSelected(name: string): boolean {
+    const set = new Set(this.tableFilter.defaultSelection);
+    return set.has(name);
+  }
+
   toggleCallout() {
     this.isCallOutVisible = !this.isCallOutVisible;
   }
@@ -132,20 +153,24 @@ export class FabDataTableFilterComponent implements OnInit {
     this.isCallOutVisible = false;
   }
 
-  updateDisplayName() {
+  updateText() {
     if (this.filterOption === TableFilterSelectionOption.Single) {
-      this.displayName = `${this.tableFilter.columnName} : ${this.selectedKey}`;
+      this.displayName = `${this.tableFilter.name} : ${this.selectedKey}`;
     } else if (this.filterOption === TableFilterSelectionOption.Multiple) {
-      if (this.selected.size === 0 || this.selected.size === this.options.length) {
-        //Selected nothing will be same as selected all as for display
-        this.displayName = `${this.tableFilter.columnName} : ${all}`;
-      } else if (this.selected.size == 1) {
-        const selectedName = Array.from(this.selected)[0];
-        const formattedSelectionName = this.optionsWithFormattedName.find(o => selectedName === o.name).formattedName;
-        this.displayName = `${this.tableFilter.columnName} : ${formattedSelectionName}`;
-      } else if (this.selected.size < this.options.length) {
-        this.displayName = `${this.tableFilter.columnName} : ${this.selected.size} of ${this.options.length} selected`;
-      }
+      this.updateMultipleSelectionText();
+    }
+  }
+
+  private updateMultipleSelectionText() {
+    if (this.selected.size === 0 || this.selected.size === this.options.length) {
+      //Selected nothing will be same as selected all as for display
+      this.displayName = `${this.tableFilter.name} : ${all}`;
+    } else if (this.selected.size == 1) {
+      const selectedName = Array.from(this.selected)[0];
+      const formattedSelectionName = this.optionsWithFormattedName.find(o => selectedName === o.name).formattedName;
+      this.displayName = `${this.tableFilter.name} : ${formattedSelectionName}`;
+    } else if (this.selected.size < this.options.length) {
+      this.displayName = `${this.tableFilter.name} : ${this.selected.size} of ${this.options.length} selected`;
     }
   }
 
