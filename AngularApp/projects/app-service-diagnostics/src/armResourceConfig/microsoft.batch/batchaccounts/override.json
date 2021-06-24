@@ -9,7 +9,7 @@
     "azureServiceName": "",
     "armApiConfig": {
         "armApiVersion": "",
-        "isArmApiResponseBase64Encoded": false
+        "isArmApiResponseBase64Encoded": true
     },
     "isSearchEnabled": true,
     "keystoneDetectorId": "",
