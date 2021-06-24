@@ -73,6 +73,10 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     if (this.rowsClone.length === 0) {
       this.fabDetailsList.renderDetailsFooter = this.emptyTableFooter
     }
+
+    if(this.renderingProperties.searchPlaceholder && this.renderingProperties.searchPlaceholder.length > 0) {
+      this.searchPlaceholder = this.renderingProperties.searchPlaceholder;
+    }
   }
 
 
@@ -98,7 +102,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   columns: IColumn[] = [];
   allowColumnSearch: boolean = false;
   searchTimeout: any;
-  searchAriaLabel = "Search by keywords";
+  searchPlaceholder = "Search by keywords";
   heightThreshold = window.innerHeight * 0.5;
   tableFilters: TableFilter[] = [];
   searchValue: string = "";
