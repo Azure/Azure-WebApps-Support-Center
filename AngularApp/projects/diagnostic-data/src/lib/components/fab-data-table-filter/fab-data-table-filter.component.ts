@@ -65,8 +65,7 @@ export class FabDataTableFilterComponent implements OnInit {
       this.initForMultipleSelection();
       this.updateMultipleSelectionText();
 
-      const selectNothingAsEverything = !this.tableFilter.defaultSelection || this.tableFilter.defaultSelection.length === 0;
-      this.emitSelectedOption(selectNothingAsEverything);
+      this.emitSelectedOption();
     }
   }
 
@@ -132,7 +131,7 @@ export class FabDataTableFilterComponent implements OnInit {
 
   updateTableWithOptions() {
     this.updateText();
-    this.emitSelectedOption(true);
+    this.emitSelectedOption();
     this.closeCallout();
   }
 
@@ -178,9 +177,9 @@ export class FabDataTableFilterComponent implements OnInit {
     }
   }
 
-  emitSelectedOption(selectNothingAsEverything = true) {
+  emitSelectedOption() {
     //For multiple selection,if selected nothing when clicking from callout or no default selection then it will show as selected nothing ,but for updating table it will be same as selected everything
-    if (this.filterOption === TableFilterSelectionOption.Multiple && this.selected.size === 0 && selectNothingAsEverything) {
+    if (this.filterOption === TableFilterSelectionOption.Multiple && this.selected.size === 0) {
       this.onFilterUpdate.emit(new Set(this.options));
     } else {
       this.onFilterUpdate.emit(this.selected);
