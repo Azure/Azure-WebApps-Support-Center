@@ -26,8 +26,6 @@ export class FabDataTableFilterComponent implements OnInit {
   selected: Set<string> = new Set<string>();
   optionsWithFormattedName: { name: string, formattedName: string, defaultSelection: boolean }[] = [];
 
-  @ViewChild("checkBoxAll", { static: false }) checkbox: FabCheckboxComponent;
-
   //For single choice
   optionsForSingleChoice: IChoiceGroupOption[] = [];
   selectedKey: string = "";
@@ -133,7 +131,7 @@ export class FabDataTableFilterComponent implements OnInit {
   }
 
   private formatOptionName(name: string): string {
-    let formattedString = name;
+    let formattedString = `${name}`;
     //remove empty space and <i> tag
     formattedString = formattedString.replace(/&nbsp;/g, "");
     formattedString = formattedString.replace(/<i.*><\/i>/g, "");

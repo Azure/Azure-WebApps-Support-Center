@@ -27,15 +27,28 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       });
     }
 
+    //Add pre-selection into filtersMap
     for (const filter of this.tableFilters) {
       this.filtersMap.set(filter.name, new Set<string>());
-      if (filter.defaultSelection && filter.defaultSelection.length > 0) {
+      if (this.checkHasDefaultSelection(filter)) {
         const set = new Set(filter.defaultSelection);
         this.filterSelectionMap.set(filter.name, set);
       }
     }
 
     this.createFabricDataTableObjects();
+
+    //Add first option into filtersMap for single selection
+    for (const filter of this.tableFilters) {
+      if (filter.selectionOption === TableFilterSelectionOption.Single && !this.checkHasDefaultSelection(filter)) {
+        const defaultSelection = Array.from(this.filtersMap.get(filter.name))[0];
+        const set = new Set([defaultSelection]);
+        this.filterSelectionMap.set(filter.name, set);
+      }
+    }
+
+
+
     this.updateTable();
 
     this.fabDetailsList.selectionMode = this.renderingProperties.descriptionColumnName ? SelectionMode.single : SelectionMode.none;
@@ -74,7 +87,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       this.fabDetailsList.renderDetailsFooter = this.emptyTableFooter
     }
 
-    if(this.renderingProperties.searchPlaceholder && this.renderingProperties.searchPlaceholder.length > 0) {
+    if (this.renderingProperties.searchPlaceholder && this.renderingProperties.searchPlaceholder.length > 0) {
       this.searchPlaceholder = this.renderingProperties.searchPlaceholder;
     }
   }
@@ -291,6 +304,10 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     let str = `${s}`;
     str = str.trim();
     return str.startsWith('<markdown>') && str.endsWith('</markdown>');
+  }
+
+  private checkHasDefaultSelection(filter: TableFilter) {
+    return filter.defaultSelection && filter.defaultSelection.length > 0;
   }
 }
 
