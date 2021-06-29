@@ -131,7 +131,7 @@ export class FabDataTableFilterComponent implements OnInit {
   }
 
   private formatOptionName(name: string): string {
-    let formattedString = `${name}`;
+    let formattedString = name;
     //remove empty space and <i> tag
     formattedString = formattedString.replace(/&nbsp;/g, "");
     formattedString = formattedString.replace(/<i.*><\/i>/g, "");

@@ -157,7 +157,8 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
         rowObject[columnName] = row[i];
 
         if (this.filtersMap.has(columnName)) {
-          this.filtersMap.get(columnName).add(row[i]);
+          const value = `${row[i]}`;
+          this.filtersMap.get(columnName).add(value);
         }
       }
 
@@ -262,7 +263,8 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     //Only if filterSelectionMap has the column name and value for the cell value does not include in the set, return false
     const keys = Array.from(this.filterSelectionMap.keys());
     for (let key of keys) {
-      if (row[key] !== undefined && !this.filterSelectionMap.get(key).has(row[key])) return false;
+      const value = row[key];
+      if (value !== undefined && !this.filterSelectionMap.get(key).has(`${value}`)) return false;
     }
     return true;
   }
