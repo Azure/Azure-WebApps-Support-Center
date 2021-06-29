@@ -289,10 +289,6 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     str = str.trim();
     return str.startsWith('<markdown>') && str.endsWith('</markdown>');
   }
-
-  private checkHasDefaultSelection(filter: TableFilter) {
-    return filter.defaultSelection && filter.defaultSelection.length > 0;
-  }
 }
 
 
