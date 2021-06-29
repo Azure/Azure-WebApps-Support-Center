@@ -60,9 +60,13 @@ export class FabDataTableFilterComponent implements OnInit {
     if (this.filterOption === TableFilterSelectionOption.Single) {
       this.initForSingleSelect();
       this.displayName = `${this.tableFilter.name} : ${this.selectedKey}`;
+      this.emitSelectedOption();
     } else if (this.filterOption === TableFilterSelectionOption.Multiple) {
       this.initForMultipleSelection();
       this.updateMultipleSelectionText();
+
+      const selectNothingAsEverything = !this.tableFilter.defaultSelection || this.tableFilter.defaultSelection.length === 0;
+      this.emitSelectedOption(selectNothingAsEverything);
     }
   }
 
@@ -120,13 +124,15 @@ export class FabDataTableFilterComponent implements OnInit {
 
   initForMultipleSelection() {
     this.optionsWithFormattedName.forEach(o => {
-      if (o.defaultSelection) this.selected.add(o.name);
+      if (o.defaultSelection) {
+        this.selected.add(o.name);
+      }
     })
   }
 
   updateTableWithOptions() {
     this.updateText();
-    this.emitSelectedOption();
+    this.emitSelectedOption(true);
     this.closeCallout();
   }
 
@@ -172,9 +178,9 @@ export class FabDataTableFilterComponent implements OnInit {
     }
   }
 
-  emitSelectedOption() {
-    //For multiple selection,if selected nothing then it will show as selected nothing ,but for updating table it will be same as selected everything
-    if (this.filterOption === TableFilterSelectionOption.Multiple && this.selected.size === 0) {
+  emitSelectedOption(selectNothingAsEverything = true) {
+    //For multiple selection,if selected nothing when clicking from callout or no default selection then it will show as selected nothing ,but for updating table it will be same as selected everything
+    if (this.filterOption === TableFilterSelectionOption.Multiple && this.selected.size === 0 && selectNothingAsEverything) {
       this.onFilterUpdate.emit(new Set(this.options));
     } else {
       this.onFilterUpdate.emit(this.selected);
