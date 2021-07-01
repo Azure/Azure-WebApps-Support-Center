@@ -35,7 +35,7 @@ export class ValidResourceResolver implements Resolve<void>{
 
       if (response && response.enabledResourceTypes.length > 0) {
         let enabledResourceTypes = <ResourceServiceInputs[]>response.enabledResourceTypes;
-        let matchingResourceInputs = enabledResourceTypes.find(t => t.resourceType == type);
+        let matchingResourceInputs = enabledResourceTypes.find(t => t.resourceType.toLowerCase() === type.toLowerCase());
 
         if (matchingResourceInputs) {
           matchingResourceInputs.armResource = resource;
