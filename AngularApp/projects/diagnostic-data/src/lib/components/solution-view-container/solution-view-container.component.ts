@@ -1,7 +1,7 @@
 
 import { Inject } from '@angular/core';
 import { Component, Input, OnInit } from '@angular/core';
-import { DiagnosticDataConfig, DIAGNOSTIC_DATA_CONFIG } from 'diagnostic-data';
+import { DiagnosticDataConfig, DIAGNOSTIC_DATA_CONFIG } from '../../config/diagnostic-data-config';
 import { TelemetryService } from "../../services/telemetry/telemetry.service";
 
 @Component({
