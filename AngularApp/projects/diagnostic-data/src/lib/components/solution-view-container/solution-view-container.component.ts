@@ -1,5 +1,7 @@
 
+import { Inject } from '@angular/core';
 import { Component, Input, OnInit } from '@angular/core';
+import { DiagnosticDataConfig, DIAGNOSTIC_DATA_CONFIG } from 'diagnostic-data';
 import { TelemetryService } from "../../services/telemetry/telemetry.service";
 
 @Component({
@@ -20,8 +22,12 @@ export class SolutionViewContainerComponent implements OnInit {
     noSelected: boolean;
     showThanksMessage: boolean = false;
     eventProps: { [name: string]: string } = {};
+    isPublic: boolean;
 
-    constructor(protected telemetryService: TelemetryService) { }
+
+    constructor(protected telemetryService: TelemetryService, @Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig) {
+        this.isPublic = config && config.isPublic;
+     }
 
     ngOnInit() {
         this.solutionTitleImageSrc = this.getIconImagePath();
@@ -37,8 +43,10 @@ export class SolutionViewContainerComponent implements OnInit {
     }
 
     private getIconImagePath() {
-        return this.isRecommended ? "../../../../assets/img/case-submission-flow/Help-and-Support.svg" : "../../../../assets/img/case-submission-flow/Troubleshoot.svg";
-    }
+         let publicImagePath = this.isRecommended ? "../../../../assets/img/case-submission-flow/Help-and-Support.svg" : "../../../../assets/img/case-submission-flow/Troubleshoot.svg";
+         let internalImagePath = this.isRecommended ? "assets/img/Help-and-Support.svg" : "assets/img/Troubleshoot.svg";
+         return this.isPublic ? publicImagePath : internalImagePath;
+        }
 
     feedbackButtonClicked(helpful: boolean) {
         this.yesSelected = helpful;
