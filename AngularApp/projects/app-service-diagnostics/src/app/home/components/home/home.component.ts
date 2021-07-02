@@ -284,6 +284,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
             let featurePath: string = additionalParameters.featurePath;
             featurePath = featurePath.startsWith('/') ? featurePath.replace('/', '') : featurePath;
 
+            //If with deep link in old UI, feature path with "categories/:categoryId/detectors/:detectorId" will remove category info it route right component
+            if(this.useLegacy && featurePath.toLowerCase().startsWith("categories/")){
+                featurePath =  featurePath.substring(featurePath.indexOf("detectors/"));
+            }
+
             return `${route}/${featurePath}`;
         }
 
