@@ -87,7 +87,7 @@ export async function runKuduAccessibleCheck(diagProvider) {
             title: "Kudu is not reachable, diagnostic will be incomplete",
             level: 1
         }));
-        var commonRecommendations = new CommonRecommendations;
+        var commonRec = new CommonRecommendations;
 
         views.push(commonRec.KuduNotAccessible.Get(`https://${diagProvider.scmHostname}`));
     }
@@ -1088,7 +1088,7 @@ export function extractHostPortFromConnectionString(connectionString) {
     var connectionStringKVMap = connectionStringTokens.reduce(
         (dict, element) =>  {
             var kvpair = element.split("=");
-            if (kvpair.length = 2) {
+            if (kvpair.length == 2) {
                 (dict[kvpair[0]] = kvpair[1])
             }
             return dict;
