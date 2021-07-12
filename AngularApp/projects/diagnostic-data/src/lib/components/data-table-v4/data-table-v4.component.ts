@@ -276,12 +276,13 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
     return width;
   }
 
+  //Return true only if table is not empty and has column for this filter with same name
   private validateFilterOption(option: TableColumnOption): boolean {
     if (option.selectionOption === undefined || option.selectionOption === TableFilterSelectionOption.None) {
       return false;
     }
     const columns = this.diagnosticData.table.columns;
-    return columns.findIndex(col => col.columnName === option.name) > -1;
+    return columns.findIndex(col => col.columnName === option.name) > -1 && this.diagnosticData.table.rows.length > 0;
   }
 
   isMarkdown(s: any) {
