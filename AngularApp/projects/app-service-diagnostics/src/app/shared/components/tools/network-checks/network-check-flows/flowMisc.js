@@ -206,19 +206,9 @@ async function checkVnetIntegrationAsync(siteInfo, diagProvider, isKuduAccessibl
                         return { checks, isContinue, subnetData };
                     }
                     else if (vnetData.status == 404) {
-                        var resource = `Virtual Network ${vnetResourceId.split("/virtualNetworks/")[1]}`;
-                        var views = [
-                            new CheckStepView({
-                                title: `${resource} does not exist`,
-                                level: 2
-                            }),
-                            new InfoStepView({
-                                infoType: 1,
-                                title: `Issue found: ${resource} does not exist`,
-                                markdown: `The VNet(**${vnetResourceId}**)  integrated with this app does not exist. Please re-configure the VNet integration with a valid VNet.`
-                            }),
-                        ];
-                        checks = checks.concat(views);
+                        var resourceNotFound = `Virtual Network ${vnetResourceId.split("/virtualNetworks/")[1]}`;
+                        var viewResourceNotFound = showResourceNotFoundStatus(resourceNotFound, "VNet");
+                        checks = checks.concat(viewResourceNotFound);
                         var isContinue = false;
                         return { checks, isContinue, subnetData };
                     }
@@ -985,12 +975,8 @@ export async function checkDnsSettingAsync(siteInfo, diagProvider) {
                     } else {
                         if (vnetMetaData.status == 401) {
                             subChecks.push({ title: "DNS check is skipped due to having no access to subnet", level: 3 });
-                            return { views, dnsServers, subChecks, level };
-                        } else if(vnetMetaData.status == 404) {
-                            subChecks.push({ title: "DNS check is skipped due to VNet not found", level: 3 });
-                            return { views, dnsServers, subChecks, level };
-                        }
-                        else {
+                            return { views, dnsServer, subChecks };
+                        } else {
                             throw new Error("checkDnsSetting failed due to unknown status of vnetMetaData");
                         }
                     }
