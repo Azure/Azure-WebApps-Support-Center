@@ -206,9 +206,19 @@ async function checkVnetIntegrationAsync(siteInfo, diagProvider, isKuduAccessibl
                         return { checks, isContinue, subnetData };
                     }
                     else if (vnetData.status == 404) {
-                        var resourceNotFound = `Virtual Network ${vnetResourceId.split("/virtualNetworks/")[1]}`;
-                        var viewResourceNotFound = showResourceNotFoundStatus(resourceNotFound, "VNet");
-                        checks = checks.concat(viewResourceNotFound);
+                        var resource = `Virtual Network ${vnetResourceId.split("/virtualNetworks/")[1]}`;
+                        var views = [
+                            new CheckStepView({
+                                title: `${resource} does not exist`,
+                                level: 2
+                            }),
+                            new InfoStepView({
+                                infoType: 1,
+                                title: `Issue found: ${resource} does not exist`,
+                                markdown: `The VNet(**${vnetResourceId}**)  integrated with this app does not exist. Please re-configure the VNet integration with a valid VNet.`
+                            }),
+                        ];
+                        checks = checks.concat(views);
                         var isContinue = false;
                         return { checks, isContinue, subnetData };
                     }
@@ -294,7 +304,8 @@ async function checkVnetIntegrationAsync(siteInfo, diagProvider, isKuduAccessibl
 
                 //Get Virtual Network
                 vnetResourceId = subnetResourceId.split("/subnets/")[0];
-                var vnetData = await diagProvider.getArmResourceAsync(vnetResourceId, "2020-11-01");
+                var vnetDataPromise = diagProvider.getArmResourceAsync(vnetResourceId, "2017-11-15");
+                var vnetData = await vnetDataPromise;
                 if (vnetData.status == 401) {
                     var missingPermissionResource = `Virtual Network: ${vnetResourceId.split("/virtualNetworks/")[1]}`;
                     var viewMissingPermissionsonResource = showMissingPermissionStatus(missingPermissionResource);
@@ -304,9 +315,20 @@ async function checkVnetIntegrationAsync(siteInfo, diagProvider, isKuduAccessibl
                     return { checks, isContinue, subnetData };
                 }
                 else if (vnetData.status == 404) {
-                    var resourceNotFound = `Virtual Network ${vnetResourceId.split("/virtualNetworks/")[1]}`;
-                    var viewResourceNotFound = showResourceNotFoundStatus(resourceNotFound);
-                    checks = checks.concat(viewResourceNotFound);
+                    var resource = `Virtual Network ${vnetResourceId.split("/virtualNetworks/")[1]}`;
+                    var views = [
+                        new CheckStepView({
+                            title: `${resource} does not exist`,
+                            level: 2
+                        }),
+                        new InfoStepView({
+                            infoType: 1,
+                            title: `Issue found: ${resource} does not exist`,
+                            markdown: `The app is integrated with a nonexistent VNet **${vnetResourceId}**. \r\n\r\n` +
+                                `Please re-configure the VNet integration with a valid VNet.`
+                        }),
+                    ];                
+                    checks = checks.concat(views);
                     var isContinue = false;
                     return { checks, isContinue, subnetData };
                 }
@@ -963,8 +985,12 @@ export async function checkDnsSettingAsync(siteInfo, diagProvider) {
                     } else {
                         if (vnetMetaData.status == 401) {
                             subChecks.push({ title: "DNS check is skipped due to having no access to subnet", level: 3 });
-                            return { views, dnsServer, subChecks };
-                        } else {
+                            return { views, dnsServers, subChecks, level };
+                        } else if(vnetMetaData.status == 404) {
+                            subChecks.push({ title: "DNS check is skipped due to VNet not found", level: 3 });
+                            return { views, dnsServers, subChecks, level };
+                        }
+                        else {
                             throw new Error("checkDnsSetting failed due to unknown status of vnetMetaData");
                         }
                     }

@@ -28,7 +28,7 @@ export var connectionFailureFlow = {
         var promise = checkVnetIntegrationHealth(siteInfo, diagProvider, kuduReachablePromise, permMgr);
         flowMgr.addViews(promise.then(d => d.views), "Checking VNet integration status...");
 
-        var data = { subnetDataPromise: promise.then(d => d.subnetData), serverFarmId: siteInfo["serverFarmId"], kuduReachablePromise, isContinuedPromise: promise.then(d => d.isContinue) };
+        var data = { subnetDataPromise: promise.then(d => d && d.subnetData), serverFarmId: siteInfo["serverFarmId"], kuduReachablePromise, isContinuedPromise: promise.then(d => d.isContinue) };
         checkNetworkConfigAndConnectivity(siteInfo, diagProvider, flowMgr, data, permMgr);
     }
 }
