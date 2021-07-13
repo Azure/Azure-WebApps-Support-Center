@@ -51,7 +51,6 @@ export class InsightUtils {
         });
 
         let allInsights: Insight[] = [];
-        let allDynamicInsights: Insight[] = [];
         insightDiagnosticData.forEach((diagnosticData: DiagnosticData) => {
             const type = (<Rendering>diagnosticData.renderingProperties).type;
             switch (type) {
@@ -61,13 +60,13 @@ export class InsightUtils {
                     break;
                 case RenderingType.DynamicInsight:
                     let dynamicInsight = DynamicInsightUtils.parseDynamicInsightFromResponse(diagnosticData);
-                    allDynamicInsights.push(dynamicInsight);
+                    allInsights.push(dynamicInsight);
                     break;
                 default:
                     break;
             }
         });
-        return allDynamicInsights.concat(allInsights);
+        return allInsights;
     }
 
     static parseInsightRendering(diagnosticData: DiagnosticData): Insight[] {
@@ -115,9 +114,9 @@ export class DynamicInsight extends InsightBase {
 class DynamicInsightUtils {
     static parseDynamicInsightFromResponse(diagnosticData: DiagnosticData): Insight {
         const renderingProperties = <DynamicInsightRendering>diagnosticData.renderingProperties;
-        const status = renderingProperties.status;
+        const status = HealthStatus[renderingProperties.status];
         const title = renderingProperties.title;
         const expanded = renderingProperties.expanded;
-        return new Insight(`${status}`, title, expanded);
+        return new Insight(status, title, expanded);
     }
 }
