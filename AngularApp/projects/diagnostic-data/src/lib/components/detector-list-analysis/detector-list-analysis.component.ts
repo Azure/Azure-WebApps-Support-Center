@@ -626,7 +626,7 @@ export class DetectorListAnalysisComponent extends DataRenderBaseComponent imple
     }
 
     getDetectorInsight(viewModel: any): any {
-        let allInsights: Insight[] = InsightUtils.parseAllInsightsFromResponse(viewModel.response);
+        let allInsights: Insight[] = InsightUtils.parseAllInsightsFromResponse(viewModel.response,true);
         let insight: any;
         if (allInsights.length > 0) {
 
