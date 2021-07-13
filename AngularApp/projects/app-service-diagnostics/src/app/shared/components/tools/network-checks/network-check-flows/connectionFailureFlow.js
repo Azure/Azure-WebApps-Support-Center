@@ -27,7 +27,7 @@ export var connectionFailureFlow = {
 
         var promise = checkVnetIntegrationHealth(siteInfo, diagProvider, kuduReachablePromise, permMgr);
         flowMgr.addViews(promise.then(d => d.views), "Checking VNet integration status...");
-
+        await promise;
         var data = { subnetDataPromise: promise.then(d => d && d.subnetData), serverFarmId: siteInfo["serverFarmId"], kuduReachablePromise, isContinuedPromise: promise.then(d => d.isContinue) };
         checkNetworkConfigAndConnectivity(siteInfo, diagProvider, flowMgr, data, permMgr);
     }
@@ -126,6 +126,7 @@ async function runConnectivityCheck(hostname, port, dnsServers, diagProvider, le
         markdown = "Connectivity test failed at TCP level. " +
             "This means the endpoint was not reachable in Transportation Layer. Possible reasons can be: \r\n\r\n" +
             "-  The endpoint does not exist, please double check the hostname:port or ip:port was correctly set. \r\n\r\n" +
+            "-  If the IP address resolved from hostname is no expected, then please check your DNS record. \r\n\r\n" +
             "-  The endpoint is not reachable from the VNet, please double check if the endpoint server is correctly configured. \r\n\r\n" +
             "-  There is a TCP level firewall or a Network Security Group Rule blocking the traffic from this app. Please check your firewall or NSG rules if there are any. \r\n\r\n" +
             "-  WEBSITE_ALWAYS_FALLBACK_TO_PUBLIC_DNS setting is not supported by this connectivity check yet, if custom DNS server fails to resolve the hostname, the check will fail.\r\n\r\n" +

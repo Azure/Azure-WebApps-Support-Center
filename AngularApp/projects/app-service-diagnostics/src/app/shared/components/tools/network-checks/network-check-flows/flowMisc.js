@@ -196,7 +196,7 @@ async function checkVnetIntegrationAsync(siteInfo, diagProvider, isKuduAccessibl
                 if (siteGWVnetInfo[0]["properties"] != null && siteGWVnetInfo[0]["properties"]["vnetResourceId"] != null) {
                     //Check if Vnet exists that the gateway is connected to
                     vnetResourceId = siteGWVnetInfo[0]["properties"]["vnetResourceId"];
-                    var vnetData = await diagProvider.getArmResourceAsync(vnetResourceId, "2017-11-15");
+                    var vnetData = await diagProvider.getArmResourceAsync(vnetResourceId, "2018-07-01");
                     if (vnetData.status == 401) {
                         var missingPermissionResource = `Virtual Network: ${vnetResourceId.split("/virtualNetworks/")[1]}`;
                         var viewMissingPermissionsonResource = showMissingPermissionStatus(missingPermissionResource);
@@ -294,7 +294,7 @@ async function checkVnetIntegrationAsync(siteInfo, diagProvider, isKuduAccessibl
 
                 //Get Virtual Network
                 vnetResourceId = subnetResourceId.split("/subnets/")[0];
-                var vnetDataPromise = diagProvider.getArmResourceAsync(vnetResourceId, "2017-11-15");
+                var vnetDataPromise = diagProvider.getArmResourceAsync(vnetResourceId, "2018-07-01");
                 var vnetData = await vnetDataPromise;
                 if (vnetData.status == 401) {
                     var missingPermissionResource = `Virtual Network: ${vnetResourceId.split("/virtualNetworks/")[1]}`;
@@ -967,7 +967,7 @@ export async function checkDnsSettingAsync(siteInfo, diagProvider) {
             if (subnetResourceId != null) {
                 if (subnetResourceId.includes("/subnets/")) {
                     var vnetResourceId = subnetResourceId.split("/subnets/")[0];
-                    var vnetMetaData = await diagProvider.getArmResourceAsync(vnetResourceId, "2020-11-01");
+                    var vnetMetaData = await diagProvider.getArmResourceAsync(vnetResourceId, "2018-07-01");
                     if (vnetMetaData != null && vnetMetaData.status == 200) {
                         if (vnetMetaData["properties"] && vnetMetaData["properties"]["dhcpOptions"] && vnetMetaData["properties"]["dhcpOptions"]["dnsServers"] != null) {
                             vnetDns = vnetMetaData["properties"]["dhcpOptions"]["dnsServers"];
