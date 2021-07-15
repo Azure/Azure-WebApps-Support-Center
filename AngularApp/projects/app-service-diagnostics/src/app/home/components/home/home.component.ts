@@ -126,7 +126,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 }
                 else {
                     this.homePageText = {
-                        title: 'App Service Diagnostics (Preview)',
+                        title: 'App Service Diagnostics',
                         description: 'Investigate how your app is performing, diagnose issues, and discover how to improve your application.' ,
                         searchBarPlaceHolder: 'Search App Service Diagnostics'
                     };
