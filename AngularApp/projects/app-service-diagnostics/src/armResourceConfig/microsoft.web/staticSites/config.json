@@ -1,0 +1,21 @@
+{
+	"homePageText": {
+		"title": "Static Web Apps Diagnostics",
+		"description": "Use Static Web Apps Diagnostics to investigate how your service is performing, diagnose issues, and discover how to improve its reliability. Select the problem category that best matches the information or tool that you're interested in:",
+		"searchBarPlaceHolder": "Search Static Web Apps Diagnostics"
+	},
+	"matchRegEx": "/Microsoft.Web/staticSites/",
+	"searchSuffix": "Static Web Apps",
+	"azureServiceName": "Static Web Apps",
+	"armApiConfig": {
+		"armApiVersion": "2019-01-14"
+	},
+	"isSearchEnabled": true,
+	"keystoneDetectorId": "",
+	"liveChatConfig": {
+		"isApplicableForLiveChat": false,
+		"supportTopicIds": []
+	},
+	"categories": [],
+	"pesId": "17265"
+}
